@@ -5,15 +5,14 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 
 @Entity
-public class Student {
+public class Alumni {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id; // Primary key and auto incremented
-    private String name;
-    private String address;
+    private String linkedinLink;
 
-    public Student(){
+    public Alumni(){
 
     }
 
@@ -21,23 +20,15 @@ public class Student {
         return id;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public String getAddress() {
-        return address;
+    public String getLinkedinLink() {
+        return linkedinLink;
     }
 
     public void setId(int id) {
         this.id = id;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
+    public void setLinkedinLink(String linkedinLink) {
+        this.linkedinLink = linkedinLink;
     }
 }

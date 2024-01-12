@@ -1,13 +1,13 @@
 import './App.css';
 import AppNavBar from './components/AppNavBar.js'
-import Student from './components/Student.js'
+import Alumni from './components/Alumni.js'
 
 
 function App() {
   return (
     <div className="App">
       <AppNavBar/>
-      <Student/>
+      <Alumni/>
     </div>
   );
 }
