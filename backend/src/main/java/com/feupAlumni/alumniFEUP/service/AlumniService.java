@@ -4,7 +4,9 @@ import com.feupAlumni.alumniFEUP.model.Alumni;
 
 import java.util.List;
 
+import org.springframework.web.multipart.MultipartFile;
+
 public interface AlumniService {
-    public Alumni saveAlumni(Alumni alumni);
+    public void processFile(MultipartFile file);
     public List<Alumni> getAllAlumnis();
 }

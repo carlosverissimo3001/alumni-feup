@@ -1,33 +1,59 @@
 import React, {useEffect, useState} from 'react';
 import Box from '@mui/material/Box';
-import TextField from '@mui/material/TextField';
-import { Container, Paper, Button } from '@mui/material';
+import { Container, Paper, Button, Input } from '@mui/material';
 
 export default function Alumni() {
   const paperStyle = {padding: '50px 20px', width:600, margin:"20px auto"}
 
-  const[linkedinLink, setLinkedinLink]=useState('')
+  const[file, setFile]=useState('')
   const[alumnis, setAlumnis]=useState([])
 
-  const handleClick=(e)=>{
-    e.preventDefault()
-    const alumni={linkedinLink}
-    console.log(alumni)
-    fetch("http://localhost:8080/alumni/add",{
-        method: "Post",
-        headers:{"Content-Type":"application/json"},
-        body:JSON.stringify(alumni)
-    }).then(()=>{
-        console.log("New Alumni Added")
-    })
+  const handleFileChange = (e) => {
+    setFile(e.target.files[0]);
+  };
+
+
+  const handleFileUpload = async () => {
+    if(!file){
+        alert('Please Select a File.');
+        return;
+    }
+
+    // File is sent to the server using a 'FormData' object
+    const formData = new FormData();
+    formData.append('file', file);
+
+    try {
+        const response = await fetch('http://localhost:8080/alumni/upload', {
+            method: 'POST',
+            body: formData,
+        });
+
+        if (response.ok){
+            console.log('File uploaded successfully');
+            // Trigger a refresh of the alumni list after file upload
+            fetchAlumnis();
+        } else {
+            console.error('File upload failed');
+        }
+
+    } catch (error) {
+        console.error('Error during file upload:', error);
+    }
+
   }
 
-  useEffect(()=>{
-    fetch("http://localhost:8080/alumni/getAll")
-    .then(res=>res.json())
+  const fetchAlumnis = () => {
+    fetch('http://localhost:8080/alumni/getAll')
+    .then((res)=>res.json())
     .then((result) => {
         setAlumnis(result);
     })
+    .catch((error) => console.error('Error fetching alumnis: ', error));
+  }
+
+  useEffect(()=>{
+    fetchAlumnis();
   }, [])
 
   return (
@@ -42,8 +68,8 @@ export default function Alumni() {
             noValidate
             autoComplete="off"
             >
-            <TextField id="outlined-basic" label="Alumni LinkedIn Link" variant="outlined" fullWidth value={linkedinLink} onChange={(e) => setLinkedinLink(e.target.value)}/>
-            <Button variant="contained" color='secondary' onClick={handleClick}>Submit</Button>
+            <Input type="file" onChange={handleFileChange} accept=".txt" />   
+            <Button variant="contained" color='secondary' onClick={handleFileUpload}>Upload File</Button>
             </Box>
         </Paper>  
 
@@ -59,7 +85,7 @@ export default function Alumni() {
 
             }
         </Paper>
-
+        
     </Container>
   );
 }
