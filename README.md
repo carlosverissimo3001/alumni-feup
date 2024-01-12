@@ -1,1 +1,3 @@
 # alimniProject
+
+How to run
