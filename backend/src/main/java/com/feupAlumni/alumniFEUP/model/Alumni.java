@@ -13,7 +13,11 @@ public class Alumni {
     private String linkedinLink;
 
     public Alumni(){
+        
+    }
 
+    public Alumni(String linkedinLink){
+        this.linkedinLink = linkedinLink;
     }
 
     public int getId() {
