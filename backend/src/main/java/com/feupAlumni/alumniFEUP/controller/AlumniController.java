@@ -16,6 +16,7 @@ public class AlumniController {
     @Autowired
     private AlumniService alumniService;
 
+    // Uploads the file containing Alumni LinkedIn links to the Alumni table along side with the data of the LinkedIn profile.
     @PostMapping("/upload")
     public ResponseEntity<String> handleFileUpload(@RequestBody MultipartFile file){
         try {
@@ -26,6 +27,18 @@ public class AlumniController {
         }        
     }
 
+    // Performs the backup of registers in table "Alumni" to the table AlumniBackup
+    @PostMapping("/backup")
+    public ResponseEntity<String> handleAlumniBackup(){
+        try {
+            alumniService.backupAlumnis();
+            return ResponseEntity.ok("Alumnis backed up successfully");
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Error during file upload: " + e.getMessage());
+        }        
+    }
+
+    // Gets data from the Alumni table
     @GetMapping("/getAll")
     public List<Alumni> getAllStudents(){
         return alumniService.getAllAlumnis();
