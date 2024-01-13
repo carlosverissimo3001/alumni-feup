@@ -61,10 +61,7 @@ public class AlumniServiceImpl implements AlumniService{
 
             while ((linkedinLink = reader.readLine()) != null){
                 if(linkedinLink.length() != 0){
-
-                    // !! Comented to make sure I don't call this method my accident !! This because I don't want to me making accidental calls to the API or accidentaly changing the backup file I have
-
-                    /*// Call the API that gets the information of a linkedin profile
+                    // Call the API that gets the information of a linkedin profile
                     var linkedinInfoResponse = getLinkedinProfileInfo(linkedinLink);
                     System.out.println("STATUS CODE: " + linkedinInfoResponse.statusCode());
 
@@ -80,7 +77,7 @@ public class AlumniServiceImpl implements AlumniService{
                     }
                     else {
                         System.out.println("API call failed with status code: " + linkedinInfoResponse.statusCode() + linkedinInfoResponse.body() + " For profile: " + linkedinLink);
-                    }*/
+                    }
                 }
             }
         } catch (Exception e) {

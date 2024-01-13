@@ -12,8 +12,29 @@ export default function Alumni() {
     setFile(e.target.files[0]);
   };
 
+  // Backup of the alumni table to an alumniBack up table
+  const handleAlumniBackup = async () => {
+    console.log("If you want to perform this functionality uncoment the code in the Alumni class. This was done to avoid backup replication in the table.")
+    /*try {
+        const response = await fetch('http://localhost:8080/alumniBackup/upload', {
+            method: 'POST',
+            body: '',
+        });
 
+        if (response.ok){
+            console.log('Alumni backup successful');
+        } else {
+            console.error('Error during alumni backup.');
+        }
+    } catch(error) {
+        console.error('Error during alumni backup:', error);
+    }*/
+  }
+
+  // Adds the file with the alumnis' linkedin link to the database
   const handleFileUpload = async () => {
+    console.log("If you want to perform this functionality uncoment the code in the Alumni class. This was done to avoid uploading a file and consequently calling the API (wasting credits) by accident.")
+    /*
     if(!file){
         alert('Please Select a File.');
         return;
@@ -39,7 +60,7 @@ export default function Alumni() {
 
     } catch (error) {
         console.error('Error during file upload:', error);
-    }
+    }*/
 
   }
 
@@ -68,8 +89,9 @@ export default function Alumni() {
             noValidate
             autoComplete="off"
             >
-            <Input type="file" onChange={handleFileChange} accept=".txt" />   
+            <Input type="file" onChange={handleFileChange} accept=".txt" />              
             <Button variant="contained" color='secondary' onClick={handleFileUpload}>Upload File</Button>
+            <Button variant="contained" color='secondary' onClick={handleAlumniBackup}>Backup Alumnis</Button>
             </Box>
         </Paper>  
 
@@ -82,7 +104,6 @@ export default function Alumni() {
                     LinkedInLink:{alumni.linkedinLink}<br/>
                 </Paper>
             ))
-
             }
         </Paper>
         
