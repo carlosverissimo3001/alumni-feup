@@ -1,9 +1,12 @@
 package com.feupAlumni.alumniFEUP.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import com.feupAlumni.alumniFEUP.model.ViewAlumniCountry;
 import com.feupAlumni.alumniFEUP.service.ViewAlumniCountryService;
 
 
@@ -26,10 +29,10 @@ public class ViewAlumniCountryController {
         }        
     }
 
-    /*
+    
     @GetMapping("/getAll")
-    public List<Alumni> getAllStudents(){
-        return alumniService.getAllAlumnis();
-    }*/
+    public List<ViewAlumniCountry> getAllStudents(){
+        return viewAlumniCountryService.getViewAlumniCountry();
+    }
 
 }
