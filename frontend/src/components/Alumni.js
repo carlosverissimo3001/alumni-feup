@@ -14,9 +14,9 @@ export default function Alumni() {
 
   // Backup of the alumni table to an alumniBack up table
   const handleAlumniBackup = async () => {
-    console.log("If you want to perform this functionality uncoment the code in the Alumni class. This was done to avoid backup replication in the table.")
-    /*try {
-        const response = await fetch('http://localhost:8080/alumniBackup/upload', {
+    //console.log("If you want to perform this functionality uncoment the code in the Alumni class. This was done to avoid backup replication in the table.")
+    try {
+        const response = await fetch('http://localhost:8080/alumni/backup', {
             method: 'POST',
             body: '',
         });
@@ -28,7 +28,7 @@ export default function Alumni() {
         }
     } catch(error) {
         console.error('Error during alumni backup:', error);
-    }*/
+    }
   }
 
   // Adds the file with the alumnis' linkedin link to the database
@@ -64,6 +64,25 @@ export default function Alumni() {
 
   }
 
+  const handlePopulateView = async () => {
+    try {
+        const response = await fetch('http://localhost:8080/alumniCountryView/populate', {
+            method: 'POST',
+            body: '',
+        });
+
+        if (response.ok){
+            console.log('ViewAlumniCountry Table pouplated sccessfully.');
+            // Trigger a refresh of the alumni list after file upload
+            fetchAlumnis();
+        } else {
+            console.error('ViewAlumniCountry Table FAILED to pouplated.');
+        }
+    } catch (error) {
+        console.error('Error during ViewAlumniCountry Table upload', error);
+    }
+  }
+
   const fetchAlumnis = () => {
     fetch('http://localhost:8080/alumni/getAll')
     .then((res)=>res.json())
@@ -92,6 +111,7 @@ export default function Alumni() {
             <Input type="file" onChange={handleFileChange} accept=".txt" />              
             <Button variant="contained" color='secondary' onClick={handleFileUpload}>Upload File</Button>
             <Button variant="contained" color='secondary' onClick={handleAlumniBackup}>Backup Alumnis</Button>
+            <Button variant="contained" color='secondary' onClick={handlePopulateView}>Populate ViewAlumniCountry Table</Button>
             </Box>
         </Paper>  
 

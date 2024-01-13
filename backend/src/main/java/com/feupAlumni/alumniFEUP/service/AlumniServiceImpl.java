@@ -1,6 +1,8 @@
 package com.feupAlumni.alumniFEUP.service;
 
 import com.feupAlumni.alumniFEUP.model.Alumni;
+import com.feupAlumni.alumniFEUP.model.AlumniBackup;
+import com.feupAlumni.alumniFEUP.repository.AlumniBackupRepository;
 import com.feupAlumni.alumniFEUP.repository.AlumniRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +25,9 @@ public class AlumniServiceImpl implements AlumniService{
 
     @Autowired
     private AlumniRepository alumniRepository;
+    @Autowired
+    private AlumniBackupRepository alumniBackupRepository;
+
 
     // Calls on the API which scrapes the user linkedin's profile
     private HttpResponse<String> getLinkedinProfileInfo(String linkedinLink) throws IOException, InterruptedException{
@@ -52,7 +57,6 @@ public class AlumniServiceImpl implements AlumniService{
         }
     }
 
-    // Processes the file, extracts LinkedIn links, and stores them in the database
     @Override
     public void processFile(MultipartFile file) {
         try (InputStream inputStream = file.getInputStream()){
@@ -69,7 +73,7 @@ public class AlumniServiceImpl implements AlumniService{
                         // Stores the result in a file for personal backup
                         storeResultInFile(linkedinInfoResponse.body());
 
-                         // Creates the alimni object with the constructor that needs the linkedinLink and the linkedinInfo
+                         // Creates the alumni object with the constructor that needs the linkedinLink and the linkedinInfo
                         Alumni alumni = new Alumni(linkedinLink, linkedinInfoResponse.body());
 
                         // Stores the information in the database
@@ -83,6 +87,17 @@ public class AlumniServiceImpl implements AlumniService{
         } catch (Exception e) {
             throw new RuntimeException("Error processing file", e);
         }
+    }
+
+    @Override
+    public void backupAlumnis() {
+        List<Alumni> alumnis = alumniRepository.findAll();
+
+        for (Alumni alumni : alumnis) {
+            AlumniBackup alumniBackup = new AlumniBackup(alumni.getLinkedinLink(), alumni.getLinkedinInfo());
+            alumniBackupRepository.save(alumniBackup);
+        }
+
     }
 
     @Override
