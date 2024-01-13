@@ -59,9 +59,9 @@ public class ViewAlumniCountryServiceImpl implements ViewAlumniCountryService{
         }
     }
 
-    /*@Override
-    public Map<String, Integer> getViewAlumniCountry() {
-        // Returns the data from the table
-    }*/
+    @Override
+    public List<ViewAlumniCountry> getViewAlumniCountry() {
+        return viewAlumniCountryRepository.findAll();
+    }
 
 }

@@ -7,6 +7,7 @@ export default function Alumni() {
 
   const[file, setFile]=useState('')
   const[alumnis, setAlumnis]=useState([])
+  const[viewAlumnisCountry, seViewAlumniCountry]=useState([])
 
   const handleFileChange = (e) => {
     setFile(e.target.files[0]);
@@ -73,8 +74,8 @@ export default function Alumni() {
 
         if (response.ok){
             console.log('ViewAlumniCountry Table pouplated sccessfully.');
-            // Trigger a refresh of the alumni list after file upload
-            fetchAlumnis();
+            // Trigger a refresh of the ViewAlumniCountry list after the table being populated
+            fetchViewAlumniCountry();
         } else {
             console.error('ViewAlumniCountry Table FAILED to pouplated.');
         }
@@ -92,8 +93,19 @@ export default function Alumni() {
     .catch((error) => console.error('Error fetching alumnis: ', error));
   }
 
+  const fetchViewAlumniCountry = () => {
+    fetch('http://localhost:8080/alumniCountryView/getAll')
+    .then((res)=>res.json())
+    .then((result) => {
+        console.log(result);
+        seViewAlumniCountry(result);
+    })
+    .catch((error) => console.error('Error fetching alumnis: ', error));
+  }
+
   useEffect(()=>{
     fetchAlumnis();
+    fetchViewAlumniCountry();
   }, [])
 
   return (
@@ -114,6 +126,19 @@ export default function Alumni() {
             <Button variant="contained" color='secondary' onClick={handlePopulateView}>Populate ViewAlumniCountry Table</Button>
             </Box>
         </Paper>  
+
+        <h1>View</h1>
+
+        <Paper elevation={3} style={paperStyle}>
+            {viewAlumnisCountry.map(viewAlumniCountry=>(
+                <Paper elevation={6} style={{margin:"10px", padding:"15px", textAlign:"left"}} key={viewAlumniCountry.id}>
+                    Country: {viewAlumniCountry.country}<br/>
+                    Nº of Alumnis: {viewAlumniCountry.nalumniInCountry}<br/>
+                </Paper>
+            ))
+            }
+        </Paper>
+
 
         <h1>Alumnis</h1>
         
