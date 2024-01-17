@@ -2,7 +2,7 @@ import './App.css';
 import React, { useRef } from 'react';
 import {Map, Source, Layer} from 'react-map-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
-import { clusterLayer, clusterCountLayer, unclusterPointLayer } from './components/layers';
+import { clusterLayer, clusterCountLayer, unclusterPointLayer } from './components/MapLayers';
 import alumniPerCountry from './countriesGeoJSON.json'
 import mapboxgl from 'mapbox-gl';
 
