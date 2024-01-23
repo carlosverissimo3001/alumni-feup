@@ -54,7 +54,8 @@ function App() {
             //pitch: 45, // Set pitch to create a 3D effect         // 3D
             //bearing: 0, // Set bearing to control the orientation // 3D
           }}
-          mapStyle="mapbox://styles/mapbox/dark-v9"                 // 2D
+          mapStyle="mapbox://styles/mapbox/dark-v11"                // 3D preto e branco
+          //mapStyle="mapbox://styles/mapbox/dark-v9"                 // 2D
           //mapStyle="mapbox://styles/mapbox/satellite-v9"          // 2D
           //mapStyle="mapbox://styles/mapbox/satellite-streets-v12" // 3D
           mapboxAccessToken={TOKEN}
