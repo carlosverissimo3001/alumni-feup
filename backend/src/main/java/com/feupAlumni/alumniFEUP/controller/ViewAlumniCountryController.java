@@ -17,8 +17,7 @@ public class ViewAlumniCountryController {
     @Autowired
     private ViewAlumniCountryService viewAlumniCountryService;
 
-    // Populates the data to be used in the Location view with updated information.
-    // TODO: this needs to be refactored. The table for this view should be updated when the file with the Alumni info is uploaded.
+    // Populates the table view_alumni_country. If it is already populated, registers are deleted and the table is repopulated
     @PostMapping("/populate")
     public ResponseEntity<String> handlePopulateAlumniCountry(){
         try {

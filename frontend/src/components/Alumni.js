@@ -13,9 +13,43 @@ export default function Alumni() {
     setFile(e.target.files[0]);
   };
 
-  // Backup of the alumni table to an alumniBack up table
-  const handleAlumniBackup = async () => {
-    //console.log("If you want to perform this functionality uncoment the code in the Alumni class. This was done to avoid backup replication in the table.")
+  /* 
+   * Calls the endpoint responsible for reading the linkdin links from the file, calling the API capable of scraping the LinkdeIn profile
+   * and stores the scraped information in the table Alumni
+   */
+  const getAlumniLinkedinInfo = async () => {
+    return true; // TODO: take this when the code below is to be uncommented
+    // File is sent to the server using a 'FormData' object
+    /*const formData = new FormData();
+    formData.append('file', file);
+
+    try {
+        const response = await fetch('http://localhost:8080/alumni/upload', {
+            method: 'POST',
+            body: formData,
+        });
+
+        if (response.ok){
+            console.log('File uploaded successfully');
+            // Trigger a refresh of the alumni list after file upload
+            fetchAlumnis();
+            return true;
+        } else {
+            console.error('File upload failed');
+            return false;
+        }
+
+    } catch (error) {
+        console.error('Error during file upload:', error);
+        return false;
+    }*/
+  }
+
+  /* 
+   * Backup of the alumni table to an alumniBack up table. If the table is already populated the data is 
+   * going to be deleted and the table repopulated.
+   */
+  const setAlumniBackup = async () => {
     try {
         const response = await fetch('http://localhost:8080/alumni/backup', {
             method: 'POST',
@@ -32,40 +66,12 @@ export default function Alumni() {
     }
   }
 
-  // Adds the file with the alumnis' linkedin link to the database
-  const handleFileUpload = async () => {
-    console.log("If you want to perform this functionality uncoment the code in the Alumni class. This was done to avoid uploading a file and consequently calling the API (wasting credits) by accident.")
-    /*
-    if(!file){
-        alert('Please Select a File.');
-        return;
-    }
-
-    // File is sent to the server using a 'FormData' object
-    const formData = new FormData();
-    formData.append('file', file);
-
-    try {
-        const response = await fetch('http://localhost:8080/alumni/upload', {
-            method: 'POST',
-            body: formData,
-        });
-
-        if (response.ok){
-            console.log('File uploaded successfully');
-            // Trigger a refresh of the alumni list after file upload
-            fetchAlumnis();
-        } else {
-            console.error('File upload failed');
-        }
-
-    } catch (error) {
-        console.error('Error during file upload:', error);
-    }*/
-
-  }
-
-  const handlePopulateView = async () => {
+  /*
+   * Calls the endpoint responsible for counting the number of alumni per country
+   * calls the API capable of getting the coordinates of each of these countries
+   * populates the table view_alumni_country => if the table is already populated, the registers are delted and the table is repopulated.
+   */
+  const setPopulateView = async () => {
     try {
         const response = await fetch('http://localhost:8080/alumniCountryView/populate', {
             method: 'POST',
@@ -82,6 +88,40 @@ export default function Alumni() {
     } catch (error) {
         console.error('Error during ViewAlumniCountry Table upload', error);
     }
+  }
+
+  // Makes the uplication setup: populades the Alumni table and performs its backup. Populates the view_alumni_country table and 
+  // generates the GeoJSON file.
+  const handleFileUpload = async () => {
+    
+    if(!file){
+        alert('Please Select a File.');
+        return;
+    }
+    
+    const userConfirmed = window.confirm('By uploading a new file, the existing populated tables are going to be deleted and repopulated with the new information from the inserted file. Are you sure you want to continue with this action?');
+
+    if (userConfirmed) {
+        // Reads the LinkedIn links from the file, calls the API that scrapes information from each link, and stores in the Alumni table
+        console.log("If you want to perform this functionality uncoment the code in the Alumni class. This was done to avoid uploading a file and consequently calling the API by accident (wasting credits).")
+        var succAlumniInfo = getAlumniLinkedinInfo(); 
+
+        // Only repopulates the DB when the get information of the alumni linkedin profile was well performed
+        if (succAlumniInfo) {
+            // Performs the backup of the table Alumni
+            setAlumniBackup();
+
+            // Populates the view_alumni_country table
+                // Calls the API to get the countries coordinates
+            setPopulateView();
+
+            // Generates the GEOJason file
+        }
+
+    } else {
+        console.log('User canceled file upload operation.');
+    }
+    
   }
 
   const fetchAlumnis = () => {
@@ -122,8 +162,6 @@ export default function Alumni() {
             >
             <Input type="file" onChange={handleFileChange} accept=".txt" />              
             <Button variant="contained" color='secondary' onClick={handleFileUpload}>Upload File</Button>
-            <Button variant="contained" color='secondary' onClick={handleAlumniBackup}>Backup Alumnis</Button>
-            <Button variant="contained" color='secondary' onClick={handlePopulateView}>Populate ViewAlumniCountry Table</Button>
             </Box>
         </Paper>  
 

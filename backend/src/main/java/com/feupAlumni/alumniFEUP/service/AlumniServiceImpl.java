@@ -91,13 +91,21 @@ public class AlumniServiceImpl implements AlumniService{
 
     @Override
     public void backupAlumnis() {
+
+        // Check if AlumniBackup table is not empty
+        if (alumniBackupRepository.count() > 0) {   
+            System.err.println("Table AlumniBackup populated. Registers are going to be deteled!");
+            alumniBackupRepository.deleteAll();
+        }
+
+        // Fetch all alumnis
         List<Alumni> alumnis = alumniRepository.findAll();
 
+        // Iterate through alumnis and add them to alumnibackup table
         for (Alumni alumni : alumnis) {
             AlumniBackup alumniBackup = new AlumniBackup(alumni.getLinkedinLink(), alumni.getLinkedinInfo());
             alumniBackupRepository.save(alumniBackup);
         }
-
     }
 
     @Override

@@ -5,6 +5,7 @@ import 'mapbox-gl/dist/mapbox-gl.css';
 import { clusterLayer, clusterCountLayer, unclusterPointLayer } from './components/MapLayers';
 import alumniPerCountry from './countriesGeoJSON.json'
 import mapboxgl from 'mapbox-gl';
+import Alumni from './components/Alumni';
 
 const TOKEN = process.env.REACT_APP_MAPBOX_ACCESS_TOKEN;
 
@@ -35,12 +36,12 @@ function App() {
 
   return (
     <>
-      {/*
+      
       <div className="App">
-        <AppNavBar/>
         <Alumni/>
       </div>
-      */}
+      
+      {/* 
       <div style={{height: '100vh'}}>
         {
           // Log the Mapbox GL JS version
@@ -80,6 +81,7 @@ function App() {
           </Source>
         </Map>
       </div>
+      */}
     </>
   );
 }
