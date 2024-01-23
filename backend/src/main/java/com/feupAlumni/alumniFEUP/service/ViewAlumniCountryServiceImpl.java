@@ -35,14 +35,24 @@ public class ViewAlumniCountryServiceImpl implements ViewAlumniCountryService{
 
     @Override
     public void setViewAlumniCountry() {
+
+        // Check if AlumniBackup table is not empty
+        if (viewAlumniCountryRepository.count() > 0) {   
+            System.err.println("Table viewAlumniCountryRepository populated. Registers are going to be deteled!");
+            viewAlumniCountryRepository.deleteAll();
+        }
+
         // Accesses the Alumni table and populates the ViewAlumniCountry table
         List<Alumni> alumniList = alumniRepository.findAll();
         Map<String, Integer> countryAlumniCount = new HashMap<>();
 
         for (Alumni alumni : alumniList) {
             String linkedinInfo = alumni.getLinkedinInfo();
-            String country = extractFieldFromJson("country", linkedinInfo);
+            String country = extractFieldFromJson("country_full_name", linkedinInfo);
             
+            // Ensures consistency across fields
+            country = country.toLowerCase();
+
             // Update the count for the country in the map
             countryAlumniCount.put(country, countryAlumniCount.getOrDefault(country, 0) + 1);
         }
@@ -53,7 +63,6 @@ public class ViewAlumniCountryServiceImpl implements ViewAlumniCountryService{
             Integer alumniCount = entry.getValue();
 
             // Saves the data in the table
-            System.out.println("country: " + country + " alumniCount: " + alumniCount);
             ViewAlumniCountry viewAlumniCountry = new ViewAlumniCountry(country, alumniCount);
             viewAlumniCountryRepository.save(viewAlumniCountry);
         }
