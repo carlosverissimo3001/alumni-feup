@@ -41,7 +41,7 @@ const MenuButtons = () => {
 
     return (
         <>
-            <input type="file" className='fileInput' onChange={handleFileChange} accept=".txt" />         
+            <input type="file" className='fileInput' onChange={handleFileChange} />         
             <button className="button butnUplFile" onClick={handleFileUpload}>Upload File</button>
 
             <button className="button butnAlumCountry">Alumni per County</button>
