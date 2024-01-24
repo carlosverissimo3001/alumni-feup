@@ -1,16 +1,15 @@
 import './App.css';
 import React from 'react';
 import 'mapbox-gl/dist/mapbox-gl.css';
-import Alumni from './components/Alumni';
+import MapCmp from './components/MapCmp';
+import MenuButtons from './components/MenuButtons';
 
 
 function App() {
-
   return (
     <>
-      <div className="App">
-        <Alumni/>
-      </div>
+        <MapCmp/>
+        <MenuButtons/>
     </>
   );
 }

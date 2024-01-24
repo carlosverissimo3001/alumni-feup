@@ -1,44 +1,27 @@
-.App {
-  text-align: center;
+
+.mapCmpDiv{
+    height: 100vh;
+    position: relative;
 }
 
-html, 
-body {
-  height: 100%;
-  margin: 0%
+.button{
+    position: absolute;
+    z-index: 2;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.butnUplFile{
+    top: 120px;
+    left: 20px;
+}
+.butnAlumCountry{
+    top: 150px;
+    left: 20px;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
-}
-
-.App-link {
-  color: #61dafb;
-}
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.fileInput{
+    position: absolute;
+    top: 30px;
+    left: 20px;
+    z-index: 3;
+    color: white;
 }
