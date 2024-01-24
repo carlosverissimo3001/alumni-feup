@@ -8,7 +8,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 public interface AlumniService {
 
-    // Backs up alumnis from table "Alumni"
+    // Backs up alumnis from table "Alumni". If the table is already populated, all registeries are deleted and the table is repopulated.
     public void backupAlumnis();
 
     // Processes the file, extracts LinkedIn links, and stores them in the database
