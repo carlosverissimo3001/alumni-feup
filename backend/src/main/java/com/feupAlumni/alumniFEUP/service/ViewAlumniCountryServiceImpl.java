@@ -1,8 +1,14 @@
 package com.feupAlumni.alumniFEUP.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.feupAlumni.alumniFEUP.model.Alumni;
+import com.feupAlumni.alumniFEUP.model.GeoJSONFeature;
+import com.feupAlumni.alumniFEUP.model.GeoJSONGeometry;
+import com.feupAlumni.alumniFEUP.model.GeoJSONProperties;
+import com.feupAlumni.alumniFEUP.model.GeoJSONStructure;
 import com.feupAlumni.alumniFEUP.model.ViewAlumniCountry;
 import com.feupAlumni.alumniFEUP.repository.AlumniRepository;
 import com.feupAlumni.alumniFEUP.repository.ViewAlumniCountryRepository;
@@ -15,11 +21,19 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.Map;
+
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 @Service
 public class ViewAlumniCountryServiceImpl implements ViewAlumniCountryService{
@@ -68,13 +82,76 @@ public class ViewAlumniCountryServiceImpl implements ViewAlumniCountryService{
         }
     }
 
+    private void createEmptyGeoJSONFile(File file) {
+        GeoJSONStructure emptyStructure = new GeoJSONStructure();
+        try (FileWriter fileWriter = new FileWriter(file)) {
+            new GsonBuilder().setPrettyPrinting().create().toJson(emptyStructure, fileWriter);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void addInfoGeoJSON(ViewAlumniCountry viewAlumniCountry, File geoJSONFile, Gson gson) {
+        
+        try (FileReader fileReader = new FileReader(geoJSONFile)) {
+            GeoJSONStructure geoJSONStructure = gson.fromJson(fileReader, GeoJSONStructure.class);
+
+            // Create a new GeoJSON feature
+            GeoJSONFeature feature = new GeoJSONFeature();
+            feature.setType("Feature");
+
+            GeoJSONProperties properties = new GeoJSONProperties();
+            properties.setName(viewAlumniCountry.getCountry());
+            properties.setStudents(viewAlumniCountry.getNAlumniInCountry());
+
+            feature.setProperties(properties);
+
+            GeoJSONGeometry geometry = new GeoJSONGeometry();
+            geometry.setType("Point");
+            List<Double> coordinatesList = coordinatesToList(viewAlumniCountry.getCountryCoordinates());
+            geometry.setCoordinates(coordinatesList);
+
+            feature.setGeometry(geometry);
+
+            geoJSONStructure.setFeatures(feature);
+
+            // Write the updated GeoJSON structure back to the file
+            try (FileWriter fileWriter = new FileWriter(geoJSONFile)) {
+                gson.toJson(geoJSONStructure, fileWriter);
+            }
+            
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    private List<Double> coordinatesToList(String coordinates) throws JsonMappingException, JsonProcessingException {
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        JsonNode latlngNode = objectMapper.readTree(coordinates);
+
+        List<Double> latlngList = new ArrayList<>();
+        for(int i = latlngNode.size()-1; i>=0;i--){
+            JsonNode element = latlngNode.get(i);
+            latlngList.add(element.asDouble());
+        }
+        return latlngList;
+    }
+
     @Override
     public void setViewAlumniCountry() {
 
         // Check if AlumniBackup table is not empty
         if (viewAlumniCountryRepository.count() > 0) {   
-            System.err.println("Table viewAlumniCountryRepository populated. Registers are going to be deteled!");
-            viewAlumniCountryRepository.deleteAll();
+            try {
+                System.err.println("Table viewAlumniCountryRepository populated. Registers are going to be deteled!");
+                viewAlumniCountryRepository.deleteAll();
+            } catch (Exception e) {
+                System.out.println("ERROR: ");
+                e.printStackTrace();
+            }
+            
         }
 
         // Accesses the Alumni table and populates the ViewAlumniCountry table
@@ -92,6 +169,20 @@ public class ViewAlumniCountryServiceImpl implements ViewAlumniCountryService{
             // Update the count for the country in the map
             countryAlumniCount.put(country, countryAlumniCount.getOrDefault(country, 0) + 1);
         }
+
+        // If the GeoJSON file exists it leats so new information can be added
+        File geoJSONFile = new File("frontend/src/countriesGeoJSON.json");
+        Gson gson = new GsonBuilder().setPrettyPrinting().create(); 
+
+        if(geoJSONFile.exists()){
+            if (geoJSONFile.delete()) {
+                System.out.println("Deleted existing GeoJSON file.");
+            } else {
+                System.err.println("Failed to delete existing GeoJSON file.");
+            }
+        }
+
+        createEmptyGeoJSONFile(geoJSONFile);
 
         // Iterate over the map and save the data to ViewAlumniCountry table
         for (Map.Entry<String, Integer> entry : countryAlumniCount.entrySet()) {
@@ -113,6 +204,11 @@ public class ViewAlumniCountryServiceImpl implements ViewAlumniCountryService{
                 // Saves the data in the table
                 ViewAlumniCountry viewAlumniCountry = new ViewAlumniCountry(country, alumniCount, coordinates);
                 viewAlumniCountryRepository.save(viewAlumniCountry);
+
+                // Adds the country, the country coordinates and the number of alumni per country in the GeoJSON file
+                addInfoGeoJSON(viewAlumniCountry, geoJSONFile, gson);
+                System.out.println("GeoJSON file updated!");
+
             } catch (IOException e) {
                 e.printStackTrace();
             } catch (InterruptedException e) {

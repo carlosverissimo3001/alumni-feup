@@ -18,6 +18,7 @@ public class ViewAlumniCountryController {
     private ViewAlumniCountryService viewAlumniCountryService;
 
     // Populates the table view_alumni_country. If it is already populated, registers are deleted and the table is repopulated
+    // Generates the GeoJson File
     @PostMapping("/populate")
     public ResponseEntity<String> handlePopulateAlumniCountry(){
         try {
