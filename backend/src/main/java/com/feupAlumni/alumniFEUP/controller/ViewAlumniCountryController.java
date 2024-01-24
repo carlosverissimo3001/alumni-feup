@@ -20,18 +20,18 @@ public class ViewAlumniCountryController {
     // Populates the table view_alumni_country. If it is already populated, registers are deleted and the table is repopulated
     // Generates the GeoJson File
     @PostMapping("/populate")
-    public ResponseEntity<String> handlePopulateAlumniCountry(){
+    public ResponseEntity<String> handleLocationSetup(){
         try {
-            viewAlumniCountryService.setViewAlumniCountry();
-            return ResponseEntity.ok("AlumniCountry table population successfull");
+            viewAlumniCountryService.setLocationSetup();
+            return ResponseEntity.ok("Location Setup Successful: almni_country table instantiated, and GeoJSON file created.");
         } catch (Exception e) {
-            return ResponseEntity.status(500).body("Error during AlumniCountry table population: " + e.getMessage());
+            return ResponseEntity.status(500).body("Error during Location setup: " + e.getMessage());
         }        
     }
 
-    
+    // Returns the alumni distribution across countries
     @GetMapping("/getAll")
-    public List<ViewAlumniCountry> getAllStudents(){
+    public List<ViewAlumniCountry> getAllAlumniCountries(){
         return viewAlumniCountryService.getViewAlumniCountry();
     }
 
