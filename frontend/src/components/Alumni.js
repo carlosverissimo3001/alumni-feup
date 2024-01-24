@@ -1,6 +1,8 @@
 import React, {useEffect, useState} from 'react';
 import Box from '@mui/material/Box';
 import { Container, Paper, Button, Input } from '@mui/material';
+import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
+import MapCmp from './MapCmp';
 
 export default function Alumni() {
   const paperStyle = {padding: '50px 20px', width:600, margin:"20px auto"}
@@ -149,47 +151,57 @@ export default function Alumni() {
   }, [])
 
   return (
-    <Container>
-        <Paper elevation={3} style={paperStyle}>
-            <h1 style={{color:"blue"}}><u>Add Alumni</u></h1>
-            <Box
-            component="form"
-            sx={{
-                '& > :not(style)': { m: 1 },
-            }}
-            noValidate
-            autoComplete="off"
-            >
-            <Input type="file" onChange={handleFileChange} accept=".txt" />              
-            <Button variant="contained" color='secondary' onClick={handleFileUpload}>Upload File</Button>
-            </Box>
-        </Paper>  
+    <Router>
+        <Container>
+            <Paper elevation={3} style={paperStyle}>
+                <h1 style={{color:"blue"}}><u>Add Alumni</u></h1>
+                <Box
+                component="form"
+                sx={{
+                    '& > :not(style)': { m: 1 },
+                }}
+                noValidate
+                autoComplete="off"
+                >
+                    <Input type="file" onChange={handleFileChange} accept=".txt" />              
+                    <Button variant="contained" color='secondary' onClick={handleFileUpload}>Upload File</Button>
+                    <Link to="/alumni-county">
+                        <Button variant="contained" color='secondary'>Alumni per County</Button>
+                    </Link>
+                    
+                    
+                </Box>
+            </Paper>  
 
-        <h1>View</h1>
+            <h1>View</h1>
 
-        <Paper elevation={3} style={paperStyle}>
-            {viewAlumnisCountry.map(viewAlumniCountry=>(
-                <Paper elevation={6} style={{margin:"10px", padding:"15px", textAlign:"left"}} key={viewAlumniCountry.id}>
-                    Country: {viewAlumniCountry.country}<br/>
-                    Nº of Alumnis: {viewAlumniCountry.nalumniInCountry}<br/>
-                </Paper>
-            ))
-            }
-        </Paper>
+            <Paper elevation={3} style={paperStyle}>
+                {viewAlumnisCountry.map(viewAlumniCountry=>(
+                    <Paper elevation={6} style={{margin:"10px", padding:"15px", textAlign:"left"}} key={viewAlumniCountry.id}>
+                        Country: {viewAlumniCountry.country}<br/>
+                        Nº of Alumnis: {viewAlumniCountry.nalumniInCountry}<br/>
+                    </Paper>
+                ))
+                }
+            </Paper>
 
 
-        <h1>Alumnis</h1>
-        
-        <Paper elevation={3} style={paperStyle}>
-            {alumnis.map(alumni=>(
-                <Paper elevation={6} style={{margin:"10px", padding:"15px", textAlign:"left"}} key={alumni.id}>
-                    Id:{alumni.id}<br/>
-                    LinkedInLink:{alumni.linkedinLink}<br/>
-                </Paper>
-            ))
-            }
-        </Paper>
-        
-    </Container>
+            <h1>Alumnis</h1>
+            
+            <Paper elevation={3} style={paperStyle}>
+                {alumnis.map(alumni=>(
+                    <Paper elevation={6} style={{margin:"10px", padding:"15px", textAlign:"left"}} key={alumni.id}>
+                        Id:{alumni.id}<br/>
+                        LinkedInLink:{alumni.linkedinLink}<br/>
+                    </Paper>
+                ))
+                }
+            </Paper>
+            
+            <Routes>
+                <Route path="/alumni-county" element={<MapCmp/>} />
+            </Routes>  
+        </Container>
+    </Router>
   );
 }
