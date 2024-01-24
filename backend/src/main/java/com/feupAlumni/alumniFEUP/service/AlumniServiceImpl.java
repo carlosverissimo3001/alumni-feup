@@ -67,7 +67,6 @@ public class AlumniServiceImpl implements AlumniService{
                 if(linkedinLink.length() != 0){
                     // Call the API that gets the information of a linkedin profile
                     var linkedinInfoResponse = getLinkedinProfileInfo(linkedinLink);
-                    System.out.println("STATUS CODE: " + linkedinInfoResponse.statusCode());
 
                     if(linkedinInfoResponse.statusCode() == 200){
                         // Stores the result in a file for personal backup

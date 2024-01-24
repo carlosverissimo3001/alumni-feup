@@ -59,7 +59,6 @@ public class ViewAlumniCountryServiceImpl implements ViewAlumniCountryService{
         // Send the request and get the response
         HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
 
-        System.out.println(response.statusCode());
         if(response.statusCode() == 200){
             ObjectMapper objectMapper = new ObjectMapper();
             return objectMapper.readTree(response.body());
