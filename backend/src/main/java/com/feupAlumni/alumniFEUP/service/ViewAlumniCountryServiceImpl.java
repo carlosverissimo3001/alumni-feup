@@ -8,6 +8,13 @@ import com.feupAlumni.alumniFEUP.repository.AlumniRepository;
 import com.feupAlumni.alumniFEUP.repository.ViewAlumniCountryRepository;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URI;
+import java.net.URLEncoder;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +40,35 @@ public class ViewAlumniCountryServiceImpl implements ViewAlumniCountryService{
         }
     }
 
+    private String getEncodedCountryName(String country) throws UnsupportedEncodingException{
+        return URLEncoder.encode(country, StandardCharsets.UTF_8).replace("+", "%20");
+    }
+
+    private JsonNode  getCoordinatesForCountry (String country) throws IOException, InterruptedException {
+
+        String encodedCountry = getEncodedCountryName(country);
+
+        String apiUrl = "https://restcountries.com/v3.1/name/" + encodedCountry;
+
+        // Create an HTTPClient
+        HttpClient httpClient = HttpClient.newHttpClient();
+
+        // Create a request
+        HttpRequest request = HttpRequest.newBuilder().uri(URI.create(apiUrl)).build();
+    
+        // Send the request and get the response
+        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+
+        System.out.println(response.statusCode());
+        if(response.statusCode() == 200){
+            ObjectMapper objectMapper = new ObjectMapper();
+            return objectMapper.readTree(response.body());
+        } else {
+            System.out.println("Failed to get coordinates for country: " + country);
+            return null;
+        }
+    }
+
     @Override
     public void setViewAlumniCountry() {
 
@@ -46,10 +82,11 @@ public class ViewAlumniCountryServiceImpl implements ViewAlumniCountryService{
         List<Alumni> alumniList = alumniRepository.findAll();
         Map<String, Integer> countryAlumniCount = new HashMap<>();
 
+        // Puts in a map the countries (as keys) and the number of alumni for each country (as value)
         for (Alumni alumni : alumniList) {
             String linkedinInfo = alumni.getLinkedinInfo();
             String country = extractFieldFromJson("country_full_name", linkedinInfo);
-            
+           
             // Ensures consistency across fields
             country = country.toLowerCase();
 
@@ -62,9 +99,26 @@ public class ViewAlumniCountryServiceImpl implements ViewAlumniCountryService{
             String country = entry.getKey();
             Integer alumniCount = entry.getValue();
 
-            // Saves the data in the table
-            ViewAlumniCountry viewAlumniCountry = new ViewAlumniCountry(country, alumniCount);
-            viewAlumniCountryRepository.save(viewAlumniCountry);
+            // Gets the coordinates of the current country
+            try {
+                String coordinates = "";
+
+                if(country != "null"){
+                    JsonNode jsonResponse = getCoordinatesForCountry(country);
+
+                    JsonNode firstElement = jsonResponse.path(0);
+                    JsonNode latlngNode = firstElement.path("latlng");
+                    coordinates = latlngNode.toString();
+                }
+                
+                // Saves the data in the table
+                ViewAlumniCountry viewAlumniCountry = new ViewAlumniCountry(country, alumniCount, coordinates);
+                viewAlumniCountryRepository.save(viewAlumniCountry);
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
     }
 
