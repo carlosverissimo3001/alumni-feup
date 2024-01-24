@@ -11,9 +11,9 @@ import com.feupAlumni.alumniFEUP.service.ViewAlumniCountryService;
 
 
 @RestController
-@RequestMapping("/alumniCountryView")
+@RequestMapping("/setupLocation")
 @CrossOrigin
-public class ViewAlumniCountryController {
+public class SetupLocationController {
     @Autowired
     private ViewAlumniCountryService viewAlumniCountryService;
 
