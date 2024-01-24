@@ -1,8 +1,6 @@
-// NewPage.js
 import React, { useRef } from 'react';
 import { clusterLayer, clusterCountLayer, unclusterPointLayer } from './MapLayers';
 import alumniPerCountry from '../countriesGeoJSON.json'
-import mapboxgl from 'mapbox-gl';
 import {Map, Source, Layer} from 'react-map-gl';
 
 const TOKEN = process.env.REACT_APP_MAPBOX_ACCESS_TOKEN;
@@ -10,7 +8,6 @@ const TOKEN = process.env.REACT_APP_MAPBOX_ACCESS_TOKEN;
 const MapCmp = () => {
 
     const mapRef = useRef(null);
-
 
     const onClick = event => {
         if (event.features && event.features.length > 0) {
@@ -34,12 +31,8 @@ const MapCmp = () => {
       }
 
     return (
-        <div style={{height: '100vh'}}>
-            {
-            // Log the Mapbox GL JS version
-            console.log('Mapbox GL JS version:', mapboxgl.version)
-            }
-            <Map
+        <div className="mapCmpDiv">
+          <Map
             initialViewState={{
                 latitude: 0,
                 longitude: 0,
@@ -47,10 +40,10 @@ const MapCmp = () => {
                 //pitch: 45, // Set pitch to create a 3D effect         // 3D
                 //bearing: 0, // Set bearing to control the orientation // 3D
             }}
-            mapStyle="mapbox://styles/mapbox/dark-v11"                // 3D preto e branco
+            mapStyle="mapbox://styles/mapbox/dark-v11"                  // 3D preto e branco
             //mapStyle="mapbox://styles/mapbox/dark-v9"                 // 2D
-            //mapStyle="mapbox://styles/mapbox/satellite-v9"          // 2D
-            //mapStyle="mapbox://styles/mapbox/satellite-streets-v12" // 3D
+            //mapStyle="mapbox://styles/mapbox/satellite-v9"            // 2D
+            //mapStyle="mapbox://styles/mapbox/satellite-streets-v12"   // 3D
             mapboxAccessToken={TOKEN}
             interactiveLayerIds={[clusterLayer.id]}
             onClick={onClick}
@@ -71,7 +64,7 @@ const MapCmp = () => {
                 <Layer {...clusterCountLayer}/>
                 <Layer {...unclusterPointLayer}/>
             </Source>
-            </Map>
+          </Map>
         </div>
     );
 };
