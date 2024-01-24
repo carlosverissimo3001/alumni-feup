@@ -1,14 +1,16 @@
 import './App.css';
-import AppNavBar from './components/AppNavBar.js'
-import Alumni from './components/Alumni.js'
+import React from 'react';
+import 'mapbox-gl/dist/mapbox-gl.css';
+import MapCmp from './components/MapCmp';
+import MenuButtons from './components/MenuButtons';
 
 
 function App() {
   return (
-    <div className="App">
-      <AppNavBar/>
-      <Alumni/>
-    </div>
+    <>
+        <MapCmp/>
+        <MenuButtons/>
+    </>
   );
 }
 
