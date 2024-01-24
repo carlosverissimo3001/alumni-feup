@@ -111,13 +111,10 @@ export default function Alumni() {
         // Only repopulates the DB when the get information of the alumni linkedin profile was well performed
         if (succAlumniInfo) {
             // Performs the backup of the table Alumni
-            setAlumniBackup();
+            await setAlumniBackup();
 
-            // Populates the view_alumni_country table
-                // Calls the API to get the countries coordinates
-            setPopulateView();
-
-            // Generates the GEOJason file
+            // Populates the view_alumni_country table < Calls the API to get the countries coordinates < generates the GEOJson file
+            await setPopulateView();            
         }
 
     } else {

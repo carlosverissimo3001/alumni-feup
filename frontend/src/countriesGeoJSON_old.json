@@ -1,0 +1,61 @@
+{
+    "type": "FeatureCollection",
+    "features": [
+        {
+            "type": "Feature",
+            "properties": {
+                "name": "Portugal",
+                "students": 150
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-8.2245, 39.3999]
+            }   
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "name": "França",
+                "students": 8
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [1, 46]
+            }   
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "name": "Canada",
+                "students": 200
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-96, 56],
+                "//": "longitude, latitude"
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "name": "Russia",
+                "students": 100
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [100, 60]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "name": "Spain",
+                "students": 100
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-3, 40]
+            }
+        }
+    ]
+}
