@@ -31,7 +31,7 @@ const MenuButtons = () => {
                 await setUp.setAlumniBackup();
 
                 // Populates the view_alumni_country table < Calls the API to get the countries coordinates < generates the GEOJson file
-                await setUp.setPopulateView();            
+                await setUp.setUpLocation();            
             }
 
         } else {

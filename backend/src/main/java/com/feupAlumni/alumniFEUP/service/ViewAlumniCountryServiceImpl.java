@@ -54,6 +54,7 @@ public class ViewAlumniCountryServiceImpl implements ViewAlumniCountryService{
             // Update the count for the country in the map
             countryAlumniCount.put(country, countryAlumniCount.getOrDefault(country, 0) + 1);
         }
+        System.err.println("Table viewAlumniCountryRepository repopulated.");
     }   
 
     @Override
@@ -68,6 +69,7 @@ public class ViewAlumniCountryServiceImpl implements ViewAlumniCountryService{
         Gson gson = new GsonBuilder().setPrettyPrinting().create(); 
         FilesHandler.fileDeletion(geoJSONFile);
         Location.createEmptyGeoJSONFile(geoJSONFile);
+        System.out.println("GeoJSON file created");
 
         // Iterate over the map and save the data to ViewAlumniCountry table + Adds the information to the GeoJSON file
         for (Map.Entry<String, Integer> entry : countryAlumniCount.entrySet()) {
@@ -87,7 +89,6 @@ public class ViewAlumniCountryServiceImpl implements ViewAlumniCountryService{
 
                 // Adds the country, the country coordinates and the number of alumni per country in the GeoJSON file
                 Location.addInfoGeoJSON(viewAlumniCountry, geoJSONFile, gson);
-                System.out.println("GeoJSON file updated!");
 
             } catch (IOException e) {
                 e.printStackTrace();
@@ -95,6 +96,8 @@ public class ViewAlumniCountryServiceImpl implements ViewAlumniCountryService{
                 e.printStackTrace();
             }
         }
+
+        System.out.println("Information added to the GeoJSON file.");
     }
 
     @Override

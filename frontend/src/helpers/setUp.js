@@ -26,18 +26,19 @@ class setUp {
    * Calls the endpoint responsible for counting the number of alumni per country
    * calls the API capable of getting the coordinates of each of these countries
    * populates the table view_alumni_country => if the table is already populated, the registers are delted and the table is repopulated.
+   * Generates a GeoJSON file.
    */
-  static async setPopulateView() {
+  static async setUpLocation() {
     try {
-        const response = await fetch('http://localhost:8080/alumniCountryView/populate', {
+        const response = await fetch('http://localhost:8080/setupLocation/populate', {
             method: 'POST',
             body: '',
         });
 
         if (response.ok){
-            console.log('ViewAlumniCountry Table pouplated sccessfully.');
+            console.log('Setup Location successful: tables instantiated, and GeoJSON file created.');
         } else {
-            console.error('ViewAlumniCountry Table FAILED to pouplated.');
+            console.error('Setup Location FAILED: tables instantiated, and GeoJSON file created.');
         }
     } catch (error) {
         console.error('Error during ViewAlumniCountry Table upload', error);
