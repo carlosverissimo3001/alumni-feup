@@ -13,8 +13,12 @@
     top: 120px;
     left: 20px;
 }
-.butnAlumCountry{
+.butnUplFileBackup{
     top: 150px;
+    left: 20px;
+}
+.butnAlumCountry{
+    top: 180px;
     left: 20px;
 }
 

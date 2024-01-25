@@ -27,6 +27,17 @@ public class AlumniController {
         }        
     }
 
+    // Uploads the BACKUP file containing the result of the LinkedIn API to the Alumni table
+    @PostMapping("/uploadBackupFil")
+    public ResponseEntity<String> handleFileBackupUpload(@RequestBody MultipartFile fileBackup){
+        try {
+            alumniService.processFileBackup(fileBackup);
+            return ResponseEntity.ok("File Backup uploaded successfully");
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Error during file backup upload: " + e.getMessage());
+        }        
+    }
+
     // Performs the backup of registers in table "Alumni" to the table AlumniBackup
     @PostMapping("/backup")
     public ResponseEntity<String> handleAlumniBackup(){
