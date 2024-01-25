@@ -45,6 +45,30 @@ class setUp {
     }
   }
 
+
+  /* Sets the table Alumni by reading from the file which contains the response of the LinkdIn API.
+   * This way, if something happens to the DB we avoid having to call the API unecessarly. 
+   */
+  static async setAlumniUsingBackup(file) {
+    try {
+        const formData = new FormData();
+        formData.append('fileBackup', file);
+
+        const response = await fetch('http://localhost:8080/alumni/uploadBackupFil', {
+            method: 'POST',
+            body: formData,
+        });
+
+        if (response.ok){
+            console.log('Alumni table populated using the backup file.');
+        } else {
+            console.error('Failed to populate the alumni table using the backup file.');
+        }
+    } catch (error) {
+        console.error('Error during the population of the alumni table using the backup file.', error);
+    }
+  }
+
   /* 
    * Calls the endpoint responsible for reading the linkdin links from the file, calling the API capable of scraping the LinkdeIn profile
    * and stores the scraped information in the table Alumni

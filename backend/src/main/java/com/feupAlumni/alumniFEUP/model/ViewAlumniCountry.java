@@ -13,6 +13,7 @@ public class ViewAlumniCountry {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id; // Primary key and auto incremented
     private String country;
+    private String countryCode;
     private String countryCoordinates;
     private int nAlumniInCountry;
 
@@ -21,8 +22,9 @@ public class ViewAlumniCountry {
 
     }
 
-    public ViewAlumniCountry(String country, int nAlumniInCountry, String countryCoordinates){
+    public ViewAlumniCountry(String country, String countryCode, int nAlumniInCountry, String countryCoordinates){
         this.country = country;
+        this.countryCode = countryCode;
         this.nAlumniInCountry = nAlumniInCountry;
         this.countryCoordinates = countryCoordinates;
     }
@@ -33,6 +35,10 @@ public class ViewAlumniCountry {
 
     public String getCountry() {
         return country;
+    }
+
+    public String getCountryCode() {
+        return countryCode;
     }
 
     public int getNAlumniInCountry() {
@@ -49,6 +55,10 @@ public class ViewAlumniCountry {
 
     public void setCountry(String country) {
         this.country = country;
+    }
+
+    public void setCountryCode(String countryCode) {
+        this.countryCode = countryCode;
     }
 
     public void setNAlumniInCountry(int nAlumniInCountry) {

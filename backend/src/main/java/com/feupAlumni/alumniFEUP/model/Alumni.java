@@ -25,6 +25,10 @@ public class Alumni {
         this.linkedinInfo = linkedinInfo;
     }
 
+    public Alumni(String linkedinInfo){
+        this.linkedinInfo = linkedinInfo;
+    }
+
     public int getId() {
         return id;
     }
