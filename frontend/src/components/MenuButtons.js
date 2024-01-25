@@ -39,10 +39,19 @@ const MenuButtons = () => {
         }
     }
 
+    // Reads from the "BackUpCallAPI", which contains a backup of the data returned by the LinkdIn API => this way we avoid calling this 
+    // API unecessarly.
+    const handleFileUploadBackup = async () => {
+        console.log("In handleFileUploadBackup");
+        setUp.setAlumniUsingBackup(file);
+        console.log("Backup set in the Alumni table");
+    }
+
     return (
         <>
             <input type="file" className='fileInput' onChange={handleFileChange} />         
             <button className="button butnUplFile" onClick={handleFileUpload}>Upload File</button>
+            <button className="button butnUplFileBackup" onClick={handleFileUploadBackup}>Upload Backup File</button>
 
             <button className="button butnAlumCountry">Alumni per County</button>
         </>

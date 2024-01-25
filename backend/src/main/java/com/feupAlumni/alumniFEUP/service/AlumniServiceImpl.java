@@ -40,7 +40,7 @@ public class AlumniServiceImpl implements AlumniService{
                         String filePath = "C:/Users/jenif/OneDrive/Área de Trabalho/BackUpCallAPI";
                         FilesHandler.storeInfoInFile(linkedinInfoResponse.body(), filePath);
 
-                         // Creates the alumni object with the constructor that needs the linkedinLink and the linkedinInfo
+                        // Creates the alumni object with the constructor that needs the linkedinLink and the linkedinInfo
                         Alumni alumni = new Alumni(linkedinLink, linkedinInfoResponse.body());
 
                         // Stores the information in the database
@@ -53,6 +53,43 @@ public class AlumniServiceImpl implements AlumniService{
             }
         } catch (Exception e) {
             throw new RuntimeException("Error processing file", e);
+        }
+    }
+
+    @Override
+    public void processFileBackup(MultipartFile fileBackup) {
+        System.out.println(fileBackup);
+        try (InputStream inputStream = fileBackup.getInputStream()){
+            String fileBackupContent = new String(inputStream.readAllBytes(), StandardCharsets.UTF_8);
+
+            String startPattern = "{\"public_identifier\":";
+            String endPattern = "]}";
+
+            // first occurance of the start pattern
+            int startIndex = fileBackupContent.indexOf(startPattern);
+
+            while (startIndex != -1) {
+                // find the next occurrence of the end pattern after the start index
+                int endIndex = fileBackupContent.indexOf(endPattern, startIndex + 1);
+
+                if(endIndex != -1){
+                    // extract the content between the start and the end patterns
+                    String linkedinContent = fileBackupContent.substring(startIndex, endIndex + 2);
+
+                    // Creates the alumni object with the constructor that needs the linkedinInfo
+                    Alumni alumni = new Alumni(linkedinContent);
+
+                    // Stores the information in the database
+                    alumniRepository.save(alumni);
+
+                    // Find the next occurrence of the start pattern after the end index
+                    startIndex = fileBackupContent.indexOf(startPattern, endIndex + 1);
+                } else {
+                    break;
+                }
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("Error processing file backup", e);
         }
     }
 

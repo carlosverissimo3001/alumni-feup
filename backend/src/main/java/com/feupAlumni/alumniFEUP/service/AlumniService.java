@@ -13,6 +13,9 @@ public interface AlumniService {
 
     // Processes the file, extracts LinkedIn links, and stores them in the database
     public void processFile(MultipartFile file);
+
+    // Processes the file backup, which contains the response of the LinkdIn API and repopulates the Alumni table
+    public void processFileBackup(MultipartFile fileBackup);
     
     // Returns alll alumnis
     public List<Alumni> getAllAlumnis();
