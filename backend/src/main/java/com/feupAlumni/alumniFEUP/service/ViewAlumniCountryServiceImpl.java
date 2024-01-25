@@ -39,7 +39,7 @@ public class ViewAlumniCountryServiceImpl implements ViewAlumniCountryService{
     }
 
     // Populates Alumni country table with values of the Alumni table
-    private void populateAlumniCountryTable(Map<String, Integer> countryAlumniCount) {
+    private void populateAlumniCountryTable(Map<String, Integer> countryAlumniCount, Map<String, String> countryCodes) {
         // Accesses the Alumni table and populates the ViewAlumniCountry table
         List<Alumni> alumniList = alumniRepository.findAll();
 
@@ -47,12 +47,17 @@ public class ViewAlumniCountryServiceImpl implements ViewAlumniCountryService{
         for (Alumni alumni : alumniList) {
             String linkedinInfo = alumni.getLinkedinInfo();
             String country = FilesHandler.extractFieldFromJson("country_full_name", linkedinInfo);
-           
+            String countryCode = FilesHandler.extractFieldFromJson("country", linkedinInfo);
+
             // Ensures consistency across fields
             country = country.toLowerCase();
+            countryCode = countryCode.toUpperCase();
+
 
             // Update the count for the country in the map
             countryAlumniCount.put(country, countryAlumniCount.getOrDefault(country, 0) + 1);
+            // Adds the country code
+            countryCodes.put(country, countryCode);
         }
         System.err.println("Table viewAlumniCountryRepository repopulated.");
     }   
@@ -63,7 +68,8 @@ public class ViewAlumniCountryServiceImpl implements ViewAlumniCountryService{
         cleanAlumniCountryTable();
 
         Map<String, Integer> countryAlumniCount = new HashMap<>();
-        populateAlumniCountryTable(countryAlumniCount);
+        Map<String, String> countryCodes = new HashMap<>();
+        populateAlumniCountryTable(countryAlumniCount, countryCodes);
         
         File geoJSONFile = new File("frontend/src/countriesGeoJSON.json");
         Gson gson = new GsonBuilder().setPrettyPrinting().create(); 
@@ -76,15 +82,16 @@ public class ViewAlumniCountryServiceImpl implements ViewAlumniCountryService{
             String country = entry.getKey();
             Integer alumniCount = entry.getValue();
 
+            String countryCode = countryCodes.get(country);
             try {
                 // Get Country Coordinates
                 String coordinates = "";
                 if(country != "null"){
-                    coordinates = Location.getCountryCoordinates(country);
+                    coordinates = Location.getCountryCoordinates(countryCode);
                 }
 
                 // Saves the data in the table
-                ViewAlumniCountry viewAlumniCountry = new ViewAlumniCountry(country, alumniCount, coordinates);
+                ViewAlumniCountry viewAlumniCountry = new ViewAlumniCountry(country, countryCode, alumniCount, coordinates);
                 viewAlumniCountryRepository.save(viewAlumniCountry);
 
                 // Adds the country, the country coordinates and the number of alumni per country in the GeoJSON file
