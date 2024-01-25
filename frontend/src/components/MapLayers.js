@@ -5,7 +5,7 @@ export const clusterLayer = {
     source: 'alumniPerCountry',
     filter: ['has', 'students'],
     paint: {
-        'circle-color': ['step', ['get', 'students'], '#51bbd6', 100, '#f1f075', 750, '#f28cb1'],
+        'circle-color': ['step', ['get', 'students'], '#51bbd6', 50, '#f1f075', 100, '#f28cb1'],
         'circle-radius': ['step', ['get', 'students'], 20, 100, 30, 750, 40]
     }
 };
