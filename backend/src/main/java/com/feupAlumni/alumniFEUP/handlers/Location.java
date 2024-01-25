@@ -5,11 +5,10 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URI;
-import java.net.URLEncoder;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.nio.charset.StandardCharsets;
+import java.net.http.HttpClient.Version;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,21 +42,31 @@ public class Location {
     }
 
     // Calls on the API which gets the information about a given country (inlcuding their latitude and longitude)
-    private static JsonNode getCoordinatesForCountry (String country) throws IOException, InterruptedException {
-        var encodedCountry = URLEncoder.encode(country, StandardCharsets.UTF_8).replace("+", "%20");
-        String apiUrl = "https://restcountries.com/v3.1/name/" + encodedCountry;
+    private static JsonNode getCoordinatesForCountry (String countryCode) throws IOException, InterruptedException {
+        
+        String API_URL = "http://api.geonames.org/searchJSON";
+        String USERNAME = "jenifer12345";
+        String url = String.format("%s?country=%s&maxRows=1&username=%s", API_URL, countryCode, USERNAME);
 
         HttpClient httpClient = HttpClient.newHttpClient();
-        HttpRequest request = HttpRequest.newBuilder().uri(URI.create(apiUrl)).build();
-        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+        HttpRequest request = HttpRequest.newBuilder().uri(URI.create(url)).version(Version.HTTP_1_1).build();
 
-        if(response.statusCode() == 200){
-            ObjectMapper objectMapper = new ObjectMapper();
-            return objectMapper.readTree(response.body());
-        } else {
-            System.out.println("Failed to get coordinates for country: " + country);
+        try {
+            HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+
+            if(response.statusCode() == 200){
+                ObjectMapper objectMapper = new ObjectMapper();
+                return objectMapper.readTree(response.body());
+            } else {
+                System.out.println("Failed to get coordinates for country code: " + countryCode);
+                return null;
+            }
+        } catch (Exception e) {
+            System.out.println("ERRO");
+            e.printStackTrace();
             return null;
         }
+        
     }
 
     // Creates a GeoJSON file
@@ -71,11 +80,22 @@ public class Location {
     }
 
     // Gets the coordinates of a given country
-    public static String getCountryCoordinates(String country) throws IOException, InterruptedException{
-        JsonNode jsonResponse = getCoordinatesForCountry(country);
-        JsonNode firstElement = jsonResponse.path(0);
-        JsonNode latlngNode = firstElement.path("latlng");
-        return latlngNode.toString();
+    public static String getCountryCoordinates(String countryCode) throws IOException, InterruptedException{
+        JsonNode jsonResponse = getCoordinatesForCountry(countryCode);
+
+        JsonNode geonamesArray = jsonResponse.path("geonames");
+        if (geonamesArray.isArray() && geonamesArray.size() > 0) {
+            JsonNode firstElement = geonamesArray.get(0);
+
+            JsonNode latitude = firstElement.path("lat");
+            JsonNode longitude = firstElement.path("lng");
+
+            return "[" + latitude + "," + longitude +"]";
+        } else {
+            System.out.println("No geonames data found for the country code: " + countryCode);
+            return null;
+        }
+
     }
 
     // Adds information to the GeoJSON file
