@@ -74,9 +74,8 @@ class setUp {
    * and stores the scraped information in the table Alumni
    */
   static async getAlumniLinkedinInfo(file) {
-    return true; // TODO: take this when the code below is to be uncommented
     // File is sent to the server using a 'FormData' object
-    /*const formData = new FormData();
+    const formData = new FormData();
     formData.append('file', file);
 
     try {
@@ -96,7 +95,7 @@ class setUp {
     } catch (error) {
         console.error('Error during file upload:', error);
         return false;
-    }*/
+    }
   }
  
 }

@@ -1,7 +1,7 @@
 package com.feupAlumni.alumniFEUP.service;
 
-import com.feupAlumni.alumniFEUP.handlers.AlumniInfo;
-import com.feupAlumni.alumniFEUP.handlers.FilesHandler;
+//import com.feupAlumni.alumniFEUP.handlers.AlumniInfo;
+//import com.feupAlumni.alumniFEUP.handlers.FilesHandler;
 import com.feupAlumni.alumniFEUP.model.Alumni;
 import com.feupAlumni.alumniFEUP.model.AlumniBackup;
 import com.feupAlumni.alumniFEUP.repository.AlumniBackupRepository;
@@ -11,10 +11,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.InputStream;
-import java.io.InputStreamReader;
+//import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
-import java.io.BufferedReader;
+
+//import javax.swing.text.html.HTMLDocument.Iterator;
+
+//import java.io.BufferedReader;
+
+import org.apache.poi.ss.usermodel.*;
+//import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import java.util.Iterator; 
 
 @Service
 public class AlumniServiceImpl implements AlumniService{
@@ -27,7 +34,32 @@ public class AlumniServiceImpl implements AlumniService{
     @Override
     public void processFile(MultipartFile file) {
         try (InputStream inputStream = file.getInputStream()){
-            BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8));
+            
+            // Read and iterate over the excel file
+            Workbook workbook = WorkbookFactory.create(inputStream);
+
+            Sheet sheet = workbook.getSheetAt(0);   // 1st sheet
+            Iterator<Row> rowIterator = sheet.iterator();
+
+            while (rowIterator.hasNext()) {
+                Row row = rowIterator.next();
+
+                String linkValue = row.getCell(0).getStringCellValue(); // Column A
+                String existeValue = row.getCell(1).getStringCellValue(); // Column B
+
+                System.out.println("linkValue + existeValue: " + linkValue + existeValue);
+
+                if ("NOVO".equals(existeValue)) {
+                    System.out.println("-> Link for NOVO: " + linkValue);
+                }
+
+            }
+
+
+            // print value of the columns
+
+            
+            /*BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8));
             String linkedinLink;
 
             while ((linkedinLink = reader.readLine()) != null){
@@ -50,7 +82,7 @@ public class AlumniServiceImpl implements AlumniService{
                         System.out.println("API call failed with status code: " + linkedinInfoResponse.statusCode() + linkedinInfoResponse.body() + " For profile: " + linkedinLink);
                     }
                 }
-            }
+            }*/
         } catch (Exception e) {
             throw new RuntimeException("Error processing file", e);
         }
@@ -95,10 +127,10 @@ public class AlumniServiceImpl implements AlumniService{
 
     @Override
     public void backupAlumnis() {
-
+        System.out.println("-----");
         // Check if AlumniBackup table is not empty
         if (alumniBackupRepository.count() > 0) {   
-            System.err.println("Table AlumniBackup populated. Registers are going to be deteled!");
+            System.out.println("Table AlumniBackup populated. Registers are going to be deteled!");
             alumniBackupRepository.deleteAll();
         }
 
@@ -110,6 +142,8 @@ public class AlumniServiceImpl implements AlumniService{
             AlumniBackup alumniBackup = new AlumniBackup(alumni.getLinkedinLink(), alumni.getLinkedinInfo());
             alumniBackupRepository.save(alumniBackup);
         }
+        System.out.println("Table AlumniBackup repopulated.");
+        System.out.println("-----");
     }
 
     @Override
