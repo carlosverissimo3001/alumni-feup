@@ -30,7 +30,8 @@ public class ViewAlumniCountryServiceImpl implements ViewAlumniCountryService{
     private void cleanAlumniCountryTable() {
         if (viewAlumniCountryRepository.count() > 0) {   
             try {
-                System.err.println("Table viewAlumniCountryRepository populated. Registers are going to be deteled!");
+                System.out.println("-----");
+                System.out.println("Table viewAlumniCountryRepository populated. Registers are going to be deteled!");
                 viewAlumniCountryRepository.deleteAll();
             } catch (Exception e) {
                 e.printStackTrace();
@@ -38,8 +39,8 @@ public class ViewAlumniCountryServiceImpl implements ViewAlumniCountryService{
         }
     }
 
-    // Populates Alumni country table with values of the Alumni table
-    private void populateAlumniCountryTable(Map<String, Integer> countryAlumniCount, Map<String, String> countryCodes) {
+    // Gets the alumni distribution per country
+    private void getAlumniDistCountry(Map<String, Integer> countryAlumniCount, Map<String, String> countryCodes) {
         // Accesses the Alumni table and populates the ViewAlumniCountry table
         List<Alumni> alumniList = alumniRepository.findAll();
 
@@ -53,13 +54,11 @@ public class ViewAlumniCountryServiceImpl implements ViewAlumniCountryService{
             country = country.toLowerCase();
             countryCode = countryCode.toUpperCase();
 
-
             // Update the count for the country in the map
             countryAlumniCount.put(country, countryAlumniCount.getOrDefault(country, 0) + 1);
             // Adds the country code
             countryCodes.put(country, countryCode);
         }
-        System.err.println("Table viewAlumniCountryRepository repopulated.");
     }   
 
     @Override
@@ -69,7 +68,7 @@ public class ViewAlumniCountryServiceImpl implements ViewAlumniCountryService{
 
         Map<String, Integer> countryAlumniCount = new HashMap<>();
         Map<String, String> countryCodes = new HashMap<>();
-        populateAlumniCountryTable(countryAlumniCount, countryCodes);
+        getAlumniDistCountry(countryAlumniCount, countryCodes);
         
         File geoJSONFile = new File("frontend/src/countriesGeoJSON.json");
         Gson gson = new GsonBuilder().setPrettyPrinting().create(); 
@@ -93,6 +92,7 @@ public class ViewAlumniCountryServiceImpl implements ViewAlumniCountryService{
                 // Saves the data in the table
                 ViewAlumniCountry viewAlumniCountry = new ViewAlumniCountry(country, countryCode, alumniCount, coordinates);
                 viewAlumniCountryRepository.save(viewAlumniCountry);
+                
 
                 // Adds the country, the country coordinates and the number of alumni per country in the GeoJSON file
                 Location.addInfoGeoJSON(viewAlumniCountry, geoJSONFile, gson);
@@ -103,8 +103,8 @@ public class ViewAlumniCountryServiceImpl implements ViewAlumniCountryService{
                 e.printStackTrace();
             }
         }
-
-        System.out.println("Information added to the GeoJSON file.");
+        System.out.println("Information added to the GeoJSON file and Table viewAlumniCountryRepository repopulated.");
+        System.out.println("-----");
     }
 
     @Override
