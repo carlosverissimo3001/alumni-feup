@@ -18,10 +18,17 @@ const MenuButtons = () => {
             return;
         }
         
+        // Check if the selected file is an Excel file (xlsx or xls)
+        const allowedFileTypes = ['application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'application/vnd.ms-excel'];
+        if (!allowedFileTypes.includes(file.type)) {
+            alert('Invalid file type. Please upload an Excel file.');
+            return;
+        }
+
         const userConfirmed = window.confirm('By uploading a new file, the existing populated tables are going to be deleted and repopulated with the new information from the inserted file. Are you sure you want to continue with this action?');
 
         if (userConfirmed) {
-            // Reads the LinkedIn links from the file, calls the API that scrapes information from each link, and stores in the Alumni table
+            // Reads the LinkedIn links from the file, calls the API that scrapes information from each link, and stores in the Alumni table and stores in a backup file the result of the API
             console.log("If you want to perform this functionality uncoment the code in the Alumni class. This was done to avoid uploading a file and consequently calling the API by accident (wasting credits).")
             var succAlumniInfo = setUp.getAlumniLinkedinInfo(file); 
 
@@ -42,7 +49,14 @@ const MenuButtons = () => {
     // Reads from the "BackUpCallAPI", which contains a backup of the data returned by the LinkdIn API => this way we avoid calling this 
     // API unecessarly.
     const handleFileUploadBackup = async () => {
-        console.log("In handleFileUploadBackup");
+       
+        // Check if the selected file is a text file (txt)
+        const allowedFileTypes = ['text/plain'];
+        if (!allowedFileTypes.includes(file.type)) {
+            alert('Invalid file type. Please upload a text file.');
+            return;
+        }
+       
         setUp.setAlumniUsingBackup(file);
         console.log("Backup set in the Alumni table");
     }
