@@ -31,6 +31,19 @@ public class AlumniServiceImpl implements AlumniService{
     @Autowired
     private AlumniBackupRepository alumniBackupRepository;
 
+    // Cleans the Alumni table if there is information stored
+    private void cleanAlumniTable() {
+        if (alumniRepository.count() > 0) {   
+            try {
+                System.out.println("-----");
+                System.out.println("Table alumni populated. Registers are going to be deteled!");
+                alumniRepository.deleteAll();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
     @Override
     public void processFile(MultipartFile file) {
         try (InputStream inputStream = file.getInputStream()){
@@ -90,7 +103,9 @@ public class AlumniServiceImpl implements AlumniService{
 
     @Override
     public void processFileBackup(MultipartFile fileBackup) {
-        System.out.println(fileBackup);
+        
+        cleanAlumniTable();
+
         try (InputStream inputStream = fileBackup.getInputStream()){
             String fileBackupContent = new String(inputStream.readAllBytes(), StandardCharsets.UTF_8);
 
@@ -123,6 +138,9 @@ public class AlumniServiceImpl implements AlumniService{
         } catch (Exception e) {
             throw new RuntimeException("Error processing file backup", e);
         }
+        
+        System.out.println("Table Alumni repopulated.");
+        System.out.println("-----");
     }
 
     @Override

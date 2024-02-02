@@ -30,10 +30,10 @@ const MenuButtons = () => {
         if (userConfirmed) {
             // Reads the LinkedIn links from the file, calls the API that scrapes information from each link, and stores in the Alumni table and stores in a backup file the result of the API
             console.log("If you want to perform this functionality uncoment the code in the Alumni class. This was done to avoid uploading a file and consequently calling the API by accident (wasting credits).")
-            var succAlumniInfo = setUp.getAlumniLinkedinInfo(file); 
+            //var succAlumniInfo = setUp.getAlumniLinkedinInfo(file); 
 
             // Only repopulates the DB when the get information of the alumni linkedin profile was well performed
-            if (succAlumniInfo) {
+            if (/*succAlumniInfo*/true) {
                 // Performs the backup of the table Alumni
                 await setUp.setAlumniBackup();
 
@@ -57,15 +57,18 @@ const MenuButtons = () => {
             return;
         }
        
-        setUp.setAlumniUsingBackup(file);
+        await setUp.setAlumniUsingBackup(file);
         console.log("Backup set in the Alumni table");
+        // Performs the backup of the table Alumni
+        await setUp.setAlumniBackup();
+        console.log("Backup set in the AlumniBackup table");
     }
 
     return (
         <>
             <input type="file" className='fileInput' onChange={handleFileChange} />         
             <button className="button butnUplFile" onClick={handleFileUpload}>Upload File</button>
-            <button className="button butnUplFileBackup" onClick={handleFileUploadBackup}>Upload Backup File</button>
+            <button className="button butnUplFileBackup" onClick={handleFileUploadBackup}>Pop Alumni with backup file</button>
 
             <button className="button butnAlumCountry">Alumni per County</button>
         </>
