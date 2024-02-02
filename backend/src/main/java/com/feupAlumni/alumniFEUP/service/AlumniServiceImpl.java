@@ -1,7 +1,7 @@
 package com.feupAlumni.alumniFEUP.service;
 
-//import com.feupAlumni.alumniFEUP.handlers.AlumniInfo;
-//import com.feupAlumni.alumniFEUP.handlers.FilesHandler;
+import com.feupAlumni.alumniFEUP.handlers.AlumniInfo;
+import com.feupAlumni.alumniFEUP.handlers.FilesHandler;
 import com.feupAlumni.alumniFEUP.model.Alumni;
 import com.feupAlumni.alumniFEUP.model.AlumniBackup;
 import com.feupAlumni.alumniFEUP.repository.AlumniBackupRepository;
@@ -10,17 +10,15 @@ import com.feupAlumni.alumniFEUP.repository.AlumniRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+
 import java.io.InputStream;
-//import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 //import javax.swing.text.html.HTMLDocument.Iterator;
 
-//import java.io.BufferedReader;
 
 import org.apache.poi.ss.usermodel.*;
-//import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import java.util.Iterator; 
 
 @Service
@@ -47,55 +45,47 @@ public class AlumniServiceImpl implements AlumniService{
     @Override
     public void processFile(MultipartFile file) {
         try (InputStream inputStream = file.getInputStream()){
-            
+
             // Read and iterate over the excel file
             Workbook workbook = WorkbookFactory.create(inputStream);
-
-            Sheet sheet = workbook.getSheetAt(0);   // 1st sheet
+            Sheet sheet = workbook.getSheetAt(1);   // 2nd sheet
             Iterator<Row> rowIterator = sheet.iterator();
 
             while (rowIterator.hasNext()) {
-                Row row = rowIterator.next();
+                try {
+                    Row row = rowIterator.next();
 
-                String linkValue = row.getCell(0).getStringCellValue(); // Column A
-                String existeValue = row.getCell(1).getStringCellValue(); // Column B
+                    String linkValue = row.getCell(0).getStringCellValue(); // Column A
+                    String existeValue = row.getCell(1).getStringCellValue(); // Column B
+    
+                    if ("NOVO".equals(existeValue)) {
 
-                System.out.println("linkValue + existeValue: " + linkValue + existeValue);
+                        // TODO: COMMENTED THIS CODE SO I DON'T CALL THE API BY ACCIDENT
 
-                if ("NOVO".equals(existeValue)) {
-                    System.out.println("-> Link for NOVO: " + linkValue);
+                        // Call the API that gets the information of a linkedin profile 
+                        /*var linkedinInfoResponse = AlumniInfo.getLinkedinProfileInfo(linkValue);
+
+                        if(linkedinInfoResponse.statusCode() == 200){
+
+                            // Stores the result in a file for personal backup
+                            String filePath = "C:/Users/jenif/OneDrive/Área de Trabalho/BackUpCallAPI";
+                            FilesHandler.storeInfoInFile(linkedinInfoResponse.body(), filePath);
+                            
+                            // Creates the alumni object with the constructor that needs the linkedinLink and the linkedinInfo
+                            Alumni alumni = new Alumni(linkValue, linkedinInfoResponse.body());
+
+                            // Stores the information in the database
+                            alumniRepository.save(alumni);
+                        } else {
+                            System.out.println("API call failed with status code: " + linkedinInfoResponse.statusCode() + linkedinInfoResponse.body() + " For profile: " + linkValue);
+                        }*/
+
+                    }
+                } catch (Exception error) {
+                    System.out.println("error: " + error);
                 }
-
             }
-
-
-            // print value of the columns
-
-            
-            /*BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8));
-            String linkedinLink;
-
-            while ((linkedinLink = reader.readLine()) != null){
-                if(linkedinLink.length() != 0){
-                    // Call the API that gets the information of a linkedin profile
-                    var linkedinInfoResponse = AlumniInfo.getLinkedinProfileInfo(linkedinLink);
-
-                    if(linkedinInfoResponse.statusCode() == 200){
-                        // Stores the result in a file for personal backup
-                        String filePath = "C:/Users/jenif/OneDrive/Área de Trabalho/BackUpCallAPI";
-                        FilesHandler.storeInfoInFile(linkedinInfoResponse.body(), filePath);
-
-                        // Creates the alumni object with the constructor that needs the linkedinLink and the linkedinInfo
-                        Alumni alumni = new Alumni(linkedinLink, linkedinInfoResponse.body());
-
-                        // Stores the information in the database
-                        alumniRepository.save(alumni);
-                    }
-                    else {
-                        System.out.println("API call failed with status code: " + linkedinInfoResponse.statusCode() + linkedinInfoResponse.body() + " For profile: " + linkedinLink);
-                    }
-                }
-            }*/
+            System.out.println("Alumni table populated with the API scraped information.");
         } catch (Exception e) {
             throw new RuntimeException("Error processing file", e);
         }

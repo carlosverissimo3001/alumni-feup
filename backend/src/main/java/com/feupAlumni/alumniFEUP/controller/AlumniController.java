@@ -20,6 +20,7 @@ public class AlumniController {
     @PostMapping("/upload")
     public ResponseEntity<String> handleFileUpload(@RequestBody MultipartFile file){
         try {
+            System.out.println("Achieved Server");
             alumniService.processFile(file);
             return ResponseEntity.ok("File uploaded successfully");
         } catch (Exception e) {
