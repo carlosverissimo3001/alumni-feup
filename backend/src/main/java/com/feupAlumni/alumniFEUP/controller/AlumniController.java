@@ -56,4 +56,16 @@ public class AlumniController {
         return alumniService.getAllAlumnis();
     }
 
+    // Populates a table with the information needed to identify which users don't have an LinkedIn link associated
+    // Creates a separate table with the users that have either an empty field, or values that make no sense, and these users don't show on the other table
+    @PostMapping("/dataHundleAlumniWithoutLink")
+    public ResponseEntity<String> handleDataAlumniWithoutLink() {
+        try {
+            alumniService.dataAlumniWithoutLink();
+            return ResponseEntity.ok("Data for detecting Alumnis without links successfully cleaned.");
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Error during detecting Alumnis without links: " + e.getMessage());
+        } 
+    }
+
 }

@@ -12,7 +12,6 @@ const MenuButtons = () => {
     // Makes the uplication setup: populades the Alumni table and performs its backup. Populates the view_alumni_country table and 
     // generates the GeoJSON file.
     const handleFileUpload = async () => {
-        
         if(!file){
             alert('Please Select a File.');
             return;
@@ -49,7 +48,6 @@ const MenuButtons = () => {
     // Reads from the "BackUpCallAPI", which contains a backup of the data returned by the LinkdIn API => this way we avoid calling this 
     // API unecessarly.
     const handleFileUploadBackup = async () => {
-       
         // Check if the selected file is a text file (txt)
         const allowedFileTypes = ['text/plain'];
         if (!allowedFileTypes.includes(file.type)) {
@@ -64,13 +62,29 @@ const MenuButtons = () => {
         console.log("Backup set in the AlumniBackup table");
     }
 
+
+    const handleAlumnisWithoutLinkedin = async () => {
+        
+        // Set up the table with the needed information
+        await setUp.prepareDataAlumniWithoutLinks();
+
+        /**
+         * Clean users that don't have the correct values in faculty, name, course, end of course and puts them in another table.
+         * This fields can either be emtpy, the values are not the ones they should be...
+         */
+
+        /**
+         * Preforms the match between the linkedin info and the ones the teacher has
+         */
+
+    }
+
     return (
         <>
             <input type="file" className='fileInput' onChange={handleFileChange} />         
             <button className="button butnUplFile" onClick={handleFileUpload}>Upload File</button>
             <button className="button butnUplFileBackup" onClick={handleFileUploadBackup}>Pop Alumni with backup file</button>
-
-            <button className="button butnAlumCountry">Alumni per County</button>
+            <button className="button butnAlmWithoutLink" onClick={handleAlumnisWithoutLinkedin}>Get Alumnis without LinkdeIn</button>
         </>
     );
 };

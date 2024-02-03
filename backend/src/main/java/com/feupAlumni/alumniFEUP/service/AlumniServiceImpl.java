@@ -1,25 +1,23 @@
 package com.feupAlumni.alumniFEUP.service;
 
-import com.feupAlumni.alumniFEUP.handlers.AlumniInfo;
 import com.feupAlumni.alumniFEUP.handlers.FilesHandler;
 import com.feupAlumni.alumniFEUP.model.Alumni;
 import com.feupAlumni.alumniFEUP.model.AlumniBackup;
+import com.feupAlumni.alumniFEUP.model.ViewAlumniWithNoLinkClean;
+import com.feupAlumni.alumniFEUP.model.ViewAlumniWithNoLinkDirty;
 import com.feupAlumni.alumniFEUP.repository.AlumniBackupRepository;
 import com.feupAlumni.alumniFEUP.repository.AlumniRepository;
-
+import com.feupAlumni.alumniFEUP.repository.ViewAlumniWithNoLinkDirtyRepository;
+import com.feupAlumni.alumniFEUP.repository.ViewAlumniWithNoLinkCleanRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
-
-//import javax.swing.text.html.HTMLDocument.Iterator;
-
-
+import com.fasterxml.jackson.databind.JsonNode;
+import java.util.Iterator;
 import org.apache.poi.ss.usermodel.*;
-import java.util.Iterator; 
 
 @Service
 public class AlumniServiceImpl implements AlumniService{
@@ -28,6 +26,11 @@ public class AlumniServiceImpl implements AlumniService{
     private AlumniRepository alumniRepository;
     @Autowired
     private AlumniBackupRepository alumniBackupRepository;
+    @Autowired
+    private ViewAlumniWithNoLinkDirtyRepository viewAlumniWithNoLinkDirtyRepository;
+    @Autowired
+    private ViewAlumniWithNoLinkCleanRepository viewAlumniWithNoLinkCleanRepository;
+
 
     // Cleans the Alumni table if there is information stored
     private void cleanAlumniTable() {
@@ -158,4 +161,64 @@ public class AlumniServiceImpl implements AlumniService{
     public List<Alumni> getAllAlumnis() {
         return alumniRepository.findAll();
     }
+
+    @Override
+    public void dataAlumniWithoutLink() {
+
+        // Check if AlumniBackup table is not empty
+        if (viewAlumniWithNoLinkDirtyRepository.count() > 0) {   
+            System.out.println("Table viewAlumniWithNoLinkDirty populated. Registers are going to be deteled!");
+            viewAlumniWithNoLinkDirtyRepository.deleteAll();
+        }
+
+        // Check if AlumniBackup table is not empty
+        if (viewAlumniWithNoLinkCleanRepository.count() > 0) {   
+            System.out.println("Table viewAlumniWithNoLinkClean populated. Registers are going to be deteled!");
+            viewAlumniWithNoLinkCleanRepository.deleteAll();
+        }
+
+
+        // Accesses the Alumni table and populates the ViewAlumniWithNoLinksClean table and ViewAlumniWithNoLinksDirty table
+        List<Alumni> alumniList = alumniRepository.findAll();
+        for (Alumni alumni : alumniList) {
+            String linkedinInfo = alumni.getLinkedinInfo();
+            String fullName = FilesHandler.extractFieldFromJson("full_name", linkedinInfo, "");
+
+            ViewAlumniWithNoLinkDirty viewAlumniWithNoLinkDirty;
+            ViewAlumniWithNoLinkClean viewAlumniWithNoLinkClean;
+            
+            // Goes to the education field of the alumni. Looks for UP or FEUP. Sees the course and field of study.
+            // Categorizes the alumni in MIEIC, LEIC/L.EIC, M.EIC, and MEI respectively 
+            JsonNode result = FilesHandler.getAlumniEducationDetailsOfFeup(linkedinInfo);
+            if (result == null) {
+                viewAlumniWithNoLinkDirty = new ViewAlumniWithNoLinkDirty(fullName, "", "", "", "", "", "", "Not a valid education field.");
+                viewAlumniWithNoLinkDirtyRepository.save(viewAlumniWithNoLinkDirty);
+            } else {
+                String school = result.get("schoolName").asText().toLowerCase();
+                String course = result.get("degreeName").asText().toLowerCase();
+                String fieldOfStudy = result.get("fieldOfStudy").asText().toLowerCase();
+                String yearStart = result.get("yearStart").asText().toLowerCase();
+                String yearEnd = result.get("yearEnd").asText().toLowerCase();
+
+                if (course.contains("integ") ||  fieldOfStudy.contains("integ")) {  
+                    viewAlumniWithNoLinkClean = new ViewAlumniWithNoLinkClean(fullName, school, fieldOfStudy, course, "MIEIC" ,yearStart, yearEnd);
+                    viewAlumniWithNoLinkCleanRepository.save(viewAlumniWithNoLinkClean);
+                } else if (course.contains("lic") || course.contains("bach") || course.contains("graduate") || course.contains("graduated") || course.contains("undergraduate") ||course.contains("degree") || (course.contains("3") && !course.contains("5"))) {
+                    viewAlumniWithNoLinkClean = new ViewAlumniWithNoLinkClean(fullName, school, fieldOfStudy, course, "LEIC/L.EIC" ,yearStart, yearEnd);
+                    viewAlumniWithNoLinkCleanRepository.save(viewAlumniWithNoLinkClean);        // lic for variantes of licenciature -- bach for variantes of bacheler TODO: SEE IF IT IS INCLUDING POST GRADUATE OR MASTER DEGREE
+                } else if (course.contains("comp") || fieldOfStudy.contains("comp")) {
+                    viewAlumniWithNoLinkClean = new ViewAlumniWithNoLinkClean(fullName, school, fieldOfStudy, course, "M.EIC" ,yearStart, yearEnd);
+                    viewAlumniWithNoLinkCleanRepository.save(viewAlumniWithNoLinkClean);  
+                } else if ((fieldOfStudy.contains("eng") || fieldOfStudy.contains("inf")) && ((course.contains("5") && !course.contains("3")) || course.contains("ms") || course.contains("m.sc") || course.contains("master") || course.contains("mestrado"))) {
+                    viewAlumniWithNoLinkClean = new ViewAlumniWithNoLinkClean(fullName, school, fieldOfStudy, course, "MEI" ,yearStart, yearEnd);
+                    viewAlumniWithNoLinkCleanRepository.save(viewAlumniWithNoLinkClean);  
+                } else {
+                    viewAlumniWithNoLinkDirty = new ViewAlumniWithNoLinkDirty(fullName, school, fieldOfStudy, course, "", yearStart, yearEnd, "Invalid fields content. No match with expected.");
+                    viewAlumniWithNoLinkDirtyRepository.save(viewAlumniWithNoLinkDirty);
+                }
+            }     
+        }
+        System.out.println("Tables ViewAlumniWithNoLinkDirty and ViewAlumniWithNoLinkClean populated.");
+    }
+
 }

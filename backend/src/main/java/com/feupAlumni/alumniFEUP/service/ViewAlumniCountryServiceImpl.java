@@ -47,8 +47,8 @@ public class ViewAlumniCountryServiceImpl implements ViewAlumniCountryService{
         // Puts in a map the countries (as keys) and the number of alumni for each country (as value)
         for (Alumni alumni : alumniList) {
             String linkedinInfo = alumni.getLinkedinInfo();
-            String country = FilesHandler.extractFieldFromJson("country_full_name", linkedinInfo);
-            String countryCode = FilesHandler.extractFieldFromJson("country", linkedinInfo);
+            String country = FilesHandler.extractFieldFromJson("country_full_name", linkedinInfo, null);
+            String countryCode = FilesHandler.extractFieldFromJson("country", linkedinInfo, null);
 
             // Ensures consistency across fields
             country = country.toLowerCase();

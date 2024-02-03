@@ -81,7 +81,7 @@ class setUp {
     try {
         const response = await fetch('http://localhost:8080/alumni/upload', {
             method: 'POST',
-            body: formData,
+            body: '',
         });
 
         if (response.ok){
@@ -98,6 +98,26 @@ class setUp {
     }
   }
  
+  /**
+   * Populates a table with the information needed to identify which users don't have an LinkedIn link associated
+   */
+  static async prepareDataAlumniWithoutLinks() {
+    try {
+        const response = await fetch('http://localhost:8080/alumni/dataHundleAlumniWithoutLink', {
+            method: 'POST',
+            body: '',
+        });
+
+        if (response.ok){
+            console.log('Alumni without link table created. And data Cleaned.');
+        } else {
+            console.error('Error during data handling on "Populating a table with the information needed to identify which users don`t have an LinkedIn link associated".');
+        }
+    } catch(error) {
+        console.error('Error populating a table with the information needed to identify which users don`t have an LinkedIn link associated :', error);
+    }
+  }
+
 }
 
 export default setUp;
