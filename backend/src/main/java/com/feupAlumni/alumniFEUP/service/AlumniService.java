@@ -17,6 +17,9 @@ public interface AlumniService {
     // Processes the file backup, which contains the response of the LinkdIn API and repopulates the Alumni table
     public void processFileBackup(MultipartFile fileBackup);
     
-    // Returns alll alumnis
+    // Returns all alumnis
     public List<Alumni> getAllAlumnis();
+
+    // Puts in one table all Alumnis with fileds that have a coherent value. Puts in another table users that have "dirty" fields (no value, values that make no sense...)
+    public void dataAlumniWithoutLink();
 }
