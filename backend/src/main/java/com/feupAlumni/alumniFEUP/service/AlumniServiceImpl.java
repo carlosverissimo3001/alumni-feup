@@ -246,56 +246,73 @@ public class AlumniServiceImpl implements AlumniService{
 
                     if (row.getCell(4) != null) { // Verifies if it has a course
                         String courseStudent = row.getCell(4).getStringCellValue().trim(); // Column E
-                        System.out.println("---------- COURSE: " + courseStudent + " -------");
-                        System.out.println("Student: " + row.getCell(1).getStringCellValue().trim());
 
                         // Stores linkedin links that matched with the student
                         ArrayList<String> matchLinks = new ArrayList<>(); 
-                        // It has to return a map. Key: mail Value: string[] de links 
+                        
                         switch (courseStudent) {
                             case "MIEIC":
                                 matchLinks = getMatch(courseStudent, row);
-                                System.out.print("matched links: ");
-                                for (String link : matchLinks) {
-                                    System.out.println(link + " / ");
+                                if (matchLinks.size() != 0) {
+                                    System.out.println();
+                                    System.out.println("---------- STUDENT: " + row.getCell(1).getStringCellValue().trim() + " -------");
+                                    System.out.print("matched links: ");
+                                    for (String link : matchLinks) {
+                                        System.out.print(link + " / ");
+                                    }
+                                    System.out.println();
                                 }
-                                System.out.println();
                                 setMatch(matchLinks, linksMultipleMatched, rowAndItsLink, row);
                                 break;
                             case "MEI":
                                 matchLinks = getMatch(courseStudent, row);
-                                System.out.print("matched links: ");
-                                for (String link : matchLinks) {
-                                    System.out.println(link + " / ");
+                                if (matchLinks.size() != 0) {
+                                    System.out.println();
+                                    System.out.println("---------- STUDENT: " + row.getCell(1).getStringCellValue().trim() + " -------");
+                                    System.out.print("matched links: ");
+                                    for (String link : matchLinks) {
+                                        System.out.print(link + " / ");
+                                    }
+                                    System.out.println();
                                 }
-                                System.out.println();
                                 setMatch(matchLinks, linksMultipleMatched, rowAndItsLink, row);
                                 break;
                             case "LEIC":
                                 matchLinks = getMatch(courseStudent, row);
-                                System.out.print("matched links: ");
-                                for (String link : matchLinks) {
-                                    System.out.println(link + " / ");
+                                if (matchLinks.size() != 0) {
+                                    System.out.println();
+                                    System.out.println("---------- STUDENT: " + row.getCell(1).getStringCellValue().trim() + " -------");
+                                    System.out.print("matched links: ");
+                                    for (String link : matchLinks) {
+                                        System.out.print(link + " / ");
+                                    }
+                                    System.out.println();
                                 }
-                                System.out.println();
                                 setMatch(matchLinks, linksMultipleMatched, rowAndItsLink, row);
                                 break;
                             case "L.EIC":
                                 matchLinks = getMatch(courseStudent, row);
-                                System.out.print("matched links: ");
-                                for (String link : matchLinks) {
-                                    System.out.println(link + " / ");
+                                if (matchLinks.size() != 0) {
+                                    System.out.println();
+                                    System.out.println("---------- STUDENT: " + row.getCell(1).getStringCellValue().trim() + " -------");
+                                    System.out.print("matched links: ");
+                                    for (String link : matchLinks) {
+                                        System.out.print(link + " / ");
+                                    }
                                 }
-                                System.out.println();
                                 setMatch(matchLinks, linksMultipleMatched, rowAndItsLink, row);
                                 break;
                             case "M.EIC":
                                 matchLinks = getMatch(courseStudent, row);
-                                System.out.print("matched links: ");
-                                for (String link : matchLinks) {
-                                    System.out.println(link + " / ");
+                                if (matchLinks.size() != 0) {
+                                    System.out.println();
+                                    System.out.println("---------- STUDENT: " + row.getCell(1).getStringCellValue().trim() + " -------");
+                                    System.out.print("matched links: ");
+                                    for (String link : matchLinks) {
+                                        System.out.print(link + " / ");
+                                    }
+                                    System.out.println();
                                 }
-                                System.out.println();
                                 setMatch(matchLinks, linksMultipleMatched, rowAndItsLink, row);
                                 break;
                             default:
@@ -373,9 +390,10 @@ public class AlumniServiceImpl implements AlumniService{
                 // Deltes from that row the link associated
                 Cell foundedRowWithSameLink = rowFoundWithLink.createCell(3);
                 foundedRowWithSameLink.setCellValue((String) null);
+                System.out.println("LINK MATHCED TWICE: " + matchLinks.get(0));
             }
         } else {
-            System.out.println("For this student 0 or more than one possible links were found, so no decision could be made.");
+            //System.out.println("For this student 0 or more than one possible links were found, so no decision could be made.");
         }
     }
 
