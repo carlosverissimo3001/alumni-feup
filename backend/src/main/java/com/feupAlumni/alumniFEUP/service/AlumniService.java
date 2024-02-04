@@ -20,6 +20,9 @@ public interface AlumniService {
     // Returns all alumnis
     public List<Alumni> getAllAlumnis();
 
-    // Puts in one table all Alumnis with fileds that have a coherent value. Puts in another table users that have "dirty" fields (no value, values that make no sense...)
-    public void dataAlumniWithoutLink();
+    // Clens the data needed to match alumnis with linkedin links
+    public void dataAlumniMatchLink();
+
+    // Receives an Excel file and tries to match the students with the alumnis Linkdein links in the DB
+    public void matchLinksToAlumnis(MultipartFile file);
 }

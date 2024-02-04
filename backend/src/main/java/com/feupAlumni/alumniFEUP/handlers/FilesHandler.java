@@ -32,37 +32,30 @@ public class FilesHandler {
         }
     } 
 
-    // Extracts the value of a given field in the Json file
-    public static String extractFieldFromJson(String fieldToExtract, String jsonData, String nestedFrom) {
+    // Extracts the value of a given NOT nested field of a json
+    public static String extractFieldFromJson(String fieldToExtract, String jsonData) {
         ObjectMapper objectMapper = new ObjectMapper();
         try {
             JsonNode jsonNode = objectMapper.readTree(jsonData);
-            return extractField(jsonNode, fieldToExtract, nestedFrom);
+            JsonNode fieldNode = jsonNode.get(fieldToExtract);
+            return fieldNode.asText();
         } catch (IOException e) {
             e.printStackTrace();
             return null;
         }
     }
     
-    private static String extractField(JsonNode jsonNode, String fieldToExtract, String nestedFrom) {
+    // Extracts nested field unitl 1 level 
+    private static String extractOneLevelNestedFiled(JsonNode jsonNode, String fieldToExtract, String nestedFrom) {
         JsonNode fieldNode = jsonNode.get(fieldToExtract);
 
-        if (fieldNode != null) {
+        if (fieldNode != null) { 
             return fieldNode.asText();
         } else {
-            // Handle nested structures
+            // Handle nested structures untill 1 level
             JsonNode nestedNode = jsonNode.get(nestedFrom);
-            if (nestedNode != null && nestedNode.isArray()) {
-                String schools = "";
-                for (JsonNode nestedEntry : nestedNode) {
-                    String result = extractField(nestedEntry, fieldToExtract, nestedFrom);
-                    if (result != null) {
-                        schools += " --- " + result;
-                    }
-                }
-                return schools;
-            } else if (nestedNode != null) {
-                return extractField(nestedNode, fieldToExtract, null);
+            if (nestedNode != null) {
+                return extractOneLevelNestedFiled(nestedNode, fieldToExtract, null);
             }
             return null;
         }
@@ -74,15 +67,15 @@ public class FilesHandler {
             ObjectMapper objectMapper = new ObjectMapper();
             JsonNode jsonNode = objectMapper.readTree(jsonData);
 
-            JsonNode educationNode = jsonNode.get("education");
-            if (educationNode != null && educationNode.isArray()) {
-                for (JsonNode entry : educationNode) {
-                    String schoolName = extractField(entry, "school", null);
-                    if (isValidSchool(schoolName)) {
-                        String degreeName = extractField(entry, "degree_name", null);
-                        String fieldOfStudy = extractField(entry, "field_of_study", null);
-                        String yearStart = extractField(entry, "year", "starts_at");
-                        String yearEnd = extractField(entry, "year", "ends_at");
+            JsonNode educations = jsonNode.get("education");
+            if (educations != null && educations.isArray()) {
+                for (JsonNode education : educations) {
+                    String schoolName = extractOneLevelNestedFiled(education, "school", null);
+                    if (CleanData.isValidSchool(schoolName)) {
+                        String degreeName = extractOneLevelNestedFiled(education, "degree_name", null);
+                        String fieldOfStudy = extractOneLevelNestedFiled(education, "field_of_study", null);
+                        String yearStart = extractOneLevelNestedFiled(education, "year", "starts_at");
+                        String yearEnd = extractOneLevelNestedFiled(education, "year", "ends_at");
 
                         if (degreeName != null && fieldOfStudy != null) {
                             ObjectNode resultNode = objectMapper.createObjectNode();
@@ -102,19 +95,5 @@ public class FilesHandler {
             e.printStackTrace();
             return null;
         }
-    }
-
-
-    public static boolean isValidSchool(String schoolName) {
-        // Convert school name to lowercase for case-insensitive comparison
-        String lowerCaseSchool = schoolName.toLowerCase();
-    
-        // Check if the school name matches any of the specified values
-        return lowerCaseSchool.contains("faculdade de engenharia da universidade do porto") ||
-               lowerCaseSchool.contains("feup") ||
-               lowerCaseSchool.contains("faculty engineering university of porto") ||
-               lowerCaseSchool.contains("universidade do porto") ||
-               lowerCaseSchool.contains("university of porto") ||
-               lowerCaseSchool.contains("faculdade de engenharia do porto");
     }
 }

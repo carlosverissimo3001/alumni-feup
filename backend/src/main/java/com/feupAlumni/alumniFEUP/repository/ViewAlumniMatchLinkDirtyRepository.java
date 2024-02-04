@@ -1,10 +1,10 @@
 package com.feupAlumni.alumniFEUP.repository;
 
-import com.feupAlumni.alumniFEUP.model.ViewAlumniWithNoLinkDirty;
+import com.feupAlumni.alumniFEUP.model.ViewAlumniMatchLinkDirty;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface ViewAlumniWithNoLinkDirtyRepository extends JpaRepository<ViewAlumniWithNoLinkDirty, Integer>{
+public interface ViewAlumniMatchLinkDirtyRepository extends JpaRepository<ViewAlumniMatchLinkDirty, Integer>{
     
 }

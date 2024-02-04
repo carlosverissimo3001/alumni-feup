@@ -62,20 +62,26 @@ const MenuButtons = () => {
         console.log("Backup set in the AlumniBackup table");
     }
 
-
-    const handleAlumnisWithoutLinkedin = async () => {
-        
-        // Set up the table with the needed information
-        await setUp.prepareDataAlumniWithoutLinks();
-
-        /**
-         * Clean users that don't have the correct values in faculty, name, course, end of course and puts them in another table.
-         * This fields can either be emtpy, the values are not the ones they should be...
-         */
+    // Matches Alumnis to lLinkedIn Links
+    const handleAlumnisMatchLinkedin = async () => {
 
         /**
          * Preforms the match between the linkedin info and the ones the teacher has
          */
+        // Check if the selected file is an Excel file (xlsx or xls)
+        const allowedFileTypes = ['application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'application/vnd.ms-excel'];
+        if (!allowedFileTypes.includes(file.type)) {
+            alert('Invalid file type. Please upload an Excel file.');
+            return;
+        }
+        
+        /**
+         * Set up the tables with the needed information
+         * Alumni valid for this functionality are added to one table and the invalid ones are added to another table.
+         */
+        //await setUp.prepareDataAlumniMactchLinks();  TODO: UNCOMMENT
+        
+        setUp.matchLinksToAlumnis(file); 
 
     }
 
@@ -84,7 +90,7 @@ const MenuButtons = () => {
             <input type="file" className='fileInput' onChange={handleFileChange} />         
             <button className="button butnUplFile" onClick={handleFileUpload}>Upload File</button>
             <button className="button butnUplFileBackup" onClick={handleFileUploadBackup}>Pop Alumni with backup file</button>
-            <button className="button butnAlmWithoutLink" onClick={handleAlumnisWithoutLinkedin}>Get Alumnis without LinkdeIn</button>
+            <button className="button butnAlmWithoutLink" onClick={handleAlumnisMatchLinkedin}>Get Alumnis without LinkdeIn</button>
         </>
     );
 };

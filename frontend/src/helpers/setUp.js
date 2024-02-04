@@ -99,22 +99,45 @@ class setUp {
   }
  
   /**
-   * Populates a table with the information needed to identify which users don't have an LinkedIn link associated
+   * Cleans the needed information to match alumnis to linkdein links. Adds the valid alumnis to one table and the invalid ones to another.
    */
-  static async prepareDataAlumniWithoutLinks() {
+  static async prepareDataAlumniMactchLinks() {
     try {
-        const response = await fetch('http://localhost:8080/alumni/dataHundleAlumniWithoutLink', {
+        const response = await fetch('http://localhost:8080/alumni/dataHundleAlumniMatchLink', {
             method: 'POST',
             body: '',
         });
 
         if (response.ok){
-            console.log('Alumni without link table created. And data Cleaned.');
+            console.log('Data for matching Alumnis with linkedins link cleaned.');
         } else {
-            console.error('Error during data handling on "Populating a table with the information needed to identify which users don`t have an LinkedIn link associated".');
+            console.error('Error while cleaning data for matchhing alumnis with linkedin links.');
         }
     } catch(error) {
-        console.error('Error populating a table with the information needed to identify which users don`t have an LinkedIn link associated :', error);
+        console.error('Error while cleaning data for matchhing alumnis with linkedin links: ', error);
+    }
+  }
+
+  /**
+   * Receives an excel to be field with linkedin Links. Makes the match of the students with the alumni information in the DB.
+   */
+  static async matchLinksToAlumnis(file) {
+    try {
+        const formData = new FormData();
+        formData.append('file', file);
+
+        const response = await fetch('http://localhost:8080/alumni/matchLinksToAlumnis', {
+            method: 'POST',
+            body: formData,
+        });
+
+        if (response.ok){
+            console.log('Match between alumnis and links performed.');
+        } else {
+            console.error('Error during match between alumnis and links.');
+        }
+    } catch(error) {
+        console.error('Error during match between alumnis and links:', error);
     }
   }
 

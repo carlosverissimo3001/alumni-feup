@@ -1,16 +1,17 @@
 package com.feupAlumni.alumniFEUP.model;
 import jakarta.persistence.Entity;
+
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 
-// View: Detect which alumnis don't have a linkedin associated - needed clean data
+// View: Detect which alumnis don't have a linkedin associated - dirty data
 @Entity
-public class ViewAlumniWithNoLinkClean {
-
+public class ViewAlumniMatchLinkDirty {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id; // Primary key and auto incremented
+    private String linkedin;
     private String fullName;
     private String school;
     private String fieldOfStudy;
@@ -18,12 +19,14 @@ public class ViewAlumniWithNoLinkClean {
     private String courseLetters;
     private String yearStart;
     private String yearEnd;
+    private String reason;
 
-    public ViewAlumniWithNoLinkClean(){
+    public ViewAlumniMatchLinkDirty(){
 
     }
 
-    public ViewAlumniWithNoLinkClean(String fullName, String school, String fieldOfStudy,String course, String courseLetters, String yearStart, String yearEnd){
+    public ViewAlumniMatchLinkDirty(String linkedin, String fullName, String school, String fieldOfStudy, String course, String courseLetters, String yearStart, String yearEnd, String reason){
+        this.linkedin = linkedin;
         this.fullName = fullName;
         this.school = school;
         this.fieldOfStudy = fieldOfStudy;
@@ -31,6 +34,11 @@ public class ViewAlumniWithNoLinkClean {
         this.courseLetters = courseLetters;
         this.yearStart = yearStart;
         this.yearEnd = yearEnd;
+        this.reason = reason;
+    }
+
+    public String getLinkedin() {
+        return linkedin;
     }
 
     public String getFullName() {
@@ -61,6 +69,14 @@ public class ViewAlumniWithNoLinkClean {
         return yearEnd;
     }
 
+    public String getReason() {
+        return reason;
+    }
+
+    public void setLinkedin(String linkedin) {
+        this.linkedin = linkedin;
+    }
+
     public void setFulltName(String fulltName) {
         this.fullName = fulltName;
     }
@@ -69,7 +85,7 @@ public class ViewAlumniWithNoLinkClean {
         this.school = school;
     }
 
-    public void setFieldOfStudy(String fieldOfStudy) {
+    public void SetFieldOfStudy(String fieldOfStudy) {
         this.fieldOfStudy = fieldOfStudy;
     }
 
@@ -81,12 +97,15 @@ public class ViewAlumniWithNoLinkClean {
         this.courseLetters = courseLetters;
     }
 
-    public void setYearStart(String yearStart) {
+    public void setYearStart (String yearStart) {
         this.yearStart = yearStart;
     }
 
-    public void setYearEnd(String yearEnd) {
+    public void setYearEnd (String yearEnd) {
         this.yearEnd = yearEnd;
     }
 
+    public void setReason(String reason) {
+        this.reason = reason;
+    }
 }
