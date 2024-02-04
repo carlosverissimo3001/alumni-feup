@@ -306,7 +306,7 @@ public class AlumniServiceImpl implements AlumniService{
                     System.out.println("error: " + error);
                 }
             }
-            System.out.println("Match performed.");
+            System.out.println("Match performed nº: " + rowAndItsLink.size());
         } catch (Exception e) {
             throw new RuntimeException("Error while perfoming the match between students and linkedin links: ", e);
         }
@@ -357,6 +357,7 @@ public class AlumniServiceImpl implements AlumniService{
             Row rowFoundWithLink = verifyLinkedinLinkAvailability(rowAndItsLink, matchLinks.get(0));
             if (rowFoundWithLink == null) {
                 System.out.println("WILL ADD TO THE EXCEL");
+
 
                 // Writes the link in the Excel Sheet 
                 Cell linkLinkedIn = row.createCell(3); // Column DmatchLinks
