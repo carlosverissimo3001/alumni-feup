@@ -20,7 +20,6 @@ public class AlumniController {
     @PostMapping("/upload")
     public ResponseEntity<String> handleFileUpload(@RequestBody MultipartFile file){
         try {
-            System.out.println("Achieved Server");
             alumniService.processFile(file);
             return ResponseEntity.ok("File uploaded successfully");
         } catch (Exception e) {
@@ -56,15 +55,25 @@ public class AlumniController {
         return alumniService.getAllAlumnis();
     }
 
-    // Populates a table with the information needed to identify which users don't have an LinkedIn link associated
-    // Creates a separate table with the users that have either an empty field, or values that make no sense, and these users don't show on the other table
-    @PostMapping("/dataHundleAlumniWithoutLink")
-    public ResponseEntity<String> handleDataAlumniWithoutLink() {
+    // Clenas the information needed to match alumnis to linkedin links. One table with the needed data and another table with the ones that are not elegible and why.
+    @PostMapping("/dataHundleAlumniMatchLink")
+    public ResponseEntity<String> handleDataAlumniMatchLink() {
         try {
-            alumniService.dataAlumniWithoutLink();
-            return ResponseEntity.ok("Data for detecting Alumnis without links successfully cleaned.");
+            alumniService.dataAlumniMatchLink();
+            return ResponseEntity.ok("Data for matching Alumnis with linkedins' links successfully cleaned.");
         } catch (Exception e) {
-            return ResponseEntity.status(500).body("Error during detecting Alumnis without links: " + e.getMessage());
+            return ResponseEntity.status(500).body("Error while cleaning data for matching Alumnis with linkedins' links: " + e.getMessage());
+        } 
+    }
+
+    // Receives an Excel file and tries to match the students with the alumnis Linkdein links in the DB
+    @PostMapping("/matchLinksToAlumnis")
+    public ResponseEntity<String> handleMatchLinksToAlumnis(@RequestBody MultipartFile file) {
+        try {
+            alumniService.matchLinksToAlumnis(file);
+            return ResponseEntity.ok("Match between Alumnis and LinkedIn links performed.");
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Error during matching between alumnis and linkedin links: " + e.getMessage());
         } 
     }
 
