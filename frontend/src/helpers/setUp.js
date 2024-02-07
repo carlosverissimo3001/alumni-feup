@@ -141,6 +141,36 @@ class setUp {
     }
   }
 
+  /**
+   * Receives an excel file and downloads an updated excel file with the found linkedin links for the alumnis 
+   */
+  static async downloadAlumnLink(file) {
+    try {
+        const formData = new FormData();
+        formData.append('excelData', file);
+
+        const response = await fetch('http://localhost:8080/alumni/downloadAlumnLink', {
+            method: 'POST',
+            body: formData,
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to download Excel file.');
+        }
+
+        const excelBlob = await response.blob();
+        const url = window.URL.createObjectURL(new Blob([excelBlob]));
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', 'modified_excel.xlsx');
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    } catch (error) {
+        console.error('Error: ', error);
+    }
+  }
+
 }
 
 export default setUp;
