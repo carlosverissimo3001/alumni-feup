@@ -13,6 +13,9 @@ import com.feupAlumni.alumniFEUP.repository.ViewAlumniMatchLinkCleanRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
@@ -22,7 +25,15 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+
 import java.util.Map;
+
+import java.io.InputStream;
+import java.io.IOException;
+
+import java.io.ByteArrayOutputStream;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 @Service
 public class AlumniServiceImpl implements AlumniService{
@@ -326,6 +337,32 @@ public class AlumniServiceImpl implements AlumniService{
             System.out.println("Match performed nº: " + rowAndItsLink.size());
         } catch (Exception e) {
             throw new RuntimeException("Error while perfoming the match between students and linkedin links: ", e);
+        }
+    }
+
+    @Override
+    public byte[] downloadAlumnLink(MultipartFile file) {
+        // Load the Excel file
+        try (InputStream inputStream = file.getInputStream()) {
+            Workbook workbook = new XSSFWorkbook(inputStream);
+
+            // Get the first sheet
+            Sheet sheet = workbook.getSheetAt(0);
+
+            // Write to cell A2
+            Row row = sheet.getRow(1); 
+            Cell cell = row.createCell(0);
+            cell.setCellValue("New Value2");
+
+            // Save the modified workbook to a byte array
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            workbook.write(outputStream);
+            byte[] modifiedExcelBytes = outputStream.toByteArray();
+            return modifiedExcelBytes;
+        } catch (IOException e) {
+            // Handle the IOException here, or log it
+            e.printStackTrace();
+            return null; // Or throw a custom exception if needed
         }
     }
     
