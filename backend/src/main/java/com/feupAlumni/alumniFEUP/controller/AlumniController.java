@@ -3,7 +3,6 @@ package com.feupAlumni.alumniFEUP.controller;
 import com.feupAlumni.alumniFEUP.model.Alumni;
 import com.feupAlumni.alumniFEUP.service.AlumniService;
 
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,14 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
-import java.io.InputStream;
 
-import java.io.ByteArrayOutputStream;
-
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -98,31 +90,17 @@ public class AlumniController {
 
     @PostMapping("/downloadAlumnLink")
     public ResponseEntity<byte[]> downloadAlumnLink(@RequestParam("excelData") MultipartFile file) throws IOException {
-        System.out.println("WLEE");
-        // Load the Excel file
-        try (InputStream inputStream = file.getInputStream()) {
-            Workbook workbook = new XSSFWorkbook(inputStream);
-
-            // Get the first sheet
-            Sheet sheet = workbook.getSheetAt(0);
-
-            // Write to cell A2
-            Row row = sheet.getRow(1); 
-            Cell cell = row.createCell(0);
-            cell.setCellValue("New Value");
-
-            // Save the modified workbook to a byte array
-            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-            workbook.write(outputStream);
-            byte[] modifiedExcelBytes = outputStream.toByteArray();
-
+        try {
+            byte[] modifiedExcelBytes = alumniService.downloadAlumnLink(file);
             // Set the response headers
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
             headers.setContentDispositionFormData("filename", "modified_excel.xlsx");
 
             return new ResponseEntity<>(modifiedExcelBytes, headers, HttpStatus.OK);
-        }
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        } 
     }
 
 }

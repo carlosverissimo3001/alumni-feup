@@ -25,4 +25,7 @@ public interface AlumniService {
 
     // Receives an Excel file and tries to match the students with the alumnis Linkdein links in the DB
     public void matchLinksToAlumnis(MultipartFile file);
+
+    // Receives an Excel file and tries to match the students with the alumnis Linkdein links in the DB
+    public byte[] downloadAlumnLink(MultipartFile file);
 }
