@@ -344,15 +344,99 @@ public class AlumniServiceImpl implements AlumniService{
     public byte[] downloadAlumnLink(MultipartFile file) {
         // Load the Excel file
         try (InputStream inputStream = file.getInputStream()) {
+            // Read and iterate over the excel file
             Workbook workbook = new XSSFWorkbook(inputStream);
 
-            // Get the first sheet
-            Sheet sheet = workbook.getSheetAt(0);
+            Sheet sheet = workbook.getSheetAt(0);   // 1st sheet
+            Iterator<Row> rowIterator = sheet.iterator();
 
-            // Write to cell A2
-            Row row = sheet.getRow(1); 
-            Cell cell = row.createCell(0);
-            cell.setCellValue("New Value2");
+            ArrayList<String> linksMultipleMatched = new ArrayList<>();
+            Map<Row, String> rowAndItsLink = new HashMap<>();
+
+            while (rowIterator.hasNext()) {
+                try {
+                    Row row = rowIterator.next();
+
+                    if (row.getCell(4) != null) { // Verifies if it has a course
+                        String courseStudent = row.getCell(4).getStringCellValue().trim(); // Column E
+
+                        // Stores linkedin links that matched with the student
+                        ArrayList<String> matchLinks = new ArrayList<>(); 
+                        
+                        switch (courseStudent) {
+                            case "MIEIC":
+                                matchLinks = getMatch(courseStudent, row);
+                                if (matchLinks.size() != 0) {
+                                    System.out.println();
+                                    System.out.println("---------- STUDENT: " + row.getCell(1).getStringCellValue().trim() + " -------");
+                                    System.out.print("matched links: ");
+                                    for (String link : matchLinks) {
+                                        System.out.print(link + " / ");
+                                    }
+                                    System.out.println();
+                                }
+                                setMatch(matchLinks, linksMultipleMatched, rowAndItsLink, row);
+                                break;
+                            case "MEI":
+                                matchLinks = getMatch(courseStudent, row);
+                                if (matchLinks.size() != 0) {
+                                    System.out.println();
+                                    System.out.println("---------- STUDENT: " + row.getCell(1).getStringCellValue().trim() + " -------");
+                                    System.out.print("matched links: ");
+                                    for (String link : matchLinks) {
+                                        System.out.print(link + " / ");
+                                    }
+                                    System.out.println();
+                                }
+                                setMatch(matchLinks, linksMultipleMatched, rowAndItsLink, row);
+                                break;
+                            case "LEIC":
+                                matchLinks = getMatch(courseStudent, row);
+                                if (matchLinks.size() != 0) {
+                                    System.out.println();
+                                    System.out.println("---------- STUDENT: " + row.getCell(1).getStringCellValue().trim() + " -------");
+                                    System.out.print("matched links: ");
+                                    for (String link : matchLinks) {
+                                        System.out.print(link + " / ");
+                                    }
+                                    System.out.println();
+                                }
+                                setMatch(matchLinks, linksMultipleMatched, rowAndItsLink, row);
+                                break;
+                            case "L.EIC":
+                                matchLinks = getMatch(courseStudent, row);
+                                if (matchLinks.size() != 0) {
+                                    System.out.println();
+                                    System.out.println("---------- STUDENT: " + row.getCell(1).getStringCellValue().trim() + " -------");
+                                    System.out.print("matched links: ");
+                                    for (String link : matchLinks) {
+                                        System.out.print(link + " / ");
+                                    }
+                                }
+                                setMatch(matchLinks, linksMultipleMatched, rowAndItsLink, row);
+                                break;
+                            case "M.EIC":
+                                matchLinks = getMatch(courseStudent, row);
+                                if (matchLinks.size() != 0) {
+                                    System.out.println();
+                                    System.out.println("---------- STUDENT: " + row.getCell(1).getStringCellValue().trim() + " -------");
+                                    System.out.print("matched links: ");
+                                    for (String link : matchLinks) {
+                                        System.out.print(link + " / ");
+                                    }
+                                    System.out.println();
+                                }
+                                setMatch(matchLinks, linksMultipleMatched, rowAndItsLink, row);
+                                break;
+                            default:
+                                break;
+                        }                        
+                    }
+                } catch (Exception error) {
+                    System.out.println("error: " + error);
+                }
+            }
+            System.out.println("Match performed nº: " + rowAndItsLink.size());
 
             // Save the modified workbook to a byte array
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
@@ -360,9 +444,8 @@ public class AlumniServiceImpl implements AlumniService{
             byte[] modifiedExcelBytes = outputStream.toByteArray();
             return modifiedExcelBytes;
         } catch (IOException e) {
-            // Handle the IOException here, or log it
             e.printStackTrace();
-            return null; // Or throw a custom exception if needed
+            return null; 
         }
     }
     
@@ -410,9 +493,8 @@ public class AlumniServiceImpl implements AlumniService{
             // Verifies if the linkedin has already been attributed to another student 
             Row rowFoundWithLink = verifyLinkedinLinkAvailability(rowAndItsLink, matchLinks.get(0));
             if (rowFoundWithLink == null) {
-                System.out.println("WILL ADD TO THE EXCEL");
-
-
+                System.out.println("WILL ADD TO THE EXCEL");           
+                
                 // Writes the link in the Excel Sheet 
                 Cell linkLinkedIn = row.createCell(3); // Column DmatchLinks
                 linkLinkedIn.setCellValue(matchLinks.get(0));
