@@ -62,7 +62,7 @@ const MenuButtons = () => {
         console.log("Backup set in the AlumniBackup table");
     }
 
-    // Matches Alumnis to lLinkedIn Links
+    // Matches Alumnis to LinkedIn Links. Receives an excel, updates the linkedin column and downloads the updated file
     const handleAlumnisMatchLinkedin = async () => {
 
         /**
@@ -84,22 +84,12 @@ const MenuButtons = () => {
         setUp.matchLinksToAlumnis(file); 
     }
 
-    // Receives an Excel file from a file input. Reads from it and downloads a file with all alumnis and their corresponding found linkedin links 
-    const handleDownloadAlumnLink = async () => {
-
-        if (!file) return;
-
-        setUp.downloadAlumnLink(file);
-
-    }
-
     return (
         <>
             <input type="file" className='fileInput' onChange={handleFileChange} />         
             <button className="button butnUplFile" onClick={handleFileUpload}>Upload File</button>
             <button className="button butnUplFileBackup" onClick={handleFileUploadBackup}>Pop Alumni with backup file</button>
             <button className="button butnAlmWithoutLink" onClick={handleAlumnisMatchLinkedin}>Get Alumnis without LinkdeIn</button>
-            <button className="button butnAlmWithoutLink" style={{ top: '30%' }} onClick={handleDownloadAlumnLink}>DOWNLOAD ALUMNIS LINKEDIN EXCEL</button>
         </>
     );
 };

@@ -76,22 +76,12 @@ public class AlumniController {
         } 
     }
 
-    // Receives an Excel file and tries to match the students with the alumnis Linkdein links in the DB
+    // Receives an Excel file and tries to match the students with the alumnis Linkdein links in the DB.
+    // Returns the file updated, this is, the file with the linkedin column field with the found links
     @PostMapping("/matchLinksToAlumnis")
-    public ResponseEntity<String> handleMatchLinksToAlumnis(@RequestBody MultipartFile file) {
+    public ResponseEntity<byte[]> handleMatchLinksToAlumnis(@RequestParam("excelData") MultipartFile file) throws IOException {
         try {
-            alumniService.matchLinksToAlumnis(file);
-            return ResponseEntity.ok("Match between Alumnis and LinkedIn links performed.");
-        } catch (Exception e) {
-            return ResponseEntity.status(500).body("Error during matching between alumnis and linkedin links: " + e.getMessage());
-        } 
-    }
-
-
-    @PostMapping("/downloadAlumnLink")
-    public ResponseEntity<byte[]> downloadAlumnLink(@RequestParam("excelData") MultipartFile file) throws IOException {
-        try {
-            byte[] modifiedExcelBytes = alumniService.downloadAlumnLink(file);
+            byte[] modifiedExcelBytes = alumniService.matchLinksToAlumnis(file);
             // Set the response headers
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
