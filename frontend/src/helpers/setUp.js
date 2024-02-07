@@ -120,36 +120,14 @@ class setUp {
 
   /**
    * Receives an excel to be field with linkedin Links. Makes the match of the students with the alumni information in the DB.
+   * Returns an updated excel with the linkedin column field with the found links.
    */
   static async matchLinksToAlumnis(file) {
     try {
         const formData = new FormData();
-        formData.append('file', file);
-
-        const response = await fetch('http://localhost:8080/alumni/matchLinksToAlumnis', {
-            method: 'POST',
-            body: formData,
-        });
-
-        if (response.ok){
-            console.log('Match between alumnis and links performed.');
-        } else {
-            console.error('Error during match between alumnis and links.');
-        }
-    } catch(error) {
-        console.error('Error during match between alumnis and links:', error);
-    }
-  }
-
-  /**
-   * Receives an excel file and downloads an updated excel file with the found linkedin links for the alumnis 
-   */
-  static async downloadAlumnLink(file) {
-    try {
-        const formData = new FormData();
         formData.append('excelData', file);
 
-        const response = await fetch('http://localhost:8080/alumni/downloadAlumnLink', {
+        const response = await fetch('http://localhost:8080/alumni/matchLinksToAlumnis', {
             method: 'POST',
             body: formData,
         });
