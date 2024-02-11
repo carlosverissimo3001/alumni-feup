@@ -65,9 +65,6 @@ const MenuButtons = () => {
     // Matches Alumnis to LinkedIn Links. Receives an excel, updates the linkedin column and downloads the updated file
     const handleAlumnisMatchLinkedin = async () => {
 
-        /**
-         * Preforms the match between the linkedin info and the ones the teacher has
-         */
         // Check if the selected file is an Excel file (xlsx or xls)
         const allowedFileTypes = ['application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'application/vnd.ms-excel'];
         if (!allowedFileTypes.includes(file.type)) {
@@ -75,12 +72,7 @@ const MenuButtons = () => {
             return;
         }
         
-        /**
-         * Set up the tables with the needed information
-         * Alumni valid for this functionality are added to one table and the invalid ones are added to another table.
-         */
-        //await setUp.prepareDataAlumniMactchLinks();  TODO: UNCOMMENT
-        
+        await setUp.prepareDataAlumniMactchLinks();  
         setUp.matchLinksToAlumnis(file); 
     }
 
@@ -90,6 +82,24 @@ const MenuButtons = () => {
         setUp.addMissingLinkedinLinks(); 
     }
 
+    // This function receives an Excel and writes to it a column with all the Alumni names (this is, the students from the group)
+    // and the corresponding professional situation
+    const handleExcelAlumniProfSitu = async () => {
+        // Check if the selected file is an Excel file (xlsx or xls)
+        const allowedFileTypes = ['application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'application/vnd.ms-excel'];
+        if (!allowedFileTypes.includes(file.type)) {
+            alert('Invalid file type. Please upload an Excel file.');
+            return;
+        }
+
+        setUp.excelAlmnProfSitu(file);
+    }
+
+    // Reads the Alumni Table and backs it up to an Excel
+    const handleAlmnTblExcel = async () => {
+
+    }
+
     return (
         <>
             <input type="file" className='fileInput' onChange={handleFileChange} />         
@@ -97,6 +107,8 @@ const MenuButtons = () => {
             <button className="button butnUplFileBackup" onClick={handleFileUploadBackup}>Pop Alumni with backup file</button>
             <button className="button butnAlmWithoutLink" onClick={handleAlumnisMatchLinkedin}>Get Alumnis without LinkdeIn</button>
             <button className="button btnPutLinksDB" onClick={handlePutLinksInDB}>Put Links in DB</button>
+            <button className="button btnExcelAlumniProfSitu" onClick={handleExcelAlumniProfSitu}>Excel: nomeAlumni + professionalSitu</button>
+            <button className="button btnExcelAlumniTableToExcel" onClick={handleAlmnTblExcel}>Alumni table to Excel</button>
         </>
     );
 };

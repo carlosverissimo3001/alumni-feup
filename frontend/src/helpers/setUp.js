@@ -170,6 +170,35 @@ class setUp {
     }
   }
 
+  /**
+   * Reads from the Alumni table and writes in an Excel file the alumni name and the professional situation
+   */
+  static async excelAlmnProfSitu(file) {
+    try {
+        const formData = new FormData();
+        formData.append('excelData', file);
+
+        const response = await fetch('http://localhost:8080/alumni/almProfiSitu', {
+            method: 'POST',
+            body: formData,
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to get the alumnis and the respective professional situation.');
+        }
+
+        const excelBlob = await response.blob();
+        const url = window.URL.createObjectURL(new Blob([excelBlob]));
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', 'alumniProfSitu.xlsx');
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    } catch (error) {
+        console.error('Error: ', error);
+    }
+  }
 
 }
 
