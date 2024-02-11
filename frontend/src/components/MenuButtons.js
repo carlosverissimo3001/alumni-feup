@@ -84,12 +84,19 @@ const MenuButtons = () => {
         setUp.matchLinksToAlumnis(file); 
     }
 
+    // DB is inconsistent and some rows don't have the linkedin link stored because of how I once read from the backup file.
+    // this function serves as a way to fix this and put the DB consistent
+    const handlePutLinksInDB = async () => {
+        setUp.addMissingLinkedinLinks(); 
+    }
+
     return (
         <>
             <input type="file" className='fileInput' onChange={handleFileChange} />         
             <button className="button butnUplFile" onClick={handleFileUpload}>Upload File</button>
             <button className="button butnUplFileBackup" onClick={handleFileUploadBackup}>Pop Alumni with backup file</button>
             <button className="button butnAlmWithoutLink" onClick={handleAlumnisMatchLinkedin}>Get Alumnis without LinkdeIn</button>
+            <button className="button btnPutLinksDB" onClick={handlePutLinksInDB}>Put Links in DB</button>
         </>
     );
 };

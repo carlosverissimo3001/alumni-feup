@@ -191,6 +191,23 @@ public class AlumniServiceImpl implements AlumniService{
     }
 
     @Override
+    public void missingLinkedinLinks() {
+        List<Alumni> alumniList = alumniRepository.findAll();
+        System.out.println("alumniList.size(): " + alumniList.size());
+        for (Alumni alumni : alumniList) {
+            String linkedinLink = alumni.getLinkedinLink();
+            if (linkedinLink == null) {
+                String linkedinInfo = alumni.getLinkedinInfo();
+                String publicIdentifier = FilesHandler.extractFieldFromJson("public_identifier", linkedinInfo);
+                String linkedinLinkNew = "https://www.linkedin.com/in/" + publicIdentifier + "/";
+
+                alumni.setLinkedinLink(linkedinLinkNew);
+                alumniRepository.save(alumni);
+            }
+        }
+    }
+
+    @Override
     public void dataAlumniMatchLink() {
 
         // Check if tables that store the clean and dirty information are populated, if so they are deleted
