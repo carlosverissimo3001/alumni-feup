@@ -14,10 +14,6 @@ import java.util.List;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/alumni")
@@ -90,6 +86,17 @@ public class AlumniController {
             return new ResponseEntity<>(modifiedExcelBytes, headers, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        } 
+    }
+
+    // Sets the missing linkedin links on the DB 
+    @PostMapping("/missingLinkedinLinks")
+    public ResponseEntity<String> handleMissingLinkedinLinks() {
+        try {
+            alumniService.missingLinkedinLinks();
+            return ResponseEntity.ok("Missing Linkedin links successfully set for the needed rows.");
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Error while seting the missing linkedin links: " + e.getMessage());
         } 
     }
 

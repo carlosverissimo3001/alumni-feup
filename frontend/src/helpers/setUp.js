@@ -149,6 +149,28 @@ class setUp {
     }
   }
 
+  /**
+   * Because once I read from the backup file, some rows in the DB don't have the linkedin link associated. This function 
+   * will create the linkedin link to those people
+   */
+  static async addMissingLinkedinLinks() {
+    try {
+        const response = await fetch('http://localhost:8080/alumni/missingLinkedinLinks', {
+            method: 'POST',
+            body: '',
+        });
+
+        if (response.ok){
+            console.log('Rows with missing linkedin links set.');
+        } else {
+            console.error('Error while trying to set the linkedin links of the missing rows.');
+        }
+    } catch(error) {
+        console.error('Error while trying to set the linkedin links of the missing rows: ', error);
+    }
+  }
+
+
 }
 
 export default setUp;

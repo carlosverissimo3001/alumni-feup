@@ -21,6 +21,10 @@
     top: 180px;
     left: 20px;
 }
+.btnPutLinksDB{
+    top: 210px;
+    left: 20px;
+}
 
 .fileInput{
     position: absolute;
