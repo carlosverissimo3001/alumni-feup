@@ -25,6 +25,14 @@
     top: 210px;
     left: 20px;
 }
+.btnExcelAlumniProfSitu{
+    top: 240px;
+    left: 20px;
+}
+.btnExcelAlumniTableToExcel{
+    top: 270px;
+    left: 20px;
+}
 
 .fileInput{
     position: absolute;
