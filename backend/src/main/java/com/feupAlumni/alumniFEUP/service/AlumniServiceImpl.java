@@ -9,6 +9,9 @@ import com.feupAlumni.alumniFEUP.model.ViewAlumniMatchLinkDirty;
 import com.feupAlumni.alumniFEUP.repository.AlumniBackupRepository;
 import com.feupAlumni.alumniFEUP.repository.AlumniRepository;
 import com.feupAlumni.alumniFEUP.repository.ViewAlumniMatchLinkDirtyRepository;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.feupAlumni.alumniFEUP.repository.ViewAlumniMatchLinkCleanRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,14 +23,17 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import java.util.Map;
+import com.google.gson.JsonParser;
 
 import java.io.InputStream;
 import java.io.IOException;
@@ -47,6 +53,7 @@ public class AlumniServiceImpl implements AlumniService{
     @Autowired
     private ViewAlumniMatchLinkCleanRepository viewAlumniMatchLinkCleanRepository;
 
+    int contagem = 0; 
 
     // Cleans the Alumni table if there is information stored
     private void cleanAlumniTable() {
@@ -275,6 +282,435 @@ public class AlumniServiceImpl implements AlumniService{
         }
     }
 
+    @Override
+    public byte[] alumniTableToExcel(MultipartFile file) {
+
+        // Load the Excel file
+        try (InputStream inputStream = file.getInputStream()) {
+            // Read and iterate over the excel file
+            Workbook workbook = new XSSFWorkbook(inputStream);
+
+            Sheet sheet = workbook.getSheetAt(0);   // 1st sheet
+
+            String[] mainTitles = {"Linkedin Link", "public_identifier", "profile_pic_url", "background_cover_image_url", "first_name", "last_name", "full_name", "follower_count", "occupation", "headline", "summary", "country", "country_full_name", "city", "state", "experiences"};
+            String[] experienceTitles = {"time", "company", "company_linkedin_profile_url", "title", "description", "location", "logo_url"};
+            String[] educationMainTitle = {"education"};
+            String[] educationTitles = {"time", "field_of_study", "degree_name", "school", "school_linkedin_profile_url", "description", "logo_url", "grade", "activities_and_societies"};
+            String[] languageTitle = {"languages"};
+            String[] accompOrganisationsMainTitle = {"accomplishment_organisations"};
+            String[] accompOrganisationsTitles = {"time", "org_name", "title", "description"};
+            String[] accompPublicationsMainTitle = {"accomplishment_publications"};
+            String[] accompPublicationsTitles = {"name", "publisher", "published_on", "description", "url"};
+            String[] accompHonorsAwardsMainTitle = {"accomplishment_honors_awards"};
+            String[] accompHonorsAwardsTitles = {"title", "issuer", "issued_on", "description"};
+            String[] accompPatentsMainTitle = {"accomplishment_patents"};
+            String[] accompPatentsTitles = {"title", "issuer", "issued_on", "description", "application_number", "patent_number", "url"};
+            String[] accompCoursesMainTitle = {"accomplishment_courses"};
+            String[] accompCoursesTitles = {"name", "number"};
+            String[] accompProjectsMainTitle = {"accomplishment_projects"};
+            String[] accompProjectsTitles = {"time", "title", "description", "url"};
+            String[] accompTestScoresMainTitle = {"accomplishment_test_scores"};
+            String[] accompTestScoresTitles = {"name", "score", "date_on", "description"};
+            String[] volunteerWorkMainTitle = {"volunteer_work"};
+            String[] volunteerWorkTitles = {"time", "title", "cause", "company", "company_linkedin_profile_url", "description", "logo_url"};
+            String[] certificationsMainTitle = {"certifications"};
+            String[] certificationsTitles = {"time", "name", "license_number", "display_source", "authority", "url"};
+            String[] connectionsMainTitle = {"connections"};
+            String[] peopleAlsoViewedMainTitle = {"people_also_viewed"};
+            String[] peopleAlsoViewedTitles = {"link", "name", "summary", "location"};
+            String[] recommendationsMainTitle = {"recommendations"};
+            String[] activitiesMainTitle = {"activities"};
+            String[] activitiesTitles = {"title", "link", "activity_status"};
+            String[] similarlyNamedProfilesMainTitle = {"similarly_named_profiles"};
+            String[] similarlyNamedProfilesTitles = {"name", "link", "summary", "location"};
+            String[] articlesMainTitle = {"articles"};
+            String[] articlesTitles = {"title", "link", "published_date", "author", "image_url"};
+            String[] groupsMainTitle = {"groups"};
+            String[] groupsTitles = {"profile_pic_url", "name", "url"};
+            String[] lastFields = {"skills", "inferred_salary", "gender", "birth_date", "industry", "extra", "interests", "personal_emails", "personal_numbers"};
+
+            createHeaders(sheet, mainTitles, experienceTitles, educationMainTitle, educationTitles, languageTitle, accompOrganisationsMainTitle, accompOrganisationsTitles, accompPublicationsMainTitle, accompPublicationsTitles, accompHonorsAwardsMainTitle, accompHonorsAwardsTitles, accompPatentsMainTitle, accompPatentsTitles, accompCoursesMainTitle, accompCoursesTitles, accompProjectsMainTitle, accompProjectsTitles, accompTestScoresMainTitle, accompTestScoresTitles, volunteerWorkMainTitle, volunteerWorkTitles, certificationsMainTitle, certificationsTitles, connectionsMainTitle, peopleAlsoViewedMainTitle, peopleAlsoViewedTitles, recommendationsMainTitle, activitiesMainTitle, activitiesTitles, similarlyNamedProfilesMainTitle, similarlyNamedProfilesTitles, articlesMainTitle, articlesTitles, groupsMainTitle, groupsTitles, lastFields);
+
+            Iterator<Alumni> alumniIterator = alumniRepository.findAll().iterator();
+
+            // Iterate over each row of the excel
+            int rowIndex=2;
+            while (alumniIterator.hasNext()) {
+                Alumni alumni = alumniIterator.next();
+                Row row = sheet.getRow(rowIndex); // Create a new row
+                if (row == null) {
+                    row = sheet.createRow(rowIndex);
+                }
+                
+                String linkedinInfo = alumni.getLinkedinInfo();
+                int lastWrittenRow = writeAlumniDataToRow(alumni, row, rowIndex, linkedinInfo, sheet, mainTitles, experienceTitles, educationTitles, languageTitle, accompOrganisationsTitles, accompPublicationsTitles, accompHonorsAwardsTitles, accompPatentsTitles,  accompCoursesTitles, accompProjectsTitles, accompTestScoresTitles, volunteerWorkTitles, certificationsTitles, connectionsMainTitle, peopleAlsoViewedTitles, recommendationsMainTitle, activitiesMainTitle, activitiesTitles, similarlyNamedProfilesMainTitle, similarlyNamedProfilesTitles, articlesMainTitle, articlesTitles, groupsMainTitle, groupsTitles, lastFields);
+
+                rowIndex = lastWrittenRow;
+            }
+
+            // Save the modified workbook to a byte array
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            workbook.write(outputStream);
+            byte[] modifiedExcelBytes = outputStream.toByteArray();
+            return modifiedExcelBytes;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    private void createHeaders(Sheet sheet, String[] mainTitles, String[] experienceTitles, String[] educationMainTitle, String[] educationTitles, String[] languageTitle, String[] accompOrganisationsMainTitle, String[] accompOrganisationsTitles, String[] accompPublicationsMainTitle, String[] accompPublicationsTitles, String[] accompHonorsAwardsMainTitle, String[] accompHonorsAwardsTitles, String[] accompPatentsMainTitle, String[] accompPatentsTitles, String[] accompCoursesMainTitle, String[] accompCoursesTitles, String[] accompProjectsMainTitle, String[] accompProjectsTitles, String[] accompTestScoresMainTitle, String[] accompTestScoresTitles, String[] accompVolunteerWorkMainTitle, String[] accompVolunteerWorkTitles, String[] certificationsMainTitle, String[] certificationsTitles, String[] connectionsMainTitle, String[] peopleAlsoViewedMainTitle, String[] peopleAlsoViewedTitles, String[] recommendationsMainTitle, String[] activitiesMainTitle, String[] activitiesTitles, String[] similarlyNamedProfilesMainTitle, String[] similarlyNamedProfilesTitles, String[] articlesMainTitle, String[] articlesTitles, String[] groupsMainTitle, String[] groupsTitles, String[] lastFields) {
+        createHeaderRow (sheet, 0, 0, mainTitles);
+        createHeaderRow (sheet, 1, mainTitles.length-1, experienceTitles);
+        createHeaderRow (sheet, 0, (mainTitles.length+experienceTitles.length)-1 , educationMainTitle);
+        createHeaderRow (sheet, 1, (mainTitles.length+experienceTitles.length)-1, educationTitles);
+        createHeaderRow (sheet, 0, (mainTitles.length+experienceTitles.length+educationTitles.length)-1, languageTitle);
+        createHeaderRow (sheet, 0, (mainTitles.length+experienceTitles.length+educationTitles.length+languageTitle.length)-1, accompOrganisationsMainTitle);
+        createHeaderRow (sheet, 1, (mainTitles.length+experienceTitles.length+educationTitles.length+languageTitle.length)-1, accompOrganisationsTitles);
+        createHeaderRow (sheet, 0, (mainTitles.length+experienceTitles.length+educationTitles.length+languageTitle.length+accompOrganisationsTitles.length)-1, accompPublicationsMainTitle);
+        createHeaderRow (sheet, 1, (mainTitles.length+experienceTitles.length+educationTitles.length+languageTitle.length+accompOrganisationsTitles.length)-1, accompPublicationsTitles);
+        createHeaderRow (sheet, 0, (mainTitles.length+experienceTitles.length+educationTitles.length+languageTitle.length+accompOrganisationsTitles.length+accompPublicationsTitles.length)-1, accompHonorsAwardsMainTitle);
+        createHeaderRow (sheet, 1, (mainTitles.length+experienceTitles.length+educationTitles.length+languageTitle.length+accompOrganisationsTitles.length+accompPublicationsTitles.length)-1, accompHonorsAwardsTitles);
+        createHeaderRow (sheet, 0, (mainTitles.length+experienceTitles.length+educationTitles.length+languageTitle.length+accompOrganisationsTitles.length+accompPublicationsTitles.length+accompHonorsAwardsTitles.length)-1, accompPatentsMainTitle);
+        createHeaderRow (sheet, 1, (mainTitles.length+experienceTitles.length+educationTitles.length+languageTitle.length+accompOrganisationsTitles.length+accompPublicationsTitles.length+accompHonorsAwardsTitles.length)-1, accompPatentsTitles);
+        createHeaderRow (sheet, 0, (mainTitles.length+experienceTitles.length+educationTitles.length+languageTitle.length+accompOrganisationsTitles.length+accompPublicationsTitles.length+accompHonorsAwardsTitles.length+accompPatentsTitles.length)-1, accompCoursesMainTitle);
+        createHeaderRow (sheet, 1, (mainTitles.length+experienceTitles.length+educationTitles.length+languageTitle.length+accompOrganisationsTitles.length+accompPublicationsTitles.length+accompHonorsAwardsTitles.length+accompPatentsTitles.length)-1, accompCoursesTitles);
+        createHeaderRow (sheet,0, (mainTitles.length+experienceTitles.length+educationTitles.length+languageTitle.length+accompOrganisationsTitles.length+accompPublicationsTitles.length+accompHonorsAwardsTitles.length+accompPatentsTitles.length+accompCoursesTitles.length)-1, accompProjectsMainTitle);
+        createHeaderRow (sheet,1, (mainTitles.length+experienceTitles.length+educationTitles.length+languageTitle.length+accompOrganisationsTitles.length+accompPublicationsTitles.length+accompHonorsAwardsTitles.length+accompPatentsTitles.length+accompCoursesTitles.length)-1, accompProjectsTitles);
+        createHeaderRow (sheet,0, (mainTitles.length+experienceTitles.length+educationTitles.length+languageTitle.length+accompOrganisationsTitles.length+accompPublicationsTitles.length+accompHonorsAwardsTitles.length+accompPatentsTitles.length+accompCoursesTitles.length+accompProjectsTitles.length)-1, accompTestScoresMainTitle);
+        createHeaderRow (sheet,1, (mainTitles.length+experienceTitles.length+educationTitles.length+languageTitle.length+accompOrganisationsTitles.length+accompPublicationsTitles.length+accompHonorsAwardsTitles.length+accompPatentsTitles.length+accompCoursesTitles.length+accompProjectsTitles.length)-1, accompTestScoresTitles);
+        createHeaderRow (sheet,0, (mainTitles.length+experienceTitles.length+educationTitles.length+languageTitle.length+accompOrganisationsTitles.length+accompPublicationsTitles.length+accompHonorsAwardsTitles.length+accompPatentsTitles.length+accompCoursesTitles.length+accompProjectsTitles.length+accompTestScoresTitles.length)-1, accompVolunteerWorkMainTitle);
+        createHeaderRow (sheet,1, (mainTitles.length+experienceTitles.length+educationTitles.length+languageTitle.length+accompOrganisationsTitles.length+accompPublicationsTitles.length+accompHonorsAwardsTitles.length+accompPatentsTitles.length+accompCoursesTitles.length+accompProjectsTitles.length+accompTestScoresTitles.length)-1, accompVolunteerWorkTitles);
+        createHeaderRow (sheet,0, (mainTitles.length+experienceTitles.length+educationTitles.length+languageTitle.length+accompOrganisationsTitles.length+accompPublicationsTitles.length+accompHonorsAwardsTitles.length+accompPatentsTitles.length+accompCoursesTitles.length+accompProjectsTitles.length+accompTestScoresTitles.length+accompVolunteerWorkTitles.length)-1, certificationsMainTitle);
+        createHeaderRow (sheet,1, (mainTitles.length+experienceTitles.length+educationTitles.length+languageTitle.length+accompOrganisationsTitles.length+accompPublicationsTitles.length+accompHonorsAwardsTitles.length+accompPatentsTitles.length+accompCoursesTitles.length+accompProjectsTitles.length+accompTestScoresTitles.length+accompVolunteerWorkTitles.length)-1, certificationsTitles);
+        createHeaderRow (sheet,0, (mainTitles.length+experienceTitles.length+educationTitles.length+languageTitle.length+accompOrganisationsTitles.length+accompPublicationsTitles.length+accompHonorsAwardsTitles.length+accompPatentsTitles.length+accompCoursesTitles.length+accompProjectsTitles.length+accompTestScoresTitles.length+accompVolunteerWorkTitles.length+certificationsTitles.length)-1, connectionsMainTitle);
+        createHeaderRow (sheet,0, (mainTitles.length+experienceTitles.length+educationTitles.length+languageTitle.length+accompOrganisationsTitles.length+accompPublicationsTitles.length+accompHonorsAwardsTitles.length+accompPatentsTitles.length+accompCoursesTitles.length+accompProjectsTitles.length+accompTestScoresTitles.length+accompVolunteerWorkTitles.length+certificationsTitles.length+connectionsMainTitle.length)-1, peopleAlsoViewedMainTitle);
+        createHeaderRow (sheet,1, (mainTitles.length+experienceTitles.length+educationTitles.length+languageTitle.length+accompOrganisationsTitles.length+accompPublicationsTitles.length+accompHonorsAwardsTitles.length+accompPatentsTitles.length+accompCoursesTitles.length+accompProjectsTitles.length+accompTestScoresTitles.length+accompVolunteerWorkTitles.length+certificationsTitles.length+connectionsMainTitle.length)-1, peopleAlsoViewedTitles);
+        createHeaderRow (sheet,0, (mainTitles.length+experienceTitles.length+educationTitles.length+languageTitle.length+accompOrganisationsTitles.length+accompPublicationsTitles.length+accompHonorsAwardsTitles.length+accompPatentsTitles.length+accompCoursesTitles.length+accompProjectsTitles.length+accompTestScoresTitles.length+accompVolunteerWorkTitles.length+certificationsTitles.length+connectionsMainTitle.length+peopleAlsoViewedTitles.length)-1, recommendationsMainTitle);
+        createHeaderRow (sheet,0, (mainTitles.length+experienceTitles.length+educationTitles.length+languageTitle.length+accompOrganisationsTitles.length+accompPublicationsTitles.length+accompHonorsAwardsTitles.length+accompPatentsTitles.length+accompCoursesTitles.length+accompProjectsTitles.length+accompTestScoresTitles.length+accompVolunteerWorkTitles.length+certificationsTitles.length+connectionsMainTitle.length+peopleAlsoViewedTitles.length+recommendationsMainTitle.length)-1, activitiesMainTitle);
+        createHeaderRow (sheet,1, (mainTitles.length+experienceTitles.length+educationTitles.length+languageTitle.length+accompOrganisationsTitles.length+accompPublicationsTitles.length+accompHonorsAwardsTitles.length+accompPatentsTitles.length+accompCoursesTitles.length+accompProjectsTitles.length+accompTestScoresTitles.length+accompVolunteerWorkTitles.length+certificationsTitles.length+connectionsMainTitle.length+peopleAlsoViewedTitles.length+recommendationsMainTitle.length)-1, activitiesTitles);
+        createHeaderRow (sheet,0, (mainTitles.length+experienceTitles.length+educationTitles.length+languageTitle.length+accompOrganisationsTitles.length+accompPublicationsTitles.length+accompHonorsAwardsTitles.length+accompPatentsTitles.length+accompCoursesTitles.length+accompProjectsTitles.length+accompTestScoresTitles.length+accompVolunteerWorkTitles.length+certificationsTitles.length+connectionsMainTitle.length+peopleAlsoViewedTitles.length+recommendationsMainTitle.length+activitiesTitles.length)-1, similarlyNamedProfilesMainTitle);
+        createHeaderRow (sheet,1, (mainTitles.length+experienceTitles.length+educationTitles.length+languageTitle.length+accompOrganisationsTitles.length+accompPublicationsTitles.length+accompHonorsAwardsTitles.length+accompPatentsTitles.length+accompCoursesTitles.length+accompProjectsTitles.length+accompTestScoresTitles.length+accompVolunteerWorkTitles.length+certificationsTitles.length+connectionsMainTitle.length+peopleAlsoViewedTitles.length+recommendationsMainTitle.length+activitiesTitles.length)-1, similarlyNamedProfilesTitles);
+        createHeaderRow (sheet,0, (mainTitles.length+experienceTitles.length+educationTitles.length+languageTitle.length+accompOrganisationsTitles.length+accompPublicationsTitles.length+accompHonorsAwardsTitles.length+accompPatentsTitles.length+accompCoursesTitles.length+accompProjectsTitles.length+accompTestScoresTitles.length+accompVolunteerWorkTitles.length+certificationsTitles.length+connectionsMainTitle.length+peopleAlsoViewedTitles.length+recommendationsMainTitle.length+activitiesTitles.length+similarlyNamedProfilesTitles.length)-1, articlesMainTitle);
+        createHeaderRow (sheet,1, (mainTitles.length+experienceTitles.length+educationTitles.length+languageTitle.length+accompOrganisationsTitles.length+accompPublicationsTitles.length+accompHonorsAwardsTitles.length+accompPatentsTitles.length+accompCoursesTitles.length+accompProjectsTitles.length+accompTestScoresTitles.length+accompVolunteerWorkTitles.length+certificationsTitles.length+connectionsMainTitle.length+peopleAlsoViewedTitles.length+recommendationsMainTitle.length+activitiesTitles.length+similarlyNamedProfilesTitles.length)-1, articlesTitles);
+        createHeaderRow (sheet,0, (mainTitles.length+experienceTitles.length+educationTitles.length+languageTitle.length+accompOrganisationsTitles.length+accompPublicationsTitles.length+accompHonorsAwardsTitles.length+accompPatentsTitles.length+accompCoursesTitles.length+accompProjectsTitles.length+accompTestScoresTitles.length+accompVolunteerWorkTitles.length+certificationsTitles.length+connectionsMainTitle.length+peopleAlsoViewedTitles.length+recommendationsMainTitle.length+activitiesTitles.length+similarlyNamedProfilesTitles.length+articlesTitles.length)-1, groupsMainTitle);
+        createHeaderRow (sheet,1, (mainTitles.length+experienceTitles.length+educationTitles.length+languageTitle.length+accompOrganisationsTitles.length+accompPublicationsTitles.length+accompHonorsAwardsTitles.length+accompPatentsTitles.length+accompCoursesTitles.length+accompProjectsTitles.length+accompTestScoresTitles.length+accompVolunteerWorkTitles.length+certificationsTitles.length+connectionsMainTitle.length+peopleAlsoViewedTitles.length+recommendationsMainTitle.length+activitiesTitles.length+similarlyNamedProfilesTitles.length+articlesTitles.length)-1, groupsTitles);
+        createHeaderRow (sheet,0, (mainTitles.length+experienceTitles.length+educationTitles.length+languageTitle.length+accompOrganisationsTitles.length+accompPublicationsTitles.length+accompHonorsAwardsTitles.length+accompPatentsTitles.length+accompCoursesTitles.length+accompProjectsTitles.length+accompTestScoresTitles.length+accompVolunteerWorkTitles.length+certificationsTitles.length+connectionsMainTitle.length+peopleAlsoViewedTitles.length+recommendationsMainTitle.length+activitiesTitles.length+similarlyNamedProfilesTitles.length+articlesTitles.length+groupsTitles.length)-1, lastFields);
+    }
+
+    // Create a row
+    private void createHeaderRow (Sheet sheet, int rowIndex, int startColumn, String[] titles) {
+        Row headerRow = sheet.getRow(rowIndex); // Create a new row
+        if (headerRow == null) {
+            headerRow = sheet.createRow(rowIndex);
+        }
+        for (int i=0; i<titles.length; i++) {
+            Cell cell = headerRow.createCell(startColumn);
+            cell.setCellValue(titles[i]);
+            startColumn++;
+        }
+    }
+
+    // Writes the alumni data to the row
+    private int writeAlumniDataToRow (Alumni alumni, Row row, int rowIndex, String linkedinInfo, Sheet sheet, String[] mainTitles, String[] experienceTitles, String[] educationTitles, String[] languageTitle, String[] accompOrganisationsTitles, String[] accompPublicationsTitles, String[] accompHonorsAwardsTitles, String[] accompPatentsTitles,  String[] accompCoursesTitles, String[] accompProjectsTitles, String[] accompTestScoresTitles, String[] volunteerWorkTitles, String[] certificationsTitles, String[] connectionsMainTitle, String[] peopleAlsoViewedTitles, String[] recommendationsMainTitle, String[] activitiesMainTitle, String[] activitiesTitles, String[] similarlyNamedProfilesMainTitle, String[] similarlyNamedProfilesTitles, String[] articlesMainTitle, String[] articlesTitles, String[] groupsMainTitle, String[] groupsTitles, String[] lastFields) {
+        String linkdeinLink = alumni.getLinkedinLink();
+        Cell cellLinkedinLink = row.createCell(0);  // Write linkedin link to column 1
+        cellLinkedinLink.setCellValue(linkdeinLink);
+        int rowIndexExperienceBackup = 0;
+        int rowIndexEducationBackup = 0;
+        int rowIndexOrganizationsBackup = 0;
+        int rowIndexPublicationsBackup = 0;
+        int rowIndexHonorAwardsBackup = 0;
+        int rowIndexAccompPattentsBackup = 0;
+        int rowIndexAccompCoursesBackup = 0;
+        int rowIndexAccompProjectsBackup = 0;
+        int rowIndexAccompTestScoreBackup = 0;
+        int rowIndexVolunteerWorkBackup = 0;
+        int rowIndexCertificatesBackup = 0;
+
+        // ----- Writes the first main titles -----
+        int columnIndex = 1;
+        for (int i=1; i<mainTitles.length; i++) {
+            String fieldValue = FilesHandler.extractFieldFromJson(mainTitles[i], linkedinInfo);
+            Cell cell = row.createCell(columnIndex); 
+            cell.setCellValue(fieldValue);
+            columnIndex++;
+        }
+
+        // ----- Writes the experience information  ----- 
+        List<ObjectNode> experiencesList = FilesHandler.getExperienceDetails(linkedinInfo);
+        int lastColumnIndex = mainTitles.length - 1; // Gets the index of the last column of the first header 
+        rowIndexExperienceBackup = rowIndex;
+        // Write values from experiencesList under experienceTitles
+        for (ObjectNode experience : experiencesList) {
+            // Create a new row
+            Row rowExperience = sheet.getRow(rowIndexExperienceBackup);
+            if (rowExperience == null) {
+                rowExperience = sheet.createRow(rowIndexExperienceBackup);
+            }
+            // write each field from the experience object to corresponding cell
+            String fieldValue = experience.get("time").asText();
+            Cell cell = rowExperience.createCell(lastColumnIndex);
+            cell.setCellValue(fieldValue);
+
+            for (int i=1; i<experienceTitles.length; i++) {
+                String fieldName = experienceTitles[i];
+                fieldValue = experience.get(fieldName).asText();
+                cell = rowExperience.createCell(lastColumnIndex + i);
+                cell.setCellValue(fieldValue);
+            }
+            rowIndexExperienceBackup++;
+        }
+
+        // ----- Writes the education information ----- 
+        List<ObjectNode> educationList = FilesHandler.getEducationDetails(linkedinInfo);
+        lastColumnIndex = (mainTitles.length + experienceTitles.length)-1;
+        rowIndexEducationBackup = rowIndex;
+        // Writes values from educationList under educationTitles
+        for (ObjectNode education : educationList) {
+            // Create a new row
+            Row rowEducation = sheet.getRow(rowIndexEducationBackup);
+            if (rowEducation == null) {
+                rowEducation = sheet.createRow(rowIndexEducationBackup);
+            }
+            // write each field from the education object to corresponding cell
+            String fieldValue = education.get("time").asText();
+            Cell cell = rowEducation.createCell(lastColumnIndex);
+            cell.setCellValue(fieldValue);
+
+            for (int i=1; i<educationTitles.length; i++) {
+                String fieldName = educationTitles[i];
+                fieldValue = education.get(fieldName).asText();
+                cell = rowEducation.createCell(lastColumnIndex + i);
+                cell.setCellValue(fieldValue);
+            }
+            rowIndexEducationBackup++;
+        } 
+
+        // Starts to fill the education cells with - so that they don't get down the links
+        while (rowIndexEducationBackup != rowIndexExperienceBackup && rowIndexEducationBackup < rowIndexExperienceBackup) {
+            // Create a new row
+            Row rowEducation = sheet.getRow(rowIndexEducationBackup);
+            if (rowEducation == null) {
+                rowEducation = sheet.createRow(rowIndexEducationBackup);
+            }
+            // write each field from the education object to corresponding cell
+            Cell cell = rowEducation.createCell(lastColumnIndex);
+            cell.setCellValue("-");
+
+            cell = rowEducation.createCell(lastColumnIndex);
+            cell.setCellValue("-");
+
+            rowIndexEducationBackup++;
+        }
+
+        // ----- Writes the languages ----- 
+        lastColumnIndex = (mainTitles.length + experienceTitles.length + educationTitles.length)-1;
+        String fieldValueLanguage = FilesHandler.extractFieldFromJson("languages", linkedinInfo);
+        Cell cellLanguage = row.createCell(lastColumnIndex); 
+        cellLanguage.setCellValue(fieldValueLanguage);
+
+        // ----- Writes the Accomplishment Organisations  ----- 
+        List<ObjectNode> accompOrganisations = FilesHandler.getAccompOrganisationsDetails(linkedinInfo);
+        lastColumnIndex = (mainTitles.length + experienceTitles.length + educationTitles.length + 1)-1; // +1 comes from the "languages" column
+        rowIndexOrganizationsBackup = rowIndex;
+        // Writes values from accompOrganizsations under accompOrganisationsTitles 
+        for (ObjectNode accompOrganisation : accompOrganisations) {
+            // Create a new row
+            Row rowOrganization = sheet.getRow(rowIndexOrganizationsBackup);
+            if (rowOrganization == null) {
+                rowOrganization = sheet.createRow(rowIndexOrganizationsBackup);
+            }
+            // write each field from the organization object to corresponding cell
+            String fieldValue = accompOrganisation.get("time").asText();
+            Cell cell = rowOrganization.createCell(lastColumnIndex);
+            cell.setCellValue(fieldValue);
+
+            for (int i=1; i<accompOrganisationsTitles.length; i++) {
+                String fieldName = accompOrganisationsTitles[i];
+                fieldValue = accompOrganisation.get(fieldName).asText();
+                cell = rowOrganization.createCell(lastColumnIndex + i);
+                cell.setCellValue(fieldValue);
+            }
+            rowIndexOrganizationsBackup++;
+        }
+
+        // ----- Writes the Accomplishment Publications  ----- 
+        List<ObjectNode> accompPublications = FilesHandler.getAccompPublicationsDetails(linkedinInfo);
+        lastColumnIndex = (mainTitles.length + experienceTitles.length + educationTitles.length + 1 + accompOrganisationsTitles.length)-1; // +1 comes from the "languages" column
+        rowIndexPublicationsBackup = rowIndex;
+        // Writes values from accompPublications under accompPublicationsTitles 
+        for (ObjectNode accompPublication : accompPublications) {
+            // Create a new row
+            Row rowPublication = sheet.getRow(rowIndexPublicationsBackup);
+            if (rowPublication == null) {
+                rowPublication = sheet.createRow(rowIndexPublicationsBackup);
+            }
+            // write each field from the publication object to corresponding cell
+            for (int i=0; i<accompPublicationsTitles.length; i++) {
+                String fieldName = accompPublicationsTitles[i];
+                String fieldValue = accompPublication.get(fieldName).asText();
+                Cell cell = rowPublication.createCell(lastColumnIndex + i);
+                cell.setCellValue(fieldValue);
+            }
+            rowIndexPublicationsBackup++;
+        }
+
+        // ----- Writes the Accomplishment Awards  ----- 
+        List<ObjectNode> accompHonorsAwards = FilesHandler.getAccompHonorsAwardsDetails(linkedinInfo);
+        lastColumnIndex = (mainTitles.length + experienceTitles.length + educationTitles.length + 1 + accompOrganisationsTitles.length + accompPublicationsTitles.length)-1; // +1 comes from the "languages" column
+        rowIndexHonorAwardsBackup = rowIndex;
+        // Writes values from accompPublications under accompPublicationsTitles 
+        for (ObjectNode accompHonorsAward : accompHonorsAwards) {
+            // Create a new row
+            Row rowHonorsAwards = sheet.getRow(rowIndexHonorAwardsBackup);
+            if (rowHonorsAwards == null) {
+                rowHonorsAwards = sheet.createRow(rowIndexHonorAwardsBackup);
+            }
+            // write each field from the publication object to corresponding cell
+            for (int i=0; i<accompHonorsAwardsTitles.length; i++) {
+                String fieldName = accompHonorsAwardsTitles[i];
+                String fieldValue = accompHonorsAward.get(fieldName).asText();
+                Cell cell = rowHonorsAwards.createCell(lastColumnIndex + i);
+                cell.setCellValue(fieldValue);
+            }
+            rowIndexHonorAwardsBackup++;
+        }
+
+        // ----- Writes the Accomplishment Pattents  ----- 
+        List<ObjectNode> accompPattents = FilesHandler.getAccompPatentsDetails(linkedinInfo);
+        lastColumnIndex = (mainTitles.length + experienceTitles.length + educationTitles.length + 1 + accompOrganisationsTitles.length + accompPublicationsTitles.length + accompHonorsAwardsTitles.length)-1; // +1 comes from the "languages" column
+        rowIndexAccompPattentsBackup = rowIndex;
+        // Writes values from accompPublications under accompPublicationsTitles 
+        for (ObjectNode accompPattent : accompPattents) {
+            // Create a new row
+            Row rowPattents = sheet.getRow(rowIndexAccompPattentsBackup);
+            if (rowPattents == null) {
+                rowPattents = sheet.createRow(rowIndexAccompPattentsBackup);
+            }
+            // write each field from the publication object to corresponding cell
+            for (int i=0; i<accompPatentsTitles.length; i++) {
+                String fieldName = accompPatentsTitles[i];
+                String fieldValue = accompPattent.get(fieldName).asText();
+                Cell cell = rowPattents.createCell(lastColumnIndex + i);
+                cell.setCellValue(fieldValue);
+            }
+            rowIndexAccompPattentsBackup++;
+        }
+
+        // ----- Writes the Accomplishment Courses  ----- 
+        List<ObjectNode> accompCourses = FilesHandler.getAccompCoursesDetails(linkedinInfo);
+        lastColumnIndex = (mainTitles.length + experienceTitles.length + educationTitles.length + 1 + accompOrganisationsTitles.length + accompPublicationsTitles.length + accompHonorsAwardsTitles.length + accompPatentsTitles.length)-1; // +1 comes from the "languages" column
+        rowIndexAccompCoursesBackup = rowIndex;
+        // Writes values from accompPublications under accompPublicationsTitles 
+        for (ObjectNode accompCourse : accompCourses) {
+            // Create a new row
+            Row rowCourse = sheet.getRow(rowIndexAccompCoursesBackup);
+            if (rowCourse == null) {
+                rowCourse = sheet.createRow(rowIndexAccompCoursesBackup);
+            }
+            // write each field from the publication object to corresponding cell
+            for (int i=0; i<accompCoursesTitles.length; i++) {
+                String fieldName = accompCoursesTitles[i];
+                String fieldValue = accompCourse.get(fieldName).asText();
+                Cell cell = rowCourse.createCell(lastColumnIndex + i);
+                cell.setCellValue(fieldValue);
+            }
+            rowIndexAccompCoursesBackup++;
+        }
+
+        // ----- Writes the Accomplishment Projects  ----- 
+        List<ObjectNode> accompProjects = FilesHandler.getAccompProjectsDetails(linkedinInfo);
+        lastColumnIndex = (mainTitles.length + experienceTitles.length + educationTitles.length + 1 + accompOrganisationsTitles.length + accompPublicationsTitles.length + accompHonorsAwardsTitles.length + accompPatentsTitles.length + accompCoursesTitles.length)-1; // +1 comes from the "languages" column
+        rowIndexAccompProjectsBackup = rowIndex;
+        // Writes values from accompProjects under accompProjectsTitles 
+        for (ObjectNode accompProject : accompProjects) {
+            // Create a new row
+            Row rowProject = sheet.getRow(rowIndexAccompProjectsBackup);
+            if (rowProject == null) {
+                rowProject = sheet.createRow(rowIndexAccompProjectsBackup);
+            }
+            // write each field from the publication object to corresponding cell
+            for (int i=0; i<accompProjectsTitles.length; i++) {
+                String fieldName = accompProjectsTitles[i];
+                String fieldValue = accompProject.get(fieldName).asText();
+                Cell cell = rowProject.createCell(lastColumnIndex + i);
+                cell.setCellValue(fieldValue);
+            }
+            rowIndexAccompProjectsBackup++;
+        }
+
+        // ----- Writes the Accomplishment Test Scores  ----- 
+        List<ObjectNode> accompTestScores = FilesHandler.getAccompTestScoresDetails(linkedinInfo);
+        lastColumnIndex = (mainTitles.length + experienceTitles.length + educationTitles.length + 1 + accompOrganisationsTitles.length + accompPublicationsTitles.length + accompHonorsAwardsTitles.length + accompPatentsTitles.length + accompCoursesTitles.length + accompProjectsTitles.length)-1; // +1 comes from the "languages" column
+        rowIndexAccompTestScoreBackup = rowIndex;
+        // Writes values from accompProjects under accompProjectsTitles 
+        for (ObjectNode accompTestScore : accompTestScores) {
+            // Create a new row
+            Row rowTestScore = sheet.getRow(rowIndexAccompTestScoreBackup);
+            if (rowTestScore == null) {
+                rowTestScore = sheet.createRow(rowIndexAccompTestScoreBackup);
+            }
+            // write each field from the publication object to corresponding cell
+            for (int i=0; i<accompTestScoresTitles.length; i++) {
+                String fieldName = accompTestScoresTitles[i];
+                String fieldValue = accompTestScore.get(fieldName).asText();
+                Cell cell = rowTestScore.createCell(lastColumnIndex + i);
+                cell.setCellValue(fieldValue);
+            }
+            rowIndexAccompTestScoreBackup++;
+        }
+
+        // ----- Writes the Volunter Work  ----- 
+        List<ObjectNode> volunteerWorks = FilesHandler.getVolunterWorksDetails(linkedinInfo);
+        lastColumnIndex = (mainTitles.length + experienceTitles.length + educationTitles.length + 1 + accompOrganisationsTitles.length + accompPublicationsTitles.length + accompHonorsAwardsTitles.length + accompPatentsTitles.length + accompCoursesTitles.length + accompProjectsTitles.length + accompTestScoresTitles.length)-1; // +1 comes from the "languages" column
+        rowIndexVolunteerWorkBackup = rowIndex;
+        // Writes values from volunteerWorks under volunteerWorksTitles 
+        for (ObjectNode volunteerWork : volunteerWorks) {
+            // Create a new row
+            Row rowVolunteerWorks = sheet.getRow(rowIndexVolunteerWorkBackup);
+            if (rowVolunteerWorks == null) {
+                rowVolunteerWorks = sheet.createRow(rowIndexVolunteerWorkBackup);
+            }
+            // write each field from the publication object to corresponding cell
+            for (int i=0; i<volunteerWorkTitles.length; i++) {
+                String fieldName = volunteerWorkTitles[i];
+                String fieldValue = volunteerWork.get(fieldName).asText();
+                Cell cell = rowVolunteerWorks.createCell(lastColumnIndex + i);
+                cell.setCellValue(fieldValue);
+            }
+            rowIndexVolunteerWorkBackup++;
+        }
+
+        // ----- Writes the certifications  ----- 
+        List<ObjectNode> certifications = FilesHandler.getCertificationsDetails(linkedinInfo);
+        lastColumnIndex = (mainTitles.length + experienceTitles.length + educationTitles.length + 1 + accompOrganisationsTitles.length + accompPublicationsTitles.length + accompHonorsAwardsTitles.length + accompPatentsTitles.length + accompCoursesTitles.length + accompProjectsTitles.length + accompTestScoresTitles.length + volunteerWorkTitles.length)-1; // +1 comes from the "languages" column
+        rowIndexCertificatesBackup = rowIndex;
+        // Writes values from certifications under certificationsTitles 
+        for (ObjectNode certification : certifications) {
+            // Create a new row
+            Row rowCertifications = sheet.getRow(rowIndexCertificatesBackup);
+            if (rowCertifications == null) {
+                rowCertifications = sheet.createRow(rowIndexCertificatesBackup);
+            }
+            // write each field from the publication object to corresponding cell
+            for (int i=0; i<certificationsTitles.length; i++) {
+                String fieldName = certificationsTitles[i];
+                String fieldValue = certification.get(fieldName).asText();
+                Cell cell = rowCertifications.createCell(lastColumnIndex + i);
+                cell.setCellValue(fieldValue);
+            }
+            rowIndexCertificatesBackup++;
+        }
+
+        // Returns the last written row
+        int[] rowIndexes = {rowIndexExperienceBackup, rowIndexEducationBackup, rowIndexOrganizationsBackup, rowIndexPublicationsBackup, rowIndexHonorAwardsBackup, rowIndexAccompPattentsBackup, rowIndexAccompCoursesBackup, rowIndexAccompProjectsBackup, rowIndexAccompTestScoreBackup, rowIndexVolunteerWorkBackup, rowIndexCertificatesBackup};
+        int maxRowIndex = Arrays.stream(rowIndexes).max().orElse(-1);
+        if (maxRowIndex == -1) {
+            System.out.println("ERROR: maxIndex couldn't find the max value!!!");
+        }
+        return maxRowIndex;
+    }
 
     @Override
     public void dataAlumniMatchLink() {

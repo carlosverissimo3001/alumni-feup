@@ -31,4 +31,7 @@ public interface AlumniService {
 
     // Receives an Excel and populates one column with the alumni name and another column with the correspondent professional situation
     public byte[] excelAlumnProfSitu(MultipartFile file);
+
+    // Reads the Alumni table and stores the information in the excel file
+    public byte[] alumniTableToExcel(MultipartFile file);
 }

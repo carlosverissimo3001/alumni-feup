@@ -97,7 +97,14 @@ const MenuButtons = () => {
 
     // Reads the Alumni Table and backs it up to an Excel
     const handleAlmnTblExcel = async () => {
+        // Check if the selected file is an Excel file (xlsx or xls)
+        const allowedFileTypes = ['application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'application/vnd.ms-excel'];
+        if (!allowedFileTypes.includes(file.type)) {
+            alert('Invalid file type. Please upload an Excel file.');
+            return;
+        }
 
+        setUp.almnTblExcel(file);
     }
 
     return (
