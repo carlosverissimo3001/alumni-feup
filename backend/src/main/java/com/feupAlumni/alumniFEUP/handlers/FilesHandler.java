@@ -502,6 +502,156 @@ public class FilesHandler {
         }
     }
 
+    public static List<ObjectNode> getPeopleAlsoViewedDetails (String jsonData) {
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            JsonNode jsonNode = objectMapper.readTree(jsonData);
+
+            JsonNode peopleAlsoViewed = jsonNode.get("people_also_viewed");
+            List<ObjectNode> resultNodesList = new ArrayList<>();
+            if (peopleAlsoViewed != null && peopleAlsoViewed.isArray()) {
+                for (JsonNode personAlsoViewed : peopleAlsoViewed) {             
+                    String link = extractOneLevelNestedFiled(personAlsoViewed, "link", null);
+                    String name = extractOneLevelNestedFiled(personAlsoViewed, "name", null);
+                    String summary = extractOneLevelNestedFiled(personAlsoViewed, "summary", null);
+                    String location = extractOneLevelNestedFiled(personAlsoViewed, "location", null);
+
+                    ObjectNode resultNode = objectMapper.createObjectNode();
+                    resultNode.put("link", link);
+                    resultNode.put("name", name);
+                    resultNode.put("summary", summary);
+                    resultNode.put("location", location);
+
+                    resultNodesList.add(resultNode);
+                }
+            }
+            return resultNodesList;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public static List<ObjectNode> getActivitiesDetails (String jsonData) {
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            JsonNode jsonNode = objectMapper.readTree(jsonData);
+
+            JsonNode activities = jsonNode.get("activities");
+            List<ObjectNode> resultNodesList = new ArrayList<>();
+            if (activities != null && activities.isArray()) {
+                for (JsonNode activity : activities) {             
+                    String title = extractOneLevelNestedFiled(activity, "title", null);
+                    String link = extractOneLevelNestedFiled(activity, "link", null);
+                    String activityStatus = extractOneLevelNestedFiled(activity, "activity_status", null);
+
+                    ObjectNode resultNode = objectMapper.createObjectNode();
+                    resultNode.put("title", title);
+                    resultNode.put("link", link);
+                    resultNode.put("activity_status", activityStatus);
+
+                    resultNodesList.add(resultNode);
+                }
+            }
+            return resultNodesList;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public static List<ObjectNode> getSimilarlyNamedProfilesDetails (String jsonData) {
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            JsonNode jsonNode = objectMapper.readTree(jsonData);
+
+            JsonNode similarlyNamedProfiles = jsonNode.get("similarly_named_profiles");
+            List<ObjectNode> resultNodesList = new ArrayList<>();
+            if (similarlyNamedProfiles != null && similarlyNamedProfiles.isArray()) {
+                for (JsonNode similarlyNamedProfile : similarlyNamedProfiles) {             
+                    String name = extractOneLevelNestedFiled(similarlyNamedProfile, "name", null);
+                    String link = extractOneLevelNestedFiled(similarlyNamedProfile, "link", null);
+                    String summary = extractOneLevelNestedFiled(similarlyNamedProfile, "summary", null);
+                    String location = extractOneLevelNestedFiled(similarlyNamedProfile, "location", null);
+
+                    ObjectNode resultNode = objectMapper.createObjectNode();
+                    resultNode.put("name", name);
+                    resultNode.put("link", link);
+                    resultNode.put("summary", summary);
+                    resultNode.put("location", location);
+
+                    resultNodesList.add(resultNode);
+                }
+            }
+            return resultNodesList;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public static List<ObjectNode> getArticlesDetails (String jsonData) {
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            JsonNode jsonNode = objectMapper.readTree(jsonData);
+
+            JsonNode articles = jsonNode.get("articles");
+            List<ObjectNode> resultNodesList = new ArrayList<>();
+            if (articles != null && articles.isArray()) {
+                for (JsonNode article : articles) {             
+                    String publishedDay = extractOneLevelNestedFiled(article, "day", "published_date");
+                    String publishedMonth = extractOneLevelNestedFiled(article, "month", "published_date");
+                    String publishedYear = extractOneLevelNestedFiled(article, "year", "published_date");
+
+                    String title = extractOneLevelNestedFiled(article, "title", null);
+                    String link = extractOneLevelNestedFiled(article, "link", null);
+                    String publishedDate = publishedDay + "/" + publishedMonth + "/" + publishedYear;
+                    String author = extractOneLevelNestedFiled(article, "author", null);
+                    String imageUrl = extractOneLevelNestedFiled(article, "image_url", null);
+
+                    ObjectNode resultNode = objectMapper.createObjectNode();
+                    resultNode.put("title", title);
+                    resultNode.put("link", link);
+                    resultNode.put("published_date", publishedDate);
+                    resultNode.put("author", author);
+                    resultNode.put("image_url", imageUrl);
+                    resultNodesList.add(resultNode);
+                }
+            }
+            return resultNodesList;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public static List<ObjectNode> getGroupsDetails (String jsonData) {
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            JsonNode jsonNode = objectMapper.readTree(jsonData);
+
+            JsonNode groups = jsonNode.get("groups");
+            List<ObjectNode> resultNodesList = new ArrayList<>();
+            if (groups != null && groups.isArray()) {
+                for (JsonNode group : groups) {             
+                    String profilePicUrl = extractOneLevelNestedFiled(group, "profile_pic_url", null);
+                    String name = extractOneLevelNestedFiled(group, "name", null);
+                    String url = extractOneLevelNestedFiled(group, "url", null);
+
+                    ObjectNode resultNode = objectMapper.createObjectNode();
+                    resultNode.put("profile_pic_url", profilePicUrl);
+                    resultNode.put("name", name);
+                    resultNode.put("url", url);
+                    resultNodesList.add(resultNode);
+                }
+            }
+            return resultNodesList;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
     // Returns the fields of the education field
     public static JsonNode getAlumniEducationDetailsOfFeup(String jsonData) {
         try {
