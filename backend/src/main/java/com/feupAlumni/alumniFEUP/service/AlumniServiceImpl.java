@@ -410,7 +410,7 @@ public class AlumniServiceImpl implements AlumniService{
             startColumn++;
         }
     }
-
+ 
     // Writes the alumni data to the row
     private int writeAlumniDataToRow (Alumni alumni, Row row, int rowIndex, String linkedinInfo, Sheet sheet, String[] mainTitles, String[] experienceTitles, String[] educationTitles, String[] languageTitle, String[] accompOrganisationsTitles, String[] accompPublicationsTitles, String[] accompHonorsAwardsTitles, String[] accompPatentsTitles,  String[] accompCoursesTitles, String[] accompProjectsTitles, String[] accompTestScoresTitles, String[] volunteerWorkTitles, String[] certificationsTitles, String[] connectionsMainTitle, String[] peopleAlsoViewedTitles, String[] recommendationsMainTitle, String[] activitiesMainTitle, String[] activitiesTitles, String[] similarlyNamedProfilesMainTitle, String[] similarlyNamedProfilesTitles, String[] articlesMainTitle, String[] articlesTitles, String[] groupsMainTitle, String[] groupsTitles, String[] lastFields) {
         String linkdeinLink = alumni.getLinkedinLink();
@@ -418,6 +418,7 @@ public class AlumniServiceImpl implements AlumniService{
         cellLinkedinLink.setCellValue(linkdeinLink);
         int rowIndexExperienceBackup = 0;
         int rowIndexEducationBackup = 0;
+        int rowIndexLanguagesBackup = 0;
         int rowIndexOrganizationsBackup = 0;
         int rowIndexPublicationsBackup = 0;
         int rowIndexHonorAwardsBackup = 0;
@@ -427,6 +428,11 @@ public class AlumniServiceImpl implements AlumniService{
         int rowIndexAccompTestScoreBackup = 0;
         int rowIndexVolunteerWorkBackup = 0;
         int rowIndexCertificatesBackup = 0;
+        int rowIndexActivitiesBackup = 0;
+        int rowIndexSimilarlyNamedProfilesBackup = 0;
+        int rowIndexArticlesBackup = 0;
+        int rowIndexGroupsBackup = 0;
+        int rowIndexPeopleAlsoViewedBackup = 0;
 
         // ----- Writes the first main titles -----
         int columnIndex = 1;
@@ -487,28 +493,21 @@ public class AlumniServiceImpl implements AlumniService{
             rowIndexEducationBackup++;
         } 
 
-        // Starts to fill the education cells with - so that they don't get down the links
-        while (rowIndexEducationBackup != rowIndexExperienceBackup && rowIndexEducationBackup < rowIndexExperienceBackup) {
-            // Create a new row
-            Row rowEducation = sheet.getRow(rowIndexEducationBackup);
-            if (rowEducation == null) {
-                rowEducation = sheet.createRow(rowIndexEducationBackup);
-            }
-            // write each field from the education object to corresponding cell
-            Cell cell = rowEducation.createCell(lastColumnIndex);
-            cell.setCellValue("-");
-
-            cell = rowEducation.createCell(lastColumnIndex);
-            cell.setCellValue("-");
-
-            rowIndexEducationBackup++;
-        }
-
         // ----- Writes the languages ----- 
         lastColumnIndex = (mainTitles.length + experienceTitles.length + educationTitles.length)-1;
         String fieldValueLanguage = FilesHandler.extractFieldFromJson("languages", linkedinInfo);
-        Cell cellLanguage = row.createCell(lastColumnIndex); 
-        cellLanguage.setCellValue(fieldValueLanguage);
+        String[] languages = fieldValueLanguage.split(", ");
+        rowIndexLanguagesBackup = rowIndex;
+        for (String language : languages) {
+            Row rowLanguage = sheet.getRow(rowIndexLanguagesBackup);
+            if (rowLanguage == null) {
+                rowLanguage = sheet.createRow(rowIndexLanguagesBackup);
+            }
+            String fieldValue = language.trim();
+            Cell cell = rowLanguage.createCell(lastColumnIndex); 
+            cell.setCellValue(fieldValue);
+            rowIndexLanguagesBackup++;
+        }      
 
         // ----- Writes the Accomplishment Organisations  ----- 
         List<ObjectNode> accompOrganisations = FilesHandler.getAccompOrganisationsDetails(linkedinInfo);
@@ -703,8 +702,150 @@ public class AlumniServiceImpl implements AlumniService{
             rowIndexCertificatesBackup++;
         }
 
+        // ----- Writes the Connections  ----- 
+        lastColumnIndex = (mainTitles.length + experienceTitles.length + educationTitles.length + 1 + accompOrganisationsTitles.length + accompPublicationsTitles.length + accompHonorsAwardsTitles.length + accompPatentsTitles.length + accompCoursesTitles.length + accompProjectsTitles.length + accompTestScoresTitles.length + volunteerWorkTitles.length + certificationsTitles.length)-1; // +1 comes from the "languages" column
+        String fieldValueConnections = FilesHandler.extractFieldFromJson("connections", linkedinInfo);
+        Cell cellConnections = row.createCell(lastColumnIndex); 
+        cellConnections.setCellValue(fieldValueConnections);
+        
+        // ----- Writes People Also Viewed  -----
+        List<ObjectNode> peopleAlsoViewed = FilesHandler.getPeopleAlsoViewedDetails(linkedinInfo);
+        lastColumnIndex = (mainTitles.length + experienceTitles.length + educationTitles.length + 1 + accompOrganisationsTitles.length + accompPublicationsTitles.length + accompHonorsAwardsTitles.length + accompPatentsTitles.length + accompCoursesTitles.length + accompProjectsTitles.length + accompTestScoresTitles.length + volunteerWorkTitles.length + certificationsTitles.length + 1)-1; // +1 comes from the "languages" and "connections" columns
+        rowIndexPeopleAlsoViewedBackup = rowIndex;
+        // Writes values from certifications under certificationsTitles 
+        for (ObjectNode personAlsoViewed : peopleAlsoViewed) {
+            // Create a new row
+            Row rowPeopleAlsoViewed = sheet.getRow(rowIndexPeopleAlsoViewedBackup);
+            if (rowPeopleAlsoViewed == null) {
+                rowPeopleAlsoViewed = sheet.createRow(rowIndexPeopleAlsoViewedBackup);
+            }
+            // write each field from the publication object to corresponding cell
+            for (int i=0; i<peopleAlsoViewedTitles.length; i++) {
+                String fieldName = peopleAlsoViewedTitles[i];
+                String fieldValue = personAlsoViewed.get(fieldName).asText();
+                Cell cell = rowPeopleAlsoViewed.createCell(lastColumnIndex + i);
+                cell.setCellValue(fieldValue);
+            }
+            rowIndexPeopleAlsoViewedBackup++;
+        }
+
+        // ----- Writes the Recomendations  ----- 
+        lastColumnIndex = (mainTitles.length + experienceTitles.length + educationTitles.length + 1 + accompOrganisationsTitles.length + accompPublicationsTitles.length + accompHonorsAwardsTitles.length + accompPatentsTitles.length + accompCoursesTitles.length + accompProjectsTitles.length + accompTestScoresTitles.length + volunteerWorkTitles.length + certificationsTitles.length + 1 + peopleAlsoViewedTitles.length)-1; // +1 comes from the "languages" column
+        String fieldValueRecomendations = FilesHandler.extractFieldFromJson("recommendations", linkedinInfo);
+        Cell cellRecomendations = row.createCell(lastColumnIndex); 
+        cellRecomendations.setCellValue(fieldValueRecomendations);
+
+        // ----- Writes the Activities ----- 
+        List<ObjectNode> activities = FilesHandler.getActivitiesDetails(linkedinInfo);
+        lastColumnIndex = (mainTitles.length + experienceTitles.length + educationTitles.length + 1 + accompOrganisationsTitles.length + accompPublicationsTitles.length + accompHonorsAwardsTitles.length + accompPatentsTitles.length + accompCoursesTitles.length + accompProjectsTitles.length + accompTestScoresTitles.length + volunteerWorkTitles.length + certificationsTitles.length + 1 + peopleAlsoViewedTitles.length + 1)-1; // +1 comes from the "languages", "connections" and "recommendations"columns.
+        rowIndexActivitiesBackup = rowIndex;
+        // Writes values from certifications under certificationsTitles 
+        for (ObjectNode activitie : activities) {
+            // Create a new row
+            Row rowActivities = sheet.getRow(rowIndexActivitiesBackup);
+            if (rowActivities == null) {
+                rowActivities = sheet.createRow(rowIndexActivitiesBackup);
+            }
+            // write each field from the publication object to corresponding cell
+            for (int i=0; i<activitiesTitles.length; i++) {
+                String fieldName = activitiesTitles[i];
+                String fieldValue = activitie.get(fieldName).asText();
+                Cell cell = rowActivities.createCell(lastColumnIndex + i);
+                cell.setCellValue(fieldValue);
+            }
+            rowIndexActivitiesBackup++;
+        }
+
+        // ----- Writes Similarly Named Profiles ----- 
+        List<ObjectNode> similarlyNamedProfiles = FilesHandler.getSimilarlyNamedProfilesDetails(linkedinInfo);
+        lastColumnIndex = (mainTitles.length + experienceTitles.length + educationTitles.length + 1 + accompOrganisationsTitles.length + accompPublicationsTitles.length + accompHonorsAwardsTitles.length + accompPatentsTitles.length + accompCoursesTitles.length + accompProjectsTitles.length + accompTestScoresTitles.length + volunteerWorkTitles.length + certificationsTitles.length + 1 + peopleAlsoViewedTitles.length + 1 + activitiesTitles.length)-1; // +1 comes from the "languages", "connections" and "recommendations"columns.
+        rowIndexSimilarlyNamedProfilesBackup = rowIndex;
+        // Writes values from certifications under certificationsTitles 
+        for (ObjectNode similarlyNamedProfile : similarlyNamedProfiles) {
+            // Create a new row
+            Row rowSimilarlyNamedProfile = sheet.getRow(rowIndexSimilarlyNamedProfilesBackup);
+            if (rowSimilarlyNamedProfile == null) {
+                rowSimilarlyNamedProfile = sheet.createRow(rowIndexSimilarlyNamedProfilesBackup);
+            }
+            // write each field from the publication object to corresponding cell
+            for (int i=0; i<similarlyNamedProfilesTitles.length; i++) {
+                String fieldName = similarlyNamedProfilesTitles[i];
+                String fieldValue = similarlyNamedProfile.get(fieldName).asText();
+                Cell cell = rowSimilarlyNamedProfile.createCell(lastColumnIndex + i);
+                cell.setCellValue(fieldValue);
+            }
+            rowIndexSimilarlyNamedProfilesBackup++;
+        }
+
+        // ----- Writes Articles ----- 
+        List<ObjectNode> articles = FilesHandler.getArticlesDetails(linkedinInfo);
+        lastColumnIndex = (mainTitles.length + experienceTitles.length + educationTitles.length + 1 + accompOrganisationsTitles.length + accompPublicationsTitles.length + accompHonorsAwardsTitles.length + accompPatentsTitles.length + accompCoursesTitles.length + accompProjectsTitles.length + accompTestScoresTitles.length + volunteerWorkTitles.length + certificationsTitles.length + 1 + peopleAlsoViewedTitles.length + 1 + activitiesTitles.length + similarlyNamedProfilesTitles.length)-1; // +1 comes from the "languages", "connections" and "recommendations"columns.
+        rowIndexArticlesBackup = rowIndex;
+        // Writes values from certifications under certificationsTitles 
+        for (ObjectNode article : articles) {
+            // Create a new row
+            Row rowArticle = sheet.getRow(rowIndexArticlesBackup);
+            if (rowArticle == null) {
+                rowArticle = sheet.createRow(rowIndexArticlesBackup);
+            }
+            // write each field from the publication object to corresponding cell
+            for (int i=0; i<articlesTitles.length; i++) {
+                String fieldName = articlesTitles[i];
+                String fieldValue = article.get(fieldName).asText();
+                Cell cell = rowArticle.createCell(lastColumnIndex + i);
+                cell.setCellValue(fieldValue);
+            }
+            rowIndexArticlesBackup++;
+        }
+
+        // ----- Writes Groups ----- 
+        List<ObjectNode> groups = FilesHandler.getGroupsDetails(linkedinInfo);
+        lastColumnIndex = (mainTitles.length + experienceTitles.length + educationTitles.length + 1 + accompOrganisationsTitles.length + accompPublicationsTitles.length + accompHonorsAwardsTitles.length + accompPatentsTitles.length + accompCoursesTitles.length + accompProjectsTitles.length + accompTestScoresTitles.length + volunteerWorkTitles.length + certificationsTitles.length + 1 + peopleAlsoViewedTitles.length + 1 + activitiesTitles.length + similarlyNamedProfilesTitles.length + articlesTitles.length)-1; // +1 comes from the "languages", "connections" and "recommendations"columns.
+        rowIndexGroupsBackup = rowIndex;
+        // Writes values from certifications under certificationsTitles 
+        for (ObjectNode group : groups) {
+            // Create a new row
+            Row rowGroup = sheet.getRow(rowIndexGroupsBackup);
+            if (rowGroup == null) {
+                rowGroup = sheet.createRow(rowIndexGroupsBackup);
+            }
+            // write each field from the publication object to corresponding cell
+            for (int i=0; i<groupsTitles.length; i++) {
+                String fieldName = groupsTitles[i];
+                String fieldValue = group.get(fieldName).asText();
+                Cell cell = rowGroup.createCell(lastColumnIndex + i);
+                cell.setCellValue(fieldValue);
+            }
+            rowIndexGroupsBackup++;
+        }
+
+        // ----- Writes the last main titles -----
+        lastColumnIndex = (mainTitles.length + experienceTitles.length + educationTitles.length + 1 + accompOrganisationsTitles.length + accompPublicationsTitles.length + accompHonorsAwardsTitles.length + accompPatentsTitles.length + accompCoursesTitles.length + accompProjectsTitles.length + accompTestScoresTitles.length + volunteerWorkTitles.length + certificationsTitles.length + 1 + peopleAlsoViewedTitles.length + 1 + activitiesTitles.length + similarlyNamedProfilesTitles.length + articlesTitles.length + groupsTitles.length)-1; // +1 comes from the "languages", "connections" and "recommendations"columns.
+        for (int i=0; i<lastFields.length; i++) {
+            String fieldValue = FilesHandler.extractFieldFromJson(lastFields[i], linkedinInfo);
+            Cell cell = row.createCell(lastColumnIndex); 
+            cell.setCellValue(fieldValue);
+            lastColumnIndex++;
+        }
+
+        // ----- Writes Skills -----
+
+        // ----- Writes InferredSalary -----
+
+        // ----- Writes Gender -----
+
+        // ----- Writes Birth Date -----
+
+        // ----- Writes Industry -----
+        
+        // ----- Writes External -----
+
+        // ----- Writes Personal E-mails -----
+
+        // ----- Writes Personal Numbers -----
+
         // Returns the last written row
-        int[] rowIndexes = {rowIndexExperienceBackup, rowIndexEducationBackup, rowIndexOrganizationsBackup, rowIndexPublicationsBackup, rowIndexHonorAwardsBackup, rowIndexAccompPattentsBackup, rowIndexAccompCoursesBackup, rowIndexAccompProjectsBackup, rowIndexAccompTestScoreBackup, rowIndexVolunteerWorkBackup, rowIndexCertificatesBackup};
+        int[] rowIndexes = {rowIndexExperienceBackup, rowIndexEducationBackup, rowIndexLanguagesBackup, rowIndexOrganizationsBackup, rowIndexPublicationsBackup, rowIndexHonorAwardsBackup, rowIndexAccompPattentsBackup, rowIndexAccompCoursesBackup, rowIndexAccompProjectsBackup, rowIndexAccompTestScoreBackup, rowIndexVolunteerWorkBackup, rowIndexCertificatesBackup, rowIndexActivitiesBackup, rowIndexSimilarlyNamedProfilesBackup, rowIndexArticlesBackup, rowIndexGroupsBackup, rowIndexPeopleAlsoViewedBackup};
         int maxRowIndex = Arrays.stream(rowIndexes).max().orElse(-1);
         if (maxRowIndex == -1) {
             System.out.println("ERROR: maxIndex couldn't find the max value!!!");
