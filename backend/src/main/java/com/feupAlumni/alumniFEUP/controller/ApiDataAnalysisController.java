@@ -37,5 +37,20 @@ public class ApiDataAnalysisController {
         } 
     }
 
+    // Returns the Excel file with one column containing the alumni names, and other column containing their professional situation
+    @PostMapping("/excelAlmProfiSitu")
+    public ResponseEntity<byte[]> handleAlmProfiSitu(@RequestParam("excelData") MultipartFile file) throws IOException {
+        try {
+            byte[] modifiedExcelBytes = apiDataAnalysisService.excelAlumnProfSitu(file);
+            // Set the response headers
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+            headers.setContentDispositionFormData("filename", "alumniProfSitu.xlsx");
+
+            return new ResponseEntity<>(modifiedExcelBytes, headers, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        } 
+    }
 
 }

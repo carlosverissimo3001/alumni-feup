@@ -76,8 +76,7 @@ const MenuButtons = () => {
             alert('Invalid file type. Please upload an Excel file.');
             return;
         }
-
-        setUp.excelAlmnProfSitu(file);
+        ApiDataAnalysis.excelAlmnProfSitu(file);
     }
 
     // Reads the Alumni Table and backs it up to an Excel
@@ -94,7 +93,7 @@ const MenuButtons = () => {
             <button className="button butnAlmWithoutLink" onClick={handleAlumnisMatchLinkedin}>Get Alumnis without LinkdeIn</button>
             <button className="button btnPutLinksDB" onClick={handlePutLinksInDB}>Put Links in DB</button>
             <button className="button btnExcelAlumniProfSitu" onClick={handleExcelAlumniProfSitu}>Excel: nomeAlumni + professionalSitu</button>
-            <button className="button btnExcelAlumniTableToExcel" onClick={handleAlmnTblExcel}>Alumni table to Excel</button>
+            <button className="button btnExcelAlumniTableToExcel" onClick={handleAlmnTblExcel}>Excel: Alumni table</button>
         </>
     );
 };
