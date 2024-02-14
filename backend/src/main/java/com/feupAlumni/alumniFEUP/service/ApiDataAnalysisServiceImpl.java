@@ -184,38 +184,57 @@ public class ApiDataAnalysisServiceImpl implements ApiDataAnalysisService {
                         lastWrittenRow = writeFieldMainTitleContent(alumni, sheet, rowIndex, columnIndex, fields[i], linkedinInfo);
                     } else {
                         List<ObjectNode> valuesSubtitles = new ArrayList<>();
-                        if (fields[i][1] == "Expirience_Subtitle") {
-                            valuesSubtitles = FilesHandler.getExperienceDetails(linkedinInfo);
-                        } else if (fields[i][1] == "Education_Subtitle") {
-                            valuesSubtitles = FilesHandler.getEducationDetails(linkedinInfo);
-                        } else if ( fields[i][1] == "AccomplishmentOrganisations_subtitle") {
-                            valuesSubtitles = FilesHandler.getAccompOrganisationsDetails(linkedinInfo);
-                        } else if ( fields[i][1] == "AccomplishmentPublications_subtitle") {
-                            valuesSubtitles = FilesHandler.getAccompPublicationsDetails(linkedinInfo);
-                        } else if (fields[i][1] == "AccomplishmentHonorsAwards_subtitle") {
-                            valuesSubtitles = FilesHandler.getAccompHonorsAwardsDetails(linkedinInfo);
-                        } else if (fields[i][1] == "AccomplishmentPatents_subtitle") {
-                            valuesSubtitles = FilesHandler.getAccompPatentsDetails(linkedinInfo);
-                        } else if (fields[i][1] == "AccomplishmentCourses_subtitle") {
-                            valuesSubtitles = FilesHandler.getAccompCoursesDetails(linkedinInfo);
-                        } else if (fields[i][1] == "AccomplishmentProjects_subtitle") {
-                            valuesSubtitles = FilesHandler.getAccompProjectsDetails(linkedinInfo);
-                        } else if (fields[i][1] == "AccomplishmentTestScores_subtitle") {
-                            valuesSubtitles = FilesHandler.getAccompTestScoresDetails(linkedinInfo);
-                        } else if (fields[i][1] == "VolunteerWork_subtitle") {
-                            valuesSubtitles = FilesHandler.getVolunterWorksDetails(linkedinInfo);
-                        } else if (fields[i][1] == "Certifications_Subtitle") {
-                            valuesSubtitles = FilesHandler.getCertificationsDetails(linkedinInfo);
-                        } else if (fields[i][1] == "PeopleAlsoViewed_subtitle") {
-                            valuesSubtitles = FilesHandler.getPeopleAlsoViewedDetails(linkedinInfo);
-                        } else if (fields[i][1] == "Activities_subtitle") {
-                            valuesSubtitles = FilesHandler.getActivitiesDetails(linkedinInfo);
-                        } else if (fields[i][1] == "SimilarlyNamedProfiles_subtitle") {
-                            valuesSubtitles = FilesHandler.getSimilarlyNamedProfilesDetails(linkedinInfo);
-                        } else if (fields[i][1] == "Articles_subtitle") {
-                            valuesSubtitles = FilesHandler.getArticlesDetails(linkedinInfo);
-                        } else if (fields[i][1] == "Groups_Subtitle") {
-                            valuesSubtitles = FilesHandler.getGroupsDetails(linkedinInfo);
+                        switch (fields[i][1]) {
+                            case "Expirience_Subtitle":
+                                valuesSubtitles = FilesHandler.getExperienceDetails(linkedinInfo);
+                                break;
+                            case "Education_Subtitle":
+                                valuesSubtitles = FilesHandler.getEducationDetails(linkedinInfo);
+                                break;
+                            case "AccomplishmentOrganisations_subtitle":
+                                valuesSubtitles = FilesHandler.getAccompOrganisationsDetails(linkedinInfo);
+                                break;
+                            case "AccomplishmentPublications_subtitle":
+                                valuesSubtitles = FilesHandler.getAccompPublicationsDetails(linkedinInfo);
+                                break;
+                            case "AccomplishmentHonorsAwards_subtitle":
+                                valuesSubtitles = FilesHandler.getAccompHonorsAwardsDetails(linkedinInfo);
+                                break;
+                            case "AccomplishmentPatents_subtitle":
+                                valuesSubtitles = FilesHandler.getAccompPatentsDetails(linkedinInfo);
+                                break;
+                            case "AccomplishmentCourses_subtitle":
+                                valuesSubtitles = FilesHandler.getAccompCoursesDetails(linkedinInfo);
+                                break;
+                            case "AccomplishmentProjects_subtitle":
+                                valuesSubtitles = FilesHandler.getAccompProjectsDetails(linkedinInfo);
+                                break;
+                            case "AccomplishmentTestScores_subtitle":
+                                valuesSubtitles = FilesHandler.getAccompTestScoresDetails(linkedinInfo);
+                                break;
+                            case "VolunteerWork_subtitle":
+                                valuesSubtitles = FilesHandler.getVolunterWorksDetails(linkedinInfo);
+                                break;
+                            case "Certifications_Subtitle":
+                                valuesSubtitles = FilesHandler.getCertificationsDetails(linkedinInfo);
+                                break;
+                            case "PeopleAlsoViewed_subtitle":
+                                valuesSubtitles = FilesHandler.getPeopleAlsoViewedDetails(linkedinInfo);
+                                break;
+                            case "Activities_subtitle":
+                                valuesSubtitles = FilesHandler.getActivitiesDetails(linkedinInfo);
+                                break;
+                            case "SimilarlyNamedProfiles_subtitle":
+                                valuesSubtitles = FilesHandler.getSimilarlyNamedProfilesDetails(linkedinInfo);
+                                break;
+                            case "Articles_subtitle":
+                                valuesSubtitles = FilesHandler.getArticlesDetails(linkedinInfo);
+                                break;
+                            case "Groups_Subtitle":
+                                valuesSubtitles = FilesHandler.getGroupsDetails(linkedinInfo);
+                                break;
+                            default:
+                                System.out.println("TITLE NOT VALID");
                         }
                         lastWrittenRow = writeFieldSubtitleContent(sheet, valuesSubtitles, fields[i], columnIndex, rowIndex);
                     }
