@@ -1,5 +1,8 @@
 import React, {useState} from 'react';
 import setUp from '../helpers/setUp';
+import Verifiers from '../helpers/verifiers';
+import ApiDataAnalysis from '../helpers/apiDataAnalysis';
+
 
 const MenuButtons = () => {
 
@@ -16,13 +19,7 @@ const MenuButtons = () => {
             alert('Please Select a File.');
             return;
         }
-        
-        // Check if the selected file is an Excel file (xlsx or xls)
-        const allowedFileTypes = ['application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'application/vnd.ms-excel'];
-        if (!allowedFileTypes.includes(file.type)) {
-            alert('Invalid file type. Please upload an Excel file.');
-            return;
-        }
+        Verifiers.checkIfExcel(file);        
 
         const userConfirmed = window.confirm('By uploading a new file, the existing populated tables are going to be deleted and repopulated with the new information from the inserted file. Are you sure you want to continue with this action?');
 
@@ -48,12 +45,7 @@ const MenuButtons = () => {
     // Reads from the "BackUpCallAPI", which contains a backup of the data returned by the LinkdIn API => this way we avoid calling this 
     // API unecessarly.
     const handleFileUploadBackup = async () => {
-        // Check if the selected file is a text file (txt)
-        const allowedFileTypes = ['text/plain'];
-        if (!allowedFileTypes.includes(file.type)) {
-            alert('Invalid file type. Please upload a text file.');
-            return;
-        }
+        Verifiers.checkIfTextFile(file);
        
         await setUp.setAlumniUsingBackup(file);
         console.log("Backup set in the Alumni table");
@@ -64,14 +56,7 @@ const MenuButtons = () => {
 
     // Matches Alumnis to LinkedIn Links. Receives an excel, updates the linkedin column and downloads the updated file
     const handleAlumnisMatchLinkedin = async () => {
-
-        // Check if the selected file is an Excel file (xlsx or xls)
-        const allowedFileTypes = ['application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'application/vnd.ms-excel'];
-        if (!allowedFileTypes.includes(file.type)) {
-            alert('Invalid file type. Please upload an Excel file.');
-            return;
-        }
-        
+        Verifiers.checkIfExcel(file);        
         await setUp.prepareDataAlumniMactchLinks();  
         setUp.matchLinksToAlumnis(file); 
     }
@@ -97,14 +82,8 @@ const MenuButtons = () => {
 
     // Reads the Alumni Table and backs it up to an Excel
     const handleAlmnTblExcel = async () => {
-        // Check if the selected file is an Excel file (xlsx or xls)
-        const allowedFileTypes = ['application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'application/vnd.ms-excel'];
-        if (!allowedFileTypes.includes(file.type)) {
-            alert('Invalid file type. Please upload an Excel file.');
-            return;
-        }
-
-        setUp.almnTblExcel(file);
+        Verifiers.checkIfExcel(file);
+        ApiDataAnalysis.almnTblExcel(file);
     }
 
     return (
