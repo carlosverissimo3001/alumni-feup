@@ -116,20 +116,4 @@ public class AlumniController {
         } 
     }
 
-    // Sets the information of the alumni table in the received Excel file
-    @PostMapping("/almTbExcel")
-    public ResponseEntity<byte[]> handleAlmTblExcel(@RequestParam("excelData") MultipartFile file) throws IOException {
-        try {
-            byte[] modifiedExcelBytes = alumniService.alumniTableToExcel(file);
-            // Set the response headers
-            HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
-            headers.setContentDispositionFormData("filename", "alumniInformationAPI.xlsx");
-
-            return new ResponseEntity<>(modifiedExcelBytes, headers, HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        } 
-    }
-
 }
