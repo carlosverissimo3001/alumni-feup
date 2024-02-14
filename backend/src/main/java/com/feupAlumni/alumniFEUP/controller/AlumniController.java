@@ -100,20 +100,4 @@ public class AlumniController {
         } 
     }
 
-    // Returns the Excel file with one column containing the alumni names, and other column containing their professional situation
-    @PostMapping("/almProfiSitu")
-    public ResponseEntity<byte[]> handleAlmProfiSitu(@RequestParam("excelData") MultipartFile file) throws IOException {
-        try {
-            byte[] modifiedExcelBytes = alumniService.excelAlumnProfSitu(file);
-            // Set the response headers
-            HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
-            headers.setContentDispositionFormData("filename", "alumniProfSitu.xlsx");
-
-            return new ResponseEntity<>(modifiedExcelBytes, headers, HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        } 
-    }
-
 }

@@ -13,6 +13,8 @@ import com.feupAlumni.alumniFEUP.model.Alumni;
 import com.feupAlumni.alumniFEUP.repository.AlumniRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import java.util.List;
+import java.util.Map;
+
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import java.util.ArrayList;
@@ -21,6 +23,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Iterator;
 import java.util.Collections;
+import java.util.HashMap;
 
 @Service
 public class ApiDataAnalysisServiceImpl implements ApiDataAnalysisService {
@@ -30,7 +33,6 @@ public class ApiDataAnalysisServiceImpl implements ApiDataAnalysisService {
 
     @Override
     public byte[] alumniTableToExcel(MultipartFile file) {
-
         // Load the Excel file
         Workbook workbook = null;
         try (InputStream inputStream = file.getInputStream()) {
@@ -56,6 +58,79 @@ public class ApiDataAnalysisServiceImpl implements ApiDataAnalysisService {
                 rowIndex = lastWrittenRow;
             }
 
+            // Save the modified workbook to a byte array
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            workbook.write(outputStream);
+            byte[] modifiedExcelBytes = outputStream.toByteArray();
+            return modifiedExcelBytes;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        } finally {
+            // Close the workbook in the finally block to ensure it's always closed
+            if (workbook != null) {
+                try {
+                    workbook.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    @Override
+    public byte[] excelAlumnProfSitu(MultipartFile file) {
+        // Load the Excel file
+        Workbook workbook = null;
+        try (InputStream inputStream = file.getInputStream()) {
+            // Read and iterate over the excel file
+            workbook = new XSSFWorkbook(inputStream);
+            Sheet sheet = workbook.getSheetAt(0);   // 1st sheet
+
+            // Iterate over each row of the excel
+            int rowIndex=0;
+            Iterator<Alumni> alumniIterator = alumniRepository.findAll().iterator();
+            Map<String, Integer> occupationCount = new HashMap<>();
+            while (alumniIterator.hasNext()) {
+                Alumni alumni = alumniIterator.next();
+                String linkedinInfo = alumni.getLinkedinInfo();
+                String fullName = FilesHandler.extractFieldFromJson("full_name", linkedinInfo);
+                String occupation = FilesHandler.extractFieldFromJson("occupation", linkedinInfo);
+                // Takes out the location
+                int atIndex = occupation.indexOf(" at ");
+                if (atIndex != -1) {
+                    occupation = occupation.substring(0, atIndex);
+                }
+                
+                // Create a new row and write full name to column 1
+                Row row = sheet.getRow(rowIndex);
+                if (row == null) {
+                    row = sheet.createRow(rowIndex);
+                }
+                Cell cellFullName = row.createCell(0);
+                cellFullName.setCellValue(fullName);
+                Cell cellOccupation = row.createCell(1);
+                cellOccupation.setCellValue(occupation);
+            
+                occupationCount.put(occupation, occupationCount.getOrDefault(occupation, 0) + 1);
+                rowIndex++;
+            }
+
+            // Write occupationCount map to columns E and F
+            int columnIndex = 4; // Column E
+            rowIndex=0;
+            for (Map.Entry<String, Integer> entry : occupationCount.entrySet()) {
+                Row row = sheet.getRow(rowIndex);
+                if (row == null) {
+                    row = sheet.createRow(rowIndex);
+                }
+                Cell cellOccupation = row.createCell(columnIndex);
+                cellOccupation.setCellValue(entry.getKey());
+                Cell cellCount = row.createCell(columnIndex + 1);
+                cellCount.setCellValue(entry.getValue());
+                rowIndex++;
+            }
+            
             // Save the modified workbook to a byte array
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
             workbook.write(outputStream);
