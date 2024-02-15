@@ -37,6 +37,8 @@ public class ApiDataAnalysisServiceImpl implements ApiDataAnalysisService {
     private int linkedinLinksMultipleMatched = 0;
     private int successfullMatches = 0;
     private int countAlumnisLinkedinLinks = 0; // counts the linkedin links that are being excluded and included
+    private int studentMatchedMore1Alumni = 0;
+    private int studentNotMatchLinkPrev = 0;
 
     @Override
     public byte[] alumniTableToExcel(MultipartFile file) {
@@ -217,30 +219,40 @@ public class ApiDataAnalysisServiceImpl implements ApiDataAnalysisService {
                         //System.out.println("### No linkedin link was matched with the user (no matched name): " +  row.getCell(1).getStringCellValue().trim() + " ###");
                         studentNotMatchedByName++;
                     } else if (matchedAlumnis.size() == 1) { // elegible to be matched
-                        // Verifies if the linkedin link was already associated with another person
-                        Row rowFoundWithLink = verifyLinkedinLinkAvailability(rowAndItsLink, matchedAlumnis.get(0).getLinkedinLink());
-                        if (rowFoundWithLink == null) { // Linkedin link was NOT previously associated
-                            // Writes the link in the Excel Sheet
-                            Cell linkLinkedIn = row.createCell(3); // Column DmatchLinks
-                            linkLinkedIn.setCellValue(matchedAlumnis.get(0).getLinkedinLink());
-
-                            // Adds the row and the linkedin so next iterations are able to see that this link was already associated
-                            rowAndItsLink.put(row, matchedAlumnis.get(0).getLinkedinLink());
-                            successfullMatches++;
+                        boolean linkPrevMatched = linkedinLinkConisderedPrevMatched(linksMultipleMatched, matchedAlumnis.get(0).getLinkedinLink()); 
+                        if (!linkPrevMatched) { // If the linkedin was not considered previously matched
+                            Row rowFoundWithLink = verifyLinkedinLinkAvailability(rowAndItsLink, matchedAlumnis.get(0).getLinkedinLink()); // Verifies if the linkedin link was already associated with another person
+                            if (rowFoundWithLink == null) { // Linkedin link was NOT previously associated
+                                // Writes the link in the Excel Sheet
+                                Cell linkLinkedIn = row.createCell(3); // Column DmatchLinks
+                                linkLinkedIn.setCellValue(matchedAlumnis.get(0).getLinkedinLink());
+    
+                                // Adds the row and the linkedin so next iterations are able to see that this link was already associated
+                                rowAndItsLink.put(row, matchedAlumnis.get(0).getLinkedinLink());
+                                successfullMatches++;
+                            } else {
+                                linksMultipleMatched.add(matchedAlumnis.get(0).getLinkedinLink()); // Adds the linkedin link to a list of multiple matched
+                                rowAndItsLink.remove(rowFoundWithLink); // deletes the row associated with that link from the map
+    
+                                // Deletes from Excel (in this row) the associated link
+                                Cell foundedRowWithSameLink = rowFoundWithLink.createCell(3);
+                                foundedRowWithSameLink.setCellValue((String) null);
+                            
+                                // Increments the number of students not able to match because no name found
+                                System.out.println("=== The linkedin link: " + matchedAlumnis.get(0).getLinkedinLink() + " was multiple matched ===.");
+                                linkedinLinksMultipleMatched++;
+                            }
                         } else {
-                            linksMultipleMatched.add(matchedAlumnis.get(0).getLinkedinLink()); // Adds the linkedin link to a list of multiple matched
-                            rowAndItsLink.remove(rowFoundWithLink); // deletes the row associated with that link from the map
-
-                            // Deletes from Excel (in this row) the associated link
-                            Cell foundedRowWithSameLink = rowFoundWithLink.createCell(3);
-                            foundedRowWithSameLink.setCellValue((String) null);
-                        
-                            // Increments the number of students not able to match because no name found
-                            System.out.println("=== The linkedin link: " + matchedAlumnis.get(0).getLinkedinLink() + " was multiple matched ===.");
-                            linkedinLinksMultipleMatched++;
+                            // Increments the number of students not
+                            String fullName = row.getCell(1).getStringCellValue().trim();
+                            System.out.println("<<< The student: " + fullName + " was not matched with a linkedin link because the linkedin link was already considered multple matched");
+                            studentNotMatchLinkPrev++;
                         }
                     } else {
-                        // Compares student courses
+                        // Increments the number of alumnis with invalid schools so it can later be printed
+                        String fullName = row.getCell(1).getStringCellValue().trim();
+                        System.out.println(">>> Student not matched because more than 1 linkedin link matched with the Student name . Student: " +  fullName + " >>>");
+                        studentMatchedMore1Alumni++;  
                     }   
                 } catch (Exception error) {
                     System.out.println("error: " + error);
@@ -252,8 +264,10 @@ public class ApiDataAnalysisServiceImpl implements ApiDataAnalysisService {
             System.out.println("Invalid alumnis because of invalid year start: " + invalidAlumnisYearStartCount + " (---).");
             System.out.println("Students not matched by names: " + studentNotMatchedByName + " (###).");
             System.out.println("Linkedin links multiple matched: " + linkedinLinksMultipleMatched + " (===).");
+            System.out.println("Students not matched because more than 1 linkedin link matched with the Student name: " + studentMatchedMore1Alumni + " (>>>).");
+            System.out.println("Student was not matched because the linkedin link was already considered previously matched: " + studentNotMatchLinkPrev + " (<<<).");
             System.out.println("Successfull matches: " + successfullMatches + " (///).");
-            System.out.println("Considered linkedin links: " + countAlumnisLinkedinLinks + " macthed: " + successfullMatches + ". Without matches: " + (countAlumnisLinkedinLinks-successfullMatches) + ". Success percentage: " + ((successfullMatches*100)/830));
+            System.out.println("Considered linkedin links: " + countAlumnisLinkedinLinks + " macthed: " + successfullMatches + ". Without matches: " + (countAlumnisLinkedinLinks-successfullMatches) + ". Success percentage: " + ((successfullMatches*100)/830) + "%");
             System.out.println("------------------------------------");
 
             // Save the modified workbook to a byte array
@@ -395,7 +409,6 @@ public class ApiDataAnalysisServiceImpl implements ApiDataAnalysisService {
             String holdestYearStartStore = ""; // Stores the year start and year end of the first inscription in feup
             for (var education : valuesEducation) {
                 if (CleanData.isValidSchool(education.get("school").asText())) {
-                    // Verifies if the time stored is holder than the current one
                     String time = education.get("time").asText();
                     String[] datesStartEnd = time.split("-");
                     String[] dateStartDayMonthYear = datesStartEnd[0].trim().split("/");
@@ -443,4 +456,14 @@ public class ApiDataAnalysisServiceImpl implements ApiDataAnalysisService {
         } 
         return null; // Linkedin link is not associated with any key in the map
     }
+
+    // Verify if the linkedin link was considered previously matched
+    private boolean linkedinLinkConisderedPrevMatched (ArrayList<String> linksMultipleMatched, String foundLinkedinLink) {
+        for (String linkMultipleMatched : linksMultipleMatched) {
+            if (linkMultipleMatched.equals(foundLinkedinLink)) {
+                return true;
+            }
+        } 
+        return false;
+    } 
 }
