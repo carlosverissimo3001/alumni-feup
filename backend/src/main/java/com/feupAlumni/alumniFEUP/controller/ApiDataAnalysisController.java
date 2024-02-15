@@ -53,4 +53,21 @@ public class ApiDataAnalysisController {
         } 
     }
 
+    // Receives an Excel file and tries to match the students with the alumnis Linkdein links in the DB.
+    // Returns the file updated, this is, the file with the linkedin column field with the found links
+    @PostMapping("/matchLinksToStudents")
+    public ResponseEntity<byte[]> handleMatchLinksToStudents(@RequestParam("excelData") MultipartFile file) throws IOException {
+        try {
+            byte[] modifiedExcelBytes = apiDataAnalysisService.matchLinksToStudents(file);
+            // Set the response headers
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+            headers.setContentDispositionFormData("filename", "modified_excel.xlsx");
+
+            return new ResponseEntity<>(modifiedExcelBytes, headers, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        } 
+    }
+
 }

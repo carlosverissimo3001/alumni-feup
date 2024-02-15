@@ -54,7 +54,7 @@ class setUp {
         const formData = new FormData();
         formData.append('fileBackup', file);
 
-        const response = await fetch('http://localhost:8080/alumni/uploadBackupFil', {
+        const response = await fetch('http://localhost:8080/alumni/uploadBackupFile', {
             method: 'POST',
             body: formData,
         });
@@ -95,57 +95,6 @@ class setUp {
     } catch (error) {
         console.error('Error during file upload:', error);
         return false;
-    }
-  }
- 
-  /**
-   * Cleans the needed information to match alumnis to linkdein links. Adds the valid alumnis to one table and the invalid ones to another.
-   */
-  static async prepareDataAlumniMactchLinks() {
-    try {
-        const response = await fetch('http://localhost:8080/alumni/dataHundleAlumniMatchLink', {
-            method: 'POST',
-            body: '',
-        });
-
-        if (response.ok){
-            console.log('Data for matching Alumnis with linkedins link cleaned.');
-        } else {
-            console.error('Error while cleaning data for matchhing alumnis with linkedin links.');
-        }
-    } catch(error) {
-        console.error('Error while cleaning data for matchhing alumnis with linkedin links: ', error);
-    }
-  }
-
-  /**
-   * Receives an excel to be field with linkedin Links. Makes the match of the students with the alumni information in the DB.
-   * Returns an updated excel with the linkedin column field with the found links.
-   */
-  static async matchLinksToAlumnis(file) {
-    try {
-        const formData = new FormData();
-        formData.append('excelData', file);
-
-        const response = await fetch('http://localhost:8080/alumni/matchLinksToAlumnis', {
-            method: 'POST',
-            body: formData,
-        });
-
-        if (!response.ok) {
-            throw new Error('Failed to download Excel file.');
-        }
-
-        const excelBlob = await response.blob();
-        const url = window.URL.createObjectURL(new Blob([excelBlob]));
-        const link = document.createElement('a');
-        link.href = url;
-        link.setAttribute('download', 'modified_excel.xlsx');
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-    } catch (error) {
-        console.error('Error: ', error);
     }
   }
 

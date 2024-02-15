@@ -9,6 +9,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.feupAlumni.alumniFEUP.handlers.FilesHandler;
 import com.feupAlumni.alumniFEUP.handlers.ManageApiData;
+import com.feupAlumni.alumniFEUP.handlers.CleanData;
 import com.feupAlumni.alumniFEUP.model.Alumni;
 import com.feupAlumni.alumniFEUP.repository.AlumniRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +31,12 @@ public class ApiDataAnalysisServiceImpl implements ApiDataAnalysisService {
 
     @Autowired
     private AlumniRepository alumniRepository;
+    private int invalidAlumnisSchoolCount = 0;
+    private int invalidAlumnisYearStartCount = 0;
+    private int studentNotMatchedByName = 0;
+    private int linkedinLinksMultipleMatched = 0;
+    private int successfullMatches = 0;
+    private int countAlumnisLinkedinLinks = 0; // counts the linkedin links that are being excluded and included
 
     @Override
     public byte[] alumniTableToExcel(MultipartFile file) {
@@ -151,6 +158,124 @@ public class ApiDataAnalysisServiceImpl implements ApiDataAnalysisService {
         }
     }
 
+    @Override
+    public byte[] matchLinksToStudents(MultipartFile file) {
+        Workbook workbook = null;
+        try (InputStream inputStream = file.getInputStream()) {
+            // Prepares a hash map. The key is the yearStart/yearConclusion and the value is an Array of Alumnis
+            HashMap<String, List<Alumni>> alumnisPerYearMap = alumnisPerYearMap();
+
+            workbook = new XSSFWorkbook(inputStream);
+            Sheet sheet = workbook.getSheetAt(0);   
+            Iterator<Row> rowIterator = sheet.iterator();
+
+            ArrayList<String> linksMultipleMatched = new ArrayList<>(); // Linkedin Links excluded because they were matched with more than 1 person
+            Map<Row, String> rowAndItsLink = new HashMap<>();           // Linkedin Links and the rows they were puted in
+
+            // For each row in the excel file, this is, for each student
+            while (rowIterator.hasNext()) {
+                try {
+                    Row row = rowIterator.next();
+
+                    // Gets the 1st year start in FEUP (no metter what course is)
+                    String[] studentYearsStart = {
+                        row.getCell(5).getStringCellValue().trim(),    // Column F
+                        row.getCell(7).getStringCellValue().trim(),    // Column H
+                        row.getCell(9).getStringCellValue().trim(),    // Column J
+                        row.getCell(11).getStringCellValue().trim(),   // Column L
+                        row.getCell(13).getStringCellValue().trim()    // Column N
+                    };
+
+                    String studentYearStartFound = "";
+                    for (String studentYearStart : studentYearsStart) {
+                        if (!studentYearStart.isEmpty()) {
+                            studentYearStartFound = studentYearStart.split("/")[0];
+                            break;
+                        }
+                    }
+
+                    // Grabs the alumni list that started in the same year 
+                    List<Alumni> alumniListYearStart = alumnisPerYearMap.get(studentYearStartFound);
+                    if (row.getCell(1) != null && row.getCell(1).getStringCellValue().trim().equals("Nuno Honório Rodrigues Flores")) {
+                        System.out.println("studentYearStartFound: " + studentYearStartFound);
+                        for (Alumni alumni : alumniListYearStart) {
+                            System.out.println("alumniListYearStart: " + FilesHandler.extractFieldFromJson("full_name", alumni.getLinkedinInfo()));
+                        }
+                    }
+                    List<Alumni> matchedAlumnis = new ArrayList<>();
+                    if (alumniListYearStart != null) {
+                        for (Alumni alumni : alumniListYearStart) {
+                            boolean matchedName = CleanData.validAlumniName(alumni, row.getCell(1).getStringCellValue().trim()); // second argument is the name of the student
+                            if (matchedName) {
+                                matchedAlumnis.add(alumni);
+                            }
+                        }
+                    }
+                    
+                    if (matchedAlumnis.size() == 0) { // No alumnis were matched with the current user (by their names)
+                        // Increments the number of students not able to match because no name found
+                        //System.out.println("### No linkedin link was matched with the user (no matched name): " +  row.getCell(1).getStringCellValue().trim() + " ###");
+                        studentNotMatchedByName++;
+                    } else if (matchedAlumnis.size() == 1) { // elegible to be matched
+                        // Verifies if the linkedin link was already associated with another person
+                        Row rowFoundWithLink = verifyLinkedinLinkAvailability(rowAndItsLink, matchedAlumnis.get(0).getLinkedinLink());
+                        if (rowFoundWithLink == null) { // Linkedin link was NOT previously associated
+                            // Writes the link in the Excel Sheet
+                            Cell linkLinkedIn = row.createCell(3); // Column DmatchLinks
+                            linkLinkedIn.setCellValue(matchedAlumnis.get(0).getLinkedinLink());
+
+                            // Adds the row and the linkedin so next iterations are able to see that this link was already associated
+                            rowAndItsLink.put(row, matchedAlumnis.get(0).getLinkedinLink());
+                            successfullMatches++;
+                        } else {
+                            linksMultipleMatched.add(matchedAlumnis.get(0).getLinkedinLink()); // Adds the linkedin link to a list of multiple matched
+                            rowAndItsLink.remove(rowFoundWithLink); // deletes the row associated with that link from the map
+
+                            // Deletes from Excel (in this row) the associated link
+                            Cell foundedRowWithSameLink = rowFoundWithLink.createCell(3);
+                            foundedRowWithSameLink.setCellValue((String) null);
+                        
+                            // Increments the number of students not able to match because no name found
+                            System.out.println("=== The linkedin link: " + matchedAlumnis.get(0).getLinkedinLink() + " was multiple matched ===.");
+                            linkedinLinksMultipleMatched++;
+                        }
+                    } else {
+                        // Compares student courses
+                    }   
+                } catch (Exception error) {
+                    System.out.println("error: " + error);
+                } 
+            }
+
+            System.out.println("------------- Summary: -------------");
+            System.out.println("Invalid alumnis because of invalid school: " + invalidAlumnisSchoolCount + " (!!!).");
+            System.out.println("Invalid alumnis because of invalid year start: " + invalidAlumnisYearStartCount + " (---).");
+            System.out.println("Students not matched by names: " + studentNotMatchedByName + " (###).");
+            System.out.println("Linkedin links multiple matched: " + linkedinLinksMultipleMatched + " (===).");
+            System.out.println("Successfull matches: " + successfullMatches + " (///).");
+            System.out.println("Considered linkedin links: " + countAlumnisLinkedinLinks + " macthed: " + successfullMatches + ". Without matches: " + (countAlumnisLinkedinLinks-successfullMatches) + ". Success percentage: " + ((successfullMatches*100)/830));
+            System.out.println("------------------------------------");
+
+            // Save the modified workbook to a byte array
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            workbook.write(outputStream);
+            byte[] modifiedExcelBytes = outputStream.toByteArray();
+            return modifiedExcelBytes;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null; 
+        } finally {
+            // Close the workbook in the finally block to ensure it's always closed
+            if (workbook != null) {
+                try {
+                    workbook.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
     // Create headers in the Excel file based on a given set of titles
     private void createHeaders(Sheet sheet, String[][] fields) {
         var columnCounter = 0;
@@ -255,4 +380,67 @@ public class ApiDataAnalysisServiceImpl implements ApiDataAnalysisService {
         return lastWrittenRow;
     }
 
+    // Gets the alumnis per year start/year conclusion in FEUP
+    // Because one student is able to perform more than one course in FEUP, only the first one is considered
+    private HashMap<String, List<Alumni>> alumnisPerYearMap() {
+        HashMap<String, List<Alumni>> alumniMap = new HashMap<>();
+        Iterator<Alumni> alumniIterator = alumniRepository.findAll().iterator();
+        while (alumniIterator.hasNext()) {
+            Alumni alumni = alumniIterator.next();
+
+            // Gets the values of the education field
+            String linkedinInfo = alumni.getLinkedinInfo();
+            List<ObjectNode> valuesEducation = ManageApiData.getValuesSubtitles("education", linkedinInfo);
+
+            String holdestYearStartStore = ""; // Stores the year start and year end of the first inscription in feup
+            for (var education : valuesEducation) {
+                if (CleanData.isValidSchool(education.get("school").asText())) {
+                    // Verifies if the time stored is holder than the current one
+                    String time = education.get("time").asText();
+                    String[] datesStartEnd = time.split("-");
+                    String[] dateStartDayMonthYear = datesStartEnd[0].trim().split("/");
+                    String yearStart = dateStartDayMonthYear[2];
+                    if (yearStart.equals("null")) { // User invalid
+                        holdestYearStartStore = "INVALID";
+                    } else { // Stores the time
+                        holdestYearStartStore = yearStart;
+                    }
+
+                    break;// The first valid school to be found is the oldest one in terms of start so it's safe to excape without checking the others
+                } 
+            }
+
+            // If no valid school was found ("") or if an invalid year start was found ("INVALID")
+            if (holdestYearStartStore == "") { 
+                // Increments the number of alumnis with invalid schools so it can later be printed
+                String fullName = FilesHandler.extractFieldFromJson("full_name", linkedinInfo);
+                System.out.println("!!! Invalid Alumnis because of school being invalid. Alumni: " +  fullName + " !!!");
+                invalidAlumnisSchoolCount++;                
+            } else if (holdestYearStartStore =="INVALID") {
+                // Increments the number of alumnis with invalid start years so it can later be printed
+                String fullName = FilesHandler.extractFieldFromJson("full_name", linkedinInfo);
+                System.out.println("--- Invalid Alumnis because of year start being invalid. Alumni: " +  fullName + " ---");
+                invalidAlumnisYearStartCount++;
+            } else {
+                // Stores in the HashMap the variable with the year and adds the alumni to the array if the key already exists
+                // Gets the list of alumnis of the current year 
+                List<Alumni> alumniList = alumniMap.getOrDefault(holdestYearStartStore, new ArrayList<>());
+                alumniList.add(alumni);
+                alumniMap.put(holdestYearStartStore, alumniList);
+            }
+
+            countAlumnisLinkedinLinks++;
+        }
+        return alumniMap;
+    }
+
+    // Verifies if the linkedin has already been attributed to another student 
+    private Row verifyLinkedinLinkAvailability(Map<Row, String> rowAndItsLink, String foundLinkedinLink) {
+        for (Map.Entry<Row, String> entry : rowAndItsLink.entrySet()) {
+            if (entry.getValue().equals(foundLinkedinLink)) {
+                return entry.getKey(); // Return the key associated with the LinkedIn link
+            }
+        } 
+        return null; // Linkedin link is not associated with any key in the map
+    }
 }
