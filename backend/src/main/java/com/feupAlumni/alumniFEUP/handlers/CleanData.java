@@ -1,5 +1,11 @@
 package com.feupAlumni.alumniFEUP.handlers;
 
+import com.feupAlumni.alumniFEUP.model.Alumni;
+
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+
 public class CleanData {
 
     public static boolean isValidSchool(String schoolName) {
@@ -7,63 +13,45 @@ public class CleanData {
         String lowerCaseSchool = schoolName.toLowerCase();
     
         // Check if the school name matches any of the specified values
-        return lowerCaseSchool.contains("faculdade de engenharia da universidade do porto") ||
+        return (lowerCaseSchool.contains("faculdade de engenharia da universidade do porto") ||
                lowerCaseSchool.contains("feup") ||
                lowerCaseSchool.contains("faculty engineering university of porto") ||
                lowerCaseSchool.contains("universidade do porto") ||
                lowerCaseSchool.contains("university of porto") ||
-               lowerCaseSchool.contains("faculdade de engenharia do porto");
+               lowerCaseSchool.contains("faculdade de engenharia do porto")) && (!lowerCaseSchool.contains("business"));
     }
 
-    // Given a course and a field of study it sees if it can be considered a MIEIC course. integ comes from "integrado" or "integrated" or other variatios
-    public static boolean isValidMIEIC(String course, String fieldOfStudy) {
-        if (course.contains("integ") ||  fieldOfStudy.contains("integ")) { 
-            return true;
-        }
-        return false;
-    }
+    // See if it has a valid name: all names of the alumni are in the student. Alumni with at least 2 names of the student and those in the same order.
+    public static boolean validAlumniName(Alumni alumni, String studentNames) {
+        String alumniLinkedinInfo = alumni.getLinkedinInfo();
+        String alumniFullName = FilesHandler.extractFieldFromJson("full_name", alumniLinkedinInfo);
+        String[] alumniNames = alumniFullName.split(" ");
 
-    // Given a course sees if it can be considered a LEIC or L.EIC course. lic for variantes of licenciature -- bach for variantes of bacheler
-    public static boolean isValidLEIC(String course) {
-        if ( 
-            (course.contains("lic") || 
-            course.contains("bach") || 
-            course.contains("gradua") || 
-            course.contains("undergraduate") || 
-            (course.contains("3")) || 
-            course.contains("degree") ) 
-            &&
-            (!course.contains("mast") &&
-            !course.contains("5") && 
-            !course.contains("post"))
-            ) {
-            return true;
+        // Verifies if there is one name that is not inside the studentName
+        Set<String> studentNamesSet = new HashSet<String>(Arrays.asList(studentNames.split(" ")));
+        boolean hasMissingName = Arrays.stream(alumniNames).anyMatch(name -> !studentNamesSet.contains(name)); // returns true if there is a missing name
+        if (hasMissingName) {
+            return false; // If it has a name in the linkedin that doesn't belong to any of the student's name, then the alumni doesn't have a valid name for this student
         }
-        return false;
-    }
 
-    // Given a course and a field of study it sees if it can be considered a M.EIC course
-    public static boolean isValidMEIC(String course, String fieldOfStudy) {
-        if (course.contains("comp") || fieldOfStudy.contains("comp")) {
-            return true;
+        // Verifies if the alumni has at least 2 names of the student and in the same order
+        String[] studentNamesArray = studentNames.split(" ");
+        int foundPosition = 0;
+        int countNames = 0; 
+        for (String alumniName : alumniNames) {
+            for (int i=foundPosition; i<studentNamesArray.length; i++ ){
+                if (alumniName.equals(studentNamesArray[i])) {
+                    foundPosition = i;
+                    countNames++;
+                    break;
+                }
+            }
         }
-        return false;
-    }
+        if (countNames < 2) {
+            return false;
+        }
 
-    // Given a course and a field of study it sees if it can be considered a MEI course
-    public static boolean isValidMEI(String course, String fieldOfStudy) {
-        if ((fieldOfStudy.contains("eng") || fieldOfStudy.contains("inf")) && ((course.contains("5") && !course.contains("3")) || course.contains("ms") || course.contains("m.sc") || course.contains("master") || course.contains("mestrado"))) {
-            return true;
-        }
-        return false;
-    }
-
-    // Verifies if it's a valid year of begining and end
-    public static boolean isValidYearBegEnd(String yearStart, String[] schoolYearBeginning, String yearEnd, String[] schoolYearConclusion) {
-        if (yearStart.equals(schoolYearBeginning[0]) && yearEnd.equals(schoolYearConclusion[1])) {
-            return true;
-        }
-        return false;
+        return true;
     }
 
 }

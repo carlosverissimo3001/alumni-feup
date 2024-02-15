@@ -4,16 +4,11 @@ import com.feupAlumni.alumniFEUP.model.Alumni;
 import com.feupAlumni.alumniFEUP.service.AlumniService;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.util.List;
-
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
 
 @RestController
 @RequestMapping("/alumni")
@@ -34,7 +29,7 @@ public class AlumniController {
     }
 
     // Uploads the BACKUP file containing the result of the LinkedIn API to the Alumni table
-    @PostMapping("/uploadBackupFil")
+    @PostMapping("/uploadBackupFile")
     public ResponseEntity<String> handleFileBackupUpload(@RequestBody MultipartFile fileBackup){
         try {
             alumniService.processFileBackup(fileBackup);
@@ -59,34 +54,6 @@ public class AlumniController {
     @GetMapping("/getAll")
     public List<Alumni> getAllStudents(){
         return alumniService.getAllAlumnis();
-    }
-
-    // Clenas the information needed to match alumnis to linkedin links. One table with the needed data and another table with the ones that are not elegible and why.
-    @PostMapping("/dataHundleAlumniMatchLink")
-    public ResponseEntity<String> handleDataAlumniMatchLink() {
-        try {
-            alumniService.dataAlumniMatchLink();
-            return ResponseEntity.ok("Data for matching Alumnis with linkedins' links successfully cleaned.");
-        } catch (Exception e) {
-            return ResponseEntity.status(500).body("Error while cleaning data for matching Alumnis with linkedins' links: " + e.getMessage());
-        } 
-    }
-
-    // Receives an Excel file and tries to match the students with the alumnis Linkdein links in the DB.
-    // Returns the file updated, this is, the file with the linkedin column field with the found links
-    @PostMapping("/matchLinksToAlumnis")
-    public ResponseEntity<byte[]> handleMatchLinksToAlumnis(@RequestParam("excelData") MultipartFile file) throws IOException {
-        try {
-            byte[] modifiedExcelBytes = alumniService.matchLinksToAlumnis(file);
-            // Set the response headers
-            HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
-            headers.setContentDispositionFormData("filename", "modified_excel.xlsx");
-
-            return new ResponseEntity<>(modifiedExcelBytes, headers, HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        } 
     }
 
     // Sets the missing linkedin links on the DB 

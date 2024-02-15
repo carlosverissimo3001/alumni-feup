@@ -22,10 +22,4 @@ public interface AlumniService {
 
     // Associates the missing linkedin links to the needed rows
     public void missingLinkedinLinks();
-
-    // Claens the data needed to match alumnis with linkedin links
-    public void dataAlumniMatchLink();
-
-    // Receives an Excel file and tries to match the students with the alumnis Linkdein links in the DB
-    public byte[] matchLinksToAlumnis(MultipartFile file);
 }

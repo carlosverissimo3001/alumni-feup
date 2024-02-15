@@ -49,16 +49,18 @@ const MenuButtons = () => {
        
         await setUp.setAlumniUsingBackup(file);
         console.log("Backup set in the Alumni table");
-        // Performs the backup of the table Alumni
+    }
+
+    // Performs the backup of the table Alumni
+    const handleAlumniBackup = async () => {
         await setUp.setAlumniBackup();
         console.log("Backup set in the AlumniBackup table");
     }
 
-    // Matches Alumnis to LinkedIn Links. Receives an excel, updates the linkedin column and downloads the updated file
+    // Matches Students to LinkedIn Links. Receives an excel, updates the linkedin column and downloads the updated file
     const handleAlumnisMatchLinkedin = async () => {
-        Verifiers.checkIfExcel(file);        
-        await setUp.prepareDataAlumniMactchLinks();  
-        setUp.matchLinksToAlumnis(file); 
+        Verifiers.checkIfExcel(file);    
+        ApiDataAnalysis.matchLinkedinLinksToStudents(file); 
     }
 
     // DB is inconsistent and some rows don't have the linkedin link stored because of how I once read from the backup file.
@@ -88,12 +90,19 @@ const MenuButtons = () => {
     return (
         <>
             <input type="file" className='fileInput' onChange={handleFileChange} />         
-            <button className="button butnUplFile" onClick={handleFileUpload}>Upload File</button>
+            {/**
+             <button className="button butnUplFile" onClick={handleFileUpload}>Upload File</button>
             <button className="button butnUplFileBackup" onClick={handleFileUploadBackup}>Pop Alumni with backup file</button>
-            <button className="button butnAlmWithoutLink" onClick={handleAlumnisMatchLinkedin}>Get Alumnis without LinkdeIn</button>
-            <button className="button btnPutLinksDB" onClick={handlePutLinksInDB}>Put Links in DB</button>
+            <button className="button butnAlumniBackup" onClick={handleAlumniBackup}>Set Backup Alumni Table</button>
+             */}
+            <button className="button butnAlmWithoutLink" onClick={handleAlumnisMatchLinkedin}>Match Alumnis Linkedin</button>
+            {/**
+             <button className="button btnPutLinksDB" onClick={handlePutLinksInDB}>Put LinkedIn Links in DB</button>
             <button className="button btnExcelAlumniProfSitu" onClick={handleExcelAlumniProfSitu}>Excel: nomeAlumni + professionalSitu</button>
             <button className="button btnExcelAlumniTableToExcel" onClick={handleAlmnTblExcel}>Excel: Alumni table</button>
+             */
+            }
+            
         </>
     );
 };

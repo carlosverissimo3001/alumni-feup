@@ -17,20 +17,24 @@
     top: 150px;
     left: 20px;
 }
-.butnAlmWithoutLink{
+.butnAlumniBackup{
     top: 180px;
     left: 20px;
 }
-.btnPutLinksDB{
+.butnAlmWithoutLink{
     top: 210px;
     left: 20px;
 }
-.btnExcelAlumniProfSitu{
+.btnPutLinksDB{
     top: 240px;
     left: 20px;
 }
-.btnExcelAlumniTableToExcel{
+.btnExcelAlumniProfSitu{
     top: 270px;
+    left: 20px;
+}
+.btnExcelAlumniTableToExcel{
+    top: 300px;
     left: 20px;
 }
 

@@ -9,7 +9,6 @@ import java.util.List;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 
 public class FilesHandler {
     
@@ -75,42 +74,6 @@ public class FilesHandler {
             if (nestedNode != null) {
                 return extractOneLevelNestedFiled(nestedNode, fieldToExtract, null);
             }
-            return null;
-        }
-    }
-
-    // Returns the fields of the education field
-    public static JsonNode getAlumniEducationDetailsOfFeup(String jsonData) {
-        try {
-            ObjectMapper objectMapper = new ObjectMapper();
-            JsonNode jsonNode = objectMapper.readTree(jsonData);
-
-            JsonNode educations = jsonNode.get("education");
-            if (educations != null && educations.isArray()) {
-                for (JsonNode education : educations) {
-                    String schoolName = extractOneLevelNestedFiled(education, "school", null);
-                    if (CleanData.isValidSchool(schoolName)) {
-                        String degreeName = extractOneLevelNestedFiled(education, "degree_name", null);
-                        String fieldOfStudy = extractOneLevelNestedFiled(education, "field_of_study", null);
-                        String yearStart = extractOneLevelNestedFiled(education, "year", "starts_at");
-                        String yearEnd = extractOneLevelNestedFiled(education, "year", "ends_at");
-
-                        if (degreeName != null && fieldOfStudy != null) {
-                            ObjectNode resultNode = objectMapper.createObjectNode();
-                            resultNode.put("schoolName", schoolName);
-                            resultNode.put("degreeName", degreeName);
-                            resultNode.put("fieldOfStudy", fieldOfStudy);
-                            resultNode.put("yearStart", yearStart);
-                            resultNode.put("yearEnd", yearEnd);
-                            
-                            return resultNode;
-                        }
-                    }
-                }
-            }
-            return null;
-        } catch (IOException e) {
-            e.printStackTrace();
             return null;
         }
     }
