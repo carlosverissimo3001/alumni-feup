@@ -17,8 +17,24 @@
     top: 150px;
     left: 20px;
 }
-.butnAlumCountry{
+.butnAlumniBackup{
     top: 180px;
+    left: 20px;
+}
+.butnAlmWithoutLink{
+    top: 210px;
+    left: 20px;
+}
+.btnPutLinksDB{
+    top: 240px;
+    left: 20px;
+}
+.btnExcelAlumniProfSitu{
+    top: 270px;
+    left: 20px;
+}
+.btnExcelAlumniTableToExcel{
+    top: 300px;
     left: 20px;
 }
 
