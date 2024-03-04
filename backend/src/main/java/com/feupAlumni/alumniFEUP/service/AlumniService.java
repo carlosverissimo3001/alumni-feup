@@ -17,6 +17,9 @@ public interface AlumniService {
     // Processes the file backup, which contains the response of the LinkdIn API and repopulates the Alumni table
     public void processFileBackup(MultipartFile fileBackup);
     
-    // Returns alll alumnis
+    // Returns all alumnis
     public List<Alumni> getAllAlumnis();
+
+    // Associates the missing linkedin links to the needed rows
+    public void missingLinkedinLinks();
 }

@@ -2,6 +2,7 @@ package com.feupAlumni.alumniFEUP.controller;
 
 import com.feupAlumni.alumniFEUP.model.Alumni;
 import com.feupAlumni.alumniFEUP.service.AlumniService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -28,7 +29,7 @@ public class AlumniController {
     }
 
     // Uploads the BACKUP file containing the result of the LinkedIn API to the Alumni table
-    @PostMapping("/uploadBackupFil")
+    @PostMapping("/uploadBackupFile")
     public ResponseEntity<String> handleFileBackupUpload(@RequestBody MultipartFile fileBackup){
         try {
             alumniService.processFileBackup(fileBackup);
@@ -53,6 +54,17 @@ public class AlumniController {
     @GetMapping("/getAll")
     public List<Alumni> getAllStudents(){
         return alumniService.getAllAlumnis();
+    }
+
+    // Sets the missing linkedin links on the DB 
+    @PostMapping("/missingLinkedinLinks")
+    public ResponseEntity<String> handleMissingLinkedinLinks() {
+        try {
+            alumniService.missingLinkedinLinks();
+            return ResponseEntity.ok("Missing Linkedin links successfully set for the needed rows.");
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Error while seting the missing linkedin links: " + e.getMessage());
+        } 
     }
 
 }

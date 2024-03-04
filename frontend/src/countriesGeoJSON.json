@@ -5,7 +5,7 @@
       "type": "Feature",
       "properties": {
         "name": "spain",
-        "students": 4
+        "students": 8
       },
       "geometry": {
         "type": "Point",
@@ -19,7 +19,7 @@
       "type": "Feature",
       "properties": {
         "name": "brazil",
-        "students": 2
+        "students": 3
       },
       "geometry": {
         "type": "Point",
@@ -33,7 +33,7 @@
       "type": "Feature",
       "properties": {
         "name": "japan",
-        "students": 1
+        "students": 3
       },
       "geometry": {
         "type": "Point",
@@ -47,7 +47,7 @@
       "type": "Feature",
       "properties": {
         "name": "portugal",
-        "students": 396
+        "students": 635
       },
       "geometry": {
         "type": "Point",
@@ -61,7 +61,7 @@
       "type": "Feature",
       "properties": {
         "name": "germany",
-        "students": 8
+        "students": 13
       },
       "geometry": {
         "type": "Point",
@@ -75,7 +75,7 @@
       "type": "Feature",
       "properties": {
         "name": "poland",
-        "students": 2
+        "students": 3
       },
       "geometry": {
         "type": "Point",
@@ -89,7 +89,7 @@
       "type": "Feature",
       "properties": {
         "name": "united arab emirates",
-        "students": 2
+        "students": 3
       },
       "geometry": {
         "type": "Point",
@@ -103,7 +103,7 @@
       "type": "Feature",
       "properties": {
         "name": "united states of america",
-        "students": 13
+        "students": 18
       },
       "geometry": {
         "type": "Point",
@@ -117,7 +117,7 @@
       "type": "Feature",
       "properties": {
         "name": "denmark",
-        "students": 1
+        "students": 3
       },
       "geometry": {
         "type": "Point",
@@ -173,7 +173,7 @@
       "type": "Feature",
       "properties": {
         "name": "luxembourg",
-        "students": 6
+        "students": 8
       },
       "geometry": {
         "type": "Point",
@@ -187,7 +187,7 @@
       "type": "Feature",
       "properties": {
         "name": "france",
-        "students": 2
+        "students": 3
       },
       "geometry": {
         "type": "Point",
@@ -201,7 +201,7 @@
       "type": "Feature",
       "properties": {
         "name": "belgium",
-        "students": 5
+        "students": 7
       },
       "geometry": {
         "type": "Point",
@@ -215,13 +215,27 @@
       "type": "Feature",
       "properties": {
         "name": "italy",
-        "students": 1
+        "students": 2
       },
       "geometry": {
         "type": "Point",
         "coordinates": [
           12.51133,
           41.89193
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "finland",
+        "students": 1
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          24.93545,
+          60.16952
         ]
       }
     },
@@ -243,7 +257,7 @@
       "type": "Feature",
       "properties": {
         "name": "united kingdom",
-        "students": 38
+        "students": 53
       },
       "geometry": {
         "type": "Point",
@@ -257,7 +271,7 @@
       "type": "Feature",
       "properties": {
         "name": "switzerland",
-        "students": 14
+        "students": 20
       },
       "geometry": {
         "type": "Point",
@@ -271,7 +285,7 @@
       "type": "Feature",
       "properties": {
         "name": "netherlands",
-        "students": 9
+        "students": 17
       },
       "geometry": {
         "type": "Point",
@@ -299,7 +313,7 @@
       "type": "Feature",
       "properties": {
         "name": "canada",
-        "students": 3
+        "students": 4
       },
       "geometry": {
         "type": "Point",
@@ -313,7 +327,7 @@
       "type": "Feature",
       "properties": {
         "name": "null",
-        "students": 2
+        "students": 4
       },
       "geometry": {
         "type": "Point",
@@ -324,7 +338,7 @@
       "type": "Feature",
       "properties": {
         "name": "norway",
-        "students": 6
+        "students": 8
       },
       "geometry": {
         "type": "Point",
@@ -338,7 +352,7 @@
       "type": "Feature",
       "properties": {
         "name": "austria",
-        "students": 2
+        "students": 4
       },
       "geometry": {
         "type": "Point",
@@ -352,7 +366,7 @@
       "type": "Feature",
       "properties": {
         "name": "ireland",
-        "students": 1
+        "students": 4
       },
       "geometry": {
         "type": "Point",
