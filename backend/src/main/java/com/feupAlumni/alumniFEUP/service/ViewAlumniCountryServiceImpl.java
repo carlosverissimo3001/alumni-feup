@@ -95,7 +95,7 @@ public class ViewAlumniCountryServiceImpl implements ViewAlumniCountryService{
                 
 
                 // Adds the country, the country coordinates and the number of alumni per country in the GeoJSON file
-                Location.addInfoGeoJSON(viewAlumniCountry, geoJSONFile, gson);
+                Location.addCountryGeoJSON(viewAlumniCountry, geoJSONFile, gson);
 
             } catch (IOException e) {
                 e.printStackTrace();

@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 import com.feupAlumni.alumniFEUP.model.ViewAlumniCountry;
 import com.feupAlumni.alumniFEUP.service.ViewAlumniCountryService;
+import com.feupAlumni.alumniFEUP.service.ViewAlumniCityService;
 
 
 @RestController
@@ -16,6 +17,8 @@ import com.feupAlumni.alumniFEUP.service.ViewAlumniCountryService;
 public class SetupLocationController {
     @Autowired
     private ViewAlumniCountryService viewAlumniCountryService;
+    @Autowired
+    private ViewAlumniCityService viewAlumniCityService;
 
     // Populates the table view_alumni_country. If it is already populated, registers are deleted and the table is repopulated
     // Generates the GeoJson File
@@ -27,6 +30,18 @@ public class SetupLocationController {
         } catch (Exception e) {
             return ResponseEntity.status(500).body("Error during Location setup: " + e.getMessage());
         }        
+    }
+
+    // Populates the table view_alumni_city. If it is already populated, registers are deleted and the table is repopulated
+    // Generates the GeoJson File
+    @PostMapping("/populateCities")
+    public ResponseEntity<String> handleLocationCitySetup(){
+        try{
+            viewAlumniCityService.setLocationCitySetup();
+            return ResponseEntity.ok("Location City Setup Successful: almni_city table instantiated, and GeoJSON file created.");
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Error during Location City setup: " + e.getMessage());
+        }
     }
 
     // Returns the alumni distribution across countries
