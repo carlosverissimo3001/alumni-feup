@@ -1,0 +1,1559 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "espinho",
+        "students": 2
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8.64125,
+          41.00763
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "louzada",
+        "students": 1
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8.27993,
+          41.27822
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "matosinhos",
+        "students": 9
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8.66743,
+          41.20766
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "geneva",
+        "students": 8
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.14569,
+          46.20222
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "porto e região",
+        "students": 9
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -48.13309,
+          -24.52268
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "lisboa",
+        "students": 31
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -9.13333,
+          38.71667
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "barcelona",
+        "students": 4
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          2.15899,
+          41.38879
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "villeneuve",
+        "students": 1
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          0.70415,
+          44.40854
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "rio tinto",
+        "students": 1
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8.55953,
+          41.17872
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "évora",
+        "students": 1
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -7.83333,
+          38.58333
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "vienna",
+        "students": 1
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          16.37208,
+          48.20849
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "esposende",
+        "students": 1
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8.75754,
+          41.54516
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "etobicoke",
+        "students": 1
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -79.56711,
+          43.65421
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "lisbon",
+        "students": 8
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -9.13333,
+          38.71667
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "münchen",
+        "students": 1
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          11.57549,
+          48.13743
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "basel",
+        "students": 1
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          7.57327,
+          47.55839
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "braga e região",
+        "students": 1
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -46.89985,
+          -22.85309
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "cabeceiras de basto",
+        "students": 1
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -7.97198,
+          41.52079
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "winchester",
+        "students": 1
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          115.35,
+          5.7
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "braga",
+        "students": 9
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8.42005,
+          41.55032
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "??? ??? ???????? ??????? ???????",
+        "students": 1
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          55.30927,
+          25.07725
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "erlangen",
+        "students": 1
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          11.00783,
+          49.59099
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "vernier",
+        "students": 1
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          161.15,
+          -77.96667
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "madrid",
+        "students": 1
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -3.70256,
+          40.4165
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "stockholm",
+        "students": 1
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          18.06871,
+          59.32938
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "zurich",
+        "students": 4
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          8.55,
+          47.36667
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "other",
+        "students": 1
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -84.755,
+          49.09111
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "villach",
+        "students": 1
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          13.85583,
+          46.61028
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "dublin",
+        "students": 2
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.24889,
+          53.33306
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "toronto",
+        "students": 1
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -79.39864,
+          43.70643
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "são paulo",
+        "students": 2
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -46.63611,
+          -23.5475
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "united states",
+        "students": 1
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -57.65625,
+          -14.60485
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "covilhã",
+        "students": 1
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -7.50504,
+          40.28106
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "greater seattle area",
+        "students": 1
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -122.3765,
+          47.5224
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "vila do conde",
+        "students": 2
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8.74516,
+          41.35326
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "porto",
+        "students": 413
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8.61099,
+          41.14961
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "ashford",
+        "students": 1
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          0.87376,
+          51.14648
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "oslo",
+        "students": 5
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.74609,
+          59.91273
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "nieder ramstadt",
+        "students": 1
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          8.70084,
+          49.82474
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "luxembourg",
+        "students": 1
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.16667,
+          49.75
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "ermesinde",
+        "students": 1
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8.55318,
+          41.21653
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "berlin",
+        "students": 2
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          13.41053,
+          52.52437
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "den haag",
+        "students": 1
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.29861,
+          52.07667
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "valongo",
+        "students": 1
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8.49857,
+          41.18883
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "opfikon",
+        "students": 1
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          8.57588,
+          47.43169
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "amarante",
+        "students": 1
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8.06503,
+          41.2705
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "greater cambridge area",
+        "students": 1
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -66.04905,
+          18.38523
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "maidenhead",
+        "students": 1
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -0.71986,
+          51.52279
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "englewood",
+        "students": 1
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -104.98776,
+          39.64777
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "lisbon metropolitan area",
+        "students": 5
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -9.13333,
+          38.71667
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "sao mamede de infesta",
+        "students": 1
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8.61105,
+          41.19183
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "innsbruck",
+        "students": 1
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          11.39454,
+          47.26266
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "amstelveen",
+        "students": 1
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.86389,
+          52.30083
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "london",
+        "students": 33
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -0.12574,
+          51.50853
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "penafiel",
+        "students": 2
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8.28285,
+          41.20835
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "montreal",
+        "students": 1
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -73.58781,
+          45.50884
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "miami",
+        "students": 1
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -80.19366,
+          25.77427
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "lausanne",
+        "students": 2
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.63282,
+          46.516
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "cologne",
+        "students": 1
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.95,
+          50.93333
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "porto metropolitan area",
+        "students": 39
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -50.92712,
+          -29.90138
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "seattle",
+        "students": 1
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -122.33207,
+          47.60621
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "warsaw",
+        "students": 2
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          21.01178,
+          52.22977
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "los angeles",
+        "students": 1
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -118.24368,
+          34.05223
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "maia",
+        "students": 10
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8.6199,
+          41.23574
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "rome",
+        "students": 1
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          12.51133,
+          41.89193
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "viana do castelo",
+        "students": 1
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8.5063,
+          41.89649
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "san francisco bay area",
+        "students": 1
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -122.41942,
+          37.77493
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "aveiro",
+        "students": 7
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8.64554,
+          40.64427
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "copenhagen",
+        "students": 3
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          12.56553,
+          55.67594
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "bragança",
+        "students": 2
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.76346,
+          41.83615
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "amsterdam",
+        "students": 9
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.88969,
+          52.37403
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "dublin city",
+        "students": 2
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.24889,
+          53.33306
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "helsinki",
+        "students": 1
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          24.93545,
+          60.16952
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "kirkland",
+        "students": 1
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -73.86586,
+          45.45008
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "delft",
+        "students": 1
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.35556,
+          52.00667
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "prague",
+        "students": 1
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          14.42076,
+          50.08804
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "vale de cambra",
+        "students": 1
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8.36022,
+          40.845
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "madeira island",
+        "students": 2
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -17.0,
+          32.73333
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "malmö",
+        "students": 1
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          13.00073,
+          55.60587
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "munich",
+        "students": 1
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          11.57549,
+          48.13743
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "brussels",
+        "students": 1
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.34878,
+          50.85045
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "campo",
+        "students": 1
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -54.64639,
+          -20.44278
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "ghent",
+        "students": 1
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          3.71667,
+          51.05
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "vila nova de gaia",
+        "students": 18
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8.61241,
+          41.12401
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "los angeles metropolitan area",
+        "students": 1
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -118.25646,
+          34.04223
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "fortaleza",
+        "students": 1
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -38.54306,
+          -3.71722
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "london area",
+        "students": 2
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -72.09952,
+          41.35565
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "lysaker",
+        "students": 1
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.63545,
+          59.90994
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "guimarães",
+        "students": 1
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8.29619,
+          41.44443
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "pijnacker",
+        "students": 1
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.42946,
+          52.01954
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "berlin metropolitan area",
+        "students": 3
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          13.33396,
+          52.49878
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "san antonio",
+        "students": 1
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -98.49363,
+          29.42412
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "wien",
+        "students": 1
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          16.37208,
+          48.20849
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "oliveira de azemeis",
+        "students": 2
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8.47555,
+          40.84101
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "bayern",
+        "students": 1
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          11.57549,
+          48.13743
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "paris",
+        "students": 3
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          2.3488,
+          48.85341
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "vila real",
+        "students": 2
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -7.74413,
+          41.30062
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "tuntange",
+        "students": 1
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.01028,
+          49.71778
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "mons",
+        "students": 1
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          3.95229,
+          50.45413
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "zürich",
+        "students": 1
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          8.55,
+          47.36667
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "san francisco",
+        "students": 2
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -122.41942,
+          37.77493
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "tallinn",
+        "students": 1
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          24.75353,
+          59.43696
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "baião",
+        "students": 1
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8.0347,
+          41.16273
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "coimbra",
+        "students": 2
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8.41955,
+          40.20564
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "new york",
+        "students": 3
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -74.00597,
+          40.71427
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "felgueiras",
+        "students": 1
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8.19396,
+          41.36806
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "vila nova de famalicão",
+        "students": 2
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8.48511,
+          41.41223
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "tokyo",
+        "students": 2
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          139.69171,
+          35.6895
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "greater pittsburgh region",
+        "students": 1
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -80.25547,
+          40.49608
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "gondomar",
+        "students": 2
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8.49595,
+          41.12015
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "the hague",
+        "students": 2
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.29861,
+          52.07667
+        ]
+      }
+    }
+  ]
+}
