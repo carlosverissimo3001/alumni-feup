@@ -1,6 +1,7 @@
 import React, { useRef } from 'react';
 import { clusterLayer, clusterCountLayer, unclusterPointLayer } from './MapLayers';
-import alumniPerCountry from '../countriesGeoJSON.json'
+//import alumniPerCountry from '../countriesGeoJSON.json';
+import alumniPerCountry from '../citiesGeoJSON.json';
 import {Map, Source, Layer} from 'react-map-gl';
 
 const TOKEN = process.env.REACT_APP_MAPBOX_ACCESS_TOKEN;

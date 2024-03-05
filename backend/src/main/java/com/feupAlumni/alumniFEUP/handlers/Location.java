@@ -1,10 +1,14 @@
 package com.feupAlumni.alumniFEUP.handlers;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
 import java.net.URI;
+import java.net.URL;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
@@ -16,13 +20,16 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.feupAlumni.alumniFEUP.model.GeoJSONFeature;
 import com.feupAlumni.alumniFEUP.model.GeoJSONGeometry;
 import com.feupAlumni.alumniFEUP.model.GeoJSONProperties;
 import com.feupAlumni.alumniFEUP.model.GeoJSONStructure;
 import com.feupAlumni.alumniFEUP.model.ViewAlumniCountry;
+import com.feupAlumni.alumniFEUP.model.ViewAlumniCity;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import java.net.URLEncoder;
 
 public class Location {
 
@@ -69,6 +76,33 @@ public class Location {
         
     }
 
+    // Calls on the API which gets the information about a given city (including their latitude and longitude)
+    private static JsonNode getCoordinatesForCity(String city) throws IOException, InterruptedException {
+
+        String username = "jenifer12345";
+        String encodedCityName = URLEncoder.encode(city, "UTF-8");
+        String apiUrl = "http://api.geonames.org/searchJSON?q=" + encodedCityName + "&maxRows=1&username=" + username;
+
+        // Create an HTTP connection
+        URL url = new URL(apiUrl);
+        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        connection.setRequestMethod("GET");
+
+        // Get the response
+        BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+        StringBuilder response = new StringBuilder();
+        String line;
+        while ((line = reader.readLine()) != null){
+            response.append(line);
+        }
+        reader.close();
+
+        // Parse the JSON response to extract latitude and longitude
+        ObjectMapper objectMapper = new ObjectMapper();
+        connection.disconnect();
+        return objectMapper.readTree(response.toString());
+    }
+
     // Creates a GeoJSON file
     public static void createEmptyGeoJSONFile(File file) {
         GeoJSONStructure emptyStructure = new GeoJSONStructure();
@@ -95,11 +129,54 @@ public class Location {
             System.out.println("No geonames data found for the country code: " + countryCode);
             return null;
         }
-
     }
 
-    // Adds information to the GeoJSON file
-    public static void addInfoGeoJSON(ViewAlumniCountry viewAlumniCountry, File geoJSONFile, Gson gson) {
+    // Gets the coordinates of a given city
+    public static String getCityCoordinates(String city) throws IOException, InterruptedException {
+        JsonNode jsonResponse = getCoordinatesForCity(city);
+
+        JsonNode geonamesNode = jsonResponse.path("geonames");
+        JsonNode firstResultNode = geonamesNode.get(0);
+        double latitude = firstResultNode.get("lat").asDouble();
+        double longitude = firstResultNode.get("lng").asDouble();
+        
+        return "[" + latitude + "," + longitude + "]";
+    }
+
+    // Adds the city to the GeoJSON file
+    public static void addCityGeoJSON(ViewAlumniCity viewAlumniCity, File geoJSONFile, Gson gson) {
+        try (FileReader fileReader = new FileReader(geoJSONFile)) {
+            GeoJSONStructure geoJSONStructure = gson.fromJson(fileReader, GeoJSONStructure.class);
+
+            GeoJSONFeature feature = new GeoJSONFeature();
+            feature.setType("Feature");
+
+            GeoJSONProperties properties = new GeoJSONProperties();
+            properties.setName(viewAlumniCity.getCity());
+            properties.setStudents(viewAlumniCity.getNAlumniInCity());
+
+            feature.setProperties(properties);
+
+            GeoJSONGeometry geometry = new GeoJSONGeometry();
+            geometry.setType("Point");
+            List<Double> coordinatesList = coordinatesToList(viewAlumniCity.getCityCoordinates());
+            geometry.setCoordinates(coordinatesList);
+
+            feature.setGeometry(geometry);
+
+            geoJSONStructure.setFeatures(feature);
+
+            // Write the updated GeoJSON structure back to the file
+            try (FileWriter fileWriter = new FileWriter(geoJSONFile)) {
+                gson.toJson(geoJSONStructure, fileWriter);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    // Adds the country to the GeoJSON file
+    public static void addCountryGeoJSON(ViewAlumniCountry viewAlumniCountry, File geoJSONFile, Gson gson) {
         
         try (FileReader fileReader = new FileReader(geoJSONFile)) {
             GeoJSONStructure geoJSONStructure = gson.fromJson(fileReader, GeoJSONStructure.class);
