@@ -1,0 +1,37 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "espinho",
+        "students": 2,
+        "residents": ["John Doe", "Jane Smith"],
+        "profilePic": ["https://s3.us-west-000.backblazeb2.com/proxycurl/person/afonsograca/profile?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=0004d7f56a0400b0000000001%2F20240112%2Fus-west-000%2Fs3%2Faws4_request&X-Amz-Date=20240112T235131Z&X-Amz-Expires=3600&X-Amz-SignedHeaders=host&X-Amz-Signature=8930324b98a990eea4106be370a50edada572b94be3db6ffcbbe6aef6f6de22e", null]
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8.64125,
+          41.00763
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "louzada",
+        "students": 1,
+        "residents": ["Alice Johnson"],
+        "profilePic": ["https://s3.us-west-000.backblazeb2.com/proxycurl/person/afpdias/profile?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=0004d7f56a0400b0000000001%2F20240112%2Fus-west-000%2Fs3%2Faws4_request&X-Amz-Date=20240112T235133Z&X-Amz-Expires=3600&X-Amz-SignedHeaders=host&X-Amz-Signature=742fcf4db58dabc35b5e2bff19aa3847ee110fa677bb735cefbde4f4b1caf27e"]
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8.27993,
+          41.27822
+        ]
+      }
+    }
+  ]
+}
