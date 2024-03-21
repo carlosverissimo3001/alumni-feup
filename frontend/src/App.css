@@ -45,3 +45,11 @@
     z-index: 3;
     color: white;
 }
+
+.clusterRectangle {
+    background-color: rgba(255, 255, 255, 0.8);
+    border: 1px solid black;
+    padding: 10px;
+    border-radius: 5px;
+    z-index: 999; /* Ensure it's above the map */
+}
