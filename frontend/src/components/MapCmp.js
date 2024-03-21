@@ -11,6 +11,7 @@ const MapCmp = () => {
 
     const mapRef = useRef(null);
     const [residentNames, setResidentNames] = useState(null);
+    const [residentLinks, setResidentLinks] = useState(null);
     const [hoveredCluster, setHoveredCluster] = useState(Boolean);
     const [hoveredMouseCoords, setHoveredMouseCoords] = useState([]);
 
@@ -42,12 +43,18 @@ const MapCmp = () => {
 
       if (event.features && event.features.length > 0) {
         const feature = event.features[0];
+        console.log("feature: ", feature);
         var residentes = feature.properties.residents;
+        var links = feature.properties.links;
 
         // Parse residentes if it's a string
         if (typeof residentes === 'string') {
           const regex = /"([^"]+)"|'([^']+)'/g;
           residentes = residentes.match(regex).map(match => match.replace(/['"]/g, ''));
+        }
+        if (typeof links === 'string') {
+          const regex = /"([^"]+)"|'([^']+)'/g;
+          links = links.match(regex).map(match => match.replace(/['"]/g, ''));
         }
 
         // Function to flatten nested arrays
@@ -60,17 +67,22 @@ const MapCmp = () => {
           return flattened;
         };
         residentes = flattenArray(residentes);
+        links = flattenArray(links);
 
-        if (residentes.length > 0) {
+        if (residentes.length > 0 && links.length > 0) {
           setResidentNames(residentes);
+          setResidentLinks(links);
+          console.log("residentLinks: ", residentLinks);
           setHoveredCluster(true);
         } else {
           setResidentNames([]);
+          setResidentLinks([]);
           setHoveredCluster(false);
           setHoveredMouseCoords(null);
         }
       } else {
         setResidentNames([]);
+        setResidentLinks([]);
         setHoveredCluster(false);
         setHoveredMouseCoords(null);
       }
@@ -106,6 +118,7 @@ const MapCmp = () => {
                 clusterProperties={{
                   students: ['+', ['get', 'students']],
                   residents: ['concat', ['get', 'residents']],
+                  links: ['concat', ['get', 'links']],
                 }}
             >
                 <Layer {...clusterLayer}/>
@@ -114,7 +127,7 @@ const MapCmp = () => {
             </Source>
           </Map>
           
-          { hoveredCluster && residentNames.length > 0  && (
+          { hoveredCluster && residentNames.length > 0  && residentLinks.length > 0 && (
             <div
               className="clusterRectangle"
               style={{
@@ -123,9 +136,11 @@ const MapCmp = () => {
               left: `${hoveredMouseCoords[0]}px`
               }}
             >
-              <ul>
+              <ul className="list-alumni">
                 {residentNames.map((resident, index) => (
-                  <li key={index}>{resident}</li>
+                  <li key={index}>
+                    <a className="link" href={residentLinks[index]} target="_blank" rel="noopener noreferrer">{resident}</a>
+                  </li>
                 ))}
               </ul>
             </div>
