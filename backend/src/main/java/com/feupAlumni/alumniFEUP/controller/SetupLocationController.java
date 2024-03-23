@@ -42,7 +42,7 @@ public class SetupLocationController {
     @PostMapping("/generateCountryGeoJason")
     public ResponseEntity<String> handleCountryGeoJason(){
         try{
-            countryService.generateCountryGeoJason();
+            countryService.generateCountryGeoJson();
             return ResponseEntity.ok("Country GeoJason successfully created.");
         } catch (Exception e) {
             return ResponseEntity.status(500).body("Error during country geoJason generation: " + e.getMessage());
