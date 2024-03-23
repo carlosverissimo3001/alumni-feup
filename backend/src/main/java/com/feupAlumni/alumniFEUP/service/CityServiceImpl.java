@@ -14,6 +14,7 @@ import com.feupAlumni.alumniFEUP.handlers.Location;
 import com.feupAlumni.alumniFEUP.model.Alumni;
 import com.feupAlumni.alumniFEUP.model.City;
 import com.feupAlumni.alumniFEUP.repository.AlumniRepository;
+import com.feupAlumni.alumniFEUP.repository.AlumniEicRepository;
 import com.feupAlumni.alumniFEUP.repository.CityRepository;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -25,6 +26,8 @@ public class CityServiceImpl implements CityService {
     private CityRepository cityRepository;
     @Autowired
     private AlumniRepository alumniRepository;
+    @Autowired
+    private AlumniEicRepository alumniEicRepository;
 
     // Gets the alumni distribution per city
     private void getAlumniDistCity(Map<String, Integer> cityAlumniCount) {
@@ -38,7 +41,8 @@ public class CityServiceImpl implements CityService {
 
             // Ensures consistency across fields
             city = city.toLowerCase();
-
+            city = city.replaceAll("ü", "u");
+            
             // Update the count for the city in the map
             cityAlumniCount.put(city, cityAlumniCount.getOrDefault(city, 0) + 1);
         }
@@ -46,6 +50,7 @@ public class CityServiceImpl implements CityService {
 
     @Override
     public void populateCityTable() {
+        CleanData.cleanTable(alumniEicRepository); // It has a foreign key
         CleanData.cleanTable(cityRepository);
 
         Map<String, Integer> cityAlumniCount = new HashMap<>();

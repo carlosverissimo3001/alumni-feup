@@ -59,4 +59,14 @@ public class AlumniController {
         } 
     }
 
+    // Populated the table alumniEIC. If it is already populated, registers are deleted and the table is repopulated
+    @PostMapping("/populateAlumniEIC")
+    public ResponseEntity<String> handlePopulateAlumniEic(){
+        try{
+            alumniService.populateAlumniEic();
+            return ResponseEntity.ok("AlumniEIC successfully populated.");
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Error while populating AlumniEIC table: " + e.getMessage());
+        }
+    }
 }

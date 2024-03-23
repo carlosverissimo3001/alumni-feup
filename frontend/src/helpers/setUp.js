@@ -137,6 +137,26 @@ class setUp {
     }
 
     /**
+    * Responsible for: populating AlumniEIC table (if already populated - registers are deleted and is repopulated)
+    */
+    static async populateAlumniEICTable() {
+        try {
+            const response = await fetch('http://localhost:8080/alumni/populateAlumniEIC', {
+                method: 'POST',
+                body: '',
+            });
+
+            if (response.ok){
+                console.log('AlumniEIC table successfully populated.');
+            } else {
+                console.error('Population of AlumniEIC failed.');
+            }
+        } catch (error) {
+            console.log('Error while populating AlumniEIC table', error);
+        }
+    }
+
+    /**
     * Generates the country geoJason
     */
    static async generateCountryGeoJason() {

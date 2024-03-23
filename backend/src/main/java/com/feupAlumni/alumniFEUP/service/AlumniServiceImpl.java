@@ -3,9 +3,15 @@ package com.feupAlumni.alumniFEUP.service;
 import com.feupAlumni.alumniFEUP.handlers.CleanData;
 import com.feupAlumni.alumniFEUP.handlers.FilesHandler;
 import com.feupAlumni.alumniFEUP.model.Alumni;
+import com.feupAlumni.alumniFEUP.model.City;
+import com.feupAlumni.alumniFEUP.model.Country;
 import com.feupAlumni.alumniFEUP.model.AlumniBackup;
+import com.feupAlumni.alumniFEUP.model.AlumniEic;
 import com.feupAlumni.alumniFEUP.repository.AlumniBackupRepository;
 import com.feupAlumni.alumniFEUP.repository.AlumniRepository;
+import com.feupAlumni.alumniFEUP.repository.AlumniEicRepository;
+import com.feupAlumni.alumniFEUP.repository.CityRepository;
+import com.feupAlumni.alumniFEUP.repository.CountryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -23,7 +29,13 @@ public class AlumniServiceImpl implements AlumniService{
     @Autowired
     private AlumniRepository alumniRepository;
     @Autowired
+    private AlumniEicRepository alumniEicRepository;
+    @Autowired
     private AlumniBackupRepository alumniBackupRepository;
+    @Autowired
+    private CityRepository cityRepository;
+    @Autowired
+    private CountryRepository countryRepository;
 
     int contagem = 0; 
 
@@ -40,7 +52,7 @@ public class AlumniServiceImpl implements AlumniService{
                 try {
                     Row row = rowIterator.next();
 
-                    String linkValue = row.getCell(0).getStringCellValue(); // Column A
+                    //String linkValue = row.getCell(0).getStringCellValue(); // Column A
                     String existeValue = row.getCell(1).getStringCellValue(); // Column B
     
                     if ("NOVO".equals(existeValue)) {
@@ -143,11 +155,6 @@ public class AlumniServiceImpl implements AlumniService{
     }
 
     @Override
-    public List<Alumni> getAllAlumnis() {
-        return alumniRepository.findAll();
-    }
-
-    @Override
     public void missingLinkedinLinks() {
         List<Alumni> alumniList = alumniRepository.findAll();
         for (Alumni alumni : alumniList) {
@@ -160,6 +167,40 @@ public class AlumniServiceImpl implements AlumniService{
                 alumni.setLinkedinLink(linkedinLinkNew);
                 alumniRepository.save(alumni);
             }
+        }
+    }
+
+    @Override
+    public void populateAlumniEic() {
+        // Clean AlumniEIC Table
+        CleanData.cleanTable(alumniEicRepository);
+
+        try{
+            //Get alumni information from the database
+            List<Alumni> alumniList = alumniRepository.findAll();
+
+            // Iterate over each alumni and populate AlumniEic table
+            for (Alumni alumni : alumniList) {
+                String linkedinInfo = alumni.getLinkedinInfo();
+                String alumniFirstName = FilesHandler.extractFieldFromJson("first_name", linkedinInfo);
+                String alumniLastName = FilesHandler.extractFieldFromJson("last_name", linkedinInfo);
+                String alumniFullName = alumniFirstName + " " + alumniLastName;
+                String linkedinLink = "https://www.linkedin.com/in/"+ FilesHandler.extractFieldFromJson("public_identifier", linkedinInfo) + "/";
+                String countryName = FilesHandler.extractFieldFromJson("country_full_name", linkedinInfo);
+                String cityName = FilesHandler.extractFieldFromJson("city", linkedinInfo);
+
+                // Fetch city and country entities from my database
+                City city = cityRepository.findByCity(cityName);
+                Country country = countryRepository.findByCountry(countryName);
+
+                // Store in the DB
+                AlumniEic alumniEic = new AlumniEic(alumniFullName, linkedinLink, city, country);
+                alumniEicRepository.save(alumniEic);
+            }
+            System.out.println("AlumniEIC table re-populated");
+            System.out.println("-----");
+        } catch(Exception e) {
+            System.out.println("Error !!!!: " + e);
         }
     }
 }
