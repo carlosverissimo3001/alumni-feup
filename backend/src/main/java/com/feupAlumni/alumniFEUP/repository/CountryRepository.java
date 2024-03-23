@@ -6,7 +6,6 @@ import org.springframework.stereotype.Repository;
 import com.feupAlumni.alumniFEUP.model.Country;
 
 @Repository
-public interface ViewAlumniCountryRepository extends JpaRepository<Country, Integer> {
-
-
+public interface CountryRepository extends JpaRepository<Country, Integer> {
+    
 }

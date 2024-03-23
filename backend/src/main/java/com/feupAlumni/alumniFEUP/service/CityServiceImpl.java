@@ -51,12 +51,6 @@ public class CityServiceImpl implements CityService {
         Map<String, Integer> cityAlumniCount = new HashMap<>();
         getAlumniDistCity(cityAlumniCount);
 
-        File geoJSONFile = new File("frontend/src/citiesGeoJSON.json");
-        Gson gson = new GsonBuilder().setPrettyPrinting().create(); 
-        FilesHandler.fileDeletion(geoJSONFile);
-        Location.createEmptyGeoJSONFile(geoJSONFile);
-        System.out.println("GeoJSON file created");
-
         // Iterate over the map and save the data to city table + Adds the information to the GeoJSON file
         for(Map.Entry<String, Integer> entry : cityAlumniCount.entrySet()){
             String city = entry.getKey();
@@ -70,9 +64,6 @@ public class CityServiceImpl implements CityService {
                     // Saves the data in the table
                     City citySave = new City(city, coordinates, alumniCount);
                     cityRepository.save(citySave);
-
-                    // Adds the city, the city coordinates and the number of alumni per city in the GeoJSON file
-                    Location.addCityGeoJSON(citySave, geoJSONFile, gson);
                 } catch (Exception e) {
                     System.out.println("city: " + city + " was not considered. Number of alumnis: " + alumniCount + " error:" + e);
                 }
@@ -82,4 +73,20 @@ public class CityServiceImpl implements CityService {
         System.out.println("-----");
     }
 
+    @Override
+    public void generateCityGeoJason() {
+        // Creates the GeoJason file
+        File geoJSONFile = new File("frontend/src/citiesGeoJSON.json");
+        Gson gson = new GsonBuilder().setPrettyPrinting().create(); 
+        FilesHandler.fileDeletion(geoJSONFile);
+        Location.createEmptyGeoJSONFile(geoJSONFile);
+        System.out.println("GeoJSON file created");
+
+        // Iterates over the City table and populates the GeoJason file
+        List<City> cityList = cityRepository.findAll();
+        for (City city : cityList) {
+            // Adds the country, the country coordinates and the number of alumni per country in the GeoJSON file
+            Location.addCityGeoJSON(city, geoJSONFile, gson);
+        }
+    }
 }

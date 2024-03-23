@@ -35,18 +35,12 @@
     top: 300px;
     left: 20px;
 }
-
-
-.btnPutLinksDB{
-    top: 240px;
+.butnGenCountryGeoJason{
+    top: 330px;
     left: 20px;
 }
-.btnExcelAlumniProfSitu{
-    top: 270px;
-    left: 20px;
-}
-.btnExcelAlumniTableToExcel{
-    top: 300px;
+.butnGenCityGeoJason{
+    top: 360px;
     left: 20px;
 }
 

@@ -111,7 +111,7 @@ class setUp {
                 console.error('Setup Location FAILED.');
             }
         } catch (error) {
-            console.error('Error during ViewAlumniCountry Table upload', error);
+            console.error('Error during Country Table upload', error);
         }
     }
 
@@ -132,9 +132,50 @@ class setUp {
                 console.error('Setup Location City FAILED.');
             }
         } catch (error) {
-            console.error('Error during ViewAlumniCity Table upload', error);
+            console.error('Error during City Table upload', error);
         }
     }
+
+    /**
+    * Generates the country geoJason
+    */
+   static async generateCountryGeoJason() {
+        try{
+            const response = await fetch('http://localhost:8080/setupLocation/generateCountryGeoJason', {
+                method: 'POST',
+                body: '',
+            });
+
+            if (response.ok){
+                console.log('Country geoJason successfully created.');
+            } else {
+                console.error('Country geoJason creation failed.');
+            }
+        } catch (error) {
+            console.log('Error while generating the country geoJason', error);
+        }
+   }
+
+   /**
+    * Generates the city geoJason
+    */
+   static async generateCityGeoJason() {
+        try{
+            const response = await fetch('http://localhost:8080/setupLocation/generateCityGeoJason', {
+                method: 'POST',
+                body: '',
+            });
+
+            if (response.ok){
+                console.log('City geoJason successfully created.');
+            } else {
+                console.error('City geoJason creation failed.');
+            }
+        } catch (error) {
+            console.log('Error while generating the city geoJason', error);
+        }
+   }
+
 }
 
 export default setUp;
