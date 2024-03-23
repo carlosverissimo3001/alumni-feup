@@ -2,101 +2,10 @@
 class setUp {
 
     /* 
-    * Backup of the alumni table to an alumniBack up table. If the table is already populated the data is 
-    * going to be deleted and the table repopulated.
+    * By calling the API to scrape profile info: populates the Alumni table
+    *                                            stores information in a backup file
     */
-    static async setAlumniBackup() {
-        try {
-            const response = await fetch('http://localhost:8080/alumni/backup', {
-                method: 'POST',
-                body: '',
-            });
-
-            if (response.ok){
-                console.log('Alumni backup successful');
-            } else {
-                console.error('Error during alumni backup.');
-            }
-        } catch(error) {
-            console.error('Error during alumni backup:', error);
-        }
-    }  
-
-    /*
-    * Calls the endpoint responsible for counting the number of alumni per country
-    * calls the API capable of getting the coordinates of each of these countries
-    * populates the table view_alumni_country => if the table is already populated, the registers are delted and the table is repopulated.
-    * Generates a GeoJSON file.
-    */
-    static async setUpLocation() {
-        try {
-            const response = await fetch('http://localhost:8080/setupLocation/populate', {
-                method: 'POST',
-                body: '',
-            });
-
-            if (response.ok){
-                console.log('Setup Location successful: tables instantiated, and GeoJSON file created.');
-            } else {
-                console.error('Setup Location FAILED.');
-            }
-        } catch (error) {
-            console.error('Error during ViewAlumniCountry Table upload', error);
-        }
-    }
-
-    /**
-    * Calls the endpoint responsible for counting the number of alumni per city
-    * calls the API capable of getting the coordinates of each of these cities 
-    * populares the table view_alumni_city => if the table is already populated, the registers are deleted and the table is repopulated
-    * Generates the GeoJson file.
-    */
-    static async setUpLocationCities() {
-        try {
-            const response = await fetch('http://localhost:8080/setupLocation/populateCities', {
-                method: 'POST',
-                body: '',
-            });
-
-            if (response.ok){
-                console.log('Setup Location City successful: tables instantiated, and GeoJson file created.');
-            } else {
-                console.error('Setup Location City FAILED.');
-            }
-        } catch (error) {
-            console.error('Error during ViewAlumniCity Table upload', error);
-        }
-    }
-
-
-    /* Sets the table Alumni by reading from the file which contains the response of the LinkdIn API.
-    * This way, if something happens to the DB we avoid having to call the API unecessarly. 
-    */
-    static async setAlumniUsingBackup(file) {
-        try {
-            const formData = new FormData();
-            formData.append('fileBackup', file);
-
-            const response = await fetch('http://localhost:8080/alumni/uploadBackupFile', {
-                method: 'POST',
-                body: formData,
-            });
-
-            if (response.ok){
-                console.log('Alumni table populated using the backup file.');
-            } else {
-                console.error('Failed to populate the alumni table using the backup file.');
-            }
-        } catch (error) {
-            console.error('Error during the population of the alumni table using the backup file.', error);
-        }
-    }
-
-    /* 
-    * Calls the endpoint responsible for reading the linkdin links from the file, calling the API capable of scraping the LinkdeIn profile
-    * and stores the scraped information in the table Alumni
-    */
-    static async getAlumniLinkedinInfo(file) {
+    static async populateAlumniTable(file) {
         // File is sent to the server using a 'FormData' object
         const formData = new FormData();
         formData.append('file', file);
@@ -121,6 +30,49 @@ class setUp {
         }
     }
 
+    /* 
+    * Backup Alumni Table. If backup table populated => data is deleted and updated with new Alumni table data
+    */
+    static async setAlumniBackup() {
+        try {
+            const response = await fetch('http://localhost:8080/alumni/backup', {
+                method: 'POST',
+                body: '',
+            });
+
+            if (response.ok){
+                console.log('Alumni backup successful');
+            } else {
+                console.error('Error during alumni backup.');
+            }
+        } catch(error) {
+            console.error('Error during alumni backup:', error);
+        }
+    }  
+
+    /* Sets the table Alumni by reading from the file which contains the response of the LinkdIn API.
+    * This way, if something happens to the DB we avoid having to call the API unecessarly. 
+    */
+    static async setAlumniUsingBackup(file) {
+        try {
+            const formData = new FormData();
+            formData.append('fileBackup', file);
+
+            const response = await fetch('http://localhost:8080/alumni/uploadBackupFile', {
+                method: 'POST',
+                body: formData,
+            });
+
+            if (response.ok){
+                console.log('Alumni table populated using the backup file.');
+            } else {
+                console.error('Failed to populate the alumni table using the backup file.');
+            }
+        } catch (error) {
+            console.error('Error during the population of the alumni table using the backup file.', error);
+        }
+    }
+
     /**
      * Because once I read from the backup file, some rows in the DB don't have the linkedin link associated. This function 
      * will create the linkedin link to those people
@@ -141,6 +93,108 @@ class setUp {
             console.error('Error while trying to set the linkedin links of the missing rows: ', error);
         }
     }
+
+    /*
+    * Responsible for: populate the country table (if already populated - registers are deleted and is repopulated)
+    *                  call API to get the coordinates of each country 
+    */
+    static async populateCountryTable() {
+        try {
+            const response = await fetch('http://localhost:8080/setupLocation/populateCountry', {
+                method: 'POST',
+                body: '',
+            });
+
+            if (response.ok){
+                console.log('Country Table successfully instantiated.');
+            } else {
+                console.error('Setup Location FAILED.');
+            }
+        } catch (error) {
+            console.error('Error during Country Table upload', error);
+        }
+    }
+
+    /*
+    * Responsible for: populate the city table (if already populated - registers are deleted and is repopulated) 
+    *                  calls the API to get the coordinates of each city
+    */
+    static async populateCityTable() {
+        try {
+            const response = await fetch('http://localhost:8080/setupLocation/populateCity', {
+                method: 'POST',
+                body: '',
+            });
+
+            if (response.ok){
+                console.log('City table successfully instantiated.');
+            } else {
+                console.error('Setup Location City FAILED.');
+            }
+        } catch (error) {
+            console.error('Error during City Table upload', error);
+        }
+    }
+
+    /**
+    * Responsible for: populating AlumniEIC table (if already populated - registers are deleted and is repopulated)
+    */
+    static async populateAlumniEICTable() {
+        try {
+            const response = await fetch('http://localhost:8080/alumni/populateAlumniEIC', {
+                method: 'POST',
+                body: '',
+            });
+
+            if (response.ok){
+                console.log('AlumniEIC table successfully populated.');
+            } else {
+                console.error('Population of AlumniEIC failed.');
+            }
+        } catch (error) {
+            console.log('Error while populating AlumniEIC table', error);
+        }
+    }
+
+    /**
+    * Generates the country geoJason
+    */
+   static async generateCountryGeoJason() {
+        try{
+            const response = await fetch('http://localhost:8080/setupLocation/generateCountryGeoJason', {
+                method: 'POST',
+                body: '',
+            });
+
+            if (response.ok){
+                console.log('Country geoJason successfully created.');
+            } else {
+                console.error('Country geoJason creation failed.');
+            }
+        } catch (error) {
+            console.log('Error while generating the country geoJason', error);
+        }
+   }
+
+   /**
+    * Generates the city geoJason
+    */
+   static async generateCityGeoJason() {
+        try{
+            const response = await fetch('http://localhost:8080/setupLocation/generateCityGeoJason', {
+                method: 'POST',
+                body: '',
+            });
+
+            if (response.ok){
+                console.log('City geoJason successfully created.');
+            } else {
+                console.error('City geoJason creation failed.');
+            }
+        } catch (error) {
+            console.log('Error while generating the city geoJason', error);
+        }
+   }
 
 }
 

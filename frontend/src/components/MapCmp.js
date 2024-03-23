@@ -1,21 +1,30 @@
-import React, { useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { clusterLayer, clusterCountLayer, unclusterPointLayer } from './MapLayers';
-//import alumniPerCountry from '../countriesGeoJSON.json';
-import alumniPerCountry from '../citiesGeoJSON.json';
 import {Map, Source, Layer} from 'react-map-gl';
 
 const TOKEN = process.env.REACT_APP_MAPBOX_ACCESS_TOKEN;
 
-const MapCmp = () => {
+const MapCmp = ({ geoJSONFile }) => {
 
     const mapRef = useRef(null);
+    const [alumniGeoJSON, setAlumniGeoJSON] = useState(null);
+    const [listPlaceName, setListPlaceName] = useState(null);
+    const [listAlumniNames, setListAlumniNames] = useState(null);
+    const [listLinkedinLinks, setListLinkedinLinks] = useState(null);
+    const [hoveredCluster, setHoveredCluster] = useState(Boolean);
+    const [hoveredMouseCoords, setHoveredMouseCoords] = useState([]);
+
+    useEffect(() => {
+      const alumniData = geoJSONFile === 'countries' ? require('../countriesGeoJSON.json') : require('../citiesGeoJSON.json');
+      setAlumniGeoJSON(alumniData);
+    }, [geoJSONFile]);
 
     const onClick = event => {
         if (event.features && event.features.length > 0) {
           const feature = event.features[0];
           const clusterId = feature.properties.cluster_id;
     
-          const mapboxSource = mapRef.current.getSource('alumniPerCountry');
+          const mapboxSource = mapRef.current.getSource(`${alumniGeoJSON}`);
           
           mapboxSource.getClusterExpansionZoom(clusterId, (err, zoom) => {
             if(err){
@@ -29,7 +38,69 @@ const MapCmp = () => {
             });
           });
         }
+    }
+
+    const onHover = event => {
+      if (event.lngLat) {
+        setHoveredMouseCoords([event.point.x, event.point.y]);
       }
+
+      if (event.features && event.features.length > 0) {
+        const feature = event.features[0];
+        var listPlaceName = feature.properties.name;
+        var listAlumniNames = feature.properties.listAlumniNames;
+        var listLinkedinLinks = feature.properties.listLinkedinLinks;
+
+        // Parse placeName if it's a string
+        if (typeof listPlaceName === 'string') {
+          const regex = /"([^"]+)"|'([^']+)'/g;
+          listPlaceName = listPlaceName.match(regex).map(match => match.replace(/['"]/g, ''));
+        }
+        // Parse listAlumniNames if it's a string
+        if (typeof listAlumniNames === 'string') {
+          const regex = /"([^"]+)"|'([^']+)'/g;
+          listAlumniNames = listAlumniNames.match(regex).map(match => match.replace(/['"]/g, ''));
+        }
+        // Parse linkeLinks if it's a string
+        if (typeof listLinkedinLinks === 'string') {
+          const regex = /"([^"]+)"|'([^']+)'/g;
+          listLinkedinLinks = listLinkedinLinks.match(regex).map(match => match.replace(/['"]/g, ''));
+        }
+
+        // Function to flatten nested arrays
+        const flattenArray = arr => {
+          if (!Array.isArray(arr)) return [arr];
+          let flattened = [];
+          arr.forEach(item => {
+            flattened = flattened.concat(flattenArray(item));
+          });
+          return flattened;
+        };
+        listPlaceName = flattenArray(listPlaceName);
+        listAlumniNames = flattenArray(listAlumniNames);
+        listLinkedinLinks = flattenArray(listLinkedinLinks);
+
+
+        if (listAlumniNames.length > 0 && listLinkedinLinks.length > 0 && listPlaceName.length > 0) {
+          setListPlaceName(listPlaceName);
+          setListAlumniNames(listAlumniNames);
+          setListLinkedinLinks(listLinkedinLinks);
+          setHoveredCluster(true);
+        } else {
+          setListPlaceName([]);
+          setListAlumniNames([]);
+          setListLinkedinLinks([]);
+          setHoveredCluster(false);
+          setHoveredMouseCoords(null);
+        }
+      } else {
+        setListPlaceName([]);
+        setListAlumniNames([]);
+        setListLinkedinLinks([]);
+        setHoveredCluster(false);
+        setHoveredMouseCoords(null);
+      }
+    };
 
     return (
         <div className="mapCmpDiv">
@@ -48,17 +119,21 @@ const MapCmp = () => {
             mapboxAccessToken={TOKEN}
             interactiveLayerIds={[clusterLayer.id]}
             onClick={onClick}
+            onMouseMove={onHover}
             ref={mapRef}
             >
             <Source
-                id="alumniPerCountry"
+                id="alumniDistribution"
                 type="geojson"
-                data={alumniPerCountry}
+                data={alumniGeoJSON}
                 cluster={true}
                 clusterMaxZoom={14}
                 clusterRadius={50}
                 clusterProperties={{
-                students: ['+', ['get', 'students']],
+                  name: ['concat', ['get', 'name']],
+                  students: ['+', ['get', 'students']],
+                  listAlumniNames: ['concat', ['get', 'listAlumniNames']],
+                  listLinkedinLinks: ['concat', ['get', 'listLinkedinLinks']],
                 }}
             >
                 <Layer {...clusterLayer}/>
@@ -66,6 +141,33 @@ const MapCmp = () => {
                 <Layer {...unclusterPointLayer}/>
             </Source>
           </Map>
+          
+          { hoveredCluster && listAlumniNames.length > 0  && listLinkedinLinks.length > 0 && listPlaceName.length > 0 && (
+            <div
+              className="clusterRectangle"
+              style={{
+              position: 'absolute',
+              top:`${hoveredMouseCoords[1]}px`,
+              left: `${hoveredMouseCoords[0]}px`
+              }}
+            >
+              <ul className={`list-alumni${listAlumniNames.length > 5 ? ' scrollable' : ''}`}>
+                <span style={{ fontWeight: 'bold' }}>Place: </span>
+                {listPlaceName.map( (place, index) => (
+                  <span key={index}>{place}{index !== listPlaceName.length - 1 && ', '}</span>
+                ))}
+
+                <p></p>
+                <span style={{ fontWeight: 'bold' }}>Alumni: </span>
+                {listAlumniNames.map((alumniName, index) => (
+                  <li key={index}>
+                    <a className="link" href={listLinkedinLinks[index]} target="_blank" rel="noopener noreferrer">{alumniName}</a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+
         </div>
     );
 };

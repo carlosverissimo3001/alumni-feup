@@ -9,32 +9,52 @@
     z-index: 2;
 }
 
-.butnUplFile{
+.butnPopAlumni{
     top: 120px;
     left: 20px;
 }
-.butnUplFileBackup{
+.butnBackAlumni{
     top: 150px;
     left: 20px;
 }
-.butnAlumniBackup{
+.butnBackAlumniWFile{
     top: 180px;
     left: 20px;
 }
-.butnAlmWithoutLink{
+.btnMissingLinkedinLinks{
     top: 210px;
     left: 20px;
 }
-.btnPutLinksDB{
-    top: 240px;
-    left: 20px;
-}
-.btnExcelAlumniProfSitu{
+
+
+.butnPopCountry{
     top: 270px;
     left: 20px;
 }
-.btnExcelAlumniTableToExcel{
+.butnPopCity{
     top: 300px;
+    left: 20px;
+}
+.butnPopAlumniEIC{
+    top: 330px;
+    left: 20px;
+}
+
+.butnGenCountryGeoJason{
+    top: 390px;
+    left: 20px;
+}
+.butnGenCityGeoJason{
+    top: 420px;
+    left: 20px;
+}
+
+.butnUseCitiesGeoJson{
+    top: 480px;
+    left: 20px;
+}
+.butnUseCountriesGeoJson{
+    top: 510px;
     left: 20px;
 }
 
@@ -44,4 +64,28 @@
     left: 20px;
     z-index: 3;
     color: white;
+}
+
+.clusterRectangle {
+    background-color: rgba(255, 255, 255, 0.8);
+    border: 1px solid black;
+    padding-left: 10px;
+    padding-right: 10px;
+    border-radius: 5px;
+    z-index: 999; /* Ensure it's above the map */
+}
+
+.link {
+    color: black;
+    text-decoration: none;
+}
+
+.list-alumni {
+    list-style-type: none;
+    padding: 0;
+}
+.list-alumni.scrollable {
+    max-height: 200px; /* Set your desired max height */
+    max-width: 500px; /* Set your desired max height */
+    overflow-y: auto;
 }

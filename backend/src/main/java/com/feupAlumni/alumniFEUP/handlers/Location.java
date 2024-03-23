@@ -12,21 +12,24 @@ import java.net.URL;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.nio.charset.StandardCharsets;
 import java.net.http.HttpClient.Version;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.feupAlumni.alumniFEUP.model.GeoJSONFeature;
 import com.feupAlumni.alumniFEUP.model.GeoJSONGeometry;
 import com.feupAlumni.alumniFEUP.model.GeoJSONProperties;
 import com.feupAlumni.alumniFEUP.model.GeoJSONStructure;
-import com.feupAlumni.alumniFEUP.model.ViewAlumniCountry;
-import com.feupAlumni.alumniFEUP.model.ViewAlumniCity;
+import com.feupAlumni.alumniFEUP.model.AlumniEic;
+import com.feupAlumni.alumniFEUP.model.City;
+import com.feupAlumni.alumniFEUP.model.Country;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import java.net.URLEncoder;
@@ -144,22 +147,29 @@ public class Location {
     }
 
     // Adds the city to the GeoJSON file
-    public static void addCityGeoJSON(ViewAlumniCity viewAlumniCity, File geoJSONFile, Gson gson) {
-        try (FileReader fileReader = new FileReader(geoJSONFile)) {
+    public static void addCityGeoJSON(City city, List<AlumniEic> alumniEicList, File geoJSONFile, Gson gson) {
+        try (FileReader fileReader = new FileReader(geoJSONFile, StandardCharsets.UTF_8)) {
             GeoJSONStructure geoJSONStructure = gson.fromJson(fileReader, GeoJSONStructure.class);
 
             GeoJSONFeature feature = new GeoJSONFeature();
             feature.setType("Feature");
 
             GeoJSONProperties properties = new GeoJSONProperties();
-            properties.setName(viewAlumniCity.getCity());
-            properties.setStudents(viewAlumniCity.getNAlumniInCity());
+            properties.setName(Arrays.asList(city.getCity()));
+            properties.setStudents(city.getNAlumniInCity());
+
+            // Collect alumni names and linkedin links for this country
+            List<String> alumniNames = alumniEicList.stream().map(AlumniEic::getAlumniName).collect(Collectors.toList());
+            properties.setListAlumniNames(alumniNames);
+
+            List<String> linkedinLinks = alumniEicList.stream().map(AlumniEic::getLinkedinLink).collect(Collectors.toList());
+            properties.setListLinkedinLinks(linkedinLinks);
 
             feature.setProperties(properties);
 
             GeoJSONGeometry geometry = new GeoJSONGeometry();
             geometry.setType("Point");
-            List<Double> coordinatesList = coordinatesToList(viewAlumniCity.getCityCoordinates());
+            List<Double> coordinatesList = coordinatesToList(city.getCityCoordinates());
             geometry.setCoordinates(coordinatesList);
 
             feature.setGeometry(geometry);
@@ -167,7 +177,7 @@ public class Location {
             geoJSONStructure.setFeatures(feature);
 
             // Write the updated GeoJSON structure back to the file
-            try (FileWriter fileWriter = new FileWriter(geoJSONFile)) {
+            try (FileWriter fileWriter = new FileWriter(geoJSONFile, StandardCharsets.UTF_8)) {
                 gson.toJson(geoJSONStructure, fileWriter);
             }
         } catch (IOException e) {
@@ -176,23 +186,30 @@ public class Location {
     }
 
     // Adds the country to the GeoJSON file
-    public static void addCountryGeoJSON(ViewAlumniCountry viewAlumniCountry, File geoJSONFile, Gson gson) {
+    public static void addCountryGeoJSON(Country country, List<AlumniEic> alumniEicList, File geoJSONFile, Gson gson) {
         
-        try (FileReader fileReader = new FileReader(geoJSONFile)) {
+        try (FileReader fileReader = new FileReader(geoJSONFile, StandardCharsets.UTF_8)) {
             GeoJSONStructure geoJSONStructure = gson.fromJson(fileReader, GeoJSONStructure.class);
 
             GeoJSONFeature feature = new GeoJSONFeature();
             feature.setType("Feature");
 
             GeoJSONProperties properties = new GeoJSONProperties();
-            properties.setName(viewAlumniCountry.getCountry());
-            properties.setStudents(viewAlumniCountry.getNAlumniInCountry());
+            properties.setName(Arrays.asList(country.getCountry()));
+            properties.setStudents(country.getNAlumniInCountry());
+
+            // Collect alumni names and linkedin links for this country
+            List<String> alumniNames = alumniEicList.stream().map(AlumniEic::getAlumniName).collect(Collectors.toList());
+            properties.setListAlumniNames(alumniNames);
+
+            List<String> linkedinLinks = alumniEicList.stream().map(AlumniEic::getLinkedinLink).collect(Collectors.toList());
+            properties.setListLinkedinLinks(linkedinLinks);
 
             feature.setProperties(properties);
 
             GeoJSONGeometry geometry = new GeoJSONGeometry();
             geometry.setType("Point");
-            List<Double> coordinatesList = coordinatesToList(viewAlumniCountry.getCountryCoordinates());
+            List<Double> coordinatesList = coordinatesToList(country.getCountryCoordinates());
             geometry.setCoordinates(coordinatesList);
 
             feature.setGeometry(geometry);
@@ -200,7 +217,7 @@ public class Location {
             geoJSONStructure.setFeatures(feature);
 
             // Write the updated GeoJSON structure back to the file
-            try (FileWriter fileWriter = new FileWriter(geoJSONFile)) {
+            try (FileWriter fileWriter = new FileWriter(geoJSONFile, StandardCharsets.UTF_8)) {
                 gson.toJson(geoJSONStructure, fileWriter);
             }
             
