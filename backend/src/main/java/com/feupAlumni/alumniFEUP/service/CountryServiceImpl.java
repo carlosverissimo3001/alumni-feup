@@ -4,6 +4,7 @@ import com.feupAlumni.alumniFEUP.handlers.CleanData;
 import com.feupAlumni.alumniFEUP.handlers.FilesHandler;
 import com.feupAlumni.alumniFEUP.handlers.Location;
 import com.feupAlumni.alumniFEUP.model.Alumni;
+import com.feupAlumni.alumniFEUP.model.AlumniEic;
 import com.feupAlumni.alumniFEUP.model.Country;
 import com.feupAlumni.alumniFEUP.repository.AlumniEicRepository;
 import com.feupAlumni.alumniFEUP.repository.AlumniRepository;
@@ -14,6 +15,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.Map;
+import java.util.stream.Collectors;
 import java.io.File;
 
 import com.google.gson.Gson;
@@ -85,7 +87,7 @@ public class CountryServiceImpl implements CountryService{
     }
 
     @Override
-    public void generateCountryGeoJason() {
+    public void generateCountryGeoJson() {
         // Creates the GeoJason file
         File geoJSONFile = new File("frontend/src/countriesGeoJSON.json");
         Gson gson = new GsonBuilder().setPrettyPrinting().create(); 
@@ -93,12 +95,27 @@ public class CountryServiceImpl implements CountryService{
         Location.createEmptyGeoJSONFile(geoJSONFile);
         System.out.println("GeoJSON file created");
 
+        // Group AlumniEic by country
+        Map<Country, List<AlumniEic>> alumniByCountry = alumniEicRepository.findAll()
+            .stream()
+            .collect(Collectors.groupingBy(AlumniEic::getCountry));
+
+        alumniByCountry.forEach((country, alumniList) -> {
+            Location.addCountryGeoJSON(country, alumniList, geoJSONFile, gson);
+        });
+
+        // Iterates over the AlumniEic table and populates the GeoJason file
+        /*List<AlumniEic> alumniEicList = alumniEicRepository.findAll();
+        for (AlumniEic alumniEic : alumniEicList) {
+            Location.addCountryGeoJSON(alumniEic, geoJSONFile, gson);
+        }*/
+
         // Iterates over the CountryService table and populates the GeoJason file
-        List<Country> countryList = countryRepository.findAll();
+        /*List<Country> countryList = countryRepository.findAll();
         for (Country country : countryList) {
             // Adds the country, the country coordinates and the number of alumni per country in the GeoJSON file
             Location.addCountryGeoJSON(country, geoJSONFile, gson);
-        }
+        }*/
     }
 
 }

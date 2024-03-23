@@ -1,8 +1,8 @@
 import React, { useRef, useState } from 'react';
 import { clusterLayer, clusterCountLayer, unclusterPointLayer } from './MapLayers';
-//import alumniPerCountry from '../countriesGeoJSON.json';
+import alumniPerCountry from '../countriesGeoJSON.json';
 //import alumniPerCountry from '../citiesGeoJSON.json';
-import alumniPerCountry from '../edit_citiesGeoJSON.json';
+//import alumniPerCountry from '../edit_citiesGeoJSON.json';
 import {Map, Source, Layer} from 'react-map-gl';
 
 const TOKEN = process.env.REACT_APP_MAPBOX_ACCESS_TOKEN;
@@ -10,8 +10,8 @@ const TOKEN = process.env.REACT_APP_MAPBOX_ACCESS_TOKEN;
 const MapCmp = () => {
 
     const mapRef = useRef(null);
-    const [residentNames, setResidentNames] = useState(null);
-    const [residentLinks, setResidentLinks] = useState(null);
+    const [listAlumniNames, setListAlumniNames] = useState(null);
+    const [listLinkedinLinks, setListLinkedinLinks] = useState(null);
     const [hoveredCluster, setHoveredCluster] = useState(Boolean);
     const [hoveredMouseCoords, setHoveredMouseCoords] = useState([]);
 
@@ -43,18 +43,17 @@ const MapCmp = () => {
 
       if (event.features && event.features.length > 0) {
         const feature = event.features[0];
-        console.log("feature: ", feature);
-        var residentes = feature.properties.residents;
-        var links = feature.properties.links;
+        var listAlumniNames = feature.properties.listAlumniNames;
+        var listLinkedinLinks = feature.properties.listLinkedinLinks;
 
-        // Parse residentes if it's a string
-        if (typeof residentes === 'string') {
+        // Parse listAlumniNames if it's a string
+        if (typeof listAlumniNames === 'string') {
           const regex = /"([^"]+)"|'([^']+)'/g;
-          residentes = residentes.match(regex).map(match => match.replace(/['"]/g, ''));
+          listAlumniNames = listAlumniNames.match(regex).map(match => match.replace(/['"]/g, ''));
         }
-        if (typeof links === 'string') {
+        if (typeof listLinkedinLinks === 'string') {
           const regex = /"([^"]+)"|'([^']+)'/g;
-          links = links.match(regex).map(match => match.replace(/['"]/g, ''));
+          listLinkedinLinks = listLinkedinLinks.match(regex).map(match => match.replace(/['"]/g, ''));
         }
 
         // Function to flatten nested arrays
@@ -66,23 +65,22 @@ const MapCmp = () => {
           });
           return flattened;
         };
-        residentes = flattenArray(residentes);
-        links = flattenArray(links);
+        listAlumniNames = flattenArray(listAlumniNames);
+        listLinkedinLinks = flattenArray(listLinkedinLinks);
 
-        if (residentes.length > 0 && links.length > 0) {
-          setResidentNames(residentes);
-          setResidentLinks(links);
-          console.log("residentLinks: ", residentLinks);
+        if (listAlumniNames.length > 0 && listLinkedinLinks.length > 0) {
+          setListAlumniNames(listAlumniNames);
+          setListLinkedinLinks(listLinkedinLinks);
           setHoveredCluster(true);
         } else {
-          setResidentNames([]);
-          setResidentLinks([]);
+          setListAlumniNames([]);
+          setListLinkedinLinks([]);
           setHoveredCluster(false);
           setHoveredMouseCoords(null);
         }
       } else {
-        setResidentNames([]);
-        setResidentLinks([]);
+        setListAlumniNames([]);
+        setListLinkedinLinks([]);
         setHoveredCluster(false);
         setHoveredMouseCoords(null);
       }
@@ -117,8 +115,8 @@ const MapCmp = () => {
                 clusterRadius={50}
                 clusterProperties={{
                   students: ['+', ['get', 'students']],
-                  residents: ['concat', ['get', 'residents']],
-                  links: ['concat', ['get', 'links']],
+                  listAlumniNames: ['concat', ['get', 'listAlumniNames']],
+                  listLinkedinLinks: ['concat', ['get', 'listLinkedinLinks']],
                 }}
             >
                 <Layer {...clusterLayer}/>
@@ -127,7 +125,7 @@ const MapCmp = () => {
             </Source>
           </Map>
           
-          { hoveredCluster && residentNames.length > 0  && residentLinks.length > 0 && (
+          { hoveredCluster && listAlumniNames.length > 0  && listLinkedinLinks.length > 0 && (
             <div
               className="clusterRectangle"
               style={{
@@ -137,9 +135,9 @@ const MapCmp = () => {
               }}
             >
               <ul className="list-alumni">
-                {residentNames.map((resident, index) => (
+                {listAlumniNames.map((alumniName, index) => (
                   <li key={index}>
-                    <a className="link" href={residentLinks[index]} target="_blank" rel="noopener noreferrer">{resident}</a>
+                    <a className="link" href={listLinkedinLinks[index]} target="_blank" rel="noopener noreferrer">{alumniName}</a>
                   </li>
                 ))}
               </ul>

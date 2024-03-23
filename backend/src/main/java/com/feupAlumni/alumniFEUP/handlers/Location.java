@@ -15,6 +15,7 @@ import java.net.http.HttpResponse;
 import java.net.http.HttpClient.Version;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -24,8 +25,9 @@ import com.feupAlumni.alumniFEUP.model.GeoJSONFeature;
 import com.feupAlumni.alumniFEUP.model.GeoJSONGeometry;
 import com.feupAlumni.alumniFEUP.model.GeoJSONProperties;
 import com.feupAlumni.alumniFEUP.model.GeoJSONStructure;
-import com.feupAlumni.alumniFEUP.model.Country;
+import com.feupAlumni.alumniFEUP.model.AlumniEic;
 import com.feupAlumni.alumniFEUP.model.City;
+import com.feupAlumni.alumniFEUP.model.Country;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import java.net.URLEncoder;
@@ -175,7 +177,7 @@ public class Location {
     }
 
     // Adds the country to the GeoJSON file
-    public static void addCountryGeoJSON(Country viewAlumniCountry, File geoJSONFile, Gson gson) {
+    public static void addCountryGeoJSON(Country country, List<AlumniEic> alumniEicList, File geoJSONFile, Gson gson) {
         
         try (FileReader fileReader = new FileReader(geoJSONFile)) {
             GeoJSONStructure geoJSONStructure = gson.fromJson(fileReader, GeoJSONStructure.class);
@@ -184,14 +186,21 @@ public class Location {
             feature.setType("Feature");
 
             GeoJSONProperties properties = new GeoJSONProperties();
-            properties.setName(viewAlumniCountry.getCountry());
-            properties.setStudents(viewAlumniCountry.getNAlumniInCountry());
+            properties.setName(country.getCountry());
+            properties.setStudents(country.getNAlumniInCountry());
+
+            // Collect alumni names and linkedin links for this country
+            List<String> alumniNames = alumniEicList.stream().map(AlumniEic::getAlumniName).collect(Collectors.toList());
+            properties.setListAlumniNames(alumniNames);
+
+            List<String> linkedinLinks = alumniEicList.stream().map(AlumniEic::getLinkedinLink).collect(Collectors.toList());
+            properties.setListLinkedinLinks(linkedinLinks);
 
             feature.setProperties(properties);
 
             GeoJSONGeometry geometry = new GeoJSONGeometry();
             geometry.setType("Point");
-            List<Double> coordinatesList = coordinatesToList(viewAlumniCountry.getCountryCoordinates());
+            List<Double> coordinatesList = coordinatesToList(country.getCountryCoordinates());
             geometry.setCoordinates(coordinatesList);
 
             feature.setGeometry(geometry);
