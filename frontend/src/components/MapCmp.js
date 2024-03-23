@@ -1,7 +1,7 @@
 import React, { useRef, useState } from 'react';
 import { clusterLayer, clusterCountLayer, unclusterPointLayer } from './MapLayers';
-import alumniPerCountry from '../countriesGeoJSON.json';
-//import alumniPerCountry from '../citiesGeoJSON.json';
+//import alumniPerCountry from '../countriesGeoJSON.json';
+import alumniPerCountry from '../citiesGeoJSON.json';
 //import alumniPerCountry from '../edit_citiesGeoJSON.json';
 import {Map, Source, Layer} from 'react-map-gl';
 

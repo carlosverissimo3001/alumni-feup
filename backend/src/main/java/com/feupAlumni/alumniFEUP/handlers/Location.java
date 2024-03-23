@@ -145,7 +145,7 @@ public class Location {
     }
 
     // Adds the city to the GeoJSON file
-    public static void addCityGeoJSON(City viewAlumniCity, File geoJSONFile, Gson gson) {
+    public static void addCityGeoJSON(City city, List<AlumniEic> alumniEicList, File geoJSONFile, Gson gson) {
         try (FileReader fileReader = new FileReader(geoJSONFile)) {
             GeoJSONStructure geoJSONStructure = gson.fromJson(fileReader, GeoJSONStructure.class);
 
@@ -153,14 +153,21 @@ public class Location {
             feature.setType("Feature");
 
             GeoJSONProperties properties = new GeoJSONProperties();
-            properties.setName(viewAlumniCity.getCity());
-            properties.setStudents(viewAlumniCity.getNAlumniInCity());
+            properties.setName(city.getCity());
+            properties.setStudents(city.getNAlumniInCity());
+
+            // Collect alumni names and linkedin links for this country
+            List<String> alumniNames = alumniEicList.stream().map(AlumniEic::getAlumniName).collect(Collectors.toList());
+            properties.setListAlumniNames(alumniNames);
+
+            List<String> linkedinLinks = alumniEicList.stream().map(AlumniEic::getLinkedinLink).collect(Collectors.toList());
+            properties.setListLinkedinLinks(linkedinLinks);
 
             feature.setProperties(properties);
 
             GeoJSONGeometry geometry = new GeoJSONGeometry();
             geometry.setType("Point");
-            List<Double> coordinatesList = coordinatesToList(viewAlumniCity.getCityCoordinates());
+            List<Double> coordinatesList = coordinatesToList(city.getCityCoordinates());
             geometry.setCoordinates(coordinatesList);
 
             feature.setGeometry(geometry);
