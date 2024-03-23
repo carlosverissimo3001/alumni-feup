@@ -6,9 +6,8 @@ import com.feupAlumni.alumniFEUP.handlers.Location;
 import com.feupAlumni.alumniFEUP.model.Alumni;
 import com.feupAlumni.alumniFEUP.model.Country;
 import com.feupAlumni.alumniFEUP.repository.AlumniRepository;
-import com.feupAlumni.alumniFEUP.repository.ViewAlumniCountryRepository;
+import com.feupAlumni.alumniFEUP.repository.CountryRepository;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +22,7 @@ import com.google.gson.GsonBuilder;
 public class CountryServiceImpl implements CountryService{
 
     @Autowired
-    private ViewAlumniCountryRepository viewAlumniCountryRepository;
+    private CountryRepository countryRepository;
     @Autowired
     private AlumniRepository alumniRepository;
 
@@ -47,21 +46,15 @@ public class CountryServiceImpl implements CountryService{
             // Adds the country code
             countryCodes.put(country, countryCode);
         }
-    }   
+    }      
 
     @Override
     public void populateCountryTable() {
-        CleanData.cleanTable(viewAlumniCountryRepository);
+        CleanData.cleanTable(countryRepository);
 
         Map<String, Integer> countryAlumniCount = new HashMap<>();
         Map<String, String> countryCodes = new HashMap<>();
         getAlumniDistCountry(countryAlumniCount, countryCodes);
-        
-        File geoJSONFile = new File("frontend/src/countriesGeoJSON.json");
-        Gson gson = new GsonBuilder().setPrettyPrinting().create(); 
-        FilesHandler.fileDeletion(geoJSONFile);
-        Location.createEmptyGeoJSONFile(geoJSONFile);
-        System.out.println("GeoJSON file created");
 
         // Iterate over the map and save the data to ViewAlumniCountry table + Adds the information to the GeoJSON file
         for (Map.Entry<String, Integer> entry : countryAlumniCount.entrySet()) {
@@ -78,15 +71,8 @@ public class CountryServiceImpl implements CountryService{
 
                 // Saves the data in the table
                 Country viewAlumniCountry = new Country(country, countryCode, alumniCount, coordinates);
-                viewAlumniCountryRepository.save(viewAlumniCountry);
-                
-
-                // Adds the country, the country coordinates and the number of alumni per country in the GeoJSON file
-                Location.addCountryGeoJSON(viewAlumniCountry, geoJSONFile, gson);
-
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (InterruptedException e) {
+                countryRepository.save(viewAlumniCountry);
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
@@ -95,8 +81,20 @@ public class CountryServiceImpl implements CountryService{
     }
 
     @Override
-    public List<Country> getViewAlumniCountry() {
-        return viewAlumniCountryRepository.findAll();
+    public void generateCountryGeoJason() {
+        // Creates the GeoJason file
+        File geoJSONFile = new File("frontend/src/countriesGeoJSON.json");
+        Gson gson = new GsonBuilder().setPrettyPrinting().create(); 
+        FilesHandler.fileDeletion(geoJSONFile);
+        Location.createEmptyGeoJSONFile(geoJSONFile);
+        System.out.println("GeoJSON file created");
+
+        // Iterates over the CountryService table and populates the GeoJason file
+        List<Country> countryList = countryRepository.findAll();
+        for (Country country : countryList) {
+            // Adds the country, the country coordinates and the number of alumni per country in the GeoJSON file
+            Location.addCountryGeoJSON(country, geoJSONFile, gson);
+        }
     }
 
 }

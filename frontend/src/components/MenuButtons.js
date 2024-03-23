@@ -54,6 +54,16 @@ const MenuButtons = () => {
         await setUp.populateCityTable();
     }
 
+    // Generates the coynntry geoJason
+    const handleGenerateCountryGeoJason = async () => {
+        await setUp.generateCountryGeoJason();
+    }
+
+    // Generates the city geoJason
+    const handleGenerateCityGeoJason = async () => {
+        await setUp.generateCityGeoJason();
+    }
+
     // Makes the uplication setup: populades the Alumni table and performs its backup. Populates the view_alumni_country table and 
     // generates the GeoJSON file.
     const handleFileUpload = async () => {
@@ -124,6 +134,9 @@ const MenuButtons = () => {
 
             <button className="button butnPopCountry" onClick={handlePopulateCountryTable}>PopulateCoutryTable</button>
             <button className="button butnPopCity" onClick={handlePopulateCityTable}>PopulateCityTable</button>
+
+            <button className="button butnGenCountryGeoJason" onClick={handleGenerateCountryGeoJason}>GenerateCountryGeoJason</button>
+            <button className="button butnGenCityGeoJason" onClick={handleGenerateCityGeoJason}>GenerateCityGeoJason</button>
 
             {/*<button className="button butnUplFile" onClick={handleFileUpload}>Upload File</button>
             
