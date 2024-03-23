@@ -12,6 +12,7 @@ import java.net.URL;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.nio.charset.StandardCharsets;
 import java.net.http.HttpClient.Version;
 import java.util.ArrayList;
 import java.util.List;
@@ -146,7 +147,7 @@ public class Location {
 
     // Adds the city to the GeoJSON file
     public static void addCityGeoJSON(City city, List<AlumniEic> alumniEicList, File geoJSONFile, Gson gson) {
-        try (FileReader fileReader = new FileReader(geoJSONFile)) {
+        try (FileReader fileReader = new FileReader(geoJSONFile, StandardCharsets.UTF_8)) {
             GeoJSONStructure geoJSONStructure = gson.fromJson(fileReader, GeoJSONStructure.class);
 
             GeoJSONFeature feature = new GeoJSONFeature();
@@ -175,7 +176,7 @@ public class Location {
             geoJSONStructure.setFeatures(feature);
 
             // Write the updated GeoJSON structure back to the file
-            try (FileWriter fileWriter = new FileWriter(geoJSONFile)) {
+            try (FileWriter fileWriter = new FileWriter(geoJSONFile, StandardCharsets.UTF_8)) {
                 gson.toJson(geoJSONStructure, fileWriter);
             }
         } catch (IOException e) {
@@ -186,7 +187,7 @@ public class Location {
     // Adds the country to the GeoJSON file
     public static void addCountryGeoJSON(Country country, List<AlumniEic> alumniEicList, File geoJSONFile, Gson gson) {
         
-        try (FileReader fileReader = new FileReader(geoJSONFile)) {
+        try (FileReader fileReader = new FileReader(geoJSONFile, StandardCharsets.UTF_8)) {
             GeoJSONStructure geoJSONStructure = gson.fromJson(fileReader, GeoJSONStructure.class);
 
             GeoJSONFeature feature = new GeoJSONFeature();
@@ -215,7 +216,7 @@ public class Location {
             geoJSONStructure.setFeatures(feature);
 
             // Write the updated GeoJSON structure back to the file
-            try (FileWriter fileWriter = new FileWriter(geoJSONFile)) {
+            try (FileWriter fileWriter = new FileWriter(geoJSONFile, StandardCharsets.UTF_8)) {
                 gson.toJson(geoJSONStructure, fileWriter);
             }
             

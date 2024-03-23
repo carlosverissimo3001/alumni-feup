@@ -4,57 +4,190 @@
     {
       "type": "Feature",
       "properties": {
-        "name": "null",
-        "students": 4,
+        "name": "brazil",
+        "students": 3,
         "listAlumniNames": [
-          "andr„?‚ riboira",
-          "Joaquim Carneiro",
-          "Jo„?‚£o Ferreira",
-          "Paulo Monteiro, MSc ??"
+          "Daniel Rodrigues",
+          "Daniel Pizarro",
+          "Joao Diogo de Oliveira"
         ],
         "listLinkedinLinks": [
-          "https://www.linkedin.com/in/andreriboira/",
-          "https://www.linkedin.com/in/joaquimcarneiro/",
-          "https://www.linkedin.com/in/jo„o-canas-ferreira-b534092/",
-          "https://www.linkedin.com/in/paulofromportugal/"
-        ]
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": []
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "spain",
-        "students": 8,
-        "listAlumniNames": [
-          "Jose Barbosa Carvalho",
-          "Sergio Rasgado",
-          "Tiago L·zaro Mendes",
-          "Pedro Azeredo Paix„o",
-          "LuÌs Guilherme Martins",
-          "Jo„o Alves",
-          "Jo„o Silva",
-          "Jo„o Vieira de Castro"
-        ],
-        "listLinkedinLinks": [
-          "https://www.linkedin.com/in/josebarbosacarvalho/",
-          "https://www.linkedin.com/in/sergiorasgado/",
-          "https://www.linkedin.com/in/tiagolm/",
-          "https://www.linkedin.com/in/zepedropaixao/",
-          "https://www.linkedin.com/in/guilhermescp/",
-          "https://www.linkedin.com/in/joaoqalves/",
-          "https://www.linkedin.com/in/joaosilva00/",
-          "https://www.linkedin.com/in/joaovieiracastro/"
+          "https://www.linkedin.com/in/danielfidalgorodrigues/",
+          "https://www.linkedin.com/in/danielpizarro/",
+          "https://www.linkedin.com/in/joaodeoliveira/"
         ]
       },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -3.70256,
-          40.4165
+          -46.63611,
+          -23.5475
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "austria",
+        "students": 4,
+        "listAlumniNames": [
+          "Guilherme Lopes",
+          "Tiago da Silva",
+          "Pedro Dias",
+          "Rui Botto"
+        ],
+        "listLinkedinLinks": [
+          "https://www.linkedin.com/in/guilherme-c-lopes/",
+          "https://www.linkedin.com/in/tiagogpmsilva/",
+          "https://www.linkedin.com/in/pedromsdias/",
+          "https://www.linkedin.com/in/ruibotto/"
+        ]
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          16.37208,
+          48.20849
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "japan",
+        "students": 3,
+        "listAlumniNames": [
+          "Francisco B.",
+          "Jo√£o Marques",
+          "Pedro Oliveira"
+        ],
+        "listLinkedinLinks": [
+          "https://www.linkedin.com/in/franciscobrito/",
+          "https://www.linkedin.com/in/joaopmmarques/",
+          "https://www.linkedin.com/in/pedroandreoliveira/"
+        ]
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          139.69171,
+          35.6895
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "norway",
+        "students": 8,
+        "listAlumniNames": [
+          "F√°bio Malheiro",
+          "Hugo Passos",
+          "Jo√£o Eiras",
+          "Lu√≠s Cabral",
+          "Telmo Pereira",
+          "Tiago Silva",
+          "Bruno Tavares",
+          "Pedro Peixoto"
+        ],
+        "listLinkedinLinks": [
+          "https://www.linkedin.com/in/fabiomalheiro/",
+          "https://www.linkedin.com/in/hugo-passos-036aa43b/",
+          "https://www.linkedin.com/in/joaoeiras/",
+          "https://www.linkedin.com/in/lcabral/",
+          "https://www.linkedin.com/in/telmorochapereira/",
+          "https://www.linkedin.com/in/tisilva/",
+          "https://www.linkedin.com/in/bruno-x-tavares/",
+          "https://www.linkedin.com/in/pedrovalepeixoto/"
+        ]
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.32415,
+          60.39299
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "france",
+        "students": 3,
+        "listAlumniNames": [
+          "carlos sousa",
+          "Cl√°udio Costa",
+          "Andr√© Ferreira"
+        ],
+        "listLinkedinLinks": [
+          "https://www.linkedin.com/in/carlosmasousa/",
+          "https://www.linkedin.com/in/cmtcosta/",
+          "https://www.linkedin.com/in/andreferreirav2/"
+        ]
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          2.3488,
+          48.85341
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "switzerland",
+        "students": 20,
+        "listAlumniNames": [
+          "Andr√© Oliveira",
+          "Belmiro Moreira",
+          "Bruno Vieira",
+          "C√©sar Duarte",
+          "Filipe Macedo Silva",
+          "Jo√£o Cravo",
+          "Joao Pedro Costa",
+          "Luis Amaral",
+          "Miguel Branco",
+          "Pedro Andrade",
+          "Ricardo Rocha",
+          "S√≠lvia Monteiro",
+          "Tiago Batista",
+          "Tiago Nunes",
+          "Jo√£o Soares",
+          "Jo√£o Gon√ßalves",
+          "Pedro Almeida",
+          "Sim√£o Pedro Oliveira",
+          "Teresa Neto",
+          "Tiago Moreira"
+        ],
+        "listLinkedinLinks": [
+          "https://www.linkedin.com/in/andr√©-oliveira-68491b/",
+          "https://www.linkedin.com/in/belmiromoreira/",
+          "https://www.linkedin.com/in/brunodsvieira/",
+          "https://www.linkedin.com/in/cesarbduarte/",
+          "https://www.linkedin.com/in/filipe-macedo-silva-a405141/",
+          "https://www.linkedin.com/in/joaogbcravo/",
+          "https://www.linkedin.com/in/joaolemoscosta/",
+          "https://www.linkedin.com/in/luismgamaral/",
+          "https://www.linkedin.com/in/miguelbranco80/",
+          "https://www.linkedin.com/in/pedroandrade/",
+          "https://www.linkedin.com/in/ricardo-rocha-739aa718/",
+          "https://www.linkedin.com/in/smonteiro/",
+          "https://www.linkedin.com/in/tiago--batista/",
+          "https://www.linkedin.com/in/tiagonunes/",
+          "https://www.linkedin.com/in/joaoamsoares/",
+          "https://www.linkedin.com/in/jsvgoncalves/",
+          "https://www.linkedin.com/in/pedrouops/",
+          "https://www.linkedin.com/in/spoliveira/",
+          "https://www.linkedin.com/in/teresa-neto-481927/",
+          "https://www.linkedin.com/in/tiago-moreira-20358a67/"
+        ]
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          8.55,
+          47.36667
         ]
       }
     },
@@ -64,10 +197,10 @@
         "name": "canada",
         "students": 4,
         "listAlumniNames": [
-          "Afonso GraÁa",
+          "Afonso Gra√ßa",
           "Alberto Mota",
-          "Rui Guimar„es",
-          "M·rio V. Castro"
+          "Rui Guimar√£es",
+          "M√°rio V. Castro"
         ],
         "listLinkedinLinks": [
           "https://www.linkedin.com/in/afonsograca/",
@@ -87,46 +220,122 @@
     {
       "type": "Feature",
       "properties": {
-        "name": "ireland",
-        "students": 4,
+        "name": "belgium",
+        "students": 7,
         "listAlumniNames": [
-          "InÍs F.",
-          "Carlos Fernandes",
-          "Mark Meehan",
-          "Rui Fernandes"
+          "Andre Guimaraes",
+          "Bruno Carvalho",
+          "Helder Ros√°rio, PMP",
+          "Pedro Polonia",
+          "Rui Pinto",
+          "Andr√© Rodrigues",
+          "Miguel Tavares"
         ],
         "listLinkedinLinks": [
-          "https://www.linkedin.com/in/iferreira/",
-          "https://www.linkedin.com/in/carlossilvafernandes/",
-          "https://www.linkedin.com/in/mark-timothy-meehan/",
-          "https://www.linkedin.com/in/rufernandes/"
+          "https://www.linkedin.com/in/andreguimaraes/",
+          "https://www.linkedin.com/in/bruno-facarvalho/",
+          "https://www.linkedin.com/in/helderrosario/",
+          "https://www.linkedin.com/in/polonia/",
+          "https://www.linkedin.com/in/ruibpinto/",
+          "https://www.linkedin.com/in/aluisrodrigues/",
+          "https://www.linkedin.com/in/mjmtavares/"
         ]
       },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -6.24889,
-          53.33306
+          4.34878,
+          50.85045
         ]
       }
     },
     {
       "type": "Feature",
       "properties": {
-        "name": "iceland",
-        "students": 1,
+        "name": "italy",
+        "students": 2,
         "listAlumniNames": [
-          "Fernando Meira"
+          "Andr√© Lamelas",
+          "Alexey S."
         ],
         "listLinkedinLinks": [
-          "https://www.linkedin.com/in/fmeira/"
+          "https://www.linkedin.com/in/lamelas/",
+          "https://www.linkedin.com/in/alexeyseliverstov/"
         ]
       },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -21.89541,
-          64.13548
+          12.51133,
+          41.89193
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "germany",
+        "students": 13,
+        "listAlumniNames": [
+          "Cristina Falcao",
+          "F√°bio Oliveira",
+          "Dr. Lu√≠s Moreira-Matias",
+          "Lu√≠s Maia",
+          "Pedro Maur√≠cio Costa, PhD",
+          "Rui Campos",
+          "Rui Ferreira",
+          "Rui Tavares",
+          "Ana C.",
+          "Jo√£o Nadais",
+          "Joel Gon√ßalves",
+          "Jos√© Silva",
+          "Rui Couto"
+        ],
+        "listLinkedinLinks": [
+          "https://www.linkedin.com/in/cristina-falcao-57b569/",
+          "https://www.linkedin.com/in/fpoliveira/",
+          "https://www.linkedin.com/in/lmatias/",
+          "https://www.linkedin.com/in/luisgoncalomaia/",
+          "https://www.linkedin.com/in/pedromauriciocosta/",
+          "https://www.linkedin.com/in/ruicamposgamedev/",
+          "https://www.linkedin.com/in/ruimferreira/",
+          "https://www.linkedin.com/in/ruitavares/",
+          "https://www.linkedin.com/in/acarraca/",
+          "https://www.linkedin.com/in/joaonadais/",
+          "https://www.linkedin.com/in/joel-gon√ßalves-18560112/",
+          "https://www.linkedin.com/in/nandomoreira/",
+          "https://www.linkedin.com/in/rui-couto/"
+        ]
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          13.41053,
+          52.52437
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "denmark",
+        "students": 3,
+        "listAlumniNames": [
+          "Joana Carvalho",
+          "Andr√© Alves",
+          "Ricardo Pinho"
+        ],
+        "listLinkedinLinks": [
+          "https://www.linkedin.com/in/joanacarvalho/",
+          "https://www.linkedin.com/in/anpalves/",
+          "https://www.linkedin.com/in/ricardo-pinho-409b8474/"
+        ]
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          12.56553,
+          55.67594
         ]
       }
     },
@@ -140,7 +349,7 @@
           "Alexandre Pinto",
           "Andre Reina",
           "Artur Moreira",
-          "AndrÈ Fernandes",
+          "Andr√© Fernandes",
           "Bruno Santos",
           "Nuno Cerqueira",
           "Daniel Albuquerque",
@@ -149,20 +358,20 @@
           "Hugo Monteiro",
           "Hugo Rodrigues",
           "Hugo Sereno Ferreira",
-          "?††Ivo Reis",
-          "Jo„o Charruadas",
+          "‚õ±¬†¬†Ivo Reis",
+          "Jo√£o Charruadas",
           "Joao Loureiro",
           "Joao Tiago Pinto, MBA",
           "John Belo",
           "Jose Santos",
           "Joaquim Rendeiro",
           "Oleksandr Kruk",
-          "LuÌs Pedrosa",
+          "Lu√≠s Pedrosa",
           "Manuel Monterroso",
-          "Marc-Olivier GonÁalves",
+          "Marc-Olivier Gon√ßalves",
           "Marta Maio",
           "Miguel Oliveira",
-          "MÛnica Santos, PhD",
+          "M√≥nica Santos, PhD",
           "Nuno Novais Dias",
           "Pedro Lamas",
           "Pedro Pacheco",
@@ -170,24 +379,24 @@
           "Ricardo Oliveira",
           "Rui Martins",
           "Rui Pacheco",
-          "Rui GonÁalves",
+          "Rui Gon√ßalves",
           "Rui Teixeira",
           "Sara Marques",
           "Tiago Fonseca",
           "Artur Gomes",
           "Tiago Azevedo",
           "Carlos Santos",
-          "Jo„o Sousa",
-          "JosÈ Paulo Ferreira",
+          "Jo√£o Sousa",
+          "Jos√© Paulo Ferreira",
           "Marco Leal",
-          "M·rio Pereira",
+          "M√°rio Pereira",
           "Marco Amador",
           "Pedro Chambino",
-          "Pedro Simıes",
+          "Pedro Sim√µes",
           "Margarida Pereira",
           "Ricardo Teixeira",
           "Rui Ferreira",
-          "Tiago GonÁalves",
+          "Tiago Gon√ßalves",
           "Amaro Gonzaga Silva"
         ],
         "listLinkedinLinks": [
@@ -235,7 +444,7 @@
           "https://www.linkedin.com/in/joaocsousa/",
           "https://www.linkedin.com/in/josepsferreira/",
           "https://www.linkedin.com/in/lealmarco/",
-          "https://www.linkedin.com/in/m·rio-pereira-917b2934/",
+          "https://www.linkedin.com/in/m√°rio-pereira-917b2934/",
           "https://www.linkedin.com/in/marcoaamador/",
           "https://www.linkedin.com/in/pchambino/",
           "https://www.linkedin.com/in/pedropintosimoes/",
@@ -257,64 +466,54 @@
     {
       "type": "Feature",
       "properties": {
-        "name": "germany",
-        "students": 13,
+        "name": "czech republic",
+        "students": 1,
         "listAlumniNames": [
-          "Cristina Falcao",
-          "F·bio Oliveira",
-          "Dr. LuÌs Moreira-Matias",
-          "LuÌs Maia",
-          "Pedro MaurÌcio Costa, PhD",
-          "Rui Campos",
-          "Rui Ferreira",
-          "Rui Tavares",
-          "Ana C.",
-          "Jo„o Nadais",
-          "Joel GonÁalves",
-          "JosÈ Silva",
-          "Rui Couto"
+          "Tiago Seabra"
         ],
         "listLinkedinLinks": [
-          "https://www.linkedin.com/in/cristina-falcao-57b569/",
-          "https://www.linkedin.com/in/fpoliveira/",
-          "https://www.linkedin.com/in/lmatias/",
-          "https://www.linkedin.com/in/luisgoncalomaia/",
-          "https://www.linkedin.com/in/pedromauriciocosta/",
-          "https://www.linkedin.com/in/ruicamposgamedev/",
-          "https://www.linkedin.com/in/ruimferreira/",
-          "https://www.linkedin.com/in/ruitavares/",
-          "https://www.linkedin.com/in/acarraca/",
-          "https://www.linkedin.com/in/joaonadais/",
-          "https://www.linkedin.com/in/joel-gonÁalves-18560112/",
-          "https://www.linkedin.com/in/nandomoreira/",
-          "https://www.linkedin.com/in/rui-couto/"
+          "https://www.linkedin.com/in/tiagoseabra/"
         ]
       },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          13.41053,
-          52.52437
+          14.42076,
+          50.08804
         ]
       }
     },
     {
       "type": "Feature",
       "properties": {
-        "name": "finland",
-        "students": 1,
+        "name": "spain",
+        "students": 8,
         "listAlumniNames": [
-          "Joao Maia"
+          "Jose Barbosa Carvalho",
+          "Sergio Rasgado",
+          "Tiago L√°zaro Mendes",
+          "Pedro Azeredo Paix√£o",
+          "Lu√≠s Guilherme Martins",
+          "Jo√£o Alves",
+          "Jo√£o Silva",
+          "Jo√£o Vieira de Castro"
         ],
         "listLinkedinLinks": [
-          "https://www.linkedin.com/in/jpmmaia/"
+          "https://www.linkedin.com/in/josebarbosacarvalho/",
+          "https://www.linkedin.com/in/sergiorasgado/",
+          "https://www.linkedin.com/in/tiagolm/",
+          "https://www.linkedin.com/in/zepedropaixao/",
+          "https://www.linkedin.com/in/guilhermescp/",
+          "https://www.linkedin.com/in/joaoqalves/",
+          "https://www.linkedin.com/in/joaosilva00/",
+          "https://www.linkedin.com/in/joaovieiracastro/"
         ]
       },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          24.93545,
-          60.16952
+          -3.70256,
+          40.4165
         ]
       }
     },
@@ -324,10 +523,10 @@
         "name": "luxembourg",
         "students": 8,
         "listAlumniNames": [
-          "Bernardo CabaÁos",
+          "Bernardo Caba√ßos",
           "Daniel Alves",
           "Filipe Alonso",
-          "Jo„o GonÁalves",
+          "Jo√£o Gon√ßalves",
           "Ricardo Torres",
           "Rui Carvalho",
           "Pedro Martins Santos",
@@ -355,122 +554,42 @@
     {
       "type": "Feature",
       "properties": {
-        "name": "estonia",
+        "name": "finland",
         "students": 1,
         "listAlumniNames": [
-          "Ricardo Nuno Almeida"
+          "Joao Maia"
         ],
         "listLinkedinLinks": [
-          "https://www.linkedin.com/in/ricardonunoalmeida/"
+          "https://www.linkedin.com/in/jpmmaia/"
         ]
       },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          24.75353,
-          59.43696
+          24.93545,
+          60.16952
         ]
       }
     },
     {
       "type": "Feature",
       "properties": {
-        "name": "cape verde",
-        "students": 1,
+        "name": "sweden",
+        "students": 2,
         "listAlumniNames": [
-          "Lindomar Rocha"
+          "Jo√£o Xavier",
+          "Pedro Pacheco"
         ],
         "listLinkedinLinks": [
-          "https://www.linkedin.com/in/lindomar-rocha-cv/"
+          "https://www.linkedin.com/in/jcxavier/",
+          "https://www.linkedin.com/in/paxpacheco/"
         ]
       },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -24.0,
-          16.0
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "denmark",
-        "students": 3,
-        "listAlumniNames": [
-          "Joana Carvalho",
-          "AndrÈ Alves",
-          "Ricardo Pinho"
-        ],
-        "listLinkedinLinks": [
-          "https://www.linkedin.com/in/joanacarvalho/",
-          "https://www.linkedin.com/in/anpalves/",
-          "https://www.linkedin.com/in/ricardo-pinho-409b8474/"
-        ]
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          12.56553,
-          55.67594
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "switzerland",
-        "students": 20,
-        "listAlumniNames": [
-          "AndrÈ Oliveira",
-          "Belmiro Moreira",
-          "Bruno Vieira",
-          "CÈsar Duarte",
-          "Filipe Macedo Silva",
-          "Jo„o Cravo",
-          "Joao Pedro Costa",
-          "Luis Amaral",
-          "Miguel Branco",
-          "Pedro Andrade",
-          "Ricardo Rocha",
-          "SÌlvia Monteiro",
-          "Tiago Batista",
-          "Tiago Nunes",
-          "Jo„o Soares",
-          "Jo„o GonÁalves",
-          "Pedro Almeida",
-          "Sim„o Pedro Oliveira",
-          "Teresa Neto",
-          "Tiago Moreira"
-        ],
-        "listLinkedinLinks": [
-          "https://www.linkedin.com/in/andrÈ-oliveira-68491b/",
-          "https://www.linkedin.com/in/belmiromoreira/",
-          "https://www.linkedin.com/in/brunodsvieira/",
-          "https://www.linkedin.com/in/cesarbduarte/",
-          "https://www.linkedin.com/in/filipe-macedo-silva-a405141/",
-          "https://www.linkedin.com/in/joaogbcravo/",
-          "https://www.linkedin.com/in/joaolemoscosta/",
-          "https://www.linkedin.com/in/luismgamaral/",
-          "https://www.linkedin.com/in/miguelbranco80/",
-          "https://www.linkedin.com/in/pedroandrade/",
-          "https://www.linkedin.com/in/ricardo-rocha-739aa718/",
-          "https://www.linkedin.com/in/smonteiro/",
-          "https://www.linkedin.com/in/tiago--batista/",
-          "https://www.linkedin.com/in/tiagonunes/",
-          "https://www.linkedin.com/in/joaoamsoares/",
-          "https://www.linkedin.com/in/jsvgoncalves/",
-          "https://www.linkedin.com/in/pedrouops/",
-          "https://www.linkedin.com/in/spoliveira/",
-          "https://www.linkedin.com/in/teresa-neto-481927/",
-          "https://www.linkedin.com/in/tiago-moreira-20358a67/"
-        ]
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          8.55,
-          47.36667
+          18.06871,
+          59.32938
         ]
       }
     },
@@ -481,7 +600,7 @@
         "students": 3,
         "listAlumniNames": [
           "Guilherme Silva",
-          "Jo„o Costa",
+          "Jo√£o Costa",
           "Damien Rosa"
         ],
         "listLinkedinLinks": [
@@ -501,156 +620,16 @@
     {
       "type": "Feature",
       "properties": {
-        "name": "united arab emirates",
-        "students": 3,
-        "listAlumniNames": [
-          "Gerardo De Oliveira",
-          "Jo„o Vieira",
-          "Eva Marques"
-        ],
-        "listLinkedinLinks": [
-          "https://www.linkedin.com/in/gerardooliveira/",
-          "https://www.linkedin.com/in/jdsvieira/",
-          "https://www.linkedin.com/in/evamasmarques/"
-        ]
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          55.30927,
-          25.07725
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "norway",
-        "students": 8,
-        "listAlumniNames": [
-          "F·bio Malheiro",
-          "Hugo Passos",
-          "Jo„o Eiras",
-          "LuÌs Cabral",
-          "Telmo Pereira",
-          "Tiago Silva",
-          "Bruno Tavares",
-          "Pedro Peixoto"
-        ],
-        "listLinkedinLinks": [
-          "https://www.linkedin.com/in/fabiomalheiro/",
-          "https://www.linkedin.com/in/hugo-passos-036aa43b/",
-          "https://www.linkedin.com/in/joaoeiras/",
-          "https://www.linkedin.com/in/lcabral/",
-          "https://www.linkedin.com/in/telmorochapereira/",
-          "https://www.linkedin.com/in/tisilva/",
-          "https://www.linkedin.com/in/bruno-x-tavares/",
-          "https://www.linkedin.com/in/pedrovalepeixoto/"
-        ]
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          5.32415,
-          60.39299
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "belgium",
-        "students": 7,
-        "listAlumniNames": [
-          "Andre Guimaraes",
-          "Bruno Carvalho",
-          "Helder Ros·rio, PMP",
-          "Pedro Polonia",
-          "Rui Pinto",
-          "AndrÈ Rodrigues",
-          "Miguel Tavares"
-        ],
-        "listLinkedinLinks": [
-          "https://www.linkedin.com/in/andreguimaraes/",
-          "https://www.linkedin.com/in/bruno-facarvalho/",
-          "https://www.linkedin.com/in/helderrosario/",
-          "https://www.linkedin.com/in/polonia/",
-          "https://www.linkedin.com/in/ruibpinto/",
-          "https://www.linkedin.com/in/aluisrodrigues/",
-          "https://www.linkedin.com/in/mjmtavares/"
-        ]
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          4.34878,
-          50.85045
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "austria",
-        "students": 4,
-        "listAlumniNames": [
-          "Guilherme Lopes",
-          "Tiago da Silva",
-          "Pedro Dias",
-          "Rui Botto"
-        ],
-        "listLinkedinLinks": [
-          "https://www.linkedin.com/in/guilherme-c-lopes/",
-          "https://www.linkedin.com/in/tiagogpmsilva/",
-          "https://www.linkedin.com/in/pedromsdias/",
-          "https://www.linkedin.com/in/ruibotto/"
-        ]
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          16.37208,
-          48.20849
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "brazil",
-        "students": 3,
-        "listAlumniNames": [
-          "Daniel Rodrigues",
-          "Daniel Pizarro",
-          "Joao Diogo de Oliveira"
-        ],
-        "listLinkedinLinks": [
-          "https://www.linkedin.com/in/danielfidalgorodrigues/",
-          "https://www.linkedin.com/in/danielpizarro/",
-          "https://www.linkedin.com/in/joaodeoliveira/"
-        ]
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -46.63611,
-          -23.5475
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
         "name": "united states of america",
         "students": 18,
         "listAlumniNames": [
           "Alexandre Perez",
           "Ana Fernandes",
           "Ana Magalhaes",
-          "AndrÈ Rodrigues",
+          "Andr√© Rodrigues",
           "Antonio Alves",
           "Miguel Monteiro",
-          "Fl·vio Cruz",
+          "Fl√°vio Cruz",
           "Joao Montenegro",
           "Miguel Vicente",
           "Pedro Teixeira",
@@ -658,7 +637,7 @@
           "Rui Pereira",
           "Ricardo Afonso",
           "Eduardo Oliveira",
-          "Jo„o Almeida",
+          "Jo√£o Almeida",
           "Nelson Rodrigues",
           "Nuno Santos",
           "Rui Gomes"
@@ -670,7 +649,7 @@
           "https://www.linkedin.com/in/andrerod/",
           "https://www.linkedin.com/in/antonioviegasalves/",
           "https://www.linkedin.com/in/cmiguelmonteiro/",
-          "https://www.linkedin.com/in/fl·vio-cruz-45417916/",
+          "https://www.linkedin.com/in/fl√°vio-cruz-45417916/",
           "https://www.linkedin.com/in/joao-montenegro-b363884/",
           "https://www.linkedin.com/in/miguelv/",
           "https://www.linkedin.com/in/pedromcteixeira/",
@@ -678,7 +657,7 @@
           "https://www.linkedin.com/in/rfapereira/",
           "https://www.linkedin.com/in/ricardoafonso/",
           "https://www.linkedin.com/in/eduardooliv/",
-          "https://www.linkedin.com/in/jo„o-almeida-451714a8/",
+          "https://www.linkedin.com/in/jo√£o-almeida-451714a8/",
           "https://www.linkedin.com/in/nelsonjorgesilvarodrigues/",
           "https://www.linkedin.com/in/nunomaiasantos/",
           "https://www.linkedin.com/in/ruigomeseu/"
@@ -700,54 +679,54 @@
         "listAlumniNames": [
           "Adriano Meira",
           "Adriano Teixeira",
-          "AndrÈ Dias",
+          "Andr√© Dias",
           "A. Jorge Tavares",
           "Alberto Lemos",
           "Alfredo Silvestre",
           "Carlos Rebelo",
-          "¡lvaro Monteiro",
-          "¡lvaro Vasconcelos",
-          "AmÌlcar  Fernandes",
-          "AndrÈ Oliveira",
-          "Ana Cl·udia Santos",
+          "√Ålvaro Monteiro",
+          "√Ålvaro Vasconcelos",
+          "Am√≠lcar  Fernandes",
+          "Andr√© Oliveira",
+          "Ana Cl√°udia Santos",
           "Ana Freitas",
           "Ana Jacinta Ferreira",
           "Ana Mota",
           "Ana Vasconcelos",
-          "AndrÈ Marinho",
-          "AndrÈ Carmo",
-          "AndrÈ Neves",
-          "AndrÈ Barbosa",
-          "AndrÈ Mota",
-          "AndrÈ Duarte",
-          "AndrÈ Barbosa",
-          "AndrÈ Meneses",
-          "AndrÈ Moniz",
+          "Andr√© Marinho",
+          "Andr√© Carmo",
+          "Andr√© Neves",
+          "Andr√© Barbosa",
+          "Andr√© Mota",
+          "Andr√© Duarte",
+          "Andr√© Barbosa",
+          "Andr√© Meneses",
+          "Andr√© Moniz",
           "Andre Montenegro Ferreira",
-          "AndrÈ Moruj„o",
-          "AndrÈ Santos",
-          "AndrÈ Pacheco Neves",
+          "Andr√© Moruj√£o",
+          "Andr√© Santos",
+          "Andr√© Pacheco Neves",
           "Antero Pacheco da Silva",
-          "AntÛnio Duarte Alves",
-          "AntÛnio de Castro (PhD)",
-          "AntÛnio Pedro Pinho",
-          "AntÛnio Pinto",
-          "AntÛnio Pedro Cerqueira",
-          "AndrÈ Restivo",
+          "Ant√≥nio Duarte Alves",
+          "Ant√≥nio de Castro (PhD)",
+          "Ant√≥nio Pedro Pinho",
+          "Ant√≥nio Pinto",
+          "Ant√≥nio Pedro Cerqueira",
+          "Andr√© Restivo",
           "Artur Fonseca",
           "A. Augusto Sousa",
-          "B·rbara Fonseca e Costa",
-          "SÈrgio Barbosa",
+          "B√°rbara Fonseca e Costa",
+          "S√©rgio Barbosa",
           "Bruno Cabral",
           "Daniel Botelho",
           "Bruno Aguiar",
           "Bruno Caiano Gil",
-          "Bruno GonÁalves",
+          "Bruno Gon√ßalves",
           "Bruno Pereira",
-          "Bruno GonÁalves",
+          "Bruno Gon√ßalves",
           "Bruno Sousa",
           "Duarte Cabral",
-          "Carlos GonÁalves",
+          "Carlos Gon√ßalves",
           "Carla Teixeira Lopes",
           "Carlos Figueiredo",
           "Carlos Lima",
@@ -756,10 +735,10 @@
           "Catarina Carvalho",
           "Catarina Lopes",
           "Celso Cardoso",
-          "Cl·udio Reis",
-          "Cl·udio Silva",
+          "Cl√°udio Reis",
+          "Cl√°udio Silva",
           "Francisco Correia",
-          "R˙ben Costa",
+          "R√∫ben Costa",
           "Cristina Perfeito",
           "Daniel Carneiro",
           "Daniela Silva",
@@ -767,31 +746,31 @@
           "Daniel Novo",
           "Daniel Silva",
           "Daniel Santos",
-          "David Magalh„es",
-          "AntÛnio Delgado",
+          "David Magalh√£es",
+          "Ant√≥nio Delgado",
           "Diogo Dias",
-          "Diogo Guimar„es",
+          "Diogo Guimar√£es",
           "Diogo Rocha",
           "Diogo Rocha",
           "Diogo Soares",
           "Daniel Aguilar",
           "Daniel Moura",
-          "Diogo J˙nior",
+          "Diogo J√∫nior",
           "Eduardo Espinheira",
           "Eduardo Pinto",
           "Tiago Silva",
           "Soraia Ferreira",
           "Elio Mota",
           "Fernando Nunes",
-          "AntÛnio Lisboa",
+          "Ant√≥nio Lisboa",
           "Tiago Santos",
-          "? Tiago Silva ?",
-          "JosÈ Espregueira",
-          "F·bio Almeida",
+          "‚òÖ Tiago Silva ‚òÖ",
+          "Jos√© Espregueira",
+          "F√°bio Almeida",
           "Fernando Almeida",
           "Frederico Figueiredo",
-          "Felipe ¡vila da Costa ???",
-          "LuÌs A.",
+          "Felipe √Åvila da Costa üá∫üá¶üïä",
+          "Lu√≠s A.",
           "Filipa Santos",
           "Filipe C.",
           "Filipe Pinho Pereira",
@@ -810,15 +789,15 @@
           "Filipe Guedes",
           "Gaspar Lencastre",
           "Gil Coutinho",
-          "GonÁalo QueirÛs",
+          "Gon√ßalo Queir√≥s",
           "Andre Grilo",
           "Guilherme Almeida",
-          "HÈlder Ribeiro",
+          "H√©lder Ribeiro",
           "Helder Coelho",
           "Helder Cabral Ferreira",
-          "Helder Magalh„es",
+          "Helder Magalh√£es",
           "Helder Silva",
-          "Hern‚ni Fernandes, PMI-ACP©",
+          "Hern√¢ni Fernandes, PMI-ACP¬©",
           "Helder Hugo Ferreira",
           "Hugo Penedones",
           "Hugo Almeida",
@@ -830,111 +809,111 @@
           "Hugo Peixoto",
           "Hugo Vara",
           "Hugo Zenha",
-          "InÍs Moniz da Cunha",
+          "In√™s Moniz da Cunha",
           "Isabel Barbosa",
           "Isabel Neto",
           "Ivo Relvas",
           "Jorge Alpedrinha Ramos",
-          "J. AndrÈ C. Rodrigues",
-          "Jo„o Aradas",
+          "J. Andr√© C. Rodrigues",
+          "Jo√£o Aradas",
           "Jacinto Barbeira",
-          "Jo„o Barbosa",
+          "Jo√£o Barbosa",
           "Jorge Carneiro",
-          "Jo„o Couto Soares",
-          "Jo„o Felgueiras, PMP, MBA",
+          "Jo√£o Couto Soares",
+          "Jo√£o Felgueiras, PMP, MBA",
           "Jadir Sousa",
-          "JosÈ Devezas",
-          "JosÈ Lucas P.",
-          "Jo„o Mourinho",
-          "JosÈ Nuno Ferreira",
+          "Jos√© Devezas",
+          "Jos√© Lucas P.",
+          "Jo√£o Mourinho",
+          "Jos√© Nuno Ferreira",
           "Jose Vasconcelos",
-          "Jo„o Santos",
-          "Joana de Castro GonÁalves",
+          "Jo√£o Santos",
+          "Joana de Castro Gon√ßalves",
           "Joana Ribeiro",
           "Joana Valente",
-          "Jo„o Ferreira",
-          "Jo„o Gouveia",
-          "Jo„o Marques",
-          "Jo„o Marques Gomes",
-          "Jo„o Rocha da Silva",
-          "Jo„o Correia",
-          "Jo„o Gomes",
-          "Jo„o Carvalho",
-          "Jo„o Faria",
+          "Jo√£o Ferreira",
+          "Jo√£o Gouveia",
+          "Jo√£o Marques",
+          "Jo√£o Marques Gomes",
+          "Jo√£o Rocha da Silva",
+          "Jo√£o Correia",
+          "Jo√£o Gomes",
+          "Jo√£o Carvalho",
+          "Jo√£o Faria",
           "Joao Piedade",
-          "Jo„o Portela",
-          "Jo„o Ribeiro Pinto",
-          "Jo„o Soares",
-          "Jo„o Campos",
+          "Jo√£o Portela",
+          "Jo√£o Ribeiro Pinto",
+          "Jo√£o Soares",
+          "Jo√£o Campos",
           "Joaquim Santos",
           "Joel Campos",
-          "Jo„o Lago",
+          "Jo√£o Lago",
           "Jorge Alves",
           "Jorge Cardoso",
           "Jorge Mateus",
           "Jorge Filipe Teixeira",
           "Jorge Machado",
           "Jorge Neves",
-          "JosÈ Branco",
-          "JosÈ VilaÁa",
-          "JosÈ Brito",
+          "Jos√© Branco",
+          "Jos√© Vila√ßa",
+          "Jos√© Brito",
           "Jose Fonseca",
-          "JosÈ Carvalho",
-          "JosÈ Miguel Monteiro",
-          "JosÈ Miguel Santos",
-          "JosÈ Aguiar",
-          "JosÈ Pedro Barros",
+          "Jos√© Carvalho",
+          "Jos√© Miguel Monteiro",
+          "Jos√© Miguel Santos",
+          "Jos√© Aguiar",
+          "Jos√© Pedro Barros",
           "Jose Valente",
-          "JosÈ Veiga",
-          "JosÈ Pacheco",
-          "Jo„o Madureira",
-          "Jo„o Pedro Lopes",
-          "Jo„o P.",
-          "Jo„o Rom„o",
-          "Jorge Ru„o",
-          "Jo„o Vale",
+          "Jos√© Veiga",
+          "Jos√© Pacheco",
+          "Jo√£o Madureira",
+          "Jo√£o Pedro Lopes",
+          "Jo√£o P.",
+          "Jo√£o Rom√£o",
+          "Jorge Ru√£o",
+          "Jo√£o Vale",
           "Lara Santos",
           "Luis Duarte",
           "Leonardo Silva",
           "Leonel Dias ",
-          "Filipe GonÁalves",
+          "Filipe Gon√ßalves",
           "Luis Santos",
-          "LuÌs Magalh„es",
+          "Lu√≠s Magalh√£es",
           "Luis Paulo Reis",
-          "LuÌs Pinto",
+          "Lu√≠s Pinto",
           "Luis Afonso Ribeiro",
-          "Luis B·rtolo",
-          "Luis Bivar Branco J·como Ramos",
-          "LuÌs Carneiro",
+          "Luis B√°rtolo",
+          "Luis Bivar Branco J√°como Ramos",
+          "Lu√≠s Carneiro",
           "Luis Ferreira",
-          "LuÌs Maia",
-          "LuÌs Martinho",
-          "LuÌs Miguel dos Reis Oliveira e Silva",
-          "LuÌs Rocha",
+          "Lu√≠s Maia",
+          "Lu√≠s Martinho",
+          "Lu√≠s Miguel dos Reis Oliveira e Silva",
+          "Lu√≠s Rocha",
           "Luis Noites",
           "Luis Pedroso",
           "Luis Pereira",
-          "LuÌs Miguel Ponte",
+          "Lu√≠s Miguel Ponte",
           "Luis Ramos",
           "Luis Miguel Sousa",
-          "M·rcio Ribeiro",
+          "M√°rcio Ribeiro",
           "Mafalda Barros",
           "Manuel Marques, PMP, CSPO",
-          "Manuel JosÈ Domingues",
+          "Manuel Jos√© Domingues",
           "Marcelo Porto",
           "Marco Alves",
           "Marco Sousa",
           "Marco Carvalho",
           "Marco Costa",
-          "Marco AntÛnio Silva",
+          "Marco Ant√≥nio Silva",
           "Marco Silva",
-          "Maria Jo„o Miranda",
+          "Maria Jo√£o Miranda",
           "Mariana Figueiredo Salvaterra",
           "Mariana Lopes",
-          "M·rio Bessa",
-          "M·rio Miguel Correia",
+          "M√°rio Bessa",
+          "M√°rio Miguel Correia",
           "Marta Pereira",
-          "Mauro Carreira BonÍco",
+          "Mauro Carreira Bon√™co",
           "Marco Faceira",
           "Micael Pinho",
           "Micael Oliveira",
@@ -948,9 +927,9 @@
           "Miguel Pereira Coutinho",
           "Miguel Rentes",
           "Miguel Monteiro",
-          "Jo„o Moreira",
+          "Jo√£o Moreira",
           "Manuel Padilha",
-          "Miguel Paix„o",
+          "Miguel Paix√£o",
           "Manuel Parente",
           "Maria Pedroto",
           "Nelson Lima",
@@ -964,7 +943,7 @@
           "Nuno Basto",
           "Nuno Gouveia",
           "Nuno Flores",
-          "Nuno GonÁalinho",
+          "Nuno Gon√ßalinho",
           "Nuno Igreja",
           "Nuno Santos",
           "Nuno Sousa",
@@ -976,7 +955,7 @@
           "Paulo Noormahomed",
           "Paulo Martins",
           "Paulo Santos",
-          "Pedro GonÁalves",
+          "Pedro Gon√ßalves",
           "Pedro Martins",
           "Pedro Almeida",
           "Pedro Campos",
@@ -986,7 +965,7 @@
           "Pedro Castro Henriques",
           "Pedro Rocha",
           "Pedro Morgado",
-          "? Pedro Campos",
+          "‚ú™ Pedro Campos",
           "Pedro Pinto",
           "Pedro Alves",
           "Pedro Pinto",
@@ -995,26 +974,26 @@
           "Pedro Ruas Moreira",
           "Pedro Sampaio",
           "Pedro Gomes",
-          "Jo„o Peixoto",
+          "Jo√£o Peixoto",
           "Pedro Torres",
-          "Pedro Ara˙jo",
+          "Pedro Ara√∫jo",
           "Fernando Pires",
-          "Paulo Kˆch",
+          "Paulo K√∂ch",
           "Pedro Coelho",
           "Pedro Ferreira",
           "Pedro Machado",
-          "CÈsar Rodrigues",
+          "C√©sar Rodrigues",
           "Filipe Cruz",
           "Pedro Vale",
-          "R˙ben NÛbrega",
+          "R√∫ben N√≥brega",
           "Rafael Pires",
           "Rui Pedro Lima",
           "Ricardo Batista",
-          "RogÈrio Paulo",
+          "Rog√©rio Paulo",
           "Ricardo Ferreira",
           "Ricardo Pinto",
           "Ricardo Pereira",
-          "Ricardo GonÁalves",
+          "Ricardo Gon√ßalves",
           "Ricardo Oliveira",
           "Ricardo Mestre",
           "Ricardo Moura",
@@ -1028,7 +1007,7 @@
           "Luis Roma Pires",
           "Ricardo Queiroz",
           "Rodrigo Queiroz Machado",
-          "Rodrigo S· Guerra",
+          "Rodrigo S√° Guerra",
           "Rui de Sousa Neves, KMP PMP",
           "Ruben Pereira",
           "Rui Alves",
@@ -1043,28 +1022,28 @@
           "Rui Lopes",
           "Rui Azevedo",
           "Rui Sampaio",
-          "SÈrgio Ribeiro",
+          "S√©rgio Ribeiro",
           "Sandra Hering",
           "Catarina Saraiva",
           "Sara Moreira",
           "Simao Rio",
-          "SÈrgio Bandeira",
-          "SÈrgio Nunes",
-          "SÈrgio Carvalho",
-          "SÈrgio Vasconcelos",
+          "S√©rgio Bandeira",
+          "S√©rgio Nunes",
+          "S√©rgio Carvalho",
+          "S√©rgio Vasconcelos",
           "Sergio Xavier",
-          "Sim„o Belchior",
-          "SÛnia Liquito",
+          "Sim√£o Belchior",
+          "S√≥nia Liquito",
           "Belmiro Sotto-Mayor",
           "Sergio Correia",
           "Ricardo Castro",
-          "Susana VilaÁa",
+          "Susana Vila√ßa",
           "Suzana Pinho",
-          "Jo„o Taborda",
+          "Jo√£o Taborda",
           "carlos tavares",
           "Telmo Pinto",
           "teresa braga",
-          "AndrÈ Cardoso",
+          "Andr√© Cardoso",
           "Tiago Pereira",
           "Tiago Santos",
           "Tiago Gomes",
@@ -1075,50 +1054,50 @@
           "Tiago Matos",
           "Tiago Fernandes",
           "Tiago Teixeira",
-          "Tiago ”rf„o",
+          "Tiago √ìrf√£o",
           "Tiago Ramos",
           "Tiago Teixeira",
           "Tiago Mota Freitas",
-          "V‚nia G.",
+          "V√¢nia G.",
           "Vasco Rocha",
           "Vasco Grilo",
           "Vasco Oliveira",
           "Vasco Pinto",
           "Vasco Vinhas",
-          "VergÌlio Loureiro",
+          "Verg√≠lio Loureiro",
           "Victor Oliveira",
-          "VÌtor P.",
+          "V√≠tor P.",
           "Vitor Madureira",
           "Vitor Pinto",
           "Vladimiro Macedo",
-          "Vladimiro S·",
+          "Vladimiro S√°",
           "Tiago Gomes",
-          "ZÈ Maria MendonÁa e Moura",
-          "¡lvaro Caldas, PMPÆ",
+          "Z√© Maria Mendon√ßa e Moura",
+          "√Ålvaro Caldas, PMP¬Æ",
           "Fernando Fernandes",
           "Afonso Caldas",
           "Afonso Rosa",
           "Ana Isabel Marques",
-          "Alice PerpÈtua",
-          "Ana LuÌsa Marques",
+          "Alice Perp√©tua",
+          "Ana Lu√≠sa Marques",
           "Diogo Amaral",
           "Antonio Miguel Cruz",
           "Ana Gomes",
           "Ana Sousa",
-          "AnaÌs Dias",
+          "Ana√≠s Dias",
           "Ana Margarida Ferreira",
           "Ana Loureiro",
           "Ana Teresa Silva",
-          "AndrÈ GonÁalves",
-          "AndrÈ Regado",
-          "AndrÈ Pires",
-          "¬ngela Ara˙jo",
-          "antÛnio bezerra",
-          "AntÛnio Garcez",
-          "AntÛnio Pereira",
+          "Andr√© Gon√ßalves",
+          "Andr√© Regado",
+          "Andr√© Pires",
+          "√Çngela Ara√∫jo",
+          "ant√≥nio bezerra",
+          "Ant√≥nio Garcez",
+          "Ant√≥nio Pereira",
           "Rita Ferreira",
-          "Rafael Simıes",
-          "B·rbara Correia",
+          "Rafael Sim√µes",
+          "B√°rbara Correia",
           "Anabela Carvalho",
           "Bruno Duarte",
           "Bruno Ferreira",
@@ -1130,7 +1109,7 @@
           "Carlos Miguel Correia da Costa",
           "Catarina Fernandes",
           "Cristiano Carvalheiro",
-          "Cl·udia Fontes",
+          "Cl√°udia Fontes",
           "Clara Sacramento",
           "Carlos Teixeira",
           "Cristiano Alves",
@@ -1139,7 +1118,7 @@
           "Daniel Nunes",
           "David Caminha",
           "David Clemente",
-          "DÈcio Ferreira",
+          "D√©cio Ferreira",
           "Diogo Barroso",
           "Diogo Pinto",
           "Diogo Leite",
@@ -1149,8 +1128,8 @@
           "Diogo Teixeira",
           "Daniel Sousa",
           "Edgar Alves",
-          "F·bio Amarante",
-          "F·bio Pinto da Costa",
+          "F√°bio Amarante",
+          "F√°bio Pinto da Costa",
           "Felipe Schmitt",
           "Fernando Miguel Pinto",
           "Filipa Ivars Silva",
@@ -1163,90 +1142,90 @@
           "Rui Freixedelo",
           "Filipe Oliveira",
           "Gabriel Borges",
-          "Jo„o Dias",
-          "GonÁalo Pereira",
-          "GonÁalo Lobo",
-          "GonÁalo Pereira",
+          "Jo√£o Dias",
+          "Gon√ßalo Pereira",
+          "Gon√ßalo Lobo",
+          "Gon√ßalo Pereira",
           "Gustavo Silva",
           "Gustavo Oliveira",
-          "HÈlder Moreira",
+          "H√©lder Moreira",
           "Hugo Drumond",
           "Hugo Matos",
-          "InÍs Garganta",
+          "In√™s Garganta",
           "Pedro Dias",
           "Ivo Silva",
           "Carlos Portela Pereira",
-          "JosÈ Reis Duarte",
-          "Jo„o Costa",
-          "JÈnifer Constantino",
-          "Jo„o Almeida",
+          "Jos√© Reis Duarte",
+          "Jo√£o Costa",
+          "J√©nifer Constantino",
+          "Jo√£o Almeida",
           "Joana Beleza",
           "Jorge Reis",
-          "Jo„o Batista",
-          "Jo„o Pinto",
-          "Jo„o Soares",
+          "Jo√£o Batista",
+          "Jo√£o Pinto",
+          "Jo√£o Soares",
           "Joana Silva",
           "Joana Barbosa",
           "Joao Almeida",
-          "Jo„o Anes",
-          "Jo„o Bordalo",
-          "Jo„o D Santos",
-          "Jo„o GonÁalves",
+          "Jo√£o Anes",
+          "Jo√£o Bordalo",
+          "Jo√£o D Santos",
+          "Jo√£o Gon√ßalves",
           "Joao Ferreira",
-          "Jo„o Morgado",
-          "Jo„o Ramos",
-          "Jo„o Norim Bandeira",
-          "Jo„o Pascoal Faria",
-          "Jo„o Reis",
-          "Jo„o Reis",
-          "Jo„o Serra",
+          "Jo√£o Morgado",
+          "Jo√£o Ramos",
+          "Jo√£o Norim Bandeira",
+          "Jo√£o Pascoal Faria",
+          "Jo√£o Reis",
+          "Jo√£o Reis",
+          "Jo√£o Serra",
           "Joel Ferreira",
           "Jorge Garcia",
           "Jorge Lima",
-          "JosÈ Oliveira",
-          "JosÈ Pedro Cardoso Rodrigues",
-          "JosÈ Pedro Marques",
-          "JosÈ Cardoso",
-          "JosÈ Horta",
-          "JosÈ Melo",
-          "JosÈ Pereira Amorim",
-          "JosÈ Carvalho",
+          "Jos√© Oliveira",
+          "Jos√© Pedro Cardoso Rodrigues",
+          "Jos√© Pedro Marques",
+          "Jos√© Cardoso",
+          "Jos√© Horta",
+          "Jos√© Melo",
+          "Jos√© Pereira Amorim",
+          "Jos√© Carvalho",
           "Pedro Barbosa",
-          "JosÈ Pedro Silva",
-          "JosÈ Pedro Pinto",
+          "Jos√© Pedro Silva",
+          "Jos√© Pedro Pinto",
           "Joaquim Barros",
-          "Jo„o Fernandes",
-          "JosÈ Silva",
-          "JosÈ Magalh„es",
+          "Jo√£o Fernandes",
+          "Jos√© Silva",
+          "Jos√© Magalh√£es",
           "Lara Marinha",
           "Leonardo Faria",
           "Leonel Peixoto",
-          "AndrÈ Lessa",
+          "Andr√© Lessa",
           "Luis Gomes",
           "Liliana Ribeiro",
           "Linda Padilla",
-          "LuÌs Pereira",
-          "LuÌs Santos",
-          "Jo„o Figueiredo",
-          "LuÌs Alberto Simıes",
-          "LuÌs P.",
-          "LuÌs Azevedo",
+          "Lu√≠s Pereira",
+          "Lu√≠s Santos",
+          "Jo√£o Figueiredo",
+          "Lu√≠s Alberto Sim√µes",
+          "Lu√≠s P.",
+          "Lu√≠s Azevedo",
           "Luis Carlos Calado",
           "Luis Carvalho",
           "Luis Oliveira",
-          "LuÌs Filipe TeÛfilo",
-          "Daniel Magalh„es",
+          "Lu√≠s Filipe Te√≥filo",
+          "Daniel Magalh√£es",
           "Manuel Pereira",
           "Marcos Oliveira",
           "Maria Caldeira",
-          "Maria Jo„o Barbosa",
+          "Maria Jo√£o Barbosa",
           "Mariana Lopes",
           "Marina Camilo",
           "Mario Pereira",
-          "M·rio Novais",
+          "M√°rio Novais",
           "Mauro Costa",
-          "Daniel MendonÁa",
-          "M·rcio Fontes",
+          "Daniel Mendon√ßa",
+          "M√°rcio Fontes",
           "Miao Sun",
           "Miguel Araujo",
           "Miguel Gomes",
@@ -1265,13 +1244,13 @@
           "Nuno Fonseca",
           "Omar Castro",
           "Pedro Sousa",
-          "AndrÈ Freitas",
+          "Andr√© Freitas",
           "Paula Rego",
           "Paulo  Faria",
           "Paulo Costa",
           "Pedro Antunes Silva",
-          "? Pedro Teixeira",
-          "Pedro Bail„o",
+          "üëã Pedro Teixeira",
+          "Pedro Bail√£o",
           "Pedro Cunha",
           "Pedro Santos",
           "Pedro Dias",
@@ -1284,8 +1263,8 @@
           "Pedro Martins",
           "Pedro Mendes",
           "Pedro Borges",
-          "Jo„o Port·sio",
-          "AntÛnio Bandeira",
+          "Jo√£o Port√°sio",
+          "Ant√≥nio Bandeira",
           "Renato Rodrigues",
           "Admilo Ribeiro",
           "Ricardo Cunha",
@@ -1294,7 +1273,7 @@
           "Ricardo Silva",
           "Rodolfo Rodrigues",
           "Tiago Rodrigues",
-          "R˙ben Veloso",
+          "R√∫ben Veloso",
           "Rui Archer",
           "Rui Pinto",
           "Rui Gomes",
@@ -1303,16 +1282,16 @@
           "Rui Valente Maia",
           "Rui Vilares",
           "Rodolfo Santos",
-          "SÈrgio D.",
+          "S√©rgio D.",
           "Sara Morais",
           "Gustavo Silva",
-          "GonÁalo Silva",
-          "J˙nior Silva",
+          "Gon√ßalo Silva",
+          "J√∫nior Silva",
           "Sofia Reis",
           "Sofia Rodrigues",
           "Susana Teixeira e Silva",
           "Tadeu Marques",
-          "T‚nia Ribeiro",
+          "T√¢nia Ribeiro",
           "Francisca Teixeira",
           "Telmo Barbosa",
           "Tiago Alves",
@@ -1326,10 +1305,10 @@
           "Tiago Reis",
           "Tiago Pereira",
           "Valter Silva",
-          "V‚nia Leite",
+          "V√¢nia Leite",
           "Vasco Torres",
-          "VÌtor Castro",
-          "V√≠tor Teixeira",
+          "V√≠tor Castro",
+          "V√É¬≠tor Teixeira",
           "Vitor Santos",
           "Walter Lima",
           "Wilson Oliveira"
@@ -1344,9 +1323,9 @@
           "https://www.linkedin.com/in/alivevision/",
           "https://www.linkedin.com/in/alvarosilvamonteiro/",
           "https://www.linkedin.com/in/alvarovasconcelos/",
-          "https://www.linkedin.com/in/amÌlcar-fernandes-2635351/",
+          "https://www.linkedin.com/in/am√≠lcar-fernandes-2635351/",
           "https://www.linkedin.com/in/amgoliv/",
-          "https://www.linkedin.com/in/ana-cl·udia-santos-8124aa17/",
+          "https://www.linkedin.com/in/ana-cl√°udia-santos-8124aa17/",
           "https://www.linkedin.com/in/anaisabelfreitas/",
           "https://www.linkedin.com/in/ana-jacinta-ferreira-b727ab/",
           "https://www.linkedin.com/in/anamota/",
@@ -1379,7 +1358,7 @@
           "https://www.linkedin.com/in/botelhodaniel/",
           "https://www.linkedin.com/in/braguiar/",
           "https://www.linkedin.com/in/brunocaianogil/",
-          "https://www.linkedin.com/in/bruno-gonÁalves-a0b5851/",
+          "https://www.linkedin.com/in/bruno-gon√ßalves-a0b5851/",
           "https://www.linkedin.com/in/brunopereira/",
           "https://www.linkedin.com/in/brunordgonc/",
           "https://www.linkedin.com/in/bssousa/",
@@ -1472,7 +1451,7 @@
           "https://www.linkedin.com/in/isabel-neto-66b2433/",
           "https://www.linkedin.com/in/ivorelvas/",
           "https://www.linkedin.com/in/jalpedrinha/",
-          "https://www.linkedin.com/in/j-andrÈ-c-rodrigues-9b7715/",
+          "https://www.linkedin.com/in/j-andr√©-c-rodrigues-9b7715/",
           "https://www.linkedin.com/in/jaradas/",
           "https://www.linkedin.com/in/jbarbeira/",
           "https://www.linkedin.com/in/jbarbosa1/",
@@ -1485,7 +1464,7 @@
           "https://www.linkedin.com/in/jmourinho/",
           "https://www.linkedin.com/in/jnunoferreira/",
           "https://www.linkedin.com/in/jnvasconcelos/",
-          "https://www.linkedin.com/in/jo„o-santos-6a7909/",
+          "https://www.linkedin.com/in/jo√£o-santos-6a7909/",
           "https://www.linkedin.com/in/joanadecastrogoncalves/",
           "https://www.linkedin.com/in/joanapintoribeiro/",
           "https://www.linkedin.com/in/joanavvalente/",
@@ -1512,8 +1491,8 @@
           "https://www.linkedin.com/in/jorgefteixeira/",
           "https://www.linkedin.com/in/jorgemcomachado/",
           "https://www.linkedin.com/in/jorge-neves-4b5572/",
-          "https://www.linkedin.com/in/josÈ-branco-a543573/",
-          "https://www.linkedin.com/in/josÈ-vilaÁa-5ba8ba3/",
+          "https://www.linkedin.com/in/jos√©-branco-a543573/",
+          "https://www.linkedin.com/in/jos√©-vila√ßa-5ba8ba3/",
           "https://www.linkedin.com/in/josebrito/",
           "https://www.linkedin.com/in/josefonseca/",
           "https://www.linkedin.com/in/josemiguelcarvalho/",
@@ -1538,9 +1517,9 @@
           "https://www.linkedin.com/in/ljpsantos/",
           "https://www.linkedin.com/in/lpmagalhaes/",
           "https://www.linkedin.com/in/lpreis/",
-          "https://www.linkedin.com/in/luÌs-pinto-21334110/",
+          "https://www.linkedin.com/in/lu√≠s-pinto-21334110/",
           "https://www.linkedin.com/in/luisafonsoribeiro/",
-          "https://www.linkedin.com/in/luis-b·rtolo-6ba9bb10/",
+          "https://www.linkedin.com/in/luis-b√°rtolo-6ba9bb10/",
           "https://www.linkedin.com/in/luisbivarramos/",
           "https://www.linkedin.com/in/luiscarloscarneiro/",
           "https://www.linkedin.com/in/luisftferreira/",
@@ -1554,10 +1533,10 @@
           "https://www.linkedin.com/in/luisponte/",
           "https://www.linkedin.com/in/luisramos/",
           "https://www.linkedin.com/in/luis-sousa-701a29/",
-          "https://www.linkedin.com/in/m·rcio-ribeiro-10429052/",
+          "https://www.linkedin.com/in/m√°rcio-ribeiro-10429052/",
           "https://www.linkedin.com/in/mafaldabarros/",
           "https://www.linkedin.com/in/manelvmarques/",
-          "https://www.linkedin.com/in/manuel-josÈ-domingues-a8362b/",
+          "https://www.linkedin.com/in/manuel-jos√©-domingues-a8362b/",
           "https://www.linkedin.com/in/marceloporto/",
           "https://www.linkedin.com/in/marcoaalves/",
           "https://www.linkedin.com/in/marco-alex-sousa/",
@@ -1643,7 +1622,7 @@
           "https://www.linkedin.com/in/pontoporponto/",
           "https://www.linkedin.com/in/psenough/",
           "https://www.linkedin.com/in/pvale/",
-          "https://www.linkedin.com/in/r˙ben-nÛbrega-89990a/",
+          "https://www.linkedin.com/in/r√∫ben-n√≥brega-89990a/",
           "https://www.linkedin.com/in/rafaelpires/",
           "https://www.linkedin.com/in/rapzo/",
           "https://www.linkedin.com/in/rbatista/",
@@ -1680,7 +1659,7 @@
           "https://www.linkedin.com/in/rui-lopes-15159532/",
           "https://www.linkedin.com/in/ruimiguelazevedo/",
           "https://www.linkedin.com/in/rui-sampaio-9b544b2/",
-          "https://www.linkedin.com/in/sÈrgio-ribeiro-5712133/",
+          "https://www.linkedin.com/in/s√©rgio-ribeiro-5712133/",
           "https://www.linkedin.com/in/sandra-hering-97a950/",
           "https://www.linkedin.com/in/saraivacatarina/",
           "https://www.linkedin.com/in/saritamoreira/",
@@ -1731,7 +1710,7 @@
           "https://www.linkedin.com/in/vladimirosa/",
           "https://www.linkedin.com/in/wolphe/",
           "https://www.linkedin.com/in/zemariamm/",
-          "https://www.linkedin.com/in/·lvaro-caldas-pmpÆ-7a31b711/",
+          "https://www.linkedin.com/in/√°lvaro-caldas-pmp¬Æ-7a31b711/",
           "https://www.linkedin.com/in/af-fernandes/",
           "https://www.linkedin.com/in/afonso-caldas/",
           "https://www.linkedin.com/in/afonso-rosa-35325376/",
@@ -1767,7 +1746,7 @@
           "https://www.linkedin.com/in/carlosmccosta/",
           "https://www.linkedin.com/in/catarina-fernandes-9801841a6/",
           "https://www.linkedin.com/in/ccarvalheiro/",
-          "https://www.linkedin.com/in/cl·udia-fontes-091ab9/",
+          "https://www.linkedin.com/in/cl√°udia-fontes-091ab9/",
           "https://www.linkedin.com/in/clara-sacramento-3b361559/",
           "https://www.linkedin.com/in/cmcmteixeira/",
           "https://www.linkedin.com/in/cristianoftalves/",
@@ -1801,7 +1780,7 @@
           "https://www.linkedin.com/in/frroliveira/",
           "https://www.linkedin.com/in/gabrielborges93/",
           "https://www.linkedin.com/in/gettoknowjdias/",
-          "https://www.linkedin.com/in/gonÁalo-pereira-63314a226/",
+          "https://www.linkedin.com/in/gon√ßalo-pereira-63314a226/",
           "https://www.linkedin.com/in/goncalobo/",
           "https://www.linkedin.com/in/goncaloper/",
           "https://www.linkedin.com/in/gussil/",
@@ -1820,8 +1799,8 @@
           "https://www.linkedin.com/in/jlopesbeleza/",
           "https://www.linkedin.com/in/jmmreis/",
           "https://www.linkedin.com/in/jnfbatista/",
-          "https://www.linkedin.com/in/jo„o-pinto-340a6747/",
-          "https://www.linkedin.com/in/jo„o-soares-083213121/",
+          "https://www.linkedin.com/in/jo√£o-pinto-340a6747/",
+          "https://www.linkedin.com/in/jo√£o-soares-083213121/",
           "https://www.linkedin.com/in/joanamcsilva/",
           "https://www.linkedin.com/in/joanavbarbosa/",
           "https://www.linkedin.com/in/joao-almeida-634aa574/",
@@ -1840,9 +1819,9 @@
           "https://www.linkedin.com/in/joelfilipeferreira/",
           "https://www.linkedin.com/in/jorgeesparteirogarcia/",
           "https://www.linkedin.com/in/jorgefilipemlima/",
-          "https://www.linkedin.com/in/josÈ-oliveira-311505b1/",
-          "https://www.linkedin.com/in/josÈ-pedro-cardoso-rodrigues-b1b0083/",
-          "https://www.linkedin.com/in/josÈ-pedro-marques-0b06a74b/",
+          "https://www.linkedin.com/in/jos√©-oliveira-311505b1/",
+          "https://www.linkedin.com/in/jos√©-pedro-cardoso-rodrigues-b1b0083/",
+          "https://www.linkedin.com/in/jos√©-pedro-marques-0b06a74b/",
           "https://www.linkedin.com/in/joseacardoso/",
           "https://www.linkedin.com/in/josehorta/",
           "https://www.linkedin.com/in/josemiguelmelo/",
@@ -1862,8 +1841,8 @@
           "https://www.linkedin.com/in/lfcgomes/",
           "https://www.linkedin.com/in/liliana-ribeiro-51a86a12b/",
           "https://www.linkedin.com/in/linda-padilla-90241854/",
-          "https://www.linkedin.com/in/luÌs-pereira-6a300b95/",
-          "https://www.linkedin.com/in/luÌs-santos-3a433327/",
+          "https://www.linkedin.com/in/lu√≠s-pereira-6a300b95/",
+          "https://www.linkedin.com/in/lu√≠s-santos-3a433327/",
           "https://www.linkedin.com/in/lucalanca/",
           "https://www.linkedin.com/in/luisalbertosimoes/",
           "https://www.linkedin.com/in/luis-a-m-p/",
@@ -1983,22 +1962,107 @@
     {
       "type": "Feature",
       "properties": {
-        "name": "sweden",
-        "students": 2,
+        "name": "cape verde",
+        "students": 1,
         "listAlumniNames": [
-          "Jo„o Xavier",
-          "Pedro Pacheco"
+          "Lindomar Rocha"
         ],
         "listLinkedinLinks": [
-          "https://www.linkedin.com/in/jcxavier/",
-          "https://www.linkedin.com/in/paxpacheco/"
+          "https://www.linkedin.com/in/lindomar-rocha-cv/"
         ]
       },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          18.06871,
-          59.32938
+          -24.0,
+          16.0
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "null",
+        "students": 4,
+        "listAlumniNames": [
+          "andr√£¬É√¢ riboira",
+          "Joaquim Carneiro",
+          "Jo√£¬É√¢¬£o Ferreira",
+          "Paulo Monteiro, MSc üá∫üá¶"
+        ],
+        "listLinkedinLinks": [
+          "https://www.linkedin.com/in/andreriboira/",
+          "https://www.linkedin.com/in/joaquimcarneiro/",
+          "https://www.linkedin.com/in/jo√£o-canas-ferreira-b534092/",
+          "https://www.linkedin.com/in/paulofromportugal/"
+        ]
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": []
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "iceland",
+        "students": 1,
+        "listAlumniNames": [
+          "Fernando Meira"
+        ],
+        "listLinkedinLinks": [
+          "https://www.linkedin.com/in/fmeira/"
+        ]
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -21.89541,
+          64.13548
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "united arab emirates",
+        "students": 3,
+        "listAlumniNames": [
+          "Gerardo De Oliveira",
+          "Jo√£o Vieira",
+          "Eva Marques"
+        ],
+        "listLinkedinLinks": [
+          "https://www.linkedin.com/in/gerardooliveira/",
+          "https://www.linkedin.com/in/jdsvieira/",
+          "https://www.linkedin.com/in/evamasmarques/"
+        ]
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          55.30927,
+          25.07725
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "estonia",
+        "students": 1,
+        "listAlumniNames": [
+          "Ricardo Nuno Almeida"
+        ],
+        "listLinkedinLinks": [
+          "https://www.linkedin.com/in/ricardonunoalmeida/"
+        ]
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          24.75353,
+          59.43696
         ]
       }
     },
@@ -2010,8 +2074,8 @@
         "listAlumniNames": [
           "Daniel Sequeira",
           "Hugo Barrote, CSM",
-          "InÍs Beir„o",
-          "Jo„o Seixas",
+          "In√™s Beir√£o",
+          "Jo√£o Seixas",
           "Luis Santos",
           "Nuno Cruz",
           "Ricardo Veloso",
@@ -2021,9 +2085,9 @@
           "Diogo Costa",
           "Filipe Batista",
           "Francisco Couto",
-          "Jo„o Nogueira",
+          "Jo√£o Nogueira",
           "Joel Alvim",
-          "JosÈ Carlos Coutinho",
+          "Jos√© Carlos Coutinho",
           "Pedro Oliveira"
         ],
         "listLinkedinLinks": [
@@ -2057,90 +2121,26 @@
     {
       "type": "Feature",
       "properties": {
-        "name": "czech republic",
-        "students": 1,
+        "name": "ireland",
+        "students": 4,
         "listAlumniNames": [
-          "Tiago Seabra"
+          "In√™s F.",
+          "Carlos Fernandes",
+          "Mark Meehan",
+          "Rui Fernandes"
         ],
         "listLinkedinLinks": [
-          "https://www.linkedin.com/in/tiagoseabra/"
+          "https://www.linkedin.com/in/iferreira/",
+          "https://www.linkedin.com/in/carlossilvafernandes/",
+          "https://www.linkedin.com/in/mark-timothy-meehan/",
+          "https://www.linkedin.com/in/rufernandes/"
         ]
       },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          14.42076,
-          50.08804
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "italy",
-        "students": 2,
-        "listAlumniNames": [
-          "AndrÈ Lamelas",
-          "Alexey S."
-        ],
-        "listLinkedinLinks": [
-          "https://www.linkedin.com/in/lamelas/",
-          "https://www.linkedin.com/in/alexeyseliverstov/"
-        ]
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          12.51133,
-          41.89193
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "japan",
-        "students": 3,
-        "listAlumniNames": [
-          "Francisco B.",
-          "Jo„o Marques",
-          "Pedro Oliveira"
-        ],
-        "listLinkedinLinks": [
-          "https://www.linkedin.com/in/franciscobrito/",
-          "https://www.linkedin.com/in/joaopmmarques/",
-          "https://www.linkedin.com/in/pedroandreoliveira/"
-        ]
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          139.69171,
-          35.6895
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "france",
-        "students": 3,
-        "listAlumniNames": [
-          "carlos sousa",
-          "Cl·udio Costa",
-          "AndrÈ Ferreira"
-        ],
-        "listLinkedinLinks": [
-          "https://www.linkedin.com/in/carlosmasousa/",
-          "https://www.linkedin.com/in/cmtcosta/",
-          "https://www.linkedin.com/in/andreferreirav2/"
-        ]
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          2.3488,
-          48.85341
+          -6.24889,
+          53.33306
         ]
       }
     }
