@@ -20,7 +20,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 @Service
-public class ViewAlumniCountryServiceImpl implements ViewAlumniCountryService{
+public class CountryServiceImpl implements CountryService{
 
     @Autowired
     private ViewAlumniCountryRepository viewAlumniCountryRepository;

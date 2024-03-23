@@ -7,7 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.feupAlumni.alumniFEUP.model.Country;
-import com.feupAlumni.alumniFEUP.service.ViewAlumniCountryService;
+import com.feupAlumni.alumniFEUP.service.CountryService;
 import com.feupAlumni.alumniFEUP.service.CityService;
 
 
@@ -16,7 +16,7 @@ import com.feupAlumni.alumniFEUP.service.CityService;
 @CrossOrigin
 public class SetupLocationController {
     @Autowired
-    private ViewAlumniCountryService viewAlumniCountryService;
+    private CountryService viewAlumniCountryService;
     @Autowired
     private CityService cityService;
 
