@@ -91,7 +91,6 @@ public class CityServiceImpl implements CityService {
 
         Map<City, List<AlumniEic>> alumniByCity = new HashMap<>();
         alumniEicRepository.findAll().forEach(alumni -> {
-            System.out.println("alumni: " + alumni.getAlumniName());
             if(alumni.getCity() != null) {
                 City city = alumni.getCity();
                 List<AlumniEic> alumniList = alumniByCity.getOrDefault(city, new ArrayList<>());
