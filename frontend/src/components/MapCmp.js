@@ -134,7 +134,7 @@ const MapCmp = () => {
               left: `${hoveredMouseCoords[0]}px`
               }}
             >
-              <ul className="list-alumni">
+              <ul className={`list-alumni${listAlumniNames.length > 5 ? ' scrollable' : ''}`}>
                 {listAlumniNames.map((alumniName, index) => (
                   <li key={index}>
                     <a className="link" href={listLinkedinLinks[index]} target="_blank" rel="noopener noreferrer">{alumniName}</a>

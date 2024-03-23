@@ -75,3 +75,7 @@
     list-style-type: none;
     padding: 0;
 }
+.list-alumni.scrollable {
+    max-height: 100px; /* Set your desired max height */
+    overflow-y: auto;
+}
