@@ -1,5 +1,6 @@
 package com.feupAlumni.alumniFEUP.service;
 
+import com.feupAlumni.alumniFEUP.handlers.CleanData;
 import com.feupAlumni.alumniFEUP.handlers.FilesHandler;
 import com.feupAlumni.alumniFEUP.model.Alumni;
 import com.feupAlumni.alumniFEUP.model.AlumniBackup;
@@ -26,21 +27,8 @@ public class AlumniServiceImpl implements AlumniService{
 
     int contagem = 0; 
 
-    // Cleans the Alumni table if there is information stored
-    private void cleanAlumniTable() {
-        if (alumniRepository.count() > 0) {   
-            try {
-                System.out.println("-----");
-                System.out.println("Table alumni populated. Registers are going to be deteled!");
-                alumniRepository.deleteAll();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
     @Override
-    public void processFile(MultipartFile file) {
+    public void populateAlumniTable(MultipartFile file) {
         try (InputStream inputStream = file.getInputStream()){
 
             // Read and iterate over the excel file
@@ -70,7 +58,6 @@ public class AlumniServiceImpl implements AlumniService{
                             
                             // Creates the alumni object with the constructor that needs the linkedinLink and the linkedinInfo
                             Alumni alumni = new Alumni(linkValue, linkedinInfoResponse.body());
-
                             // Stores the information in the database
                             alumniRepository.save(alumni);
                         } else {
@@ -89,10 +76,35 @@ public class AlumniServiceImpl implements AlumniService{
     }
 
     @Override
-    public void processFileBackup(MultipartFile fileBackup) {
-        
-        cleanAlumniTable();
+    public void backupAlumniTable() {
+        System.out.println("-----");
+        // Check if AlumniBackup table is not empty
+        if (alumniBackupRepository.count() > 0) {   
+            System.out.println("Table AlumniBackup populated. Registers are going to be deteled!");
+            alumniBackupRepository.deleteAll();
+        }
 
+        // Fetch all alumnis
+        List<Alumni> alumnis = alumniRepository.findAll();
+
+        if(alumnis.isEmpty()) {
+            System.out.println("Procedure interrupted: alumni table is empty.");
+            System.out.println("-----");
+            return;
+        }
+
+        // Iterate through alumnis and add them to alumnibackup table
+        for (Alumni alumni : alumnis) {
+            AlumniBackup alumniBackup = new AlumniBackup(alumni.getLinkedinLink(), alumni.getLinkedinInfo());
+            alumniBackupRepository.save(alumniBackup);
+        }
+        System.out.println("Table AlumniBackup repopulated.");
+        System.out.println("-----");
+    }
+
+    @Override
+    public void processFileBackup(MultipartFile fileBackup) {
+        CleanData.cleanTable(alumniRepository);
         try (InputStream inputStream = fileBackup.getInputStream()){
             String fileBackupContent = new String(inputStream.readAllBytes(), StandardCharsets.UTF_8);
 
@@ -127,27 +139,6 @@ public class AlumniServiceImpl implements AlumniService{
         }
         
         System.out.println("Table Alumni repopulated.");
-        System.out.println("-----");
-    }
-
-    @Override
-    public void backupAlumnis() {
-        System.out.println("-----");
-        // Check if AlumniBackup table is not empty
-        if (alumniBackupRepository.count() > 0) {   
-            System.out.println("Table AlumniBackup populated. Registers are going to be deteled!");
-            alumniBackupRepository.deleteAll();
-        }
-
-        // Fetch all alumnis
-        List<Alumni> alumnis = alumniRepository.findAll();
-
-        // Iterate through alumnis and add them to alumnibackup table
-        for (Alumni alumni : alumnis) {
-            AlumniBackup alumniBackup = new AlumniBackup(alumni.getLinkedinLink(), alumni.getLinkedinInfo());
-            alumniBackupRepository.save(alumniBackup);
-        }
-        System.out.println("Table AlumniBackup repopulated.");
         System.out.println("-----");
     }
 

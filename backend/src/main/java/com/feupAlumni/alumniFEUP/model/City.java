@@ -6,7 +6,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 
 @Entity
-public class ViewAlumniCity {
+public class City {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -16,11 +16,11 @@ public class ViewAlumniCity {
     private int nAlumniInCity;
 
 
-    public ViewAlumniCity(){
+    public City(){
 
     }
 
-    public ViewAlumniCity(String city, String cityCoordinates, int nAlumniInCity){
+    public City(String city, String cityCoordinates, int nAlumniInCity){
         this.city = city;
         this.cityCoordinates = cityCoordinates;
         this.nAlumniInCity = nAlumniInCity;

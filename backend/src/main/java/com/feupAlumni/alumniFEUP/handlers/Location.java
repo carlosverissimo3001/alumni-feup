@@ -24,8 +24,8 @@ import com.feupAlumni.alumniFEUP.model.GeoJSONFeature;
 import com.feupAlumni.alumniFEUP.model.GeoJSONGeometry;
 import com.feupAlumni.alumniFEUP.model.GeoJSONProperties;
 import com.feupAlumni.alumniFEUP.model.GeoJSONStructure;
-import com.feupAlumni.alumniFEUP.model.ViewAlumniCountry;
-import com.feupAlumni.alumniFEUP.model.ViewAlumniCity;
+import com.feupAlumni.alumniFEUP.model.Country;
+import com.feupAlumni.alumniFEUP.model.City;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import java.net.URLEncoder;
@@ -143,7 +143,7 @@ public class Location {
     }
 
     // Adds the city to the GeoJSON file
-    public static void addCityGeoJSON(ViewAlumniCity viewAlumniCity, File geoJSONFile, Gson gson) {
+    public static void addCityGeoJSON(City viewAlumniCity, File geoJSONFile, Gson gson) {
         try (FileReader fileReader = new FileReader(geoJSONFile)) {
             GeoJSONStructure geoJSONStructure = gson.fromJson(fileReader, GeoJSONStructure.class);
 
@@ -175,7 +175,7 @@ public class Location {
     }
 
     // Adds the country to the GeoJSON file
-    public static void addCountryGeoJSON(ViewAlumniCountry viewAlumniCountry, File geoJSONFile, Gson gson) {
+    public static void addCountryGeoJSON(Country viewAlumniCountry, File geoJSONFile, Gson gson) {
         
         try (FileReader fileReader = new FileReader(geoJSONFile)) {
             GeoJSONStructure geoJSONStructure = gson.fromJson(fileReader, GeoJSONStructure.class);
