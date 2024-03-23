@@ -8,6 +8,7 @@ const MapCmp = ({ geoJSONFile }) => {
 
     const mapRef = useRef(null);
     const [alumniGeoJSON, setAlumniGeoJSON] = useState(null);
+    const [listPlaceName, setListPlaceName] = useState(null);
     const [listAlumniNames, setListAlumniNames] = useState(null);
     const [listLinkedinLinks, setListLinkedinLinks] = useState(null);
     const [hoveredCluster, setHoveredCluster] = useState(Boolean);
@@ -46,14 +47,21 @@ const MapCmp = ({ geoJSONFile }) => {
 
       if (event.features && event.features.length > 0) {
         const feature = event.features[0];
+        var listPlaceName = feature.properties.name;
         var listAlumniNames = feature.properties.listAlumniNames;
         var listLinkedinLinks = feature.properties.listLinkedinLinks;
 
+        // Parse placeName if it's a string
+        if (typeof listPlaceName === 'string') {
+          const regex = /"([^"]+)"|'([^']+)'/g;
+          listPlaceName = listPlaceName.match(regex).map(match => match.replace(/['"]/g, ''));
+        }
         // Parse listAlumniNames if it's a string
         if (typeof listAlumniNames === 'string') {
           const regex = /"([^"]+)"|'([^']+)'/g;
           listAlumniNames = listAlumniNames.match(regex).map(match => match.replace(/['"]/g, ''));
         }
+        // Parse linkeLinks if it's a string
         if (typeof listLinkedinLinks === 'string') {
           const regex = /"([^"]+)"|'([^']+)'/g;
           listLinkedinLinks = listLinkedinLinks.match(regex).map(match => match.replace(/['"]/g, ''));
@@ -68,20 +76,25 @@ const MapCmp = ({ geoJSONFile }) => {
           });
           return flattened;
         };
+        listPlaceName = flattenArray(listPlaceName);
         listAlumniNames = flattenArray(listAlumniNames);
         listLinkedinLinks = flattenArray(listLinkedinLinks);
 
-        if (listAlumniNames.length > 0 && listLinkedinLinks.length > 0) {
+
+        if (listAlumniNames.length > 0 && listLinkedinLinks.length > 0 && listPlaceName.length > 0) {
+          setListPlaceName(listPlaceName);
           setListAlumniNames(listAlumniNames);
           setListLinkedinLinks(listLinkedinLinks);
           setHoveredCluster(true);
         } else {
+          setListPlaceName([]);
           setListAlumniNames([]);
           setListLinkedinLinks([]);
           setHoveredCluster(false);
           setHoveredMouseCoords(null);
         }
       } else {
+        setListPlaceName([]);
         setListAlumniNames([]);
         setListLinkedinLinks([]);
         setHoveredCluster(false);
@@ -117,6 +130,7 @@ const MapCmp = ({ geoJSONFile }) => {
                 clusterMaxZoom={14}
                 clusterRadius={50}
                 clusterProperties={{
+                  name: ['concat', ['get', 'name']],
                   students: ['+', ['get', 'students']],
                   listAlumniNames: ['concat', ['get', 'listAlumniNames']],
                   listLinkedinLinks: ['concat', ['get', 'listLinkedinLinks']],
@@ -128,7 +142,7 @@ const MapCmp = ({ geoJSONFile }) => {
             </Source>
           </Map>
           
-          { hoveredCluster && listAlumniNames.length > 0  && listLinkedinLinks.length > 0 && (
+          { hoveredCluster && listAlumniNames.length > 0  && listLinkedinLinks.length > 0 && listPlaceName.length > 0 && (
             <div
               className="clusterRectangle"
               style={{
@@ -138,6 +152,13 @@ const MapCmp = ({ geoJSONFile }) => {
               }}
             >
               <ul className={`list-alumni${listAlumniNames.length > 5 ? ' scrollable' : ''}`}>
+                <span style={{ fontWeight: 'bold' }}>Place: </span>
+                {listPlaceName.map( (place, index) => (
+                  <span key={index}>{place}{index !== listPlaceName.length - 1 && ', '}</span>
+                ))}
+
+                <p></p>
+                <span style={{ fontWeight: 'bold' }}>Alumni: </span>
                 {listAlumniNames.map((alumniName, index) => (
                   <li key={index}>
                     <a className="link" href={listLinkedinLinks[index]} target="_blank" rel="noopener noreferrer">{alumniName}</a>
