@@ -49,6 +49,15 @@
     left: 20px;
 }
 
+.butnUseCitiesGeoJson{
+    top: 480px;
+    left: 20px;
+}
+.butnUseCountriesGeoJson{
+    top: 510px;
+    left: 20px;
+}
+
 .fileInput{
     position: absolute;
     top: 30px;

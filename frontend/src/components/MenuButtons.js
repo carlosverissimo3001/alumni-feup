@@ -4,7 +4,7 @@ import Verifiers from '../helpers/verifiers';
 import ApiDataAnalysis from '../helpers/apiDataAnalysis';
 
 
-const MenuButtons = () => {
+const MenuButtons = ({onSelectGeoJSON }) => {
 
     const[file, setFile]=useState('')
 
@@ -69,6 +69,16 @@ const MenuButtons = () => {
         await setUp.generateCityGeoJason();
     }    
 
+    // Use cities GeoJson file 
+    const handleUseCitiesGeoJson = async () => {
+        onSelectGeoJSON('cities');
+    }
+
+    // Use countries GeoJson file
+    const handleUseCountriesGeoJson = async () => {
+        onSelectGeoJSON('countries');
+    }
+
     // Matches Students to LinkedIn Links. Receives an excel, updates the linkedin column and downloads the updated file
     const handleAlumnisMatchLinkedin = async () => {
         Verifiers.checkIfExcel(file);    
@@ -107,6 +117,9 @@ const MenuButtons = () => {
 
             <button className="button butnGenCountryGeoJason" onClick={handleGenerateCountryGeoJason}>GenerateCountryGeoJason</button>
             <button className="button butnGenCityGeoJason" onClick={handleGenerateCityGeoJason}>GenerateCityGeoJason</button>
+
+            <button className="button butnUseCitiesGeoJson" onClick={handleUseCitiesGeoJson}>UseCitiesGeoJson</button>
+            <button className="button butnUseCountriesGeoJson" onClick={handleUseCountriesGeoJson}>UseCountriesGeoJson</button>
 
             {/*
             <button className="button butnAlmWithoutLink" onClick={handleAlumnisMatchLinkedin}>Match Alumnis Linkedin</button>

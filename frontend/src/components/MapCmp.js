@@ -1,26 +1,29 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { clusterLayer, clusterCountLayer, unclusterPointLayer } from './MapLayers';
-//import alumniPerCountry from '../countriesGeoJSON.json';
-import alumniPerCountry from '../citiesGeoJSON.json';
-//import alumniPerCountry from '../edit_citiesGeoJSON.json';
 import {Map, Source, Layer} from 'react-map-gl';
 
 const TOKEN = process.env.REACT_APP_MAPBOX_ACCESS_TOKEN;
 
-const MapCmp = () => {
+const MapCmp = ({ geoJSONFile }) => {
 
     const mapRef = useRef(null);
+    const [alumniGeoJSON, setAlumniGeoJSON] = useState(null);
     const [listAlumniNames, setListAlumniNames] = useState(null);
     const [listLinkedinLinks, setListLinkedinLinks] = useState(null);
     const [hoveredCluster, setHoveredCluster] = useState(Boolean);
     const [hoveredMouseCoords, setHoveredMouseCoords] = useState([]);
+
+    useEffect(() => {
+      const alumniData = geoJSONFile === 'countries' ? require('../countriesGeoJSON.json') : require('../citiesGeoJSON.json');
+      setAlumniGeoJSON(alumniData);
+    }, [geoJSONFile]);
 
     const onClick = event => {
         if (event.features && event.features.length > 0) {
           const feature = event.features[0];
           const clusterId = feature.properties.cluster_id;
     
-          const mapboxSource = mapRef.current.getSource('alumniPerCountry');
+          const mapboxSource = mapRef.current.getSource(`${alumniGeoJSON}`);
           
           mapboxSource.getClusterExpansionZoom(clusterId, (err, zoom) => {
             if(err){
@@ -107,9 +110,9 @@ const MapCmp = () => {
             ref={mapRef}
             >
             <Source
-                id="alumniPerCountry"
+                id="alumniDistribution"
                 type="geojson"
-                data={alumniPerCountry}
+                data={alumniGeoJSON}
                 cluster={true}
                 clusterMaxZoom={14}
                 clusterRadius={50}
