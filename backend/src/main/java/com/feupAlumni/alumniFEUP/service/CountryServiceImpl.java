@@ -5,6 +5,7 @@ import com.feupAlumni.alumniFEUP.handlers.FilesHandler;
 import com.feupAlumni.alumniFEUP.handlers.Location;
 import com.feupAlumni.alumniFEUP.model.Alumni;
 import com.feupAlumni.alumniFEUP.model.Country;
+import com.feupAlumni.alumniFEUP.repository.AlumniEicRepository;
 import com.feupAlumni.alumniFEUP.repository.AlumniRepository;
 import com.feupAlumni.alumniFEUP.repository.CountryRepository;
 
@@ -23,6 +24,8 @@ public class CountryServiceImpl implements CountryService{
 
     @Autowired
     private CountryRepository countryRepository;
+    @Autowired
+    private AlumniEicRepository alumniEicRepository;
     @Autowired
     private AlumniRepository alumniRepository;
 
@@ -50,6 +53,7 @@ public class CountryServiceImpl implements CountryService{
 
     @Override
     public void populateCountryTable() {
+        CleanData.cleanTable(alumniEicRepository); // it has a foreign key
         CleanData.cleanTable(countryRepository);
 
         Map<String, Integer> countryAlumniCount = new HashMap<>();

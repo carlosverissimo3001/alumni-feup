@@ -1,9 +1,5 @@
 package com.feupAlumni.alumniFEUP.service;
 
-import com.feupAlumni.alumniFEUP.model.Alumni;
-
-import java.util.List;
-
 import org.springframework.web.multipart.MultipartFile;
 
 public interface AlumniService {
@@ -18,10 +14,10 @@ public interface AlumniService {
 
     // Processes the file backup, which contains the response of the LinkdIn API and repopulates the Alumni table
     public void processFileBackup(MultipartFile fileBackup);
-    
-    // Returns all alumnis
-    public List<Alumni> getAllAlumnis();
 
     // Associates the missing linkedin links to the needed rows
     public void missingLinkedinLinks();
+
+    // Populates the AlumniEic table
+    public void populateAlumniEic();
 }

@@ -1,12 +1,12 @@
 package com.feupAlumni.alumniFEUP.repository;
+
+import com.feupAlumni.alumniFEUP.model.AlumniEic;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import com.feupAlumni.alumniFEUP.model.City;
-
 @Repository
-public interface CityRepository extends JpaRepository<City, Integer> {
-    City findByCity(String cityName);
+public interface AlumniEicRepository extends JpaRepository<AlumniEic, Integer> {
+
+
 }
-
-

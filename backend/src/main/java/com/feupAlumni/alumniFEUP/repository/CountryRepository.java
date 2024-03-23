@@ -7,5 +7,5 @@ import com.feupAlumni.alumniFEUP.model.Country;
 
 @Repository
 public interface CountryRepository extends JpaRepository<Country, Integer> {
-    
+    Country findByCountry(String countryName);
 }

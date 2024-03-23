@@ -35,12 +35,17 @@
     top: 300px;
     left: 20px;
 }
-.butnGenCountryGeoJason{
+.butnPopAlumniEIC{
     top: 330px;
     left: 20px;
 }
+
+.butnGenCountryGeoJason{
+    top: 390px;
+    left: 20px;
+}
 .butnGenCityGeoJason{
-    top: 360px;
+    top: 420px;
     left: 20px;
 }
 

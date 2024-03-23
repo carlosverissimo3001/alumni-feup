@@ -54,6 +54,11 @@ const MenuButtons = () => {
         await setUp.populateCityTable();
     }
 
+    // Populates the alumniEic table
+    const handlePopulateAlumniEICTable = async () => {
+        await setUp.populateAlumniEICTable();
+    }
+
     // Generates the coynntry geoJason
     const handleGenerateCountryGeoJason = async () => {
         await setUp.generateCountryGeoJason();
@@ -62,43 +67,7 @@ const MenuButtons = () => {
     // Generates the city geoJason
     const handleGenerateCityGeoJason = async () => {
         await setUp.generateCityGeoJason();
-    }
-
-    // Makes the uplication setup: populades the Alumni table and performs its backup. Populates the view_alumni_country table and 
-    // generates the GeoJSON file.
-    const handleFileUpload = async () => {
-        if(!file){
-            alert('Please Select a File.');
-            return;
-        }
-        Verifiers.checkIfExcel(file);        
-
-        const userConfirmed = window.confirm('By uploading a new file, the existing populated tables are going to be deleted and repopulated with the new information from the inserted file. Are you sure you want to continue with this action?');
-
-        if (userConfirmed) {
-            // Reads the LinkedIn links from the file, calls the API that scrapes information from each link, and stores in the Alumni table and stores in a backup file the result of the API
-            console.log("If you want to perform this functionality uncoment the code in the Alumni class. This was done to avoid uploading a file and consequently calling the API by accident (wasting credits).")
-            //var succAlumniInfo = setUp.getAlumniLinkedinInfo(file); TODO: commented for now
-            var succAlumniInfo = true;                              //TODO: delete this
-
-            // Only repopulates the DB when the get information of the alumni linkedin profile was well performed
-            if (succAlumniInfo) {
-                // Performs the backup of the table Alumni
-                //await setUp.setAlumniBackup();                    TODO: Uncomment this
-
-                // Populates the view_alumni_country table < Calls the API to get the countries coordinates < generates the GEOJson file
-                // await setUp.setUpLocation();                     TODO: Uncomment this
-
-                // Populates the view_alumni_city table < Calls the API to get the city coordinates < generates the GEOJson file
-                await setUp.setUpLocationCities();
-            }
-
-        } else {
-            console.log('User canceled file upload operation.');
-        }
-    }
-
-    
+    }    
 
     // Matches Students to LinkedIn Links. Receives an excel, updates the linkedin column and downloads the updated file
     const handleAlumnisMatchLinkedin = async () => {
@@ -134,12 +103,12 @@ const MenuButtons = () => {
 
             <button className="button butnPopCountry" onClick={handlePopulateCountryTable}>PopulateCoutryTable</button>
             <button className="button butnPopCity" onClick={handlePopulateCityTable}>PopulateCityTable</button>
+            <button className="button butnPopAlumniEIC" onClick={handlePopulateAlumniEICTable}>PopulateAlumniEICTable</button>
 
             <button className="button butnGenCountryGeoJason" onClick={handleGenerateCountryGeoJason}>GenerateCountryGeoJason</button>
             <button className="button butnGenCityGeoJason" onClick={handleGenerateCityGeoJason}>GenerateCityGeoJason</button>
 
-            {/*<button className="button butnUplFile" onClick={handleFileUpload}>Upload File</button>
-            
+            {/*
             <button className="button butnAlmWithoutLink" onClick={handleAlumnisMatchLinkedin}>Match Alumnis Linkedin</button>
             <button className="button btnExcelAlumniProfSitu" onClick={handleExcelAlumniProfSitu}>Excel: nomeAlumni + professionalSitu</button>
             <button className="button btnExcelAlumniTableToExcel" onClick={handleAlmnTblExcel}>Excel: Alumni table</button>
