@@ -103,19 +103,6 @@ public class CountryServiceImpl implements CountryService{
         alumniByCountry.forEach((country, alumniList) -> {
             Location.addCountryGeoJSON(country, alumniList, geoJSONFile, gson);
         });
-
-        // Iterates over the AlumniEic table and populates the GeoJason file
-        /*List<AlumniEic> alumniEicList = alumniEicRepository.findAll();
-        for (AlumniEic alumniEic : alumniEicList) {
-            Location.addCountryGeoJSON(alumniEic, geoJSONFile, gson);
-        }*/
-
-        // Iterates over the CountryService table and populates the GeoJason file
-        /*List<Country> countryList = countryRepository.findAll();
-        for (Country country : countryList) {
-            // Adds the country, the country coordinates and the number of alumni per country in the GeoJSON file
-            Location.addCountryGeoJSON(country, geoJSONFile, gson);
-        }*/
     }
 
 }

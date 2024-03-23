@@ -1,6 +1,7 @@
 package com.feupAlumni.alumniFEUP.service;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,6 +13,7 @@ import com.feupAlumni.alumniFEUP.handlers.CleanData;
 import com.feupAlumni.alumniFEUP.handlers.FilesHandler;
 import com.feupAlumni.alumniFEUP.handlers.Location;
 import com.feupAlumni.alumniFEUP.model.Alumni;
+import com.feupAlumni.alumniFEUP.model.AlumniEic;
 import com.feupAlumni.alumniFEUP.model.City;
 import com.feupAlumni.alumniFEUP.repository.AlumniRepository;
 import com.feupAlumni.alumniFEUP.repository.AlumniEicRepository;
@@ -87,11 +89,19 @@ public class CityServiceImpl implements CityService {
         Location.createEmptyGeoJSONFile(geoJSONFile);
         System.out.println("GeoJSON file created");
 
-        // Iterates over the City table and populates the GeoJason file
-        List<City> cityList = cityRepository.findAll();
-        for (City city : cityList) {
-            // Adds the country, the country coordinates and the number of alumni per country in the GeoJSON file
-            Location.addCityGeoJSON(city, geoJSONFile, gson);
-        }
+        Map<City, List<AlumniEic>> alumniByCity = new HashMap<>();
+        alumniEicRepository.findAll().forEach(alumni -> {
+            System.out.println("alumni: " + alumni.getAlumniName());
+            if(alumni.getCity() != null) {
+                City city = alumni.getCity();
+                List<AlumniEic> alumniList = alumniByCity.getOrDefault(city, new ArrayList<>());
+                alumniList.add(alumni);
+                alumniByCity.put(city, alumniList);
+            }
+        });
+
+        alumniByCity.forEach((city, alumniList) -> {
+            Location.addCityGeoJSON(city, alumniList, geoJSONFile, gson);
+        });
     }
 }
