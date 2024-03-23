@@ -1,10 +1,17 @@
 package com.feupAlumni.alumniFEUP.service;
 
+import com.feupAlumni.alumniFEUP.handlers.CleanData;
 import com.feupAlumni.alumniFEUP.handlers.FilesHandler;
 import com.feupAlumni.alumniFEUP.model.Alumni;
+import com.feupAlumni.alumniFEUP.model.City;
+import com.feupAlumni.alumniFEUP.model.Country;
 import com.feupAlumni.alumniFEUP.model.AlumniBackup;
+import com.feupAlumni.alumniFEUP.model.AlumniEic;
 import com.feupAlumni.alumniFEUP.repository.AlumniBackupRepository;
 import com.feupAlumni.alumniFEUP.repository.AlumniRepository;
+import com.feupAlumni.alumniFEUP.repository.AlumniEicRepository;
+import com.feupAlumni.alumniFEUP.repository.CityRepository;
+import com.feupAlumni.alumniFEUP.repository.CountryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -22,25 +29,18 @@ public class AlumniServiceImpl implements AlumniService{
     @Autowired
     private AlumniRepository alumniRepository;
     @Autowired
+    private AlumniEicRepository alumniEicRepository;
+    @Autowired
     private AlumniBackupRepository alumniBackupRepository;
+    @Autowired
+    private CityRepository cityRepository;
+    @Autowired
+    private CountryRepository countryRepository;
 
     int contagem = 0; 
 
-    // Cleans the Alumni table if there is information stored
-    private void cleanAlumniTable() {
-        if (alumniRepository.count() > 0) {   
-            try {
-                System.out.println("-----");
-                System.out.println("Table alumni populated. Registers are going to be deteled!");
-                alumniRepository.deleteAll();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
     @Override
-    public void processFile(MultipartFile file) {
+    public void populateAlumniTable(MultipartFile file) {
         try (InputStream inputStream = file.getInputStream()){
 
             // Read and iterate over the excel file
@@ -52,7 +52,7 @@ public class AlumniServiceImpl implements AlumniService{
                 try {
                     Row row = rowIterator.next();
 
-                    String linkValue = row.getCell(0).getStringCellValue(); // Column A
+                    //String linkValue = row.getCell(0).getStringCellValue(); // Column A
                     String existeValue = row.getCell(1).getStringCellValue(); // Column B
     
                     if ("NOVO".equals(existeValue)) {
@@ -70,7 +70,6 @@ public class AlumniServiceImpl implements AlumniService{
                             
                             // Creates the alumni object with the constructor that needs the linkedinLink and the linkedinInfo
                             Alumni alumni = new Alumni(linkValue, linkedinInfoResponse.body());
-
                             // Stores the information in the database
                             alumniRepository.save(alumni);
                         } else {
@@ -89,10 +88,35 @@ public class AlumniServiceImpl implements AlumniService{
     }
 
     @Override
-    public void processFileBackup(MultipartFile fileBackup) {
-        
-        cleanAlumniTable();
+    public void backupAlumniTable() {
+        System.out.println("-----");
+        // Check if AlumniBackup table is not empty
+        if (alumniBackupRepository.count() > 0) {   
+            System.out.println("Table AlumniBackup populated. Registers are going to be deteled!");
+            alumniBackupRepository.deleteAll();
+        }
 
+        // Fetch all alumnis
+        List<Alumni> alumnis = alumniRepository.findAll();
+
+        if(alumnis.isEmpty()) {
+            System.out.println("Procedure interrupted: alumni table is empty.");
+            System.out.println("-----");
+            return;
+        }
+
+        // Iterate through alumnis and add them to alumnibackup table
+        for (Alumni alumni : alumnis) {
+            AlumniBackup alumniBackup = new AlumniBackup(alumni.getLinkedinLink(), alumni.getLinkedinInfo());
+            alumniBackupRepository.save(alumniBackup);
+        }
+        System.out.println("Table AlumniBackup repopulated.");
+        System.out.println("-----");
+    }
+
+    @Override
+    public void processFileBackup(MultipartFile fileBackup) {
+        CleanData.cleanTable(alumniRepository);
         try (InputStream inputStream = fileBackup.getInputStream()){
             String fileBackupContent = new String(inputStream.readAllBytes(), StandardCharsets.UTF_8);
 
@@ -131,32 +155,6 @@ public class AlumniServiceImpl implements AlumniService{
     }
 
     @Override
-    public void backupAlumnis() {
-        System.out.println("-----");
-        // Check if AlumniBackup table is not empty
-        if (alumniBackupRepository.count() > 0) {   
-            System.out.println("Table AlumniBackup populated. Registers are going to be deteled!");
-            alumniBackupRepository.deleteAll();
-        }
-
-        // Fetch all alumnis
-        List<Alumni> alumnis = alumniRepository.findAll();
-
-        // Iterate through alumnis and add them to alumnibackup table
-        for (Alumni alumni : alumnis) {
-            AlumniBackup alumniBackup = new AlumniBackup(alumni.getLinkedinLink(), alumni.getLinkedinInfo());
-            alumniBackupRepository.save(alumniBackup);
-        }
-        System.out.println("Table AlumniBackup repopulated.");
-        System.out.println("-----");
-    }
-
-    @Override
-    public List<Alumni> getAllAlumnis() {
-        return alumniRepository.findAll();
-    }
-
-    @Override
     public void missingLinkedinLinks() {
         List<Alumni> alumniList = alumniRepository.findAll();
         for (Alumni alumni : alumniList) {
@@ -169,6 +167,40 @@ public class AlumniServiceImpl implements AlumniService{
                 alumni.setLinkedinLink(linkedinLinkNew);
                 alumniRepository.save(alumni);
             }
+        }
+    }
+
+    @Override
+    public void populateAlumniEic() {
+        // Clean AlumniEIC Table
+        CleanData.cleanTable(alumniEicRepository);
+
+        try{
+            //Get alumni information from the database
+            List<Alumni> alumniList = alumniRepository.findAll();
+
+            // Iterate over each alumni and populate AlumniEic table
+            for (Alumni alumni : alumniList) {
+                String linkedinInfo = alumni.getLinkedinInfo();
+                String alumniFirstName = FilesHandler.extractFieldFromJson("first_name", linkedinInfo);
+                String alumniLastName = FilesHandler.extractFieldFromJson("last_name", linkedinInfo);
+                String alumniFullName = alumniFirstName + " " + alumniLastName;
+                String linkedinLink = "https://www.linkedin.com/in/"+ FilesHandler.extractFieldFromJson("public_identifier", linkedinInfo) + "/";
+                String countryName = FilesHandler.extractFieldFromJson("country_full_name", linkedinInfo);
+                String cityName = FilesHandler.extractFieldFromJson("city", linkedinInfo);
+
+                // Fetch city and country entities from my database
+                City city = cityRepository.findByCity(cityName);
+                Country country = countryRepository.findByCountry(countryName);
+
+                // Store in the DB
+                AlumniEic alumniEic = new AlumniEic(alumniFullName, linkedinLink, city, country);
+                alumniEicRepository.save(alumniEic);
+            }
+            System.out.println("AlumniEIC table re-populated");
+            System.out.println("-----");
+        } catch(Exception e) {
+            System.out.println("Error !!!!: " + e);
         }
     }
 }
