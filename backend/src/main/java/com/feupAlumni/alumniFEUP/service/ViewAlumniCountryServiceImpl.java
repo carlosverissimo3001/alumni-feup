@@ -1,9 +1,10 @@
 package com.feupAlumni.alumniFEUP.service;
 
+import com.feupAlumni.alumniFEUP.handlers.CleanData;
 import com.feupAlumni.alumniFEUP.handlers.FilesHandler;
 import com.feupAlumni.alumniFEUP.handlers.Location;
 import com.feupAlumni.alumniFEUP.model.Alumni;
-import com.feupAlumni.alumniFEUP.model.ViewAlumniCountry;
+import com.feupAlumni.alumniFEUP.model.Country;
 import com.feupAlumni.alumniFEUP.repository.AlumniRepository;
 import com.feupAlumni.alumniFEUP.repository.ViewAlumniCountryRepository;
 
@@ -25,19 +26,6 @@ public class ViewAlumniCountryServiceImpl implements ViewAlumniCountryService{
     private ViewAlumniCountryRepository viewAlumniCountryRepository;
     @Autowired
     private AlumniRepository alumniRepository;
-
-    // Check if AlumniBackup table is not empty
-    private void cleanAlumniCountryTable() {
-        if (viewAlumniCountryRepository.count() > 0) {   
-            try {
-                System.out.println("-----");
-                System.out.println("Table viewAlumniCountryRepository populated. Registers are going to be deteled!");
-                viewAlumniCountryRepository.deleteAll();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    }
 
     // Gets the alumni distribution per country
     private void getAlumniDistCountry(Map<String, Integer> countryAlumniCount, Map<String, String> countryCodes) {
@@ -62,9 +50,8 @@ public class ViewAlumniCountryServiceImpl implements ViewAlumniCountryService{
     }   
 
     @Override
-    public void setLocationSetup() {
-
-        cleanAlumniCountryTable();
+    public void populateCountryTable() {
+        CleanData.cleanTable(viewAlumniCountryRepository);
 
         Map<String, Integer> countryAlumniCount = new HashMap<>();
         Map<String, String> countryCodes = new HashMap<>();
@@ -90,7 +77,7 @@ public class ViewAlumniCountryServiceImpl implements ViewAlumniCountryService{
                 }
 
                 // Saves the data in the table
-                ViewAlumniCountry viewAlumniCountry = new ViewAlumniCountry(country, countryCode, alumniCount, coordinates);
+                Country viewAlumniCountry = new Country(country, countryCode, alumniCount, coordinates);
                 viewAlumniCountryRepository.save(viewAlumniCountry);
                 
 
@@ -108,7 +95,7 @@ public class ViewAlumniCountryServiceImpl implements ViewAlumniCountryService{
     }
 
     @Override
-    public List<ViewAlumniCountry> getViewAlumniCountry() {
+    public List<Country> getViewAlumniCountry() {
         return viewAlumniCountryRepository.findAll();
     }
 

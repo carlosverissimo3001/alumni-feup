@@ -2,12 +2,11 @@ package com.feupAlumni.alumniFEUP.service;
 
 import java.util.List;
 
-import com.feupAlumni.alumniFEUP.model.ViewAlumniCountry;
+import com.feupAlumni.alumniFEUP.model.Country;
 
 public interface ViewAlumniCountryService {
     // Populates the table with updated information. If the table has register, they are delted and the table is repopulated.
-    // Generates the GeoJSON file.
-    public void setLocationSetup();
+    public void populateCountryTable();
     // Returns the information in the table
-    public List<ViewAlumniCountry> getViewAlumniCountry();
+    public List<Country> getViewAlumniCountry();
 }

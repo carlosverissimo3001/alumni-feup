@@ -12,6 +12,48 @@ const MenuButtons = () => {
         setFile(e.target.files[0]);
     };
 
+    // By calling the API to scrape information: populates the alumni table
+    //                                           stores the information in a file
+    const handlePopulateAlumniTable = async () => {
+        Verifiers.checkIfExcel(file);        
+
+        const userConfirmed = window.confirm('You are about to delete the info of tables and update with the setelected file');
+        if(userConfirmed) {
+            console.log("API call commented");
+            setUp.populateAlumniTable(file); 
+        }
+    }
+
+    // Performs backup of the Alumni table
+    const handleBackupTableAlumni = async () => {
+        await setUp.setAlumniBackup();         
+        console.log("Backup of alumni table performed");       
+    }
+
+    // Read from a file that contains the API response of scraped profiles => avoid unecessary calls to the API
+    const handlePopulateAlumniTableFileBckp = async () => {
+        Verifiers.checkIfTextFile(file);
+       
+        await setUp.setAlumniUsingBackup(file);
+        console.log("Backup set in the Alumni table");
+    }
+
+    // DB is inconsistent and some rows don't have the linkedin link stored because of how I once read from the backup file.
+    // this function serves as a way to fix this and put the DB consistent
+    const handleLinkedinLinksAlumniTable = async () => {
+        setUp.addMissingLinkedinLinks(); 
+    }
+
+    // Populates the country table: calls the API for the cuntry coordinates
+    const handlePopulateCountryTable = async () => {
+        await setUp.populateCountryTable();                     
+    }
+
+    // Populates the city table: calls API for the city coordinates
+    const handlePopulateCityTable = async () => {
+        await setUp.populateCityTable();
+    }
+
     // Makes the uplication setup: populades the Alumni table and performs its backup. Populates the view_alumni_country table and 
     // generates the GeoJSON file.
     const handleFileUpload = async () => {
@@ -46,33 +88,13 @@ const MenuButtons = () => {
         }
     }
 
-    // Reads from the "BackUpCallAPI", which contains a backup of the data returned by the LinkdIn API => this way we avoid calling this 
-    // API unecessarly.
-    const handleFileUploadBackup = async () => {
-        Verifiers.checkIfTextFile(file);
-       
-        await setUp.setAlumniUsingBackup(file);
-        console.log("Backup set in the Alumni table");
-    }
-
-    // Performs the backup of the table Alumni
-    const handleAlumniBackup = async () => {
-        await setUp.setAlumniBackup();
-        console.log("Backup set in the AlumniBackup table");
-    }
+    
 
     // Matches Students to LinkedIn Links. Receives an excel, updates the linkedin column and downloads the updated file
     const handleAlumnisMatchLinkedin = async () => {
         Verifiers.checkIfExcel(file);    
         ApiDataAnalysis.matchLinkedinLinksToStudents(file); 
     }
-
-    // DB is inconsistent and some rows don't have the linkedin link stored because of how I once read from the backup file.
-    // this function serves as a way to fix this and put the DB consistent
-    const handlePutLinksInDB = async () => {
-        setUp.addMissingLinkedinLinks(); 
-    }
-
     // This function receives an Excel and writes to it a column with all the Alumni names (this is, the students from the group)
     // and the corresponding professional situation
     const handleExcelAlumniProfSitu = async () => {
@@ -84,7 +106,6 @@ const MenuButtons = () => {
         }
         ApiDataAnalysis.excelAlmnProfSitu(file);
     }
-
     // Reads the Alumni Table and backs it up to an Excel
     const handleAlmnTblExcel = async () => {
         Verifiers.checkIfExcel(file);
@@ -95,12 +116,18 @@ const MenuButtons = () => {
         <>
             <input type="file" className='fileInput' onChange={handleFileChange} />         
             
-            <button className="button butnUplFile" onClick={handleFileUpload}>Upload File</button>
-            {/*<button className="button butnUplFileBackup" onClick={handleFileUploadBackup}>Pop Alumni with backup file</button>
-            <button className="button butnAlumniBackup" onClick={handleAlumniBackup}>Set Backup Alumni Table</button>
+            <button className="button butnPopAlumni" onClick={handlePopulateAlumniTable}>AlumniTablePopulate</button>
+            <button className="button butnBackAlumni" onClick={handleBackupTableAlumni}>BackupTableAlumni</button>
+            <button className="button butnBackAlumniWFile" onClick={handlePopulateAlumniTableFileBckp}>AlumniTablePopulate - backup file</button>
+            <button className="button btnMissingLinkedinLinks" onClick={handleLinkedinLinksAlumniTable}>MissingLinkedinLinks</button>
+
+
+            <button className="button butnPopCountry" onClick={handlePopulateCountryTable}>PopulateCoutryTable</button>
+            <button className="button butnPopCity" onClick={handlePopulateCityTable}>PopulateCityTable</button>
+
+            {/*<button className="button butnUplFile" onClick={handleFileUpload}>Upload File</button>
             
             <button className="button butnAlmWithoutLink" onClick={handleAlumnisMatchLinkedin}>Match Alumnis Linkedin</button>
-            <button className="button btnPutLinksDB" onClick={handlePutLinksInDB}>Put LinkedIn Links in DB</button>
             <button className="button btnExcelAlumniProfSitu" onClick={handleExcelAlumniProfSitu}>Excel: nomeAlumni + professionalSitu</button>
             <button className="button btnExcelAlumniTableToExcel" onClick={handleAlmnTblExcel}>Excel: Alumni table</button>
             */}

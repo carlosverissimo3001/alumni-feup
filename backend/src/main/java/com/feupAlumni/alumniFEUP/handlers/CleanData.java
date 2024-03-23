@@ -6,7 +6,22 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.springframework.data.jpa.repository.JpaRepository;
+
 public class CleanData {
+
+    // If the table has registers they are deleted
+    public static void cleanTable(JpaRepository<?, ?> repository) {
+        if (repository.count() > 0) {
+            try {
+                System.out.println("-----");
+                System.out.println("Table: " + repository + "populated. Registers are going to be deteled!");
+                repository.deleteAll();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
 
     public static boolean isValidSchool(String schoolName) {
         // Convert school name to lowercase for case-insensitive comparison

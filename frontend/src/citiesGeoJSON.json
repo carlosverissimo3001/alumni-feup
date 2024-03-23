@@ -38,8 +38,8 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -8.66743,
-          41.20766
+          -8.68908,
+          41.18207
         ]
       }
     },
@@ -60,14 +60,14 @@
     {
       "type": "Feature",
       "properties": {
-        "name": "porto e regiï¿½o",
+        "name": "porto e região",
         "students": 9
       },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -48.13309,
-          -24.52268
+          -34.8918,
+          -7.11502
         ]
       }
     },
@@ -122,22 +122,22 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -8.55953,
-          41.17872
+          -35.03715,
+          -6.79673
         ]
       }
     },
     {
       "type": "Feature",
       "properties": {
-        "name": "ï¿½vora",
+        "name": "évora",
         "students": 1
       },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -7.83333,
-          38.58333
+          -7.9,
+          38.56667
         ]
       }
     },
@@ -178,8 +178,8 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -79.56711,
-          43.65421
+          -79.56985,
+          43.64415
         ]
       }
     },
@@ -200,7 +200,7 @@
     {
       "type": "Feature",
       "properties": {
-        "name": "mï¿½nchen",
+        "name": "münchen",
         "students": 1
       },
       "geometry": {
@@ -228,7 +228,7 @@
     {
       "type": "Feature",
       "properties": {
-        "name": "braga e regiï¿½o",
+        "name": "braga e região",
         "students": 1
       },
       "geometry": {
@@ -424,7 +424,7 @@
     {
       "type": "Feature",
       "properties": {
-        "name": "sï¿½o paulo",
+        "name": "são paulo",
         "students": 2
       },
       "geometry": {
@@ -452,7 +452,7 @@
     {
       "type": "Feature",
       "properties": {
-        "name": "covilhï¿½",
+        "name": "covilhã",
         "students": 1
       },
       "geometry": {
@@ -640,8 +640,8 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -8.06503,
-          41.2705
+          -39.06727,
+          -3.56612
         ]
       }
     },
@@ -970,7 +970,7 @@
     {
       "type": "Feature",
       "properties": {
-        "name": "braganï¿½a",
+        "name": "bragança",
         "students": 2
       },
       "geometry": {
@@ -1096,7 +1096,7 @@
     {
       "type": "Feature",
       "properties": {
-        "name": "malmï¿½",
+        "name": "malmö",
         "students": 1
       },
       "geometry": {
@@ -1236,7 +1236,7 @@
     {
       "type": "Feature",
       "properties": {
-        "name": "guimarï¿½es",
+        "name": "guimarães",
         "students": 1
       },
       "geometry": {
@@ -1270,8 +1270,8 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
-          13.33396,
-          52.49878
+          -3.67264,
+          40.448
         ]
       }
     },
@@ -1326,8 +1326,8 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
-          11.57549,
-          48.13743
+          11.5,
+          49.0
         ]
       }
     },
@@ -1390,7 +1390,7 @@
     {
       "type": "Feature",
       "properties": {
-        "name": "zï¿½rich",
+        "name": "zürich",
         "students": 1
       },
       "geometry": {
@@ -1410,8 +1410,8 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -122.41942,
-          37.77493
+          -87.20681,
+          14.0818
         ]
       }
     },
@@ -1432,14 +1432,14 @@
     {
       "type": "Feature",
       "properties": {
-        "name": "baiï¿½o",
+        "name": "baião",
         "students": 1
       },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -8.0347,
-          41.16273
+          -8.03581,
+          41.16384
         ]
       }
     },
@@ -1488,7 +1488,7 @@
     {
       "type": "Feature",
       "properties": {
-        "name": "vila nova de famalicï¿½o",
+        "name": "vila nova de famalicão",
         "students": 2
       },
       "geometry": {
