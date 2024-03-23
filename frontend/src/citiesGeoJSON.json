@@ -4,365 +4,473 @@
     {
       "type": "Feature",
       "properties": {
-        "name": "penafiel",
+        "name": [
+          "cologne"
+        ],
+        "students": 1,
+        "listAlumniNames": [
+          "Rui Tavares"
+        ],
+        "listLinkedinLinks": [
+          "https://www.linkedin.com/in/ruitavares/"
+        ]
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.95,
+          50.93333
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": [
+          "delft"
+        ],
+        "students": 1,
+        "listAlumniNames": [
+          "José Carlos Coutinho"
+        ],
+        "listLinkedinLinks": [
+          "https://www.linkedin.com/in/jose-carlos-ms-coutinho/"
+        ]
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.35556,
+          52.00667
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": [
+          "warsaw"
+        ],
         "students": 2,
         "listAlumniNames": [
-          "Luis Pedroso",
-          "Tiago Pereira"
+          "João Costa",
+          "Damien Rosa"
         ],
         "listLinkedinLinks": [
-          "https://www.linkedin.com/in/luispedroso/",
-          "https://www.linkedin.com/in/tiagoafpereira/"
+          "https://www.linkedin.com/in/jpcosta/",
+          "https://www.linkedin.com/in/damien-rosa-83806134/"
         ]
       },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -8.28285,
-          41.20835
+          21.01178,
+          52.22977
         ]
       }
     },
     {
       "type": "Feature",
       "properties": {
-        "name": "stockholm",
+        "name": [
+          "opfikon"
+        ],
         "students": 1,
         "listAlumniNames": [
-          "Pedro Pacheco"
+          "João Soares"
         ],
         "listLinkedinLinks": [
-          "https://www.linkedin.com/in/paxpacheco/"
+          "https://www.linkedin.com/in/joaoamsoares/"
         ]
       },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          18.06871,
-          59.32938
+          8.57588,
+          47.43169
         ]
       }
     },
     {
       "type": "Feature",
       "properties": {
-        "name": "ashford",
-        "students": 1,
-        "listAlumniNames": [
-          "André Fernandes"
+        "name": [
+          "valongo"
         ],
-        "listLinkedinLinks": [
-          "https://www.linkedin.com/in/asfer/"
-        ]
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          0.87376,
-          51.14648
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "zurich",
-        "students": 5,
-        "listAlumniNames": [
-          "Bruno Vieira",
-          "César Duarte",
-          "Luis Amaral",
-          "Sílvia Monteiro",
-          "João Gonçalves"
-        ],
-        "listLinkedinLinks": [
-          "https://www.linkedin.com/in/brunodsvieira/",
-          "https://www.linkedin.com/in/cesarbduarte/",
-          "https://www.linkedin.com/in/luismgamaral/",
-          "https://www.linkedin.com/in/smonteiro/",
-          "https://www.linkedin.com/in/jsvgoncalves/"
-        ]
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          8.55,
-          47.36667
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "greater seattle area",
-        "students": 1,
-        "listAlumniNames": [
-          "André Rodrigues"
-        ],
-        "listLinkedinLinks": [
-          "https://www.linkedin.com/in/andrerod/"
-        ]
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -122.3765,
-          47.5224
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "ermesinde",
-        "students": 1,
-        "listAlumniNames": [
-          "Filipe Pinto Reis"
-        ],
-        "listLinkedinLinks": [
-          "https://www.linkedin.com/in/filipepintoreis/"
-        ]
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -8.55318,
-          41.21653
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "vila nova de famalicão",
-        "students": 2,
-        "listAlumniNames": [
-          "Frederico Figueiredo",
-          "Fernando Fernandes"
-        ],
-        "listLinkedinLinks": [
-          "https://www.linkedin.com/in/fbfigueiredo/",
-          "https://www.linkedin.com/in/af-fernandes/"
-        ]
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -8.48511,
-          41.41223
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "barcelona",
-        "students": 4,
-        "listAlumniNames": [
-          "Sergio Rasgado",
-          "Luís Guilherme Martins",
-          "João Alves",
-          "João Vieira de Castro"
-        ],
-        "listLinkedinLinks": [
-          "https://www.linkedin.com/in/sergiorasgado/",
-          "https://www.linkedin.com/in/guilhermescp/",
-          "https://www.linkedin.com/in/joaoqalves/",
-          "https://www.linkedin.com/in/joaovieiracastro/"
-        ]
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          2.15899,
-          41.38879
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "los angeles",
         "students": 1,
         "listAlumniNames": [
           "Rui Gomes"
         ],
         "listLinkedinLinks": [
-          "https://www.linkedin.com/in/ruigomeseu/"
+          "https://www.linkedin.com/in/ruihgomes/"
         ]
       },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -118.24368,
-          34.05223
+          -8.49857,
+          41.18883
         ]
       }
     },
     {
       "type": "Feature",
       "properties": {
-        "name": "porto metropolitan area",
-        "students": 39,
-        "listAlumniNames": [
-          "Ana Jacinta Ferreira",
-          "André Mota",
-          "André Barbosa",
-          "Sérgio Barbosa",
-          "Diogo Dias",
-          "Daniel Moura",
-          "António Lisboa",
-          "Fábio Almeida",
-          "Felipe Ávila da Costa 🇺🇦🕊",
-          "Filipe C.",
-          "Hugo Peixoto",
-          "Jadir Sousa",
-          "Joel Campos",
-          "José Branco",
-          "José Miguel Monteiro",
-          "José Aguiar",
-          "Lara Santos",
-          "Leonel Dias ",
-          "Maria Pedroto",
-          "Paulo Marques",
-          "Pedro Carneiro",
-          "Pedro Ruas Moreira",
-          "Rafael Pires",
-          "Rui Guerra",
-          "Tiago Santos",
-          "Anaís Dias",
-          "Filipe Miranda",
-          "Filipe Carvalho",
-          "Hélder Moreira",
-          "Hugo Drumond",
-          "Joana Silva",
-          "Joana Barbosa",
-          "José Silva",
-          "Liliana Ribeiro",
-          "Luís P.",
-          "Márcio Fontes",
-          "Paulo Costa",
-          "Ricardo Silva",
-          "Tadeu Marques"
+        "name": [
+          "tuntange"
         ],
-        "listLinkedinLinks": [
-          "https://www.linkedin.com/in/ana-jacinta-ferreira-b727ab/",
-          "https://www.linkedin.com/in/andrefmota/",
-          "https://www.linkedin.com/in/andremanuelbarbosa/",
-          "https://www.linkedin.com/in/barbosasergio/",
-          "https://www.linkedin.com/in/diogocdias/",
-          "https://www.linkedin.com/in/dmoura/",
-          "https://www.linkedin.com/in/englisboa/",
-          "https://www.linkedin.com/in/fabioacalmeida/",
-          "https://www.linkedin.com/in/felipeacosta/",
-          "https://www.linkedin.com/in/filcoelho/",
-          "https://www.linkedin.com/in/hugopeixoto/",
-          "https://www.linkedin.com/in/jjsousa/",
-          "https://www.linkedin.com/in/joelcampos/",
-          "https://www.linkedin.com/in/josé-branco-a543573/",
-          "https://www.linkedin.com/in/jose-miguel-monteiro-0483469/",
-          "https://www.linkedin.com/in/josempaguiar/",
-          "https://www.linkedin.com/in/larammsantos/",
-          "https://www.linkedin.com/in/leoneljdias/",
-          "https://www.linkedin.com/in/mpedroto/",
-          "https://www.linkedin.com/in/paulo-marques-25234124/",
-          "https://www.linkedin.com/in/pedrocarneiro/",
-          "https://www.linkedin.com/in/pedroruasmoreira/",
-          "https://www.linkedin.com/in/rafaelpires/",
-          "https://www.linkedin.com/in/ruiguerra/",
-          "https://www.linkedin.com/in/tiagoalmeidasantos/",
-          "https://www.linkedin.com/in/anaisdias/",
-          "https://www.linkedin.com/in/filipefmiranda/",
-          "https://www.linkedin.com/in/filipemiguelcarvalho/",
-          "https://www.linkedin.com/in/hmoreira/",
-          "https://www.linkedin.com/in/hugdru/",
-          "https://www.linkedin.com/in/joanamcsilva/",
-          "https://www.linkedin.com/in/joanavbarbosa/",
-          "https://www.linkedin.com/in/jsilva-pt/",
-          "https://www.linkedin.com/in/liliana-ribeiro-51a86a12b/",
-          "https://www.linkedin.com/in/luis-a-m-p/",
-          "https://www.linkedin.com/in/mfvfontes/",
-          "https://www.linkedin.com/in/pcostaeu/",
-          "https://www.linkedin.com/in/ricardo-silva-25902a59/",
-          "https://www.linkedin.com/in/tadeumarques/"
-        ]
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -50.92712,
-          -29.90138
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "oliveira de azemeis",
-        "students": 2,
-        "listAlumniNames": [
-          "Paulo Noormahomed",
-          "Rui Soares"
-        ],
-        "listLinkedinLinks": [
-          "https://www.linkedin.com/in/paulo-noormahomed/",
-          "https://www.linkedin.com/in/rui-soares-/"
-        ]
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -8.47555,
-          40.84101
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "esposende",
         "students": 1,
         "listAlumniNames": [
-          "Vitor Madureira"
+          "Daniel Alves"
         ],
         "listLinkedinLinks": [
-          "https://www.linkedin.com/in/vitor-madureira-326b1844/"
+          "https://www.linkedin.com/in/danielfoalves/"
         ]
       },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -8.75754,
-          41.54516
+          6.01028,
+          49.71778
         ]
       }
     },
     {
       "type": "Feature",
       "properties": {
-        "name": "madeira island",
+        "name": [
+          "évora"
+        ],
+        "students": 1,
+        "listAlumniNames": [
+          "Miguel Paixão"
+        ],
+        "listLinkedinLinks": [
+          "https://www.linkedin.com/in/mpaixao/"
+        ]
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -7.9,
+          38.56667
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": [
+          "cabeceiras de basto"
+        ],
+        "students": 1,
+        "listAlumniNames": [
+          "Ana Isabel Marques"
+        ],
+        "listLinkedinLinks": [
+          "https://www.linkedin.com/in/aisabelmarques/"
+        ]
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -7.97198,
+          41.52079
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": [
+          "guimarães"
+        ],
+        "students": 1,
+        "listAlumniNames": [
+          "Marco Alves"
+        ],
+        "listLinkedinLinks": [
+          "https://www.linkedin.com/in/marcoaalves/"
+        ]
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8.29619,
+          41.44443
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": [
+          "vila do conde"
+        ],
         "students": 2,
         "listAlumniNames": [
-          "Rúben Nóbrega",
-          "Jénifer Constantino"
+          "João Ramos",
+          "Pedro Dias"
         ],
         "listLinkedinLinks": [
-          "https://www.linkedin.com/in/rúben-nóbrega-89990a/",
-          "https://www.linkedin.com/in/jenifer-constantino/"
+          "https://www.linkedin.com/in/joaomvramos94/",
+          "https://www.linkedin.com/in/pedro-dias-a293956/"
         ]
       },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -17.0,
-          32.73333
+          -8.74516,
+          41.35326
         ]
       }
     },
     {
       "type": "Feature",
       "properties": {
-        "name": "são paulo",
+        "name": [
+          "mons"
+        ],
+        "students": 1,
+        "listAlumniNames": [
+          "Pedro Polonia"
+        ],
+        "listLinkedinLinks": [
+          "https://www.linkedin.com/in/polonia/"
+        ]
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          3.95229,
+          50.45413
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": [
+          "winchester"
+        ],
+        "students": 1,
+        "listAlumniNames": [
+          "Miguel Monteiro"
+        ],
+        "listLinkedinLinks": [
+          "https://www.linkedin.com/in/cmiguelmonteiro/"
+        ]
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          115.35,
+          5.7
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": [
+          "louzada"
+        ],
+        "students": 1,
+        "listAlumniNames": [
+          "Rafael Nogueira"
+        ],
+        "listLinkedinLinks": [
+          "https://www.linkedin.com/in/diogonogueira/"
+        ]
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8.27993,
+          41.27822
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": [
+          "munich"
+        ],
+        "students": 1,
+        "listAlumniNames": [
+          "Rui Couto"
+        ],
+        "listLinkedinLinks": [
+          "https://www.linkedin.com/in/rui-couto/"
+        ]
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          11.57549,
+          48.13743
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": [
+          "maidenhead"
+        ],
+        "students": 1,
+        "listAlumniNames": [
+          "Manuel Monterroso"
+        ],
+        "listLinkedinLinks": [
+          "https://www.linkedin.com/in/manuelmonterroso/"
+        ]
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -0.71986,
+          51.52279
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": [
+          "ghent"
+        ],
+        "students": 1,
+        "listAlumniNames": [
+          "Andre Guimaraes"
+        ],
+        "listLinkedinLinks": [
+          "https://www.linkedin.com/in/andreguimaraes/"
+        ]
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          3.71667,
+          51.05
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": [
+          "vale de cambra"
+        ],
+        "students": 1,
+        "listAlumniNames": [
+          "A. Jorge Tavares"
+        ],
+        "listLinkedinLinks": [
+          "https://www.linkedin.com/in/ajorgetavares/"
+        ]
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8.36022,
+          40.845
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": [
+          "london"
+        ],
+        "students": 33,
+        "listAlumniNames": [
+          "Alex Rodrigues",
+          "Alexandre Pinto",
+          "Andre Reina",
+          "Bruno Santos",
+          "Daniel Albuquerque",
+          "Diego Jesus",
+          "Filipa Moura",
+          "Hugo Rodrigues",
+          "Hugo Sereno Ferreira",
+          "⛱  Ivo Reis",
+          "João Charruadas",
+          "Joao Loureiro",
+          "John Belo",
+          "Jose Santos",
+          "Luís Pedrosa",
+          "Marta Maio",
+          "Miguel Oliveira",
+          "Mónica Santos, PhD",
+          "Pedro Lamas",
+          "Ricardo Lagido",
+          "Rui Martins",
+          "Rui Gonçalves",
+          "Rui Teixeira",
+          "Tiago Fonseca",
+          "João Sousa",
+          "José Paulo Ferreira",
+          "Mário Pereira",
+          "Pedro Chambino",
+          "Pedro Simões",
+          "Margarida Pereira",
+          "Rui Ferreira",
+          "Tiago Gonçalves",
+          "Amaro Gonzaga Silva"
+        ],
+        "listLinkedinLinks": [
+          "https://www.linkedin.com/in/ajrodrigues/",
+          "https://www.linkedin.com/in/alexandre-miranda-pinto/",
+          "https://www.linkedin.com/in/andrereina/",
+          "https://www.linkedin.com/in/bmpsantos/",
+          "https://www.linkedin.com/in/danielmartinsalbuquerque/",
+          "https://www.linkedin.com/in/djesus/",
+          "https://www.linkedin.com/in/filipamoura/",
+          "https://www.linkedin.com/in/hugorodrigues/",
+          "https://www.linkedin.com/in/hugoserenoferreira/",
+          "https://www.linkedin.com/in/ivoreis/",
+          "https://www.linkedin.com/in/jcharruadas/",
+          "https://www.linkedin.com/in/jmbploureiro/",
+          "https://www.linkedin.com/in/johnbelo/",
+          "https://www.linkedin.com/in/josemsantos/",
+          "https://www.linkedin.com/in/lpedrosa88/",
+          "https://www.linkedin.com/in/martamaio/",
+          "https://www.linkedin.com/in/miguelpoliveira/",
+          "https://www.linkedin.com/in/monicasantos/",
+          "https://www.linkedin.com/in/pedrolamas/",
+          "https://www.linkedin.com/in/ricardolagido/",
+          "https://www.linkedin.com/in/ruibm/",
+          "https://www.linkedin.com/in/ruippeixotog/",
+          "https://www.linkedin.com/in/ruivazteixeira/",
+          "https://www.linkedin.com/in/trfonseca/",
+          "https://www.linkedin.com/in/joaocsousa/",
+          "https://www.linkedin.com/in/josepsferreira/",
+          "https://www.linkedin.com/in/mário-pereira-917b2934/",
+          "https://www.linkedin.com/in/pchambino/",
+          "https://www.linkedin.com/in/pedropintosimoes/",
+          "https://www.linkedin.com/in/pereiramargarida/",
+          "https://www.linkedin.com/in/ruiaf/",
+          "https://www.linkedin.com/in/tiagomiguelgoncalves/",
+          "https://www.linkedin.com/in/zagasilva/"
+        ]
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -0.12574,
+          51.50853
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": [
+          "são paulo"
+        ],
         "students": 2,
         "listAlumniNames": [
           "Daniel Rodrigues",
@@ -384,77 +492,59 @@
     {
       "type": "Feature",
       "properties": {
-        "name": "san francisco",
-        "students": 2,
-        "listAlumniNames": [
-          "Joao Montenegro",
-          "Nelson Rodrigues"
+        "name": [
+          "braga e região"
         ],
-        "listLinkedinLinks": [
-          "https://www.linkedin.com/in/joao-montenegro-b363884/",
-          "https://www.linkedin.com/in/nelsonjorgesilvarodrigues/"
-        ]
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -87.20681,
-          14.0818
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "maidenhead",
         "students": 1,
         "listAlumniNames": [
-          "Manuel Monterroso"
+          "Nuno Gouveia"
         ],
         "listLinkedinLinks": [
-          "https://www.linkedin.com/in/manuelmonterroso/"
+          "https://www.linkedin.com/in/nunoestrada/"
         ]
       },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -0.71986,
-          51.52279
+          -46.89985,
+          -22.85309
         ]
       }
     },
     {
       "type": "Feature",
       "properties": {
-        "name": "gondomar",
-        "students": 2,
-        "listAlumniNames": [
-          "Rui Alves",
-          "Pedro Machado"
+        "name": [
+          "munchen"
         ],
-        "listLinkedinLinks": [
-          "https://www.linkedin.com/in/rui-alves-119991/",
-          "https://www.linkedin.com/in/pedromfmachado/"
-        ]
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -8.49595,
-          41.12015
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "vienna",
         "students": 1,
         "listAlumniNames": [
-          "Pedro Dias"
+          "Ana C."
         ],
         "listLinkedinLinks": [
-          "https://www.linkedin.com/in/pedromsdias/"
+          "https://www.linkedin.com/in/acarraca/"
+        ]
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          11.57549,
+          48.13743
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": [
+          "wien"
+        ],
+        "students": 1,
+        "listAlumniNames": [
+          "Rui Botto"
+        ],
+        "listLinkedinLinks": [
+          "https://www.linkedin.com/in/ruibotto/"
         ]
       },
       "geometry": {
@@ -468,7 +558,305 @@
     {
       "type": "Feature",
       "properties": {
-        "name": "london area",
+        "name": [
+          "paris"
+        ],
+        "students": 3,
+        "listAlumniNames": [
+          "carlos sousa",
+          "Cláudio Costa",
+          "André Ferreira"
+        ],
+        "listLinkedinLinks": [
+          "https://www.linkedin.com/in/carlosmasousa/",
+          "https://www.linkedin.com/in/cmtcosta/",
+          "https://www.linkedin.com/in/andreferreirav2/"
+        ]
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          2.3488,
+          48.85341
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": [
+          "penafiel"
+        ],
+        "students": 2,
+        "listAlumniNames": [
+          "Luis Pedroso",
+          "Tiago Pereira"
+        ],
+        "listLinkedinLinks": [
+          "https://www.linkedin.com/in/luispedroso/",
+          "https://www.linkedin.com/in/tiagoafpereira/"
+        ]
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8.28285,
+          41.20835
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": [
+          "stockholm"
+        ],
+        "students": 1,
+        "listAlumniNames": [
+          "Pedro Pacheco"
+        ],
+        "listLinkedinLinks": [
+          "https://www.linkedin.com/in/paxpacheco/"
+        ]
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          18.06871,
+          59.32938
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": [
+          "covilhã"
+        ],
+        "students": 1,
+        "listAlumniNames": [
+          "César Rodrigues"
+        ],
+        "listLinkedinLinks": [
+          "https://www.linkedin.com/in/pontoporponto/"
+        ]
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -7.50504,
+          40.28106
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": [
+          "matosinhos"
+        ],
+        "students": 9,
+        "listAlumniNames": [
+          "António de Castro (PhD)",
+          "Luís A.",
+          "João P.",
+          "Ricardo Gonçalves",
+          "Tiago Gomes",
+          "Rafael Simões",
+          "David Clemente",
+          "João D Santos",
+          "João Serra"
+        ],
+        "listLinkedinLinks": [
+          "https://www.linkedin.com/in/antoniocastro/",
+          "https://www.linkedin.com/in/feupesiano/",
+          "https://www.linkedin.com/in/jprudencio/",
+          "https://www.linkedin.com/in/ricardogo/",
+          "https://www.linkedin.com/in/tiagoamgomes/",
+          "https://www.linkedin.com/in/armindorlsimoes/",
+          "https://www.linkedin.com/in/david-clemente/",
+          "https://www.linkedin.com/in/joao-d-o-santos/",
+          "https://www.linkedin.com/in/joaoserraseal/"
+        ]
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8.68908,
+          41.18207
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": [
+          "greater cambridge area"
+        ],
+        "students": 1,
+        "listAlumniNames": [
+          "Tiago Azevedo"
+        ],
+        "listLinkedinLinks": [
+          "https://www.linkedin.com/in/azevedotiago/"
+        ]
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -66.04905,
+          18.38523
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": [
+          "lisboa"
+        ],
+        "students": 31,
+        "listAlumniNames": [
+          "André Barbosa",
+          "André Moniz",
+          "António Pedro Pinho",
+          "Daniel Aguilar",
+          "Hugo Penedones",
+          "João Aradas",
+          "Jorge Carneiro",
+          "João Soares",
+          "Joaquim Santos",
+          "Marco Carvalho",
+          "Marco António Silva",
+          "Marta Pereira",
+          "Micael Pinho",
+          "Miguel Pereira",
+          "Nuno S.",
+          "Paulo Lopes",
+          "Fernando Pires",
+          "Filipe Cruz",
+          "Rodrigo Sá Guerra",
+          "Sérgio Vasconcelos",
+          "Vladimiro Sá",
+          "Alice Perpétua",
+          "Ana Sousa",
+          "Carlos Portela Pereira",
+          "Joel Ferreira",
+          "Maria João Barbosa",
+          "Nuno Passos",
+          "António Bandeira",
+          "Rui Archer",
+          "Sofia Reis",
+          "Tiago Martins Lomba"
+        ],
+        "listLinkedinLinks": [
+          "https://www.linkedin.com/in/andreemanuelbarbosa/",
+          "https://www.linkedin.com/in/andremoniz/",
+          "https://www.linkedin.com/in/antoniopinho/",
+          "https://www.linkedin.com/in/djbaguilar/",
+          "https://www.linkedin.com/in/hpenedones/",
+          "https://www.linkedin.com/in/jaradas/",
+          "https://www.linkedin.com/in/jccarneiro/",
+          "https://www.linkedin.com/in/joaotrigosoares/",
+          "https://www.linkedin.com/in/joaquimsantos/",
+          "https://www.linkedin.com/in/marco-carvalho-216538a/",
+          "https://www.linkedin.com/in/marconsilva/",
+          "https://www.linkedin.com/in/martapereira/",
+          "https://www.linkedin.com/in/mfapinho/",
+          "https://www.linkedin.com/in/miguel-pereira-392820/",
+          "https://www.linkedin.com/in/nufil/",
+          "https://www.linkedin.com/in/paulo-lopes-2b84911/",
+          "https://www.linkedin.com/in/piresfernando/",
+          "https://www.linkedin.com/in/psenough/",
+          "https://www.linkedin.com/in/rsguerra/",
+          "https://www.linkedin.com/in/sergiovasconcelos/",
+          "https://www.linkedin.com/in/vladimirosa/",
+          "https://www.linkedin.com/in/aliceperpetua/",
+          "https://www.linkedin.com/in/anaisabelsousa/",
+          "https://www.linkedin.com/in/jcarlosportelapereira/",
+          "https://www.linkedin.com/in/joelfilipeferreira/",
+          "https://www.linkedin.com/in/mariajoaobarbosa/",
+          "https://www.linkedin.com/in/nuno-passos-19765061/",
+          "https://www.linkedin.com/in/pt-antoniobandeira/",
+          "https://www.linkedin.com/in/ruiarcher/",
+          "https://www.linkedin.com/in/sofiaoreis/",
+          "https://www.linkedin.com/in/tiago-martins-lomba/"
+        ]
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -9.13333,
+          38.71667
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": [
+          "porto e região"
+        ],
+        "students": 9,
+        "listAlumniNames": [
+          "Catarina Lopes",
+          "Gaspar Lencastre",
+          "João Gomes",
+          "José Pacheco",
+          "Luis Duarte",
+          "Pedro Gomes",
+          "Ricardo Mestre",
+          "Ricardo Melo",
+          "Pedro Cunha"
+        ],
+        "listLinkedinLinks": [
+          "https://www.linkedin.com/in/catarina-lopes-a3360439/",
+          "https://www.linkedin.com/in/gasparlencastre/",
+          "https://www.linkedin.com/in/joaopcgomes/",
+          "https://www.linkedin.com/in/jpacheco/",
+          "https://www.linkedin.com/in/lduarte/",
+          "https://www.linkedin.com/in/pedrovelosogomes/",
+          "https://www.linkedin.com/in/ricardojoaomestre/",
+          "https://www.linkedin.com/in/rjmelo/",
+          "https://www.linkedin.com/in/pedro-cunha-sw-engineer/"
+        ]
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -34.8918,
+          -7.11502
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": [
+          "montreal"
+        ],
+        "students": 1,
+        "listAlumniNames": [
+          "Rui Guimarães"
+        ],
+        "listLinkedinLinks": [
+          "https://www.linkedin.com/in/ruiguimaraes/"
+        ]
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -73.58781,
+          45.50884
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": [
+          "london area"
+        ],
         "students": 2,
         "listAlumniNames": [
           "Hugo Monteiro",
@@ -490,89 +878,91 @@
     {
       "type": "Feature",
       "properties": {
-        "name": "rome",
+        "name": [
+          "pijnacker"
+        ],
         "students": 1,
         "listAlumniNames": [
-          "André Lamelas"
+          "Ricardo Veloso"
         ],
         "listLinkedinLinks": [
-          "https://www.linkedin.com/in/lamelas/"
+          "https://www.linkedin.com/in/ricardoveloso/"
         ]
       },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          12.51133,
-          41.89193
+          4.42946,
+          52.01954
         ]
       }
     },
     {
       "type": "Feature",
       "properties": {
-        "name": "campo",
+        "name": [
+          "amsterdam"
+        ],
+        "students": 9,
+        "listAlumniNames": [
+          "Daniel Sequeira",
+          "Hugo Barrote, CSM",
+          "Inês Beirão",
+          "Luis Santos",
+          "Nuno Cruz",
+          "Filipe Batista",
+          "Francisco Couto",
+          "João Nogueira",
+          "Pedro Oliveira"
+        ],
+        "listLinkedinLinks": [
+          "https://www.linkedin.com/in/daniel-sequeira/",
+          "https://www.linkedin.com/in/hugobarrote/",
+          "https://www.linkedin.com/in/inesclfbeirao/",
+          "https://www.linkedin.com/in/luis-almeida-santos/",
+          "https://www.linkedin.com/in/nunomarquescruz/",
+          "https://www.linkedin.com/in/filipe-gama-batista/",
+          "https://www.linkedin.com/in/francisco-s-g-couto/",
+          "https://www.linkedin.com/in/joaomnogueira/",
+          "https://www.linkedin.com/in/pedrodeoliveira/"
+        ]
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.88969,
+          52.37403
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": [
+          "etobicoke"
+        ],
         "students": 1,
         "listAlumniNames": [
-          "Ricardo Loureiro"
+          "Fernando Meira"
         ],
         "listLinkedinLinks": [
-          "https://www.linkedin.com/in/ricardo-loureiro-767367118/"
+          "https://www.linkedin.com/in/fmeira/"
         ]
       },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -54.64639,
-          -20.44278
+          -79.56985,
+          43.64415
         ]
       }
     },
     {
       "type": "Feature",
       "properties": {
-        "name": "berlin",
-        "students": 2,
-        "listAlumniNames": [
-          "Fábio Oliveira",
-          "João Nadais"
+        "name": [
+          "oslo"
         ],
-        "listLinkedinLinks": [
-          "https://www.linkedin.com/in/fpoliveira/",
-          "https://www.linkedin.com/in/joaonadais/"
-        ]
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          13.41053,
-          52.52437
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "montreal",
-        "students": 1,
-        "listAlumniNames": [
-          "Rui Guimarães"
-        ],
-        "listLinkedinLinks": [
-          "https://www.linkedin.com/in/ruiguimaraes/"
-        ]
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -73.58781,
-          45.50884
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "oslo",
         "students": 5,
         "listAlumniNames": [
           "Fábio Malheiro",
@@ -600,7 +990,97 @@
     {
       "type": "Feature",
       "properties": {
-        "name": "lausanne",
+        "name": [
+          "bayern"
+        ],
+        "students": 1,
+        "listAlumniNames": [
+          "Joel Gonçalves"
+        ],
+        "listLinkedinLinks": [
+          "https://www.linkedin.com/in/joel-gonçalves-18560112/"
+        ]
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          11.5,
+          49.0
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": [
+          "esposende"
+        ],
+        "students": 1,
+        "listAlumniNames": [
+          "Vitor Madureira"
+        ],
+        "listLinkedinLinks": [
+          "https://www.linkedin.com/in/vitor-madureira-326b1844/"
+        ]
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8.75754,
+          41.54516
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": [
+          "luxembourg"
+        ],
+        "students": 1,
+        "listAlumniNames": [
+          "Ricardo Torres"
+        ],
+        "listLinkedinLinks": [
+          "https://www.linkedin.com/in/jrctorres/"
+        ]
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.16667,
+          49.75
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": [
+          "vernier"
+        ],
+        "students": 1,
+        "listAlumniNames": [
+          "Tiago Batista"
+        ],
+        "listLinkedinLinks": [
+          "https://www.linkedin.com/in/tiago--batista/"
+        ]
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          161.15,
+          -77.96667
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": [
+          "lausanne"
+        ],
         "students": 2,
         "listAlumniNames": [
           "Miguel Branco",
@@ -622,101 +1102,235 @@
     {
       "type": "Feature",
       "properties": {
-        "name": "helsinki",
-        "students": 1,
+        "name": [
+          "berlin"
+        ],
+        "students": 2,
         "listAlumniNames": [
-          "Joao Maia"
+          "Fábio Oliveira",
+          "João Nadais"
         ],
         "listLinkedinLinks": [
-          "https://www.linkedin.com/in/jpmmaia/"
+          "https://www.linkedin.com/in/fpoliveira/",
+          "https://www.linkedin.com/in/joaonadais/"
         ]
       },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          24.93545,
-          60.16952
+          13.41053,
+          52.52437
         ]
       }
     },
     {
       "type": "Feature",
       "properties": {
-        "name": "tuntange",
-        "students": 1,
-        "listAlumniNames": [
-          "Daniel Alves"
+        "name": [
+          "lisbon"
         ],
-        "listLinkedinLinks": [
-          "https://www.linkedin.com/in/danielfoalves/"
-        ]
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          6.01028,
-          49.71778
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "braga e região",
-        "students": 1,
-        "listAlumniNames": [
-          "Nuno Gouveia"
-        ],
-        "listLinkedinLinks": [
-          "https://www.linkedin.com/in/nunoestrada/"
-        ]
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -46.89985,
-          -22.85309
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "geneva",
         "students": 8,
         "listAlumniNames": [
-          "Belmiro Moreira",
-          "Filipe Macedo Silva",
-          "Joao Pedro Costa",
-          "Pedro Andrade",
-          "Ricardo Rocha",
-          "Pedro Almeida",
-          "Teresa Neto",
-          "Tiago Moreira"
+          "Andre Grilo",
+          "João Marques Gomes",
+          "João Carvalho",
+          "Mauro Carreira Bonêco",
+          "Tiago Teixeira",
+          "Miao Sun",
+          "Paulo  Faria",
+          "Francisca Teixeira"
         ],
         "listLinkedinLinks": [
-          "https://www.linkedin.com/in/belmiromoreira/",
-          "https://www.linkedin.com/in/filipe-macedo-silva-a405141/",
-          "https://www.linkedin.com/in/joaolemoscosta/",
-          "https://www.linkedin.com/in/pedroandrade/",
-          "https://www.linkedin.com/in/ricardo-rocha-739aa718/",
-          "https://www.linkedin.com/in/pedrouops/",
-          "https://www.linkedin.com/in/teresa-neto-481927/",
-          "https://www.linkedin.com/in/tiago-moreira-20358a67/"
+          "https://www.linkedin.com/in/grilo/",
+          "https://www.linkedin.com/in/joaomg/",
+          "https://www.linkedin.com/in/joaopedrocarvalho/",
+          "https://www.linkedin.com/in/maurocarreiraboneco/",
+          "https://www.linkedin.com/in/tiagomouraoteixeira/",
+          "https://www.linkedin.com/in/miaosun/",
+          "https://www.linkedin.com/in/paulomfaria/",
+          "https://www.linkedin.com/in/teixeirafrancisca/"
         ]
       },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          6.14569,
-          46.20222
+          -9.13333,
+          38.71667
         ]
       }
     },
     {
       "type": "Feature",
       "properties": {
-        "name": "vila real",
+        "name": [
+          "united states"
+        ],
+        "students": 1,
+        "listAlumniNames": [
+          "Rui Pereira"
+        ],
+        "listLinkedinLinks": [
+          "https://www.linkedin.com/in/rfapereira/"
+        ]
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -57.65625,
+          -14.60485
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": [
+          "viana do castelo"
+        ],
+        "students": 1,
+        "listAlumniNames": [
+          "Vasco Torres"
+        ],
+        "listLinkedinLinks": [
+          "https://www.linkedin.com/in/vascotorres/"
+        ]
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8.5063,
+          41.89649
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": [
+          "rio tinto"
+        ],
+        "students": 1,
+        "listAlumniNames": [
+          "Amílcar  Fernandes"
+        ],
+        "listLinkedinLinks": [
+          "https://www.linkedin.com/in/amílcar-fernandes-2635351/"
+        ]
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -35.03715,
+          -6.79673
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": [
+          "amstelveen"
+        ],
+        "students": 1,
+        "listAlumniNames": [
+          "Silvia Ramalho"
+        ],
+        "listLinkedinLinks": [
+          "https://www.linkedin.com/in/silvia-ramalho-1b44a415/"
+        ]
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.86389,
+          52.30083
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": [
+          "vila nova de gaia"
+        ],
+        "students": 18,
+        "listAlumniNames": [
+          "André Meneses",
+          "Duarte Cabral",
+          "José Devezas",
+          "Jorge Alves",
+          "Luís Miguel dos Reis Oliveira e Silva",
+          "Micael Oliveira",
+          "Miguel David",
+          "Miguel M.",
+          "Nelson Oliveira",
+          "Pedro Ferreira",
+          "Pedro Machado",
+          "Ricardo Leandro",
+          "Vasco Pinto",
+          "Rita Ferreira",
+          "Miguel Mendes",
+          "André Freitas",
+          "Júnior Silva",
+          "Walter Lima"
+        ],
+        "listLinkedinLinks": [
+          "https://www.linkedin.com/in/andremeneses/",
+          "https://www.linkedin.com/in/cabralduarte/",
+          "https://www.linkedin.com/in/jldevezas/",
+          "https://www.linkedin.com/in/jorge-alves-0055/",
+          "https://www.linkedin.com/in/luismiguelsilva/",
+          "https://www.linkedin.com/in/micaeloliveira/",
+          "https://www.linkedin.com/in/migueldavid/",
+          "https://www.linkedin.com/in/miguelnmelo/",
+          "https://www.linkedin.com/in/ntroliveira/",
+          "https://www.linkedin.com/in/pmsferreira/",
+          "https://www.linkedin.com/in/pmsmhome/",
+          "https://www.linkedin.com/in/rileandro/",
+          "https://www.linkedin.com/in/vascopinto/",
+          "https://www.linkedin.com/in/aritasferreira/",
+          "https://www.linkedin.com/in/miguel-mendes-6157608a/",
+          "https://www.linkedin.com/in/pandrefreitas/",
+          "https://www.linkedin.com/in/silvajunior/",
+          "https://www.linkedin.com/in/walter-lima-10634020/"
+        ]
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8.61241,
+          41.12401
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": [
+          "greater seattle area"
+        ],
+        "students": 1,
+        "listAlumniNames": [
+          "André Rodrigues"
+        ],
+        "listLinkedinLinks": [
+          "https://www.linkedin.com/in/andrerod/"
+        ]
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -122.3765,
+          47.5224
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": [
+          "vila real"
+        ],
         "students": 2,
         "listAlumniNames": [
           "Luís Pinto",
@@ -738,51 +1352,53 @@
     {
       "type": "Feature",
       "properties": {
-        "name": "berlin metropolitan area",
-        "students": 3,
-        "listAlumniNames": [
-          "Dr. Luís Moreira-Matias",
-          "Pedro Maurício Costa, PhD",
-          "Rui Ferreira"
+        "name": [
+          "villeneuve"
         ],
-        "listLinkedinLinks": [
-          "https://www.linkedin.com/in/lmatias/",
-          "https://www.linkedin.com/in/pedromauriciocosta/",
-          "https://www.linkedin.com/in/ruimferreira/"
-        ]
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -3.67264,
-          40.448
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "greater pittsburgh region",
         "students": 1,
         "listAlumniNames": [
-          "Flávio Cruz"
+          "André Oliveira"
         ],
         "listLinkedinLinks": [
-          "https://www.linkedin.com/in/flávio-cruz-45417916/"
+          "https://www.linkedin.com/in/andré-oliveira-68491b/"
         ]
       },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -80.25547,
-          40.49608
+          0.70415,
+          44.40854
         ]
       }
     },
     {
       "type": "Feature",
       "properties": {
-        "name": "porto",
+        "name": [
+          "englewood"
+        ],
+        "students": 1,
+        "listAlumniNames": [
+          "Antonio Alves"
+        ],
+        "listLinkedinLinks": [
+          "https://www.linkedin.com/in/antonioviegasalves/"
+        ]
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -104.98776,
+          39.64777
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": [
+          "porto"
+        ],
         "students": 413,
         "listAlumniNames": [
           "Adriano Teixeira",
@@ -1626,87 +2242,123 @@
     {
       "type": "Feature",
       "properties": {
-        "name": "kirkland",
+        "name": [
+          "san francisco bay area"
+        ],
         "students": 1,
         "listAlumniNames": [
-          "Miguel Vicente"
+          "Alexandre Perez"
         ],
         "listLinkedinLinks": [
-          "https://www.linkedin.com/in/miguelv/"
+          "https://www.linkedin.com/in/alexandrecperez/"
         ]
       },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -73.86586,
-          45.45008
+          -122.41942,
+          37.77493
         ]
       }
     },
     {
       "type": "Feature",
       "properties": {
-        "name": "valongo",
+        "name": [
+          "san antonio"
+        ],
         "students": 1,
         "listAlumniNames": [
-          "Rui Gomes"
+          "Pedro S."
         ],
         "listLinkedinLinks": [
-          "https://www.linkedin.com/in/ruihgomes/"
+          "https://www.linkedin.com/in/pedrosalgado/"
         ]
       },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -8.49857,
-          41.18883
+          -98.49363,
+          29.42412
         ]
       }
     },
     {
       "type": "Feature",
       "properties": {
-        "name": "etobicoke",
-        "students": 1,
+        "name": [
+          "oliveira de azemeis"
+        ],
+        "students": 2,
         "listAlumniNames": [
-          "Fernando Meira"
+          "Paulo Noormahomed",
+          "Rui Soares"
         ],
         "listLinkedinLinks": [
-          "https://www.linkedin.com/in/fmeira/"
+          "https://www.linkedin.com/in/paulo-noormahomed/",
+          "https://www.linkedin.com/in/rui-soares-/"
         ]
       },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -79.56985,
-          43.64415
+          -8.47555,
+          40.84101
         ]
       }
     },
     {
       "type": "Feature",
       "properties": {
-        "name": "winchester",
+        "name": [
+          "los angeles metropolitan area"
+        ],
         "students": 1,
         "listAlumniNames": [
-          "Miguel Monteiro"
+          "João Almeida"
         ],
         "listLinkedinLinks": [
-          "https://www.linkedin.com/in/cmiguelmonteiro/"
+          "https://www.linkedin.com/in/joão-almeida-451714a8/"
         ]
       },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          115.35,
-          5.7
+          -118.25646,
+          34.04223
         ]
       }
     },
     {
       "type": "Feature",
       "properties": {
-        "name": "madrid",
+        "name": [
+          "coimbra"
+        ],
+        "students": 2,
+        "listAlumniNames": [
+          "Nuno Nogueira",
+          "Nuno Silva"
+        ],
+        "listLinkedinLinks": [
+          "https://www.linkedin.com/in/nogueiranuno/",
+          "https://www.linkedin.com/in/nunocruzsilva/"
+        ]
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8.41955,
+          40.20564
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": [
+          "madrid"
+        ],
         "students": 1,
         "listAlumniNames": [
           "Jose Barbosa Carvalho"
@@ -1726,127 +2378,489 @@
     {
       "type": "Feature",
       "properties": {
-        "name": "villach",
-        "students": 1,
+        "name": [
+          "bragança"
+        ],
+        "students": 2,
         "listAlumniNames": [
-          "Tiago da Silva"
+          "João Mourinho",
+          "Rui Freixedelo"
         ],
         "listLinkedinLinks": [
-          "https://www.linkedin.com/in/tiagogpmsilva/"
+          "https://www.linkedin.com/in/jmourinho/",
+          "https://www.linkedin.com/in/freixedelo/"
         ]
       },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          13.85583,
-          46.61028
+          -6.76346,
+          41.83615
         ]
       }
     },
     {
       "type": "Feature",
       "properties": {
-        "name": "greater cambridge area",
+        "name": [
+          "den haag"
+        ],
         "students": 1,
         "listAlumniNames": [
-          "Tiago Azevedo"
+          "Tiago Pinheiro"
         ],
         "listLinkedinLinks": [
-          "https://www.linkedin.com/in/azevedotiago/"
+          "https://www.linkedin.com/in/tpinheiro/"
         ]
       },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -66.04905,
-          18.38523
+          4.29861,
+          52.07667
         ]
       }
     },
     {
       "type": "Feature",
       "properties": {
-        "name": "bayern",
-        "students": 1,
+        "name": [
+          "the hague"
+        ],
+        "students": 2,
         "listAlumniNames": [
-          "Joel Gonçalves"
+          "João Seixas",
+          "Joel Alvim"
         ],
         "listLinkedinLinks": [
-          "https://www.linkedin.com/in/joel-gonçalves-18560112/"
+          "https://www.linkedin.com/in/jcseixas/",
+          "https://www.linkedin.com/in/joel-alvim-0b4b51/"
         ]
       },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          11.5,
-          49.0
+          4.29861,
+          52.07667
         ]
       }
     },
     {
       "type": "Feature",
       "properties": {
-        "name": "vale de cambra",
+        "name": [
+          "vienna"
+        ],
         "students": 1,
         "listAlumniNames": [
-          "A. Jorge Tavares"
+          "Pedro Dias"
         ],
         "listLinkedinLinks": [
-          "https://www.linkedin.com/in/ajorgetavares/"
+          "https://www.linkedin.com/in/pedromsdias/"
         ]
       },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -8.36022,
-          40.845
+          16.37208,
+          48.20849
         ]
       }
     },
     {
       "type": "Feature",
       "properties": {
-        "name": "cabeceiras de basto",
-        "students": 1,
+        "name": [
+          "copenhagen"
+        ],
+        "students": 3,
         "listAlumniNames": [
-          "Ana Isabel Marques"
+          "Joana Carvalho",
+          "André Alves",
+          "Ricardo Pinho"
         ],
         "listLinkedinLinks": [
-          "https://www.linkedin.com/in/aisabelmarques/"
+          "https://www.linkedin.com/in/joanacarvalho/",
+          "https://www.linkedin.com/in/anpalves/",
+          "https://www.linkedin.com/in/ricardo-pinho-409b8474/"
         ]
       },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -7.97198,
-          41.52079
+          12.56553,
+          55.67594
         ]
       }
     },
     {
       "type": "Feature",
       "properties": {
-        "name": "brussels",
+        "name": [
+          "rome"
+        ],
         "students": 1,
         "listAlumniNames": [
-          "Miguel Tavares"
+          "André Lamelas"
         ],
         "listLinkedinLinks": [
-          "https://www.linkedin.com/in/mjmtavares/"
+          "https://www.linkedin.com/in/lamelas/"
         ]
       },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          4.34878,
-          50.85045
+          12.51133,
+          41.89193
         ]
       }
     },
     {
       "type": "Feature",
       "properties": {
-        "name": "braga",
+        "name": [
+          "miami"
+        ],
+        "students": 1,
+        "listAlumniNames": [
+          "Eduardo Oliveira"
+        ],
+        "listLinkedinLinks": [
+          "https://www.linkedin.com/in/eduardooliv/"
+        ]
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -80.19366,
+          25.77427
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": [
+          "new york"
+        ],
+        "students": 3,
+        "listAlumniNames": [
+          "Ana Magalhaes",
+          "Pedro Teixeira",
+          "Nuno Santos"
+        ],
+        "listLinkedinLinks": [
+          "https://www.linkedin.com/in/ana-sa-magalhaes/",
+          "https://www.linkedin.com/in/pedromcteixeira/",
+          "https://www.linkedin.com/in/nunomaiasantos/"
+        ]
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -74.00597,
+          40.71427
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": [
+          "lysaker"
+        ],
+        "students": 1,
+        "listAlumniNames": [
+          "Hugo Passos"
+        ],
+        "listLinkedinLinks": [
+          "https://www.linkedin.com/in/hugo-passos-036aa43b/"
+        ]
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.63545,
+          59.90994
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": [
+          "zurich"
+        ],
+        "students": 5,
+        "listAlumniNames": [
+          "Bruno Vieira",
+          "César Duarte",
+          "Luis Amaral",
+          "Sílvia Monteiro",
+          "João Gonçalves"
+        ],
+        "listLinkedinLinks": [
+          "https://www.linkedin.com/in/brunodsvieira/",
+          "https://www.linkedin.com/in/cesarbduarte/",
+          "https://www.linkedin.com/in/luismgamaral/",
+          "https://www.linkedin.com/in/smonteiro/",
+          "https://www.linkedin.com/in/jsvgoncalves/"
+        ]
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          8.55,
+          47.36667
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": [
+          "dublin city"
+        ],
+        "students": 2,
+        "listAlumniNames": [
+          "Inês F.",
+          "Mark Meehan"
+        ],
+        "listLinkedinLinks": [
+          "https://www.linkedin.com/in/iferreira/",
+          "https://www.linkedin.com/in/mark-timothy-meehan/"
+        ]
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.24889,
+          53.33306
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": [
+          "aveiro"
+        ],
+        "students": 7,
+        "listAlumniNames": [
+          "Bruno Cabral",
+          "Soraia Ferreira",
+          "Filipe Madureira",
+          "João Correia",
+          "Sérgio Bandeira",
+          "Cristiano Carvalheiro",
+          "Manuel Pereira"
+        ],
+        "listLinkedinLinks": [
+          "https://www.linkedin.com/in/bcabral/",
+          "https://www.linkedin.com/in/ei09119/",
+          "https://www.linkedin.com/in/filipe-madureira-60a99111/",
+          "https://www.linkedin.com/in/joaoocorreia/",
+          "https://www.linkedin.com/in/sergiobandeira/",
+          "https://www.linkedin.com/in/ccarvalheiro/",
+          "https://www.linkedin.com/in/manuelgpereira/"
+        ]
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8.64554,
+          40.64427
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": [
+          "vila nova de famalicão"
+        ],
+        "students": 2,
+        "listAlumniNames": [
+          "Frederico Figueiredo",
+          "Fernando Fernandes"
+        ],
+        "listLinkedinLinks": [
+          "https://www.linkedin.com/in/fbfigueiredo/",
+          "https://www.linkedin.com/in/af-fernandes/"
+        ]
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8.48511,
+          41.41223
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": [
+          "gondomar"
+        ],
+        "students": 2,
+        "listAlumniNames": [
+          "Rui Alves",
+          "Pedro Machado"
+        ],
+        "listLinkedinLinks": [
+          "https://www.linkedin.com/in/rui-alves-119991/",
+          "https://www.linkedin.com/in/pedromfmachado/"
+        ]
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8.49595,
+          41.12015
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": [
+          "sao mamede de infesta"
+        ],
+        "students": 1,
+        "listAlumniNames": [
+          "Ricardo Castro"
+        ],
+        "listLinkedinLinks": [
+          "https://www.linkedin.com/in/supericardoc/"
+        ]
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8.61105,
+          41.19183
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": [
+          "basel"
+        ],
+        "students": 1,
+        "listAlumniNames": [
+          "Simão Pedro Oliveira"
+        ],
+        "listLinkedinLinks": [
+          "https://www.linkedin.com/in/spoliveira/"
+        ]
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          7.57327,
+          47.55839
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": [
+          "other"
+        ],
+        "students": 1,
+        "listAlumniNames": [
+          "Joaquim Carneiro"
+        ],
+        "listLinkedinLinks": [
+          "https://www.linkedin.com/in/joaquimcarneiro/"
+        ]
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -84.755,
+          49.09111
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": [
+          "tokyo"
+        ],
+        "students": 2,
+        "listAlumniNames": [
+          "Francisco B.",
+          "Carolina Centeio Jorge"
+        ],
+        "listLinkedinLinks": [
+          "https://www.linkedin.com/in/franciscobrito/",
+          "https://www.linkedin.com/in/carolinacenteiojorge/"
+        ]
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          139.69171,
+          35.6895
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": [
+          "baião"
+        ],
+        "students": 1,
+        "listAlumniNames": [
+          "Tiago Ferreira"
+        ],
+        "listLinkedinLinks": [
+          "https://www.linkedin.com/in/tiagommferreira55/"
+        ]
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8.03581,
+          41.16384
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": [
+          "los angeles"
+        ],
+        "students": 1,
+        "listAlumniNames": [
+          "Rui Gomes"
+        ],
+        "listLinkedinLinks": [
+          "https://www.linkedin.com/in/ruigomeseu/"
+        ]
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -118.24368,
+          34.05223
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": [
+          "braga"
+        ],
         "students": 9,
         "listAlumniNames": [
           "Daniel Botelho",
@@ -1882,123 +2896,67 @@
     {
       "type": "Feature",
       "properties": {
-        "name": "villeneuve",
+        "name": [
+          "innsbruck"
+        ],
         "students": 1,
         "listAlumniNames": [
-          "André Oliveira"
+          "Guilherme Lopes"
         ],
         "listLinkedinLinks": [
-          "https://www.linkedin.com/in/andré-oliveira-68491b/"
+          "https://www.linkedin.com/in/guilherme-c-lopes/"
         ]
       },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          0.70415,
-          44.40854
+          11.39454,
+          47.26266
         ]
       }
     },
     {
       "type": "Feature",
       "properties": {
-        "name": "tokyo",
-        "students": 2,
+        "name": [
+          "geneva"
+        ],
+        "students": 8,
         "listAlumniNames": [
-          "Francisco B.",
-          "Carolina Centeio Jorge"
+          "Belmiro Moreira",
+          "Filipe Macedo Silva",
+          "Joao Pedro Costa",
+          "Pedro Andrade",
+          "Ricardo Rocha",
+          "Pedro Almeida",
+          "Teresa Neto",
+          "Tiago Moreira"
         ],
         "listLinkedinLinks": [
-          "https://www.linkedin.com/in/franciscobrito/",
-          "https://www.linkedin.com/in/carolinacenteiojorge/"
+          "https://www.linkedin.com/in/belmiromoreira/",
+          "https://www.linkedin.com/in/filipe-macedo-silva-a405141/",
+          "https://www.linkedin.com/in/joaolemoscosta/",
+          "https://www.linkedin.com/in/pedroandrade/",
+          "https://www.linkedin.com/in/ricardo-rocha-739aa718/",
+          "https://www.linkedin.com/in/pedrouops/",
+          "https://www.linkedin.com/in/teresa-neto-481927/",
+          "https://www.linkedin.com/in/tiago-moreira-20358a67/"
         ]
       },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          139.69171,
-          35.6895
+          6.14569,
+          46.20222
         ]
       }
     },
     {
       "type": "Feature",
       "properties": {
-        "name": "prague",
-        "students": 1,
-        "listAlumniNames": [
-          "Tiago Seabra"
+        "name": [
+          "espinho"
         ],
-        "listLinkedinLinks": [
-          "https://www.linkedin.com/in/tiagoseabra/"
-        ]
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          14.42076,
-          50.08804
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "vila nova de gaia",
-        "students": 18,
-        "listAlumniNames": [
-          "André Meneses",
-          "Duarte Cabral",
-          "José Devezas",
-          "Jorge Alves",
-          "Luís Miguel dos Reis Oliveira e Silva",
-          "Micael Oliveira",
-          "Miguel David",
-          "Miguel M.",
-          "Nelson Oliveira",
-          "Pedro Ferreira",
-          "Pedro Machado",
-          "Ricardo Leandro",
-          "Vasco Pinto",
-          "Rita Ferreira",
-          "Miguel Mendes",
-          "André Freitas",
-          "Júnior Silva",
-          "Walter Lima"
-        ],
-        "listLinkedinLinks": [
-          "https://www.linkedin.com/in/andremeneses/",
-          "https://www.linkedin.com/in/cabralduarte/",
-          "https://www.linkedin.com/in/jldevezas/",
-          "https://www.linkedin.com/in/jorge-alves-0055/",
-          "https://www.linkedin.com/in/luismiguelsilva/",
-          "https://www.linkedin.com/in/micaeloliveira/",
-          "https://www.linkedin.com/in/migueldavid/",
-          "https://www.linkedin.com/in/miguelnmelo/",
-          "https://www.linkedin.com/in/ntroliveira/",
-          "https://www.linkedin.com/in/pmsferreira/",
-          "https://www.linkedin.com/in/pmsmhome/",
-          "https://www.linkedin.com/in/rileandro/",
-          "https://www.linkedin.com/in/vascopinto/",
-          "https://www.linkedin.com/in/aritasferreira/",
-          "https://www.linkedin.com/in/miguel-mendes-6157608a/",
-          "https://www.linkedin.com/in/pandrefreitas/",
-          "https://www.linkedin.com/in/silvajunior/",
-          "https://www.linkedin.com/in/walter-lima-10634020/"
-        ]
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -8.61241,
-          41.12401
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "espinho",
         "students": 2,
         "listAlumniNames": [
           "Ricardo Oliveira",
@@ -2020,103 +2978,273 @@
     {
       "type": "Feature",
       "properties": {
-        "name": "basel",
+        "name": [
+          "tallinn"
+        ],
         "students": 1,
         "listAlumniNames": [
-          "Simão Pedro Oliveira"
+          "Ricardo Nuno Almeida"
         ],
         "listLinkedinLinks": [
-          "https://www.linkedin.com/in/spoliveira/"
+          "https://www.linkedin.com/in/ricardonunoalmeida/"
         ]
       },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          7.57327,
-          47.55839
+          24.75353,
+          59.43696
         ]
       }
     },
     {
       "type": "Feature",
       "properties": {
-        "name": "rio tinto",
+        "name": [
+          "greater pittsburgh region"
+        ],
         "students": 1,
         "listAlumniNames": [
-          "Amílcar  Fernandes"
+          "Flávio Cruz"
         ],
         "listLinkedinLinks": [
-          "https://www.linkedin.com/in/amílcar-fernandes-2635351/"
+          "https://www.linkedin.com/in/flávio-cruz-45417916/"
         ]
       },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -35.03715,
-          -6.79673
+          -80.25547,
+          40.49608
         ]
       }
     },
     {
       "type": "Feature",
       "properties": {
-        "name": "matosinhos",
-        "students": 9,
+        "name": [
+          "prague"
+        ],
+        "students": 1,
         "listAlumniNames": [
-          "António de Castro (PhD)",
-          "Luís A.",
-          "João P.",
-          "Ricardo Gonçalves",
-          "Tiago Gomes",
-          "Rafael Simões",
-          "David Clemente",
-          "João D Santos",
-          "João Serra"
+          "Tiago Seabra"
         ],
         "listLinkedinLinks": [
-          "https://www.linkedin.com/in/antoniocastro/",
-          "https://www.linkedin.com/in/feupesiano/",
-          "https://www.linkedin.com/in/jprudencio/",
-          "https://www.linkedin.com/in/ricardogo/",
-          "https://www.linkedin.com/in/tiagoamgomes/",
-          "https://www.linkedin.com/in/armindorlsimoes/",
-          "https://www.linkedin.com/in/david-clemente/",
-          "https://www.linkedin.com/in/joao-d-o-santos/",
-          "https://www.linkedin.com/in/joaoserraseal/"
+          "https://www.linkedin.com/in/tiagoseabra/"
         ]
       },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -8.68908,
-          41.18207
+          14.42076,
+          50.08804
         ]
       }
     },
     {
       "type": "Feature",
       "properties": {
-        "name": "lisbon",
-        "students": 8,
+        "name": [
+          "ashford"
+        ],
+        "students": 1,
         "listAlumniNames": [
-          "Andre Grilo",
-          "João Marques Gomes",
-          "João Carvalho",
-          "Mauro Carreira Bonêco",
-          "Tiago Teixeira",
-          "Miao Sun",
-          "Paulo  Faria",
-          "Francisca Teixeira"
+          "André Fernandes"
         ],
         "listLinkedinLinks": [
-          "https://www.linkedin.com/in/grilo/",
-          "https://www.linkedin.com/in/joaomg/",
-          "https://www.linkedin.com/in/joaopedrocarvalho/",
-          "https://www.linkedin.com/in/maurocarreiraboneco/",
-          "https://www.linkedin.com/in/tiagomouraoteixeira/",
-          "https://www.linkedin.com/in/miaosun/",
-          "https://www.linkedin.com/in/paulomfaria/",
-          "https://www.linkedin.com/in/teixeirafrancisca/"
+          "https://www.linkedin.com/in/asfer/"
+        ]
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          0.87376,
+          51.14648
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": [
+          "barcelona"
+        ],
+        "students": 4,
+        "listAlumniNames": [
+          "Sergio Rasgado",
+          "Luís Guilherme Martins",
+          "João Alves",
+          "João Vieira de Castro"
+        ],
+        "listLinkedinLinks": [
+          "https://www.linkedin.com/in/sergiorasgado/",
+          "https://www.linkedin.com/in/guilhermescp/",
+          "https://www.linkedin.com/in/joaoqalves/",
+          "https://www.linkedin.com/in/joaovieiracastro/"
+        ]
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          2.15899,
+          41.38879
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": [
+          "nieder ramstadt"
+        ],
+        "students": 1,
+        "listAlumniNames": [
+          "José Silva"
+        ],
+        "listLinkedinLinks": [
+          "https://www.linkedin.com/in/nandomoreira/"
+        ]
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          8.70084,
+          49.82474
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": [
+          "campo"
+        ],
+        "students": 1,
+        "listAlumniNames": [
+          "Ricardo Loureiro"
+        ],
+        "listLinkedinLinks": [
+          "https://www.linkedin.com/in/ricardo-loureiro-767367118/"
+        ]
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -54.64639,
+          -20.44278
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": [
+          "madeira island"
+        ],
+        "students": 2,
+        "listAlumniNames": [
+          "Rúben Nóbrega",
+          "Jénifer Constantino"
+        ],
+        "listLinkedinLinks": [
+          "https://www.linkedin.com/in/rúben-nóbrega-89990a/",
+          "https://www.linkedin.com/in/jenifer-constantino/"
+        ]
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -17.0,
+          32.73333
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": [
+          "erlangen"
+        ],
+        "students": 1,
+        "listAlumniNames": [
+          "Cristina Falcao"
+        ],
+        "listLinkedinLinks": [
+          "https://www.linkedin.com/in/cristina-falcao-57b569/"
+        ]
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          11.00783,
+          49.59099
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": [
+          "دبي دبي الإمارات العربية المتحدة"
+        ],
+        "students": 1,
+        "listAlumniNames": [
+          "Gerardo De Oliveira"
+        ],
+        "listLinkedinLinks": [
+          "https://www.linkedin.com/in/gerardooliveira/"
+        ]
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          55.30927,
+          25.07725
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": [
+          "kirkland"
+        ],
+        "students": 1,
+        "listAlumniNames": [
+          "Miguel Vicente"
+        ],
+        "listLinkedinLinks": [
+          "https://www.linkedin.com/in/miguelv/"
+        ]
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -73.86586,
+          45.45008
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": [
+          "lisbon metropolitan area"
+        ],
+        "students": 5,
+        "listAlumniNames": [
+          "Filipe Pinho Pereira",
+          "Hugo Almeida",
+          "Pedro Almeida",
+          "Pedro Coelho",
+          "Susana Vilaça"
+        ],
+        "listLinkedinLinks": [
+          "https://www.linkedin.com/in/filipeappereira/",
+          "https://www.linkedin.com/in/hugo-almeida-01b8094/",
+          "https://www.linkedin.com/in/pedro--almeida/",
+          "https://www.linkedin.com/in/plfcoelho/",
+          "https://www.linkedin.com/in/susanavilaca/"
         ]
       },
       "geometry": {
@@ -2130,47 +3258,129 @@
     {
       "type": "Feature",
       "properties": {
-        "name": "amstelveen",
-        "students": 1,
+        "name": [
+          "porto metropolitan area"
+        ],
+        "students": 39,
         "listAlumniNames": [
-          "Silvia Ramalho"
+          "Ana Jacinta Ferreira",
+          "André Mota",
+          "André Barbosa",
+          "Sérgio Barbosa",
+          "Diogo Dias",
+          "Daniel Moura",
+          "António Lisboa",
+          "Fábio Almeida",
+          "Felipe Ávila da Costa 🇺🇦🕊",
+          "Filipe C.",
+          "Hugo Peixoto",
+          "Jadir Sousa",
+          "Joel Campos",
+          "José Branco",
+          "José Miguel Monteiro",
+          "José Aguiar",
+          "Lara Santos",
+          "Leonel Dias ",
+          "Maria Pedroto",
+          "Paulo Marques",
+          "Pedro Carneiro",
+          "Pedro Ruas Moreira",
+          "Rafael Pires",
+          "Rui Guerra",
+          "Tiago Santos",
+          "Anaís Dias",
+          "Filipe Miranda",
+          "Filipe Carvalho",
+          "Hélder Moreira",
+          "Hugo Drumond",
+          "Joana Silva",
+          "Joana Barbosa",
+          "José Silva",
+          "Liliana Ribeiro",
+          "Luís P.",
+          "Márcio Fontes",
+          "Paulo Costa",
+          "Ricardo Silva",
+          "Tadeu Marques"
         ],
         "listLinkedinLinks": [
-          "https://www.linkedin.com/in/silvia-ramalho-1b44a415/"
+          "https://www.linkedin.com/in/ana-jacinta-ferreira-b727ab/",
+          "https://www.linkedin.com/in/andrefmota/",
+          "https://www.linkedin.com/in/andremanuelbarbosa/",
+          "https://www.linkedin.com/in/barbosasergio/",
+          "https://www.linkedin.com/in/diogocdias/",
+          "https://www.linkedin.com/in/dmoura/",
+          "https://www.linkedin.com/in/englisboa/",
+          "https://www.linkedin.com/in/fabioacalmeida/",
+          "https://www.linkedin.com/in/felipeacosta/",
+          "https://www.linkedin.com/in/filcoelho/",
+          "https://www.linkedin.com/in/hugopeixoto/",
+          "https://www.linkedin.com/in/jjsousa/",
+          "https://www.linkedin.com/in/joelcampos/",
+          "https://www.linkedin.com/in/josé-branco-a543573/",
+          "https://www.linkedin.com/in/jose-miguel-monteiro-0483469/",
+          "https://www.linkedin.com/in/josempaguiar/",
+          "https://www.linkedin.com/in/larammsantos/",
+          "https://www.linkedin.com/in/leoneljdias/",
+          "https://www.linkedin.com/in/mpedroto/",
+          "https://www.linkedin.com/in/paulo-marques-25234124/",
+          "https://www.linkedin.com/in/pedrocarneiro/",
+          "https://www.linkedin.com/in/pedroruasmoreira/",
+          "https://www.linkedin.com/in/rafaelpires/",
+          "https://www.linkedin.com/in/ruiguerra/",
+          "https://www.linkedin.com/in/tiagoalmeidasantos/",
+          "https://www.linkedin.com/in/anaisdias/",
+          "https://www.linkedin.com/in/filipefmiranda/",
+          "https://www.linkedin.com/in/filipemiguelcarvalho/",
+          "https://www.linkedin.com/in/hmoreira/",
+          "https://www.linkedin.com/in/hugdru/",
+          "https://www.linkedin.com/in/joanamcsilva/",
+          "https://www.linkedin.com/in/joanavbarbosa/",
+          "https://www.linkedin.com/in/jsilva-pt/",
+          "https://www.linkedin.com/in/liliana-ribeiro-51a86a12b/",
+          "https://www.linkedin.com/in/luis-a-m-p/",
+          "https://www.linkedin.com/in/mfvfontes/",
+          "https://www.linkedin.com/in/pcostaeu/",
+          "https://www.linkedin.com/in/ricardo-silva-25902a59/",
+          "https://www.linkedin.com/in/tadeumarques/"
         ]
       },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          4.86389,
-          52.30083
+          -50.92712,
+          -29.90138
         ]
       }
     },
     {
       "type": "Feature",
       "properties": {
-        "name": "los angeles metropolitan area",
+        "name": [
+          "felgueiras"
+        ],
         "students": 1,
         "listAlumniNames": [
-          "João Almeida"
+          "Mauro Costa"
         ],
         "listLinkedinLinks": [
-          "https://www.linkedin.com/in/joão-almeida-451714a8/"
+          "https://www.linkedin.com/in/maurorcosta/"
         ]
       },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -118.25646,
-          34.04223
+          -8.19396,
+          41.36806
         ]
       }
     },
     {
       "type": "Feature",
       "properties": {
-        "name": "maia",
+        "name": [
+          "maia"
+        ],
         "students": 10,
         "listAlumniNames": [
           "Carlos Vales",
@@ -2208,925 +3418,31 @@
     {
       "type": "Feature",
       "properties": {
-        "name": "delft",
+        "name": [
+          "helsinki"
+        ],
         "students": 1,
         "listAlumniNames": [
-          "José Carlos Coutinho"
+          "Joao Maia"
         ],
         "listLinkedinLinks": [
-          "https://www.linkedin.com/in/jose-carlos-ms-coutinho/"
+          "https://www.linkedin.com/in/jpmmaia/"
         ]
       },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          4.35556,
-          52.00667
+          24.93545,
+          60.16952
         ]
       }
     },
     {
       "type": "Feature",
       "properties": {
-        "name": "évora",
-        "students": 1,
-        "listAlumniNames": [
-          "Miguel Paixão"
+        "name": [
+          "dublin"
         ],
-        "listLinkedinLinks": [
-          "https://www.linkedin.com/in/mpaixao/"
-        ]
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -7.9,
-          38.56667
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "other",
-        "students": 1,
-        "listAlumniNames": [
-          "Joaquim Carneiro"
-        ],
-        "listLinkedinLinks": [
-          "https://www.linkedin.com/in/joaquimcarneiro/"
-        ]
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -84.755,
-          49.09111
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "ghent",
-        "students": 1,
-        "listAlumniNames": [
-          "Andre Guimaraes"
-        ],
-        "listLinkedinLinks": [
-          "https://www.linkedin.com/in/andreguimaraes/"
-        ]
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          3.71667,
-          51.05
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "bragança",
-        "students": 2,
-        "listAlumniNames": [
-          "João Mourinho",
-          "Rui Freixedelo"
-        ],
-        "listLinkedinLinks": [
-          "https://www.linkedin.com/in/jmourinho/",
-          "https://www.linkedin.com/in/freixedelo/"
-        ]
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -6.76346,
-          41.83615
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "london",
-        "students": 33,
-        "listAlumniNames": [
-          "Alex Rodrigues",
-          "Alexandre Pinto",
-          "Andre Reina",
-          "Bruno Santos",
-          "Daniel Albuquerque",
-          "Diego Jesus",
-          "Filipa Moura",
-          "Hugo Rodrigues",
-          "Hugo Sereno Ferreira",
-          "⛱  Ivo Reis",
-          "João Charruadas",
-          "Joao Loureiro",
-          "John Belo",
-          "Jose Santos",
-          "Luís Pedrosa",
-          "Marta Maio",
-          "Miguel Oliveira",
-          "Mónica Santos, PhD",
-          "Pedro Lamas",
-          "Ricardo Lagido",
-          "Rui Martins",
-          "Rui Gonçalves",
-          "Rui Teixeira",
-          "Tiago Fonseca",
-          "João Sousa",
-          "José Paulo Ferreira",
-          "Mário Pereira",
-          "Pedro Chambino",
-          "Pedro Simões",
-          "Margarida Pereira",
-          "Rui Ferreira",
-          "Tiago Gonçalves",
-          "Amaro Gonzaga Silva"
-        ],
-        "listLinkedinLinks": [
-          "https://www.linkedin.com/in/ajrodrigues/",
-          "https://www.linkedin.com/in/alexandre-miranda-pinto/",
-          "https://www.linkedin.com/in/andrereina/",
-          "https://www.linkedin.com/in/bmpsantos/",
-          "https://www.linkedin.com/in/danielmartinsalbuquerque/",
-          "https://www.linkedin.com/in/djesus/",
-          "https://www.linkedin.com/in/filipamoura/",
-          "https://www.linkedin.com/in/hugorodrigues/",
-          "https://www.linkedin.com/in/hugoserenoferreira/",
-          "https://www.linkedin.com/in/ivoreis/",
-          "https://www.linkedin.com/in/jcharruadas/",
-          "https://www.linkedin.com/in/jmbploureiro/",
-          "https://www.linkedin.com/in/johnbelo/",
-          "https://www.linkedin.com/in/josemsantos/",
-          "https://www.linkedin.com/in/lpedrosa88/",
-          "https://www.linkedin.com/in/martamaio/",
-          "https://www.linkedin.com/in/miguelpoliveira/",
-          "https://www.linkedin.com/in/monicasantos/",
-          "https://www.linkedin.com/in/pedrolamas/",
-          "https://www.linkedin.com/in/ricardolagido/",
-          "https://www.linkedin.com/in/ruibm/",
-          "https://www.linkedin.com/in/ruippeixotog/",
-          "https://www.linkedin.com/in/ruivazteixeira/",
-          "https://www.linkedin.com/in/trfonseca/",
-          "https://www.linkedin.com/in/joaocsousa/",
-          "https://www.linkedin.com/in/josepsferreira/",
-          "https://www.linkedin.com/in/mário-pereira-917b2934/",
-          "https://www.linkedin.com/in/pchambino/",
-          "https://www.linkedin.com/in/pedropintosimoes/",
-          "https://www.linkedin.com/in/pereiramargarida/",
-          "https://www.linkedin.com/in/ruiaf/",
-          "https://www.linkedin.com/in/tiagomiguelgoncalves/",
-          "https://www.linkedin.com/in/zagasilva/"
-        ]
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -0.12574,
-          51.50853
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "den haag",
-        "students": 1,
-        "listAlumniNames": [
-          "Tiago Pinheiro"
-        ],
-        "listLinkedinLinks": [
-          "https://www.linkedin.com/in/tpinheiro/"
-        ]
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          4.29861,
-          52.07667
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "lysaker",
-        "students": 1,
-        "listAlumniNames": [
-          "Hugo Passos"
-        ],
-        "listLinkedinLinks": [
-          "https://www.linkedin.com/in/hugo-passos-036aa43b/"
-        ]
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          10.63545,
-          59.90994
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "englewood",
-        "students": 1,
-        "listAlumniNames": [
-          "Antonio Alves"
-        ],
-        "listLinkedinLinks": [
-          "https://www.linkedin.com/in/antonioviegasalves/"
-        ]
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -104.98776,
-          39.64777
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "san antonio",
-        "students": 1,
-        "listAlumniNames": [
-          "Pedro S."
-        ],
-        "listLinkedinLinks": [
-          "https://www.linkedin.com/in/pedrosalgado/"
-        ]
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -98.49363,
-          29.42412
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "amsterdam",
-        "students": 9,
-        "listAlumniNames": [
-          "Daniel Sequeira",
-          "Hugo Barrote, CSM",
-          "Inês Beirão",
-          "Luis Santos",
-          "Nuno Cruz",
-          "Filipe Batista",
-          "Francisco Couto",
-          "João Nogueira",
-          "Pedro Oliveira"
-        ],
-        "listLinkedinLinks": [
-          "https://www.linkedin.com/in/daniel-sequeira/",
-          "https://www.linkedin.com/in/hugobarrote/",
-          "https://www.linkedin.com/in/inesclfbeirao/",
-          "https://www.linkedin.com/in/luis-almeida-santos/",
-          "https://www.linkedin.com/in/nunomarquescruz/",
-          "https://www.linkedin.com/in/filipe-gama-batista/",
-          "https://www.linkedin.com/in/francisco-s-g-couto/",
-          "https://www.linkedin.com/in/joaomnogueira/",
-          "https://www.linkedin.com/in/pedrodeoliveira/"
-        ]
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          4.88969,
-          52.37403
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "innsbruck",
-        "students": 1,
-        "listAlumniNames": [
-          "Guilherme Lopes"
-        ],
-        "listLinkedinLinks": [
-          "https://www.linkedin.com/in/guilherme-c-lopes/"
-        ]
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          11.39454,
-          47.26266
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "porto e região",
-        "students": 9,
-        "listAlumniNames": [
-          "Catarina Lopes",
-          "Gaspar Lencastre",
-          "João Gomes",
-          "José Pacheco",
-          "Luis Duarte",
-          "Pedro Gomes",
-          "Ricardo Mestre",
-          "Ricardo Melo",
-          "Pedro Cunha"
-        ],
-        "listLinkedinLinks": [
-          "https://www.linkedin.com/in/catarina-lopes-a3360439/",
-          "https://www.linkedin.com/in/gasparlencastre/",
-          "https://www.linkedin.com/in/joaopcgomes/",
-          "https://www.linkedin.com/in/jpacheco/",
-          "https://www.linkedin.com/in/lduarte/",
-          "https://www.linkedin.com/in/pedrovelosogomes/",
-          "https://www.linkedin.com/in/ricardojoaomestre/",
-          "https://www.linkedin.com/in/rjmelo/",
-          "https://www.linkedin.com/in/pedro-cunha-sw-engineer/"
-        ]
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -34.8918,
-          -7.11502
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "copenhagen",
-        "students": 3,
-        "listAlumniNames": [
-          "Joana Carvalho",
-          "André Alves",
-          "Ricardo Pinho"
-        ],
-        "listLinkedinLinks": [
-          "https://www.linkedin.com/in/joanacarvalho/",
-          "https://www.linkedin.com/in/anpalves/",
-          "https://www.linkedin.com/in/ricardo-pinho-409b8474/"
-        ]
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          12.56553,
-          55.67594
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "munchen",
-        "students": 1,
-        "listAlumniNames": [
-          "Ana C."
-        ],
-        "listLinkedinLinks": [
-          "https://www.linkedin.com/in/acarraca/"
-        ]
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          11.57549,
-          48.13743
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "united states",
-        "students": 1,
-        "listAlumniNames": [
-          "Rui Pereira"
-        ],
-        "listLinkedinLinks": [
-          "https://www.linkedin.com/in/rfapereira/"
-        ]
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -57.65625,
-          -14.60485
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "opfikon",
-        "students": 1,
-        "listAlumniNames": [
-          "João Soares"
-        ],
-        "listLinkedinLinks": [
-          "https://www.linkedin.com/in/joaoamsoares/"
-        ]
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          8.57588,
-          47.43169
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "vila do conde",
-        "students": 2,
-        "listAlumniNames": [
-          "João Ramos",
-          "Pedro Dias"
-        ],
-        "listLinkedinLinks": [
-          "https://www.linkedin.com/in/joaomvramos94/",
-          "https://www.linkedin.com/in/pedro-dias-a293956/"
-        ]
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -8.74516,
-          41.35326
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "the hague",
-        "students": 2,
-        "listAlumniNames": [
-          "João Seixas",
-          "Joel Alvim"
-        ],
-        "listLinkedinLinks": [
-          "https://www.linkedin.com/in/jcseixas/",
-          "https://www.linkedin.com/in/joel-alvim-0b4b51/"
-        ]
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          4.29861,
-          52.07667
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "san francisco bay area",
-        "students": 1,
-        "listAlumniNames": [
-          "Alexandre Perez"
-        ],
-        "listLinkedinLinks": [
-          "https://www.linkedin.com/in/alexandrecperez/"
-        ]
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -122.41942,
-          37.77493
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "fortaleza",
-        "students": 1,
-        "listAlumniNames": [
-          "Joao Diogo de Oliveira"
-        ],
-        "listLinkedinLinks": [
-          "https://www.linkedin.com/in/joaodeoliveira/"
-        ]
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -38.54306,
-          -3.71722
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "new york",
-        "students": 3,
-        "listAlumniNames": [
-          "Ana Magalhaes",
-          "Pedro Teixeira",
-          "Nuno Santos"
-        ],
-        "listLinkedinLinks": [
-          "https://www.linkedin.com/in/ana-sa-magalhaes/",
-          "https://www.linkedin.com/in/pedromcteixeira/",
-          "https://www.linkedin.com/in/nunomaiasantos/"
-        ]
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -74.00597,
-          40.71427
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "warsaw",
-        "students": 2,
-        "listAlumniNames": [
-          "João Costa",
-          "Damien Rosa"
-        ],
-        "listLinkedinLinks": [
-          "https://www.linkedin.com/in/jpcosta/",
-          "https://www.linkedin.com/in/damien-rosa-83806134/"
-        ]
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          21.01178,
-          52.22977
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "sao mamede de infesta",
-        "students": 1,
-        "listAlumniNames": [
-          "Ricardo Castro"
-        ],
-        "listLinkedinLinks": [
-          "https://www.linkedin.com/in/supericardoc/"
-        ]
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -8.61105,
-          41.19183
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "coimbra",
-        "students": 2,
-        "listAlumniNames": [
-          "Nuno Nogueira",
-          "Nuno Silva"
-        ],
-        "listLinkedinLinks": [
-          "https://www.linkedin.com/in/nogueiranuno/",
-          "https://www.linkedin.com/in/nunocruzsilva/"
-        ]
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -8.41955,
-          40.20564
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "covilhã",
-        "students": 1,
-        "listAlumniNames": [
-          "César Rodrigues"
-        ],
-        "listLinkedinLinks": [
-          "https://www.linkedin.com/in/pontoporponto/"
-        ]
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -7.50504,
-          40.28106
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "vernier",
-        "students": 1,
-        "listAlumniNames": [
-          "Tiago Batista"
-        ],
-        "listLinkedinLinks": [
-          "https://www.linkedin.com/in/tiago--batista/"
-        ]
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          161.15,
-          -77.96667
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "felgueiras",
-        "students": 1,
-        "listAlumniNames": [
-          "Mauro Costa"
-        ],
-        "listLinkedinLinks": [
-          "https://www.linkedin.com/in/maurorcosta/"
-        ]
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -8.19396,
-          41.36806
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "mons",
-        "students": 1,
-        "listAlumniNames": [
-          "Pedro Polonia"
-        ],
-        "listLinkedinLinks": [
-          "https://www.linkedin.com/in/polonia/"
-        ]
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          3.95229,
-          50.45413
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "lisboa",
-        "students": 31,
-        "listAlumniNames": [
-          "André Barbosa",
-          "André Moniz",
-          "António Pedro Pinho",
-          "Daniel Aguilar",
-          "Hugo Penedones",
-          "João Aradas",
-          "Jorge Carneiro",
-          "João Soares",
-          "Joaquim Santos",
-          "Marco Carvalho",
-          "Marco António Silva",
-          "Marta Pereira",
-          "Micael Pinho",
-          "Miguel Pereira",
-          "Nuno S.",
-          "Paulo Lopes",
-          "Fernando Pires",
-          "Filipe Cruz",
-          "Rodrigo Sá Guerra",
-          "Sérgio Vasconcelos",
-          "Vladimiro Sá",
-          "Alice Perpétua",
-          "Ana Sousa",
-          "Carlos Portela Pereira",
-          "Joel Ferreira",
-          "Maria João Barbosa",
-          "Nuno Passos",
-          "António Bandeira",
-          "Rui Archer",
-          "Sofia Reis",
-          "Tiago Martins Lomba"
-        ],
-        "listLinkedinLinks": [
-          "https://www.linkedin.com/in/andreemanuelbarbosa/",
-          "https://www.linkedin.com/in/andremoniz/",
-          "https://www.linkedin.com/in/antoniopinho/",
-          "https://www.linkedin.com/in/djbaguilar/",
-          "https://www.linkedin.com/in/hpenedones/",
-          "https://www.linkedin.com/in/jaradas/",
-          "https://www.linkedin.com/in/jccarneiro/",
-          "https://www.linkedin.com/in/joaotrigosoares/",
-          "https://www.linkedin.com/in/joaquimsantos/",
-          "https://www.linkedin.com/in/marco-carvalho-216538a/",
-          "https://www.linkedin.com/in/marconsilva/",
-          "https://www.linkedin.com/in/martapereira/",
-          "https://www.linkedin.com/in/mfapinho/",
-          "https://www.linkedin.com/in/miguel-pereira-392820/",
-          "https://www.linkedin.com/in/nufil/",
-          "https://www.linkedin.com/in/paulo-lopes-2b84911/",
-          "https://www.linkedin.com/in/piresfernando/",
-          "https://www.linkedin.com/in/psenough/",
-          "https://www.linkedin.com/in/rsguerra/",
-          "https://www.linkedin.com/in/sergiovasconcelos/",
-          "https://www.linkedin.com/in/vladimirosa/",
-          "https://www.linkedin.com/in/aliceperpetua/",
-          "https://www.linkedin.com/in/anaisabelsousa/",
-          "https://www.linkedin.com/in/jcarlosportelapereira/",
-          "https://www.linkedin.com/in/joelfilipeferreira/",
-          "https://www.linkedin.com/in/mariajoaobarbosa/",
-          "https://www.linkedin.com/in/nuno-passos-19765061/",
-          "https://www.linkedin.com/in/pt-antoniobandeira/",
-          "https://www.linkedin.com/in/ruiarcher/",
-          "https://www.linkedin.com/in/sofiaoreis/",
-          "https://www.linkedin.com/in/tiago-martins-lomba/"
-        ]
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -9.13333,
-          38.71667
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "baião",
-        "students": 1,
-        "listAlumniNames": [
-          "Tiago Ferreira"
-        ],
-        "listLinkedinLinks": [
-          "https://www.linkedin.com/in/tiagommferreira55/"
-        ]
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -8.03581,
-          41.16384
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "pijnacker",
-        "students": 1,
-        "listAlumniNames": [
-          "Ricardo Veloso"
-        ],
-        "listLinkedinLinks": [
-          "https://www.linkedin.com/in/ricardoveloso/"
-        ]
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          4.42946,
-          52.01954
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "amarante",
-        "students": 1,
-        "listAlumniNames": [
-          "Rui Vilares"
-        ],
-        "listLinkedinLinks": [
-          "https://www.linkedin.com/in/ruivilares/"
-        ]
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -39.06727,
-          -3.56612
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "cologne",
-        "students": 1,
-        "listAlumniNames": [
-          "Rui Tavares"
-        ],
-        "listLinkedinLinks": [
-          "https://www.linkedin.com/in/ruitavares/"
-        ]
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          6.95,
-          50.93333
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "paris",
-        "students": 3,
-        "listAlumniNames": [
-          "carlos sousa",
-          "Cláudio Costa",
-          "André Ferreira"
-        ],
-        "listLinkedinLinks": [
-          "https://www.linkedin.com/in/carlosmasousa/",
-          "https://www.linkedin.com/in/cmtcosta/",
-          "https://www.linkedin.com/in/andreferreirav2/"
-        ]
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          2.3488,
-          48.85341
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "malmö",
-        "students": 1,
-        "listAlumniNames": [
-          "João Xavier"
-        ],
-        "listLinkedinLinks": [
-          "https://www.linkedin.com/in/jcxavier/"
-        ]
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          13.00073,
-          55.60587
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "luxembourg",
-        "students": 1,
-        "listAlumniNames": [
-          "Ricardo Torres"
-        ],
-        "listLinkedinLinks": [
-          "https://www.linkedin.com/in/jrctorres/"
-        ]
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          6.16667,
-          49.75
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "dublin",
         "students": 2,
         "listAlumniNames": [
           "Carlos Fernandes",
@@ -3148,27 +3464,55 @@
     {
       "type": "Feature",
       "properties": {
-        "name": "nieder ramstadt",
-        "students": 1,
+        "name": [
+          "san francisco"
+        ],
+        "students": 2,
         "listAlumniNames": [
-          "José Silva"
+          "Joao Montenegro",
+          "Nelson Rodrigues"
         ],
         "listLinkedinLinks": [
-          "https://www.linkedin.com/in/nandomoreira/"
+          "https://www.linkedin.com/in/joao-montenegro-b363884/",
+          "https://www.linkedin.com/in/nelsonjorgesilvarodrigues/"
         ]
       },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          8.70084,
-          49.82474
+          -87.20681,
+          14.0818
         ]
       }
     },
     {
       "type": "Feature",
       "properties": {
-        "name": "toronto",
+        "name": [
+          "malmö"
+        ],
+        "students": 1,
+        "listAlumniNames": [
+          "João Xavier"
+        ],
+        "listLinkedinLinks": [
+          "https://www.linkedin.com/in/jcxavier/"
+        ]
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          13.00073,
+          55.60587
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": [
+          "toronto"
+        ],
         "students": 1,
         "listAlumniNames": [
           "Afonso Graça"
@@ -3188,67 +3532,9 @@
     {
       "type": "Feature",
       "properties": {
-        "name": "tallinn",
-        "students": 1,
-        "listAlumniNames": [
-          "Ricardo Nuno Almeida"
+        "name": [
+          "seattle"
         ],
-        "listLinkedinLinks": [
-          "https://www.linkedin.com/in/ricardonunoalmeida/"
-        ]
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          24.75353,
-          59.43696
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "viana do castelo",
-        "students": 1,
-        "listAlumniNames": [
-          "Vasco Torres"
-        ],
-        "listLinkedinLinks": [
-          "https://www.linkedin.com/in/vascotorres/"
-        ]
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -8.5063,
-          41.89649
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "دبي دبي الإمارات العربية المتحدة",
-        "students": 1,
-        "listAlumniNames": [
-          "Gerardo De Oliveira"
-        ],
-        "listLinkedinLinks": [
-          "https://www.linkedin.com/in/gerardooliveira/"
-        ]
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          55.30927,
-          25.07725
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "seattle",
         "students": 1,
         "listAlumniNames": [
           "Ricardo Afonso"
@@ -3268,202 +3554,136 @@
     {
       "type": "Feature",
       "properties": {
-        "name": "lisbon metropolitan area",
-        "students": 5,
-        "listAlumniNames": [
-          "Filipe Pinho Pereira",
-          "Hugo Almeida",
-          "Pedro Almeida",
-          "Pedro Coelho",
-          "Susana Vilaça"
+        "name": [
+          "amarante"
         ],
-        "listLinkedinLinks": [
-          "https://www.linkedin.com/in/filipeappereira/",
-          "https://www.linkedin.com/in/hugo-almeida-01b8094/",
-          "https://www.linkedin.com/in/pedro--almeida/",
-          "https://www.linkedin.com/in/plfcoelho/",
-          "https://www.linkedin.com/in/susanavilaca/"
-        ]
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -9.13333,
-          38.71667
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "aveiro",
-        "students": 7,
-        "listAlumniNames": [
-          "Bruno Cabral",
-          "Soraia Ferreira",
-          "Filipe Madureira",
-          "João Correia",
-          "Sérgio Bandeira",
-          "Cristiano Carvalheiro",
-          "Manuel Pereira"
-        ],
-        "listLinkedinLinks": [
-          "https://www.linkedin.com/in/bcabral/",
-          "https://www.linkedin.com/in/ei09119/",
-          "https://www.linkedin.com/in/filipe-madureira-60a99111/",
-          "https://www.linkedin.com/in/joaoocorreia/",
-          "https://www.linkedin.com/in/sergiobandeira/",
-          "https://www.linkedin.com/in/ccarvalheiro/",
-          "https://www.linkedin.com/in/manuelgpereira/"
-        ]
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -8.64554,
-          40.64427
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "miami",
         "students": 1,
         "listAlumniNames": [
-          "Eduardo Oliveira"
+          "Rui Vilares"
         ],
         "listLinkedinLinks": [
-          "https://www.linkedin.com/in/eduardooliv/"
+          "https://www.linkedin.com/in/ruivilares/"
         ]
       },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -80.19366,
-          25.77427
+          -39.06727,
+          -3.56612
         ]
       }
     },
     {
       "type": "Feature",
       "properties": {
-        "name": "erlangen",
+        "name": [
+          "villach"
+        ],
         "students": 1,
         "listAlumniNames": [
-          "Cristina Falcao"
+          "Tiago da Silva"
         ],
         "listLinkedinLinks": [
-          "https://www.linkedin.com/in/cristina-falcao-57b569/"
+          "https://www.linkedin.com/in/tiagogpmsilva/"
         ]
       },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          11.00783,
-          49.59099
+          13.85583,
+          46.61028
         ]
       }
     },
     {
       "type": "Feature",
       "properties": {
-        "name": "wien",
+        "name": [
+          "ermesinde"
+        ],
         "students": 1,
         "listAlumniNames": [
-          "Rui Botto"
+          "Filipe Pinto Reis"
         ],
         "listLinkedinLinks": [
-          "https://www.linkedin.com/in/ruibotto/"
+          "https://www.linkedin.com/in/filipepintoreis/"
         ]
       },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          16.37208,
-          48.20849
+          -8.55318,
+          41.21653
         ]
       }
     },
     {
       "type": "Feature",
       "properties": {
-        "name": "guimarães",
+        "name": [
+          "berlin metropolitan area"
+        ],
+        "students": 3,
+        "listAlumniNames": [
+          "Dr. Luís Moreira-Matias",
+          "Pedro Maurício Costa, PhD",
+          "Rui Ferreira"
+        ],
+        "listLinkedinLinks": [
+          "https://www.linkedin.com/in/lmatias/",
+          "https://www.linkedin.com/in/pedromauriciocosta/",
+          "https://www.linkedin.com/in/ruimferreira/"
+        ]
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -3.67264,
+          40.448
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": [
+          "fortaleza"
+        ],
         "students": 1,
         "listAlumniNames": [
-          "Marco Alves"
+          "Joao Diogo de Oliveira"
         ],
         "listLinkedinLinks": [
-          "https://www.linkedin.com/in/marcoaalves/"
+          "https://www.linkedin.com/in/joaodeoliveira/"
         ]
       },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -8.29619,
-          41.44443
+          -38.54306,
+          -3.71722
         ]
       }
     },
     {
       "type": "Feature",
       "properties": {
-        "name": "louzada",
+        "name": [
+          "brussels"
+        ],
         "students": 1,
         "listAlumniNames": [
-          "Rafael Nogueira"
+          "Miguel Tavares"
         ],
         "listLinkedinLinks": [
-          "https://www.linkedin.com/in/diogonogueira/"
+          "https://www.linkedin.com/in/mjmtavares/"
         ]
       },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -8.27993,
-          41.27822
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "munich",
-        "students": 1,
-        "listAlumniNames": [
-          "Rui Couto"
-        ],
-        "listLinkedinLinks": [
-          "https://www.linkedin.com/in/rui-couto/"
-        ]
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          11.57549,
-          48.13743
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "dublin city",
-        "students": 2,
-        "listAlumniNames": [
-          "Inês F.",
-          "Mark Meehan"
-        ],
-        "listLinkedinLinks": [
-          "https://www.linkedin.com/in/iferreira/",
-          "https://www.linkedin.com/in/mark-timothy-meehan/"
-        ]
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -6.24889,
-          53.33306
+          4.34878,
+          50.85045
         ]
       }
     }

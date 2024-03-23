@@ -15,6 +15,7 @@ import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 import java.net.http.HttpClient.Version;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -154,7 +155,7 @@ public class Location {
             feature.setType("Feature");
 
             GeoJSONProperties properties = new GeoJSONProperties();
-            properties.setName(city.getCity());
+            properties.setName(Arrays.asList(city.getCity()));
             properties.setStudents(city.getNAlumniInCity());
 
             // Collect alumni names and linkedin links for this country
@@ -194,7 +195,7 @@ public class Location {
             feature.setType("Feature");
 
             GeoJSONProperties properties = new GeoJSONProperties();
-            properties.setName(country.getCountry());
+            properties.setName(Arrays.asList(country.getCountry()));
             properties.setStudents(country.getNAlumniInCountry());
 
             // Collect alumni names and linkedin links for this country

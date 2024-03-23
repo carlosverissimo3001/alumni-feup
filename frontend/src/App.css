@@ -85,6 +85,7 @@
     padding: 0;
 }
 .list-alumni.scrollable {
-    max-height: 100px; /* Set your desired max height */
+    max-height: 200px; /* Set your desired max height */
+    max-width: 500px; /* Set your desired max height */
     overflow-y: auto;
 }
