@@ -105,10 +105,10 @@ const MenuButtons = ({onSelectGeoJSON }) => {
         <>
             <input type="file" className='fileInput' onChange={handleFileChange} />         
             
-            <button className="button butnPopAlumni" onClick={handlePopulateAlumniTable}>AlumniTablePopulate</button>
-            {/*<button className="button butnBackAlumni" onClick={handleBackupTableAlumni}>BackupTableAlumni</button>
+            {/*<button className="button butnPopAlumni" onClick={handlePopulateAlumniTable}>AlumniTablePopulate</button>
+            <button className="button butnBackAlumni" onClick={handleBackupTableAlumni}>BackupTableAlumni</button>
             <button className="button butnBackAlumniWFile" onClick={handlePopulateAlumniTableFileBckp}>AlumniTablePopulate - backup file</button>
-            <button className="button btnMissingLinkedinLinks" onClick={handleLinkedinLinksAlumniTable}>MissingLinkedinLinks</button>
+            <button className="button btnMissingLinkedinLinks" onClick={handleLinkedinLinksAlumniTable}>MissingLinkedinLinks</button>*/}
 
 
             <button className="button butnPopCountry" onClick={handlePopulateCountryTable}>PopulateCoutryTable</button>
@@ -119,13 +119,13 @@ const MenuButtons = ({onSelectGeoJSON }) => {
             <button className="button butnGenCityGeoJason" onClick={handleGenerateCityGeoJason}>GenerateCityGeoJason</button>
 
             <button className="button butnUseCitiesGeoJson" onClick={handleUseCitiesGeoJson}>UseCitiesGeoJson</button>
-            <button className="button butnUseCountriesGeoJson" onClick={handleUseCountriesGeoJson}>UseCountriesGeoJson</button>*/}
+            <button className="button butnUseCountriesGeoJson" onClick={handleUseCountriesGeoJson}>UseCountriesGeoJson</button>
 
             {/*
             <button className="button butnAlmWithoutLink" onClick={handleAlumnisMatchLinkedin}>Match Alumnis Linkedin</button>
             <button className="button btnExcelAlumniProfSitu" onClick={handleExcelAlumniProfSitu}>Excel: nomeAlumni + professionalSitu</button>
-            <button className="button btnExcelAlumniTableToExcel" onClick={handleAlmnTblExcel}>Excel: Alumni table</button>
-            */}
+            <button className="button btnExcelAlumniTableToExcel" onClick={handleAlmnTblExcel}>Excel: Alumni table</button>*/}
+            
             
         </>
     );
