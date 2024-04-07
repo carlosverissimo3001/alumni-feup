@@ -13,7 +13,7 @@ class setUp {
         try {
             const response = await fetch('http://localhost:8080/alumni/upload', {
                 method: 'POST',
-                body: '',
+                body: formData,
             });
 
             if (response.ok){
