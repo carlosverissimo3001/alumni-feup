@@ -19,7 +19,7 @@ const MenuButtons = ({onSelectGeoJSON }) => {
 
         const userConfirmed = window.confirm('You are about to delete the info of tables and update with the setelected file');
         if(userConfirmed) {
-            console.log("API call commented");
+            console.log("API call commented: ");
             setUp.populateAlumniTable(file); 
         }
     }
@@ -106,7 +106,7 @@ const MenuButtons = ({onSelectGeoJSON }) => {
             <input type="file" className='fileInput' onChange={handleFileChange} />         
             
             <button className="button butnPopAlumni" onClick={handlePopulateAlumniTable}>AlumniTablePopulate</button>
-            <button className="button butnBackAlumni" onClick={handleBackupTableAlumni}>BackupTableAlumni</button>
+            {/*<button className="button butnBackAlumni" onClick={handleBackupTableAlumni}>BackupTableAlumni</button>
             <button className="button butnBackAlumniWFile" onClick={handlePopulateAlumniTableFileBckp}>AlumniTablePopulate - backup file</button>
             <button className="button btnMissingLinkedinLinks" onClick={handleLinkedinLinksAlumniTable}>MissingLinkedinLinks</button>
 
@@ -119,7 +119,7 @@ const MenuButtons = ({onSelectGeoJSON }) => {
             <button className="button butnGenCityGeoJason" onClick={handleGenerateCityGeoJason}>GenerateCityGeoJason</button>
 
             <button className="button butnUseCitiesGeoJson" onClick={handleUseCitiesGeoJson}>UseCitiesGeoJson</button>
-            <button className="button butnUseCountriesGeoJson" onClick={handleUseCountriesGeoJson}>UseCountriesGeoJson</button>
+            <button className="button butnUseCountriesGeoJson" onClick={handleUseCountriesGeoJson}>UseCountriesGeoJson</button>*/}
 
             {/*
             <button className="button butnAlmWithoutLink" onClick={handleAlumnisMatchLinkedin}>Match Alumnis Linkedin</button>
