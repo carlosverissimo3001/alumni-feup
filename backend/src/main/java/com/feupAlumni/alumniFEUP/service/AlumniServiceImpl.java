@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.InputStream;
+import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
@@ -39,23 +40,40 @@ public class AlumniServiceImpl implements AlumniService{
 
     int contagem = 0; 
 
+    private boolean linkedinExists(String linkValue) {
+        return alumniRepository.existsByLinkedinLink(linkValue);
+    }   
+                                      
     @Override
     public void populateAlumniTable(MultipartFile file) {
         try (InputStream inputStream = file.getInputStream()){
-
             // Read and iterate over the excel file
             Workbook workbook = WorkbookFactory.create(inputStream);
             Sheet sheet = workbook.getSheetAt(1);   // 2nd sheet
             Iterator<Row> rowIterator = sheet.iterator();
 
+            // Skip the first two rows
+            for (int i=0; i<2; i++){
+                if(rowIterator.hasNext()){
+                    rowIterator.next();
+                } 
+            }
+
+            var count = 0;
             while (rowIterator.hasNext()) {
                 try {
                     Row row = rowIterator.next();
 
-                    //String linkValue = row.getCell(0).getStringCellValue(); // Column A
-                    String existeValue = row.getCell(1).getStringCellValue(); // Column B
-    
-                    if ("NOVO".equals(existeValue)) {
+                    String linkValue = row.getCell(8).getStringCellValue();                     
+                    linkValue = URLDecoder.decode(linkValue, StandardCharsets.UTF_8.toString());
+
+                    // Sees if the linkedin link exists in the tabel
+                    Boolean linkedinExists = linkedinExists(linkValue);
+
+                    // If the linkedin doesn't exist - calls the API and: adds to the table
+                    //                                                    adds to the file for personal backup
+                    if(!linkedinExists && linkValue.length()!=0){
+                        System.out.println("---- " + linkValue);
 
                         // TODO: COMMENTED THIS CODE SO I DON'T CALL THE API BY ACCIDENT
 
@@ -63,8 +81,7 @@ public class AlumniServiceImpl implements AlumniService{
                         /*var linkedinInfoResponse = AlumniInfo.getLinkedinProfileInfo(linkValue);
 
                         if(linkedinInfoResponse.statusCode() == 200){
-
-                            // Stores the result in a file for personal backup
+                            // Stores the result in a file for personal backup. If the file exists, adds to the content
                             String filePath = "C:/Users/jenif/OneDrive/Área de Trabalho/BackUpCallAPI";
                             FilesHandler.storeInfoInFile(linkedinInfoResponse.body(), filePath);
                             
@@ -72,15 +89,16 @@ public class AlumniServiceImpl implements AlumniService{
                             Alumni alumni = new Alumni(linkValue, linkedinInfoResponse.body());
                             // Stores the information in the database
                             alumniRepository.save(alumni);
+                            count++;
                         } else {
                             System.out.println("API call failed with status code: " + linkedinInfoResponse.statusCode() + linkedinInfoResponse.body() + " For profile: " + linkValue);
                         }*/
-
-                    }
+                    }                    
                 } catch (Exception error) {
                     System.out.println("error: " + error);
                 }
             }
+            System.out.println("New added: " + count);
             System.out.println("Alumni table populated with the API scraped information.");
         } catch (Exception e) {
             throw new RuntimeException("Error processing file", e);
