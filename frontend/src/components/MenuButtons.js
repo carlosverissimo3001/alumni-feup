@@ -3,7 +3,6 @@ import setUp from '../helpers/setUp';
 import Verifiers from '../helpers/verifiers';
 import ApiDataAnalysis from '../helpers/apiDataAnalysis';
 
-
 const MenuButtons = ({onSelectGeoJSON}) => {
 
     const[file, setFile]=useState('');

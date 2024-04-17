@@ -12,6 +12,7 @@ const MapCmp = () => {
     const [listPlaceName, setListPlaceName] = useState(null);
     const [listAlumniNames, setListAlumniNames] = useState(null);
     const [listLinkedinLinks, setListLinkedinLinks] = useState(null);
+    const [alumniData, setAlumniData] = useState([]);
     const [hoveredCluster, setHoveredCluster] = useState(Boolean);
     const [hoveredMouseCoords, setHoveredMouseCoords] = useState([]);
     const [geoJSONFile, setGeoJSONFile] = useState('countries'); // by default it shows the countries
@@ -64,17 +65,22 @@ const MapCmp = () => {
         listPlaceName = flattenArray(listPlaceName);
         listAlumniNames = flattenArray(listAlumniNames);
         listLinkedinLinks = flattenArray(listLinkedinLinks);
-
+        const alumniData = listAlumniNames.map((name, index) => ({
+          name: name,
+          linkedinLink: listLinkedinLinks[index]
+        }));
 
         if (listAlumniNames.length > 0 && listLinkedinLinks.length > 0 && listPlaceName.length > 0) {
           setListPlaceName(listPlaceName);
           setListAlumniNames(listAlumniNames);
           setListLinkedinLinks(listLinkedinLinks);
+          setAlumniData(alumniData);
           setHoveredCluster(true);
         } else {
           setListPlaceName([]);
           setListAlumniNames([]);
           setListLinkedinLinks([]);
+          setAlumniData([]);
           setHoveredCluster(false);
           setHoveredMouseCoords(null);
         }
@@ -82,6 +88,7 @@ const MapCmp = () => {
         setListPlaceName([]);
         setListAlumniNames([]);
         setListLinkedinLinks([]);
+        setAlumniData([]);
         setHoveredCluster(false);
         setHoveredMouseCoords(null);
       }
@@ -136,9 +143,9 @@ const MapCmp = () => {
             <div
               className="clusterRectangle"
               style={{
-              position: 'absolute',
-              top:`${hoveredMouseCoords[1]}px`,
-              left: `${hoveredMouseCoords[0]}px`
+                position: 'absolute',
+                top:`${hoveredMouseCoords[1]}px`,
+                left: `${hoveredMouseCoords[0]}px`
               }}
             >
               <ul className={`list-alumni${listAlumniNames.length > 5 ? ' scrollable' : ''}`}>
@@ -149,11 +156,15 @@ const MapCmp = () => {
 
                 <p></p>
                 <span style={{ fontWeight: 'bold' }}>Alumni: </span>
-                {listAlumniNames.map((alumniName, index) => (
-                  <li key={index}>
-                    <a className="link" href={listLinkedinLinks[index]} target="_blank" rel="noopener noreferrer">{alumniName}</a>
-                  </li>
-                ))}
+                {alumniData
+                  .slice() // Create a copy of the array to avoid mutating the original
+                  .sort((a, b) => a.name.localeCompare(b.name)) // Sort the array alphabetically
+                  .map((alumni, index) => (
+                    <li key={index}>
+                      <a className="link" href={alumni.linkedinLink} target="_blank" rel="noopener noreferrer">{alumni.name}</a>
+                    </li>
+                  ))
+                }
               </ul>
             </div>
           )}
