@@ -1,10 +1,11 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { clusterLayer, clusterCountLayer, unclusterPointLayer } from './MapLayers';
 import {Map, Source, Layer} from 'react-map-gl';
+import MenuButtons from './MenuButtons';
 
 const TOKEN = process.env.REACT_APP_MAPBOX_ACCESS_TOKEN;
 
-const MapCmp = ({ geoJSONFile }) => {
+const MapCmp = () => {
 
     const mapRef = useRef(null);
     const [alumniGeoJSON, setAlumniGeoJSON] = useState(null);
@@ -13,32 +14,16 @@ const MapCmp = ({ geoJSONFile }) => {
     const [listLinkedinLinks, setListLinkedinLinks] = useState(null);
     const [hoveredCluster, setHoveredCluster] = useState(Boolean);
     const [hoveredMouseCoords, setHoveredMouseCoords] = useState([]);
+    const [geoJSONFile, setGeoJSONFile] = useState('countries'); // by default it shows the countries
 
     useEffect(() => {
       const alumniData = geoJSONFile === 'countries' ? require('../countriesGeoJSON.json') : require('../citiesGeoJSON.json');
       setAlumniGeoJSON(alumniData);
     }, [geoJSONFile]);
 
-    const onClick = event => {
-        if (event.features && event.features.length > 0) {
-          const feature = event.features[0];
-          const clusterId = feature.properties.cluster_id;
-    
-          const mapboxSource = mapRef.current.getSource(`${alumniGeoJSON}`);
-          
-          mapboxSource.getClusterExpansionZoom(clusterId, (err, zoom) => {
-            if(err){
-              return;
-            }
-    
-            mapRef.current.easeTo({
-              center: feature.geometry.coordinates,
-              zoom,
-              duration: 500
-            });
-          });
-        }
-    }
+    const handleSelectGeoJSON = (file) => {
+      setGeoJSONFile(file);
+    };
 
     const onHover = event => {
       if (event.lngLat) {
@@ -103,6 +88,12 @@ const MapCmp = ({ geoJSONFile }) => {
     };
 
     return (
+      <>
+        <div>
+          <div className="menu-buttons-container">
+              <MenuButtons onSelectGeoJSON={handleSelectGeoJSON} />
+          </div>
+        </div>
         <div className="mapCmpDiv">
           <Map
             initialViewState={{
@@ -118,7 +109,6 @@ const MapCmp = ({ geoJSONFile }) => {
             //mapStyle="mapbox://styles/mapbox/satellite-streets-v12"   // 3D
             mapboxAccessToken={TOKEN}
             interactiveLayerIds={[clusterLayer.id]}
-            onClick={onClick}
             onMouseMove={onHover}
             ref={mapRef}
             >
@@ -167,8 +157,8 @@ const MapCmp = ({ geoJSONFile }) => {
               </ul>
             </div>
           )}
-
         </div>
+      </>
     );
 };
 
