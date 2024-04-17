@@ -16,6 +16,19 @@ const MapCmp = () => {
     const [hoveredCluster, setHoveredCluster] = useState(Boolean);
     const [hoveredMouseCoords, setHoveredMouseCoords] = useState([]);
     const [geoJSONFile, setGeoJSONFile] = useState('countries'); // by default it shows the countries
+    const [selectedAlumni, setSelectedAlumni] = useState(null);
+
+    useEffect(() => {
+      if (selectedAlumni) {
+        const { coordinates } = selectedAlumni;
+        if (coordinates) {
+          mapRef.current.getMap().flyTo({
+            center: coordinates,
+            zoom: 10,
+          });
+        }
+      }
+    }, [selectedAlumni]);
 
     useEffect(() => {
       const alumniData = geoJSONFile === 'countries' ? require('../countriesGeoJSON.json') : require('../citiesGeoJSON.json');
@@ -94,11 +107,15 @@ const MapCmp = () => {
       }
     };
 
+    const handleSelectAlumni = (name, coordinates) => {
+      setSelectedAlumni({name, coordinates});
+    }
+
     return (
       <>
         <div>
           <div className="menu-buttons-container">
-              <MenuButtons onSelectGeoJSON={handleSelectGeoJSON} />
+              <MenuButtons onSelectAlumni={handleSelectAlumni} onSelectGeoJSON={handleSelectGeoJSON} />
           </div>
         </div>
         <div className="mapCmpDiv">

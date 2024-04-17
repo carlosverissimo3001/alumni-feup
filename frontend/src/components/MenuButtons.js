@@ -3,19 +3,47 @@ import setUp from '../helpers/setUp';
 import Verifiers from '../helpers/verifiers';
 import ApiDataAnalysis from '../helpers/apiDataAnalysis';
 
-const MenuButtons = ({onSelectGeoJSON}) => {
+const MenuButtons = ({onSelectGeoJSON, onSelectAlumni}) => {
 
     const[file, setFile]=useState('');
     const [selectedOption, setSelectedOption] = useState('countries');
+    const [filteredAlumniNamesCoord, setFilteredAlumniNamesCoord] = useState([]);
+    const [listAlumniNamesWithCoordinates, setListAlumniNamesWithCoordinates] = useState([]);
+    const [searchInput, setSearchInput] = useState('');
+    
+    useEffect(() => {
+        const geoJSONData = selectedOption === 'countries' ? require('../countriesGeoJSON.json') : require('../citiesGeoJSON.json');
+        const alumniNamesWithCoords = geoJSONData.features.flatMap(feature =>
+            feature.properties.listAlumniNames.map(name => ({
+                name: name,
+                coordinates: feature.geometry.coordinates
+            }))
+        );
+        setListAlumniNamesWithCoordinates(alumniNamesWithCoords);
+        onSelectGeoJSON(selectedOption); // Use cities/countries GeoJson file
+    }, [onSelectGeoJSON, selectedOption]);
 
     useEffect(() => {
-        console.log("Selected Option:", selectedOption);
-        if (selectedOption === 'cities') {
-            handleUseCitiesGeoJson();
-        } else if (selectedOption === 'countries') {
-            handleUseCountriesGeoJson();
+        // Filter alumni names based on search input
+        if (listAlumniNamesWithCoordinates && searchInput.trim() !== '') {
+          const filteredNamesCoord = listAlumniNamesWithCoordinates.filter(item =>
+            item.name.toLowerCase().includes(searchInput.toLowerCase())
+          );
+          setFilteredAlumniNamesCoord(filteredNamesCoord);
+        } else {
+            setFilteredAlumniNamesCoord([]);
         }
-    }, [selectedOption]); // Run this effect whenever selectedOption changes
+    }, [listAlumniNamesWithCoordinates, searchInput]);
+  
+    const handleSearchInputChange = (e) => {
+        setSearchInput(e.target.value);
+    };
+
+    const handleAlumniSelection = (name, coordinates) => {
+        console.log("name: ", name);
+        console.log("coordinates: ", coordinates);
+        onSelectAlumni(name, coordinates);
+    };
 
     // Function to handle checkbox selection
     const handleCheckboxChange = (event) => {
@@ -83,16 +111,6 @@ const MenuButtons = ({onSelectGeoJSON}) => {
         await setUp.generateCityGeoJason();
     }    
 
-    // Use cities GeoJson file 
-    const handleUseCitiesGeoJson = async () => {
-        onSelectGeoJSON('cities');
-    }
-
-    // Use countries GeoJson file
-    const handleUseCountriesGeoJson = async () => {
-        onSelectGeoJSON('countries');
-    }
-
     // Matches Students to LinkedIn Links. Receives an excel, updates the linkedin column and downloads the updated file
     const handleAlumnisMatchLinkedin = async () => {
         Verifiers.checkIfExcel(file);    
@@ -137,6 +155,24 @@ const MenuButtons = ({onSelectGeoJSON}) => {
                     onChange={handleCheckboxChange}
                 />
                 <label htmlFor="citiesCheckbox">Cities</label>
+            </div>
+
+            <div className="search-container">
+                <input
+                    type="text"
+                    placeholder="Search alumni..."
+                    value={searchInput}
+                    onChange={handleSearchInputChange}
+                />
+                {filteredAlumniNamesCoord.length > 0 && (
+                    <div className={`search-results ${filteredAlumniNamesCoord.length > 5 ? 'scrollable' : ''}`}>
+                    {filteredAlumniNamesCoord.map((alumniData, index) => (
+                        <div key={index} onClick={() => handleAlumniSelection(alumniData.name, alumniData.coordinates)}>
+                        {alumniData.name}
+                        </div>
+                    ))}
+                    </div>
+                )}
             </div>
 
             {/*<input type="file" className='fileInput' onChange={handleFileChange} />         
