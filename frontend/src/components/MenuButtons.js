@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import setUp from '../helpers/setUp';
 import Verifiers from '../helpers/verifiers';
 import ApiDataAnalysis from '../helpers/apiDataAnalysis';
@@ -6,16 +6,20 @@ import ApiDataAnalysis from '../helpers/apiDataAnalysis';
 const MenuButtons = ({onSelectGeoJSON}) => {
 
     const[file, setFile]=useState('');
-    const [selectedOption, setSelectedOption] = useState('');
+    const [selectedOption, setSelectedOption] = useState('countries');
 
-    // Function to handle checkbox selection
-    const handleCheckboxChange = (event) => {
-        setSelectedOption(event.target.value);
+    useEffect(() => {
+        console.log("Selected Option:", selectedOption);
         if (selectedOption === 'cities') {
             handleUseCitiesGeoJson();
         } else if (selectedOption === 'countries') {
             handleUseCountriesGeoJson();
         }
+    }, [selectedOption]); // Run this effect whenever selectedOption changes
+
+    // Function to handle checkbox selection
+    const handleCheckboxChange = (event) => {
+        setSelectedOption(event.target.value);
     };
 
     const handleFileChange = (e) => {
@@ -117,22 +121,22 @@ const MenuButtons = ({onSelectGeoJSON}) => {
             <div>
                 <input
                     type="checkbox"
-                    id="citiesCheckbox"
-                    value="cities"
-                    checked={selectedOption === 'cities'}
-                    onChange={handleCheckboxChange}
-                />
-                <label htmlFor="citiesCheckbox">Countries</label>
-            </div>
-            <div>
-                <input
-                    type="checkbox"
                     id="countriesCheckbox"
                     value="countries"
                     checked={selectedOption === 'countries'}
                     onChange={handleCheckboxChange}
                 />
-                <label htmlFor="countriesCheckbox">Cities</label>
+                <label htmlFor="countriesCheckbox">Countries</label>
+            </div>
+            <div>
+                <input
+                    type="checkbox"
+                    id="citiesCheckbox"
+                    value="cities"
+                    checked={selectedOption === 'cities'}
+                    onChange={handleCheckboxChange}
+                />
+                <label htmlFor="citiesCheckbox">Cities</label>
             </div>
 
             {/*<input type="file" className='fileInput' onChange={handleFileChange} />         
