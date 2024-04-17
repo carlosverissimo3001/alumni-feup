@@ -82,6 +82,19 @@
     color: white;
 }
 
+.scrollable {
+    max-height: 200px; 
+    overflow-y: auto;
+}
+
+.search-results div {
+    cursor: pointer; 
+}
+
+.search-results div:hover {
+    background-color: #f0f0f0; 
+}
+
 .clusterRectangle {
     background-color: rgba(255, 255, 255, 0.8);
     border: 1px solid black;
