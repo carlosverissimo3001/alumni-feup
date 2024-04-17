@@ -4,9 +4,20 @@ import Verifiers from '../helpers/verifiers';
 import ApiDataAnalysis from '../helpers/apiDataAnalysis';
 
 
-const MenuButtons = ({onSelectGeoJSON }) => {
+const MenuButtons = ({onSelectGeoJSON}) => {
 
-    const[file, setFile]=useState('')
+    const[file, setFile]=useState('');
+    const [selectedOption, setSelectedOption] = useState('');
+
+    // Function to handle checkbox selection
+    const handleCheckboxChange = (event) => {
+        setSelectedOption(event.target.value);
+        if (selectedOption === 'cities') {
+            handleUseCitiesGeoJson();
+        } else if (selectedOption === 'countries') {
+            handleUseCountriesGeoJson();
+        }
+    };
 
     const handleFileChange = (e) => {
         setFile(e.target.files[0]);
@@ -103,12 +114,34 @@ const MenuButtons = ({onSelectGeoJSON }) => {
 
     return (
         <>
-            <input type="file" className='fileInput' onChange={handleFileChange} />         
+            <p>See alumni distribution across:</p>
+            <div>
+                <input
+                    type="checkbox"
+                    id="citiesCheckbox"
+                    value="cities"
+                    checked={selectedOption === 'cities'}
+                    onChange={handleCheckboxChange}
+                />
+                <label htmlFor="citiesCheckbox">Countries</label>
+            </div>
+            <div>
+                <input
+                    type="checkbox"
+                    id="countriesCheckbox"
+                    value="countries"
+                    checked={selectedOption === 'countries'}
+                    onChange={handleCheckboxChange}
+                />
+                <label htmlFor="countriesCheckbox">Cities</label>
+            </div>
+
+            {/*<input type="file" className='fileInput' onChange={handleFileChange} />         
             
-            {/*<button className="button butnPopAlumni" onClick={handlePopulateAlumniTable}>AlumniTablePopulate</button>
+            <button className="button butnPopAlumni" onClick={handlePopulateAlumniTable}>AlumniTablePopulate</button>
             <button className="button butnBackAlumni" onClick={handleBackupTableAlumni}>BackupTableAlumni</button>
             <button className="button butnBackAlumniWFile" onClick={handlePopulateAlumniTableFileBckp}>AlumniTablePopulate - backup file</button>
-            <button className="button btnMissingLinkedinLinks" onClick={handleLinkedinLinksAlumniTable}>MissingLinkedinLinks</button>*/}
+            <button className="button btnMissingLinkedinLinks" onClick={handleLinkedinLinksAlumniTable}>MissingLinkedinLinks</button>
 
 
             <button className="button butnPopCountry" onClick={handlePopulateCountryTable}>PopulateCoutryTable</button>
@@ -118,15 +151,9 @@ const MenuButtons = ({onSelectGeoJSON }) => {
             <button className="button butnGenCountryGeoJason" onClick={handleGenerateCountryGeoJason}>GenerateCountryGeoJason</button>
             <button className="button butnGenCityGeoJason" onClick={handleGenerateCityGeoJason}>GenerateCityGeoJason</button>
 
-            <button className="button butnUseCitiesGeoJson" onClick={handleUseCitiesGeoJson}>UseCitiesGeoJson</button>
-            <button className="button butnUseCountriesGeoJson" onClick={handleUseCountriesGeoJson}>UseCountriesGeoJson</button>
-
-            {/*
             <button className="button butnAlmWithoutLink" onClick={handleAlumnisMatchLinkedin}>Match Alumnis Linkedin</button>
             <button className="button btnExcelAlumniProfSitu" onClick={handleExcelAlumniProfSitu}>Excel: nomeAlumni + professionalSitu</button>
             <button className="button btnExcelAlumniTableToExcel" onClick={handleAlmnTblExcel}>Excel: Alumni table</button>*/}
-            
-            
         </>
     );
 };
