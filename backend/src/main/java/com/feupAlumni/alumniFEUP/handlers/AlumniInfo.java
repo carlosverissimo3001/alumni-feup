@@ -3,9 +3,13 @@ package com.feupAlumni.alumniFEUP.handlers;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
+import java.net.URL;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.nio.file.Path;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.util.Properties;
 
 public class AlumniInfo {
@@ -23,6 +27,22 @@ public class AlumniInfo {
             return properties.getProperty("linkedin.api.key");
         } catch (IOException e) {
             e.printStackTrace();
+            return null;
+        }
+    }
+
+    // Download an image URL to the given path 
+    public static String downloadAndSaveImage(String profilePicUrl, String pathStoreImage, String publicIdentifier) {
+        try {
+            URL url = new URL(profilePicUrl);
+            Path targetPath = Path.of(pathStoreImage + "/" + publicIdentifier + ".png");
+            System.out.println("targetPath: " + targetPath);
+            try (InputStream in = url.openStream()) {
+                Files.copy(in, targetPath, StandardCopyOption.REPLACE_EXISTING);
+            }
+            return targetPath.toString();
+        } catch (Exception e) {
+            System.out.println("Failed to download or save image: " + e.getMessage());
             return null;
         }
     }

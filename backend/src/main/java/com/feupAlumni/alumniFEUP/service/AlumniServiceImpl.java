@@ -1,6 +1,7 @@
 package com.feupAlumni.alumniFEUP.service;
 
 import com.feupAlumni.alumniFEUP.handlers.CleanData;
+import com.feupAlumni.alumniFEUP.handlers.AlumniInfo;
 import com.feupAlumni.alumniFEUP.handlers.FilesHandler;
 import com.feupAlumni.alumniFEUP.model.Alumni;
 import com.feupAlumni.alumniFEUP.model.City;
@@ -16,6 +17,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
@@ -45,8 +49,10 @@ public class AlumniServiceImpl implements AlumniService{
     }   
                                       
     @Override
-    public void populateAlumniTable(MultipartFile file) {
-        try (InputStream inputStream = file.getInputStream()){
+    public void populateAlumniTable(MultipartFile file) throws IOException, InterruptedException {
+        // TODO: commented so I don't call the API by accident
+        
+        /*try (InputStream inputStream = file.getInputStream()){
             // Read and iterate over the excel file
             Workbook workbook = WorkbookFactory.create(inputStream);
             Sheet sheet = workbook.getSheetAt(1);   // 2nd sheet
@@ -59,7 +65,6 @@ public class AlumniServiceImpl implements AlumniService{
                 } 
             }
 
-            var count = 0;
             while (rowIterator.hasNext()) {
                 try {
                     Row row = rowIterator.next();
@@ -72,37 +77,44 @@ public class AlumniServiceImpl implements AlumniService{
 
                     // If the linkedin doesn't exist - calls the API and: adds to the table
                     //                                                    adds to the file for personal backup
-                    if(!linkedinExists && linkValue.length()!=0){
+                    //                                                    stores the image profile in a local folder (this because the API only makes the URL available for 30 min)
+                    // The images is stored in the path: "C:/alimniProject/backend/src/main/java/com/feupAlumni/alumniFEUP/Images"
+                    // The name of the image is set to the profile identifier
+                    if(!linkedinExists && linkValue.length()!=0 ){
                         System.out.println("---- " + linkValue);
 
-                        // TODO: COMMENTED THIS CODE SO I DON'T CALL THE API BY ACCIDENT
-
                         // Call the API that gets the information of a linkedin profile 
-                        /*var linkedinInfoResponse = AlumniInfo.getLinkedinProfileInfo(linkValue);
+                        var linkedinInfoResponse = AlumniInfo.getLinkedinProfileInfo(linkValue);
 
                         if(linkedinInfoResponse.statusCode() == 200){
+                            // Get the profile pic URL
+                            JSONObject jsonResponse = new JSONObject(linkedinInfoResponse.body());
+                            String profilePicUrl = jsonResponse.optString("profile_pic_url", null); 
+                            String publicIdentifier = jsonResponse.optString("public_identifier", null);
+
+                            // downloads and saves the pic in a local folder
+                            String savedImagePath = AlumniInfo.downloadAndSaveImage(profilePicUrl, "C:/alimniProject/backend/src/main/java/com/feupAlumni/alumniFEUP/Images", publicIdentifier);
+                            System.out.println("Saved to path: " + savedImagePath);
+
                             // Stores the result in a file for personal backup. If the file exists, adds to the content
                             String filePath = "C:/Users/jenif/OneDrive/Área de Trabalho/BackUpCallAPI";
                             FilesHandler.storeInfoInFile(linkedinInfoResponse.body(), filePath);
                             
-                            // Creates the alumni object with the constructor that needs the linkedinLink and the linkedinInfo
-                            Alumni alumni = new Alumni(linkValue, linkedinInfoResponse.body());
                             // Stores the information in the database
+                            Alumni alumni = new Alumni(linkValue, linkedinInfoResponse.body()); // Creates the alumni object with the constructor that needs the linkedinLink and the linkedinInfo
                             alumniRepository.save(alumni);
-                            count++;
                         } else {
                             System.out.println("API call failed with status code: " + linkedinInfoResponse.statusCode() + linkedinInfoResponse.body() + " For profile: " + linkValue);
-                        }*/
+                        }
                     }                    
                 } catch (Exception error) {
                     System.out.println("error: " + error);
                 }
             }
-            System.out.println("New added: " + count);
             System.out.println("Alumni table populated with the API scraped information.");
         } catch (Exception e) {
             throw new RuntimeException("Error processing file", e);
-        }
+        }*/
     }
 
     @Override

@@ -56,13 +56,15 @@ const MenuButtons = ({onSelectGeoJSON, onSelectAlumni}) => {
 
     // By calling the API to scrape information: populates the alumni table
     //                                           stores the information in a file
+    //                                           uploades the profile pics to the folder: "C:/alimniProject/backend/src/main/java/com/feupAlumni/alumniFEUP/Images"
+    // The name of the profile pics is set to the public identifier of the user, wich is retrieved by the API
     const handlePopulateAlumniTable = async () => {
         Verifiers.checkIfExcel(file);        
 
         const userConfirmed = window.confirm('You are about to delete the info of tables and update with the setelected file');
         if(userConfirmed) {
             console.log("API call commented: ");
-            setUp.populateAlumniTable(file); 
+            //setUp.populateAlumniTable(file); 
         }
     }
 
@@ -175,10 +177,10 @@ const MenuButtons = ({onSelectGeoJSON, onSelectAlumni}) => {
                 )}
             </div>
 
-            {/*<input type="file" className='fileInput' onChange={handleFileChange} />         
+            <input type="file" className='fileInput' onChange={handleFileChange} />    
             
             <button className="button butnPopAlumni" onClick={handlePopulateAlumniTable}>AlumniTablePopulate</button>
-            <button className="button butnBackAlumni" onClick={handleBackupTableAlumni}>BackupTableAlumni</button>
+            {/*<button className="button butnBackAlumni" onClick={handleBackupTableAlumni}>BackupTableAlumni</button>
             <button className="button butnBackAlumniWFile" onClick={handlePopulateAlumniTableFileBckp}>AlumniTablePopulate - backup file</button>
             <button className="button btnMissingLinkedinLinks" onClick={handleLinkedinLinksAlumniTable}>MissingLinkedinLinks</button>
 

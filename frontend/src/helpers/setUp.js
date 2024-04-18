@@ -4,6 +4,8 @@ class setUp {
     /* 
     * By calling the API to scrape profile info: populates the Alumni table
     *                                            stores information in a backup file
+    *                                            uploades the profile pics to the folder: "C:/alimniProject/backend/src/main/java/com/feupAlumni/alumniFEUP/Images"
+    * The name of the profile pics is set to the public identifier of the user, which is retrieved by the API
     */
     static async populateAlumniTable(file) {
         // File is sent to the server using a 'FormData' object
