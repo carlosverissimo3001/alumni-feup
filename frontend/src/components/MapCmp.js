@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { clusterLayer, clusterCountLayer, unclusterPointLayer } from './MapLayers';
 import {Map, Source, Layer} from 'react-map-gl';
 import MenuButtons from './MenuButtons';
+import ApiDataAnalysis from '../helpers/apiDataAnalysis';
 
 const TOKEN = process.env.REACT_APP_MAPBOX_ACCESS_TOKEN;
 
@@ -39,7 +40,7 @@ const MapCmp = () => {
       setGeoJSONFile(file);
     };
 
-    const onHover = event => {
+    const onHover = async event => {
       if (event.lngLat) {
         setHoveredMouseCoords([event.point.x, event.point.y]);
       }
@@ -49,7 +50,8 @@ const MapCmp = () => {
         var listPlaceName = feature.properties.name;
         var listAlumniNames = feature.properties.listAlumniNames;
         var listLinkedinLinks = feature.properties.listLinkedinLinks;
-
+        var profilePics = [];
+        
         // Parse placeName if it's a string
         if (typeof listPlaceName === 'string') {
           const regex = /"([^"]+)"|'([^']+)'/g;
@@ -78,9 +80,11 @@ const MapCmp = () => {
         listPlaceName = flattenArray(listPlaceName);
         listAlumniNames = flattenArray(listAlumniNames);
         listLinkedinLinks = flattenArray(listLinkedinLinks);
+        profilePics = await ApiDataAnalysis.extractPathToProfilePics(listLinkedinLinks);
         const alumniData = listAlumniNames.map((name, index) => ({
           name: name,
-          linkedinLink: listLinkedinLinks[index]
+          linkedinLink: listLinkedinLinks[index],
+          profilePics: profilePics[index]
         }));
 
         if (listAlumniNames.length > 0 && listLinkedinLinks.length > 0 && listPlaceName.length > 0) {
@@ -177,7 +181,8 @@ const MapCmp = () => {
                   .slice() // Create a copy of the array to avoid mutating the original
                   .sort((a, b) => a.name.localeCompare(b.name)) // Sort the array alphabetically
                   .map((alumni, index) => (
-                    <li key={index}>
+                    <li key={index} className="listing-image-profile-picture">
+                      <img className="profile-picture" src={alumni.profilePics} alt="" />
                       <a className="link" href={alumni.linkedinLink} target="_blank" rel="noopener noreferrer">{alumni.name}</a>
                     </li>
                   ))
