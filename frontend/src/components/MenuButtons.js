@@ -177,10 +177,10 @@ const MenuButtons = ({onSelectGeoJSON, onSelectAlumni}) => {
                 )}
             </div>
 
-            <input type="file" className='fileInput' onChange={handleFileChange} />    
+            {/*<input type="file" className='fileInput' onChange={handleFileChange} />    
             
             <button className="button butnPopAlumni" onClick={handlePopulateAlumniTable}>AlumniTablePopulate</button>
-            {/*<button className="button butnBackAlumni" onClick={handleBackupTableAlumni}>BackupTableAlumni</button>
+            <button className="button butnBackAlumni" onClick={handleBackupTableAlumni}>BackupTableAlumni</button>
             <button className="button butnBackAlumniWFile" onClick={handlePopulateAlumniTableFileBckp}>AlumniTablePopulate - backup file</button>
             <button className="button btnMissingLinkedinLinks" onClick={handleLinkedinLinksAlumniTable}>MissingLinkedinLinks</button>
 

@@ -87,6 +87,17 @@
     overflow-y: auto;
 }
 
+.profile-picture {
+    max-height: 30px;
+    border-radius: 100%; 
+    margin-right: 10px;
+} 
+
+.listing-image-profile-picture {
+    display: flex;
+    align-items: center;
+}
+
 .search-results div {
     cursor: pointer; 
 }
@@ -101,7 +112,7 @@
     padding-left: 10px;
     padding-right: 10px;
     border-radius: 5px;
-    z-index: 999; /* Ensure it's above the map */
+    z-index: 999; 
 }
 
 .link {
@@ -114,7 +125,7 @@
     padding: 0;
 }
 .list-alumni.scrollable {
-    max-height: 200px; /* Set your desired max height */
-    max-width: 500px; /* Set your desired max height */
+    max-height: 200px; 
+    max-width: 500px; 
     overflow-y: auto;
 }
