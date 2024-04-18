@@ -164,6 +164,7 @@ const MenuButtons = ({onSelectGeoJSON, onSelectAlumni}) => {
                     type="text"
                     placeholder="Search alumni..."
                     value={searchInput}
+                    className='search-bar-alumni'
                     onChange={handleSearchInputChange}
                 />
                 {filteredAlumniNamesCoord.length > 0 && (

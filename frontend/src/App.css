@@ -74,6 +74,16 @@
     left: 20px;
 }
 
+.search-bar-alumni {
+    border: 1px solid gray;
+    border-radius: 5px; 
+    box-shadow: none; 
+    padding: 5px; 
+    outline: none; 
+    margin-top: 10px;
+    width: 95%;
+}
+
 .fileInput{
     position: absolute;
     top: 30px;
@@ -102,9 +112,6 @@
     cursor: pointer; 
 }
 
-.search-results div:hover {
-    background-color: #f0f0f0; 
-}
 
 .clusterRectangle {
     background-color: rgba(255, 255, 255, 0.8);
