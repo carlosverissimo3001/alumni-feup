@@ -93,7 +93,7 @@ public class AlumniServiceImpl implements AlumniService{
                             String publicIdentifier = jsonResponse.optString("public_identifier", null);
 
                             // downloads and saves the pic in a local folder
-                            String savedImagePath = AlumniInfo.downloadAndSaveImage(profilePicUrl, "C:/alimniProject/backend/src/main/java/com/feupAlumni/alumniFEUP/Images", publicIdentifier);
+                            String savedImagePath = AlumniInfo.downloadAndSaveImage(profilePicUrl, "C:/alimniProject/frontend/public/Images", publicIdentifier);
                             System.out.println("Saved to path: " + savedImagePath);
 
                             // Stores the result in a file for personal backup. If the file exists, adds to the content
