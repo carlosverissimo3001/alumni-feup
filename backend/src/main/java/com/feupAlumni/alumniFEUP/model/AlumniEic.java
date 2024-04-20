@@ -78,4 +78,8 @@ public class AlumniEic {
     public void setCountry(Country country) {
         this.country = country;
     }
+
+    public List<AlumniEic_has_Course> getAlumniEicHasCourse() {
+        return alumniEicHasCourse;
+    }
 }
