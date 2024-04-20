@@ -100,7 +100,21 @@ const MenuButtons = ({onSelectGeoJSON, onSelectAlumni}) => {
 
     // Populates the alumniEic table
     const handlePopulateAlumniEICTable = async () => {
-        await setUp.populateAlumniEICTable();
+        Verifiers.checkIfExcel(file);
+        const userConfirmed = window.confirm('You are about to delete the info of table AlumniEic and AlumniEic has courses and update with the setelected file');
+        if(userConfirmed){
+            await setUp.populateAlumniEICTable(file);
+        }
+    }
+
+    // Populates courses table
+    const handlePopulateCoursesTable = async () => {
+        Verifiers.checkIfExcel(file);
+        const userConfirmed = window.confirm('You are about to delete the info of table Courses and update with the setelected file');
+        if(userConfirmed) {
+            await setUp.handlePopulateCoursesTable(file);
+            console.log("Courses table populated");
+        }
     }
 
     // Generates the coynntry geoJason
@@ -179,6 +193,7 @@ const MenuButtons = ({onSelectGeoJSON, onSelectAlumni}) => {
             </div>
 
             {/*<input type="file" className='fileInput' onChange={handleFileChange} />    
+            <button className="button butnPopAlumni" onClick={handlePopulateCoursesTable}>Populate Courses Table</button>
             
             <button className="button butnPopAlumni" onClick={handlePopulateAlumniTable}>AlumniTablePopulate</button>
             <button className="button butnBackAlumni" onClick={handleBackupTableAlumni}>BackupTableAlumni</button>
@@ -187,8 +202,8 @@ const MenuButtons = ({onSelectGeoJSON, onSelectAlumni}) => {
 
 
             <button className="button butnPopCountry" onClick={handlePopulateCountryTable}>PopulateCoutryTable</button>
-            <button className="button butnPopCity" onClick={handlePopulateCityTable}>PopulateCityTable</button>
-            <button className="button butnPopAlumniEIC" onClick={handlePopulateAlumniEICTable}>PopulateAlumniEICTable</button>
+            <button className="button butnPopCity" onClick={handlePopulateCityTable}>PopulateCityTable</button>*/}
+            {/*<button className="button butnPopAlumniEIC" onClick={handlePopulateAlumniEICTable}>PopulateAlumniEICTable</button>
 
             <button className="button butnGenCountryGeoJason" onClick={handleGenerateCountryGeoJason}>GenerateCountryGeoJason</button>
             <button className="button butnGenCityGeoJason" onClick={handleGenerateCityGeoJason}>GenerateCityGeoJason</button>

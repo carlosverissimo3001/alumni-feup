@@ -141,11 +141,14 @@ class setUp {
     /**
     * Responsible for: populating AlumniEIC table (if already populated - registers are deleted and is repopulated)
     */
-    static async populateAlumniEICTable() {
+    static async populateAlumniEICTable(file) {
+        // File is sent to the server using a 'FormData' object
+        const formData = new FormData();
+        formData.append('file', file);
         try {
             const response = await fetch('http://localhost:8080/alumni/populateAlumniEIC', {
                 method: 'POST',
-                body: '',
+                body: formData,
             });
 
             if (response.ok){
@@ -155,6 +158,33 @@ class setUp {
             }
         } catch (error) {
             console.log('Error while populating AlumniEIC table', error);
+        }
+    }
+
+    /**
+     * Responsible for: populating Courses table (if already populated - registers are deleted and is repopulated)
+     * It receives an excel that has on column J courses abreviations 
+     */
+    static async handlePopulateCoursesTable(file) {
+        // File is sent to the server using a 'FormData' object
+        const formData = new FormData();
+        formData.append('file', file);
+        try {
+            const response = await fetch('http://localhost:8080/alumni/populateCoursesTable', {
+                method: 'POST',
+                body: formData,
+            });
+
+            if (response.ok){
+                console.log('File uploaded successfully');
+                return true;
+            } else {
+                console.error('File upload failed');
+                return false;
+            }
+        } catch (error) {
+            console.error('Error during file upload:', error);
+            return false;
         }
     }
 

@@ -1,4 +1,5 @@
 package com.feupAlumni.alumniFEUP.model;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -6,6 +7,11 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+
+import java.util.ArrayList;
+import java.util.List;
+
 
 @Entity
 public class AlumniEic {
@@ -23,6 +29,9 @@ public class AlumniEic {
     private String linkedinLink;
     private String alumniName;
 
+    @OneToMany(mappedBy = "alumniEic", cascade = CascadeType.ALL)
+    private List<AlumniEic_has_Course> alumniEicHasCourse = new ArrayList<>();
+
     public AlumniEic(){
 
     }
@@ -32,6 +41,10 @@ public class AlumniEic {
         this.alumniName = alumniName;
         this.city = city;
         this.country = country;
+    }
+
+    public int getId() {
+        return id;
     }
 
     public String getAlumniName() {
@@ -65,5 +78,4 @@ public class AlumniEic {
     public void setCountry(Country country) {
         this.country = country;
     }
-        
 }
