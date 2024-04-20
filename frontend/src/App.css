@@ -74,7 +74,7 @@
     left: 20px;
 }
 
-.search-bar-alumni {
+.search-bar {
     border: 1px solid gray;
     border-radius: 5px; 
     box-shadow: none; 
@@ -82,6 +82,14 @@
     outline: none; 
     margin-top: 10px;
     width: 95%;
+}
+
+.search-bar-alumni {
+    margin-top: 10px;
+}
+
+.filter-course-alumni {
+    margin-top: 11px;
 }
 
 .fileInput{

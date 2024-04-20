@@ -10,6 +10,7 @@ const MenuButtons = ({onSelectGeoJSON, onSelectAlumni}) => {
     const [filteredAlumniNamesCoord, setFilteredAlumniNamesCoord] = useState([]);
     const [listAlumniNamesWithCoordinates, setListAlumniNamesWithCoordinates] = useState([]);
     const [searchInput, setSearchInput] = useState('');
+    const [filterCourseInput, setFilterCourseInput] = useState('');
     
     useEffect(() => {
         const geoJSONData = selectedOption === 'countries' ? require('../countriesGeoJSON.json') : require('../citiesGeoJSON.json');
@@ -26,22 +27,24 @@ const MenuButtons = ({onSelectGeoJSON, onSelectAlumni}) => {
     useEffect(() => {
         // Filter alumni names based on search input
         if (listAlumniNamesWithCoordinates && searchInput.trim() !== '') {
-          const filteredNamesCoord = listAlumniNamesWithCoordinates.filter(item =>
-            item.name.toLowerCase().includes(searchInput.toLowerCase())
-          );
-          setFilteredAlumniNamesCoord(filteredNamesCoord);
+            const filteredNamesCoord = listAlumniNamesWithCoordinates.filter(alumni =>
+                alumni.name.toLowerCase().includes(searchInput.toLowerCase())
+            );
+            setFilteredAlumniNamesCoord(filteredNamesCoord);
         } else {
             setFilteredAlumniNamesCoord([]);
         }
     }, [listAlumniNamesWithCoordinates, searchInput]);
-  
+
     const handleSearchInputChange = (e) => {
         setSearchInput(e.target.value);
     };
 
+    const handleFilterCourseInputChange = (e) => {
+        setFilterCourseInput(e.target.value);
+    };
+
     const handleAlumniSelection = (name, coordinates) => {
-        console.log("name: ", name);
-        console.log("coordinates: ", coordinates);
         onSelectAlumni(name, coordinates);
     };
 
@@ -178,18 +181,28 @@ const MenuButtons = ({onSelectGeoJSON, onSelectAlumni}) => {
                     type="text"
                     placeholder="Search alumni..."
                     value={searchInput}
-                    className='search-bar-alumni'
+                    className='search-bar-alumni search-bar'
                     onChange={handleSearchInputChange}
                 />
                 {filteredAlumniNamesCoord.length > 0 && (
                     <div className={`search-results ${filteredAlumniNamesCoord.length > 5 ? 'scrollable' : ''}`}>
                     {filteredAlumniNamesCoord.map((alumniData, index) => (
                         <div key={index} onClick={() => handleAlumniSelection(alumniData.name, alumniData.coordinates)}>
-                        {alumniData.name}
+                            {alumniData.name}
                         </div>
                     ))}
                     </div>
                 )}
+            </div>
+
+            <div className="search-container">
+                <input
+                    type="text"
+                    placeholder="Filter by course..."
+                    value={filterCourseInput}
+                    className='filter-course-alumni search-bar'
+                    onChange={handleFilterCourseInputChange}
+                />
             </div>
 
             {/*<input type="file" className='fileInput' onChange={handleFileChange} />    
@@ -202,13 +215,13 @@ const MenuButtons = ({onSelectGeoJSON, onSelectAlumni}) => {
 
 
             <button className="button butnPopCountry" onClick={handlePopulateCountryTable}>PopulateCoutryTable</button>
-            <button className="button butnPopCity" onClick={handlePopulateCityTable}>PopulateCityTable</button>*/}
-            {/*<button className="button butnPopAlumniEIC" onClick={handlePopulateAlumniEICTable}>PopulateAlumniEICTable</button>
+            <button className="button butnPopCity" onClick={handlePopulateCityTable}>PopulateCityTable</button>
+            <button className="button butnPopAlumniEIC" onClick={handlePopulateAlumniEICTable}>PopulateAlumniEICTable</button>*/}
 
             <button className="button butnGenCountryGeoJason" onClick={handleGenerateCountryGeoJason}>GenerateCountryGeoJason</button>
             <button className="button butnGenCityGeoJason" onClick={handleGenerateCityGeoJason}>GenerateCityGeoJason</button>
 
-            <button className="button butnAlmWithoutLink" onClick={handleAlumnisMatchLinkedin}>Match Alumnis Linkedin</button>
+            {/*<button className="button butnAlmWithoutLink" onClick={handleAlumnisMatchLinkedin}>Match Alumnis Linkedin</button>
             <button className="button btnExcelAlumniProfSitu" onClick={handleExcelAlumniProfSitu}>Excel: nomeAlumni + professionalSitu</button>
             <button className="button btnExcelAlumniTableToExcel" onClick={handleAlmnTblExcel}>Excel: Alumni table</button>*/}
         </>

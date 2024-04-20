@@ -1,13 +1,13 @@
 package com.feupAlumni.alumniFEUP.model;
-
 import java.util.List;
+import java.util.Map;
 
 public class GeoJSONProperties {
     
     private List<String> name;
     private int students;
-    private List<String> listAlumniNames ;
-    private List<String> listLinkedinLinks ;
+    private Map<String, String> listLinkedinLinksByUser ;
+    private Map<String, Map<String, String>> coursesYearConclusionByUser; // Key: alumni Vlaue: map where key: course and value: year of conclusion
 
     public void setName(List<String> name) {
         this.name = name;
@@ -25,20 +25,19 @@ public class GeoJSONProperties {
         return students;
     }
 
-    public void setListAlumniNames(List<String> listAlumniNames) {
-        this.listAlumniNames = listAlumniNames;
+    public void setListLinkedinLinks(Map<String, String> listLinkedinLinksByUser) {
+        this.listLinkedinLinksByUser = listLinkedinLinksByUser;
     }
 
-    public List<String> getListAlumniNames() {
-        return listAlumniNames;
+    public Map<String, String> getListLinkedinLinks() {
+        return listLinkedinLinksByUser;
     }
 
-    public void setListLinkedinLinks(List<String> listLinkedinLinks) {
-        this.listLinkedinLinks = listLinkedinLinks;
+    public Map<String, Map<String, String>> getCoursesYearConclusionByUser() {
+        return coursesYearConclusionByUser;
     }
 
-    public List<String> getListLinkedinLinks() {
-        return listLinkedinLinks;
+    public void setCoursesYearConclusionByUser(Map<String, Map<String, String>> coursesYearConclusionByUser) {
+        this.coursesYearConclusionByUser = coursesYearConclusionByUser;
     }
-
 }
