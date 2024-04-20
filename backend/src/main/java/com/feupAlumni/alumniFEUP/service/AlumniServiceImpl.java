@@ -4,13 +4,17 @@ import com.feupAlumni.alumniFEUP.handlers.CleanData;
 import com.feupAlumni.alumniFEUP.handlers.AlumniInfo;
 import com.feupAlumni.alumniFEUP.handlers.FilesHandler;
 import com.feupAlumni.alumniFEUP.model.Alumni;
+import com.feupAlumni.alumniFEUP.model.Course;
 import com.feupAlumni.alumniFEUP.model.City;
 import com.feupAlumni.alumniFEUP.model.Country;
 import com.feupAlumni.alumniFEUP.model.AlumniBackup;
 import com.feupAlumni.alumniFEUP.model.AlumniEic;
+import com.feupAlumni.alumniFEUP.model.AlumniEic_has_Course;
 import com.feupAlumni.alumniFEUP.repository.AlumniBackupRepository;
+import com.feupAlumni.alumniFEUP.repository.AlumniEicHasCourseRepository;
 import com.feupAlumni.alumniFEUP.repository.AlumniRepository;
 import com.feupAlumni.alumniFEUP.repository.AlumniEicRepository;
+import com.feupAlumni.alumniFEUP.repository.CourseRepository;
 import com.feupAlumni.alumniFEUP.repository.CityRepository;
 import com.feupAlumni.alumniFEUP.repository.CountryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,9 +28,12 @@ import java.io.InputStream;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
-
+import java.util.Optional;
 import java.util.Iterator;
+import java.util.HashMap;
+import java.util.Map;
 import org.apache.poi.ss.usermodel.*;
+
 
 @Service
 public class AlumniServiceImpl implements AlumniService{
@@ -35,6 +42,10 @@ public class AlumniServiceImpl implements AlumniService{
     private AlumniRepository alumniRepository;
     @Autowired
     private AlumniEicRepository alumniEicRepository;
+    @Autowired
+    private CourseRepository courseRepository;
+    @Autowired
+    private AlumniEicHasCourseRepository alumniEic_has_CourseRepository;
     @Autowired
     private AlumniBackupRepository alumniBackupRepository;
     @Autowired
@@ -47,6 +58,10 @@ public class AlumniServiceImpl implements AlumniService{
     private boolean linkedinExists(String linkValue) {
         return alumniRepository.existsByLinkedinLink(linkValue);
     }   
+
+    private boolean courseExists(String course) {
+        return courseRepository.existsByAbbreviation(course);
+    }
                                       
     @Override
     public void populateAlumniTable(MultipartFile file) throws IOException, InterruptedException {
@@ -201,36 +216,145 @@ public class AlumniServiceImpl implements AlumniService{
     }
 
     @Override
-    public void populateAlumniEic() {
+    public void populateAlumniEic(MultipartFile file) {
         // Clean AlumniEIC Table
         CleanData.cleanTable(alumniEicRepository);
 
-        try{
-            //Get alumni information from the database
-            List<Alumni> alumniList = alumniRepository.findAll();
+        // Clean AlumniEIC_has_Courses Table
+        CleanData.cleanTable(alumniEic_has_CourseRepository);
 
-            // Iterate over each alumni and populate AlumniEic table
-            for (Alumni alumni : alumniList) {
-                String linkedinInfo = alumni.getLinkedinInfo();
-                String alumniFirstName = FilesHandler.extractFieldFromJson("first_name", linkedinInfo);
-                String alumniLastName = FilesHandler.extractFieldFromJson("last_name", linkedinInfo);
-                String alumniFullName = alumniFirstName + " " + alumniLastName;
-                String linkedinLink = "https://www.linkedin.com/in/"+ FilesHandler.extractFieldFromJson("public_identifier", linkedinInfo) + "/";
-                String countryName = FilesHandler.extractFieldFromJson("country_full_name", linkedinInfo);
-                String cityName = FilesHandler.extractFieldFromJson("city", linkedinInfo);
+        // Goes through the Excel file
+        try (InputStream inputStream = file.getInputStream()){
+            // Read and iterate over the excel file
+            Workbook workbook = WorkbookFactory.create(inputStream);
+            Sheet sheet = workbook.getSheetAt(1);   // 2nd sheet
+            Iterator<Row> rowIterator = sheet.iterator();
 
-                // Fetch city and country entities from my database
-                City city = cityRepository.findByCity(cityName);
-                Country country = countryRepository.findByCountry(countryName);
+            // Skip the first two rows
+            for (int i=0; i<2; i++){
+                if(rowIterator.hasNext()){
+                    rowIterator.next();
+                } 
+            }
 
-                // Store in the DB
-                AlumniEic alumniEic = new AlumniEic(alumniFullName, linkedinLink, city, country);
-                alumniEicRepository.save(alumniEic);
+            while (rowIterator.hasNext()) {
+                // Reads the linkedin links of the current row
+                Row row = rowIterator.next();
+                String linkedinLinkBefore = row.getCell(4).getStringCellValue();
+                String linkedinLinkAfter = row.getCell(8).getStringCellValue();
+                if((!linkedinLinkBefore.isEmpty() || !linkedinLinkAfter.isEmpty())){
+                    // Gets the alumni with the specific linkedinLink
+                    Alumni alumniWithLinkedinLink = alumniRepository.findByLinkedinLink(linkedinLinkBefore);
+                    if(alumniWithLinkedinLink==null) { // If "linkedinLinkBefore" was not found because it's empty, for example, it trys the other one
+                        alumniWithLinkedinLink = alumniRepository.findByLinkedinLink(linkedinLinkAfter);
+                    }
+                    if(alumniWithLinkedinLink!=null) { 
+                        // From the Alumni table in the DB: full name, linkedin link, country name, and city name
+                        String linkedinInfo = alumniWithLinkedinLink.getLinkedinInfo();
+                        String alumniFirstName = FilesHandler.extractFieldFromJson("first_name", linkedinInfo);
+                        String alumniLastName = FilesHandler.extractFieldFromJson("last_name", linkedinInfo);
+                        String alumniFullName = alumniFirstName + " " + alumniLastName;
+                        String linkedinLink = "https://www.linkedin.com/in/"+ FilesHandler.extractFieldFromJson("public_identifier", linkedinInfo) + "/";
+                        String countryName = FilesHandler.extractFieldFromJson("country_full_name", linkedinInfo);
+                        String cityName = FilesHandler.extractFieldFromJson("city", linkedinInfo);
+                        
+                        City city = cityRepository.findByCity(cityName);
+                        Country country = countryRepository.findByCountry(countryName);
+
+                        // From the Excel: gets the courses and years of conclusion
+                        String courses = row.getCell(9).getStringCellValue();
+                        String[] coursesArray = courses.split(" ");
+                        Map<Course, String> courseYearMap = new HashMap<>();
+                        
+                        for (String course : coursesArray) {
+                            String yearConclusion = "";
+                            Course courseMap;
+                            switch (course) {
+                                case "LEIC":
+                                    yearConclusion = row.getCell(11).getStringCellValue();
+                                    break;
+                                case "MEI":
+                                    yearConclusion = row.getCell(13).getStringCellValue();
+                                    break;
+                                case "MIEIC":
+                                    yearConclusion = row.getCell(15).getStringCellValue();
+                                    break;
+                                case "L.EIC":
+                                    yearConclusion = row.getCell(17).getStringCellValue();
+                                    break;
+                                case "M.EIC":
+                                    yearConclusion = row.getCell(19).getStringCellValue();
+                                    break;
+                                default:
+                                    break;
+                            }
+                            courseMap = courseRepository.findByAbbreviation(course);
+                            courseYearMap.put(courseMap, yearConclusion);
+                        }
+                        // Saves the alumni in the DB
+                        AlumniEic alumniEic = new AlumniEic(alumniFullName, linkedinLink, city, country);
+                        alumniEicRepository.save(alumniEic);
+                        for (Course course : courseYearMap.keySet()) {
+                            String yearOfConclusion = courseYearMap.get(course);
+                            AlumniEic_has_Course alumniEicHasCourse = new AlumniEic_has_Course(alumniEic, course, yearOfConclusion);
+                            alumniEic_has_CourseRepository.save(alumniEicHasCourse);
+                        }
+                    }
+                }
             }
             System.out.println("AlumniEIC table re-populated");
             System.out.println("-----");
         } catch(Exception e) {
             System.out.println("Error !!!!: " + e);
+        }
+    }
+
+    @Override
+    public void populateCoursesTable(MultipartFile file) {
+        // Clean Courses table
+        CleanData.cleanTable(courseRepository);
+
+        // Clean AlumniEIC_has_Courses Table
+        CleanData.cleanTable(alumniEic_has_CourseRepository);
+
+        // Goes through the excel file
+        try (InputStream inputStream = file.getInputStream()){
+            // Read and iterate over the excel file
+            Workbook workbook = WorkbookFactory.create(inputStream);
+            Sheet sheet = workbook.getSheetAt(1);   // 2nd sheet
+            Iterator<Row> rowIterator = sheet.iterator();
+
+            // Skip the first two rows
+            for (int i=0; i<2; i++){
+                if(rowIterator.hasNext()){
+                    rowIterator.next();
+                } 
+            }
+
+            while (rowIterator.hasNext()) {
+                try {
+                    // Reads the course of the current row
+                    Row row = rowIterator.next();
+                    String courses = row.getCell(9).getStringCellValue();
+                    String[] coursesArray = courses.split(" ");
+                    
+                    for (String course : coursesArray) {
+                        // Sees if the course exists in the table
+                        Boolean courseExists = courseExists(course);
+                        if(!courseExists){
+                            System.out.println("----" + course);
+                            // Stores the information in the DB
+                            Course courseDb = new Course(course);
+                            courseRepository.save(courseDb);
+                        }                   
+                    }                     
+                } catch (Exception error) {
+                    System.out.println("error: " + error);
+                }
+            }
+            System.out.println("Alumni table populated with the API scraped information.");
+        } catch (Exception e) {
+            throw new RuntimeException("Error processing file", e);
         }
     }
 }

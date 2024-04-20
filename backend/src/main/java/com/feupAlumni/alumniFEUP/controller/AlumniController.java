@@ -61,12 +61,23 @@ public class AlumniController {
 
     // Populated the table alumniEIC. If it is already populated, registers are deleted and the table is repopulated
     @PostMapping("/populateAlumniEIC")
-    public ResponseEntity<String> handlePopulateAlumniEic(){
+    public ResponseEntity<String> handlePopulateAlumniEic(@RequestBody MultipartFile file){
         try{
-            alumniService.populateAlumniEic();
+            alumniService.populateAlumniEic(file);
             return ResponseEntity.ok("AlumniEIC successfully populated.");
         } catch (Exception e) {
             return ResponseEntity.status(500).body("Error while populating AlumniEIC table: " + e.getMessage());
+        }
+    }
+
+    // Populates the table
+    @PostMapping("/populateCoursesTable")
+    public ResponseEntity<String> handlePopulateCoursesTable(@RequestBody MultipartFile file){
+        try{
+            alumniService.populateCoursesTable(file);
+            return ResponseEntity.ok("Courses successfully populated.");
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Error while populating Courses table: " + e.getMessage());
         }
     }
 }

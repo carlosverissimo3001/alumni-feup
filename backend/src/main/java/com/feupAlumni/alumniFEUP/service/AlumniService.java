@@ -23,5 +23,9 @@ public interface AlumniService {
     public void missingLinkedinLinks();
 
     // Populates the AlumniEic table
-    public void populateAlumniEic();
+    public void populateAlumniEic(MultipartFile file);
+
+    // Populates Courses table
+    public void populateCoursesTable(MultipartFile file);
+
 }
