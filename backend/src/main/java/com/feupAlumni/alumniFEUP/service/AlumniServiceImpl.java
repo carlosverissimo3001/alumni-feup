@@ -62,6 +62,41 @@ public class AlumniServiceImpl implements AlumniService{
     private boolean courseExists(String course) {
         return courseRepository.existsByAbbreviation(course);
     }
+
+    private Map<String, Row> excelLinkedinLinksToRows(MultipartFile file) {
+        Map<String, Row> excelLinkedinMap = new HashMap<>();
+
+        try (InputStream inputStream = file.getInputStream()) {
+            Workbook workbook = WorkbookFactory.create(inputStream);
+            Sheet sheet = workbook.getSheetAt(1); // Second sheet
+            Iterator<Row> rowIterator = sheet.iterator();
+
+            // Skip the first two rows
+            for (int i = 0; i < 2; i++) {
+                if (rowIterator.hasNext()) {
+                    rowIterator.next();
+                }
+            }
+
+            while (rowIterator.hasNext()) {
+                Row row = rowIterator.next();
+                String linkedinLinkBefore = row.getCell(4).getStringCellValue();
+                String linkedinLinkAfter = row.getCell(8).getStringCellValue();
+                
+                // Even if both have value, because I'm storing in a map and linkedin links are keys, repeated entries won't exist
+                if (!linkedinLinkBefore.isEmpty()) {
+                    excelLinkedinMap.put(linkedinLinkBefore, row);
+                }
+                if (!linkedinLinkAfter.isEmpty()) {
+                    excelLinkedinMap.put(linkedinLinkAfter, row);
+                }
+            }
+            return excelLinkedinMap;
+        } catch (Exception  e) {
+            System.out.println("Error !!!!: " + e);
+            return null;
+        }
+    }
                                       
     @Override
     public void populateAlumniTable(MultipartFile file) throws IOException, InterruptedException {
@@ -216,6 +251,45 @@ public class AlumniServiceImpl implements AlumniService{
     }
 
     @Override
+    public void refactorlinkdinLinkAlumnis() {
+        List<Alumni> allAlumni = alumniRepository.findAll();
+        for (Alumni alumni : allAlumni) {
+            String linkedinLink = alumni.getLinkedinLink();
+            if (!linkedinLink.endsWith("/")) {
+                linkedinLink = linkedinLink+"/";
+                alumni.setLinkedinLink(linkedinLink); // Update the linkedinLink of the current alumni
+                alumniRepository.save(alumni); // Save the updated alumni object
+            }
+        }
+        System.out.println("Finished");
+    }
+
+    @Override
+    public void deleteRepeatedAlumnis() {
+        List<Alumni> allAlumni = alumniRepository.findAll();
+        Map<String, Alumni> uniqueLinkedInUrls = new HashMap<>();
+        for (Alumni alumni : allAlumni) {
+            String linkedinLink = alumni.getLinkedinLink();
+            if(linkedinLink.equals("https://www.linkedin.com/in/jpmmaia")) {
+                System.out.println("oiii");
+            }
+            if (uniqueLinkedInUrls.containsKey(linkedinLink)) {  //https://www.linkedin.com/in/jpmmaia/
+                if(linkedinLink.equals("https://www.linkedin.com/in/jpmmaia")) {
+                    System.out.print("shé");
+                }
+                alumniRepository.delete(alumni);
+                System.out.println("Deleted duplicate alumni record with LinkedIn profile URL: " + linkedinLink);
+            } else {
+                if(linkedinLink.equals("https://www.linkedin.com/in/jpmmaia")) {
+                    System.out.println("pe");
+                }
+                uniqueLinkedInUrls.put(linkedinLink, alumni);
+            }
+        }
+        System.out.println("Finished");
+    }
+
+    @Override
     public void populateAlumniEic(MultipartFile file) {
         // Clean AlumniEIC Table
         CleanData.cleanTable(alumniEicRepository);
@@ -223,90 +297,74 @@ public class AlumniServiceImpl implements AlumniService{
         // Clean AlumniEIC_has_Courses Table
         CleanData.cleanTable(alumniEic_has_CourseRepository);
 
-        // Goes through the Excel file
-        try (InputStream inputStream = file.getInputStream()){
-            // Read and iterate over the excel file
-            Workbook workbook = WorkbookFactory.create(inputStream);
-            Sheet sheet = workbook.getSheetAt(1);   // 2nd sheet
-            Iterator<Row> rowIterator = sheet.iterator();
+        // Having the linkedin links as key and the corresponding row as value 
+        Map<String, Row> excelLinkedinLinksToRows = excelLinkedinLinksToRows(file);
 
-            // Skip the first two rows
-            for (int i=0; i<2; i++){
-                if(rowIterator.hasNext()){
-                    rowIterator.next();
-                } 
-            }
+        // Iterates over the alumni and adds him in the alumniEic table
+        // If the alumni is in the Excel, than it's possible to know its course and therefore he is added to the alumni_has_course table
+        List<Alumni> alumniList = alumniRepository.findAll();
+        for (Alumni alumni : alumniList) {
+            // Get data from the alumni
+            String linkedinInfo = alumni.getLinkedinInfo();
+            String firstName = FilesHandler.extractFieldFromJson("first_name", linkedinInfo);
+            String lastName = FilesHandler.extractFieldFromJson("last_name", linkedinInfo);
+            String fullName = firstName + " " + lastName;
+            String countryName = FilesHandler.extractFieldFromJson("country_full_name", linkedinInfo);
+            String cityName = FilesHandler.extractFieldFromJson("city", linkedinInfo);
+            String publicIdentifier = FilesHandler.extractFieldFromJson("public_identifier", linkedinInfo);
+            String linkedinFullLink = "https://www.linkedin.com/in/" + publicIdentifier + "/";
 
-            while (rowIterator.hasNext()) {
-                // Reads the linkedin links of the current row
-                Row row = rowIterator.next();
-                String linkedinLinkBefore = row.getCell(4).getStringCellValue();
-                String linkedinLinkAfter = row.getCell(8).getStringCellValue();
-                if((!linkedinLinkBefore.isEmpty() || !linkedinLinkAfter.isEmpty())){
-                    // Gets the alumni with the specific linkedinLink
-                    Alumni alumniWithLinkedinLink = alumniRepository.findByLinkedinLink(linkedinLinkBefore);
-                    if(alumniWithLinkedinLink==null) { // If "linkedinLinkBefore" was not found because it's empty, for example, it trys the other one
-                        alumniWithLinkedinLink = alumniRepository.findByLinkedinLink(linkedinLinkAfter);
+            City city = cityRepository.findByCity(cityName);
+            Country country = countryRepository.findByCountry(countryName);
+
+            // Saves the alumni in the DB
+            AlumniEic alumniEic = new AlumniEic(fullName, linkedinFullLink, city, country);
+            alumniEicRepository.save(alumniEic);
+
+            Row correspondingRow = excelLinkedinLinksToRows.get(linkedinFullLink);
+            if (correspondingRow != null) {
+                // From the Excel: gets the courses and years of conclusion
+                String courses = correspondingRow.getCell(9).getStringCellValue();
+                String[] coursesArray = courses.split(" ");
+                Map<Course, String> courseYearMap = new HashMap<>();
+                
+                for (String course : coursesArray) {
+                    String yearConclusion = "";
+                    Course courseMap;
+                    switch (course) {
+                        case "LEIC":
+                            yearConclusion = correspondingRow.getCell(11).getStringCellValue();
+                            break;
+                        case "MEI":
+                            yearConclusion = correspondingRow.getCell(13).getStringCellValue();
+                            break;
+                        case "MIEIC":
+                            yearConclusion = correspondingRow.getCell(15).getStringCellValue();
+                            break;
+                        case "L.EIC":
+                            yearConclusion = correspondingRow.getCell(17).getStringCellValue();
+                            break;
+                        case "M.EIC":
+                            yearConclusion = correspondingRow.getCell(19).getStringCellValue();
+                            break;
+                        default:
+                            break;
                     }
-                    if(alumniWithLinkedinLink!=null) { 
-                        // From the Alumni table in the DB: full name, linkedin link, country name, and city name
-                        String linkedinInfo = alumniWithLinkedinLink.getLinkedinInfo();
-                        String alumniFirstName = FilesHandler.extractFieldFromJson("first_name", linkedinInfo);
-                        String alumniLastName = FilesHandler.extractFieldFromJson("last_name", linkedinInfo);
-                        String alumniFullName = alumniFirstName + " " + alumniLastName;
-                        String linkedinLink = "https://www.linkedin.com/in/"+ FilesHandler.extractFieldFromJson("public_identifier", linkedinInfo) + "/";
-                        String countryName = FilesHandler.extractFieldFromJson("country_full_name", linkedinInfo);
-                        String cityName = FilesHandler.extractFieldFromJson("city", linkedinInfo);
-                        
-                        City city = cityRepository.findByCity(cityName);
-                        Country country = countryRepository.findByCountry(countryName);
+                    courseMap = courseRepository.findByAbbreviation(course);
+                    courseYearMap.put(courseMap, yearConclusion);
 
-                        // From the Excel: gets the courses and years of conclusion
-                        String courses = row.getCell(9).getStringCellValue();
-                        String[] coursesArray = courses.split(" ");
-                        Map<Course, String> courseYearMap = new HashMap<>();
-                        
-                        for (String course : coursesArray) {
-                            String yearConclusion = "";
-                            Course courseMap;
-                            switch (course) {
-                                case "LEIC":
-                                    yearConclusion = row.getCell(11).getStringCellValue();
-                                    break;
-                                case "MEI":
-                                    yearConclusion = row.getCell(13).getStringCellValue();
-                                    break;
-                                case "MIEIC":
-                                    yearConclusion = row.getCell(15).getStringCellValue();
-                                    break;
-                                case "L.EIC":
-                                    yearConclusion = row.getCell(17).getStringCellValue();
-                                    break;
-                                case "M.EIC":
-                                    yearConclusion = row.getCell(19).getStringCellValue();
-                                    break;
-                                default:
-                                    break;
-                            }
-                            courseMap = courseRepository.findByAbbreviation(course);
-                            courseYearMap.put(courseMap, yearConclusion);
-                        }
-                        // Saves the alumni in the DB
-                        AlumniEic alumniEic = new AlumniEic(alumniFullName, linkedinLink, city, country);
-                        alumniEicRepository.save(alumniEic);
-                        for (Course course : courseYearMap.keySet()) {
-                            String yearOfConclusion = courseYearMap.get(course);
-                            AlumniEic_has_Course alumniEicHasCourse = new AlumniEic_has_Course(alumniEic, course, yearOfConclusion);
-                            alumniEic_has_CourseRepository.save(alumniEicHasCourse);
-                        }
+                    // Saves the relationship
+                    for (Course courseEntry : courseYearMap.keySet()) {
+                        String yearOfConclusion = courseYearMap.get(courseEntry);
+                        AlumniEic_has_Course alumniEicHasCourse = new AlumniEic_has_Course(alumniEic, courseEntry, yearOfConclusion);
+                        alumniEic_has_CourseRepository.save(alumniEicHasCourse);
                     }
                 }
             }
-            System.out.println("AlumniEIC table re-populated");
-            System.out.println("-----");
-        } catch(Exception e) {
-            System.out.println("Error !!!!: " + e);
+
         }
+        System.out.println("AlumniEIC table re-populated");
+        System.out.println("-----"); 
     }
 
     @Override

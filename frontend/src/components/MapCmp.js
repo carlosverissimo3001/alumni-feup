@@ -40,34 +40,57 @@ const MapCmp = () => {
       setGeoJSONFile(file);
     };
 
+    const extractJSONObjects = (str) => {
+      const jsonObjects = [];
+      let depth = 0; // to keep track of nested levels
+      let currentObject = '';
+    
+      // Iterate over the string to separate JSON objects
+      for (let i = 0; i < str.length; i++) {
+        if (str[i] === '{') {
+          if (depth === 0) {
+            currentObject = ''; // start a new object
+          }
+          depth++; // increment depth for nested objects
+        }
+    
+        if (depth > 0) {
+          currentObject += str[i];
+        }
+    
+        if (str[i] === '}') {
+          depth--; // decrement depth when closing a JSON object
+          if (depth === 0) {
+            jsonObjects.push(currentObject); // complete object
+          }
+        }
+      }
+    
+      return jsonObjects.map((jsonStr) => JSON.parse(jsonStr));
+    };
+
     const onHover = async event => {
       if (event.lngLat) {
         setHoveredMouseCoords([event.point.x, event.point.y]);
       }
 
       if (event.features && event.features.length > 0) {
-        const feature = event.features[0];
+        const feature = event.features[0];        
         var listPlaceName = feature.properties.name;
-        var listAlumniNames = feature.properties.listAlumniNames;
-        var listLinkedinLinks = feature.properties.listLinkedinLinks;
+
+        const linkUsersString = feature.properties.listLinkedinLinksByUser;
+        const jsonObjects = extractJSONObjects(linkUsersString);
+        const mapUserLinks = jsonObjects.reduce((acc, obj) => ({ ...acc, ...obj }), {});
+        var listAlumniNames = Object.keys(mapUserLinks)
+        var listLinkedinLinks = Object.values(mapUserLinks)
         var profilePics = [];
-        
+
         // Parse placeName if it's a string
         if (typeof listPlaceName === 'string') {
           const regex = /"([^"]+)"|'([^']+)'/g;
           listPlaceName = listPlaceName.match(regex).map(match => match.replace(/['"]/g, ''));
         }
-        // Parse listAlumniNames if it's a string
-        if (typeof listAlumniNames === 'string') {
-          const regex = /"([^"]+)"|'([^']+)'/g;
-          listAlumniNames = listAlumniNames.match(regex).map(match => match.replace(/['"]/g, ''));
-        }
-        // Parse linkeLinks if it's a string
-        if (typeof listLinkedinLinks === 'string') {
-          const regex = /"([^"]+)"|'([^']+)'/g;
-          listLinkedinLinks = listLinkedinLinks.match(regex).map(match => match.replace(/['"]/g, ''));
-        }
-
+        
         // Function to flatten nested arrays
         const flattenArray = arr => {
           if (!Array.isArray(arr)) return [arr];
@@ -78,8 +101,6 @@ const MapCmp = () => {
           return flattened;
         };
         listPlaceName = flattenArray(listPlaceName);
-        listAlumniNames = flattenArray(listAlumniNames);
-        listLinkedinLinks = flattenArray(listLinkedinLinks);
         profilePics = await ApiDataAnalysis.extractPathToProfilePics(listLinkedinLinks);
         const alumniData = listAlumniNames.map((name, index) => ({
           name: name,
@@ -150,8 +171,7 @@ const MapCmp = () => {
                 clusterProperties={{
                   name: ['concat', ['get', 'name']],
                   students: ['+', ['get', 'students']],
-                  listAlumniNames: ['concat', ['get', 'listAlumniNames']],
-                  listLinkedinLinks: ['concat', ['get', 'listLinkedinLinks']],
+                  listLinkedinLinksByUser: ['concat', ['get', 'listLinkedinLinksByUser'], ';'],
                 }}
             >
                 <Layer {...clusterLayer}/>

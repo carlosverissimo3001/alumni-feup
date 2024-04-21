@@ -13,13 +13,20 @@ const MenuButtons = ({onSelectGeoJSON, onSelectAlumni}) => {
     const [filterCourseInput, setFilterCourseInput] = useState('');
     
     useEffect(() => {
-        const geoJSONData = selectedOption === 'countries' ? require('../countriesGeoJSON.json') : require('../citiesGeoJSON.json');
-        const alumniNamesWithCoords = geoJSONData.features.flatMap(feature =>
-            feature.properties.listAlumniNames.map(name => ({
-                name: name,
-                coordinates: feature.geometry.coordinates
-            }))
-        );
+        const geoJSONData = selectedOption === 'countries' ? require('../countriesGeoJSON.json') : require('../citiesGeoJSON.json');        
+        
+        const alumniNamesWithCoords = geoJSONData.features.flatMap((feature) => {
+            var namesLinkedinLinks = Object.entries(feature.properties.listLinkedinLinksByUser).map(([name, link]) => ({
+                name,
+                link
+            }));
+            const alumnis = namesLinkedinLinks.map((item) => ({
+                name: item.name,
+                coordinates: feature.geometry.coordinates,
+            }));
+
+            return alumnis;
+        });
         setListAlumniNamesWithCoordinates(alumniNamesWithCoords);
         onSelectGeoJSON(selectedOption); // Use cities/countries GeoJson file
     }, [onSelectGeoJSON, selectedOption]);
@@ -89,6 +96,16 @@ const MenuButtons = ({onSelectGeoJSON, onSelectAlumni}) => {
     // this function serves as a way to fix this and put the DB consistent
     const handleLinkedinLinksAlumniTable = async () => {
         setUp.addMissingLinkedinLinks(); 
+    }
+
+    // Makes sure that every linkedin link in the DB finishes with /
+    const handleRefactorlinkdinLinkAlumnis = async () => {
+        setUp.refactorlinkdinLinkAlumnis();
+    }
+
+    // Deletes repeated alumnis from the alumni table
+    const handleDeleteRepeatedAlumnis = async () => {
+        setUp.deleteRepeatedAlumnis();
     }
 
     // Populates the country table: calls the API for the cuntry coordinates
@@ -205,18 +222,21 @@ const MenuButtons = ({onSelectGeoJSON, onSelectAlumni}) => {
                 />
             </div>
 
-            {/*<input type="file" className='fileInput' onChange={handleFileChange} />    
-            <button className="button butnPopAlumni" onClick={handlePopulateCoursesTable}>Populate Courses Table</button>
+            <input type="file" className='fileInput' onChange={handleFileChange} />    
+            {/*<button className="button butnPopAlumni" onClick={handlePopulateCoursesTable}>Populate Courses Table</button>
             
             <button className="button butnPopAlumni" onClick={handlePopulateAlumniTable}>AlumniTablePopulate</button>
             <button className="button butnBackAlumni" onClick={handleBackupTableAlumni}>BackupTableAlumni</button>
             <button className="button butnBackAlumniWFile" onClick={handlePopulateAlumniTableFileBckp}>AlumniTablePopulate - backup file</button>
             <button className="button btnMissingLinkedinLinks" onClick={handleLinkedinLinksAlumniTable}>MissingLinkedinLinks</button>
 
+            <button className="button butnPopCountry" onClick={handleDeleteRepeatedAlumnis}>DeleteRepeatedAlumnis</button>
+            <button className="button butnPopCity" onClick={handleRefactorlinkdinLinkAlumnis}>RefactorlinkdinLinkAlumnis</button>*/}
+
 
             <button className="button butnPopCountry" onClick={handlePopulateCountryTable}>PopulateCoutryTable</button>
             <button className="button butnPopCity" onClick={handlePopulateCityTable}>PopulateCityTable</button>
-            <button className="button butnPopAlumniEIC" onClick={handlePopulateAlumniEICTable}>PopulateAlumniEICTable</button>*/}
+            <button className="button butnPopAlumniEIC" onClick={handlePopulateAlumniEICTable}>PopulateAlumniEICTable</button>
 
             <button className="button butnGenCountryGeoJason" onClick={handleGenerateCountryGeoJason}>GenerateCountryGeoJason</button>
             <button className="button butnGenCityGeoJason" onClick={handleGenerateCityGeoJason}>GenerateCityGeoJason</button>

@@ -22,6 +22,12 @@ public interface AlumniService {
     // Associates the missing linkedin links to the needed rows
     public void missingLinkedinLinks();
 
+    // Makes sure that every linkedin link finishes with /
+    public void refactorlinkdinLinkAlumnis();
+
+    // Deleting repeated alumnis
+    public void deleteRepeatedAlumnis();
+
     // Populates the AlumniEic table
     public void populateAlumniEic(MultipartFile file);
 

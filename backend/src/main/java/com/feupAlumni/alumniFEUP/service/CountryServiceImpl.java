@@ -7,7 +7,6 @@ import com.feupAlumni.alumniFEUP.model.Alumni;
 import com.feupAlumni.alumniFEUP.model.AlumniEic;
 import com.feupAlumni.alumniFEUP.model.AlumniEic_has_Course;
 import com.feupAlumni.alumniFEUP.model.Country;
-import com.feupAlumni.alumniFEUP.model.Course;
 import com.feupAlumni.alumniFEUP.repository.AlumniEicRepository;
 import com.feupAlumni.alumniFEUP.repository.AlumniRepository;
 import com.feupAlumni.alumniFEUP.repository.CountryRepository;
@@ -37,12 +36,17 @@ public class CountryServiceImpl implements CountryService{
     private void getAlumniDistCountry(Map<String, Integer> countryAlumniCount, Map<String, String> countryCodes) {
         // Accesses the Alumni table and populates the ViewAlumniCountry table
         List<Alumni> alumniList = alumniRepository.findAll();
-
+        var count = 0;
         // Puts in a map the countries (as keys) and the number of alumni for each country (as value)
         for (Alumni alumni : alumniList) {
             String linkedinInfo = alumni.getLinkedinInfo();
             String country = FilesHandler.extractFieldFromJson("country_full_name", linkedinInfo);
             String countryCode = FilesHandler.extractFieldFromJson("country", linkedinInfo);
+            if(countryCode.toUpperCase().equals("SI")){
+                System.out.println("alumni: " + alumni.getLinkedinInfo());
+                count++;
+                System.out.println("----------------------------------------------------------------");
+            }
 
             // Ensures consistency across fields
             country = country.toLowerCase();
@@ -53,6 +57,7 @@ public class CountryServiceImpl implements CountryService{
             // Adds the country code
             countryCodes.put(country, countryCode);
         }
+        System.out.println("count: " + count);
     }      
 
     @Override

@@ -59,6 +59,30 @@ public class AlumniController {
         } 
     }
 
+    // Makes sure that every linkedin link finishes with /
+    @PostMapping("/refactorlinkdinLinkAlumnis")
+    public ResponseEntity<String> refactorlinkdinLinkAlumnis() {
+        try {
+            System.out.println("--------");
+            alumniService.refactorlinkdinLinkAlumnis();
+            return ResponseEntity.ok("Finished: every linkedin link in the alumni table finishes with /.");
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Error while trying to make sure that every linkedin link in the alumni table finishes with /: " + e.getMessage());
+        } 
+    }
+
+    // Delete repeated alumnis
+    @PostMapping("/deleteRepeatedAlumnis")
+    public ResponseEntity<String> deleteRepeatedAlumnis() {
+        try {
+            System.out.println("--------");
+            alumniService.deleteRepeatedAlumnis();
+            return ResponseEntity.ok("Repeated Alumnis deleted.");
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Error while deleting repeated alumnis: " + e.getMessage());
+        } 
+    }
+
     // Populated the table alumniEIC. If it is already populated, registers are deleted and the table is repopulated
     @PostMapping("/populateAlumniEIC")
     public ResponseEntity<String> handlePopulateAlumniEic(@RequestBody MultipartFile file){
