@@ -89,7 +89,11 @@ const MenuButtons = ({onSelectGeoJSON, onSelectAlumni}) => {
     };
 
     const handleCourseSelection = async (courseAbreviation) => {
-        await setUp.generateCountryGeoJason(courseAbreviation);
+        if (selectedOption === "countries") {
+            await setUp.generateCountryGeoJason(courseAbreviation);
+        } else if (selectedOption === "cities") {
+            await setUp.generateCityGeoJason(courseAbreviation);
+        }
     }
 
     // Function to handle checkbox selection
@@ -181,7 +185,7 @@ const MenuButtons = ({onSelectGeoJSON, onSelectAlumni}) => {
 
     // Generates the city geoJason
     const handleGenerateCityGeoJason = async () => {
-        await setUp.generateCityGeoJason();
+        await setUp.generateCityGeoJason("");
     }    
 
     // Matches Students to LinkedIn Links. Receives an excel, updates the linkedin column and downloads the updated file

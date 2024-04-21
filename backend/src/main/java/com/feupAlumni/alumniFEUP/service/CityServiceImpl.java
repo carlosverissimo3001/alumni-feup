@@ -83,7 +83,8 @@ public class CityServiceImpl implements CityService {
     }
 
     @Override
-    public void generateCityGeoJason() {
+    public void generateCityGeoJason(String courseFilter) {
+        System.out.println("courseFilter: " + courseFilter);
         // Creates the GeoJason file
         File geoJSONFile = new File("frontend/src/citiesGeoJSON.json");
         Gson gson = new GsonBuilder().setPrettyPrinting().create(); 
@@ -107,7 +108,17 @@ public class CityServiceImpl implements CityService {
         for (AlumniEic alumni : alumniEicRepository.findAll()) {
             String linkdeinLink = alumni.getLinkedinLink();
             String alumniName = alumni.getAlumniName();
-            listLinkedinLinksByUser.put(alumniName, linkdeinLink);
+            if (!courseFilter.equals("")) {
+                List<AlumniEic_has_Course> alumniCourses = alumni.getAlumniEicHasCourse();
+                for (AlumniEic_has_Course course : alumniCourses) {
+                    String abrev = course.getCourse().getAbbreviation();
+                    if (abrev.equals(courseFilter)) {
+                        listLinkedinLinksByUser.put(alumniName, linkdeinLink);
+                    }
+                }
+            } else {
+                listLinkedinLinksByUser.put(alumniName, linkdeinLink);
+            }
         }
 
         // For each alumni associates the various courses he was involved and the year of conclusion of each course
@@ -115,11 +126,25 @@ public class CityServiceImpl implements CityService {
         Map<String, Map<String, String>> alumniByCourseYearConclusion = new HashMap<>();
         for (AlumniEic alumni : alumniEicRepository.findAll()) {
             Map<String, String> coursesYearConclusion = new HashMap<>();
-            for (AlumniEic_has_Course alumniCourse : alumni.getAlumniEicHasCourse()) {
-                String courseAbrev = alumniCourse.getCourse().getAbbreviation();
-                coursesYearConclusion.put(courseAbrev, alumniCourse.getYearOfConclusion());
-            }   
-            alumniByCourseYearConclusion.put(alumni.getAlumniName(), coursesYearConclusion);
+            if (courseFilter.length() > 0) {
+                var containsCourseFilter = false;
+                for (AlumniEic_has_Course alumniCourse : alumni.getAlumniEicHasCourse()) {
+                    String courseAbrev = alumniCourse.getCourse().getAbbreviation();
+                    if (courseAbrev.equals(courseFilter)) {
+                        containsCourseFilter = true;
+                    }
+                    coursesYearConclusion.put(courseAbrev, alumniCourse.getYearOfConclusion());
+                }  
+                if (containsCourseFilter) {
+                    alumniByCourseYearConclusion.put(alumni.getAlumniName(), coursesYearConclusion);
+                }
+            } else {
+                for (AlumniEic_has_Course alumniCourse : alumni.getAlumniEicHasCourse()) {
+                    String courseAbrev = alumniCourse.getCourse().getAbbreviation();
+                    coursesYearConclusion.put(courseAbrev, alumniCourse.getYearOfConclusion());
+                }   
+                alumniByCourseYearConclusion.put(alumni.getAlumniName(), coursesYearConclusion);
+            }
         }
 
         alumniByCity.forEach((city, alumniList) -> {
