@@ -46,7 +46,7 @@ const MenuButtons = ({onSelectGeoJSON, onSelectAlumni}) => {
         });
         setListAlumniNamesWithCoordinates(alumniNamesWithCoords);
         onSelectGeoJSON(selectedOption); // Use cities/countries GeoJson file
-    }, [onSelectGeoJSON, selectedOption]);
+    }, [selectedOption]);
 
     // Filter alumni names based on search input
     useEffect(() => {
@@ -89,13 +89,7 @@ const MenuButtons = ({onSelectGeoJSON, onSelectAlumni}) => {
     };
 
     const handleCourseSelection = async (courseAbreviation) => {
-        console.log("selected course: ", courseAbreviation);
-
-        // I need to generate the geoJson again but this time, only people from this course are selected
-
         await setUp.generateCountryGeoJason(courseAbreviation);
-
-
     }
 
     // Function to handle checkbox selection
