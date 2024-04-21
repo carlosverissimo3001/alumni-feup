@@ -96,6 +96,46 @@ class setUp {
         }
     }
 
+    /**
+     * Make sure that every linkedin link in the alumni table finishes with /
+     */
+    static async refactorlinkdinLinkAlumnis() {
+        try {
+            const response = await fetch('http://localhost:8080/alumni/refactorlinkdinLinkAlumnis', {
+                method: 'POST',
+                body: '',
+            });
+
+            if (response.ok){
+                console.log('Finished: making sure that every linkedin link in the alumni table finishes with /.');
+            } else {
+                console.error('Error while trying to make sure that every linkedin link in the alumni table finishes with /.');
+            }
+        } catch(error) {
+            console.error('Error  while trying to make sure that every linkedin link in the alumni table finishes with /: ', error);
+        }
+    }
+
+    /**
+     * Deletes repeated alumnis from the DB
+     */
+    static async deleteRepeatedAlumnis() {
+        try {
+            const response = await fetch('http://localhost:8080/alumni/deleteRepeatedAlumnis', {
+                method: 'POST',
+                body: '',
+            });
+
+            if (response.ok){
+                console.log('Finished: delte repeated alumnis.');
+            } else {
+                console.error('Error while trying to delete repeated alumnis.');
+            }
+        } catch(error) {
+            console.error('Error while trying to delete repeated alumnis: ', error);
+        }
+    }
+
     /*
     * Responsible for: populate the country table (if already populated - registers are deleted and is repopulated)
     *                  call API to get the coordinates of each country 

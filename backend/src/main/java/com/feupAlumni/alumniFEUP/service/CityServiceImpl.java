@@ -91,6 +91,7 @@ public class CityServiceImpl implements CityService {
         Location.createEmptyGeoJSONFile(geoJSONFile);
         System.out.println("GeoJSON file created");
 
+        // Group Alumni by city
         Map<City, List<AlumniEic>> alumniByCity = new HashMap<>();
         alumniEicRepository.findAll().forEach(alumni -> {
             if(alumni.getCity() != null) {
