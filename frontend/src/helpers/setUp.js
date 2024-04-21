@@ -255,11 +255,15 @@ class setUp {
    /**
     * Generates the city geoJason
     */
-   static async generateCityGeoJason() {
+   static async generateCityGeoJason(courseFilter) {
         try{
+            const data = JSON.stringify({ courseFilter });
             const response = await fetch('http://localhost:8080/setupLocation/generateCityGeoJason', {
                 method: 'POST',
-                body: '',
+                headers: {
+                    'Content-Type': 'application/json',  // Set the content type to JSON
+                },
+                body: data,
             });
 
             if (response.ok){

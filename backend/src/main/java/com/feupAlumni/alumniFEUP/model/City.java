@@ -13,8 +13,6 @@ public class City {
     private int id; // Primary key and auto incremented
     private String city;
     private String cityCoordinates;
-    private int nAlumniInCity;
-
 
     public City(){
 
@@ -23,7 +21,6 @@ public class City {
     public City(String city, String cityCoordinates, int nAlumniInCity){
         this.city = city;
         this.cityCoordinates = cityCoordinates;
-        this.nAlumniInCity = nAlumniInCity;
     }
 
     public String getCity() {
@@ -34,20 +31,12 @@ public class City {
         return cityCoordinates;
     }
 
-    public int getNAlumniInCity() {
-        return nAlumniInCity;
-    }
-
     public void setCity(String city) {
         this.city = city;
     }
 
     public void setCityCoordinates(String cityCoordinates) {
         this.cityCoordinates = cityCoordinates;
-    }
-
-    public void setNAlumniInCity(int nAlumniInCity) {
-        this.nAlumniInCity = nAlumniInCity;
     }
     
 }

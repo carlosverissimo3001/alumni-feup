@@ -5,5 +5,5 @@ public interface CityService {
     public void populateCityTable();
     
     // Generates the city geoJason file
-    public void generateCityGeoJason();
+    public void generateCityGeoJason(String courseFilter);
 }
