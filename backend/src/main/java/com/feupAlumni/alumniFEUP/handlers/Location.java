@@ -195,7 +195,7 @@ public class Location {
 
             GeoJSONProperties properties = new GeoJSONProperties();
             properties.setName(Arrays.asList(country.getCountry()));
-            properties.setStudents(country.getNAlumniInCountry());
+            properties.setStudents(listLinkedinLinksByUser.size());
 
             // Collect alumni names and linkedin links for this country
             properties.setListLinkedinLinks(listLinkedinLinksByUser);
