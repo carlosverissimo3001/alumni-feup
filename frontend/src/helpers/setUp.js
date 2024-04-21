@@ -231,11 +231,15 @@ class setUp {
     /**
     * Generates the country geoJason
     */
-   static async generateCountryGeoJason() {
+   static async generateCountryGeoJason(courseFilter) {
         try{
+            const data = JSON.stringify({ courseFilter });
             const response = await fetch('http://localhost:8080/setupLocation/generateCountryGeoJason', {
                 method: 'POST',
-                body: '',
+                headers: {
+                    'Content-Type': 'application/json',  // Set the content type to JSON
+                },
+                body: data,
             });
 
             if (response.ok){
@@ -267,7 +271,6 @@ class setUp {
             console.log('Error while generating the city geoJason', error);
         }
    }
-
 }
 
 export default setUp;
