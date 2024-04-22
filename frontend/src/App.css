@@ -1,3 +1,15 @@
+.menu-buttons-container {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    background-color: rgba(255, 255, 255, 0.5); 
+    padding-top: 0px;
+    padding-left: 10px; 
+    padding-right: 10px;
+    padding-bottom: 10px;
+    border-radius: 5px;
+    z-index: 3;
+}
 
 .mapCmpDiv{
     height: 100vh;
@@ -62,6 +74,24 @@
     left: 20px;
 }
 
+.search-bar {
+    border: 1px solid gray;
+    border-radius: 5px; 
+    box-shadow: none; 
+    padding: 5px; 
+    outline: none; 
+    margin-top: 10px;
+    width: 95%;
+}
+
+.search-bar-alumni {
+    margin-top: 10px;
+}
+
+.filter-course-alumni {
+    margin-top: 11px;
+}
+
 .fileInput{
     position: absolute;
     top: 30px;
@@ -70,13 +100,34 @@
     color: white;
 }
 
+.scrollable {
+    max-height: 200px; 
+    overflow-y: auto;
+}
+
+.profile-picture {
+    max-height: 30px;
+    border-radius: 100%; 
+    margin-right: 10px;
+} 
+
+.listing-image-profile-picture {
+    display: flex;
+    align-items: center;
+}
+
+.search-results div {
+    cursor: pointer; 
+}
+
+
 .clusterRectangle {
     background-color: rgba(255, 255, 255, 0.8);
     border: 1px solid black;
     padding-left: 10px;
     padding-right: 10px;
     border-radius: 5px;
-    z-index: 999; /* Ensure it's above the map */
+    z-index: 999; 
 }
 
 .link {
@@ -89,7 +140,7 @@
     padding: 0;
 }
 .list-alumni.scrollable {
-    max-height: 200px; /* Set your desired max height */
-    max-width: 500px; /* Set your desired max height */
+    max-height: 200px; 
+    max-width: 500px; 
     overflow-y: auto;
 }

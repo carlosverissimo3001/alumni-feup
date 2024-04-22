@@ -7,4 +7,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface AlumniRepository extends JpaRepository<Alumni, Integer> {
     boolean existsByLinkedinLink(String linkedinLink);
+    Alumni findByLinkedinLink(String linkedinLink);
 }

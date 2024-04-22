@@ -15,7 +15,6 @@ public class Country {
     private String country;
     private String countryCode;
     private String countryCoordinates;
-    private int nAlumniInCountry;
 
 
     public Country(){
@@ -25,7 +24,6 @@ public class Country {
     public Country(String country, String countryCode, int nAlumniInCountry, String countryCoordinates){
         this.country = country;
         this.countryCode = countryCode;
-        this.nAlumniInCountry = nAlumniInCountry;
         this.countryCoordinates = countryCoordinates;
     }
 
@@ -39,10 +37,6 @@ public class Country {
 
     public String getCountryCode() {
         return countryCode;
-    }
-
-    public int getNAlumniInCountry() {
-        return nAlumniInCountry;
     }
 
     public String getCountryCoordinates() {
@@ -59,10 +53,6 @@ public class Country {
 
     public void setCountryCode(String countryCode) {
         this.countryCode = countryCode;
-    }
-
-    public void setNAlumniInCountry(int nAlumniInCountry) {
-        this.nAlumniInCountry = nAlumniInCountry;
     }
 
     public void setCountryCoordinates(String countryCoordinates) {

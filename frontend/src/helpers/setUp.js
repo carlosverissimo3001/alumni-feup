@@ -4,6 +4,8 @@ class setUp {
     /* 
     * By calling the API to scrape profile info: populates the Alumni table
     *                                            stores information in a backup file
+    *                                            uploades the profile pics to the folder: "C:/alimniProject/backend/src/main/java/com/feupAlumni/alumniFEUP/Images"
+    * The name of the profile pics is set to the public identifier of the user, which is retrieved by the API
     */
     static async populateAlumniTable(file) {
         // File is sent to the server using a 'FormData' object
@@ -94,6 +96,46 @@ class setUp {
         }
     }
 
+    /**
+     * Make sure that every linkedin link in the alumni table finishes with /
+     */
+    static async refactorlinkdinLinkAlumnis() {
+        try {
+            const response = await fetch('http://localhost:8080/alumni/refactorlinkdinLinkAlumnis', {
+                method: 'POST',
+                body: '',
+            });
+
+            if (response.ok){
+                console.log('Finished: making sure that every linkedin link in the alumni table finishes with /.');
+            } else {
+                console.error('Error while trying to make sure that every linkedin link in the alumni table finishes with /.');
+            }
+        } catch(error) {
+            console.error('Error  while trying to make sure that every linkedin link in the alumni table finishes with /: ', error);
+        }
+    }
+
+    /**
+     * Deletes repeated alumnis from the DB
+     */
+    static async deleteRepeatedAlumnis() {
+        try {
+            const response = await fetch('http://localhost:8080/alumni/deleteRepeatedAlumnis', {
+                method: 'POST',
+                body: '',
+            });
+
+            if (response.ok){
+                console.log('Finished: delte repeated alumnis.');
+            } else {
+                console.error('Error while trying to delete repeated alumnis.');
+            }
+        } catch(error) {
+            console.error('Error while trying to delete repeated alumnis: ', error);
+        }
+    }
+
     /*
     * Responsible for: populate the country table (if already populated - registers are deleted and is repopulated)
     *                  call API to get the coordinates of each country 
@@ -139,11 +181,14 @@ class setUp {
     /**
     * Responsible for: populating AlumniEIC table (if already populated - registers are deleted and is repopulated)
     */
-    static async populateAlumniEICTable() {
+    static async populateAlumniEICTable(file) {
+        // File is sent to the server using a 'FormData' object
+        const formData = new FormData();
+        formData.append('file', file);
         try {
             const response = await fetch('http://localhost:8080/alumni/populateAlumniEIC', {
                 method: 'POST',
-                body: '',
+                body: formData,
             });
 
             if (response.ok){
@@ -157,13 +202,44 @@ class setUp {
     }
 
     /**
+     * Responsible for: populating Courses table (if already populated - registers are deleted and is repopulated)
+     * It receives an excel that has on column J courses abreviations 
+     */
+    static async handlePopulateCoursesTable(file) {
+        // File is sent to the server using a 'FormData' object
+        const formData = new FormData();
+        formData.append('file', file);
+        try {
+            const response = await fetch('http://localhost:8080/alumni/populateCoursesTable', {
+                method: 'POST',
+                body: formData,
+            });
+
+            if (response.ok){
+                console.log('File uploaded successfully');
+                return true;
+            } else {
+                console.error('File upload failed');
+                return false;
+            }
+        } catch (error) {
+            console.error('Error during file upload:', error);
+            return false;
+        }
+    }
+
+    /**
     * Generates the country geoJason
     */
-   static async generateCountryGeoJason() {
+   static async generateCountryGeoJason(courseFilter) {
         try{
+            const data = JSON.stringify({ courseFilter });
             const response = await fetch('http://localhost:8080/setupLocation/generateCountryGeoJason', {
                 method: 'POST',
-                body: '',
+                headers: {
+                    'Content-Type': 'application/json',  // Set the content type to JSON
+                },
+                body: data,
             });
 
             if (response.ok){
@@ -179,11 +255,15 @@ class setUp {
    /**
     * Generates the city geoJason
     */
-   static async generateCityGeoJason() {
+   static async generateCityGeoJason(courseFilter) {
         try{
+            const data = JSON.stringify({ courseFilter });
             const response = await fetch('http://localhost:8080/setupLocation/generateCityGeoJason', {
                 method: 'POST',
-                body: '',
+                headers: {
+                    'Content-Type': 'application/json',  // Set the content type to JSON
+                },
+                body: data,
             });
 
             if (response.ok){
@@ -195,7 +275,6 @@ class setUp {
             console.log('Error while generating the city geoJason', error);
         }
    }
-
 }
 
 export default setUp;

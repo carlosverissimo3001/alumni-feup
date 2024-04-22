@@ -1,12 +1,16 @@
 package com.feupAlumni.alumniFEUP.service;
 
+import java.io.IOException;
+
 import org.springframework.web.multipart.MultipartFile;
 
 public interface AlumniService {
 
     // By calling the API stores the scraped information in the Alumni Table
     //                                                   in a Backup file
-    public void populateAlumniTable(MultipartFile file);
+    //                                                   uploades the profile pics to the folder: "C:/alimniProject/backend/src/main/java/com/feupAlumni/alumniFEUP/Images"
+    // The name of the profile pics is set to the public identifier of the user, which is retrieved by the API
+    public void populateAlumniTable(MultipartFile file) throws IOException, InterruptedException;;
 
     // Backs up alumnis from table "Alumni". If the table is already populated:  all registeries are deleted
     //                                                                           the table is repopulated.
@@ -18,6 +22,16 @@ public interface AlumniService {
     // Associates the missing linkedin links to the needed rows
     public void missingLinkedinLinks();
 
+    // Makes sure that every linkedin link finishes with /
+    public void refactorlinkdinLinkAlumnis();
+
+    // Deleting repeated alumnis
+    public void deleteRepeatedAlumnis();
+
     // Populates the AlumniEic table
-    public void populateAlumniEic();
+    public void populateAlumniEic(MultipartFile file);
+
+    // Populates Courses table
+    public void populateCoursesTable(MultipartFile file);
+
 }

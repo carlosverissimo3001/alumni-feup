@@ -7,6 +7,9 @@ import org.springframework.web.bind.annotation.*;
 import com.feupAlumni.alumniFEUP.service.CountryService;
 import com.feupAlumni.alumniFEUP.service.CityService;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.Map;
+
 @RestController
 @RequestMapping("/setupLocation")
 @CrossOrigin
@@ -38,22 +41,28 @@ public class SetupLocationController {
         }
     }
 
-    // Populates the table city. If it is already populated, registers are deleted and the table is repopulated
+    // Generates the country geoJson
     @PostMapping("/generateCountryGeoJason")
-    public ResponseEntity<String> handleCountryGeoJason(){
+    public ResponseEntity<String> handleCountryGeoJason(@RequestBody String jsonCouseFilter){
         try{
-            countryService.generateCountryGeoJson();
+            ObjectMapper objectMapper = new ObjectMapper(); // Use ObjectMapper to convert JSON string to Map
+            Map<String, String> map = objectMapper.readValue(jsonCouseFilter, Map.class);
+            String courseFilter = map.get("courseFilter"); // Extract courseFilter from the Map
+            countryService.generateCountryGeoJson(courseFilter);
             return ResponseEntity.ok("Country GeoJason successfully created.");
         } catch (Exception e) {
             return ResponseEntity.status(500).body("Error during country geoJason generation: " + e.getMessage());
         }
     }
 
-    // Populates the table city. If it is already populated, registers are deleted and the table is repopulated
+    // Generates the city geoJson
     @PostMapping("/generateCityGeoJason")
-    public ResponseEntity<String> handleCityGeoJason(){
+    public ResponseEntity<String> handleCityGeoJason(@RequestBody String jsonCouseFilter){
         try{
-            cityService.generateCityGeoJason();
+            ObjectMapper objectMapper = new ObjectMapper(); // Use ObjectMapper to convert JSON string to Map
+            Map<String, String> map = objectMapper.readValue(jsonCouseFilter, Map.class);
+            String courseFilter = map.get("courseFilter"); // Extract cityFilter from the Map
+            cityService.generateCityGeoJason(courseFilter);
             return ResponseEntity.ok("City GeoJason successfully created.");
         } catch (Exception e) {
             return ResponseEntity.status(500).body("Error during city geoJason generation: " + e.getMessage());
