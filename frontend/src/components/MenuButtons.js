@@ -16,12 +16,14 @@ const MenuButtons = ({onSelectGeoJSON, onSelectAlumni}) => {
     useEffect(() => {
         const geoJSONData = selectedOption === 'countries' ? require('../countriesGeoJSON.json') : require('../citiesGeoJSON.json');        
         // Get the names with their LinkedIn links
-        const namesLinkedinLinks = geoJSONData.features.flatMap((feature) => 
-            Object.entries(feature.properties.listLinkedinLinksByUser).map(([name, link]) => ({
-                name,
-                link,
-            }))
-        );
+        const namesLinkedinLinks = geoJSONData.features.flatMap((feature) => {
+            const coordinates = feature.geometry.coordinates; // Get coordinates
+            return Object.entries(feature.properties.listLinkedinLinksByUser).map(([name, link]) => ({
+              name,
+              link,
+              coordinates, 
+            }));
+        });
         // Get the courses data with the years of conclusion
         const namesCourseYears = geoJSONData.features.flatMap((feature) => 
             Object.entries(feature.properties.coursesYearConclusionByUser).map(([name, courseYears]) => ({
@@ -29,21 +31,17 @@ const MenuButtons = ({onSelectGeoJSON, onSelectAlumni}) => {
                 courseYears
             }))
         );
-        const alumniNamesWithCoords = geoJSONData.features.flatMap((feature) => {
-            const coordinates = feature.geometry.coordinates;
-            const alumnis = namesLinkedinLinks.map((item) => { 
-                // Find the corresponding courses data based on name
-                const coursesData = namesCourseYears.find((courseItem) => courseItem.name === item.name);
-
-                return {
-                    name: item.name,
-                    coordinates: coordinates,
-                    link: item.link,
-                    courses: coursesData ? coursesData.courseYears : [],
-                };
-            });
-            return alumnis;
+        const alumniNamesWithCoords = namesLinkedinLinks.map((item) => { 
+            // Find the corresponding courses data based on name
+            const coursesData = namesCourseYears.find((courseItem) => courseItem.name === item.name);
+            return {
+                name: item.name,
+                coordinates: item.coordinates,
+                link: item.link,
+                courses: coursesData ? coursesData.courseYears : {},
+            };
         });
+        
         setListAlumniNamesWithCoordinates(alumniNamesWithCoords);
         onSelectGeoJSON(selectedOption); // Use cities/countries GeoJson file
     }, [selectedOption]);
@@ -51,7 +49,7 @@ const MenuButtons = ({onSelectGeoJSON, onSelectAlumni}) => {
     // Filter alumni names based on search input
     useEffect(() => {
         if (listAlumniNamesWithCoordinates && searchInput.trim() !== '') {
-            const filteredNamesCoord = listAlumniNamesWithCoordinates.filter(alumni =>
+            const filteredNamesCoord = listAlumniNamesWithCoordinates.filter(alumni => 
                 alumni.name.toLowerCase().includes(searchInput.toLowerCase())
             );
             setFilteredAlumniNamesCoord(filteredNamesCoord);
@@ -85,6 +83,8 @@ const MenuButtons = ({onSelectGeoJSON, onSelectAlumni}) => {
     };
 
     const handleAlumniSelection = (name, coordinates) => {
+        console.log("selected name: ", name);
+        console.log("selected coordinates: ", coordinates);
         onSelectAlumni(name, coordinates);
     };
 
