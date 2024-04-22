@@ -5,5 +5,5 @@ public interface CountryService {
     public void populateCountryTable();
 
     // Generates the country geoJason file
-    public void generateCountryGeoJson();
+    public void generateCountryGeoJson(String courseFilter);
 }

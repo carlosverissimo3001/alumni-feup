@@ -1,6 +1,20 @@
 class ApiDataAnalysis {
 
     /**
+     * Extracts the profile pics of a linkedin user
+     */
+    static async extractPathToProfilePics(linkedinLinks) {
+        const pathsToProfileImage = [];
+        linkedinLinks.forEach(link => {
+            const parts = link.split('/');
+            const profileIdentifier = parts[parts.length-2];
+            const pathToProfileImage = `/Images/${profileIdentifier}.png`;
+            pathsToProfileImage.push(pathToProfileImage);
+        });
+        return pathsToProfileImage;
+    }
+
+    /**
     * Reads from the alumni table and stores the information in the excel file
     */
     static async almnTblExcel(file) {

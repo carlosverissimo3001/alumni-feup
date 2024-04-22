@@ -15,7 +15,7 @@ public class CleanData {
         if (repository.count() > 0) {
             try {
                 System.out.println("-----");
-                System.out.println("Table: " + repository + "populated. Registers are going to be deteled!");
+                System.out.println("Registers are going to be deteled!");
                 repository.deleteAll();
             } catch (Exception e) {
                 e.printStackTrace();
