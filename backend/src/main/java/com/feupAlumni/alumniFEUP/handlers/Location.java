@@ -111,7 +111,7 @@ public class Location {
     // Creates a GeoJSON file
     public static void createEmptyGeoJSONFile(File file) {
         GeoJSONStructure emptyStructure = new GeoJSONStructure();
-        try (FileWriter fileWriter = new FileWriter(file)) {
+        try (FileWriter fileWriter = new FileWriter(file, false)) { // false allows overrides
             new GsonBuilder().setPrettyPrinting().create().toJson(emptyStructure, fileWriter);
         } catch (IOException e) {
             e.printStackTrace();
