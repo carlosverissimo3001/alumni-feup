@@ -23,17 +23,6 @@ public class FilesHandler {
         }
     }
 
-    // If the file exists => delete 
-    public static void fileDeletion(File file) {
-        if(file.exists()){
-            if (file.delete()) {
-                System.out.println("Deleted existing file.");
-            } else {
-                System.err.println("Failed to delete existing file.");
-            }
-        }
-    } 
-
     // Extracts the value of a given NOT nested field of a json
     public static String extractFieldFromJson(String fieldToExtract, String jsonData) {
         ObjectMapper objectMapper = new ObjectMapper();

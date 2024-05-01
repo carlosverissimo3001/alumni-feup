@@ -98,7 +98,6 @@ public class CountryServiceImpl implements CountryService{
         // Creates the GeoJason file
         File geoJSONFile = new File("frontend/src/countriesGeoJSON.json");
         Gson gson = new GsonBuilder().setPrettyPrinting().create(); 
-        FilesHandler.fileDeletion(geoJSONFile);
         Location.createEmptyGeoJSONFile(geoJSONFile);
         System.out.println("GeoJSON file created");
 
