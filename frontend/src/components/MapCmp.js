@@ -188,38 +188,38 @@ const MapCmp = () => {
                 <Layer {...clusterCountLayer}/>
                 <Layer {...unclusterPointLayer}/>
             </Source>
-          </Map>
-          
-          { hoveredCluster && listAlumniNames.length > 0  && listLinkedinLinks.length > 0 && listPlaceName.length > 0 && (
-            <div
-              className="clusterRectangle"
-              style={{
-                position: 'absolute',
-                top:`${hoveredMouseCoords[1]}px`,
-                left: `${hoveredMouseCoords[0]}px`
-              }}
-            >
-              <ul className={`list-alumni${listAlumniNames.length > 5 ? ' scrollable' : ''}`}>
-                <span style={{ fontWeight: 'bold' }}>Place: </span>
-                {listPlaceName.map( (place, index) => (
-                  <span key={index}>{place}{index !== listPlaceName.length - 1 && ', '}</span>
-                ))}
 
-                <p></p>
-                <span style={{ fontWeight: 'bold' }}>Alumni: </span>
-                {alumniData
-                  .slice() // Create a copy of the array to avoid mutating the original
-                  .sort((a, b) => a.name.localeCompare(b.name)) // Sort the array alphabetically
-                  .map((alumni, index) => (
-                    <li key={index} className="listing-image-profile-picture">
-                      <img className="profile-picture" src={alumni.profilePics} alt="" />
-                      <a className="link" href={alumni.linkedinLink} target="_blank" rel="noopener noreferrer">{alumni.name}</a>
-                    </li>
-                  ))
-                }
-              </ul>
-            </div>
-          )}
+            { hoveredCluster && listAlumniNames.length > 0  && listLinkedinLinks.length > 0 && listPlaceName.length > 0 && (
+              <div
+                className="clusterRectangle"
+                style={{
+                  position: 'absolute',
+                  top:`${hoveredMouseCoords[1]}px`,
+                  left: `${hoveredMouseCoords[0]}px`
+                }}
+              >
+                <ul className={`list-alumni${listAlumniNames.length > 5 ? ' scrollable' : ''}`}>
+                  <span style={{ fontWeight: 'bold' }}>Place: </span>
+                  {listPlaceName.map( (place, index) => (
+                    <span key={index}>{place}{index !== listPlaceName.length - 1 && ', '}</span>
+                  ))}
+
+                  <p></p>
+                  <span style={{ fontWeight: 'bold' }}>Alumni: </span>
+                  {alumniData
+                    .slice() // Create a copy of the array to avoid mutating the original
+                    .sort((a, b) => a.name.localeCompare(b.name)) // Sort the array alphabetically
+                    .map((alumni, index) => (
+                      <li key={index} className="listing-image-profile-picture">
+                        <img className="profile-picture" src={alumni.profilePics} alt="" />
+                        <a className="link" href={alumni.linkedinLink} target="_blank" rel="noopener noreferrer">{alumni.name}</a>
+                      </li>
+                    ))
+                  }
+                </ul>
+              </div>
+            )}
+          </Map>
         </div>
       </>
     );
