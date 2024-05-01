@@ -51,9 +51,7 @@ public class AlumniServiceImpl implements AlumniService{
     @Autowired
     private CityRepository cityRepository;
     @Autowired
-    private CountryRepository countryRepository;
-
-    int contagem = 0; 
+    private CountryRepository countryRepository; 
 
     private boolean linkedinExists(String linkValue) {
         return alumniRepository.existsByLinkedinLink(linkValue);
@@ -101,7 +99,6 @@ public class AlumniServiceImpl implements AlumniService{
     @Override
     public void populateAlumniTable(MultipartFile file) throws IOException, InterruptedException {
         // TODO: commented so I don't call the API by accident
-        
         /*try (InputStream inputStream = file.getInputStream()){
             // Read and iterate over the excel file
             Workbook workbook = WorkbookFactory.create(inputStream);
@@ -135,7 +132,6 @@ public class AlumniServiceImpl implements AlumniService{
 
                         // Call the API that gets the information of a linkedin profile 
                         var linkedinInfoResponse = AlumniInfo.getLinkedinProfileInfo(linkValue);
-
                         if(linkedinInfoResponse.statusCode() == 200){
                             // Get the profile pic URL
                             JSONObject jsonResponse = new JSONObject(linkedinInfoResponse.body());
@@ -143,7 +139,7 @@ public class AlumniServiceImpl implements AlumniService{
                             String publicIdentifier = jsonResponse.optString("public_identifier", null);
 
                             // downloads and saves the pic in a local folder
-                            String savedImagePath = AlumniInfo.downloadAndSaveImage(profilePicUrl, "C:/alimniProject/frontend/public/Images", publicIdentifier);
+                            String savedImagePath = AlumniInfo.downloadAndSaveImage(profilePicUrl, "C:/alumniProject/frontend/public/Images", publicIdentifier);
                             System.out.println("Saved to path: " + savedImagePath);
 
                             // Stores the result in a file for personal backup. If the file exists, adds to the content
