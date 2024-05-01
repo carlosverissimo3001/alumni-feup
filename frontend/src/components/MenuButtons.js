@@ -12,39 +12,44 @@ const MenuButtons = ({onSelectGeoJSON, onSelectAlumni}) => {
     const [listAlumniNamesWithCoordinates, setListAlumniNamesWithCoordinates] = useState([]);
     const [searchInput, setSearchInput] = useState('');
     const [filterCourseInput, setFilterCourseInput] = useState('');
-    
+    const [loadingJson, setLoadingJson] = useState(true);
+
     useEffect(() => {
-        const geoJSONData = selectedOption === 'countries' ? require('../countriesGeoJSON.json') : require('../citiesGeoJSON.json');        
-        // Get the names with their LinkedIn links
-        const namesLinkedinLinks = geoJSONData.features.flatMap((feature) => {
-            const coordinates = feature.geometry.coordinates; // Get coordinates
-            return Object.entries(feature.properties.listLinkedinLinksByUser).map(([name, link]) => ({
-              name,
-              link,
-              coordinates, 
-            }));
-        });
-        // Get the courses data with the years of conclusion
-        const namesCourseYears = geoJSONData.features.flatMap((feature) => 
-            Object.entries(feature.properties.coursesYearConclusionByUser).map(([name, courseYears]) => ({
-                name,
-                courseYears
-            }))
-        );
-        const alumniNamesWithCoords = namesLinkedinLinks.map((item) => { 
-            // Find the corresponding courses data based on name
-            const coursesData = namesCourseYears.find((courseItem) => courseItem.name === item.name);
-            return {
-                name: item.name,
-                coordinates: item.coordinates,
-                link: item.link,
-                courses: coursesData ? coursesData.courseYears : {},
-            };
-        });
-        
-        setListAlumniNamesWithCoordinates(alumniNamesWithCoords);
-        onSelectGeoJSON(selectedOption); // Use cities/countries GeoJson file
-    }, [selectedOption]);
+        try{
+            const geoJSONData = selectedOption === 'countries' ? require('../countriesGeoJSON.json') : require('../citiesGeoJSON.json');        
+            // Get the names with their LinkedIn links
+            const namesLinkedinLinks = geoJSONData.features.flatMap((feature) => {
+                const coordinates = feature.geometry.coordinates; // Get coordinates
+                return Object.entries(feature.properties.listLinkedinLinksByUser).map(([name, link]) => ({
+                  name,
+                  link,
+                  coordinates, 
+                }));
+            });
+            // Get the courses data with the years of conclusion
+            const namesCourseYears = geoJSONData.features.flatMap((feature) => 
+                Object.entries(feature.properties.coursesYearConclusionByUser).map(([name, courseYears]) => ({
+                    name,
+                    courseYears
+                }))
+            );
+            const alumniNamesWithCoords = namesLinkedinLinks.map((item) => { 
+                // Find the corresponding courses data based on name
+                const coursesData = namesCourseYears.find((courseItem) => courseItem.name === item.name);
+                return {
+                    name: item.name,
+                    coordinates: item.coordinates,
+                    link: item.link,
+                    courses: coursesData ? coursesData.courseYears : {},
+                };
+            });
+            
+            setListAlumniNamesWithCoordinates(alumniNamesWithCoords);
+            onSelectGeoJSON(selectedOption); // Use cities/countries GeoJson file
+        } catch(error){
+            console.log("!! error: ");
+        }
+    }, [onSelectGeoJSON, selectedOption]);
 
     // Filter alumni names based on search input
     useEffect(() => {
@@ -89,9 +94,9 @@ const MenuButtons = ({onSelectGeoJSON, onSelectAlumni}) => {
     };
 
     const handleCourseSelection = async (courseAbreviation) => {
-        if (selectedOption === "countries") {
+        if (selectedOption === "countries" && loadingJson) {
             await setUp.generateCountryGeoJason(courseAbreviation);
-        } else if (selectedOption === "cities") {
+        } else if (selectedOption === "cities" && loadingJson) {
             await setUp.generateCityGeoJason(courseAbreviation);
         }
     }
@@ -180,12 +185,21 @@ const MenuButtons = ({onSelectGeoJSON, onSelectAlumni}) => {
 
     // Generates the coynntry geoJason
     const handleGenerateCountryGeoJason = async () => {
-        await setUp.generateCountryGeoJason("");
+        // loadingJson ensures the writing to the geoJson hapens only once the writing of the previous has finished
+        if (loadingJson) {
+            setLoadingJson(false);
+            await setUp.generateCountryGeoJason("");
+            setLoadingJson(true);
+        }
     }
 
     // Generates the city geoJason
     const handleGenerateCityGeoJason = async () => {
-        await setUp.generateCityGeoJason("");
+        if(loadingJson){
+            setLoadingJson(false);
+            await setUp.generateCityGeoJason("");
+            setLoadingJson(true);
+        }
     }    
 
     // Matches Students to LinkedIn Links. Receives an excel, updates the linkedin column and downloads the updated file

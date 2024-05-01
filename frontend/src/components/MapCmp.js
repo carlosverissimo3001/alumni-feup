@@ -32,8 +32,14 @@ const MapCmp = () => {
     }, [selectedAlumni]);
 
     useEffect(() => {
-      const alumniData = geoJSONFile === 'countries' ? require('../countriesGeoJSON.json') : require('../citiesGeoJSON.json');
-      setAlumniGeoJSON(alumniData);
+      try {
+        setTimeout(() => { // timeout so that react only renders the GeoJson once it is created
+          const alumniData = geoJSONFile === 'countries' ? require('../countriesGeoJSON.json') : require('../citiesGeoJSON.json');
+          setAlumniGeoJSON(alumniData);
+        }, 1000); 
+      } catch (error) {
+        console.log("!! error: ", error);
+      }
     }, [geoJSONFile]);
 
     const handleSelectGeoJSON = (file) => {
@@ -70,50 +76,59 @@ const MapCmp = () => {
     };
 
     const onHover = async event => {
-      if (event.lngLat) {
-        setHoveredMouseCoords([event.point.x, event.point.y]);
-      }
-
-      if (event.features && event.features.length > 0) {
-        const feature = event.features[0];        
-        var listPlaceName = feature.properties.name;
-
-        const linkUsersString = feature.properties.listLinkedinLinksByUser;
-        const jsonObjects = extractJSONObjects(linkUsersString);
-        const mapUserLinks = jsonObjects.reduce((acc, obj) => ({ ...acc, ...obj }), {});
-        var listAlumniNames = Object.keys(mapUserLinks)
-        var listLinkedinLinks = Object.values(mapUserLinks)
-        var profilePics = [];
-
-        // Parse placeName if it's a string
-        if (typeof listPlaceName === 'string') {
-          const regex = /"([^"]+)"|'([^']+)'/g;
-          listPlaceName = listPlaceName.match(regex).map(match => match.replace(/['"]/g, ''));
+      try {
+        if (event.lngLat) {
+          setHoveredMouseCoords([event.point.x, event.point.y]);
         }
-        
-        // Function to flatten nested arrays
-        const flattenArray = arr => {
-          if (!Array.isArray(arr)) return [arr];
-          let flattened = [];
-          arr.forEach(item => {
-            flattened = flattened.concat(flattenArray(item));
-          });
-          return flattened;
-        };
-        listPlaceName = flattenArray(listPlaceName);
-        profilePics = await ApiDataAnalysis.extractPathToProfilePics(listLinkedinLinks);
-        const alumniData = listAlumniNames.map((name, index) => ({
-          name: name,
-          linkedinLink: listLinkedinLinks[index],
-          profilePics: profilePics[index]
-        }));
-
-        if (listAlumniNames.length > 0 && listLinkedinLinks.length > 0 && listPlaceName.length > 0) {
-          setListPlaceName(listPlaceName);
-          setListAlumniNames(listAlumniNames);
-          setListLinkedinLinks(listLinkedinLinks);
-          setAlumniData(alumniData);
-          setHoveredCluster(true);
+  
+        if (event.features && event.features.length > 0) {
+          const feature = event.features[0];        
+          var listPlaceName = feature.properties.name;
+  
+          const linkUsersString = feature.properties.listLinkedinLinksByUser;
+          const jsonObjects = extractJSONObjects(linkUsersString);
+          const mapUserLinks = jsonObjects.reduce((acc, obj) => ({ ...acc, ...obj }), {});
+          var listAlumniNames = Object.keys(mapUserLinks)
+          var listLinkedinLinks = Object.values(mapUserLinks)
+          var profilePics = [];
+  
+          // Parse placeName if it's a string
+          if (typeof listPlaceName === 'string') {
+            const regex = /"([^"]+)"|'([^']+)'/g;
+            listPlaceName = listPlaceName.match(regex).map(match => match.replace(/['"]/g, ''));
+          }
+          
+          // Function to flatten nested arrays
+          const flattenArray = arr => {
+            if (!Array.isArray(arr)) return [arr];
+            let flattened = [];
+            arr.forEach(item => {
+              flattened = flattened.concat(flattenArray(item));
+            });
+            return flattened;
+          };
+          listPlaceName = flattenArray(listPlaceName);
+          profilePics = await ApiDataAnalysis.extractPathToProfilePics(listLinkedinLinks);
+          const alumniData = listAlumniNames.map((name, index) => ({
+            name: name,
+            linkedinLink: listLinkedinLinks[index],
+            profilePics: profilePics[index]
+          }));
+  
+          if (listAlumniNames.length > 0 && listLinkedinLinks.length > 0 && listPlaceName.length > 0) {
+            setListPlaceName(listPlaceName);
+            setListAlumniNames(listAlumniNames);
+            setListLinkedinLinks(listLinkedinLinks);
+            setAlumniData(alumniData);
+            setHoveredCluster(true);
+          } else {
+            setListPlaceName([]);
+            setListAlumniNames([]);
+            setListLinkedinLinks([]);
+            setAlumniData([]);
+            setHoveredCluster(false);
+            setHoveredMouseCoords(null);
+          }
         } else {
           setListPlaceName([]);
           setListAlumniNames([]);
@@ -122,13 +137,8 @@ const MapCmp = () => {
           setHoveredCluster(false);
           setHoveredMouseCoords(null);
         }
-      } else {
-        setListPlaceName([]);
-        setListAlumniNames([]);
-        setListLinkedinLinks([]);
-        setAlumniData([]);
-        setHoveredCluster(false);
-        setHoveredMouseCoords(null);
+      } catch (error) {
+        console.log("!! error: ", error);
       }
     };
 
