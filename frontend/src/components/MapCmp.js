@@ -203,24 +203,56 @@ const MapCmp = () => {
                   left: `${hoveredMouseCoords[0]}px`
                 }}
               >
-                <ul className={`list-alumni${listAlumniNames.length > 5 ? ' scrollable' : ''}`}>
-                  <span style={{ fontWeight: 'bold' }}>Place: </span>
+                <span><b>Place:</b></span>
+                <div style={{ maxHeight: listPlaceName.length > 10 ? '100px' : 'auto', overflow: 'auto' }}>
                   {listPlaceName.map( (place, index) => (
                     <span key={index}>{place}{index !== listPlaceName.length - 1 && ', '}</span>
                   ))}
+                </div>
 
-                  <p></p>
-                  <span style={{ fontWeight: 'bold' }}>Alumni: </span>
-                  {alumniData
-                    .slice() // Create a copy of the array to avoid mutating the original
-                    .sort((a, b) => a.name.localeCompare(b.name)) // Sort the array alphabetically
-                    .map((alumni, index) => (
-                      <li key={index} className="listing-image-profile-picture">
-                        <img className="profile-picture" src={alumni.profilePics} alt="" onError={handleImageError} />
-                        <a className="link" href={alumni.linkedinLink} target="_blank" rel="noopener noreferrer">{alumni.name}</a>
-                      </li>
-                    ))
-                  }
+                <p></p>
+
+                <span><b>Alumni Information:</b></span>
+                <ul className={`list-alumni${listAlumniNames.length > 5 ? ' scrollable' : ''}`}>
+                  <table className="alumni-table">
+                    <thead>
+                      <tr>
+                        <th className="table-titles">Alumni</th>
+                        <th className="table-titles">Course</th>
+                        <th className="table-titles">Finish Year</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {alumniData
+                        .slice() // Create a copy of the array to avoid mutating the original
+                        .sort((a, b) => a.name.localeCompare(b.name)) // Sort the array alphabetically
+                        .map((alumni, index) => (
+                          <tr key={index}>
+                            <td>
+                              <div className='alumni-cell'>
+                                <img
+                                  className="profile-picture"
+                                  src={alumni.profilePics}
+                                  alt=""
+                                  onError={handleImageError}
+                                />
+                                <a
+                                  className="link"
+                                  href={alumni.linkedinLink}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                >
+                                  {alumni.name}
+                                </a>
+                              </div>
+                            </td>
+                            <td>MiEIC</td>
+                            <td>2024</td>
+                          </tr>
+                        ))
+                      }
+                    </tbody>
+                  </table>
                 </ul>
               </div>
             )}

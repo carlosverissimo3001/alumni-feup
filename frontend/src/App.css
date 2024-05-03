@@ -105,6 +105,11 @@
     overflow-y: auto;
 }
 
+.alumni-cell {
+    display: flex; 
+    align-items: center; 
+  }
+
 .profile-picture {
     max-height: 30px;
     border-radius: 100%; 
@@ -127,6 +132,7 @@
     padding-left: 10px;
     padding-right: 10px;
     border-radius: 5px;
+    width: 25%;
     z-index: 999; 
 }
 
@@ -144,3 +150,7 @@
     max-width: 500px; 
     overflow-y: auto;
 }
+
+.table-titles {
+    text-align: left;
+  }
