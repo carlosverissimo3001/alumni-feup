@@ -152,4 +152,24 @@
 
 .table-titles {
     text-align: left;
+}
+
+.my-button-done {
+    background: linear-gradient(135deg, #6b73ff, #000dff); 
+    border: none; 
+    border-radius: 5px; 
+    color: white;
+    padding: 5px 10px; 
+    font-size: 10px; 
+    font-weight: bold; 
+    text-transform: uppercase; 
+    cursor: pointer; 
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2); 
+    transition: all 0.3s ease; 
+  }
+  
+  .my-button-done:hover {
+    background: linear-gradient(135deg, #000dff, #6b73ff); /* Reverse gradient on hover */
+    box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.3); /* Increase shadow on hover */
+    transform: translateY(-2px); /* Small lift on hover */
   }
