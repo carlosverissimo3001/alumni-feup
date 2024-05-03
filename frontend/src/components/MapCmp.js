@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { clusterLayer, clusterCountLayer, unclusterPointLayer } from './MapLayers';
-import {Map, Source, Layer} from 'react-map-gl';
+import {Map as MapGL, Source, Layer} from 'react-map-gl';
 import MenuButtons from './MenuButtons';
 import ApiDataAnalysis from '../helpers/apiDataAnalysis';
 import { FaRegUser } from "react-icons/fa";
@@ -77,23 +77,25 @@ const MapCmp = () => {
     };
 
     const onHover = async event => {
-      try {
+      //try {
         if (event.lngLat) {
           setHoveredMouseCoords([event.point.x, event.point.y]);
         }
   
         if (event.features && event.features.length > 0) {
+          // Extracts feature fields
           const feature = event.features[0];        
           var listPlaceName = feature.properties.name;
-  
           const linkUsersString = feature.properties.listLinkedinLinksByUser;
-          const jsonObjects = extractJSONObjects(linkUsersString);
-          const mapUserLinks = jsonObjects.reduce((acc, obj) => ({ ...acc, ...obj }), {});
-          var listAlumniNames = Object.keys(mapUserLinks)
-          var listLinkedinLinks = Object.values(mapUserLinks)
-          var profilePics = [];
+          const coursesYearConclusionByUser = feature.properties.coursesYearConclusionByUser;
+
+            // Separates fields of linkUsersString
+          var jsonObjects = extractJSONObjects(linkUsersString);
+          var mapUserLinks = jsonObjects.reduce((acc, obj) => ({ ...acc, ...obj }), {});
+          const listAlumniNames = Object.keys(mapUserLinks)
+          const listLinkedinLinks = Object.values(mapUserLinks)
   
-          // Parse placeName if it's a string
+            // Parse placeName if it's a string
           if (typeof listPlaceName === 'string') {
             const regex = /"([^"]+)"|'([^']+)'/g;
             listPlaceName = listPlaceName.match(regex).map(match => match.replace(/['"]/g, ''));
@@ -109,12 +111,43 @@ const MapCmp = () => {
             return flattened;
           };
           listPlaceName = flattenArray(listPlaceName);
-          profilePics = await ApiDataAnalysis.extractPathToProfilePics(listLinkedinLinks);
-          const alumniData = listAlumniNames.map((name, index) => ({
-            name: name,
-            linkedinLink: listLinkedinLinks[index],
-            profilePics: profilePics[index]
-          }));
+          
+          var profilePics = await ApiDataAnalysis.extractPathToProfilePics(listLinkedinLinks);
+          
+          var mapUserCoursesYears = new Map();
+          var jsonObjectsPeopleCoursesConclusion = extractJSONObjects(coursesYearConclusionByUser);
+          var mapUserPeopleCoursesConclusion = jsonObjectsPeopleCoursesConclusion.reduce((acc, obj) => ({ ...acc, ...obj }), {});
+          Object.entries(mapUserPeopleCoursesConclusion).forEach(([userName, courseYear]) => {
+            var mapCoursesYears = new Map();
+            Object.entries(courseYear).forEach((courseConclusionYears)=>{
+              mapCoursesYears.set(courseConclusionYears[0], courseConclusionYears[1]);
+            });
+            mapUserCoursesYears.set(userName, mapCoursesYears);
+          });
+
+          const alumniData = listAlumniNames.map((name, index) => {
+            var coursesCurrentAlumni = "";
+            var yearConclusionCurrentAlumni="";
+            var userCoursesYearsConclusion = mapUserCoursesYears.get(name);
+
+            userCoursesYearsConclusion.forEach((yearConclusion, course) => {
+              coursesCurrentAlumni+=course+" ";
+              yearConclusionCurrentAlumni+=yearConclusion+" ";
+            });
+
+            if (coursesCurrentAlumni==="" || yearConclusionCurrentAlumni==="") {
+              coursesCurrentAlumni = "-";
+              yearConclusionCurrentAlumni = "-";
+            } 
+
+            return {
+              name: name,
+              linkedinLink: listLinkedinLinks[index],
+              profilePics: profilePics[index],
+              courses: coursesCurrentAlumni,
+              yearConclusions: yearConclusionCurrentAlumni,
+            };
+          });
   
           if (listAlumniNames.length > 0 && listLinkedinLinks.length > 0 && listPlaceName.length > 0) {
             setListPlaceName(listPlaceName);
@@ -138,9 +171,9 @@ const MapCmp = () => {
           setHoveredCluster(false);
           setHoveredMouseCoords(null);
         }
-      } catch (error) {
+      /*} catch (error) {
         console.log("!! error: ", error);
-      }
+      }*/
     };
 
     const handleSelectAlumni = (name, coordinates) => {
@@ -159,7 +192,7 @@ const MapCmp = () => {
           </div>
         </div>
         <div className="mapCmpDiv">
-          <Map
+          <MapGL
             initialViewState={{
                 latitude: 0,
                 longitude: 0,
@@ -187,6 +220,7 @@ const MapCmp = () => {
                   name: ['concat', ['get', 'name']],
                   students: ['+', ['get', 'students']],
                   listLinkedinLinksByUser: ['concat', ['get', 'listLinkedinLinksByUser'], ';'],
+                  coursesYearConclusionByUser: ['concat', ['get', 'coursesYearConclusionByUser'], ';'],
                 }}
             >
                 <Layer {...clusterLayer}/>
@@ -212,7 +246,6 @@ const MapCmp = () => {
 
                 <p></p>
 
-                <span><b>Alumni Information:</b></span>
                 <ul className={`list-alumni${listAlumniNames.length > 5 ? ' scrollable' : ''}`}>
                   <table className="alumni-table">
                     <thead>
@@ -246,8 +279,8 @@ const MapCmp = () => {
                                 </a>
                               </div>
                             </td>
-                            <td>MiEIC</td>
-                            <td>2024</td>
+                            <td>{alumni.courses}</td>
+                            <td>{alumni.yearConclusions}</td>
                           </tr>
                         ))
                       }
@@ -256,7 +289,7 @@ const MapCmp = () => {
                 </ul>
               </div>
             )}
-          </Map>
+          </MapGL>
         </div>
       </>
     );
