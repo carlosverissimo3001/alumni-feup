@@ -77,7 +77,7 @@ const MapCmp = () => {
     };
 
     const onHover = async event => {
-      //try {
+      try {
         if (event.lngLat) {
           setHoveredMouseCoords([event.point.x, event.point.y]);
         }
@@ -172,9 +172,9 @@ const MapCmp = () => {
           setHoveredCluster(false);
           setHoveredMouseCoords(null);
         }
-      /*} catch (error) {
+      } catch (error) {
         console.log("!! error: ", error);
-      }*/
+      }
     };
 
     const handleSelectAlumni = (name, coordinates) => {
