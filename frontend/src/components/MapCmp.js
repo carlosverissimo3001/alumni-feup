@@ -253,7 +253,7 @@ const MapCmp = () => {
                       <tr>
                         <th className="table-titles">Alumni</th>
                         <th className="table-titles">Course</th>
-                        <th className="table-titles">Finish Year</th>
+                        <th className="table-titles">Conclusion</th>
                       </tr>
                     </thead>
                     <tbody>
