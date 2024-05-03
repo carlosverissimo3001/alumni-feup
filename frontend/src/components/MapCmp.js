@@ -148,7 +148,7 @@ const MapCmp = () => {
     }
 
     const handleImageError = (event) => {
-      event.target.src = `/Images/acarraca.png`;
+      event.target.src = `/Images/noImage.png`;
     };
 
     return (
