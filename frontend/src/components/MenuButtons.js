@@ -224,6 +224,11 @@ const MenuButtons = ({onSelectGeoJSON, onSelectAlumni}) => {
         ApiDataAnalysis.almnTblExcel(file);
     }
 
+    // Applies the values inserted in the fields
+    const onClickDone = async () => {
+
+    }
+
     return (
         <>
             <p>See alumni distribution across:</p>
@@ -285,6 +290,8 @@ const MenuButtons = ({onSelectGeoJSON, onSelectAlumni}) => {
                     </div>
                 )}
             </div>
+
+            <button className="my-button-done" onClick={onClickDone}> Done </button>
 
             {/*<input type="file" className='fileInput' onChange={handleFileChange} />    
             <button className="button butnPopAlumni" onClick={handlePopulateCoursesTable}>Populate Courses Table</button>
