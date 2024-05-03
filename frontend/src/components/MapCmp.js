@@ -120,7 +120,8 @@ const MapCmp = () => {
           Object.entries(mapUserPeopleCoursesConclusion).forEach(([userName, courseYear]) => {
             var mapCoursesYears = new Map();
             Object.entries(courseYear).forEach((courseConclusionYears)=>{
-              mapCoursesYears.set(courseConclusionYears[0], courseConclusionYears[1]);
+              const courseConclusionYearsSplited = courseConclusionYears[1].split("/");
+              mapCoursesYears.set(courseConclusionYears[0], courseConclusionYearsSplited[1]);
             });
             mapUserCoursesYears.set(userName, mapCoursesYears);
           });
