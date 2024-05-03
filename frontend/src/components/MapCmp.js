@@ -3,6 +3,7 @@ import { clusterLayer, clusterCountLayer, unclusterPointLayer } from './MapLayer
 import {Map, Source, Layer} from 'react-map-gl';
 import MenuButtons from './MenuButtons';
 import ApiDataAnalysis from '../helpers/apiDataAnalysis';
+import { FaRegUser } from "react-icons/fa";
 
 const TOKEN = process.env.REACT_APP_MAPBOX_ACCESS_TOKEN;
 
@@ -146,6 +147,10 @@ const MapCmp = () => {
       setSelectedAlumni({name, coordinates});
     }
 
+    const handleImageError = (event) => {
+      event.target.src = `/Images/acarraca.png`;
+    };
+
     return (
       <>
         <div>
@@ -211,7 +216,7 @@ const MapCmp = () => {
                     .sort((a, b) => a.name.localeCompare(b.name)) // Sort the array alphabetically
                     .map((alumni, index) => (
                       <li key={index} className="listing-image-profile-picture">
-                        <img className="profile-picture" src={alumni.profilePics} alt="" />
+                        <img className="profile-picture" src={alumni.profilePics} alt="" onError={handleImageError} />
                         <a className="link" href={alumni.linkedinLink} target="_blank" rel="noopener noreferrer">{alumni.name}</a>
                       </li>
                     ))
