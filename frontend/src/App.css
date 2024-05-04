@@ -125,7 +125,6 @@
     cursor: pointer; 
 }
 
-
 .clusterRectangle {
     background-color: rgba(255, 255, 255, 0.8);
     border: 1px solid black;
@@ -154,7 +153,7 @@
     text-align: left;
 }
 
-.my-button-done {
+.my-button-clean {
     background: linear-gradient(135deg, #6b73ff, #000dff); 
     border: none; 
     border-radius: 5px; 
@@ -168,8 +167,8 @@
     transition: all 0.3s ease; 
   }
   
-  .my-button-done:hover {
-    background: linear-gradient(135deg, #000dff, #6b73ff); /* Reverse gradient on hover */
-    box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.3); /* Increase shadow on hover */
-    transform: translateY(-2px); /* Small lift on hover */
+  .my-button-clean:hover {
+    background: linear-gradient(135deg, #000dff, #6b73ff); 
+    box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.3); 
+    transform: translateY(-2px); 
   }

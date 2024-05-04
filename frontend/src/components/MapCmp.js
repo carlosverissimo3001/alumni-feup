@@ -3,7 +3,6 @@ import { clusterLayer, clusterCountLayer, unclusterPointLayer } from './MapLayer
 import {Map as MapGL, Source, Layer} from 'react-map-gl';
 import MenuButtons from './MenuButtons';
 import ApiDataAnalysis from '../helpers/apiDataAnalysis';
-import { FaRegUser } from "react-icons/fa";
 
 const TOKEN = process.env.REACT_APP_MAPBOX_ACCESS_TOKEN;
 
@@ -125,6 +124,7 @@ const MapCmp = () => {
             });
             mapUserCoursesYears.set(userName, mapCoursesYears);
           });
+          console.log("listAlumniNames: ", listAlumniNames.length, " listAlumniNames: ", listAlumniNames);
 
           const alumniData = listAlumniNames.map((name, index) => {
             var coursesCurrentAlumni = "";

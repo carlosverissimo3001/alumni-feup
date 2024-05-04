@@ -13,6 +13,7 @@ const MenuButtons = ({onSelectGeoJSON, onSelectAlumni}) => {
     const [searchInput, setSearchInput] = useState('');
     const [filterCourseInput, setFilterCourseInput] = useState('');
     const [loadingJson, setLoadingJson] = useState(true);
+    const [numberAlumnisShowing, setNumberAlumnisShowing] = useState(0);
 
     useEffect(() => {
         try{
@@ -45,9 +46,10 @@ const MenuButtons = ({onSelectGeoJSON, onSelectAlumni}) => {
             });
             
             setListAlumniNamesWithCoordinates(alumniNamesWithCoords);
+            setNumberAlumnisShowing(listAlumniNamesWithCoordinates.length);
             onSelectGeoJSON(selectedOption); // Use cities/countries GeoJson file
         } catch(error){
-            console.log("!! error: ");
+            console.log("Attention!");
         }
     }, [onSelectGeoJSON, selectedOption]);
 
@@ -88,12 +90,11 @@ const MenuButtons = ({onSelectGeoJSON, onSelectAlumni}) => {
     };
 
     const handleAlumniSelection = (name, coordinates) => {
-        console.log("selected name: ", name);
-        console.log("selected coordinates: ", coordinates);
         onSelectAlumni(name, coordinates);
     };
 
     const handleCourseSelection = async (courseAbreviation) => {
+        setFilterCourseInput(courseAbreviation);
         if (selectedOption === "countries" && loadingJson) {
             await setUp.generateCountryGeoJason(courseAbreviation);
         } else if (selectedOption === "cities" && loadingJson) {
@@ -226,7 +227,9 @@ const MenuButtons = ({onSelectGeoJSON, onSelectAlumni}) => {
 
     // Applies the values inserted in the fields
     const onClickDone = async () => {
-
+        handleCourseSelection("");                
+        setSelectedOption("countries");
+        setSearchInput("");
     }
 
     return (
@@ -291,7 +294,9 @@ const MenuButtons = ({onSelectGeoJSON, onSelectAlumni}) => {
                 )}
             </div>
 
-            <button className="my-button-done" onClick={onClickDone}> Done </button>
+            <button className="my-button-clean" onClick={onClickDone}> Clean </button>
+
+            <p>Total nº alumnis displayed: {numberAlumnisShowing}</p>
 
             {/*<input type="file" className='fileInput' onChange={handleFileChange} />    
             <button className="button butnPopAlumni" onClick={handlePopulateCoursesTable}>Populate Courses Table</button>
@@ -307,12 +312,12 @@ const MenuButtons = ({onSelectGeoJSON, onSelectAlumni}) => {
 
             {/*<button className="button butnPopCountry" onClick={handlePopulateCountryTable}>PopulateCoutryTable</button>
             <button className="button butnPopCity" onClick={handlePopulateCityTable}>PopulateCityTable</button>
-            <button className="button butnPopAlumniEIC" onClick={handlePopulateAlumniEICTable}>PopulateAlumniEICTable</button>*/}
+            <button className="button butnPopAlumniEIC" onClick={handlePopulateAlumniEICTable}>PopulateAlumniEICTable</button>
 
             <button className="button butnGenCountryGeoJason" onClick={handleGenerateCountryGeoJason}>GenerateCountryGeoJason</button>
             <button className="button butnGenCityGeoJason" onClick={handleGenerateCityGeoJason}>GenerateCityGeoJason</button>
 
-            {/*<button className="button butnAlmWithoutLink" onClick={handleAlumnisMatchLinkedin}>Match Alumnis Linkedin</button>
+            <button className="button butnAlmWithoutLink" onClick={handleAlumnisMatchLinkedin}>Match Alumnis Linkedin</button>
             <button className="button btnExcelAlumniProfSitu" onClick={handleExcelAlumniProfSitu}>Excel: nomeAlumni + professionalSitu</button>
             <button className="button btnExcelAlumniTableToExcel" onClick={handleAlmnTblExcel}>Excel: Alumni table</button>*/}
         </>
