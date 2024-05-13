@@ -21,11 +21,17 @@ const MapCmp = () => {
 
     useEffect(() => {
       if (selectedAlumni) {
-        const { coordinates } = selectedAlumni;
+        const { name, coordinates } = selectedAlumni;
+        var zoom = 0;
+        if (name.length!==0) {
+          zoom = 10;
+        } else {
+          zoom = 3;
+        }
         if (coordinates) {
           mapRef.current.getMap().flyTo({
             center: coordinates,
-            zoom: 10,
+            zoom: zoom,
           });
         }
       }

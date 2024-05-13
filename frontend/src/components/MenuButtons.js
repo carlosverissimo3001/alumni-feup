@@ -230,6 +230,7 @@ const MenuButtons = ({onSelectGeoJSON, onSelectAlumni}) => {
         handleCourseSelection("");                
         setSelectedOption("countries");
         setSearchInput("");
+        onSelectAlumni("", [0,0]);
     }
 
     return (
