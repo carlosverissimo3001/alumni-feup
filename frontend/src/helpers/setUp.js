@@ -229,12 +229,13 @@ class setUp {
     }
 
     /**
-    * Generates the country geoJson
+    * Generates the geoJson
+    * geoJsonType refers if is e country geojson or a city geojson
     */
-   static async generateCountryGeoJson(courseFilter, yearsConclusionFilter) {
+    static async generateGeoJson(courseFilter, yearsConclusionFilter, geoJsonType) {
         try{
-            const data = JSON.stringify({ courseFilter, yearsConclusionFilter });
-            const response = await fetch('http://localhost:8080/setupLocation/generateCountryGeoJson', {
+            const data = JSON.stringify({ courseFilter, yearsConclusionFilter, geoJsonType });
+            const response = await fetch('http://localhost:8080/setupLocation/generateGeoJson', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',  // Set the content type to JSON
@@ -242,38 +243,14 @@ class setUp {
                 body: data,
             });
             if (response.ok){
-                console.log('Country geoJason successfully created.');
+                console.log('GeoJason successfully created.');
             } else {
-                console.error('Country geoJason creation failed.');
+                console.error('GeoJason creation failed.');
             }
         } catch (error) {
-            console.log('Error while generating the country geoJason', error);
+            console.log('Error while generating the geoJason', error);
         }
-   }
-
-   /**
-    * Generates the city geoJson
-    */
-   static async generateCityGeoJson(courseFilter, yearsConclusionFilter) {
-        try{
-            const data = JSON.stringify({ courseFilter, yearsConclusionFilter });
-            const response = await fetch('http://localhost:8080/setupLocation/generateCityGeoJson', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',  // Set the content type to JSON
-                },
-                body: data,
-            });
-
-            if (response.ok){
-                console.log('City geoJason successfully created.');
-            } else {
-                console.error('City geoJason creation failed.');
-            }
-        } catch (error) {
-            console.log('Error while generating the city geoJason', error);
-        }
-   }
+   } 
 }
 
 export default setUp;

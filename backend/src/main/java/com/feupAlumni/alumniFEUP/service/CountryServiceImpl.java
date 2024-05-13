@@ -4,8 +4,6 @@ import com.feupAlumni.alumniFEUP.handlers.CleanData;
 import com.feupAlumni.alumniFEUP.handlers.FilesHandler;
 import com.feupAlumni.alumniFEUP.handlers.Location;
 import com.feupAlumni.alumniFEUP.model.Alumni;
-import com.feupAlumni.alumniFEUP.model.AlumniEic;
-import com.feupAlumni.alumniFEUP.model.AlumniEic_has_Course;
 import com.feupAlumni.alumniFEUP.model.Country;
 import com.feupAlumni.alumniFEUP.repository.AlumniEicRepository;
 import com.feupAlumni.alumniFEUP.repository.AlumniRepository;
@@ -16,15 +14,10 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.Map;
-import java.util.stream.Collectors;
-import java.io.File;
-
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 
 @Service
 public class CountryServiceImpl implements CountryService{
-
+ 
     @Autowired
     private CountryRepository countryRepository;
     @Autowired
@@ -91,75 +84,5 @@ public class CountryServiceImpl implements CountryService{
         }
         System.out.println("Information added to the GeoJSON file and Table viewAlumniCountryRepository repopulated.");
         System.out.println("-----");
-    }
-
-    @Override
-    public void generateCountryGeoJson(String courseFilter, List<String> yearFilter) {
-        // Creates the GeoJason file
-        File geoJSONFile = new File("frontend/src/countriesGeoJSON.json");
-        Gson gson = new GsonBuilder().setPrettyPrinting().create(); 
-        Location.createEmptyGeoJSONFile(geoJSONFile);
-        System.out.println("GeoJSON file created");
-
-        // Group AlumniEic by country
-        Map<Country, List<AlumniEic>> alumniByCountry = alumniEicRepository.findAll()
-            .stream()
-            .collect(Collectors.groupingBy(AlumniEic::getCountry));
-
-        // For each alumni associates the linkedin link he is associated with
-        Map<String, String> listLinkedinLinksByUser = new HashMap<>();
-        for (AlumniEic alumni : alumniEicRepository.findAll()) {
-            String linkdeinLink = alumni.getLinkedinLink();
-            String alumniName = alumni.getAlumniName();
-            if (!courseFilter.equals("")) {
-                List<AlumniEic_has_Course> alumniCourses = alumni.getAlumniEicHasCourse();
-                for (AlumniEic_has_Course course : alumniCourses) {
-                    String abrev = course.getCourse().getAbbreviation();
-                    if (abrev.equals(courseFilter)) {
-                        listLinkedinLinksByUser.put(alumniName, linkdeinLink);
-                    }
-                }
-            } else {
-                listLinkedinLinksByUser.put(alumniName, linkdeinLink);
-            }
-        }
-
-        // For each alumni associates the various courses he was involved and the year of conclusion of each course
-        // Key: alumni Vlaue: map where key: course and value: year of conclusion
-        Map<String, Map<String, String>> alumniByCourseYearConclusion = new HashMap<>();
-        for (AlumniEic alumni : alumniEicRepository.findAll()) {
-            Map<String, String> coursesYearConclusion = new HashMap<>();
-            if (courseFilter.length() > 0) {
-                var containsCourseFilter = false;
-                for (AlumniEic_has_Course alumniCourse : alumni.getAlumniEicHasCourse()) {
-                    String courseAbrev = alumniCourse.getCourse().getAbbreviation();
-                    if (courseAbrev.equals(courseFilter)) {
-                        containsCourseFilter = true;
-                    }
-                    coursesYearConclusion.put(courseAbrev, alumniCourse.getYearOfConclusion());
-                }
-                if (containsCourseFilter) {
-                    alumniByCourseYearConclusion.put(alumni.getAlumniName(), coursesYearConclusion);
-                }
-            } else {
-                for (AlumniEic_has_Course alumniCourse : alumni.getAlumniEicHasCourse()) {
-                    String courseAbrev = alumniCourse.getCourse().getAbbreviation();
-                    coursesYearConclusion.put(courseAbrev, alumniCourse.getYearOfConclusion());
-                }   
-                alumniByCourseYearConclusion.put(alumni.getAlumniName(), coursesYearConclusion);
-            }
-        }
-
-        alumniByCountry.forEach((country, alumniList) -> {
-            Map<String, String> filteredListLinkedinLinksByUser = listLinkedinLinksByUser.entrySet().stream()
-                .filter(entry -> alumniList.stream().anyMatch(alumni -> alumni.getAlumniName().equals(entry.getKey())))
-                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-
-            Map<String, Map<String, String>> filteredAlumniByCourseYearConclusion = alumniByCourseYearConclusion.entrySet().stream()
-            .filter(entry -> alumniList.stream().anyMatch(alumni -> alumni.getAlumniName().equals(entry.getKey())))
-            .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-
-            Location.addCountryGeoJSON(country, filteredListLinkedinLinksByUser, filteredAlumniByCourseYearConclusion, geoJSONFile, gson);
-        });
     }
 }

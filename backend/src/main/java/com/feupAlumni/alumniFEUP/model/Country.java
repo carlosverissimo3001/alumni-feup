@@ -7,7 +7,7 @@ import jakarta.persistence.Id;
 // View: "The system should be able to show the alumni distribution in different countries and cyties" 
 // This view contains the data needed to perform this funcitonality
 @Entity
-public class Country {
+public class Country extends LocationAlumnis {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,24 +27,18 @@ public class Country {
         this.countryCoordinates = countryCoordinates;
     }
 
-    public int getId() {
-        return id;
+    @Override
+    public String getName() {
+        return country;
     }
 
-    public String getCountry() {
-        return country;
+    @Override
+    public String getCoordinates() {
+        return countryCoordinates;
     }
 
     public String getCountryCode() {
         return countryCode;
-    }
-
-    public String getCountryCoordinates() {
-        return countryCoordinates;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public void setCountry(String country) {
