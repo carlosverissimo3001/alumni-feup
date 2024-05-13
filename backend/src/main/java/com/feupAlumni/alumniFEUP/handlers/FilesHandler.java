@@ -1,6 +1,5 @@
 package com.feupAlumni.alumniFEUP.handlers;
 
-import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;

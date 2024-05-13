@@ -6,7 +6,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 
 @Entity
-public class City {
+public class City extends LocationAlumnis {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,11 +23,13 @@ public class City {
         this.cityCoordinates = cityCoordinates;
     }
 
-    public String getCity() {
+    @Override
+    public String getName() {
         return city;
     }
 
-    public String getCityCoordinates() {
+    @Override
+    public String getCoordinates() {
         return cityCoordinates;
     }
 

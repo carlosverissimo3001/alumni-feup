@@ -244,7 +244,7 @@ const MenuButtons = ({onSelectGeoJSON, onSelectAlumni}) => {
         // loadingJson ensures the writing to the geoJson hapens only once the writing of the previous has finished
         if (loadingJson) {
             setLoadingJson(false);
-            await setUp.generateCountryGeoJson("");
+            //await setUp.generateCountryGeoJson(""); Not updated
             setLoadingJson(true);
         }
     }
@@ -253,7 +253,7 @@ const MenuButtons = ({onSelectGeoJSON, onSelectAlumni}) => {
     const handleGenerateCityGeoJason = async () => {
         if(loadingJson){
             setLoadingJson(false);
-            await setUp.generateCityGeoJson("");
+            //await setUp.generateCityGeoJson(""); Not updated
             setLoadingJson(true);
         }
     }    
@@ -296,11 +296,7 @@ const MenuButtons = ({onSelectGeoJSON, onSelectAlumni}) => {
 
     // Applies the values inserted in the fields
     const onClickApply = async (courseFilter, yearsConclusionFilters) => {
-        if (selectedOption === "countries" && loadingJson) {
-            await setUp.generateCountryGeoJson(courseFilter, yearsConclusionFilters);
-        } else if (selectedOption === "cities" && loadingJson) {
-            await setUp.generateCityGeoJson(courseFilter, yearsConclusionFilters);
-        }
+        setUp.generateGeoJson(courseFilter, yearsConclusionFilters, selectedOption);
     }
 
     return (
