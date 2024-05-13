@@ -8,6 +8,8 @@ import com.feupAlumni.alumniFEUP.service.CountryService;
 import com.feupAlumni.alumniFEUP.service.CityService;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -42,13 +44,16 @@ public class SetupLocationController {
     }
 
     // Generates the country geoJson
-    @PostMapping("/generateCountryGeoJason")
-    public ResponseEntity<String> handleCountryGeoJason(@RequestBody String jsonCouseFilter){
+    @PostMapping("/generateCountryGeoJson")
+    public ResponseEntity<String> handleCountryGeoJson(@RequestBody String filters){
         try{
             ObjectMapper objectMapper = new ObjectMapper(); // Use ObjectMapper to convert JSON string to Map
-            Map<String, String> map = objectMapper.readValue(jsonCouseFilter, Map.class);
-            String courseFilter = map.get("courseFilter"); // Extract courseFilter from the Map
-            countryService.generateCountryGeoJson(courseFilter);
+            Map<String, Object> map = objectMapper.readValue(filters, Map.class);
+            
+            String courseFilter = (String) map.get("courseFilter"); // Extract courseFilter from the Map            
+            List<String> yearFilter = (List<String>) map.get("yearsConclusionFilter"); // Extract yearsConclusionFilter from the Map
+            
+            countryService.generateCountryGeoJson(courseFilter, yearFilter);
             return ResponseEntity.ok("Country GeoJason successfully created.");
         } catch (Exception e) {
             return ResponseEntity.status(500).body("Error during country geoJason generation: " + e.getMessage());
@@ -56,13 +61,16 @@ public class SetupLocationController {
     }
 
     // Generates the city geoJson
-    @PostMapping("/generateCityGeoJason")
-    public ResponseEntity<String> handleCityGeoJason(@RequestBody String jsonCouseFilter){
+    @PostMapping("/generateCityGeoJson")
+    public ResponseEntity<String> handleCityGeoJson(@RequestBody String filters){
         try{
             ObjectMapper objectMapper = new ObjectMapper(); // Use ObjectMapper to convert JSON string to Map
-            Map<String, String> map = objectMapper.readValue(jsonCouseFilter, Map.class);
-            String courseFilter = map.get("courseFilter"); // Extract cityFilter from the Map
-            cityService.generateCityGeoJason(courseFilter);
+            Map<String, Object> map = objectMapper.readValue(filters, Map.class);
+
+            String courseFilter = (String) map.get("courseFilter"); // Extract cityFilter from the Map
+            List<String> yearFilter = (List<String>) map.get("yearsConclusionFilter"); // Extract yearsConclusionFilter from the Map
+
+            cityService.generateCityGeoJson(courseFilter, yearFilter);
             return ResponseEntity.ok("City GeoJason successfully created.");
         } catch (Exception e) {
             return ResponseEntity.status(500).body("Error during city geoJason generation: " + e.getMessage());

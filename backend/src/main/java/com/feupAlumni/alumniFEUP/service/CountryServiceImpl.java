@@ -94,7 +94,7 @@ public class CountryServiceImpl implements CountryService{
     }
 
     @Override
-    public void generateCountryGeoJson(String courseFilter) {
+    public void generateCountryGeoJson(String courseFilter, List<String> yearFilter) {
         // Creates the GeoJason file
         File geoJSONFile = new File("frontend/src/countriesGeoJSON.json");
         Gson gson = new GsonBuilder().setPrettyPrinting().create(); 

@@ -229,19 +229,18 @@ class setUp {
     }
 
     /**
-    * Generates the country geoJason
+    * Generates the country geoJson
     */
-   static async generateCountryGeoJason(courseFilter) {
+   static async generateCountryGeoJson(courseFilter, yearsConclusionFilter) {
         try{
-            const data = JSON.stringify({ courseFilter });
-            const response = await fetch('http://localhost:8080/setupLocation/generateCountryGeoJason', {
+            const data = JSON.stringify({ courseFilter, yearsConclusionFilter });
+            const response = await fetch('http://localhost:8080/setupLocation/generateCountryGeoJson', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',  // Set the content type to JSON
                 },
                 body: data,
             });
-
             if (response.ok){
                 console.log('Country geoJason successfully created.');
             } else {
@@ -253,12 +252,12 @@ class setUp {
    }
 
    /**
-    * Generates the city geoJason
+    * Generates the city geoJson
     */
-   static async generateCityGeoJason(courseFilter) {
+   static async generateCityGeoJson(courseFilter, yearsConclusionFilter) {
         try{
-            const data = JSON.stringify({ courseFilter });
-            const response = await fetch('http://localhost:8080/setupLocation/generateCityGeoJason', {
+            const data = JSON.stringify({ courseFilter, yearsConclusionFilter });
+            const response = await fetch('http://localhost:8080/setupLocation/generateCityGeoJson', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',  // Set the content type to JSON
