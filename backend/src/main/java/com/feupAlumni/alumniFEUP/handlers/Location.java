@@ -186,7 +186,7 @@ public class Location {
     }
 
     // Adds the country to the GeoJSON file
-    public static void addCountryGeoJSON(Country country, Map<String, String> listLinkedinLinksByUser, Map<String, Map<String, String>> alumniByCourseYearConclusion, File geoJSONFile, Gson gson) {
+    public static void addCountryGeoJSON(Country country, Map<String, String> filteredLinkdinUserFilterCountry, Map<String, Map<String, String>> alumniByCourseYearConclusion, File geoJSONFile, Gson gson) {
         try (FileReader fileReader = new FileReader(geoJSONFile, StandardCharsets.UTF_8)) {
             GeoJSONStructure geoJSONStructure = gson.fromJson(fileReader, GeoJSONStructure.class);
 
@@ -195,10 +195,10 @@ public class Location {
 
             GeoJSONProperties properties = new GeoJSONProperties();
             properties.setName(Arrays.asList(country.getCountry()));
-            properties.setStudents(listLinkedinLinksByUser.size());
+            properties.setStudents(filteredLinkdinUserFilterCountry.size());
 
             // Collect alumni names and linkedin links for this country
-            properties.setListLinkedinLinks(listLinkedinLinksByUser);
+            properties.setListLinkedinLinks(filteredLinkdinUserFilterCountry);
 
             // Collect alumni names and courses (and respective year of conclusion) for this country
             properties.setCoursesYearConclusionByUser(alumniByCourseYearConclusion);

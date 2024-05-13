@@ -92,6 +92,19 @@
     margin-top: 11px;
 }
 
+.year-filter-container {
+    display: flex;
+}
+
+.search-container-year {
+    width: 46%;
+    display: inline-block;
+}
+
+.search-container-to-year {
+    margin-left: 20px;
+}
+
 .fileInput{
     position: absolute;
     top: 30px;
@@ -153,7 +166,7 @@
     text-align: left;
 }
 
-.my-button-clean {
+.my-button {
     background: linear-gradient(135deg, #6b73ff, #000dff); 
     border: none; 
     border-radius: 5px; 
@@ -165,10 +178,15 @@
     cursor: pointer; 
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2); 
     transition: all 0.3s ease; 
-  }
+}
+
+.my-button-clean {
+    margin-left: 10px;
+}
+
   
-  .my-button-clean:hover {
-    background: linear-gradient(135deg, #000dff, #6b73ff); 
-    box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.3); 
-    transform: translateY(-2px); 
-  }
+.my-button-clean:hover {
+background: linear-gradient(135deg, #000dff, #6b73ff); 
+box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.3); 
+transform: translateY(-2px); 
+}

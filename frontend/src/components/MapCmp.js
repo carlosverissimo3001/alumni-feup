@@ -130,7 +130,6 @@ const MapCmp = () => {
             });
             mapUserCoursesYears.set(userName, mapCoursesYears);
           });
-          console.log("listAlumniNames: ", listAlumniNames.length, " listAlumniNames: ", listAlumniNames);
 
           const alumniData = listAlumniNames.map((name, index) => {
             var coursesCurrentAlumni = "";

@@ -83,7 +83,7 @@ public class CityServiceImpl implements CityService {
     }
 
     @Override
-    public void generateCityGeoJason(String courseFilter) {
+    public void generateCityGeoJson(String courseFilter, List<String> yearFilter) {
         System.out.println("courseFilter: " + courseFilter);
         // Creates the GeoJason file
         File geoJSONFile = new File("frontend/src/citiesGeoJSON.json");
