@@ -3,7 +3,6 @@ package com.feupAlumni.alumniFEUP.service;
 import com.feupAlumni.alumniFEUP.handlers.Location;
 import com.feupAlumni.alumniFEUP.model.AlumniEic;
 import com.feupAlumni.alumniFEUP.model.AlumniEic_has_Course;
-import com.feupAlumni.alumniFEUP.model.City;
 import com.feupAlumni.alumniFEUP.model.LocationAlumnis;
 import com.feupAlumni.alumniFEUP.repository.AlumniEicRepository;
 
