@@ -33,14 +33,14 @@ const MenuButtons = ({onSelectGeoJSON, onSelectAlumni,}) => {
 
             // Get the courses data with the years of conclusion
             const namesCourseYears = geoJSONData.features.flatMap((feature) => 
-                Object.entries(feature.properties.coursesYearConclusionByUser).map(([name, courseYears]) => ({
-                    name,
+                Object.entries(feature.properties.coursesYearConclusionByUser).map(([linkedinLink, courseYears]) => ({
+                    linkedinLink,
                     courseYears
                 }))
             );
             const alumniNamesWithCoords = namesLinkedinLinks.map((alumniInfo) => { 
                 // Find the corresponding courses data based on name
-                const coursesData = namesCourseYears.find((courseItem) => courseItem.name === alumniInfo.name);
+                const coursesData = namesCourseYears.find((courseItem) => courseItem.linkedinLink === alumniInfo.link);
                 return {
                     name: alumniInfo.name,
                     coordinates: alumniInfo.coordinates,
@@ -71,12 +71,10 @@ const MenuButtons = ({onSelectGeoJSON, onSelectAlumni,}) => {
 
     // Filter alumnis based on course input
     useEffect(() => {
-        if (listAlumniNamesWithCoordinates && filterCourseInput.trim() !== '') {
+        if (listAlumniNamesWithCoordinates) {
             // Filter courses based on the input to filter courses
             const allCourses = listAlumniNamesWithCoordinates.flatMap((alumni) => {
-                return Object.keys(alumni.coursesYears).filter((course) => 
-                    course.toLowerCase().includes(filterCourseInput.trim().toLowerCase())
-                );
+                return Object.keys(alumni.coursesYears);
             });
 
             // Remove duplicates
@@ -291,9 +289,10 @@ const MenuButtons = ({onSelectGeoJSON, onSelectAlumni,}) => {
     // Cleans the values inserted in the fields
     const onClickClean = async () => {
         onClickApply("", ["", ""]);
-        setSearchInput("");
-        onSelectAlumni("", [0,0]);
-        filterCourseInput("");
+        setSearchInput("");         // cleans the search alumni input 
+        onSelectAlumni("", [0,0]);  // positions the user in the middle of the screen
+        setYearFilter(['', '']);  // cleans the year filter field
+        setFilterCourseInput(""); // cleans the search user input
     }
 
     // Applies the values inserted in the fields
@@ -306,7 +305,7 @@ const MenuButtons = ({onSelectGeoJSON, onSelectAlumni,}) => {
             <p>See alumni distribution across:</p>
             <div>
                 <input
-                    type="checkbox"
+                    type="radio"
                     id="countriesCheckbox"
                     value="countries"
                     checked={selectedOption === 'countries'}
@@ -316,7 +315,7 @@ const MenuButtons = ({onSelectGeoJSON, onSelectAlumni,}) => {
             </div>
             <div>
                 <input
-                    type="checkbox"
+                    type="radio"
                     id="citiesCheckbox"
                     value="cities"
                     checked={selectedOption === 'cities'}
@@ -344,23 +343,20 @@ const MenuButtons = ({onSelectGeoJSON, onSelectAlumni,}) => {
                 )}
             </div>
 
-            <div className="search-container">
-                <input
-                    type="text"
-                    placeholder="Filter by course..."
-                    value={filterCourseInput}
-                    className='filter-course-alumni search-bar'
-                    onChange={handleFilterCourseInputChange}
-                />
-                {filteredCourse.length > 0 && (
-                    <div className={`search-results ${filteredCourse.length > 5 ? 'scrollable' : ''}`}>
-                    {filteredCourse.map((courseAbreviation, index) => (
-                        <div key={index} onClick={() => handleCourseSelection(courseAbreviation)}>
-                            {courseAbreviation}
-                        </div>
+            <div className="search-container"> 
+                <label for="myDropdown">Course:</label>
+                <select 
+                className='filter-course-alumni search-bar' 
+                id="myDropdown"
+                value={filterCourseInput}
+                onChange={handleFilterCourseInputChange}>
+                    <option value="" > </option>
+                    {filteredCourse.map((course, index) => (
+                        <option key={index} value={course} >
+                            {course}
+                        </option>
                     ))}
-                    </div>
-                )}
+                </select>
             </div>
 
             <div className="year-filter-container">
