@@ -68,48 +68,73 @@ public class LocationServiceImpl implements LocationService {
         }   
     }
 
+    // Verifies if the alumni has at least one course that is the same as the courseFilter
+    private boolean isFromCourse(AlumniEic alumni, String courseFilter) {
+        if (!courseFilter.equals("")) {
+            List<AlumniEic_has_Course> alumniCourses = alumni.getAlumniEicHasCourse();
+            for (AlumniEic_has_Course course : alumniCourses) {
+                String abrev = course.getCourse().getAbbreviation();
+                if (abrev.equals(courseFilter)) {
+                    return true;
+                }
+            }
+            return false;
+        }
+        return true;
+    }
+
+    // Verifies if the alumni has at least one course that finished in the yearFilter
+    // yearFilter.get(0) => From year
+    // yearFilter.get(1) => To year
+    // TODO: Add validations: If from year has value to year also has to have value
+    //                        "From year" might have value and "to year" don't
+    //                        Both fields can be empty
+    //                        If both have value, then the "to year" should be bigger than the "from year"
+    private boolean isFromConclusionYear(AlumniEic alumni, List<String> yearFilter) {
+        if (!yearFilter.get(0).equals("")) { // There is a From year
+            List<AlumniEic_has_Course> alumniCourses = alumni.getAlumniEicHasCourse();
+            for (AlumniEic_has_Course course : alumniCourses) {
+                String[] yearConclusion = course.getYearOfConclusion().split("/"); // [2023, 2024]
+                if (!yearFilter.get(1).equals("")) { // There is a To year => Interval
+                    if (Integer.parseInt(yearFilter.get(0)) <= Integer.parseInt(yearConclusion[1]) &&
+                        Integer.parseInt(yearFilter.get(1)) >= Integer.parseInt(yearConclusion[1])
+                    ) {
+                        return true;
+                    }
+                } else { // There isn't a To year => unique year
+                    if (Integer.parseInt(yearFilter.get(0)) == Integer.parseInt(yearConclusion[1])) {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+        return true;
+    }
+
     // Associates each alumni to a LinkedIn link
-    private Map<String, String> alumniLinkedInLink(String courseFilter) {
+    private Map<String, String> alumniLinkedInLink(String courseFilter, List<String> yearFilter) {
         Map<String, String> listLinkedinLinksByUser = new HashMap<>();
         for (AlumniEic alumni : alumniEicRepository.findAll()) {
             String linkdeinLink = alumni.getLinkedinLink();
             String alumniName = alumni.getAlumniName();
-            if (!courseFilter.equals("")) {
-                List<AlumniEic_has_Course> alumniCourses = alumni.getAlumniEicHasCourse();
-                for (AlumniEic_has_Course course : alumniCourses) {
-                    String abrev = course.getCourse().getAbbreviation();
-                    if (abrev.equals(courseFilter)) {
-                        listLinkedinLinksByUser.put(alumniName, linkdeinLink);
-                    }
-                }
-            } else {
+            if (isFromCourse(alumni, courseFilter) && isFromConclusionYear(alumni, yearFilter)) {
                 listLinkedinLinksByUser.put(alumniName, linkdeinLink);
             }
         }
         return listLinkedinLinksByUser;
     }
 
-    private Map<String, Map<String, String>> alumniByCourseYearConclusion(String courseFilter) {
+    // Associates each alumni to a course and the respective year of conclusion
+    private Map<String, Map<String, String>> alumniByCourseYearConclusion(String courseFilter, List<String> yearFilter) {
         Map<String, Map<String, String>> alumniByCourseYearConclusion = new HashMap<>();
         for (AlumniEic alumni : alumniEicRepository.findAll()) {
             Map<String, String> coursesYearConclusion = new HashMap<>();
-            if (courseFilter.length() > 0) {
-                var containsCourseFilter = false;
-                for (AlumniEic_has_Course alumniCourse : alumni.getAlumniEicHasCourse()) {
-                    String courseAbrev = alumniCourse.getCourse().getAbbreviation();
-                    if (courseAbrev.equals(courseFilter)) {
-                        containsCourseFilter = true;
-                    }
-                    coursesYearConclusion.put(courseAbrev, alumniCourse.getYearOfConclusion());
-                }
-                if (containsCourseFilter) {
-                    alumniByCourseYearConclusion.put(alumni.getAlumniName(), coursesYearConclusion);
-                }
-            } else {
+            if (isFromCourse(alumni, courseFilter) && isFromConclusionYear(alumni, yearFilter)) {
                 for (AlumniEic_has_Course alumniCourse : alumni.getAlumniEicHasCourse()) {
                     String courseAbrev = alumniCourse.getCourse().getAbbreviation();
                     coursesYearConclusion.put(courseAbrev, alumniCourse.getYearOfConclusion());
-                }   
+                }
                 alumniByCourseYearConclusion.put(alumni.getAlumniName(), coursesYearConclusion);
             }
         }
@@ -137,20 +162,20 @@ public class LocationServiceImpl implements LocationService {
     }
 
     @Override
-    public void generateGeoJson(String courseFilter, List<String> yearFilter, String geoJsonType) {
+    public void generateGeoJson(String courseFilter, List<String> yearFilter, String geoJsonType) { //[2000, 2023]
         // Creates the GeoJason file depending on geoJsonType
         Map<File, Gson> fileGson = createFile(geoJsonType);
 
         // Group alumnis in countries or cities depending on geoJsonType
         Map<LocationAlumnis, List<AlumniEic>> alumniByLocation = groupAlumnis(geoJsonType);
 
-        // For each alumni associates the linkedin link he is associated with
+        // For each alumni associates the linkedin link he is associated with + filters applied
         // Key: alumni name value: linkedin link
-        Map<String, String> alumniLinkedInLink = alumniLinkedInLink(courseFilter);
+        Map<String, String> alumniLinkedInLink = alumniLinkedInLink(courseFilter, yearFilter);
 
-        // For each alumni associates a course with the respective year of conclusion 
+        // For each alumni associates a course with the respective year of conclusion + filters applied
         // Key: alumni Vlaue: map where key: course and value: year of conclusion
-        Map<String, Map<String, String>> alumniByCourseYearConclusion = alumniByCourseYearConclusion(courseFilter);
+        Map<String, Map<String, String>> alumniByCourseYearConclusion = alumniByCourseYearConclusion(courseFilter, yearFilter);
 
         // Adds the content to the geoJson
         addContentInGeoJson(alumniByLocation, alumniLinkedInLink, alumniByCourseYearConclusion, fileGson);
