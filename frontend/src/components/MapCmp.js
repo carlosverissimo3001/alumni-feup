@@ -194,7 +194,7 @@ const MapCmp = () => {
       <>
         <div>
           <div className="menu-buttons-container">
-              <MenuButtons onSelectAlumni={handleSelectAlumni} onSelectGeoJSON={handleSelectGeoJSON} />
+              <MenuButtons onSelectAlumni={handleSelectAlumni} onSelectGeoJSON={handleSelectGeoJSON} alumnisBeingDisplayed={alumniData.length} />
           </div>
         </div>
         <div className="mapCmpDiv">

@@ -143,20 +143,22 @@ public class LocationServiceImpl implements LocationService {
     // Writes the content in the geoJson
     private void addContentInGeoJson(Map<LocationAlumnis, List<AlumniEic>> alumniByLocation, Map<String, String> alumniLinkedInLink, Map<String, Map<String, String>> alumniByCourseYearConclusion, Map<File, Gson> fileGson) {
         alumniByLocation.forEach((location, alumniList) -> {
-            // From the map of all alumnis associated with the respecitve linkedin link (alumniLinkedInLink)
-            // it only extracts the the alumnis from the alumniList of the current location
-            Map<String, String> alumniLinkedinLinkForLocation = alumniLinkedInLink.entrySet().stream()
+            if (!location.getName().equals("null")) { //doesn't write null locations
+                // From the map of all alumnis associated with the respecitve linkedin link (alumniLinkedInLink)
+                // it only extracts the the alumnis from the alumniList of the current location
+                Map<String, String> alumniLinkedinLinkForLocation = alumniLinkedInLink.entrySet().stream()
+                    .filter(entry -> alumniList.stream().anyMatch(alumni -> alumni.getLinkedinLink().equals(entry.getKey())))
+                    .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+
+                // From the map of all alumnis associated with the respective course and year of conclusion (alumniByCourseYearConclusion)
+                // it only extracts the alumnis from the alumniList of the current location
+                Map<String, Map<String, String>> alumniByCourseYearConclusionForLocation = alumniByCourseYearConclusion.entrySet().stream()
                 .filter(entry -> alumniList.stream().anyMatch(alumni -> alumni.getLinkedinLink().equals(entry.getKey())))
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
-            // From the map of all alumnis associated with the respective course and year of conclusion (alumniByCourseYearConclusion)
-            // it only extracts the alumnis from the alumniList of the current location
-            Map<String, Map<String, String>> alumniByCourseYearConclusionForLocation = alumniByCourseYearConclusion.entrySet().stream()
-            .filter(entry -> alumniList.stream().anyMatch(alumni -> alumni.getLinkedinLink().equals(entry.getKey())))
-            .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-
-            Map.Entry<File, Gson> fileGsonIteration = fileGson.entrySet().iterator().next();
-            Location.addLocationGeoJson(location, alumniLinkedinLinkForLocation, alumniByCourseYearConclusionForLocation, fileGsonIteration.getKey(), fileGsonIteration.getValue());
+                Map.Entry<File, Gson> fileGsonIteration = fileGson.entrySet().iterator().next();
+                Location.addLocationGeoJson(location, alumniLinkedinLinkForLocation, alumniByCourseYearConclusionForLocation, fileGsonIteration.getKey(), fileGsonIteration.getValue());
+            }
         });
     }
 

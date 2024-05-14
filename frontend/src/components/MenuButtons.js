@@ -3,7 +3,7 @@ import setUp from '../helpers/setUp';
 import Verifiers from '../helpers/verifiers';
 import ApiDataAnalysis from '../helpers/apiDataAnalysis';
 
-const MenuButtons = ({onSelectGeoJSON, onSelectAlumni}) => {
+const MenuButtons = ({onSelectGeoJSON, onSelectAlumni,}) => {
 
     const[file, setFile]=useState('');
     const [selectedOption, setSelectedOption] = useState('countries');
@@ -30,6 +30,7 @@ const MenuButtons = ({onSelectGeoJSON, onSelectAlumni}) => {
                   coordinates, 
                 }));
             });
+
             // Get the courses data with the years of conclusion
             const namesCourseYears = geoJSONData.features.flatMap((feature) => 
                 Object.entries(feature.properties.coursesYearConclusionByUser).map(([name, courseYears]) => ({
@@ -49,7 +50,7 @@ const MenuButtons = ({onSelectGeoJSON, onSelectAlumni}) => {
             });
             
             setListAlumniNamesWithCoordinates(alumniNamesWithCoords);
-            setNumberAlumnisShowing(listAlumniNamesWithCoordinates.length);
+            setNumberAlumnisShowing(alumniNamesWithCoords.length);
             onSelectGeoJSON(selectedOption); // Use cities/countries GeoJson file
         } catch(error){
             console.log("Attention!");
@@ -410,7 +411,7 @@ const MenuButtons = ({onSelectGeoJSON, onSelectAlumni}) => {
             <button className="my-button" onClick={() => onClickApply(filterCourseInput, yearFilter)}> Apply </button>
             <button className="my-button my-button-clean" onClick={onClickClean}> Clean </button>
 
-            <p>Total nº alumnis displayed: {numberAlumnisShowing}</p>
+            <p>Total selected: {numberAlumnisShowing}</p>
 
             {/*<input type="file" className='fileInput' onChange={handleFileChange} />    
             <button className="button butnPopAlumni" onClick={handlePopulateCoursesTable}>Populate Courses Table</button>
