@@ -24,7 +24,7 @@ const MenuButtons = ({onSelectGeoJSON, onSelectAlumni}) => {
             // Get the names with their LinkedIn links
             const namesLinkedinLinks = geoJSONData.features.flatMap((feature) => {
                 const coordinates = feature.geometry.coordinates; // Get coordinates
-                return Object.entries(feature.properties.listLinkedinLinksByUser).map(([name, link]) => ({
+                return Object.entries(feature.properties.listLinkedinLinksByUser).map(([link, name]) => ({
                   name,
                   link,
                   coordinates, 
