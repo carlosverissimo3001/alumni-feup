@@ -177,7 +177,23 @@ public class LocationServiceImpl implements LocationService {
         // For each alumni associates a course with the respective year of conclusion + filters applied
         // Key: alumni linkdin link Vlaue: map where key: course and value: year of conclusion
         Map<String, Map<String, String>> alumniByCourseYearConclusion = alumniByCourseYearConclusion(courseFilter, yearFilter);
-
+        for (Map.Entry<String, Map<String, String>> entry : alumniByCourseYearConclusion.entrySet()) {
+            String course = entry.getKey();
+            Map<String, String> yearConclusionMap = entry.getValue();
+        
+            // Print the course
+            System.out.println("Course: " + course);
+        
+            // Iterate over the inner map
+            for (Map.Entry<String, String> yearConclusionEntry : yearConclusionMap.entrySet()) {
+                String year = yearConclusionEntry.getKey();
+                String conclusion = yearConclusionEntry.getValue();
+        
+                // Print the year and conclusion
+                System.out.println("Year: " + year + ", Conclusion: " + conclusion);
+            }
+        }
+        
         // Adds the content to the geoJson
         addContentInGeoJson(alumniByLocation, alumniLinkedInLink, alumniByCourseYearConclusion, fileGson);
     }

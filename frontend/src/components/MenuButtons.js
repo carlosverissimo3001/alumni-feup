@@ -222,6 +222,7 @@ const MenuButtons = ({onSelectGeoJSON, onSelectAlumni,}) => {
     }
 
     // Populates the alumniEic table
+    // It receives the excel that has linnkedin links before the forms and after, alongside the courses of each alumni and year of conclusion
     const handlePopulateAlumniEICTable = async () => {
         Verifiers.checkIfExcel(file);
         const userConfirmed = window.confirm('You are about to delete the info of table AlumniEic and AlumniEic has courses and update with the setelected file');
@@ -413,10 +414,10 @@ const MenuButtons = ({onSelectGeoJSON, onSelectAlumni,}) => {
 
             <p>Total selected: {numberAlumnisShowing}</p>
 
-            {/*<input type="file" className='fileInput' onChange={handleFileChange} />    
+            <input type="file" className='fileInput' onChange={handleFileChange} />  
             <button className="button butnPopAlumni" onClick={handlePopulateCoursesTable}>Populate Courses Table</button>
             
-            <button className="button butnPopAlumni" onClick={handlePopulateAlumniTable}>AlumniTablePopulate</button>
+            {/*<button className="button butnPopAlumni" onClick={handlePopulateAlumniTable}>AlumniTablePopulate</button>
             <button className="button butnBackAlumni" onClick={handleBackupTableAlumni}>BackupTableAlumni</button>
             <button className="button butnBackAlumniWFile" onClick={handlePopulateAlumniTableFileBckp}>AlumniTablePopulate - backup file</button>
             <button className="button btnMissingLinkedinLinks" onClick={handleLinkedinLinksAlumniTable}>MissingLinkedinLinks</button>
@@ -426,10 +427,10 @@ const MenuButtons = ({onSelectGeoJSON, onSelectAlumni,}) => {
 
 
             {/*<button className="button butnPopCountry" onClick={handlePopulateCountryTable}>PopulateCoutryTable</button>
-            <button className="button butnPopCity" onClick={handlePopulateCityTable}>PopulateCityTable</button>
+            <button className="button butnPopCity" onClick={handlePopulateCityTable}>PopulateCityTable</button>*/}
             <button className="button butnPopAlumniEIC" onClick={handlePopulateAlumniEICTable}>PopulateAlumniEICTable</button>
 
-            <button className="button butnGenCountryGeoJason" onClick={generateCountryGeoJson}>generateCountryGeoJson</button>
+            {/*<button className="button butnGenCountryGeoJason" onClick={generateCountryGeoJson}>generateCountryGeoJson</button>
             <button className="button butnGenCityGeoJason" onClick={handleGenerateCityGeoJson}>GenerateCityGeoJson</button>
 
             <button className="button butnAlmWithoutLink" onClick={handleAlumnisMatchLinkedin}>Match Alumnis Linkedin</button>
