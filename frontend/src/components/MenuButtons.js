@@ -9,8 +9,7 @@ const MenuButtons = ({onSelectGeoJSON, onSelectAlumni,}) => {
     const [selectedOption, setSelectedOption] = useState('countries');
     const [filteredAlumniNamesCoord, setFilteredAlumniNamesCoord] = useState([]);
     const [filteredCourse, setFilteredCourse] = useState([]);
-    const [filteredFromYears, setFilteredFromYears] = useState([]);
-    const [filteredToYears, setFilteredToYears] = useState([]);
+    const [filteredYears, setFilteredYears] = useState([]);
     const [listAlumniNamesWithCoordinates, setListAlumniNamesWithCoordinates] = useState([]);
     const [searchInput, setSearchInput] = useState('');
     const [filterCourseInput, setFilterCourseInput] = useState('');
@@ -87,50 +86,21 @@ const MenuButtons = ({onSelectGeoJSON, onSelectAlumni,}) => {
 
     // Filter alumnis based on "from" conclusion year
     useEffect(() => {
-        const [fromYear, toYear] = yearFilter;
-        if (listAlumniNamesWithCoordinates && fromYear.trim() !== '') {
-
+        if (listAlumniNamesWithCoordinates) {
             // TODO: the if I have is no longer enough
-            // yearFilter[0]
-            const allFromYears = listAlumniNamesWithCoordinates.flatMap((alumni) => {
-                return Object.values(alumni.coursesYears).filter((year) => {
-                    const yearConclusion = year.split("/");
-                    return yearConclusion[1].includes(fromYear);
-                    //return parsedYear >= parseInt(startYear, 10) && parsedYear <= parseInt(endYear, 10);
+            const allYears = listAlumniNamesWithCoordinates.flatMap((alumni) => {
+                return Object.values(alumni.coursesYears).map(yearRange => {
+                    return yearRange.split('/')[1]; // Split the string and take the second part
                 });
             });
 
             // Remove duplicates
-            const uniqueFromYears = [...new Set(allFromYears)];
-            setFilteredFromYears(uniqueFromYears);
+            const uniqueFromYears = [...new Set(allYears)];
+            setFilteredYears(uniqueFromYears);
         } else {
-            setFilteredFromYears([]);
+            setFilteredYears([]);
         }
-    }, [listAlumniNamesWithCoordinates, yearFilter]);
-
-    // Filter alumnis based on "to" conclusion year
-    useEffect(() => {
-        const [fromYear, toYear] = yearFilter;
-        if (listAlumniNamesWithCoordinates && toYear.trim() !== '') {
-
-            // TODO: the if I have is no longer enough
-            // yearFilter[1]
-            const allToYears = listAlumniNamesWithCoordinates.flatMap((alumni) => {
-                return Object.values(alumni.coursesYears).filter((year) => {
-                    const yearConclusion = year.split("/");
-                    return yearConclusion[1].includes(toYear);
-                    //return parsedYear >= parseInt(startYear, 10) && parsedYear <= parseInt(endYear, 10);
-                });
-            });
-
-            // Remove duplicates
-            const uniqueToYears = [...new Set(allToYears)];
-            setFilteredToYears(uniqueToYears);
-        } else {
-            setFilteredToYears([]);
-        }
-    }, [listAlumniNamesWithCoordinates, yearFilter]);
-
+    }, [listAlumniNamesWithCoordinates]);
 
     const handleSearchInputChange = (e) => {
         setSearchInput(e.target.value);
@@ -359,49 +329,36 @@ const MenuButtons = ({onSelectGeoJSON, onSelectAlumni,}) => {
                 </select>
             </div>
 
-            <div className="year-filter-container">
+            <div className="year-filter-container"> 
                 <div className='search-container-year'>
-                    <input
-                        type="text"
-                        placeholder="From year..."
+                    <label for="myDropdown">From Year:</label>
+                    <select 
+                        className='filter-year-from-alumni search-bar' 
+                        id="myDropdownYearFrom"
                         value={yearFilter[0]}
-                        onChange={e => handleYearChange(0, e.target.value)}
-                        className='filter-year-from-alumni search-bar'
-                    />
-                    {filteredFromYears.length > 0 && (
-                        <div className={`search-results ${filteredFromYears.length > 5 ? 'scrollable' : ''}`}> 
-                            {filteredFromYears.map((year, index) => {
-                                const lastYear = year.split("/")[1];
-                                return (
-                                    <div key={index} onClick={() => handleFromYearSelection(lastYear)}>
-                                        {lastYear}
-                                    </div>
-                                );
-                            })}
-                        </div>
-                    )}
+                        onChange={e => handleYearChange(0, e.target.value)}>
+                            <option value="" > </option>
+                            {filteredYears.map((year, index) => (
+                                <option key={index} value={year} >
+                                    {year}
+                                </option>
+                            ))}
+                    </select>
                 </div>
-                
-                <div className='search-container-year search-container-to-year'>
-                    <input
-                        type="text"
-                        placeholder="To year..."
+                <div className='search-container-year'>
+                    <label for="myDropdown">To Year:</label>
+                    <select 
+                        className='filter-year-to-alumni search-bar' 
+                        id="myDropdownYearTo"
                         value={yearFilter[1]}
-                        onChange={e => handleYearChange(1, e.target.value)}
-                        className='filter-year-to-alumni search-bar'
-                    />
-                    {filteredToYears.length > 0 && (
-                        <div className={`search-results ${filteredToYears.length > 5 ? 'scrollable' : ''}`}> 
-                            {filteredToYears.map((year, index) => {
-                                const lastYear = year.split("/")[1];
-                                return(
-                                    <div key={index} onClick={() => handleToYearSelection(lastYear)}>
-                                        {lastYear}
-                                    </div>
-                                );
-                            })}
-                        </div>
-                    )}
+                        onChange={e => handleYearChange(1, e.target.value)}>
+                            <option value="" > </option>
+                            {filteredYears.map((year, index) => (
+                                <option key={index} value={year} >
+                                    {year}
+                                </option>
+                            ))}
+                    </select>
                 </div>
             </div>
 
