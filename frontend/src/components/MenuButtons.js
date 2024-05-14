@@ -77,7 +77,7 @@ const MenuButtons = ({onSelectGeoJSON, onSelectAlumni,}) => {
             });
 
             // Remove duplicates
-            const uniqueCourses = [...new Set(allCourses)];
+            const uniqueCourses = [...new Set(allCourses)].sort();
             setFilteredCourse(uniqueCourses);
         } else {
           setFilteredCourse([]);
@@ -95,8 +95,8 @@ const MenuButtons = ({onSelectGeoJSON, onSelectAlumni,}) => {
             });
 
             // Remove duplicates
-            const uniqueFromYears = [...new Set(allYears)];
-            setFilteredYears(uniqueFromYears);
+            const uniqueYears = [...new Set(allYears)].sort((a, b) => b - a);
+            setFilteredYears(uniqueYears);
         } else {
             setFilteredYears([]);
         }
