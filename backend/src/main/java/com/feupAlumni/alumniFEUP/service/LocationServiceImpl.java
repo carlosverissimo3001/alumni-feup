@@ -118,7 +118,7 @@ public class LocationServiceImpl implements LocationService {
             String linkdeinLink = alumni.getLinkedinLink();
             String alumniName = alumni.getAlumniName();
             if (isFromCourse(alumni, courseFilter) && isFromConclusionYear(alumni, yearFilter)) {
-                listLinkedinLinksByUser.put(alumniName, linkdeinLink);
+                listLinkedinLinksByUser.put(linkdeinLink, alumniName);
             }
         }
         return listLinkedinLinksByUser;
@@ -134,7 +134,7 @@ public class LocationServiceImpl implements LocationService {
                     String courseAbrev = alumniCourse.getCourse().getAbbreviation();
                     coursesYearConclusion.put(courseAbrev, alumniCourse.getYearOfConclusion());
                 }
-                alumniByCourseYearConclusion.put(alumni.getAlumniName(), coursesYearConclusion);
+                alumniByCourseYearConclusion.put(alumni.getLinkedinLink(), coursesYearConclusion);
             }
         }
         return alumniByCourseYearConclusion;
@@ -146,13 +146,13 @@ public class LocationServiceImpl implements LocationService {
             // From the map of all alumnis associated with the respecitve linkedin link (alumniLinkedInLink)
             // it only extracts the the alumnis from the alumniList of the current location
             Map<String, String> alumniLinkedinLinkForLocation = alumniLinkedInLink.entrySet().stream()
-                .filter(entry -> alumniList.stream().anyMatch(alumni -> alumni.getAlumniName().equals(entry.getKey())))
+                .filter(entry -> alumniList.stream().anyMatch(alumni -> alumni.getLinkedinLink().equals(entry.getKey())))
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
             // From the map of all alumnis associated with the respective course and year of conclusion (alumniByCourseYearConclusion)
             // it only extracts the alumnis from the alumniList of the current location
             Map<String, Map<String, String>> alumniByCourseYearConclusionForLocation = alumniByCourseYearConclusion.entrySet().stream()
-            .filter(entry -> alumniList.stream().anyMatch(alumni -> alumni.getAlumniName().equals(entry.getKey())))
+            .filter(entry -> alumniList.stream().anyMatch(alumni -> alumni.getLinkedinLink().equals(entry.getKey())))
             .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
             Map.Entry<File, Gson> fileGsonIteration = fileGson.entrySet().iterator().next();
@@ -169,11 +169,11 @@ public class LocationServiceImpl implements LocationService {
         Map<LocationAlumnis, List<AlumniEic>> alumniByLocation = groupAlumnis(geoJsonType);
 
         // For each alumni associates the linkedin link he is associated with + filters applied
-        // Key: alumni name value: linkedin link
+        // Key: alumni linkedin link value: linkedin link
         Map<String, String> alumniLinkedInLink = alumniLinkedInLink(courseFilter, yearFilter);
 
         // For each alumni associates a course with the respective year of conclusion + filters applied
-        // Key: alumni Vlaue: map where key: course and value: year of conclusion
+        // Key: alumni linkdin link Vlaue: map where key: course and value: year of conclusion
         Map<String, Map<String, String>> alumniByCourseYearConclusion = alumniByCourseYearConclusion(courseFilter, yearFilter);
 
         // Adds the content to the geoJson
