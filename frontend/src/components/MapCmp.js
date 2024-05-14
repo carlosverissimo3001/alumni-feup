@@ -97,8 +97,8 @@ const MapCmp = () => {
             // Separates fields of linkUsersString
           var jsonObjects = extractJSONObjects(linkUsersString);
           var mapUserLinks = jsonObjects.reduce((acc, obj) => ({ ...acc, ...obj }), {});
-          const listAlumniNames = Object.keys(mapUserLinks)
-          const listLinkedinLinks = Object.values(mapUserLinks)
+          const listLinkedinLinks = Object.keys(mapUserLinks);
+          const listAlumniNames = Object.values(mapUserLinks);
   
             // Parse placeName if it's a string
           if (typeof listPlaceName === 'string') {
@@ -122,19 +122,19 @@ const MapCmp = () => {
           var mapUserCoursesYears = new Map();
           var jsonObjectsPeopleCoursesConclusion = extractJSONObjects(coursesYearConclusionByUser);
           var mapUserPeopleCoursesConclusion = jsonObjectsPeopleCoursesConclusion.reduce((acc, obj) => ({ ...acc, ...obj }), {});
-          Object.entries(mapUserPeopleCoursesConclusion).forEach(([userName, courseYear]) => {
+          Object.entries(mapUserPeopleCoursesConclusion).forEach(([linkdinLink, courseYear]) => {
             var mapCoursesYears = new Map();
             Object.entries(courseYear).forEach((courseConclusionYears)=>{
               const courseConclusionYearsSplited = courseConclusionYears[1].split("/");
               mapCoursesYears.set(courseConclusionYears[0], courseConclusionYearsSplited[1]);
             });
-            mapUserCoursesYears.set(userName, mapCoursesYears);
+            mapUserCoursesYears.set(linkdinLink, mapCoursesYears);
           });
 
-          const alumniData = listAlumniNames.map((name, index) => {
+          const alumniData = listLinkedinLinks.map((linkdinLink, index) => {
             var coursesCurrentAlumni = "";
             var yearConclusionCurrentAlumni="";
-            var userCoursesYearsConclusion = mapUserCoursesYears.get(name);
+            var userCoursesYearsConclusion = mapUserCoursesYears.get(linkdinLink);
 
             userCoursesYearsConclusion.forEach((yearConclusion, course) => {
               coursesCurrentAlumni+=course+" ";
@@ -147,7 +147,7 @@ const MapCmp = () => {
             } 
 
             return {
-              name: name,
+              name: listAlumniNames[index],
               linkedinLink: listLinkedinLinks[index],
               profilePics: profilePics[index],
               courses: coursesCurrentAlumni,
