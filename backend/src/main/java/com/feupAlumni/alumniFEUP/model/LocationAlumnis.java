@@ -18,6 +18,8 @@ public abstract class LocationAlumnis {
 
     public abstract String getName();
     public abstract String getCoordinates();
+    public abstract int getNAlumni();
+    public abstract void setNAlumni(int nAlumni);
 
     public int getId() {
         return id;
