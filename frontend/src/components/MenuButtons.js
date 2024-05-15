@@ -292,7 +292,7 @@ const MenuButtons = ({onSelectGeoJSON, onSelectAlumni,}) => {
 
     return (
         <>
-            <p>See alumni distribution across:</p>
+            <p className='text-distribution'>See alumni distribution across:</p>
             <div>
                 <input
                     type="radio"
