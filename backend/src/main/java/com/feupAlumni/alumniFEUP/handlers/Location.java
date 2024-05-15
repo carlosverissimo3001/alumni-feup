@@ -51,7 +51,6 @@ public class Location {
 
     // Calls on the API which gets the information about a given country (inlcuding their latitude and longitude)
     private static JsonNode getCoordinatesForCountry (String countryCode) throws IOException, InterruptedException {
-        
         String API_URL = "http://api.geonames.org/searchJSON";
         String USERNAME = "jenifer12345";
         String url = String.format("%s?country=%s&maxRows=1&username=%s", API_URL, countryCode, USERNAME);
@@ -74,12 +73,10 @@ public class Location {
             e.printStackTrace();
             return null;
         }
-        
     }
 
     // Calls on the API which gets the information about a given city (including their latitude and longitude)
     private static JsonNode getCoordinatesForCity(String city) throws IOException, InterruptedException {
-
         String username = "jenifer12345";
         String encodedCityName = URLEncoder.encode(city, "UTF-8");
         String apiUrl = "http://api.geonames.org/searchJSON?q=" + encodedCityName + "&maxRows=1&username=" + username;
