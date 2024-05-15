@@ -107,7 +107,7 @@ const MenuButtons = ({onSelectGeoJSON, onSelectAlumni,}) => {
                 // Get only the available years wich are bigger than the one selected in the From field
             const allToYears = listAlumniNamesWithCoordinates.flatMap((alumni) => {
                 return Object.values(alumni.coursesYears).map(yearRange => {
-                    if (parseInt(yearRange.split('/')[1]) > parseInt(yearFilter[0])) {
+                    if (parseInt(yearRange.split('/')[1]) >= parseInt(yearFilter[0])) {
                         return yearRange.split('/')[1]; // Split the string and take the second part
                     }
                 });
