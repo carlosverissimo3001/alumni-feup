@@ -15,6 +15,7 @@ public class Country extends LocationAlumnis {
     private String country;
     private String countryCode;
     private String countryCoordinates;
+    private int nAlumniInCountry;
 
 
     public Country(){
@@ -25,6 +26,7 @@ public class Country extends LocationAlumnis {
         this.country = country;
         this.countryCode = countryCode;
         this.countryCoordinates = countryCoordinates;
+        this.nAlumniInCountry = nAlumniInCountry;
     }
 
     @Override
@@ -39,6 +41,16 @@ public class Country extends LocationAlumnis {
 
     public String getCountryCode() {
         return countryCode;
+    }
+
+    @Override
+    public int getNAlumni() {
+        return nAlumniInCountry;
+    }
+
+    @Override
+    public void setNAlumni(int nAlumniInCountry) {
+        this.nAlumniInCountry = nAlumniInCountry;
     }
 
     public void setCountry(String country) {

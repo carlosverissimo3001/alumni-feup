@@ -287,9 +287,6 @@ const MenuButtons = ({onSelectGeoJSON, onSelectAlumni,}) => {
 
     // Applies the values inserted in the fields
     const onClickApply = async (courseFilter, yearsConclusionFilters) => {
-        // Verifies if yearConclusionFilters inputs are valid or not
-        // TODO: Extract this to a method
-        
         setUp.generateGeoJson(courseFilter, yearsConclusionFilters, selectedOption);
     }
 
@@ -390,8 +387,8 @@ const MenuButtons = ({onSelectGeoJSON, onSelectAlumni,}) => {
 
             <p>Total selected: {numberAlumnisShowing}</p>
 
-            {/*<input type="file" className='fileInput' onChange={handleFileChange} />  
-            <button className="button butnPopAlumni" onClick={handlePopulateCoursesTable}>Populate Courses Table</button>
+            <input type="file" className='fileInput' onChange={handleFileChange} />  
+            {/*<button className="button butnPopAlumni" onClick={handlePopulateCoursesTable}>Populate Courses Table</button>
             
             <button className="button butnPopAlumni" onClick={handlePopulateAlumniTable}>AlumniTablePopulate</button>
             <button className="button butnBackAlumni" onClick={handleBackupTableAlumni}>BackupTableAlumni</button>
@@ -399,10 +396,10 @@ const MenuButtons = ({onSelectGeoJSON, onSelectAlumni,}) => {
             <button className="button btnMissingLinkedinLinks" onClick={handleLinkedinLinksAlumniTable}>MissingLinkedinLinks</button>
 
             <button className="button butnPopCountry" onClick={handleDeleteRepeatedAlumnis}>DeleteRepeatedAlumnis</button>
-            <button className="button butnPopCity" onClick={handleRefactorlinkdinLinkAlumnis}>RefactorlinkdinLinkAlumnis</button>*/}
+            <button className="button butnPopCity" onClick={handleRefactorlinkdinLinkAlumnis}>RefactorlinkdinLinkAlumnis</button>
 
 
-            {/*<button className="button butnPopCountry" onClick={handlePopulateCountryTable}>PopulateCoutryTable</button>
+            <button className="button butnPopCountry" onClick={handlePopulateCountryTable}>PopulateCoutryTable</button>
             <button className="button butnPopCity" onClick={handlePopulateCityTable}>PopulateCityTable</button>
             <button className="button butnPopAlumniEIC" onClick={handlePopulateAlumniEICTable}>PopulateAlumniEICTable</button>*/}
 

@@ -72,7 +72,7 @@ public class CountryServiceImpl implements CountryService{
                 // Get Country Coordinates
                 String coordinates = "";
                 if(country != "null"){
-                    coordinates = Location.getCountryCoordinates(countryCode);
+                    coordinates = Location.getLocationCoordinates(countryCode, false);
                 }
 
                 // Saves the data in the table

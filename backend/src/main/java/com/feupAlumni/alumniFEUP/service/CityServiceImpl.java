@@ -62,7 +62,7 @@ public class CityServiceImpl implements CityService {
             String coordinates = "";
             if(city != "null"){
                 try{
-                    coordinates = Location.getCityCoordinates(city);
+                    coordinates = Location.getLocationCoordinates(city, true);
                     // Saves the data in the table
                     City citySave = new City(city, coordinates, alumniCount);
                     cityRepository.save(citySave);
