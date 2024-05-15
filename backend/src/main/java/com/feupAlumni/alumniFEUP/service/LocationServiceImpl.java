@@ -168,7 +168,7 @@ public class LocationServiceImpl implements LocationService {
 
     @Override
     public void generateGeoJson(String courseFilter, List<String> yearFilter, String geoJsonType) { //[2000, 2023]
-        // Creates the GeoJason file depending on geoJsonType
+        // Creates the GeoJson file depending on geoJsonType
         Map<File, Gson> fileGson = createFile(geoJsonType);
 
         // Group alumnis in countries or cities depending on geoJsonType

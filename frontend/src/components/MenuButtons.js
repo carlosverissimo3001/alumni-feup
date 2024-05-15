@@ -227,8 +227,8 @@ const MenuButtons = ({onSelectGeoJSON, onSelectAlumni,}) => {
         }
     }
 
-    // Generates the coynntry geoJason
-    const handleGenerateCountryGeoJason = async () => {
+    // Generates the coynntry geoJson
+    const handleGenerateCountryGeoJson = async () => {
         // loadingJson ensures the writing to the geoJson hapens only once the writing of the previous has finished
         if (loadingJson) {
             setLoadingJson(false);
@@ -237,8 +237,8 @@ const MenuButtons = ({onSelectGeoJSON, onSelectAlumni,}) => {
         }
     }
 
-    // Generates the city geoJason
-    const handleGenerateCityGeoJason = async () => {
+    // Generates the city geoJson
+    const handleGenerateCityGeoJson = async () => {
         if(loadingJson){
             setLoadingJson(false);
             //await setUp.generateCityGeoJson(""); Not updated
@@ -405,8 +405,8 @@ const MenuButtons = ({onSelectGeoJSON, onSelectAlumni,}) => {
             <button className="button butnPopCity" onClick={handlePopulateCityTable}>PopulateCityTable</button>
             <button className="button butnPopAlumniEIC" onClick={handlePopulateAlumniEICTable}>PopulateAlumniEICTable</button>*/}
 
-            {/*<button className="button butnGenCountryGeoJason" onClick={generateCountryGeoJson}>generateCountryGeoJson</button>
-            <button className="button butnGenCityGeoJason" onClick={handleGenerateCityGeoJson}>GenerateCityGeoJson</button>
+            {/*<button className="button butnGenCountryGeoJson" onClick={generateCountryGeoJson}>generateCountryGeoJson</button>
+            <button className="button butnGenCityGeoJson" onClick={handleGenerateCityGeoJson}>GenerateCityGeoJson</button>
 
             <button className="button butnAlmWithoutLink" onClick={handleAlumnisMatchLinkedin}>Match Alumnis Linkedin</button>
             <button className="button btnExcelAlumniProfSitu" onClick={handleExcelAlumniProfSitu}>Excel: nomeAlumni + professionalSitu</button>
