@@ -157,6 +157,7 @@ const MenuButtons = ({onSelectGeoJSON, onSelectAlumni,}) => {
     //                                           stores the information in a file
     //                                           uploades the profile pics to the folder: "C:/alimniProject/backend/src/main/java/com/feupAlumni/alumniFEUP/Images"
     // The name of the profile pics is set to the public identifier of the user, wich is retrieved by the API
+    // Also stores the information in a backup file
     const handlePopulateAlumniTable = async () => {
         Verifiers.checkIfExcel(file);        
 
