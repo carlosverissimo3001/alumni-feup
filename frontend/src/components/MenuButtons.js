@@ -387,8 +387,8 @@ const MenuButtons = ({onSelectGeoJSON, onSelectAlumni,}) => {
 
             <p>Total selected: {numberAlumnisShowing}</p>
 
-            <input type="file" className='fileInput' onChange={handleFileChange} />  
-            {/*<button className="button butnPopAlumni" onClick={handlePopulateCoursesTable}>Populate Courses Table</button>
+            {/*<input type="file" className='fileInput' onChange={handleFileChange} />  
+            <button className="button butnPopAlumni" onClick={handlePopulateCoursesTable}>Populate Courses Table</button>
             
             <button className="button butnPopAlumni" onClick={handlePopulateAlumniTable}>AlumniTablePopulate</button>
             <button className="button butnBackAlumni" onClick={handleBackupTableAlumni}>BackupTableAlumni</button>
