@@ -1,6 +1,5 @@
 package com.feupAlumni.alumniFEUP.handlers;
 
-import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -22,17 +21,6 @@ public class FilesHandler {
             e.printStackTrace();
         }
     }
-
-    // If the file exists => delete 
-    public static void fileDeletion(File file) {
-        if(file.exists()){
-            if (file.delete()) {
-                System.out.println("Deleted existing file.");
-            } else {
-                System.err.println("Failed to delete existing file.");
-            }
-        }
-    } 
 
     // Extracts the value of a given NOT nested field of a json
     public static String extractFieldFromJson(String fieldToExtract, String jsonData) {

@@ -92,6 +92,19 @@
     margin-top: 11px;
 }
 
+.year-filter-container {
+    display: flex;
+}
+
+.search-container-year {
+    width: 46%;
+    display: inline-block;
+}
+
+.search-container-to-year {
+    margin-left: 20px;
+}
+
 .fileInput{
     position: absolute;
     top: 30px;
@@ -104,6 +117,11 @@
     max-height: 200px; 
     overflow-y: auto;
 }
+
+.alumni-cell {
+    display: flex; 
+    align-items: center; 
+  }
 
 .profile-picture {
     max-height: 30px;
@@ -119,7 +137,6 @@
 .search-results div {
     cursor: pointer; 
 }
-
 
 .clusterRectangle {
     background-color: rgba(255, 255, 255, 0.8);
@@ -143,4 +160,33 @@
     max-height: 200px; 
     max-width: 500px; 
     overflow-y: auto;
+}
+
+.table-titles {
+    text-align: left;
+}
+
+.my-button {
+    background: linear-gradient(135deg, #6b73ff, #000dff); 
+    border: none; 
+    border-radius: 5px; 
+    color: white;
+    padding: 5px 10px; 
+    font-size: 10px; 
+    font-weight: bold; 
+    text-transform: uppercase; 
+    cursor: pointer; 
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2); 
+    transition: all 0.3s ease; 
+}
+
+.my-button-clean {
+    margin-left: 10px;
+}
+
+  
+.my-button-clean:hover {
+background: linear-gradient(135deg, #000dff, #6b73ff); 
+box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.3); 
+transform: translateY(-2px); 
 }

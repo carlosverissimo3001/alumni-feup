@@ -3,7 +3,7 @@ export const clusterLayer = {
     id: 'clusters',
     type: 'circle',
     source: 'alumniPerCountry',
-    filter: ['has', 'students'],
+    filter: ['>', 'students', 0],
     paint: {
         'circle-color': ['step', ['get', 'students'], '#51bbd6', 50, '#f1f075', 100, '#f28cb1'],
         'circle-radius': ['step', ['get', 'students'], 20, 100, 30, 750, 40]
@@ -14,7 +14,7 @@ export const clusterCountLayer = {
     id: 'cluster-count',
     type: 'symbol',
     source: 'alumniPerCountry',
-    filter: ['has', 'students'],
+    filter: ['>', 'students', 0],
     layout: {
         'text-field': '{students}',
         'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Bold'],

@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { clusterLayer, clusterCountLayer, unclusterPointLayer } from './MapLayers';
-import {Map, Source, Layer} from 'react-map-gl';
+import {Map as MapGL, Source, Layer} from 'react-map-gl';
 import MenuButtons from './MenuButtons';
 import ApiDataAnalysis from '../helpers/apiDataAnalysis';
 
@@ -21,19 +21,31 @@ const MapCmp = () => {
 
     useEffect(() => {
       if (selectedAlumni) {
-        const { coordinates } = selectedAlumni;
+        const { name, coordinates } = selectedAlumni;
+        var zoom = 0;
+        if (name.length!==0) {
+          zoom = 10;
+        } else {
+          zoom = 3;
+        }
         if (coordinates) {
           mapRef.current.getMap().flyTo({
             center: coordinates,
-            zoom: 10,
+            zoom: zoom,
           });
         }
       }
     }, [selectedAlumni]);
 
     useEffect(() => {
-      const alumniData = geoJSONFile === 'countries' ? require('../countriesGeoJSON.json') : require('../citiesGeoJSON.json');
-      setAlumniGeoJSON(alumniData);
+      try {
+        setTimeout(() => { // timeout so that react only renders the GeoJson once it is created
+          const alumniData = geoJSONFile === 'countries' ? require('../countriesGeoJSON.json') : require('../citiesGeoJSON.json');
+          setAlumniGeoJSON(alumniData);
+        }, 1000); 
+      } catch (error) {
+        console.log("!! error: ", error);
+      }
     }, [geoJSONFile]);
 
     const handleSelectGeoJSON = (file) => {
@@ -70,50 +82,93 @@ const MapCmp = () => {
     };
 
     const onHover = async event => {
-      if (event.lngLat) {
-        setHoveredMouseCoords([event.point.x, event.point.y]);
-      }
-
-      if (event.features && event.features.length > 0) {
-        const feature = event.features[0];        
-        var listPlaceName = feature.properties.name;
-
-        const linkUsersString = feature.properties.listLinkedinLinksByUser;
-        const jsonObjects = extractJSONObjects(linkUsersString);
-        const mapUserLinks = jsonObjects.reduce((acc, obj) => ({ ...acc, ...obj }), {});
-        var listAlumniNames = Object.keys(mapUserLinks)
-        var listLinkedinLinks = Object.values(mapUserLinks)
-        var profilePics = [];
-
-        // Parse placeName if it's a string
-        if (typeof listPlaceName === 'string') {
-          const regex = /"([^"]+)"|'([^']+)'/g;
-          listPlaceName = listPlaceName.match(regex).map(match => match.replace(/['"]/g, ''));
+      try {
+        if (event.lngLat) {
+          setHoveredMouseCoords([event.point.x, event.point.y]);
         }
-        
-        // Function to flatten nested arrays
-        const flattenArray = arr => {
-          if (!Array.isArray(arr)) return [arr];
-          let flattened = [];
-          arr.forEach(item => {
-            flattened = flattened.concat(flattenArray(item));
-          });
-          return flattened;
-        };
-        listPlaceName = flattenArray(listPlaceName);
-        profilePics = await ApiDataAnalysis.extractPathToProfilePics(listLinkedinLinks);
-        const alumniData = listAlumniNames.map((name, index) => ({
-          name: name,
-          linkedinLink: listLinkedinLinks[index],
-          profilePics: profilePics[index]
-        }));
+  
+        if (event.features && event.features.length > 0) {
+          // Extracts feature fields
+          const feature = event.features[0];        
+          var listPlaceName = feature.properties.name;
+          const linkUsersString = feature.properties.listLinkedinLinksByUser;
+          const coursesYearConclusionByUser = feature.properties.coursesYearConclusionByUser;
 
-        if (listAlumniNames.length > 0 && listLinkedinLinks.length > 0 && listPlaceName.length > 0) {
-          setListPlaceName(listPlaceName);
-          setListAlumniNames(listAlumniNames);
-          setListLinkedinLinks(listLinkedinLinks);
-          setAlumniData(alumniData);
-          setHoveredCluster(true);
+            // Separates fields of linkUsersString
+          var jsonObjects = extractJSONObjects(linkUsersString);
+          var mapUserLinks = jsonObjects.reduce((acc, obj) => ({ ...acc, ...obj }), {});
+          const listLinkedinLinks = Object.keys(mapUserLinks);
+          const listAlumniNames = Object.values(mapUserLinks);
+  
+            // Parse placeName if it's a string
+          if (typeof listPlaceName === 'string') {
+            const regex = /"([^"]+)"|'([^']+)'/g;
+            listPlaceName = listPlaceName.match(regex).map(match => match.replace(/['"]/g, ''));
+          }
+          
+          // Function to flatten nested arrays
+          const flattenArray = arr => {
+            if (!Array.isArray(arr)) return [arr];
+            let flattened = [];
+            arr.forEach(item => {
+              flattened = flattened.concat(flattenArray(item));
+            });
+            return flattened;
+          };
+          listPlaceName = flattenArray(listPlaceName);
+          
+          var profilePics = await ApiDataAnalysis.extractPathToProfilePics(listLinkedinLinks);
+          
+          var mapUserCoursesYears = new Map();
+          var jsonObjectsPeopleCoursesConclusion = extractJSONObjects(coursesYearConclusionByUser);
+          var mapUserPeopleCoursesConclusion = jsonObjectsPeopleCoursesConclusion.reduce((acc, obj) => ({ ...acc, ...obj }), {});
+          Object.entries(mapUserPeopleCoursesConclusion).forEach(([linkdinLink, courseYear]) => {
+            var mapCoursesYears = new Map();
+            Object.entries(courseYear).forEach((courseConclusionYears)=>{
+              const courseConclusionYearsSplited = courseConclusionYears[1].split("/");
+              mapCoursesYears.set(courseConclusionYears[0], courseConclusionYearsSplited[1]);
+            });
+            mapUserCoursesYears.set(linkdinLink, mapCoursesYears);
+          });
+
+          const alumniData = listLinkedinLinks.map((linkdinLink, index) => {
+            var coursesCurrentAlumni = "";
+            var yearConclusionCurrentAlumni="";
+            var userCoursesYearsConclusion = mapUserCoursesYears.get(linkdinLink);
+
+            userCoursesYearsConclusion.forEach((yearConclusion, course) => {
+              coursesCurrentAlumni+=course+" ";
+              yearConclusionCurrentAlumni+=yearConclusion+" ";
+            });
+
+            if (coursesCurrentAlumni==="" || yearConclusionCurrentAlumni==="") {
+              coursesCurrentAlumni = "-";
+              yearConclusionCurrentAlumni = "-";
+            } 
+
+            return {
+              name: listAlumniNames[index],
+              linkedinLink: listLinkedinLinks[index],
+              profilePics: profilePics[index],
+              courses: coursesCurrentAlumni,
+              yearConclusions: yearConclusionCurrentAlumni,
+            };
+          });
+  
+          if (listAlumniNames.length > 0 && listLinkedinLinks.length > 0 && listPlaceName.length > 0) {
+            setListPlaceName(listPlaceName);
+            setListAlumniNames(listAlumniNames);
+            setListLinkedinLinks(listLinkedinLinks);
+            setAlumniData(alumniData);
+            setHoveredCluster(true);
+          } else {
+            setListPlaceName([]);
+            setListAlumniNames([]);
+            setListLinkedinLinks([]);
+            setAlumniData([]);
+            setHoveredCluster(false);
+            setHoveredMouseCoords(null);
+          }
         } else {
           setListPlaceName([]);
           setListAlumniNames([]);
@@ -122,13 +177,8 @@ const MapCmp = () => {
           setHoveredCluster(false);
           setHoveredMouseCoords(null);
         }
-      } else {
-        setListPlaceName([]);
-        setListAlumniNames([]);
-        setListLinkedinLinks([]);
-        setAlumniData([]);
-        setHoveredCluster(false);
-        setHoveredMouseCoords(null);
+      } catch (error) {
+        console.log("!! error: ", error);
       }
     };
 
@@ -136,15 +186,19 @@ const MapCmp = () => {
       setSelectedAlumni({name, coordinates});
     }
 
+    const handleImageError = (event) => {
+      event.target.src = `/Images/noImage.png`;
+    };
+
     return (
       <>
         <div>
           <div className="menu-buttons-container">
-              <MenuButtons onSelectAlumni={handleSelectAlumni} onSelectGeoJSON={handleSelectGeoJSON} />
+              <MenuButtons onSelectAlumni={handleSelectAlumni} onSelectGeoJSON={handleSelectGeoJSON} alumnisBeingDisplayed={alumniData.length} />
           </div>
         </div>
         <div className="mapCmpDiv">
-          <Map
+          <MapGL
             initialViewState={{
                 latitude: 0,
                 longitude: 0,
@@ -172,44 +226,76 @@ const MapCmp = () => {
                   name: ['concat', ['get', 'name']],
                   students: ['+', ['get', 'students']],
                   listLinkedinLinksByUser: ['concat', ['get', 'listLinkedinLinksByUser'], ';'],
+                  coursesYearConclusionByUser: ['concat', ['get', 'coursesYearConclusionByUser'], ';'],
                 }}
             >
                 <Layer {...clusterLayer}/>
                 <Layer {...clusterCountLayer}/>
                 <Layer {...unclusterPointLayer}/>
             </Source>
-          </Map>
-          
-          { hoveredCluster && listAlumniNames.length > 0  && listLinkedinLinks.length > 0 && listPlaceName.length > 0 && (
-            <div
-              className="clusterRectangle"
-              style={{
-                position: 'absolute',
-                top:`${hoveredMouseCoords[1]}px`,
-                left: `${hoveredMouseCoords[0]}px`
-              }}
-            >
-              <ul className={`list-alumni${listAlumniNames.length > 5 ? ' scrollable' : ''}`}>
-                <span style={{ fontWeight: 'bold' }}>Place: </span>
-                {listPlaceName.map( (place, index) => (
-                  <span key={index}>{place}{index !== listPlaceName.length - 1 && ', '}</span>
-                ))}
+
+            { hoveredCluster && listAlumniNames.length > 0  && listLinkedinLinks.length > 0 && listPlaceName.length > 0 && (
+              <div
+                className="clusterRectangle"
+                style={{
+                  position: 'absolute',
+                  top:`${hoveredMouseCoords[1]}px`,
+                  left: `${hoveredMouseCoords[0]}px`
+                }}
+              >
+                <span><b>Place:</b></span>
+                <div style={{ maxHeight: listPlaceName.length > 10 ? '100px' : 'auto', overflow: 'auto' }}>
+                  {listPlaceName.map( (place, index) => (
+                    <span key={index}>{place}{index !== listPlaceName.length - 1 && ', '}</span>
+                  ))}
+                </div>
 
                 <p></p>
-                <span style={{ fontWeight: 'bold' }}>Alumni: </span>
-                {alumniData
-                  .slice() // Create a copy of the array to avoid mutating the original
-                  .sort((a, b) => a.name.localeCompare(b.name)) // Sort the array alphabetically
-                  .map((alumni, index) => (
-                    <li key={index} className="listing-image-profile-picture">
-                      <img className="profile-picture" src={alumni.profilePics} alt="" />
-                      <a className="link" href={alumni.linkedinLink} target="_blank" rel="noopener noreferrer">{alumni.name}</a>
-                    </li>
-                  ))
-                }
-              </ul>
-            </div>
-          )}
+
+                <ul className={`list-alumni${listAlumniNames.length > 5 ? ' scrollable' : ''}`}>
+                  <table className="alumni-table">
+                    <thead>
+                      <tr>
+                        <th className="table-titles">Alumni</th>
+                        <th className="table-titles">Course</th>
+                        <th className="table-titles">Conclusion</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {alumniData
+                        .slice() // Create a copy of the array to avoid mutating the original
+                        .sort((a, b) => a.name.localeCompare(b.name)) // Sort the array alphabetically
+                        .map((alumni, index) => (
+                          <tr key={index}>
+                            <td>
+                              <div className='alumni-cell'>
+                                <img
+                                  className="profile-picture"
+                                  src={alumni.profilePics}
+                                  alt=""
+                                  onError={handleImageError}
+                                />
+                                <a
+                                  className="link"
+                                  href={alumni.linkedinLink}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                >
+                                  {alumni.name}
+                                </a>
+                              </div>
+                            </td>
+                            <td>{alumni.courses}</td>
+                            <td>{alumni.yearConclusions}</td>
+                          </tr>
+                        ))
+                      }
+                    </tbody>
+                  </table>
+                </ul>
+              </div>
+            )}
+          </MapGL>
         </div>
       </>
     );
