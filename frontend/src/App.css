@@ -107,9 +107,13 @@
     margin-bottom: 10px;
 }
 
+.text {
+    margin: 0px;
+}
+
 .text-distribution {
-    margin-bottom: 0px;
     padding-left: 6px;
+    margin-top: 10px;
 }
 
 .fileInput{

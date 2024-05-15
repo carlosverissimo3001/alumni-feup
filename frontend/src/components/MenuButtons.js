@@ -292,7 +292,7 @@ const MenuButtons = ({onSelectGeoJSON, onSelectAlumni,}) => {
 
     return (
         <>
-            <p className='text-distribution'>See alumni distribution across:</p>
+            <p className='text text-distribution'>See alumni distribution across:</p>
             <div>
                 <input
                     type="radio"
@@ -349,9 +349,11 @@ const MenuButtons = ({onSelectGeoJSON, onSelectAlumni,}) => {
                 </select>
             </div>
 
+            <p className='text'>Conclusion year:</p>
+
             <div className="year-filter-container"> 
                 <div className='search-container-year'>
-                    <label for="myDropdown">From Year:</label>
+                    <label for="myDropdown">From</label>
                     <select 
                         className='filter-year-from-alumni search-bar' 
                         id="myDropdownYearFrom"
@@ -366,7 +368,7 @@ const MenuButtons = ({onSelectGeoJSON, onSelectAlumni,}) => {
                     </select>
                 </div>
                 <div className='search-container-year'>
-                    <label for="myDropdown">To Year:</label>
+                    <label for="myDropdown">To</label>
                     <select 
                         className='filter-year-to-alumni search-bar' 
                         id="myDropdownYearTo"
@@ -383,7 +385,7 @@ const MenuButtons = ({onSelectGeoJSON, onSelectAlumni,}) => {
             </div>
 
             <button className="my-button" onClick={() => onClickApply(filterCourseInput, yearFilter)}> Apply </button>
-            <button className="my-button my-button-clean" onClick={onClickClean}> Clean </button>
+            <button className="my-button my-button-clean" onClick={onClickClean}> Clear </button>
 
             <p>Total selected: {numberAlumnisShowing}</p>
 
