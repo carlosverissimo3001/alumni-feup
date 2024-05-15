@@ -243,12 +243,12 @@ class setUp {
                 body: data,
             });
             if (response.ok){
-                console.log('GeoJason successfully created.');
+                console.log('GeoJson successfully created.');
             } else {
-                console.error('GeoJason creation failed.');
+                console.error('GeoJson creation failed.');
             }
         } catch (error) {
-            console.log('Error while generating the geoJason', error);
+            console.log('Error while generating the geoJson', error);
         }
    } 
 }

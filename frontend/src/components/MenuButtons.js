@@ -107,7 +107,7 @@ const MenuButtons = ({onSelectGeoJSON, onSelectAlumni,}) => {
                 // Get only the available years wich are bigger than the one selected in the From field
             const allToYears = listAlumniNamesWithCoordinates.flatMap((alumni) => {
                 return Object.values(alumni.coursesYears).map(yearRange => {
-                    if (parseInt(yearRange.split('/')[1]) > parseInt(yearFilter[0])) {
+                    if (parseInt(yearRange.split('/')[1]) >= parseInt(yearFilter[0])) {
                         return yearRange.split('/')[1]; // Split the string and take the second part
                     }
                 });
@@ -157,6 +157,7 @@ const MenuButtons = ({onSelectGeoJSON, onSelectAlumni,}) => {
     //                                           stores the information in a file
     //                                           uploades the profile pics to the folder: "C:/alimniProject/backend/src/main/java/com/feupAlumni/alumniFEUP/Images"
     // The name of the profile pics is set to the public identifier of the user, wich is retrieved by the API
+    // Also stores the information in a backup file
     const handlePopulateAlumniTable = async () => {
         Verifiers.checkIfExcel(file);        
 
@@ -227,8 +228,8 @@ const MenuButtons = ({onSelectGeoJSON, onSelectAlumni,}) => {
         }
     }
 
-    // Generates the coynntry geoJason
-    const handleGenerateCountryGeoJason = async () => {
+    // Generates the coynntry geoJson
+    const handleGenerateCountryGeoJson = async () => {
         // loadingJson ensures the writing to the geoJson hapens only once the writing of the previous has finished
         if (loadingJson) {
             setLoadingJson(false);
@@ -237,8 +238,8 @@ const MenuButtons = ({onSelectGeoJSON, onSelectAlumni,}) => {
         }
     }
 
-    // Generates the city geoJason
-    const handleGenerateCityGeoJason = async () => {
+    // Generates the city geoJson
+    const handleGenerateCityGeoJson = async () => {
         if(loadingJson){
             setLoadingJson(false);
             //await setUp.generateCityGeoJson(""); Not updated
@@ -286,15 +287,12 @@ const MenuButtons = ({onSelectGeoJSON, onSelectAlumni,}) => {
 
     // Applies the values inserted in the fields
     const onClickApply = async (courseFilter, yearsConclusionFilters) => {
-        // Verifies if yearConclusionFilters inputs are valid or not
-        // TODO: Extract this to a method
-        
         setUp.generateGeoJson(courseFilter, yearsConclusionFilters, selectedOption);
     }
 
     return (
         <>
-            <p>See alumni distribution across:</p>
+            <p className='text text-distribution'>See alumni distribution across:</p>
             <div>
                 <input
                     type="radio"
@@ -351,9 +349,11 @@ const MenuButtons = ({onSelectGeoJSON, onSelectAlumni,}) => {
                 </select>
             </div>
 
+            <p className='text'>Conclusion year:</p>
+
             <div className="year-filter-container"> 
                 <div className='search-container-year'>
-                    <label for="myDropdown">From Year:</label>
+                    <label for="myDropdown">From</label>
                     <select 
                         className='filter-year-from-alumni search-bar' 
                         id="myDropdownYearFrom"
@@ -368,7 +368,7 @@ const MenuButtons = ({onSelectGeoJSON, onSelectAlumni,}) => {
                     </select>
                 </div>
                 <div className='search-container-year'>
-                    <label for="myDropdown">To Year:</label>
+                    <label for="myDropdown">To</label>
                     <select 
                         className='filter-year-to-alumni search-bar' 
                         id="myDropdownYearTo"
@@ -385,7 +385,7 @@ const MenuButtons = ({onSelectGeoJSON, onSelectAlumni,}) => {
             </div>
 
             <button className="my-button" onClick={() => onClickApply(filterCourseInput, yearFilter)}> Apply </button>
-            <button className="my-button my-button-clean" onClick={onClickClean}> Clean </button>
+            <button className="my-button my-button-clean" onClick={onClickClean}> Clear </button>
 
             <p>Total selected: {numberAlumnisShowing}</p>
 
@@ -398,15 +398,15 @@ const MenuButtons = ({onSelectGeoJSON, onSelectAlumni,}) => {
             <button className="button btnMissingLinkedinLinks" onClick={handleLinkedinLinksAlumniTable}>MissingLinkedinLinks</button>
 
             <button className="button butnPopCountry" onClick={handleDeleteRepeatedAlumnis}>DeleteRepeatedAlumnis</button>
-            <button className="button butnPopCity" onClick={handleRefactorlinkdinLinkAlumnis}>RefactorlinkdinLinkAlumnis</button>*/}
+            <button className="button butnPopCity" onClick={handleRefactorlinkdinLinkAlumnis}>RefactorlinkdinLinkAlumnis</button>
 
 
-            {/*<button className="button butnPopCountry" onClick={handlePopulateCountryTable}>PopulateCoutryTable</button>
+            <button className="button butnPopCountry" onClick={handlePopulateCountryTable}>PopulateCoutryTable</button>
             <button className="button butnPopCity" onClick={handlePopulateCityTable}>PopulateCityTable</button>
             <button className="button butnPopAlumniEIC" onClick={handlePopulateAlumniEICTable}>PopulateAlumniEICTable</button>*/}
 
-            {/*<button className="button butnGenCountryGeoJason" onClick={generateCountryGeoJson}>generateCountryGeoJson</button>
-            <button className="button butnGenCityGeoJason" onClick={handleGenerateCityGeoJson}>GenerateCityGeoJson</button>
+            {/*<button className="button butnGenCountryGeoJson" onClick={generateCountryGeoJson}>generateCountryGeoJson</button>
+            <button className="button butnGenCityGeoJson" onClick={handleGenerateCityGeoJson}>GenerateCityGeoJson</button>
 
             <button className="button butnAlmWithoutLink" onClick={handleAlumnisMatchLinkedin}>Match Alumnis Linkedin</button>
             <button className="button btnExcelAlumniProfSitu" onClick={handleExcelAlumniProfSitu}>Excel: nomeAlumni + professionalSitu</button>

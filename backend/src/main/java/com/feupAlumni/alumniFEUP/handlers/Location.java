@@ -2,6 +2,7 @@ package com.feupAlumni.alumniFEUP.handlers;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -31,8 +32,19 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import java.net.URLEncoder;
 import java.util.Map;
+import java.util.Properties;
 
 public class Location {
+
+    private static final String PROPERTIES_FILE = "backend/src/main/resources/application.properties";
+
+    private static Properties loadProperties() throws IOException {
+        Properties properties = new Properties();
+        FileInputStream fis = new FileInputStream(PROPERTIES_FILE);
+        properties.load(fis);
+        fis.close();
+        return properties;
+    }
 
     // It receives the coordinates in the form of a string like: "[latitude, longitude]"
     // and returns them as an array like: [longitude, latitude]
@@ -51,7 +63,7 @@ public class Location {
 
     // Calls on the API which gets the information about a given country (inlcuding their latitude and longitude)
     private static JsonNode getCoordinatesForCountry (String countryCode) throws IOException, InterruptedException {
-        
+            
         String API_URL = "http://api.geonames.org/searchJSON";
         String USERNAME = "jenifer12345";
         String url = String.format("%s?country=%s&maxRows=1&username=%s", API_URL, countryCode, USERNAME);
