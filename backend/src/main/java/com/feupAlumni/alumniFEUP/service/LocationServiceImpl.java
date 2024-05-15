@@ -85,7 +85,7 @@ public class LocationServiceImpl implements LocationService {
     // Verifies if the alumni has at least one course that finished in the yearFilter
     // yearFilter.get(0) => From year
     // yearFilter.get(1) => To year
-    // TODO: Add validations: If from year has value to year also has to have value
+    // Validations: If from year has value to year also has to have value
     //                        "From year" might have value and "to year" don't
     //                        Both fields can be empty
     //                        If both have value, then the "to year" should be bigger than the "from year"
@@ -95,11 +95,15 @@ public class LocationServiceImpl implements LocationService {
             for (AlumniEic_has_Course course : alumniCourses) {
                 String[] yearConclusion = course.getYearOfConclusion().split("/"); // [2023, 2024]
                 if (!yearFilter.get(1).equals("")) { // There is a To year => Interval
-                    if (Integer.parseInt(yearFilter.get(0)) <= Integer.parseInt(yearConclusion[1]) &&
-                        Integer.parseInt(yearFilter.get(1)) >= Integer.parseInt(yearConclusion[1])
-                    ) {
-                        return true;
-                    }
+                    // Validates the years: if there is a value "to year", then this second value has to be bigger than the "from year"
+                    if (Integer.parseInt(yearFilter.get(0)) < Integer.parseInt(yearFilter.get(1))) {
+                        if (Integer.parseInt(yearFilter.get(0)) <= Integer.parseInt(yearConclusion[1]) &&
+                            Integer.parseInt(yearFilter.get(1)) >= Integer.parseInt(yearConclusion[1])
+                        ) {
+                            return true;
+                        }
+                    } 
+                    return false;
                 } else { // There isn't a To year => unique year
                     if (Integer.parseInt(yearFilter.get(0)) == Integer.parseInt(yearConclusion[1])) {
                         return true;
