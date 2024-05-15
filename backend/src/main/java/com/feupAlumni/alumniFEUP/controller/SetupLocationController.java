@@ -59,9 +59,9 @@ public class SetupLocationController {
             List<String> yearFilter = (List<String>) map.get("yearsConclusionFilter"); // Extract yearsConclusionFilter from the Map
             
             locationService.generateGeoJson(courseFilter, yearFilter, geoJsonType);
-            return ResponseEntity.ok("GeoJason successfully created.");
+            return ResponseEntity.ok("GeoJson successfully created.");
         } catch (Exception e) {
-            return ResponseEntity.status(500).body("Error during geoJason generation: " + e.getMessage());
+            return ResponseEntity.status(500).body("Error during geoJson generation: " + e.getMessage());
         }
     }
 }

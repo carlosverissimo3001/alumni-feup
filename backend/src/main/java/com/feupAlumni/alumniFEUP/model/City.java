@@ -13,6 +13,7 @@ public class City extends LocationAlumnis {
     private int id; // Primary key and auto incremented
     private String city;
     private String cityCoordinates;
+    private int nAlumniInCity;
 
     public City(){
 
@@ -21,6 +22,7 @@ public class City extends LocationAlumnis {
     public City(String city, String cityCoordinates, int nAlumniInCity){
         this.city = city;
         this.cityCoordinates = cityCoordinates;
+        this.nAlumniInCity = nAlumniInCity;
     }
 
     @Override
@@ -31,6 +33,16 @@ public class City extends LocationAlumnis {
     @Override
     public String getCoordinates() {
         return cityCoordinates;
+    }
+
+    @Override
+    public int getNAlumni() {
+        return nAlumniInCity;
+    }
+
+    @Override
+    public void setNAlumni(int nAlumniInCity) {
+        this.nAlumniInCity = nAlumniInCity;
     }
 
     public void setCity(String city) {

@@ -96,7 +96,7 @@ public class LocationServiceImpl implements LocationService {
                 String[] yearConclusion = course.getYearOfConclusion().split("/"); // [2023, 2024]
                 if (!yearFilter.get(1).equals("")) { // There is a To year => Interval
                     // Validates the years: if there is a value "to year", then this second value has to be bigger than the "from year"
-                    if (Integer.parseInt(yearFilter.get(0)) < Integer.parseInt(yearFilter.get(1))) {
+                    if (Integer.parseInt(yearFilter.get(0)) <= Integer.parseInt(yearFilter.get(1))) {
                         if (Integer.parseInt(yearFilter.get(0)) <= Integer.parseInt(yearConclusion[1]) &&
                             Integer.parseInt(yearFilter.get(1)) >= Integer.parseInt(yearConclusion[1])
                         ) {
@@ -104,8 +104,8 @@ public class LocationServiceImpl implements LocationService {
                         }
                     } 
                     return false;
-                } else { // There isn't a To year => unique year
-                    if (Integer.parseInt(yearFilter.get(0)) == Integer.parseInt(yearConclusion[1])) {
+                } else { // There isn't a To year => it shows from that year beyond
+                    if (Integer.parseInt(yearConclusion[1]) >= Integer.parseInt(yearFilter.get(0))) {
                         return true;
                     }
                 }
@@ -168,7 +168,7 @@ public class LocationServiceImpl implements LocationService {
 
     @Override
     public void generateGeoJson(String courseFilter, List<String> yearFilter, String geoJsonType) { //[2000, 2023]
-        // Creates the GeoJason file depending on geoJsonType
+        // Creates the GeoJson file depending on geoJsonType
         Map<File, Gson> fileGson = createFile(geoJsonType);
 
         // Group alumnis in countries or cities depending on geoJsonType
@@ -181,22 +181,6 @@ public class LocationServiceImpl implements LocationService {
         // For each alumni associates a course with the respective year of conclusion + filters applied
         // Key: alumni linkdin link Vlaue: map where key: course and value: year of conclusion
         Map<String, Map<String, String>> alumniByCourseYearConclusion = alumniByCourseYearConclusion(courseFilter, yearFilter);
-        for (Map.Entry<String, Map<String, String>> entry : alumniByCourseYearConclusion.entrySet()) {
-            String course = entry.getKey();
-            Map<String, String> yearConclusionMap = entry.getValue();
-        
-            // Print the course
-            System.out.println("Course: " + course);
-        
-            // Iterate over the inner map
-            for (Map.Entry<String, String> yearConclusionEntry : yearConclusionMap.entrySet()) {
-                String year = yearConclusionEntry.getKey();
-                String conclusion = yearConclusionEntry.getValue();
-        
-                // Print the year and conclusion
-                System.out.println("Year: " + year + ", Conclusion: " + conclusion);
-            }
-        }
         
         // Adds the content to the geoJson
         addContentInGeoJson(alumniByLocation, alumniLinkedInLink, alumniByCourseYearConclusion, fileGson);

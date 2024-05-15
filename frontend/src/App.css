@@ -80,29 +80,40 @@
     box-shadow: none; 
     padding: 5px; 
     outline: none; 
-    margin-top: 10px;
     width: 95%;
 }
 
-.search-bar-alumni {
-    margin-top: 10px;
-}
-
 .filter-course-alumni {
-    margin-top: 11px;
+    width: 100%;
+    margin-bottom: 10px;
 }
 
 .year-filter-container {
     display: flex;
+    margin-bottom: 10px;
 }
 
 .search-container-year {
-    width: 46%;
+    width: 50%;
     display: inline-block;
 }
 
-.search-container-to-year {
-    margin-left: 20px;
+.filter-year-to-alumni {
+    margin-left: 5px;
+}
+
+.search-bar-alumni {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.text {
+    margin: 0px;
+}
+
+.text-distribution {
+    padding-left: 6px;
+    margin-top: 10px;
 }
 
 .fileInput{
@@ -145,6 +156,7 @@
     padding-right: 10px;
     border-radius: 5px;
     z-index: 999; 
+    width: 20%;
 }
 
 .link {
