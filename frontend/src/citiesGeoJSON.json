@@ -5,39 +5,47 @@
       "type": "Feature",
       "properties": {
         "name": [
-          "oslo"
+          "munchen"
         ],
-        "students": 5,
+        "students": 1,
         "listLinkedinLinksByUser": {
-          "https://www.linkedin.com/in/tisilva/": "Tiago Silva",
-          "https://www.linkedin.com/in/joaoeiras/": "João Eiras",
-          "https://www.linkedin.com/in/lcabral/": "Luís Cabral",
-          "https://www.linkedin.com/in/telmorochapereira/": "Telmo Pereira",
-          "https://www.linkedin.com/in/fabiomalheiro/": "Fábio Malheiro"
+          "https://www.linkedin.com/in/acarraca/": "Ana C."
         },
         "coursesYearConclusionByUser": {
-          "https://www.linkedin.com/in/tisilva/": {
-            "MIEIC": "2011/2012"
-          },
-          "https://www.linkedin.com/in/joaoeiras/": {
-            "MIEIC": "2007/2008"
-          },
-          "https://www.linkedin.com/in/lcabral/": {
-            "MEI": "2006/2007"
-          },
-          "https://www.linkedin.com/in/telmorochapereira/": {
-            "MIEIC": "2009/2010"
-          },
-          "https://www.linkedin.com/in/fabiomalheiro/": {
-            "MIEIC": "2009/2010"
+          "https://www.linkedin.com/in/acarraca/": {
+            "MIEIC": "2013/2014"
           }
         }
       },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          10.74609,
-          59.91273
+          11.57549,
+          48.13743
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": [
+          "malmö"
+        ],
+        "students": 1,
+        "listLinkedinLinksByUser": {
+          "https://www.linkedin.com/in/jcxavier/": "João Xavier"
+        },
+        "coursesYearConclusionByUser": {
+          "https://www.linkedin.com/in/jcxavier/": {
+            "MIEIC": "2010/2011"
+          }
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          13.00073,
+          55.60587
         ]
       }
     },
@@ -88,23 +96,23 @@
       "type": "Feature",
       "properties": {
         "name": [
-          "campo"
+          "greater cambridge area"
         ],
         "students": 1,
         "listLinkedinLinksByUser": {
-          "https://www.linkedin.com/in/ricardo-loureiro-767367118/": "Ricardo Loureiro"
+          "https://www.linkedin.com/in/azevedotiago/": "Tiago Azevedo"
         },
         "coursesYearConclusionByUser": {
-          "https://www.linkedin.com/in/ricardo-loureiro-767367118/": {
-            "MIEIC": "2016/2017"
+          "https://www.linkedin.com/in/azevedotiago/": {
+            "MIEIC": "2014/2015"
           }
         }
       },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -54.64639,
-          -20.44278
+          -66.04905,
+          18.38523
         ]
       }
     },
@@ -112,87 +120,257 @@
       "type": "Feature",
       "properties": {
         "name": [
-          "vila real"
+          "berlin metropolitan area"
+        ],
+        "students": 3,
+        "listLinkedinLinksByUser": {
+          "https://www.linkedin.com/in/pedromauriciocosta/": "Pedro Maurício Costa, PhD",
+          "https://www.linkedin.com/in/lmatias/": "Dr. Luís Moreira-Matias",
+          "https://www.linkedin.com/in/ruimferreira/": "Rui Ferreira"
+        },
+        "coursesYearConclusionByUser": {
+          "https://www.linkedin.com/in/pedromauriciocosta/": {
+            "LEIC": "2006/2007"
+          },
+          "https://www.linkedin.com/in/lmatias/": {
+            "MIEIC": "2008/2009"
+          },
+          "https://www.linkedin.com/in/ruimferreira/": {
+            "LEIC": "2004/2005"
+          }
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -3.67264,
+          40.448
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": [
+          "viana do castelo"
+        ],
+        "students": 1,
+        "listLinkedinLinksByUser": {
+          "https://www.linkedin.com/in/vascotorres/": "Vasco Torres"
+        },
+        "coursesYearConclusionByUser": {
+          "https://www.linkedin.com/in/vascotorres/": {
+            "MIEIC": "2012/2013"
+          }
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8.5063,
+          41.89649
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": [
+          "maia"
+        ],
+        "students": 22,
+        "listLinkedinLinksByUser": {
+          "https://www.linkedin.com/in/joao-alvaro-ferreira/": "João Álvaro Ferreira",
+          "https://www.linkedin.com/in/maria-helena-ferreira-654627178/": "Maria Helena Ferreira",
+          "https://www.linkedin.com/in/dmfrodrigues/": "diogo rodrigues",
+          "https://www.linkedin.com/in/carlosvales/": "Carlos Vales",
+          "https://www.linkedin.com/in/fabioamarante/": "Fábio Amarante",
+          "https://www.linkedin.com/in/andre-lago/": "André Lago",
+          "https://www.linkedin.com/in/goncalopascoal/": "Gonçalo Pascoal",
+          "https://www.linkedin.com/in/helderferreira/": "Helder Cabral Ferreira",
+          "https://www.linkedin.com/in/frguedes/": "Filipe Guedes",
+          "https://www.linkedin.com/in/margarida-s/": "margarida silva",
+          "https://www.linkedin.com/in/luismprocha/": "Luís Rocha",
+          "https://www.linkedin.com/in/duarte-sardão-558104295/": "Duarte Sardão",
+          "https://www.linkedin.com/in/joao-rocha123/": "João Rocha",
+          "https://www.linkedin.com/in/ivorelvas/": "Ivo Relvas",
+          "https://www.linkedin.com/in/joaoferreiragouveia/": "João Gouveia",
+          "https://www.linkedin.com/in/ricruz/": "Ricardo Cruz",
+          "https://www.linkedin.com/in/carloslousada00/": "Carlos Lousada",
+          "https://www.linkedin.com/in/paulo-aguiar-156930/": "Paulo Aguiar",
+          "https://www.linkedin.com/in/joaosilva22/": "João Pedro Silva",
+          "https://www.linkedin.com/in/peixotojoao/": "João Peixoto",
+          "https://www.linkedin.com/in/claudiarmamede/": "Cláudia Mamede",
+          "https://www.linkedin.com/in/filipe-garcês-116333236/": "Filipe Garcês"
+        },
+        "coursesYearConclusionByUser": {
+          "https://www.linkedin.com/in/joao-alvaro-ferreira/": {},
+          "https://www.linkedin.com/in/maria-helena-ferreira-654627178/": {
+            "M.EIC": "2021/2022"
+          },
+          "https://www.linkedin.com/in/dmfrodrigues/": {
+            "M.EIC": "2022/2023"
+          },
+          "https://www.linkedin.com/in/carlosvales/": {
+            "LEIC": "2003/2004"
+          },
+          "https://www.linkedin.com/in/fabioamarante/": {
+            "MIEIC": "2017/2018"
+          },
+          "https://www.linkedin.com/in/andre-lago/": {
+            "MIEIC": "2017/2018"
+          },
+          "https://www.linkedin.com/in/goncalopascoal/": {},
+          "https://www.linkedin.com/in/helderferreira/": {
+            "MEI": "2005/2006"
+          },
+          "https://www.linkedin.com/in/frguedes/": {
+            "LEIC": "2005/2006"
+          },
+          "https://www.linkedin.com/in/margarida-s/": {},
+          "https://www.linkedin.com/in/luismprocha/": {
+            "MIEIC": "2010/2011"
+          },
+          "https://www.linkedin.com/in/duarte-sardão-558104295/": {},
+          "https://www.linkedin.com/in/joao-rocha123/": {
+            "L.EIC": "2021/2022"
+          },
+          "https://www.linkedin.com/in/ivorelvas/": {
+            "LEIC": "2004/2005"
+          },
+          "https://www.linkedin.com/in/joaoferreiragouveia/": {
+            "MIEIC": "2010/2011"
+          },
+          "https://www.linkedin.com/in/ricruz/": {
+            "MIEIC": "2007/2008"
+          },
+          "https://www.linkedin.com/in/carloslousada00/": {},
+          "https://www.linkedin.com/in/paulo-aguiar-156930/": {
+            "LEIC": "1999/2000"
+          },
+          "https://www.linkedin.com/in/joaosilva22/": {},
+          "https://www.linkedin.com/in/peixotojoao/": {
+            "LEIC": "2002/2003"
+          },
+          "https://www.linkedin.com/in/claudiarmamede/": {
+            "M.EIC": "2021/2022"
+          },
+          "https://www.linkedin.com/in/filipe-garcês-116333236/": {}
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8.6199,
+          41.23574
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": [
+          "delft"
+        ],
+        "students": 1,
+        "listLinkedinLinksByUser": {
+          "https://www.linkedin.com/in/jose-carlos-ms-coutinho/": "José Carlos Coutinho"
+        },
+        "coursesYearConclusionByUser": {
+          "https://www.linkedin.com/in/jose-carlos-ms-coutinho/": {
+            "MIEIC": "2018/2019"
+          }
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.35556,
+          52.00667
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": [
+          "trofa"
+        ],
+        "students": 1,
+        "listLinkedinLinksByUser": {
+          "https://www.linkedin.com/in/ptozin/": "João Araújo"
+        },
+        "coursesYearConclusionByUser": {
+          "https://www.linkedin.com/in/ptozin/": {
+            "L.EIC": "2022/2023"
+          }
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8.5764,
+          41.30646
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": [
+          "london area"
+        ],
+        "students": 3,
+        "listLinkedinLinksByUser": {
+          "https://www.linkedin.com/in/rjsteixeira/": "Ricardo Teixeira",
+          "https://www.linkedin.com/in/bruno-silveira-18942226/": "Bruno Silveira",
+          "https://www.linkedin.com/in/hugomonteiro/": "Hugo Monteiro"
+        },
+        "coursesYearConclusionByUser": {
+          "https://www.linkedin.com/in/rjsteixeira/": {
+            "MIEIC": "2013/2014"
+          },
+          "https://www.linkedin.com/in/bruno-silveira-18942226/": {
+            "MIEIC": "2009/2010"
+          },
+          "https://www.linkedin.com/in/hugomonteiro/": {
+            "LEIC": "2004/2005"
+          }
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -72.09952,
+          41.35565
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": [
+          "toronto"
         ],
         "students": 2,
         "listLinkedinLinksByUser": {
-          "https://www.linkedin.com/in/luís-santos-3a433327/": "Luís Santos",
-          "https://www.linkedin.com/in/luís-pinto-21334110/": "Luís Pinto"
+          "https://www.linkedin.com/in/afonsograca/": "Afonso Graça",
+          "https://www.linkedin.com/in/joelpramos/": "Joel Ramos"
         },
         "coursesYearConclusionByUser": {
-          "https://www.linkedin.com/in/luís-santos-3a433327/": {
-            "MIEIC": "2010/2011"
+          "https://www.linkedin.com/in/afonsograca/": {
+            "MIEIC": "2011/2012"
           },
-          "https://www.linkedin.com/in/luís-pinto-21334110/": {
-            "MIEIC": "2009/2010"
-          }
-        }
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -7.74413,
-          41.30062
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "name": [
-          "winchester"
-        ],
-        "students": 1,
-        "listLinkedinLinksByUser": {
-          "https://www.linkedin.com/in/cmiguelmonteiro/": "Miguel Monteiro"
-        },
-        "coursesYearConclusionByUser": {
-          "https://www.linkedin.com/in/cmiguelmonteiro/": {
-            "LEIC": "2006/2007"
-          }
-        }
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          115.35,
-          5.7
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "name": [
-          "paris"
-        ],
-        "students": 5,
-        "listLinkedinLinksByUser": {
-          "https://www.linkedin.com/in/andreferreirav2/": "André Ferreira",
-          "https://www.linkedin.com/in/carlosmasousa/": "carlos sousa",
-          "https://www.linkedin.com/in/cmtcosta/": "Cláudio Costa",
-          "https://www.linkedin.com/in/antonio-ramadas/": "António Ramadas",
-          "https://www.linkedin.com/in/leonormsousa/": "Leonor Sousa"
-        },
-        "coursesYearConclusionByUser": {
-          "https://www.linkedin.com/in/andreferreirav2/": {
+          "https://www.linkedin.com/in/joelpramos/": {
             "MIEIC": "2013/2014"
-          },
-          "https://www.linkedin.com/in/carlosmasousa/": {
-            "MIEIC": "2007/2008"
-          },
-          "https://www.linkedin.com/in/cmtcosta/": {
-            "MIEIC": "2009/2010"
-          },
-          "https://www.linkedin.com/in/antonio-ramadas/": {},
-          "https://www.linkedin.com/in/leonormsousa/": {}
+          }
         }
       },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          2.3488,
-          48.85341
+          -79.39864,
+          43.70643
         ]
       }
     },
@@ -357,31 +535,23 @@
       "type": "Feature",
       "properties": {
         "name": [
-          "copenhagen"
+          "nieder ramstadt"
         ],
-        "students": 3,
+        "students": 1,
         "listLinkedinLinksByUser": {
-          "https://www.linkedin.com/in/anpalves/": "André Alves",
-          "https://www.linkedin.com/in/joanacarvalho/": "Joana Carvalho",
-          "https://www.linkedin.com/in/ricardo-pinho-409b8474/": "Ricardo Pinho"
+          "https://www.linkedin.com/in/nandomoreira/": "José Silva"
         },
         "coursesYearConclusionByUser": {
-          "https://www.linkedin.com/in/anpalves/": {
+          "https://www.linkedin.com/in/nandomoreira/": {
             "MIEIC": "2012/2013"
-          },
-          "https://www.linkedin.com/in/joanacarvalho/": {
-            "LEIC": "2001/2002"
-          },
-          "https://www.linkedin.com/in/ricardo-pinho-409b8474/": {
-            "MIEIC": "2013/2014"
           }
         }
       },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          12.56553,
-          55.67594
+          8.70084,
+          49.82474
         ]
       }
     },
@@ -389,621 +559,14 @@
       "type": "Feature",
       "properties": {
         "name": [
-          "póvoa de varzim"
-        ],
-        "students": 2,
-        "listLinkedinLinksByUser": {
-          "https://www.linkedin.com/in/rubencostaviana/": "Rúben Viana",
-          "https://www.linkedin.com/in/diogo-mendes-54b449247/": "Diogo Mendes"
-        },
-        "coursesYearConclusionByUser": {
-          "https://www.linkedin.com/in/rubencostaviana/": {},
-          "https://www.linkedin.com/in/diogo-mendes-54b449247/": {
-            "L.EIC": "2021/2022",
-            "M.EIC": "2022/2023"
-          }
-        }
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -8.76364,
-          41.38344
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "name": [
-          "ovar"
+          "san francisco bay area"
         ],
         "students": 1,
         "listLinkedinLinksByUser": {
-          "https://www.linkedin.com/in/helder-fontes/": "Helder Fontes"
+          "https://www.linkedin.com/in/alexandrecperez/": "Alexandre Perez"
         },
         "coursesYearConclusionByUser": {
-          "https://www.linkedin.com/in/helder-fontes/": {
-            "MIEIC": "2009/2010"
-          }
-        }
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -8.61226,
-          40.89422
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "name": [
-          "groningen"
-        ],
-        "students": 1,
-        "listLinkedinLinksByUser": {
-          "https://www.linkedin.com/in/joanasmramos/": "Joana Ramos"
-        },
-        "coursesYearConclusionByUser": {
-          "https://www.linkedin.com/in/joanasmramos/": {
-            "MIEIC": "2020/2021"
-          }
-        }
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          6.56667,
-          53.21917
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "name": [
-          "covilhã"
-        ],
-        "students": 1,
-        "listLinkedinLinksByUser": {
-          "https://www.linkedin.com/in/pontoporponto/": "César Rodrigues"
-        },
-        "coursesYearConclusionByUser": {
-          "https://www.linkedin.com/in/pontoporponto/": {
-            "LEIC": "2001/2002"
-          }
-        }
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -7.50504,
-          40.28106
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "name": [
-          "greater cambridge area"
-        ],
-        "students": 1,
-        "listLinkedinLinksByUser": {
-          "https://www.linkedin.com/in/azevedotiago/": "Tiago Azevedo"
-        },
-        "coursesYearConclusionByUser": {
-          "https://www.linkedin.com/in/azevedotiago/": {
-            "MIEIC": "2014/2015"
-          }
-        }
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -66.04905,
-          18.38523
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "name": [
-          "greater stockholm metropolitan area"
-        ],
-        "students": 1,
-        "listLinkedinLinksByUser": {
-          "https://www.linkedin.com/in/jotacoelho/": "👨‍💻 João C."
-        },
-        "coursesYearConclusionByUser": {
-          "https://www.linkedin.com/in/jotacoelho/": {}
-        }
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          18.00221,
-          59.50044
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "name": [
-          "refojos de basto"
-        ],
-        "students": 1,
-        "listLinkedinLinksByUser": {
-          "https://www.linkedin.com/in/diogosamuel/": "Diogo Samuel Fernandes"
-        },
-        "coursesYearConclusionByUser": {
-          "https://www.linkedin.com/in/diogosamuel/": {
-            "M.EIC": "2022/2023"
-          }
-        }
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -7.99517,
-          41.51318
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "name": [
-          "berlin"
-        ],
-        "students": 3,
-        "listLinkedinLinksByUser": {
-          "https://www.linkedin.com/in/joaonadais/": "João Nadais",
-          "https://www.linkedin.com/in/thejjoliveira/": "José Oliveira",
-          "https://www.linkedin.com/in/fpoliveira/": "Fábio Oliveira"
-        },
-        "coursesYearConclusionByUser": {
-          "https://www.linkedin.com/in/joaonadais/": {
-            "MIEIC": "2015/2016"
-          },
-          "https://www.linkedin.com/in/thejjoliveira/": {},
-          "https://www.linkedin.com/in/fpoliveira/": {
-            "MIEIC": "2007/2008"
-          }
-        }
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          13.41053,
-          52.52437
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "name": [
-          "baião"
-        ],
-        "students": 1,
-        "listLinkedinLinksByUser": {
-          "https://www.linkedin.com/in/tiagommferreira55/": "Tiago Ferreira"
-        },
-        "coursesYearConclusionByUser": {
-          "https://www.linkedin.com/in/tiagommferreira55/": {
-            "MIEIC": "2016/2017"
-          }
-        }
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -8.03581,
-          41.16384
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "name": [
-          "belo horizonte"
-        ],
-        "students": 1,
-        "listLinkedinLinksByUser": {
-          "https://www.linkedin.com/in/carlosnovaduarte/": "carlos duarte"
-        },
-        "coursesYearConclusionByUser": {
-          "https://www.linkedin.com/in/carlosnovaduarte/": {
-            "M.EIC": "2021/2022"
-          }
-        }
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -43.93778,
-          -19.92083
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "name": [
-          "maia"
-        ],
-        "students": 22,
-        "listLinkedinLinksByUser": {
-          "https://www.linkedin.com/in/joao-alvaro-ferreira/": "João Álvaro Ferreira",
-          "https://www.linkedin.com/in/maria-helena-ferreira-654627178/": "Maria Helena Ferreira",
-          "https://www.linkedin.com/in/dmfrodrigues/": "diogo rodrigues",
-          "https://www.linkedin.com/in/carlosvales/": "Carlos Vales",
-          "https://www.linkedin.com/in/fabioamarante/": "Fábio Amarante",
-          "https://www.linkedin.com/in/andre-lago/": "André Lago",
-          "https://www.linkedin.com/in/goncalopascoal/": "Gonçalo Pascoal",
-          "https://www.linkedin.com/in/helderferreira/": "Helder Cabral Ferreira",
-          "https://www.linkedin.com/in/frguedes/": "Filipe Guedes",
-          "https://www.linkedin.com/in/margarida-s/": "margarida silva",
-          "https://www.linkedin.com/in/luismprocha/": "Luís Rocha",
-          "https://www.linkedin.com/in/duarte-sardão-558104295/": "Duarte Sardão",
-          "https://www.linkedin.com/in/joao-rocha123/": "João Rocha",
-          "https://www.linkedin.com/in/ivorelvas/": "Ivo Relvas",
-          "https://www.linkedin.com/in/joaoferreiragouveia/": "João Gouveia",
-          "https://www.linkedin.com/in/ricruz/": "Ricardo Cruz",
-          "https://www.linkedin.com/in/carloslousada00/": "Carlos Lousada",
-          "https://www.linkedin.com/in/paulo-aguiar-156930/": "Paulo Aguiar",
-          "https://www.linkedin.com/in/joaosilva22/": "João Pedro Silva",
-          "https://www.linkedin.com/in/peixotojoao/": "João Peixoto",
-          "https://www.linkedin.com/in/claudiarmamede/": "Cláudia Mamede",
-          "https://www.linkedin.com/in/filipe-garcês-116333236/": "Filipe Garcês"
-        },
-        "coursesYearConclusionByUser": {
-          "https://www.linkedin.com/in/joao-alvaro-ferreira/": {},
-          "https://www.linkedin.com/in/maria-helena-ferreira-654627178/": {
-            "M.EIC": "2021/2022"
-          },
-          "https://www.linkedin.com/in/dmfrodrigues/": {
-            "M.EIC": "2022/2023"
-          },
-          "https://www.linkedin.com/in/carlosvales/": {
-            "LEIC": "2003/2004"
-          },
-          "https://www.linkedin.com/in/fabioamarante/": {
-            "MIEIC": "2017/2018"
-          },
-          "https://www.linkedin.com/in/andre-lago/": {
-            "MIEIC": "2017/2018"
-          },
-          "https://www.linkedin.com/in/goncalopascoal/": {},
-          "https://www.linkedin.com/in/helderferreira/": {
-            "MEI": "2005/2006"
-          },
-          "https://www.linkedin.com/in/frguedes/": {
-            "LEIC": "2005/2006"
-          },
-          "https://www.linkedin.com/in/margarida-s/": {},
-          "https://www.linkedin.com/in/luismprocha/": {
-            "MIEIC": "2010/2011"
-          },
-          "https://www.linkedin.com/in/duarte-sardão-558104295/": {},
-          "https://www.linkedin.com/in/joao-rocha123/": {
-            "L.EIC": "2021/2022"
-          },
-          "https://www.linkedin.com/in/ivorelvas/": {
-            "LEIC": "2004/2005"
-          },
-          "https://www.linkedin.com/in/joaoferreiragouveia/": {
-            "MIEIC": "2010/2011"
-          },
-          "https://www.linkedin.com/in/ricruz/": {
-            "MIEIC": "2007/2008"
-          },
-          "https://www.linkedin.com/in/carloslousada00/": {},
-          "https://www.linkedin.com/in/paulo-aguiar-156930/": {
-            "LEIC": "1999/2000"
-          },
-          "https://www.linkedin.com/in/joaosilva22/": {},
-          "https://www.linkedin.com/in/peixotojoao/": {
-            "LEIC": "2002/2003"
-          },
-          "https://www.linkedin.com/in/claudiarmamede/": {
-            "M.EIC": "2021/2022"
-          },
-          "https://www.linkedin.com/in/filipe-garcês-116333236/": {}
-        }
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -8.6199,
-          41.23574
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "name": [
-          "other"
-        ],
-        "students": 1,
-        "listLinkedinLinksByUser": {
-          "https://www.linkedin.com/in/joaquimcarneiro/": "Joaquim Carneiro"
-        },
-        "coursesYearConclusionByUser": {
-          "https://www.linkedin.com/in/joaquimcarneiro/": {}
-        }
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -84.755,
-          49.09111
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "name": [
-          "greater seattle area"
-        ],
-        "students": 1,
-        "listLinkedinLinksByUser": {
-          "https://www.linkedin.com/in/andrerod/": "André Rodrigues"
-        },
-        "coursesYearConclusionByUser": {
-          "https://www.linkedin.com/in/andrerod/": {
-            "MIEIC": "2007/2008"
-          }
-        }
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -122.3765,
-          47.5224
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "name": [
-          "stockholm"
-        ],
-        "students": 1,
-        "listLinkedinLinksByUser": {
-          "https://www.linkedin.com/in/paxpacheco/": "Pedro Pacheco"
-        },
-        "coursesYearConclusionByUser": {
-          "https://www.linkedin.com/in/paxpacheco/": {
-            "MIEIC": "2009/2010"
-          }
-        }
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          18.06871,
-          59.32938
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "name": [
-          "vale de cambra"
-        ],
-        "students": 1,
-        "listLinkedinLinksByUser": {
-          "https://www.linkedin.com/in/ajorgetavares/": "A. Jorge Tavares"
-        },
-        "coursesYearConclusionByUser": {
-          "https://www.linkedin.com/in/ajorgetavares/": {
-            "LEIC": "1999/2000"
-          }
-        }
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -8.36022,
-          40.845
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "name": [
-          "espinho"
-        ],
-        "students": 3,
-        "listLinkedinLinksByUser": {
-          "https://www.linkedin.com/in/mikespinto/": "Mike Pinto",
-          "https://www.linkedin.com/in/andrepmalheiro/": "André Malheiro",
-          "https://www.linkedin.com/in/ricardojmdoliveira/": "Ricardo Oliveira"
-        },
-        "coursesYearConclusionByUser": {
-          "https://www.linkedin.com/in/mikespinto/": {
-            "MIEIC": "2016/2017"
-          },
-          "https://www.linkedin.com/in/andrepmalheiro/": {
-            "L.EIC": "2021/2022"
-          },
-          "https://www.linkedin.com/in/ricardojmdoliveira/": {
-            "LEIC": "2004/2005"
-          }
-        }
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -8.64125,
-          41.00763
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "name": [
-          "matosinhos"
-        ],
-        "students": 16,
-        "listLinkedinLinksByUser": {
-          "https://www.linkedin.com/in/andrenasx/": "André Nascimento",
-          "https://www.linkedin.com/in/tiagoamgomes/": "Tiago Gomes",
-          "https://www.linkedin.com/in/ana-teresa-cruz/": "Ana Teresa Cruz",
-          "https://www.linkedin.com/in/jprudencio/": "João P.",
-          "https://www.linkedin.com/in/joao-d-o-santos/": "João D Santos",
-          "https://www.linkedin.com/in/armindorlsimoes/": "Rafael Simões",
-          "https://www.linkedin.com/in/antoniocastro/": "António de Castro (PhD)",
-          "https://www.linkedin.com/in/francisjssilva/": "Francisco Silva",
-          "https://www.linkedin.com/in/pedronmacedo/": "Pedro Macedo",
-          "https://www.linkedin.com/in/joaoserraseal/": "João Serra",
-          "https://www.linkedin.com/in/david-clemente/": "David Clemente",
-          "https://www.linkedin.com/in/feupesiano/": "Luís A.",
-          "https://www.linkedin.com/in/ricardogo/": "Ricardo Gonçalves",
-          "https://www.linkedin.com/in/dianaamfreitas/": "Diana Freitas",
-          "https://www.linkedin.com/in/ana-santos-556807130/": "Ana Santos",
-          "https://www.linkedin.com/in/pedromlcosta/": "Pedro Costa"
-        },
-        "coursesYearConclusionByUser": {
-          "https://www.linkedin.com/in/andrenasx/": {
-            "M.EIC": "2022/2023"
-          },
-          "https://www.linkedin.com/in/tiagoamgomes/": {
-            "LEIC": "2005/2006"
-          },
-          "https://www.linkedin.com/in/ana-teresa-cruz/": {
-            "M.EIC": "2022/2023"
-          },
-          "https://www.linkedin.com/in/jprudencio/": {},
-          "https://www.linkedin.com/in/joao-d-o-santos/": {
-            "MIEIC": "2014/2015"
-          },
-          "https://www.linkedin.com/in/armindorlsimoes/": {},
-          "https://www.linkedin.com/in/antoniocastro/": {},
-          "https://www.linkedin.com/in/francisjssilva/": {},
-          "https://www.linkedin.com/in/pedronmacedo/": {},
-          "https://www.linkedin.com/in/joaoserraseal/": {
-            "MIEIC": "2012/2013"
-          },
-          "https://www.linkedin.com/in/david-clemente/": {
-            "MIEIC": "2015/2016"
-          },
-          "https://www.linkedin.com/in/feupesiano/": {},
-          "https://www.linkedin.com/in/ricardogo/": {
-            "MIEIC": "2011/2012"
-          },
-          "https://www.linkedin.com/in/dianaamfreitas/": {},
-          "https://www.linkedin.com/in/ana-santos-556807130/": {},
-          "https://www.linkedin.com/in/pedromlcosta/": {
-            "MIEIC": "2017/2018"
-          }
-        }
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -8.68908,
-          41.18207
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "name": [
-          "felgueiras"
-        ],
-        "students": 1,
-        "listLinkedinLinksByUser": {
-          "https://www.linkedin.com/in/maurorcosta/": "Mauro Costa"
-        },
-        "coursesYearConclusionByUser": {
-          "https://www.linkedin.com/in/maurorcosta/": {
-            "MIEIC": "2016/2017"
-          }
-        }
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -8.19396,
-          41.36806
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "name": [
-          "leiria"
-        ],
-        "students": 1,
-        "listLinkedinLinksByUser": {
-          "https://www.linkedin.com/in/miguelpoeira/": "Miguel Cunha"
-        },
-        "coursesYearConclusionByUser": {
-          "https://www.linkedin.com/in/miguelpoeira/": {
-            "MIEIC": "2015/2016"
-          }
-        }
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -8.80705,
-          39.74362
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "name": [
-          "arcos de valdevez"
-        ],
-        "students": 1,
-        "listLinkedinLinksByUser": {
-          "https://www.linkedin.com/in/xico2001pt/": "Francisco Cerqueira"
-        },
-        "coursesYearConclusionByUser": {
-          "https://www.linkedin.com/in/xico2001pt/": {
-            "L.EIC": "2021/2022"
-          }
-        }
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -8.41905,
-          41.84668
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "name": [
-          "braga e região"
-        ],
-        "students": 1,
-        "listLinkedinLinksByUser": {
-          "https://www.linkedin.com/in/nunoestrada/": "Nuno Gouveia"
-        },
-        "coursesYearConclusionByUser": {
-          "https://www.linkedin.com/in/nunoestrada/": {
+          "https://www.linkedin.com/in/alexandrecperez/": {
             "MIEIC": "2011/2012"
           }
         }
@@ -1011,156 +574,8 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -46.89985,
-          -22.85309
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "name": [
-          "caminha"
-        ],
-        "students": 1,
-        "listLinkedinLinksByUser": {
-          "https://www.linkedin.com/in/anriii/": "Henrique Pereira"
-        },
-        "coursesYearConclusionByUser": {
-          "https://www.linkedin.com/in/anriii/": {
-            "M.EIC": "2022/2023"
-          }
-        }
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -8.80133,
-          41.84647
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "name": [
-          "bragança"
-        ],
-        "students": 2,
-        "listLinkedinLinksByUser": {
-          "https://www.linkedin.com/in/freixedelo/": "Rui Freixedelo",
-          "https://www.linkedin.com/in/jmourinho/": "João Mourinho"
-        },
-        "coursesYearConclusionByUser": {
-          "https://www.linkedin.com/in/freixedelo/": {
-            "MIEIC": "2013/2014"
-          },
-          "https://www.linkedin.com/in/jmourinho/": {
-            "MIEIC": "2007/2008"
-          }
-        }
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -6.76346,
-          41.83615
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "name": [
-          "los angeles metropolitan area"
-        ],
-        "students": 1,
-        "listLinkedinLinksByUser": {
-          "https://www.linkedin.com/in/joão-almeida-451714a8/": "João Almeida"
-        },
-        "coursesYearConclusionByUser": {
-          "https://www.linkedin.com/in/joão-almeida-451714a8/": {
-            "MIEIC": "2016/2017"
-          }
-        }
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -118.25646,
-          34.04223
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "name": [
-          "coimbra"
-        ],
-        "students": 2,
-        "listLinkedinLinksByUser": {
-          "https://www.linkedin.com/in/nunocruzsilva/": "Nuno Silva",
-          "https://www.linkedin.com/in/nogueiranuno/": "Nuno Nogueira"
-        },
-        "coursesYearConclusionByUser": {
-          "https://www.linkedin.com/in/nunocruzsilva/": {},
-          "https://www.linkedin.com/in/nogueiranuno/": {
-            "LEIC": "2005/2006"
-          }
-        }
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -8.41955,
-          40.20564
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "name": [
-          "eindhoven"
-        ],
-        "students": 1,
-        "listLinkedinLinksByUser": {
-          "https://www.linkedin.com/in/eduardo-fernandes-79a5292a/": "Eduardo Fernandes"
-        },
-        "coursesYearConclusionByUser": {
-          "https://www.linkedin.com/in/eduardo-fernandes-79a5292a/": {}
-        }
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          5.47778,
-          51.44083
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "name": [
-          "vienna"
-        ],
-        "students": 1,
-        "listLinkedinLinksByUser": {
-          "https://www.linkedin.com/in/pedromsdias/": "Pedro Dias"
-        },
-        "coursesYearConclusionByUser": {
-          "https://www.linkedin.com/in/pedromsdias/": {
-            "MIEIC": "2013/2014"
-          }
-        }
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          16.37208,
-          48.20849
+          -122.41942,
+          37.77493
         ]
       }
     },
@@ -1192,616 +607,18 @@
       "type": "Feature",
       "properties": {
         "name": [
-          "braga"
-        ],
-        "students": 11,
-        "listLinkedinLinksByUser": {
-          "https://www.linkedin.com/in/pedrotiagopontes/": "Pedro Tiago Pontes",
-          "https://www.linkedin.com/in/ritaapeixoto/": "rita peixoto",
-          "https://www.linkedin.com/in/rui-lopes-15159532/": "Rui Lopes",
-          "https://www.linkedin.com/in/paula-rego-1508b12/": "Paula Rego",
-          "https://www.linkedin.com/in/filipe-pinto-b2714052/": "Filipe Pinto",
-          "https://www.linkedin.com/in/rapzo/": "Rui Pedro Lima",
-          "https://www.linkedin.com/in/goncaloper/": "Gonçalo Pereira",
-          "https://www.linkedin.com/in/botelhodaniel/": "Daniel Botelho",
-          "https://www.linkedin.com/in/joao-feio-goncalves/": "João Gonçalves",
-          "https://www.linkedin.com/in/miriamcmcg/": "Miriam Gonçalves",
-          "https://www.linkedin.com/in/jd557/": "João Costa"
-        },
-        "coursesYearConclusionByUser": {
-          "https://www.linkedin.com/in/pedrotiagopontes/": {
-            "MIEIC": "2012/2013"
-          },
-          "https://www.linkedin.com/in/ritaapeixoto/": {},
-          "https://www.linkedin.com/in/rui-lopes-15159532/": {
-            "MIEIC": "2008/2009"
-          },
-          "https://www.linkedin.com/in/paula-rego-1508b12/": {},
-          "https://www.linkedin.com/in/filipe-pinto-b2714052/": {
-            "LEIC": "2001/2002"
-          },
-          "https://www.linkedin.com/in/rapzo/": {},
-          "https://www.linkedin.com/in/goncaloper/": {
-            "MIEIC": "2013/2014"
-          },
-          "https://www.linkedin.com/in/botelhodaniel/": {
-            "MIEIC": "2008/2009"
-          },
-          "https://www.linkedin.com/in/joao-feio-goncalves/": {
-            "MIEIC": "2012/2013"
-          },
-          "https://www.linkedin.com/in/miriamcmcg/": {},
-          "https://www.linkedin.com/in/jd557/": {
-            "MIEIC": "2013/2014"
-          }
-        }
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -8.42005,
-          41.55032
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "name": [
-          "london area"
+          "paços de ferreira"
         ],
         "students": 3,
         "listLinkedinLinksByUser": {
-          "https://www.linkedin.com/in/rjsteixeira/": "Ricardo Teixeira",
-          "https://www.linkedin.com/in/bruno-silveira-18942226/": "Bruno Silveira",
-          "https://www.linkedin.com/in/hugomonteiro/": "Hugo Monteiro"
+          "https://www.linkedin.com/in/jorgepacheco99/": "Jorge Pacheco",
+          "https://www.linkedin.com/in/josemartinsdev/": "José Martins",
+          "https://www.linkedin.com/in/daviddiassilva/": "David Silva"
         },
         "coursesYearConclusionByUser": {
-          "https://www.linkedin.com/in/rjsteixeira/": {
-            "MIEIC": "2013/2014"
-          },
-          "https://www.linkedin.com/in/bruno-silveira-18942226/": {
-            "MIEIC": "2009/2010"
-          },
-          "https://www.linkedin.com/in/hugomonteiro/": {
-            "LEIC": "2004/2005"
-          }
-        }
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -72.09952,
-          41.35565
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "name": [
-          "lysaker"
-        ],
-        "students": 1,
-        "listLinkedinLinksByUser": {
-          "https://www.linkedin.com/in/hugo-passos-036aa43b/": "Hugo Passos"
-        },
-        "coursesYearConclusionByUser": {
-          "https://www.linkedin.com/in/hugo-passos-036aa43b/": {
-            "MIEIC": "2011/2012"
-          }
-        }
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          10.63545,
-          59.90994
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "name": [
-          "dublin city"
-        ],
-        "students": 2,
-        "listLinkedinLinksByUser": {
-          "https://www.linkedin.com/in/mark-timothy-meehan/": "Mark Meehan",
-          "https://www.linkedin.com/in/iferreira/": "Inês F."
-        },
-        "coursesYearConclusionByUser": {
-          "https://www.linkedin.com/in/mark-timothy-meehan/": {
-            "M.EIC": "2021/2022"
-          },
-          "https://www.linkedin.com/in/iferreira/": {
-            "MIEIC": "2011/2012"
-          }
-        }
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -6.24889,
-          53.33306
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "name": [
-          "esposende"
-        ],
-        "students": 1,
-        "listLinkedinLinksByUser": {
-          "https://www.linkedin.com/in/vitor-madureira-326b1844/": "Vitor Madureira"
-        },
-        "coursesYearConclusionByUser": {
-          "https://www.linkedin.com/in/vitor-madureira-326b1844/": {
-            "MIEIC": "2009/2010"
-          }
-        }
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -8.75754,
-          41.54516
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "name": [
-          "louzada"
-        ],
-        "students": 1,
-        "listLinkedinLinksByUser": {
-          "https://www.linkedin.com/in/diogonogueira/": "Rafael Nogueira"
-        },
-        "coursesYearConclusionByUser": {
-          "https://www.linkedin.com/in/diogonogueira/": {
-            "MIEIC": "2013/2014"
-          }
-        }
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -8.27993,
-          41.27822
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "name": [
-          "kirkland"
-        ],
-        "students": 1,
-        "listLinkedinLinksByUser": {
-          "https://www.linkedin.com/in/miguelv/": "Miguel Vicente"
-        },
-        "coursesYearConclusionByUser": {
-          "https://www.linkedin.com/in/miguelv/": {
-            "MIEIC": "2007/2008"
-          }
-        }
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -73.86586,
-          45.45008
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "name": [
-          "luxembourg"
-        ],
-        "students": 1,
-        "listLinkedinLinksByUser": {
-          "https://www.linkedin.com/in/jrctorres/": "Ricardo Torres"
-        },
-        "coursesYearConclusionByUser": {
-          "https://www.linkedin.com/in/jrctorres/": {
-            "MIEIC": "2011/2012"
-          }
-        }
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          6.16667,
-          49.75
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "name": [
-          "etobicoke"
-        ],
-        "students": 1,
-        "listLinkedinLinksByUser": {
-          "https://www.linkedin.com/in/fmeira/": "Fernando Meira"
-        },
-        "coursesYearConclusionByUser": {
-          "https://www.linkedin.com/in/fmeira/": {
-            "LEIC": "2004/2005"
-          }
-        }
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -79.56985,
-          43.64415
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "name": [
-          "penafiel"
-        ],
-        "students": 2,
-        "listLinkedinLinksByUser": {
-          "https://www.linkedin.com/in/tiagoafpereira/": "Tiago Pereira",
-          "https://www.linkedin.com/in/luispedroso/": "Luis Pedroso"
-        },
-        "coursesYearConclusionByUser": {
-          "https://www.linkedin.com/in/tiagoafpereira/": {
-            "LEIC": "2006/2007"
-          },
-          "https://www.linkedin.com/in/luispedroso/": {}
-        }
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -8.28285,
-          41.20835
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "name": [
-          "vila nova de famalicão"
-        ],
-        "students": 3,
-        "listLinkedinLinksByUser": {
-          "https://www.linkedin.com/in/af-fernandes/": "Fernando Fernandes",
-          "https://www.linkedin.com/in/fbfigueiredo/": "Frederico Figueiredo",
-          "https://www.linkedin.com/in/limwa/": "André Lima"
-        },
-        "coursesYearConclusionByUser": {
-          "https://www.linkedin.com/in/af-fernandes/": {
-            "MIEIC": "2019/2020"
-          },
-          "https://www.linkedin.com/in/fbfigueiredo/": {
-            "MIEIC": "2008/2009"
-          },
-          "https://www.linkedin.com/in/limwa/": {}
-        }
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -8.48511,
-          41.41223
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "name": [
-          "los angeles"
-        ],
-        "students": 1,
-        "listLinkedinLinksByUser": {
-          "https://www.linkedin.com/in/ruigomeseu/": "Rui Gomes"
-        },
-        "coursesYearConclusionByUser": {
-          "https://www.linkedin.com/in/ruigomeseu/": {
-            "MIEIC": "2016/2017"
-          }
-        }
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -118.24368,
-          34.05223
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "name": [
-          "vila do conde"
-        ],
-        "students": 2,
-        "listLinkedinLinksByUser": {
-          "https://www.linkedin.com/in/joaomvramos94/": "João Ramos",
-          "https://www.linkedin.com/in/pedro-dias-a293956/": "Pedro Dias"
-        },
-        "coursesYearConclusionByUser": {
-          "https://www.linkedin.com/in/joaomvramos94/": {},
-          "https://www.linkedin.com/in/pedro-dias-a293956/": {}
-        }
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -8.74516,
-          41.35326
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "name": [
-          "montreal"
-        ],
-        "students": 1,
-        "listLinkedinLinksByUser": {
-          "https://www.linkedin.com/in/ruiguimaraes/": "Rui Guimarães"
-        },
-        "coursesYearConclusionByUser": {
-          "https://www.linkedin.com/in/ruiguimaraes/": {}
-        }
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -73.58781,
-          45.50884
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "name": [
-          "villeneuve"
-        ],
-        "students": 1,
-        "listLinkedinLinksByUser": {
-          "https://www.linkedin.com/in/andré-oliveira-68491b/": "André Oliveira"
-        },
-        "coursesYearConclusionByUser": {
-          "https://www.linkedin.com/in/andré-oliveira-68491b/": {
-            "LEIC": "1999/2000"
-          }
-        }
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          0.70415,
-          44.40854
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "name": [
-          "lausanne"
-        ],
-        "students": 2,
-        "listLinkedinLinksByUser": {
-          "https://www.linkedin.com/in/miguelbranco80/": "Miguel Branco",
-          "https://www.linkedin.com/in/tiagonunes/": "Tiago Nunes"
-        },
-        "coursesYearConclusionByUser": {
-          "https://www.linkedin.com/in/miguelbranco80/": {
-            "LEIC": "2002/2003"
-          },
-          "https://www.linkedin.com/in/tiagonunes/": {
-            "MIEIC": "2008/2009"
-          }
-        }
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          6.63282,
-          46.516
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "name": [
-          "ghent"
-        ],
-        "students": 1,
-        "listLinkedinLinksByUser": {
-          "https://www.linkedin.com/in/andreguimaraes/": "Andre Guimaraes"
-        },
-        "coursesYearConclusionByUser": {
-          "https://www.linkedin.com/in/andreguimaraes/": {
-            "LEIC": "2001/2002"
-          }
-        }
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          3.71667,
-          51.05
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "name": [
-          "amstelveen"
-        ],
-        "students": 1,
-        "listLinkedinLinksByUser": {
-          "https://www.linkedin.com/in/silvia-ramalho-1b44a415/": "Silvia Ramalho"
-        },
-        "coursesYearConclusionByUser": {
-          "https://www.linkedin.com/in/silvia-ramalho-1b44a415/": {}
-        }
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          4.86389,
-          52.30083
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "name": [
-          "seattle"
-        ],
-        "students": 1,
-        "listLinkedinLinksByUser": {
-          "https://www.linkedin.com/in/ricardoafonso/": "Ricardo Afonso"
-        },
-        "coursesYearConclusionByUser": {
-          "https://www.linkedin.com/in/ricardoafonso/": {
-            "LEIC": "2004/2005"
-          }
-        }
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -122.33207,
-          47.60621
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "name": [
-          "hamburg"
-        ],
-        "students": 1,
-        "listLinkedinLinksByUser": {
-          "https://www.linkedin.com/in/sofia-germer-7bab67193/": "Sofia Germer"
-        },
-        "coursesYearConclusionByUser": {
-          "https://www.linkedin.com/in/sofia-germer-7bab67193/": {}
-        }
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          9.99302,
-          53.55073
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "name": [
-          "madeira island"
-        ],
-        "students": 2,
-        "listLinkedinLinksByUser": {
-          "https://www.linkedin.com/in/jenifer-constantino/": "Jénifer Constantino",
-          "https://www.linkedin.com/in/rúben-nóbrega-89990a/": "Rúben Nóbrega"
-        },
-        "coursesYearConclusionByUser": {
-          "https://www.linkedin.com/in/jenifer-constantino/": {},
-          "https://www.linkedin.com/in/rúben-nóbrega-89990a/": {}
-        }
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -17.0,
-          32.73333
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "name": [
-          "bayern"
-        ],
-        "students": 1,
-        "listLinkedinLinksByUser": {
-          "https://www.linkedin.com/in/joel-gonçalves-18560112/": "Joel Gonçalves"
-        },
-        "coursesYearConclusionByUser": {
-          "https://www.linkedin.com/in/joel-gonçalves-18560112/": {
-            "MIEIC": "2011/2012"
-          }
-        }
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          11.5,
-          49.0
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "name": [
-          "villach"
-        ],
-        "students": 1,
-        "listLinkedinLinksByUser": {
-          "https://www.linkedin.com/in/tiagogpmsilva/": "Tiago da Silva"
-        },
-        "coursesYearConclusionByUser": {
-          "https://www.linkedin.com/in/tiagogpmsilva/": {
-            "LEIC": "2002/2003"
-          }
-        }
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          13.85583,
-          46.61028
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "name": [
-          "ponte de lima"
-        ],
-        "students": 1,
-        "listLinkedinLinksByUser": {
-          "https://www.linkedin.com/in/matheus-pereirag/": "Matheus Gonçalves"
-        },
-        "coursesYearConclusionByUser": {
-          "https://www.linkedin.com/in/matheus-pereirag/": {
+          "https://www.linkedin.com/in/jorgepacheco99/": {},
+          "https://www.linkedin.com/in/josemartinsdev/": {},
+          "https://www.linkedin.com/in/daviddiassilva/": {
             "M.EIC": "2021/2022"
           }
         }
@@ -1809,276 +626,8 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -8.58393,
-          41.76719
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "name": [
-          "valongo"
-        ],
-        "students": 1,
-        "listLinkedinLinksByUser": {
-          "https://www.linkedin.com/in/ruihgomes/": "Rui Gomes"
-        },
-        "coursesYearConclusionByUser": {
-          "https://www.linkedin.com/in/ruihgomes/": {
-            "MIEIC": "2013/2014"
-          }
-        }
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -8.49857,
-          41.18883
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "name": [
-          "erlangen"
-        ],
-        "students": 1,
-        "listLinkedinLinksByUser": {
-          "https://www.linkedin.com/in/cristina-falcao-57b569/": "Cristina Falcao"
-        },
-        "coursesYearConclusionByUser": {
-          "https://www.linkedin.com/in/cristina-falcao-57b569/": {
-            "LEIC": "2003/2004"
-          }
-        }
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          11.00783,
-          49.59099
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "name": [
-          "rome"
-        ],
-        "students": 1,
-        "listLinkedinLinksByUser": {
-          "https://www.linkedin.com/in/lamelas/": "André Lamelas"
-        },
-        "coursesYearConclusionByUser": {
-          "https://www.linkedin.com/in/lamelas/": {
-            "MIEIC": "2007/2008"
-          }
-        }
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          12.51133,
-          41.89193
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "name": [
-          "trofa"
-        ],
-        "students": 1,
-        "listLinkedinLinksByUser": {
-          "https://www.linkedin.com/in/ptozin/": "João Araújo"
-        },
-        "coursesYearConclusionByUser": {
-          "https://www.linkedin.com/in/ptozin/": {
-            "L.EIC": "2022/2023"
-          }
-        }
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -8.5764,
-          41.30646
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "name": [
-          "aveiro"
-        ],
-        "students": 9,
-        "listLinkedinLinksByUser": {
-          "https://www.linkedin.com/in/filipe-madureira-60a99111/": "Filipe Madureira",
-          "https://www.linkedin.com/in/ei09119/": "Soraia Ferreira",
-          "https://www.linkedin.com/in/sergiobandeira/": "Sérgio Bandeira",
-          "https://www.linkedin.com/in/madureira-filipe/": "Filipe Madureira",
-          "https://www.linkedin.com/in/joaoocorreia/": "João Correia",
-          "https://www.linkedin.com/in/bcabral/": "Bruno Cabral",
-          "https://www.linkedin.com/in/ccarvalheiro/": "Cristiano Carvalheiro",
-          "https://www.linkedin.com/in/manuelgpereira/": "Manuel Pereira",
-          "https://www.linkedin.com/in/dfamonteiro/": "Daniel Monteiro"
-        },
-        "coursesYearConclusionByUser": {
-          "https://www.linkedin.com/in/filipe-madureira-60a99111/": {
-            "LEIC": "2002/2003"
-          },
-          "https://www.linkedin.com/in/ei09119/": {
-            "MIEIC": "2011/2012"
-          },
-          "https://www.linkedin.com/in/sergiobandeira/": {
-            "LEIC": "2002/2003"
-          },
-          "https://www.linkedin.com/in/madureira-filipe/": {},
-          "https://www.linkedin.com/in/joaoocorreia/": {
-            "MIEIC": "2011/2012"
-          },
-          "https://www.linkedin.com/in/bcabral/": {
-            "LEIC": "2002/2003"
-          },
-          "https://www.linkedin.com/in/ccarvalheiro/": {
-            "MIEIC": "2015/2016"
-          },
-          "https://www.linkedin.com/in/manuelgpereira/": {
-            "MIEIC": "2015/2016"
-          },
-          "https://www.linkedin.com/in/dfamonteiro/": {
-            "M.EIC": "2022/2023"
-          }
-        }
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -8.64554,
-          40.64427
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "name": [
-          "innsbruck"
-        ],
-        "students": 1,
-        "listLinkedinLinksByUser": {
-          "https://www.linkedin.com/in/guilherme-c-lopes/": "Guilherme Lopes"
-        },
-        "coursesYearConclusionByUser": {
-          "https://www.linkedin.com/in/guilherme-c-lopes/": {
-            "MIEIC": "2007/2008"
-          }
-        }
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          11.39454,
-          47.26266
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "name": [
-          "wien"
-        ],
-        "students": 1,
-        "listLinkedinLinksByUser": {
-          "https://www.linkedin.com/in/ruibotto/": "Rui Botto"
-        },
-        "coursesYearConclusionByUser": {
-          "https://www.linkedin.com/in/ruibotto/": {
-            "MIEIC": "2017/2018"
-          }
-        }
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          16.37208,
-          48.20849
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "name": [
-          "united states"
-        ],
-        "students": 1,
-        "listLinkedinLinksByUser": {
-          "https://www.linkedin.com/in/rfapereira/": "Rui Pereira"
-        },
-        "coursesYearConclusionByUser": {
-          "https://www.linkedin.com/in/rfapereira/": {
-            "LEIC": "2000/2001"
-          }
-        }
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -57.65625,
-          -14.60485
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "name": [
-          "mealhada"
-        ],
-        "students": 1,
-        "listLinkedinLinksByUser": {
-          "https://www.linkedin.com/in/joão-pereira-543b26217/": "João Pereira"
-        },
-        "coursesYearConclusionByUser": {
-          "https://www.linkedin.com/in/joão-pereira-543b26217/": {}
-        }
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -8.44781,
-          40.36273
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "name": [
-          "fortaleza"
-        ],
-        "students": 1,
-        "listLinkedinLinksByUser": {
-          "https://www.linkedin.com/in/joaodeoliveira/": "Joao Diogo de Oliveira"
-        },
-        "coursesYearConclusionByUser": {
-          "https://www.linkedin.com/in/joaodeoliveira/": {
-            "MIEIC": "2008/2009"
-          }
-        }
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -38.54306,
-          -3.71722
+          -8.37617,
+          41.27657
         ]
       }
     },
@@ -2111,134 +660,14 @@
       "type": "Feature",
       "properties": {
         "name": [
-          "delft"
+          "bayern"
         ],
         "students": 1,
         "listLinkedinLinksByUser": {
-          "https://www.linkedin.com/in/jose-carlos-ms-coutinho/": "José Carlos Coutinho"
+          "https://www.linkedin.com/in/joel-gonçalves-18560112/": "Joel Gonçalves"
         },
         "coursesYearConclusionByUser": {
-          "https://www.linkedin.com/in/jose-carlos-ms-coutinho/": {
-            "MIEIC": "2018/2019"
-          }
-        }
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          4.35556,
-          52.00667
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "name": [
-          "tuntange"
-        ],
-        "students": 1,
-        "listLinkedinLinksByUser": {
-          "https://www.linkedin.com/in/danielfoalves/": "Daniel Alves"
-        },
-        "coursesYearConclusionByUser": {
-          "https://www.linkedin.com/in/danielfoalves/": {
-            "MIEIC": "2007/2008"
-          }
-        }
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          6.01028,
-          49.71778
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "name": [
-          "prague"
-        ],
-        "students": 1,
-        "listLinkedinLinksByUser": {
-          "https://www.linkedin.com/in/tiagoseabra/": "Tiago Seabra"
-        },
-        "coursesYearConclusionByUser": {
-          "https://www.linkedin.com/in/tiagoseabra/": {
-            "MIEIC": "2010/2011"
-          }
-        }
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          14.42076,
-          50.08804
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "name": [
-          "nurnberg"
-        ],
-        "students": 1,
-        "listLinkedinLinksByUser": {
-          "https://www.linkedin.com/in/luis-marques-oliveira-96970054/": "Luis Marques Oliveira"
-        },
-        "coursesYearConclusionByUser": {
-          "https://www.linkedin.com/in/luis-marques-oliveira-96970054/": {
-            "MIEIC": "2020/2021"
-          }
-        }
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          11.07752,
-          49.45421
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "name": [
-          "munich"
-        ],
-        "students": 1,
-        "listLinkedinLinksByUser": {
-          "https://www.linkedin.com/in/rui-couto/": "Rui Couto"
-        },
-        "coursesYearConclusionByUser": {
-          "https://www.linkedin.com/in/rui-couto/": {
-            "MIEIC": "2014/2015"
-          }
-        }
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          11.57549,
-          48.13743
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "name": [
-          "ashford"
-        ],
-        "students": 1,
-        "listLinkedinLinksByUser": {
-          "https://www.linkedin.com/in/asfer/": "André Fernandes"
-        },
-        "coursesYearConclusionByUser": {
-          "https://www.linkedin.com/in/asfer/": {
+          "https://www.linkedin.com/in/joel-gonçalves-18560112/": {
             "MIEIC": "2011/2012"
           }
         }
@@ -2246,8 +675,8 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
-          0.87376,
-          51.14648
+          11.5,
+          49.0
         ]
       }
     },
@@ -2255,202 +684,47 @@
       "type": "Feature",
       "properties": {
         "name": [
-          "dublin"
-        ],
-        "students": 3,
-        "listLinkedinLinksByUser": {
-          "https://www.linkedin.com/in/rufernandes/": "Rui Fernandes",
-          "https://www.linkedin.com/in/xfontes/": "Xavier Fontes",
-          "https://www.linkedin.com/in/carlossilvafernandes/": "Carlos Fernandes"
-        },
-        "coursesYearConclusionByUser": {
-          "https://www.linkedin.com/in/rufernandes/": {
-            "MIEIC": "2011/2012"
-          },
-          "https://www.linkedin.com/in/xfontes/": {},
-          "https://www.linkedin.com/in/carlossilvafernandes/": {
-            "MIEIC": "2008/2009"
-          }
-        }
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -6.24889,
-          53.33306
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "name": [
-          "miami"
+          "campo"
         ],
         "students": 1,
         "listLinkedinLinksByUser": {
-          "https://www.linkedin.com/in/eduardooliv/": "Eduardo Oliveira"
+          "https://www.linkedin.com/in/ricardo-loureiro-767367118/": "Ricardo Loureiro"
         },
         "coursesYearConclusionByUser": {
-          "https://www.linkedin.com/in/eduardooliv/": {
-            "MIEIC": "2010/2011"
-          }
-        }
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -80.19366,
-          25.77427
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "name": [
-          "lisboa"
-        ],
-        "students": 33,
-        "listLinkedinLinksByUser": {
-          "https://www.linkedin.com/in/sofiaoreis/": "Sofia Reis",
-          "https://www.linkedin.com/in/marconsilva/": "Marco António Silva",
-          "https://www.linkedin.com/in/miguel-pereira-392820/": "Miguel Pereira",
-          "https://www.linkedin.com/in/anaisabelsousa/": "Ana Sousa",
-          "https://www.linkedin.com/in/mariajoaobarbosa/": "Maria João Barbosa",
-          "https://www.linkedin.com/in/jcarlosportelapereira/": "Carlos Portela Pereira",
-          "https://www.linkedin.com/in/jaradas/": "João Aradas",
-          "https://www.linkedin.com/in/joelfilipeferreira/": "Joel Ferreira",
-          "https://www.linkedin.com/in/antoniopinho/": "António Pedro Pinho",
-          "https://www.linkedin.com/in/andremoniz/": "André Moniz",
-          "https://www.linkedin.com/in/aliceperpetua/": "Alice Perpétua",
-          "https://www.linkedin.com/in/paulo-lopes-2b84911/": "Paulo Lopes",
-          "https://www.linkedin.com/in/andreemanuelbarbosa/": "André Barbosa",
-          "https://www.linkedin.com/in/joaotrigosoares/": "João Soares",
-          "https://www.linkedin.com/in/nufil/": "Nuno S.",
-          "https://www.linkedin.com/in/piresfernando/": "Fernando Pires",
-          "https://www.linkedin.com/in/psenough/": "Filipe Cruz",
-          "https://www.linkedin.com/in/hpenedones/": "Hugo Penedones",
-          "https://www.linkedin.com/in/joaocmfs/": "João Carlos Santos",
-          "https://www.linkedin.com/in/djbaguilar/": "Daniel Aguilar",
-          "https://www.linkedin.com/in/sergiovasconcelos/": "Sérgio Vasconcelos",
-          "https://www.linkedin.com/in/rsguerra/": "Rodrigo Sá Guerra",
-          "https://www.linkedin.com/in/nuno-passos-19765061/": "Nuno Passos",
-          "https://www.linkedin.com/in/marco-carvalho-216538a/": "Marco Carvalho",
-          "https://www.linkedin.com/in/daniel-soares/": "Soares, Daniel",
-          "https://www.linkedin.com/in/jccarneiro/": "Jorge Carneiro",
-          "https://www.linkedin.com/in/mfapinho/": "Micael Pinho",
-          "https://www.linkedin.com/in/joaquimsantos/": "Joaquim Santos",
-          "https://www.linkedin.com/in/ruiarcher/": "Rui Archer",
-          "https://www.linkedin.com/in/vladimirosa/": "Vladimiro S.",
-          "https://www.linkedin.com/in/pt-antoniobandeira/": "António Bandeira",
-          "https://www.linkedin.com/in/martapereira/": "Marta Pereira",
-          "https://www.linkedin.com/in/tiago-martins-lomba/": "Tiago Martins Lomba"
-        },
-        "coursesYearConclusionByUser": {
-          "https://www.linkedin.com/in/sofiaoreis/": {
+          "https://www.linkedin.com/in/ricardo-loureiro-767367118/": {
             "MIEIC": "2016/2017"
-          },
-          "https://www.linkedin.com/in/marconsilva/": {
-            "MIEIC": "2007/2008"
-          },
-          "https://www.linkedin.com/in/miguel-pereira-392820/": {
-            "LEIC": "2001/2002"
-          },
-          "https://www.linkedin.com/in/anaisabelsousa/": {
-            "MIEIC": "2015/2016"
-          },
-          "https://www.linkedin.com/in/mariajoaobarbosa/": {
-            "MIEIC": "2010/2011"
-          },
-          "https://www.linkedin.com/in/jcarlosportelapereira/": {
-            "MIEIC": "2013/2014"
-          },
-          "https://www.linkedin.com/in/jaradas/": {
-            "MIEIC": "2008/2009"
-          },
-          "https://www.linkedin.com/in/joelfilipeferreira/": {
-            "MIEIC": "2012/2013"
-          },
-          "https://www.linkedin.com/in/antoniopinho/": {
-            "LEIC": "2003/2004"
-          },
-          "https://www.linkedin.com/in/andremoniz/": {
-            "LEIC": "2003/2004"
-          },
-          "https://www.linkedin.com/in/aliceperpetua/": {
-            "MIEIC": "2013/2014"
-          },
-          "https://www.linkedin.com/in/paulo-lopes-2b84911/": {
-            "LEIC": "2000/2001"
-          },
-          "https://www.linkedin.com/in/andreemanuelbarbosa/": {
-            "LEIC": "2006/2007"
-          },
-          "https://www.linkedin.com/in/joaotrigosoares/": {
-            "MIEIC": "2010/2011"
-          },
-          "https://www.linkedin.com/in/nufil/": {
-            "MIEIC": "2011/2012"
-          },
-          "https://www.linkedin.com/in/piresfernando/": {
-            "MIEIC": "2007/2008"
-          },
-          "https://www.linkedin.com/in/psenough/": {
-            "LEIC": "2005/2006",
-            "MEI": "2007/2008"
-          },
-          "https://www.linkedin.com/in/hpenedones/": {
-            "LEIC": "2004/2005"
-          },
-          "https://www.linkedin.com/in/joaocmfs/": {
-            "MIEIC": "2015/2016"
-          },
-          "https://www.linkedin.com/in/djbaguilar/": {
-            "MIEIC": "2007/2008"
-          },
-          "https://www.linkedin.com/in/sergiovasconcelos/": {
-            "LEIC": "2005/2006"
-          },
-          "https://www.linkedin.com/in/rsguerra/": {
-            "LEIC": "2003/2004"
-          },
-          "https://www.linkedin.com/in/nuno-passos-19765061/": {
-            "MIEIC": "2010/2011"
-          },
-          "https://www.linkedin.com/in/marco-carvalho-216538a/": {},
-          "https://www.linkedin.com/in/daniel-soares/": {},
-          "https://www.linkedin.com/in/jccarneiro/": {
-            "LEIC": "2005/2006"
-          },
-          "https://www.linkedin.com/in/mfapinho/": {
-            "MIEIC": "2011/2012"
-          },
-          "https://www.linkedin.com/in/joaquimsantos/": {
-            "MIEIC": "2009/2010"
-          },
-          "https://www.linkedin.com/in/ruiarcher/": {
-            "MIEIC": "2012/2013"
-          },
-          "https://www.linkedin.com/in/vladimirosa/": {
-            "MIEIC": "2007/2008"
-          },
-          "https://www.linkedin.com/in/pt-antoniobandeira/": {
-            "MIEIC": "2007/2008"
-          },
-          "https://www.linkedin.com/in/martapereira/": {
-            "MIEIC": "2007/2008"
-          },
-          "https://www.linkedin.com/in/tiago-martins-lomba/": {
-            "MIEIC": "2012/2013"
           }
         }
       },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -9.13333,
-          38.71667
+          -54.64639,
+          -20.44278
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": [
+          "caminha"
+        ],
+        "students": 1,
+        "listLinkedinLinksByUser": {
+          "https://www.linkedin.com/in/anriii/": "Henrique Pereira"
+        },
+        "coursesYearConclusionByUser": {
+          "https://www.linkedin.com/in/anriii/": {
+            "M.EIC": "2022/2023"
+          }
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8.80133,
+          41.84647
         ]
       }
     },
@@ -2608,51 +882,62 @@
       "type": "Feature",
       "properties": {
         "name": [
-          "madrid"
-        ],
-        "students": 5,
-        "listLinkedinLinksByUser": {
-          "https://www.linkedin.com/in/diogo-rosário/": "Diogo Rosário",
-          "https://www.linkedin.com/in/joaomiguel13/": "Joao Pinto",
-          "https://www.linkedin.com/in/josebarbosacarvalho/": "Jose Barbosa Carvalho",
-          "https://www.linkedin.com/in/josemartins88/": "José Martins",
-          "https://www.linkedin.com/in/smsesteves/": "Sérgio Esteves"
-        },
-        "coursesYearConclusionByUser": {
-          "https://www.linkedin.com/in/diogo-rosário/": {},
-          "https://www.linkedin.com/in/joaomiguel13/": {},
-          "https://www.linkedin.com/in/josebarbosacarvalho/": {
-            "MIEIC": "2007/2008"
-          },
-          "https://www.linkedin.com/in/josemartins88/": {
-            "MIEIC": "2010/2011"
-          },
-          "https://www.linkedin.com/in/smsesteves/": {
-            "MIEIC": "2015/2016"
-          }
-        }
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -3.70256,
-          40.4165
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "name": [
-          "vernier"
+          "mons"
         ],
         "students": 1,
         "listLinkedinLinksByUser": {
-          "https://www.linkedin.com/in/tiago--batista/": "Tiago Batista"
+          "https://www.linkedin.com/in/polonia/": "Pedro Polonia"
         },
         "coursesYearConclusionByUser": {
-          "https://www.linkedin.com/in/tiago--batista/": {
-            "LEIC": "2003/2004",
+          "https://www.linkedin.com/in/polonia/": {
+            "MIEIC": "2010/2011"
+          }
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          3.95229,
+          50.45413
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": [
+          "ashford"
+        ],
+        "students": 1,
+        "listLinkedinLinksByUser": {
+          "https://www.linkedin.com/in/asfer/": "André Fernandes"
+        },
+        "coursesYearConclusionByUser": {
+          "https://www.linkedin.com/in/asfer/": {
+            "MIEIC": "2011/2012"
+          }
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          0.87376,
+          51.14648
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": [
+          "innsbruck"
+        ],
+        "students": 1,
+        "listLinkedinLinksByUser": {
+          "https://www.linkedin.com/in/guilherme-c-lopes/": "Guilherme Lopes"
+        },
+        "coursesYearConclusionByUser": {
+          "https://www.linkedin.com/in/guilherme-c-lopes/": {
             "MIEIC": "2007/2008"
           }
         }
@@ -2660,8 +945,8 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
-          161.15,
-          -77.96667
+          11.39454,
+          47.26266
         ]
       }
     },
@@ -2669,27 +954,23 @@
       "type": "Feature",
       "properties": {
         "name": [
-          "são paulo"
+          "groningen"
         ],
-        "students": 2,
+        "students": 1,
         "listLinkedinLinksByUser": {
-          "https://www.linkedin.com/in/danielpizarro/": "Daniel Pizarro",
-          "https://www.linkedin.com/in/danielfidalgorodrigues/": "Daniel Rodrigues"
+          "https://www.linkedin.com/in/joanasmramos/": "Joana Ramos"
         },
         "coursesYearConclusionByUser": {
-          "https://www.linkedin.com/in/danielpizarro/": {
-            "LEIC": "2005/2006"
-          },
-          "https://www.linkedin.com/in/danielfidalgorodrigues/": {
-            "MIEIC": "2009/2010"
+          "https://www.linkedin.com/in/joanasmramos/": {
+            "MIEIC": "2020/2021"
           }
         }
       },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -46.63611,
-          -23.5475
+          6.56667,
+          53.21917
         ]
       }
     },
@@ -2697,23 +978,69 @@
       "type": "Feature",
       "properties": {
         "name": [
-          "barcelos"
+          "eindhoven"
         ],
-        "students": 2,
+        "students": 1,
         "listLinkedinLinksByUser": {
-          "https://www.linkedin.com/in/josemfazevedob/": "José Azevedo",
-          "https://www.linkedin.com/in/cdanielgomes/": "Carlos Daniel Gomes"
+          "https://www.linkedin.com/in/eduardo-fernandes-79a5292a/": "Eduardo Fernandes"
         },
         "coursesYearConclusionByUser": {
-          "https://www.linkedin.com/in/josemfazevedob/": {},
-          "https://www.linkedin.com/in/cdanielgomes/": {}
+          "https://www.linkedin.com/in/eduardo-fernandes-79a5292a/": {}
         }
       },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -63.53706,
-          -0.39287
+          5.47778,
+          51.44083
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": [
+          "covilhã"
+        ],
+        "students": 1,
+        "listLinkedinLinksByUser": {
+          "https://www.linkedin.com/in/pontoporponto/": "César Rodrigues"
+        },
+        "coursesYearConclusionByUser": {
+          "https://www.linkedin.com/in/pontoporponto/": {
+            "LEIC": "2001/2002"
+          }
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -7.50504,
+          40.28106
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": [
+          "united states"
+        ],
+        "students": 1,
+        "listLinkedinLinksByUser": {
+          "https://www.linkedin.com/in/rfapereira/": "Rui Pereira"
+        },
+        "coursesYearConclusionByUser": {
+          "https://www.linkedin.com/in/rfapereira/": {
+            "LEIC": "2000/2001"
+          }
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -57.65625,
+          -14.60485
         ]
       }
     },
@@ -2774,6 +1101,1077 @@
         "coordinates": [
           -9.13333,
           38.71667
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": [
+          "maidenhead"
+        ],
+        "students": 1,
+        "listLinkedinLinksByUser": {
+          "https://www.linkedin.com/in/manuelmonterroso/": "Manuel Monterroso"
+        },
+        "coursesYearConclusionByUser": {
+          "https://www.linkedin.com/in/manuelmonterroso/": {
+            "LEIC": "2006/2007"
+          }
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -0.71986,
+          51.52279
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": [
+          "nurnberg"
+        ],
+        "students": 1,
+        "listLinkedinLinksByUser": {
+          "https://www.linkedin.com/in/luis-marques-oliveira-96970054/": "Luis Marques Oliveira"
+        },
+        "coursesYearConclusionByUser": {
+          "https://www.linkedin.com/in/luis-marques-oliveira-96970054/": {
+            "MIEIC": "2020/2021"
+          }
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          11.07752,
+          49.45421
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": [
+          "vale de cambra"
+        ],
+        "students": 1,
+        "listLinkedinLinksByUser": {
+          "https://www.linkedin.com/in/ajorgetavares/": "A. Jorge Tavares"
+        },
+        "coursesYearConclusionByUser": {
+          "https://www.linkedin.com/in/ajorgetavares/": {
+            "LEIC": "1999/2000"
+          }
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8.36022,
+          40.845
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": [
+          "hamburg"
+        ],
+        "students": 1,
+        "listLinkedinLinksByUser": {
+          "https://www.linkedin.com/in/sofia-germer-7bab67193/": "Sofia Germer"
+        },
+        "coursesYearConclusionByUser": {
+          "https://www.linkedin.com/in/sofia-germer-7bab67193/": {}
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          9.99302,
+          53.55073
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": [
+          "miami"
+        ],
+        "students": 1,
+        "listLinkedinLinksByUser": {
+          "https://www.linkedin.com/in/eduardooliv/": "Eduardo Oliveira"
+        },
+        "coursesYearConclusionByUser": {
+          "https://www.linkedin.com/in/eduardooliv/": {
+            "MIEIC": "2010/2011"
+          }
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -80.19366,
+          25.77427
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": [
+          "paris"
+        ],
+        "students": 5,
+        "listLinkedinLinksByUser": {
+          "https://www.linkedin.com/in/andreferreirav2/": "André Ferreira",
+          "https://www.linkedin.com/in/carlosmasousa/": "carlos sousa",
+          "https://www.linkedin.com/in/cmtcosta/": "Cláudio Costa",
+          "https://www.linkedin.com/in/antonio-ramadas/": "António Ramadas",
+          "https://www.linkedin.com/in/leonormsousa/": "Leonor Sousa"
+        },
+        "coursesYearConclusionByUser": {
+          "https://www.linkedin.com/in/andreferreirav2/": {
+            "MIEIC": "2013/2014"
+          },
+          "https://www.linkedin.com/in/carlosmasousa/": {
+            "MIEIC": "2007/2008"
+          },
+          "https://www.linkedin.com/in/cmtcosta/": {
+            "MIEIC": "2009/2010"
+          },
+          "https://www.linkedin.com/in/antonio-ramadas/": {},
+          "https://www.linkedin.com/in/leonormsousa/": {}
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          2.3488,
+          48.85341
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": [
+          "دبي دبي الإمارات العربية المتحدة"
+        ],
+        "students": 1,
+        "listLinkedinLinksByUser": {
+          "https://www.linkedin.com/in/gerardooliveira/": "Gerardo De Oliveira"
+        },
+        "coursesYearConclusionByUser": {
+          "https://www.linkedin.com/in/gerardooliveira/": {
+            "MIEIC": "2009/2010"
+          }
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          55.30927,
+          25.07725
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": [
+          "póvoa de varzim"
+        ],
+        "students": 2,
+        "listLinkedinLinksByUser": {
+          "https://www.linkedin.com/in/rubencostaviana/": "Rúben Viana",
+          "https://www.linkedin.com/in/diogo-mendes-54b449247/": "Diogo Mendes"
+        },
+        "coursesYearConclusionByUser": {
+          "https://www.linkedin.com/in/rubencostaviana/": {},
+          "https://www.linkedin.com/in/diogo-mendes-54b449247/": {
+            "L.EIC": "2021/2022",
+            "M.EIC": "2022/2023"
+          }
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8.76364,
+          41.38344
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": [
+          "porto metropolitan area"
+        ],
+        "students": 46,
+        "listLinkedinLinksByUser": {
+          "https://www.linkedin.com/in/luis-a-m-p/": "Luís P.",
+          "https://www.linkedin.com/in/josé-branco-a543573/": "José Branco",
+          "https://www.linkedin.com/in/joelcampos/": "Joel Campos",
+          "https://www.linkedin.com/in/joanavbarbosa/": "Joana Barbosa",
+          "https://www.linkedin.com/in/hugdru/": "Hugo Drumond",
+          "https://www.linkedin.com/in/filcoelho/": "Filipe C.",
+          "https://www.linkedin.com/in/jose-miguel-monteiro-0483469/": "José Miguel Monteiro",
+          "https://www.linkedin.com/in/jjsousa/": "Jadir Sousa",
+          "https://www.linkedin.com/in/felipeacosta/": "Felipe Ávila da Costa 🇺🇦🕊",
+          "https://www.linkedin.com/in/filipemiguelcarvalho/": "Filipe Carvalho",
+          "https://www.linkedin.com/in/joanamcsilva/": "Joana Silva",
+          "https://www.linkedin.com/in/josempaguiar/": "José Aguiar",
+          "https://www.linkedin.com/in/andremanuelbarbosa/": "André Barbosa",
+          "https://www.linkedin.com/in/ana-jacinta-ferreira-b727ab/": "Ana Jacinta Ferreira",
+          "https://www.linkedin.com/in/jsilva-pt/": "José Silva",
+          "https://www.linkedin.com/in/eduardo-ramalho-pt/": "Eduardo Ramalho",
+          "https://www.linkedin.com/in/andrefmota/": "André Mota",
+          "https://www.linkedin.com/in/larammsantos/": "Lara Santos",
+          "https://www.linkedin.com/in/ruiguerra/": "Rui Guerra",
+          "https://www.linkedin.com/in/ricardo-silva-25902a59/": "Ricardo Silva",
+          "https://www.linkedin.com/in/pedroruasmoreira/": "Pedro Ruas Moreira",
+          "https://www.linkedin.com/in/diogocdias/": "Diogo Dias",
+          "https://www.linkedin.com/in/mpedroto/": "Maria Pedroto",
+          "https://www.linkedin.com/in/pcostaeu/": "Paulo Costa",
+          "https://www.linkedin.com/in/ruigrandaorocha/": "Rui Grandão",
+          "https://www.linkedin.com/in/barbosasergio/": "Sérgio Barbosa",
+          "https://www.linkedin.com/in/mfvfontes/": "Márcio Fontes",
+          "https://www.linkedin.com/in/tadeumarques/": "Tadeu Marques",
+          "https://www.linkedin.com/in/dcibrao/": "Daniel Cibrão",
+          "https://www.linkedin.com/in/-marcio-duarte-/": "Márcio Duarte",
+          "https://www.linkedin.com/in/dmoura/": "Daniel Moura",
+          "https://www.linkedin.com/in/paulo-marques-25234124/": "Paulo Marques",
+          "https://www.linkedin.com/in/hmoreira/": "Hélder Moreira",
+          "https://www.linkedin.com/in/jpdamas/": "João Damas",
+          "https://www.linkedin.com/in/duartemb/": "Marcos Duarte",
+          "https://www.linkedin.com/in/pedrocarneiro/": "Pedro Carneiro",
+          "https://www.linkedin.com/in/tiagoalmeidasantos/": "Tiago Santos",
+          "https://www.linkedin.com/in/liliana-ribeiro-51a86a12b/": "Liliana Ribeiro",
+          "https://www.linkedin.com/in/anaisdias/": "Anaís Dias",
+          "https://www.linkedin.com/in/fabioacalmeida/": "Fábio Almeida",
+          "https://www.linkedin.com/in/hugopeixoto/": "Hugo Peixoto",
+          "https://www.linkedin.com/in/rafaelpires/": "Rafael Pires",
+          "https://www.linkedin.com/in/englisboa/": "António Lisboa",
+          "https://www.linkedin.com/in/filipefmiranda/": "Filipe Miranda",
+          "https://www.linkedin.com/in/manuelcurral/": "Manuel Curral",
+          "https://www.linkedin.com/in/leoneljdias/": "Leonel Dias "
+        },
+        "coursesYearConclusionByUser": {
+          "https://www.linkedin.com/in/luis-a-m-p/": {
+            "MIEIC": "2016/2017"
+          },
+          "https://www.linkedin.com/in/josé-branco-a543573/": {
+            "MIEIC": "2007/2008"
+          },
+          "https://www.linkedin.com/in/joelcampos/": {
+            "MIEIC": "2007/2008"
+          },
+          "https://www.linkedin.com/in/joanavbarbosa/": {
+            "MIEIC": "2012/2013"
+          },
+          "https://www.linkedin.com/in/hugdru/": {
+            "MIEIC": "2018/2019"
+          },
+          "https://www.linkedin.com/in/filcoelho/": {
+            "MIEIC": "2007/2008"
+          },
+          "https://www.linkedin.com/in/jose-miguel-monteiro-0483469/": {
+            "LEIC": "1998/1999"
+          },
+          "https://www.linkedin.com/in/jjsousa/": {
+            "MIEIC": "2007/2008"
+          },
+          "https://www.linkedin.com/in/felipeacosta/": {
+            "MIEIC": "2008/2009"
+          },
+          "https://www.linkedin.com/in/filipemiguelcarvalho/": {
+            "MIEIC": "2013/2014"
+          },
+          "https://www.linkedin.com/in/joanamcsilva/": {
+            "MIEIC": "2020/2021"
+          },
+          "https://www.linkedin.com/in/josempaguiar/": {
+            "MIEIC": "2010/2011"
+          },
+          "https://www.linkedin.com/in/andremanuelbarbosa/": {
+            "LEIC": "2005/2006",
+            "MIEIC": "2009/2010"
+          },
+          "https://www.linkedin.com/in/ana-jacinta-ferreira-b727ab/": {
+            "LEIC": "1998/1999"
+          },
+          "https://www.linkedin.com/in/jsilva-pt/": {
+            "MIEIC": "2012/2013"
+          },
+          "https://www.linkedin.com/in/eduardo-ramalho-pt/": {
+            "LEIC": "2001/2002",
+            "MIEIC": "2010/2011"
+          },
+          "https://www.linkedin.com/in/andrefmota/": {
+            "LEIC": "2006/2007"
+          },
+          "https://www.linkedin.com/in/larammsantos/": {
+            "LEIC": "1999/2000"
+          },
+          "https://www.linkedin.com/in/ruiguerra/": {
+            "MIEIC": "2008/2009"
+          },
+          "https://www.linkedin.com/in/ricardo-silva-25902a59/": {
+            "MIEIC": "2012/2013"
+          },
+          "https://www.linkedin.com/in/pedroruasmoreira/": {
+            "MIEIC": "2007/2008"
+          },
+          "https://www.linkedin.com/in/diogocdias/": {
+            "MIEIC": "2010/2011"
+          },
+          "https://www.linkedin.com/in/mpedroto/": {
+            "LEIC": "2005/2006"
+          },
+          "https://www.linkedin.com/in/pcostaeu/": {
+            "MIEIC": "2016/2017"
+          },
+          "https://www.linkedin.com/in/ruigrandaorocha/": {},
+          "https://www.linkedin.com/in/barbosasergio/": {
+            "LEIC": "2005/2006"
+          },
+          "https://www.linkedin.com/in/mfvfontes/": {},
+          "https://www.linkedin.com/in/tadeumarques/": {
+            "MIEIC": "2013/2014"
+          },
+          "https://www.linkedin.com/in/dcibrao/": {},
+          "https://www.linkedin.com/in/-marcio-duarte-/": {
+            "M.EIC": "2022/2023"
+          },
+          "https://www.linkedin.com/in/dmoura/": {
+            "LEIC": "2000/2001"
+          },
+          "https://www.linkedin.com/in/paulo-marques-25234124/": {
+            "LEIC": "2006/2007"
+          },
+          "https://www.linkedin.com/in/hmoreira/": {
+            "MIEIC": "2012/2013"
+          },
+          "https://www.linkedin.com/in/jpdamas/": {
+            "MIEIC": "2019/2020"
+          },
+          "https://www.linkedin.com/in/duartemb/": {},
+          "https://www.linkedin.com/in/pedrocarneiro/": {
+            "LEIC": "2006/2007"
+          },
+          "https://www.linkedin.com/in/tiagoalmeidasantos/": {
+            "LEIC": "2004/2005"
+          },
+          "https://www.linkedin.com/in/liliana-ribeiro-51a86a12b/": {
+            "MIEIC": "2016/2017"
+          },
+          "https://www.linkedin.com/in/anaisdias/": {
+            "MIEIC": "2016/2017"
+          },
+          "https://www.linkedin.com/in/fabioacalmeida/": {
+            "MIEIC": "2011/2012"
+          },
+          "https://www.linkedin.com/in/hugopeixoto/": {
+            "MIEIC": "2009/2010"
+          },
+          "https://www.linkedin.com/in/rafaelpires/": {
+            "MIEIC": "2009/2010"
+          },
+          "https://www.linkedin.com/in/englisboa/": {
+            "LEIC": "2004/2005"
+          },
+          "https://www.linkedin.com/in/filipefmiranda/": {
+            "MIEIC": "2016/2017"
+          },
+          "https://www.linkedin.com/in/manuelcurral/": {
+            "MIEIC": "2020/2021"
+          },
+          "https://www.linkedin.com/in/leoneljdias/": {
+            "MIEIC": "2009/2010"
+          }
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -50.92712,
+          -29.90138
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": [
+          "lysaker"
+        ],
+        "students": 1,
+        "listLinkedinLinksByUser": {
+          "https://www.linkedin.com/in/hugo-passos-036aa43b/": "Hugo Passos"
+        },
+        "coursesYearConclusionByUser": {
+          "https://www.linkedin.com/in/hugo-passos-036aa43b/": {
+            "MIEIC": "2011/2012"
+          }
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.63545,
+          59.90994
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": [
+          "barcelona"
+        ],
+        "students": 5,
+        "listLinkedinLinksByUser": {
+          "https://www.linkedin.com/in/joaovieiracastro/": "João Vieira de Castro",
+          "https://www.linkedin.com/in/fabiocaramelo/": "Fábio Caramelo",
+          "https://www.linkedin.com/in/sergiorasgado/": "Sergio Rasgado",
+          "https://www.linkedin.com/in/guilhermescp/": "Luís Guilherme Martins",
+          "https://www.linkedin.com/in/joaoqalves/": "João Alves"
+        },
+        "coursesYearConclusionByUser": {
+          "https://www.linkedin.com/in/joaovieiracastro/": {
+            "MIEIC": "2016/2017"
+          },
+          "https://www.linkedin.com/in/fabiocaramelo/": {
+            "MIEIC": "2018/2019"
+          },
+          "https://www.linkedin.com/in/sergiorasgado/": {
+            "LEIC": "2004/2005"
+          },
+          "https://www.linkedin.com/in/guilhermescp/": {
+            "MIEIC": "2014/2015"
+          },
+          "https://www.linkedin.com/in/joaoqalves/": {}
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          2.15899,
+          41.38879
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": [
+          "greater stockholm metropolitan area"
+        ],
+        "students": 1,
+        "listLinkedinLinksByUser": {
+          "https://www.linkedin.com/in/jotacoelho/": "👨‍💻 João C."
+        },
+        "coursesYearConclusionByUser": {
+          "https://www.linkedin.com/in/jotacoelho/": {}
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          18.00221,
+          59.50044
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": [
+          "fortaleza"
+        ],
+        "students": 1,
+        "listLinkedinLinksByUser": {
+          "https://www.linkedin.com/in/joaodeoliveira/": "Joao Diogo de Oliveira"
+        },
+        "coursesYearConclusionByUser": {
+          "https://www.linkedin.com/in/joaodeoliveira/": {
+            "MIEIC": "2008/2009"
+          }
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -38.54306,
+          -3.71722
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": [
+          "brussels"
+        ],
+        "students": 2,
+        "listLinkedinLinksByUser": {
+          "https://www.linkedin.com/in/theantonioalmeida/": "António Almeida",
+          "https://www.linkedin.com/in/mjmtavares/": "Miguel Tavares"
+        },
+        "coursesYearConclusionByUser": {
+          "https://www.linkedin.com/in/theantonioalmeida/": {},
+          "https://www.linkedin.com/in/mjmtavares/": {
+            "MIEIC": "2016/2017"
+          }
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.34878,
+          50.85045
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": [
+          "madeira island"
+        ],
+        "students": 2,
+        "listLinkedinLinksByUser": {
+          "https://www.linkedin.com/in/jenifer-constantino/": "Jénifer Constantino",
+          "https://www.linkedin.com/in/rúben-nóbrega-89990a/": "Rúben Nóbrega"
+        },
+        "coursesYearConclusionByUser": {
+          "https://www.linkedin.com/in/jenifer-constantino/": {},
+          "https://www.linkedin.com/in/rúben-nóbrega-89990a/": {}
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -17.0,
+          32.73333
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": [
+          "refojos de basto"
+        ],
+        "students": 1,
+        "listLinkedinLinksByUser": {
+          "https://www.linkedin.com/in/diogosamuel/": "Diogo Samuel Fernandes"
+        },
+        "coursesYearConclusionByUser": {
+          "https://www.linkedin.com/in/diogosamuel/": {
+            "M.EIC": "2022/2023"
+          }
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -7.99517,
+          41.51318
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": [
+          "englewood"
+        ],
+        "students": 1,
+        "listLinkedinLinksByUser": {
+          "https://www.linkedin.com/in/antonioviegasalves/": "Antonio Alves"
+        },
+        "coursesYearConclusionByUser": {
+          "https://www.linkedin.com/in/antonioviegasalves/": {
+            "LEIC": "2001/2002"
+          }
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -104.98776,
+          39.64777
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": [
+          "leiria"
+        ],
+        "students": 1,
+        "listLinkedinLinksByUser": {
+          "https://www.linkedin.com/in/miguelpoeira/": "Miguel Cunha"
+        },
+        "coursesYearConclusionByUser": {
+          "https://www.linkedin.com/in/miguelpoeira/": {
+            "MIEIC": "2015/2016"
+          }
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8.80705,
+          39.74362
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": [
+          "munich"
+        ],
+        "students": 1,
+        "listLinkedinLinksByUser": {
+          "https://www.linkedin.com/in/rui-couto/": "Rui Couto"
+        },
+        "coursesYearConclusionByUser": {
+          "https://www.linkedin.com/in/rui-couto/": {
+            "MIEIC": "2014/2015"
+          }
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          11.57549,
+          48.13743
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": [
+          "the hague"
+        ],
+        "students": 3,
+        "listLinkedinLinksByUser": {
+          "https://www.linkedin.com/in/jcseixas/": "João Seixas",
+          "https://www.linkedin.com/in/filipe-fernandes-154930/": "filipe fernandes",
+          "https://www.linkedin.com/in/joel-alvim-0b4b51/": "Joel Alvim"
+        },
+        "coursesYearConclusionByUser": {
+          "https://www.linkedin.com/in/jcseixas/": {
+            "LEIC": "2001/2002"
+          },
+          "https://www.linkedin.com/in/filipe-fernandes-154930/": {},
+          "https://www.linkedin.com/in/joel-alvim-0b4b51/": {
+            "LEIC": "2002/2003"
+          }
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.29861,
+          52.07667
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": [
+          "porto e região"
+        ],
+        "students": 18,
+        "listLinkedinLinksByUser": {
+          "https://www.linkedin.com/in/joao-conde/": "João Conde",
+          "https://www.linkedin.com/in/matilde-freilao/": "Matilde Freilão",
+          "https://www.linkedin.com/in/jmscrodrigues/": "Joaquim Rodrigues",
+          "https://www.linkedin.com/in/pedrovelosogomes/": "Pedro Gomes",
+          "https://www.linkedin.com/in/beatrizmaguiar/": "Beatriz Aguiar",
+          "https://www.linkedin.com/in/diogoasteixeira/": "Diogo Teixeira",
+          "https://www.linkedin.com/in/joaopcgomes/": "João Gomes",
+          "https://www.linkedin.com/in/rjmelo/": "Ricardo Melo",
+          "https://www.linkedin.com/in/ricardojoaomestre/": "Ricardo Mestre",
+          "https://www.linkedin.com/in/catarina-lopes-a3360439/": "Catarina Lopes",
+          "https://www.linkedin.com/in/gasparlencastre/": "Gaspar Lencastre",
+          "https://www.linkedin.com/in/lduarte/": "Luis Duarte",
+          "https://www.linkedin.com/in/danielsilvareis/": "Daniel Reis",
+          "https://www.linkedin.com/in/tiagoaraujocastro/": "Tiago Castro",
+          "https://www.linkedin.com/in/luismarquestorres/": "Luis Marques Torres E Silva",
+          "https://www.linkedin.com/in/pedro-cunha-sw-engineer/": "Pedro Cunha",
+          "https://www.linkedin.com/in/jpacheco/": "José Pacheco",
+          "https://www.linkedin.com/in/rchilro/": "Rui Chilro"
+        },
+        "coursesYearConclusionByUser": {
+          "https://www.linkedin.com/in/joao-conde/": {},
+          "https://www.linkedin.com/in/matilde-freilao/": {
+            "MIEIC": "2019/2020"
+          },
+          "https://www.linkedin.com/in/jmscrodrigues/": {},
+          "https://www.linkedin.com/in/pedrovelosogomes/": {
+            "LEIC": "2001/2002",
+            "MIEIC": "2008/2009"
+          },
+          "https://www.linkedin.com/in/beatrizmaguiar/": {},
+          "https://www.linkedin.com/in/diogoasteixeira/": {},
+          "https://www.linkedin.com/in/joaopcgomes/": {
+            "MIEIC": "2007/2008"
+          },
+          "https://www.linkedin.com/in/rjmelo/": {
+            "LEIC": "2002/2003"
+          },
+          "https://www.linkedin.com/in/ricardojoaomestre/": {
+            "MIEIC": "2008/2009"
+          },
+          "https://www.linkedin.com/in/catarina-lopes-a3360439/": {
+            "MIEIC": "2010/2011"
+          },
+          "https://www.linkedin.com/in/gasparlencastre/": {
+            "LEIC": "2004/2005",
+            "MIEIC": "2007/2008"
+          },
+          "https://www.linkedin.com/in/lduarte/": {
+            "LEIC": "2004/2005"
+          },
+          "https://www.linkedin.com/in/danielsilvareis/": {
+            "MIEIC": "2017/2018"
+          },
+          "https://www.linkedin.com/in/tiagoaraujocastro/": {
+            "MIEIC": "2020/2021"
+          },
+          "https://www.linkedin.com/in/luismarquestorres/": {
+            "M.EIC": "2022/2023"
+          },
+          "https://www.linkedin.com/in/pedro-cunha-sw-engineer/": {
+            "MIEIC": "2014/2015"
+          },
+          "https://www.linkedin.com/in/jpacheco/": {
+            "LEIC": "2006/2007"
+          },
+          "https://www.linkedin.com/in/rchilro/": {
+            "LEIC": "2001/2002"
+          }
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -34.8918,
+          -7.11502
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": [
+          "cary"
+        ],
+        "students": 1,
+        "listLinkedinLinksByUser": {
+          "https://www.linkedin.com/in/augustocravosilva/": "Augusto Cravo Silva"
+        },
+        "coursesYearConclusionByUser": {
+          "https://www.linkedin.com/in/augustocravosilva/": {}
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -78.78112,
+          35.79154
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": [
+          "dublin city"
+        ],
+        "students": 2,
+        "listLinkedinLinksByUser": {
+          "https://www.linkedin.com/in/mark-timothy-meehan/": "Mark Meehan",
+          "https://www.linkedin.com/in/iferreira/": "Inês F."
+        },
+        "coursesYearConclusionByUser": {
+          "https://www.linkedin.com/in/mark-timothy-meehan/": {
+            "M.EIC": "2021/2022"
+          },
+          "https://www.linkedin.com/in/iferreira/": {
+            "MIEIC": "2011/2012"
+          }
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.24889,
+          53.33306
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": [
+          "etobicoke"
+        ],
+        "students": 1,
+        "listLinkedinLinksByUser": {
+          "https://www.linkedin.com/in/fmeira/": "Fernando Meira"
+        },
+        "coursesYearConclusionByUser": {
+          "https://www.linkedin.com/in/fmeira/": {
+            "LEIC": "2004/2005"
+          }
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -79.56985,
+          43.64415
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": [
+          "warsaw"
+        ],
+        "students": 2,
+        "listLinkedinLinksByUser": {
+          "https://www.linkedin.com/in/damien-rosa-83806134/": "Damien Rosa",
+          "https://www.linkedin.com/in/jpcosta/": "João Costa"
+        },
+        "coursesYearConclusionByUser": {
+          "https://www.linkedin.com/in/damien-rosa-83806134/": {
+            "MIEIC": "2014/2015"
+          },
+          "https://www.linkedin.com/in/jpcosta/": {
+            "MIEIC": "2007/2008"
+          }
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          21.01178,
+          52.22977
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": [
+          "amarante"
+        ],
+        "students": 1,
+        "listLinkedinLinksByUser": {
+          "https://www.linkedin.com/in/ruivilares/": "Rui Vilares"
+        },
+        "coursesYearConclusionByUser": {
+          "https://www.linkedin.com/in/ruivilares/": {
+            "MIEIC": "2017/2018"
+          }
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -39.06727,
+          -3.56612
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": [
+          "barcelos"
+        ],
+        "students": 2,
+        "listLinkedinLinksByUser": {
+          "https://www.linkedin.com/in/josemfazevedob/": "José Azevedo",
+          "https://www.linkedin.com/in/cdanielgomes/": "Carlos Daniel Gomes"
+        },
+        "coursesYearConclusionByUser": {
+          "https://www.linkedin.com/in/josemfazevedob/": {},
+          "https://www.linkedin.com/in/cdanielgomes/": {}
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -63.53706,
+          -0.39287
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": [
+          "tuntange"
+        ],
+        "students": 1,
+        "listLinkedinLinksByUser": {
+          "https://www.linkedin.com/in/danielfoalves/": "Daniel Alves"
+        },
+        "coursesYearConclusionByUser": {
+          "https://www.linkedin.com/in/danielfoalves/": {
+            "MIEIC": "2007/2008"
+          }
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.01028,
+          49.71778
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": [
+          "seattle"
+        ],
+        "students": 1,
+        "listLinkedinLinksByUser": {
+          "https://www.linkedin.com/in/ricardoafonso/": "Ricardo Afonso"
+        },
+        "coursesYearConclusionByUser": {
+          "https://www.linkedin.com/in/ricardoafonso/": {
+            "LEIC": "2004/2005"
+          }
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -122.33207,
+          47.60621
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": [
+          "other"
+        ],
+        "students": 1,
+        "listLinkedinLinksByUser": {
+          "https://www.linkedin.com/in/joaquimcarneiro/": "Joaquim Carneiro"
+        },
+        "coursesYearConclusionByUser": {
+          "https://www.linkedin.com/in/joaquimcarneiro/": {}
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -84.755,
+          49.09111
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": [
+          "vila real"
+        ],
+        "students": 2,
+        "listLinkedinLinksByUser": {
+          "https://www.linkedin.com/in/luís-santos-3a433327/": "Luís Santos",
+          "https://www.linkedin.com/in/luís-pinto-21334110/": "Luís Pinto"
+        },
+        "coursesYearConclusionByUser": {
+          "https://www.linkedin.com/in/luís-santos-3a433327/": {
+            "MIEIC": "2010/2011"
+          },
+          "https://www.linkedin.com/in/luís-pinto-21334110/": {
+            "MIEIC": "2009/2010"
+          }
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -7.74413,
+          41.30062
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": [
+          "amstelveen"
+        ],
+        "students": 1,
+        "listLinkedinLinksByUser": {
+          "https://www.linkedin.com/in/silvia-ramalho-1b44a415/": "Silvia Ramalho"
+        },
+        "coursesYearConclusionByUser": {
+          "https://www.linkedin.com/in/silvia-ramalho-1b44a415/": {}
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.86389,
+          52.30083
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": [
+          "são paulo"
+        ],
+        "students": 2,
+        "listLinkedinLinksByUser": {
+          "https://www.linkedin.com/in/danielpizarro/": "Daniel Pizarro",
+          "https://www.linkedin.com/in/danielfidalgorodrigues/": "Daniel Rodrigues"
+        },
+        "coursesYearConclusionByUser": {
+          "https://www.linkedin.com/in/danielpizarro/": {
+            "LEIC": "2005/2006"
+          },
+          "https://www.linkedin.com/in/danielfidalgorodrigues/": {
+            "MIEIC": "2009/2010"
+          }
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -46.63611,
+          -23.5475
         ]
       }
     },
@@ -4746,196 +4144,163 @@
       "type": "Feature",
       "properties": {
         "name": [
-          "berlin metropolitan area"
+          "cologne"
         ],
-        "students": 3,
+        "students": 1,
         "listLinkedinLinksByUser": {
-          "https://www.linkedin.com/in/pedromauriciocosta/": "Pedro Maurício Costa, PhD",
-          "https://www.linkedin.com/in/lmatias/": "Dr. Luís Moreira-Matias",
-          "https://www.linkedin.com/in/ruimferreira/": "Rui Ferreira"
+          "https://www.linkedin.com/in/ruitavares/": "Rui Tavares"
         },
         "coursesYearConclusionByUser": {
-          "https://www.linkedin.com/in/pedromauriciocosta/": {
-            "LEIC": "2006/2007"
+          "https://www.linkedin.com/in/ruitavares/": {
+            "LEIC": "2003/2004"
+          }
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.95,
+          50.93333
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": [
+          "lisboa"
+        ],
+        "students": 33,
+        "listLinkedinLinksByUser": {
+          "https://www.linkedin.com/in/sofiaoreis/": "Sofia Reis",
+          "https://www.linkedin.com/in/marconsilva/": "Marco António Silva",
+          "https://www.linkedin.com/in/miguel-pereira-392820/": "Miguel Pereira",
+          "https://www.linkedin.com/in/anaisabelsousa/": "Ana Sousa",
+          "https://www.linkedin.com/in/mariajoaobarbosa/": "Maria João Barbosa",
+          "https://www.linkedin.com/in/jcarlosportelapereira/": "Carlos Portela Pereira",
+          "https://www.linkedin.com/in/jaradas/": "João Aradas",
+          "https://www.linkedin.com/in/joelfilipeferreira/": "Joel Ferreira",
+          "https://www.linkedin.com/in/antoniopinho/": "António Pedro Pinho",
+          "https://www.linkedin.com/in/andremoniz/": "André Moniz",
+          "https://www.linkedin.com/in/aliceperpetua/": "Alice Perpétua",
+          "https://www.linkedin.com/in/paulo-lopes-2b84911/": "Paulo Lopes",
+          "https://www.linkedin.com/in/andreemanuelbarbosa/": "André Barbosa",
+          "https://www.linkedin.com/in/joaotrigosoares/": "João Soares",
+          "https://www.linkedin.com/in/nufil/": "Nuno S.",
+          "https://www.linkedin.com/in/piresfernando/": "Fernando Pires",
+          "https://www.linkedin.com/in/psenough/": "Filipe Cruz",
+          "https://www.linkedin.com/in/hpenedones/": "Hugo Penedones",
+          "https://www.linkedin.com/in/joaocmfs/": "João Carlos Santos",
+          "https://www.linkedin.com/in/djbaguilar/": "Daniel Aguilar",
+          "https://www.linkedin.com/in/sergiovasconcelos/": "Sérgio Vasconcelos",
+          "https://www.linkedin.com/in/rsguerra/": "Rodrigo Sá Guerra",
+          "https://www.linkedin.com/in/nuno-passos-19765061/": "Nuno Passos",
+          "https://www.linkedin.com/in/marco-carvalho-216538a/": "Marco Carvalho",
+          "https://www.linkedin.com/in/daniel-soares/": "Soares, Daniel",
+          "https://www.linkedin.com/in/jccarneiro/": "Jorge Carneiro",
+          "https://www.linkedin.com/in/mfapinho/": "Micael Pinho",
+          "https://www.linkedin.com/in/joaquimsantos/": "Joaquim Santos",
+          "https://www.linkedin.com/in/ruiarcher/": "Rui Archer",
+          "https://www.linkedin.com/in/vladimirosa/": "Vladimiro S.",
+          "https://www.linkedin.com/in/pt-antoniobandeira/": "António Bandeira",
+          "https://www.linkedin.com/in/martapereira/": "Marta Pereira",
+          "https://www.linkedin.com/in/tiago-martins-lomba/": "Tiago Martins Lomba"
+        },
+        "coursesYearConclusionByUser": {
+          "https://www.linkedin.com/in/sofiaoreis/": {
+            "MIEIC": "2016/2017"
           },
-          "https://www.linkedin.com/in/lmatias/": {
+          "https://www.linkedin.com/in/marconsilva/": {
+            "MIEIC": "2007/2008"
+          },
+          "https://www.linkedin.com/in/miguel-pereira-392820/": {
+            "LEIC": "2001/2002"
+          },
+          "https://www.linkedin.com/in/anaisabelsousa/": {
+            "MIEIC": "2015/2016"
+          },
+          "https://www.linkedin.com/in/mariajoaobarbosa/": {
+            "MIEIC": "2010/2011"
+          },
+          "https://www.linkedin.com/in/jcarlosportelapereira/": {
+            "MIEIC": "2013/2014"
+          },
+          "https://www.linkedin.com/in/jaradas/": {
             "MIEIC": "2008/2009"
           },
-          "https://www.linkedin.com/in/ruimferreira/": {
-            "LEIC": "2004/2005"
-          }
-        }
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -3.67264,
-          40.448
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "name": [
-          "san francisco"
-        ],
-        "students": 2,
-        "listLinkedinLinksByUser": {
-          "https://www.linkedin.com/in/nelsonjorgesilvarodrigues/": "Nelson Rodrigues",
-          "https://www.linkedin.com/in/joao-montenegro-b363884/": "Joao Montenegro"
-        },
-        "coursesYearConclusionByUser": {
-          "https://www.linkedin.com/in/nelsonjorgesilvarodrigues/": {
-            "LEIC": "2004/2005"
-          },
-          "https://www.linkedin.com/in/joao-montenegro-b363884/": {
-            "LEIC": "2001/2002"
-          }
-        }
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -87.20681,
-          14.0818
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "name": [
-          "gondomar"
-        ],
-        "students": 6,
-        "listLinkedinLinksByUser": {
-          "https://www.linkedin.com/in/goncalomarantes/": "Gonçalo Marantes",
-          "https://www.linkedin.com/in/nmtc01/": "Nuno Cardoso",
-          "https://www.linkedin.com/in/pedromfmachado/": "Pedro Machado",
-          "https://www.linkedin.com/in/andré-assunção-7b57781b9/": "André Assunção",
-          "https://www.linkedin.com/in/rui-alves-119991/": "Rui Alves",
-          "https://www.linkedin.com/in/diogoemsilva/": "Diogo Silva"
-        },
-        "coursesYearConclusionByUser": {
-          "https://www.linkedin.com/in/goncalomarantes/": {},
-          "https://www.linkedin.com/in/nmtc01/": {
-            "M.EIC": "2021/2022"
-          },
-          "https://www.linkedin.com/in/pedromfmachado/": {
+          "https://www.linkedin.com/in/joelfilipeferreira/": {
             "MIEIC": "2012/2013"
           },
-          "https://www.linkedin.com/in/andré-assunção-7b57781b9/": {},
-          "https://www.linkedin.com/in/rui-alves-119991/": {
+          "https://www.linkedin.com/in/antoniopinho/": {
+            "LEIC": "2003/2004"
+          },
+          "https://www.linkedin.com/in/andremoniz/": {
+            "LEIC": "2003/2004"
+          },
+          "https://www.linkedin.com/in/aliceperpetua/": {
+            "MIEIC": "2013/2014"
+          },
+          "https://www.linkedin.com/in/paulo-lopes-2b84911/": {
             "LEIC": "2000/2001"
           },
-          "https://www.linkedin.com/in/diogoemsilva/": {
-            "MIEIC": "2015/2016"
-          }
-        }
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -8.49595,
-          41.12015
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "name": [
-          "guimarães"
-        ],
-        "students": 2,
-        "listLinkedinLinksByUser": {
-          "https://www.linkedin.com/in/marcoaalves/": "Marco Alves",
-          "https://www.linkedin.com/in/cmpinto/": "César Pinto"
-        },
-        "coursesYearConclusionByUser": {
-          "https://www.linkedin.com/in/marcoaalves/": {
+          "https://www.linkedin.com/in/andreemanuelbarbosa/": {
+            "LEIC": "2006/2007"
+          },
+          "https://www.linkedin.com/in/joaotrigosoares/": {
             "MIEIC": "2010/2011"
           },
-          "https://www.linkedin.com/in/cmpinto/": {}
-        }
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -8.29619,
-          41.44443
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "name": [
-          "new york"
-        ],
-        "students": 3,
-        "listLinkedinLinksByUser": {
-          "https://www.linkedin.com/in/ana-sa-magalhaes/": "Ana Magalhaes",
-          "https://www.linkedin.com/in/nunomaiasantos/": "Nuno Santos",
-          "https://www.linkedin.com/in/pedromcteixeira/": "Pedro Teixeira"
-        },
-        "coursesYearConclusionByUser": {
-          "https://www.linkedin.com/in/ana-sa-magalhaes/": {
+          "https://www.linkedin.com/in/nufil/": {
+            "MIEIC": "2011/2012"
+          },
+          "https://www.linkedin.com/in/piresfernando/": {
+            "MIEIC": "2007/2008"
+          },
+          "https://www.linkedin.com/in/psenough/": {
+            "LEIC": "2005/2006",
+            "MEI": "2007/2008"
+          },
+          "https://www.linkedin.com/in/hpenedones/": {
             "LEIC": "2004/2005"
           },
-          "https://www.linkedin.com/in/nunomaiasantos/": {
-            "MIEIC": "2008/2009"
-          },
-          "https://www.linkedin.com/in/pedromcteixeira/": {
+          "https://www.linkedin.com/in/joaocmfs/": {
             "MIEIC": "2015/2016"
-          }
-        }
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -74.00597,
-          40.71427
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "name": [
-          "mons"
-        ],
-        "students": 1,
-        "listLinkedinLinksByUser": {
-          "https://www.linkedin.com/in/polonia/": "Pedro Polonia"
-        },
-        "coursesYearConclusionByUser": {
-          "https://www.linkedin.com/in/polonia/": {
+          },
+          "https://www.linkedin.com/in/djbaguilar/": {
+            "MIEIC": "2007/2008"
+          },
+          "https://www.linkedin.com/in/sergiovasconcelos/": {
+            "LEIC": "2005/2006"
+          },
+          "https://www.linkedin.com/in/rsguerra/": {
+            "LEIC": "2003/2004"
+          },
+          "https://www.linkedin.com/in/nuno-passos-19765061/": {
             "MIEIC": "2010/2011"
-          }
-        }
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          3.95229,
-          50.45413
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "name": [
-          "nieder ramstadt"
-        ],
-        "students": 1,
-        "listLinkedinLinksByUser": {
-          "https://www.linkedin.com/in/nandomoreira/": "José Silva"
-        },
-        "coursesYearConclusionByUser": {
-          "https://www.linkedin.com/in/nandomoreira/": {
+          },
+          "https://www.linkedin.com/in/marco-carvalho-216538a/": {},
+          "https://www.linkedin.com/in/daniel-soares/": {},
+          "https://www.linkedin.com/in/jccarneiro/": {
+            "LEIC": "2005/2006"
+          },
+          "https://www.linkedin.com/in/mfapinho/": {
+            "MIEIC": "2011/2012"
+          },
+          "https://www.linkedin.com/in/joaquimsantos/": {
+            "MIEIC": "2009/2010"
+          },
+          "https://www.linkedin.com/in/ruiarcher/": {
+            "MIEIC": "2012/2013"
+          },
+          "https://www.linkedin.com/in/vladimirosa/": {
+            "MIEIC": "2007/2008"
+          },
+          "https://www.linkedin.com/in/pt-antoniobandeira/": {
+            "MIEIC": "2007/2008"
+          },
+          "https://www.linkedin.com/in/martapereira/": {
+            "MIEIC": "2007/2008"
+          },
+          "https://www.linkedin.com/in/tiago-martins-lomba/": {
             "MIEIC": "2012/2013"
           }
         }
@@ -4943,8 +4308,8 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
-          8.70084,
-          49.82474
+          -9.13333,
+          38.71667
         ]
       }
     },
@@ -4952,23 +4317,23 @@
       "type": "Feature",
       "properties": {
         "name": [
-          "malmö"
+          "geneva metropolitan area"
         ],
         "students": 1,
         "listLinkedinLinksByUser": {
-          "https://www.linkedin.com/in/jcxavier/": "João Xavier"
+          "https://www.linkedin.com/in/ticunha/": "Tiago Cunha"
         },
         "coursesYearConclusionByUser": {
-          "https://www.linkedin.com/in/jcxavier/": {
-            "MIEIC": "2010/2011"
+          "https://www.linkedin.com/in/ticunha/": {
+            "MIEIC": "2012/2013"
           }
         }
       },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          13.00073,
-          55.60587
+          -88.30535,
+          41.88753
         ]
       }
     },
@@ -4976,27 +4341,51 @@
       "type": "Feature",
       "properties": {
         "name": [
-          "toronto"
+          "ponte de lima"
+        ],
+        "students": 1,
+        "listLinkedinLinksByUser": {
+          "https://www.linkedin.com/in/matheus-pereirag/": "Matheus Gonçalves"
+        },
+        "coursesYearConclusionByUser": {
+          "https://www.linkedin.com/in/matheus-pereirag/": {
+            "M.EIC": "2021/2022"
+          }
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8.58393,
+          41.76719
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": [
+          "lausanne"
         ],
         "students": 2,
         "listLinkedinLinksByUser": {
-          "https://www.linkedin.com/in/afonsograca/": "Afonso Graça",
-          "https://www.linkedin.com/in/joelpramos/": "Joel Ramos"
+          "https://www.linkedin.com/in/miguelbranco80/": "Miguel Branco",
+          "https://www.linkedin.com/in/tiagonunes/": "Tiago Nunes"
         },
         "coursesYearConclusionByUser": {
-          "https://www.linkedin.com/in/afonsograca/": {
-            "MIEIC": "2011/2012"
+          "https://www.linkedin.com/in/miguelbranco80/": {
+            "LEIC": "2002/2003"
           },
-          "https://www.linkedin.com/in/joelpramos/": {
-            "MIEIC": "2013/2014"
+          "https://www.linkedin.com/in/tiagonunes/": {
+            "MIEIC": "2008/2009"
           }
         }
       },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -79.39864,
-          43.70643
+          6.63282,
+          46.516
         ]
       }
     },
@@ -5004,23 +4393,73 @@
       "type": "Feature",
       "properties": {
         "name": [
-          "englewood"
+          "opfikon"
         ],
         "students": 1,
         "listLinkedinLinksByUser": {
-          "https://www.linkedin.com/in/antonioviegasalves/": "Antonio Alves"
+          "https://www.linkedin.com/in/joaoamsoares/": "João Soares"
         },
         "coursesYearConclusionByUser": {
-          "https://www.linkedin.com/in/antonioviegasalves/": {
-            "LEIC": "2001/2002"
+          "https://www.linkedin.com/in/joaoamsoares/": {
+            "MIEIC": "2011/2012"
           }
         }
       },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -104.98776,
-          39.64777
+          8.57588,
+          47.43169
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": [
+          "tokyo"
+        ],
+        "students": 2,
+        "listLinkedinLinksByUser": {
+          "https://www.linkedin.com/in/franciscobrito/": "Francisco B.",
+          "https://www.linkedin.com/in/carolinacenteiojorge/": "Carolina Centeio Jorge"
+        },
+        "coursesYearConclusionByUser": {
+          "https://www.linkedin.com/in/franciscobrito/": {
+            "MIEIC": "2010/2011"
+          },
+          "https://www.linkedin.com/in/carolinacenteiojorge/": {
+            "MIEIC": "2018/2019"
+          }
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          139.69171,
+          35.6895
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": [
+          "montreal"
+        ],
+        "students": 1,
+        "listLinkedinLinksByUser": {
+          "https://www.linkedin.com/in/ruiguimaraes/": "Rui Guimarães"
+        },
+        "coursesYearConclusionByUser": {
+          "https://www.linkedin.com/in/ruiguimaraes/": {}
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -73.58781,
+          45.50884
         ]
       }
     },
@@ -5092,28 +4531,23 @@
       "type": "Feature",
       "properties": {
         "name": [
-          "oliveira de azemeis"
+          "wien"
         ],
-        "students": 2,
+        "students": 1,
         "listLinkedinLinksByUser": {
-          "https://www.linkedin.com/in/paulo-noormahomed/": "Paulo Noormahomed",
-          "https://www.linkedin.com/in/rui-soares-/": "Rui Soares"
+          "https://www.linkedin.com/in/ruibotto/": "Rui Botto"
         },
         "coursesYearConclusionByUser": {
-          "https://www.linkedin.com/in/paulo-noormahomed/": {
-            "LEIC": "1999/2000"
-          },
-          "https://www.linkedin.com/in/rui-soares-/": {
-            "LEIC": "2001/2002",
-            "MIEIC": "2008/2009"
+          "https://www.linkedin.com/in/ruibotto/": {
+            "MIEIC": "2017/2018"
           }
         }
       },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -8.47555,
-          40.84101
+          16.37208,
+          48.20849
         ]
       }
     },
@@ -5121,29 +4555,59 @@
       "type": "Feature",
       "properties": {
         "name": [
-          "the hague"
+          "madrid"
         ],
-        "students": 3,
+        "students": 5,
         "listLinkedinLinksByUser": {
-          "https://www.linkedin.com/in/jcseixas/": "João Seixas",
-          "https://www.linkedin.com/in/filipe-fernandes-154930/": "filipe fernandes",
-          "https://www.linkedin.com/in/joel-alvim-0b4b51/": "Joel Alvim"
+          "https://www.linkedin.com/in/diogo-rosário/": "Diogo Rosário",
+          "https://www.linkedin.com/in/joaomiguel13/": "Joao Pinto",
+          "https://www.linkedin.com/in/josebarbosacarvalho/": "Jose Barbosa Carvalho",
+          "https://www.linkedin.com/in/josemartins88/": "José Martins",
+          "https://www.linkedin.com/in/smsesteves/": "Sérgio Esteves"
         },
         "coursesYearConclusionByUser": {
-          "https://www.linkedin.com/in/jcseixas/": {
-            "LEIC": "2001/2002"
+          "https://www.linkedin.com/in/diogo-rosário/": {},
+          "https://www.linkedin.com/in/joaomiguel13/": {},
+          "https://www.linkedin.com/in/josebarbosacarvalho/": {
+            "MIEIC": "2007/2008"
           },
-          "https://www.linkedin.com/in/filipe-fernandes-154930/": {},
-          "https://www.linkedin.com/in/joel-alvim-0b4b51/": {
-            "LEIC": "2002/2003"
+          "https://www.linkedin.com/in/josemartins88/": {
+            "MIEIC": "2010/2011"
+          },
+          "https://www.linkedin.com/in/smsesteves/": {
+            "MIEIC": "2015/2016"
           }
         }
       },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          4.29861,
-          52.07667
+          -3.70256,
+          40.4165
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": [
+          "tallinn"
+        ],
+        "students": 1,
+        "listLinkedinLinksByUser": {
+          "https://www.linkedin.com/in/ricardonunoalmeida/": "Ricardo Nuno Almeida"
+        },
+        "coursesYearConclusionByUser": {
+          "https://www.linkedin.com/in/ricardonunoalmeida/": {
+            "LEIC": "2004/2005"
+          }
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          24.75353,
+          59.43696
         ]
       }
     },
@@ -5191,194 +4655,6 @@
       "type": "Feature",
       "properties": {
         "name": [
-          "cabeceiras de basto"
-        ],
-        "students": 1,
-        "listLinkedinLinksByUser": {
-          "https://www.linkedin.com/in/aisabelmarques/": "Ana Isabel Marques"
-        },
-        "coursesYearConclusionByUser": {
-          "https://www.linkedin.com/in/aisabelmarques/": {
-            "MIEIC": "2013/2014"
-          }
-        }
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -7.97198,
-          41.52079
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "name": [
-          "den haag"
-        ],
-        "students": 1,
-        "listLinkedinLinksByUser": {
-          "https://www.linkedin.com/in/tpinheiro/": "Tiago Pinheiro"
-        },
-        "coursesYearConclusionByUser": {
-          "https://www.linkedin.com/in/tpinheiro/": {
-            "LEIC": "1999/2000"
-          }
-        }
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          4.29861,
-          52.07667
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "name": [
-          "cary"
-        ],
-        "students": 1,
-        "listLinkedinLinksByUser": {
-          "https://www.linkedin.com/in/augustocravosilva/": "Augusto Cravo Silva"
-        },
-        "coursesYearConclusionByUser": {
-          "https://www.linkedin.com/in/augustocravosilva/": {}
-        }
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -78.78112,
-          35.79154
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "name": [
-          "paços de ferreira"
-        ],
-        "students": 3,
-        "listLinkedinLinksByUser": {
-          "https://www.linkedin.com/in/jorgepacheco99/": "Jorge Pacheco",
-          "https://www.linkedin.com/in/josemartinsdev/": "José Martins",
-          "https://www.linkedin.com/in/daviddiassilva/": "David Silva"
-        },
-        "coursesYearConclusionByUser": {
-          "https://www.linkedin.com/in/jorgepacheco99/": {},
-          "https://www.linkedin.com/in/josemartinsdev/": {},
-          "https://www.linkedin.com/in/daviddiassilva/": {
-            "M.EIC": "2021/2022"
-          }
-        }
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -8.37617,
-          41.27657
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "name": [
-          "barcelona"
-        ],
-        "students": 5,
-        "listLinkedinLinksByUser": {
-          "https://www.linkedin.com/in/joaovieiracastro/": "João Vieira de Castro",
-          "https://www.linkedin.com/in/fabiocaramelo/": "Fábio Caramelo",
-          "https://www.linkedin.com/in/sergiorasgado/": "Sergio Rasgado",
-          "https://www.linkedin.com/in/guilhermescp/": "Luís Guilherme Martins",
-          "https://www.linkedin.com/in/joaoqalves/": "João Alves"
-        },
-        "coursesYearConclusionByUser": {
-          "https://www.linkedin.com/in/joaovieiracastro/": {
-            "MIEIC": "2016/2017"
-          },
-          "https://www.linkedin.com/in/fabiocaramelo/": {
-            "MIEIC": "2018/2019"
-          },
-          "https://www.linkedin.com/in/sergiorasgado/": {
-            "LEIC": "2004/2005"
-          },
-          "https://www.linkedin.com/in/guilhermescp/": {
-            "MIEIC": "2014/2015"
-          },
-          "https://www.linkedin.com/in/joaoqalves/": {}
-        }
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          2.15899,
-          41.38879
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "name": [
-          "opfikon"
-        ],
-        "students": 1,
-        "listLinkedinLinksByUser": {
-          "https://www.linkedin.com/in/joaoamsoares/": "João Soares"
-        },
-        "coursesYearConclusionByUser": {
-          "https://www.linkedin.com/in/joaoamsoares/": {
-            "MIEIC": "2011/2012"
-          }
-        }
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          8.57588,
-          47.43169
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "name": [
-          "warsaw"
-        ],
-        "students": 2,
-        "listLinkedinLinksByUser": {
-          "https://www.linkedin.com/in/damien-rosa-83806134/": "Damien Rosa",
-          "https://www.linkedin.com/in/jpcosta/": "João Costa"
-        },
-        "coursesYearConclusionByUser": {
-          "https://www.linkedin.com/in/damien-rosa-83806134/": {
-            "MIEIC": "2014/2015"
-          },
-          "https://www.linkedin.com/in/jpcosta/": {
-            "MIEIC": "2007/2008"
-          }
-        }
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          21.01178,
-          52.22977
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "name": [
           "sobrado"
         ],
         "students": 1,
@@ -5396,578 +4672,6 @@
         "coordinates": [
           -35.23251,
           -7.16887
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "name": [
-          "rio tinto"
-        ],
-        "students": 1,
-        "listLinkedinLinksByUser": {
-          "https://www.linkedin.com/in/amílcar-fernandes-2635351/": "Amílcar  Fernandes"
-        },
-        "coursesYearConclusionByUser": {
-          "https://www.linkedin.com/in/amílcar-fernandes-2635351/": {}
-        }
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -35.03715,
-          -6.79673
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "name": [
-          "دبي دبي الإمارات العربية المتحدة"
-        ],
-        "students": 1,
-        "listLinkedinLinksByUser": {
-          "https://www.linkedin.com/in/gerardooliveira/": "Gerardo De Oliveira"
-        },
-        "coursesYearConclusionByUser": {
-          "https://www.linkedin.com/in/gerardooliveira/": {
-            "MIEIC": "2009/2010"
-          }
-        }
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          55.30927,
-          25.07725
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "name": [
-          "cologne"
-        ],
-        "students": 1,
-        "listLinkedinLinksByUser": {
-          "https://www.linkedin.com/in/ruitavares/": "Rui Tavares"
-        },
-        "coursesYearConclusionByUser": {
-          "https://www.linkedin.com/in/ruitavares/": {
-            "LEIC": "2003/2004"
-          }
-        }
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          6.95,
-          50.93333
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "name": [
-          "porto metropolitan area"
-        ],
-        "students": 46,
-        "listLinkedinLinksByUser": {
-          "https://www.linkedin.com/in/luis-a-m-p/": "Luís P.",
-          "https://www.linkedin.com/in/josé-branco-a543573/": "José Branco",
-          "https://www.linkedin.com/in/joelcampos/": "Joel Campos",
-          "https://www.linkedin.com/in/joanavbarbosa/": "Joana Barbosa",
-          "https://www.linkedin.com/in/hugdru/": "Hugo Drumond",
-          "https://www.linkedin.com/in/filcoelho/": "Filipe C.",
-          "https://www.linkedin.com/in/jose-miguel-monteiro-0483469/": "José Miguel Monteiro",
-          "https://www.linkedin.com/in/jjsousa/": "Jadir Sousa",
-          "https://www.linkedin.com/in/felipeacosta/": "Felipe Ávila da Costa 🇺🇦🕊",
-          "https://www.linkedin.com/in/filipemiguelcarvalho/": "Filipe Carvalho",
-          "https://www.linkedin.com/in/joanamcsilva/": "Joana Silva",
-          "https://www.linkedin.com/in/josempaguiar/": "José Aguiar",
-          "https://www.linkedin.com/in/andremanuelbarbosa/": "André Barbosa",
-          "https://www.linkedin.com/in/ana-jacinta-ferreira-b727ab/": "Ana Jacinta Ferreira",
-          "https://www.linkedin.com/in/jsilva-pt/": "José Silva",
-          "https://www.linkedin.com/in/eduardo-ramalho-pt/": "Eduardo Ramalho",
-          "https://www.linkedin.com/in/andrefmota/": "André Mota",
-          "https://www.linkedin.com/in/larammsantos/": "Lara Santos",
-          "https://www.linkedin.com/in/ruiguerra/": "Rui Guerra",
-          "https://www.linkedin.com/in/ricardo-silva-25902a59/": "Ricardo Silva",
-          "https://www.linkedin.com/in/pedroruasmoreira/": "Pedro Ruas Moreira",
-          "https://www.linkedin.com/in/diogocdias/": "Diogo Dias",
-          "https://www.linkedin.com/in/mpedroto/": "Maria Pedroto",
-          "https://www.linkedin.com/in/pcostaeu/": "Paulo Costa",
-          "https://www.linkedin.com/in/ruigrandaorocha/": "Rui Grandão",
-          "https://www.linkedin.com/in/barbosasergio/": "Sérgio Barbosa",
-          "https://www.linkedin.com/in/mfvfontes/": "Márcio Fontes",
-          "https://www.linkedin.com/in/tadeumarques/": "Tadeu Marques",
-          "https://www.linkedin.com/in/dcibrao/": "Daniel Cibrão",
-          "https://www.linkedin.com/in/-marcio-duarte-/": "Márcio Duarte",
-          "https://www.linkedin.com/in/dmoura/": "Daniel Moura",
-          "https://www.linkedin.com/in/paulo-marques-25234124/": "Paulo Marques",
-          "https://www.linkedin.com/in/hmoreira/": "Hélder Moreira",
-          "https://www.linkedin.com/in/jpdamas/": "João Damas",
-          "https://www.linkedin.com/in/duartemb/": "Marcos Duarte",
-          "https://www.linkedin.com/in/pedrocarneiro/": "Pedro Carneiro",
-          "https://www.linkedin.com/in/tiagoalmeidasantos/": "Tiago Santos",
-          "https://www.linkedin.com/in/liliana-ribeiro-51a86a12b/": "Liliana Ribeiro",
-          "https://www.linkedin.com/in/anaisdias/": "Anaís Dias",
-          "https://www.linkedin.com/in/fabioacalmeida/": "Fábio Almeida",
-          "https://www.linkedin.com/in/hugopeixoto/": "Hugo Peixoto",
-          "https://www.linkedin.com/in/rafaelpires/": "Rafael Pires",
-          "https://www.linkedin.com/in/englisboa/": "António Lisboa",
-          "https://www.linkedin.com/in/filipefmiranda/": "Filipe Miranda",
-          "https://www.linkedin.com/in/manuelcurral/": "Manuel Curral",
-          "https://www.linkedin.com/in/leoneljdias/": "Leonel Dias "
-        },
-        "coursesYearConclusionByUser": {
-          "https://www.linkedin.com/in/luis-a-m-p/": {
-            "MIEIC": "2016/2017"
-          },
-          "https://www.linkedin.com/in/josé-branco-a543573/": {
-            "MIEIC": "2007/2008"
-          },
-          "https://www.linkedin.com/in/joelcampos/": {
-            "MIEIC": "2007/2008"
-          },
-          "https://www.linkedin.com/in/joanavbarbosa/": {
-            "MIEIC": "2012/2013"
-          },
-          "https://www.linkedin.com/in/hugdru/": {
-            "MIEIC": "2018/2019"
-          },
-          "https://www.linkedin.com/in/filcoelho/": {
-            "MIEIC": "2007/2008"
-          },
-          "https://www.linkedin.com/in/jose-miguel-monteiro-0483469/": {
-            "LEIC": "1998/1999"
-          },
-          "https://www.linkedin.com/in/jjsousa/": {
-            "MIEIC": "2007/2008"
-          },
-          "https://www.linkedin.com/in/felipeacosta/": {
-            "MIEIC": "2008/2009"
-          },
-          "https://www.linkedin.com/in/filipemiguelcarvalho/": {
-            "MIEIC": "2013/2014"
-          },
-          "https://www.linkedin.com/in/joanamcsilva/": {
-            "MIEIC": "2020/2021"
-          },
-          "https://www.linkedin.com/in/josempaguiar/": {
-            "MIEIC": "2010/2011"
-          },
-          "https://www.linkedin.com/in/andremanuelbarbosa/": {
-            "LEIC": "2005/2006",
-            "MIEIC": "2009/2010"
-          },
-          "https://www.linkedin.com/in/ana-jacinta-ferreira-b727ab/": {
-            "LEIC": "1998/1999"
-          },
-          "https://www.linkedin.com/in/jsilva-pt/": {
-            "MIEIC": "2012/2013"
-          },
-          "https://www.linkedin.com/in/eduardo-ramalho-pt/": {
-            "LEIC": "2001/2002",
-            "MIEIC": "2010/2011"
-          },
-          "https://www.linkedin.com/in/andrefmota/": {
-            "LEIC": "2006/2007"
-          },
-          "https://www.linkedin.com/in/larammsantos/": {
-            "LEIC": "1999/2000"
-          },
-          "https://www.linkedin.com/in/ruiguerra/": {
-            "MIEIC": "2008/2009"
-          },
-          "https://www.linkedin.com/in/ricardo-silva-25902a59/": {
-            "MIEIC": "2012/2013"
-          },
-          "https://www.linkedin.com/in/pedroruasmoreira/": {
-            "MIEIC": "2007/2008"
-          },
-          "https://www.linkedin.com/in/diogocdias/": {
-            "MIEIC": "2010/2011"
-          },
-          "https://www.linkedin.com/in/mpedroto/": {
-            "LEIC": "2005/2006"
-          },
-          "https://www.linkedin.com/in/pcostaeu/": {
-            "MIEIC": "2016/2017"
-          },
-          "https://www.linkedin.com/in/ruigrandaorocha/": {},
-          "https://www.linkedin.com/in/barbosasergio/": {
-            "LEIC": "2005/2006"
-          },
-          "https://www.linkedin.com/in/mfvfontes/": {},
-          "https://www.linkedin.com/in/tadeumarques/": {
-            "MIEIC": "2013/2014"
-          },
-          "https://www.linkedin.com/in/dcibrao/": {},
-          "https://www.linkedin.com/in/-marcio-duarte-/": {
-            "M.EIC": "2022/2023"
-          },
-          "https://www.linkedin.com/in/dmoura/": {
-            "LEIC": "2000/2001"
-          },
-          "https://www.linkedin.com/in/paulo-marques-25234124/": {
-            "LEIC": "2006/2007"
-          },
-          "https://www.linkedin.com/in/hmoreira/": {
-            "MIEIC": "2012/2013"
-          },
-          "https://www.linkedin.com/in/jpdamas/": {
-            "MIEIC": "2019/2020"
-          },
-          "https://www.linkedin.com/in/duartemb/": {},
-          "https://www.linkedin.com/in/pedrocarneiro/": {
-            "LEIC": "2006/2007"
-          },
-          "https://www.linkedin.com/in/tiagoalmeidasantos/": {
-            "LEIC": "2004/2005"
-          },
-          "https://www.linkedin.com/in/liliana-ribeiro-51a86a12b/": {
-            "MIEIC": "2016/2017"
-          },
-          "https://www.linkedin.com/in/anaisdias/": {
-            "MIEIC": "2016/2017"
-          },
-          "https://www.linkedin.com/in/fabioacalmeida/": {
-            "MIEIC": "2011/2012"
-          },
-          "https://www.linkedin.com/in/hugopeixoto/": {
-            "MIEIC": "2009/2010"
-          },
-          "https://www.linkedin.com/in/rafaelpires/": {
-            "MIEIC": "2009/2010"
-          },
-          "https://www.linkedin.com/in/englisboa/": {
-            "LEIC": "2004/2005"
-          },
-          "https://www.linkedin.com/in/filipefmiranda/": {
-            "MIEIC": "2016/2017"
-          },
-          "https://www.linkedin.com/in/manuelcurral/": {
-            "MIEIC": "2020/2021"
-          },
-          "https://www.linkedin.com/in/leoneljdias/": {
-            "MIEIC": "2009/2010"
-          }
-        }
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -50.92712,
-          -29.90138
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "name": [
-          "porto e região"
-        ],
-        "students": 18,
-        "listLinkedinLinksByUser": {
-          "https://www.linkedin.com/in/joao-conde/": "João Conde",
-          "https://www.linkedin.com/in/matilde-freilao/": "Matilde Freilão",
-          "https://www.linkedin.com/in/jmscrodrigues/": "Joaquim Rodrigues",
-          "https://www.linkedin.com/in/pedrovelosogomes/": "Pedro Gomes",
-          "https://www.linkedin.com/in/beatrizmaguiar/": "Beatriz Aguiar",
-          "https://www.linkedin.com/in/diogoasteixeira/": "Diogo Teixeira",
-          "https://www.linkedin.com/in/joaopcgomes/": "João Gomes",
-          "https://www.linkedin.com/in/rjmelo/": "Ricardo Melo",
-          "https://www.linkedin.com/in/ricardojoaomestre/": "Ricardo Mestre",
-          "https://www.linkedin.com/in/catarina-lopes-a3360439/": "Catarina Lopes",
-          "https://www.linkedin.com/in/gasparlencastre/": "Gaspar Lencastre",
-          "https://www.linkedin.com/in/lduarte/": "Luis Duarte",
-          "https://www.linkedin.com/in/danielsilvareis/": "Daniel Reis",
-          "https://www.linkedin.com/in/tiagoaraujocastro/": "Tiago Castro",
-          "https://www.linkedin.com/in/luismarquestorres/": "Luis Marques Torres E Silva",
-          "https://www.linkedin.com/in/pedro-cunha-sw-engineer/": "Pedro Cunha",
-          "https://www.linkedin.com/in/jpacheco/": "José Pacheco",
-          "https://www.linkedin.com/in/rchilro/": "Rui Chilro"
-        },
-        "coursesYearConclusionByUser": {
-          "https://www.linkedin.com/in/joao-conde/": {},
-          "https://www.linkedin.com/in/matilde-freilao/": {
-            "MIEIC": "2019/2020"
-          },
-          "https://www.linkedin.com/in/jmscrodrigues/": {},
-          "https://www.linkedin.com/in/pedrovelosogomes/": {
-            "LEIC": "2001/2002",
-            "MIEIC": "2008/2009"
-          },
-          "https://www.linkedin.com/in/beatrizmaguiar/": {},
-          "https://www.linkedin.com/in/diogoasteixeira/": {},
-          "https://www.linkedin.com/in/joaopcgomes/": {
-            "MIEIC": "2007/2008"
-          },
-          "https://www.linkedin.com/in/rjmelo/": {
-            "LEIC": "2002/2003"
-          },
-          "https://www.linkedin.com/in/ricardojoaomestre/": {
-            "MIEIC": "2008/2009"
-          },
-          "https://www.linkedin.com/in/catarina-lopes-a3360439/": {
-            "MIEIC": "2010/2011"
-          },
-          "https://www.linkedin.com/in/gasparlencastre/": {
-            "LEIC": "2004/2005",
-            "MIEIC": "2007/2008"
-          },
-          "https://www.linkedin.com/in/lduarte/": {
-            "LEIC": "2004/2005"
-          },
-          "https://www.linkedin.com/in/danielsilvareis/": {
-            "MIEIC": "2017/2018"
-          },
-          "https://www.linkedin.com/in/tiagoaraujocastro/": {
-            "MIEIC": "2020/2021"
-          },
-          "https://www.linkedin.com/in/luismarquestorres/": {
-            "M.EIC": "2022/2023"
-          },
-          "https://www.linkedin.com/in/pedro-cunha-sw-engineer/": {
-            "MIEIC": "2014/2015"
-          },
-          "https://www.linkedin.com/in/jpacheco/": {
-            "LEIC": "2006/2007"
-          },
-          "https://www.linkedin.com/in/rchilro/": {
-            "LEIC": "2001/2002"
-          }
-        }
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -34.8918,
-          -7.11502
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "name": [
-          "maidenhead"
-        ],
-        "students": 1,
-        "listLinkedinLinksByUser": {
-          "https://www.linkedin.com/in/manuelmonterroso/": "Manuel Monterroso"
-        },
-        "coursesYearConclusionByUser": {
-          "https://www.linkedin.com/in/manuelmonterroso/": {
-            "LEIC": "2006/2007"
-          }
-        }
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -0.71986,
-          51.52279
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "name": [
-          "sao mamede de infesta"
-        ],
-        "students": 1,
-        "listLinkedinLinksByUser": {
-          "https://www.linkedin.com/in/supericardoc/": "Ricardo Castro"
-        },
-        "coursesYearConclusionByUser": {
-          "https://www.linkedin.com/in/supericardoc/": {
-            "LEIC": "2004/2005"
-          }
-        }
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -8.61105,
-          41.19183
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "name": [
-          "amarante"
-        ],
-        "students": 1,
-        "listLinkedinLinksByUser": {
-          "https://www.linkedin.com/in/ruivilares/": "Rui Vilares"
-        },
-        "coursesYearConclusionByUser": {
-          "https://www.linkedin.com/in/ruivilares/": {
-            "MIEIC": "2017/2018"
-          }
-        }
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -39.06727,
-          -3.56612
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "name": [
-          "helsinki"
-        ],
-        "students": 1,
-        "listLinkedinLinksByUser": {
-          "https://www.linkedin.com/in/jpmmaia/": "Joao Maia"
-        },
-        "coursesYearConclusionByUser": {
-          "https://www.linkedin.com/in/jpmmaia/": {
-            "MIEIC": "2016/2017"
-          }
-        }
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          24.93545,
-          60.16952
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "name": [
-          "ermesinde"
-        ],
-        "students": 1,
-        "listLinkedinLinksByUser": {
-          "https://www.linkedin.com/in/filipepintoreis/": "Filipe Pinto Reis"
-        },
-        "coursesYearConclusionByUser": {
-          "https://www.linkedin.com/in/filipepintoreis/": {
-            "M.EIC": "2021/2022"
-          }
-        }
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -8.55318,
-          41.21653
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "name": [
-          "brussels"
-        ],
-        "students": 2,
-        "listLinkedinLinksByUser": {
-          "https://www.linkedin.com/in/theantonioalmeida/": "António Almeida",
-          "https://www.linkedin.com/in/mjmtavares/": "Miguel Tavares"
-        },
-        "coursesYearConclusionByUser": {
-          "https://www.linkedin.com/in/theantonioalmeida/": {},
-          "https://www.linkedin.com/in/mjmtavares/": {
-            "MIEIC": "2016/2017"
-          }
-        }
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          4.34878,
-          50.85045
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "name": [
-          "viana do castelo"
-        ],
-        "students": 1,
-        "listLinkedinLinksByUser": {
-          "https://www.linkedin.com/in/vascotorres/": "Vasco Torres"
-        },
-        "coursesYearConclusionByUser": {
-          "https://www.linkedin.com/in/vascotorres/": {
-            "MIEIC": "2012/2013"
-          }
-        }
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -8.5063,
-          41.89649
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "name": [
-          "munchen"
-        ],
-        "students": 1,
-        "listLinkedinLinksByUser": {
-          "https://www.linkedin.com/in/acarraca/": "Ana C."
-        },
-        "coursesYearConclusionByUser": {
-          "https://www.linkedin.com/in/acarraca/": {
-            "MIEIC": "2013/2014"
-          }
-        }
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          11.57549,
-          48.13743
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "name": [
-          "san francisco bay area"
-        ],
-        "students": 1,
-        "listLinkedinLinksByUser": {
-          "https://www.linkedin.com/in/alexandrecperez/": "Alexandre Perez"
-        },
-        "coursesYearConclusionByUser": {
-          "https://www.linkedin.com/in/alexandrecperez/": {
-            "MIEIC": "2011/2012"
-          }
-        }
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -122.41942,
-          37.77493
         ]
       }
     },
@@ -6033,6 +4737,763 @@
       "type": "Feature",
       "properties": {
         "name": [
+          "oslo"
+        ],
+        "students": 5,
+        "listLinkedinLinksByUser": {
+          "https://www.linkedin.com/in/tisilva/": "Tiago Silva",
+          "https://www.linkedin.com/in/joaoeiras/": "João Eiras",
+          "https://www.linkedin.com/in/lcabral/": "Luís Cabral",
+          "https://www.linkedin.com/in/telmorochapereira/": "Telmo Pereira",
+          "https://www.linkedin.com/in/fabiomalheiro/": "Fábio Malheiro"
+        },
+        "coursesYearConclusionByUser": {
+          "https://www.linkedin.com/in/tisilva/": {
+            "MIEIC": "2011/2012"
+          },
+          "https://www.linkedin.com/in/joaoeiras/": {
+            "MIEIC": "2007/2008"
+          },
+          "https://www.linkedin.com/in/lcabral/": {
+            "MEI": "2006/2007"
+          },
+          "https://www.linkedin.com/in/telmorochapereira/": {
+            "MIEIC": "2009/2010"
+          },
+          "https://www.linkedin.com/in/fabiomalheiro/": {
+            "MIEIC": "2009/2010"
+          }
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.74609,
+          59.91273
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": [
+          "baião"
+        ],
+        "students": 1,
+        "listLinkedinLinksByUser": {
+          "https://www.linkedin.com/in/tiagommferreira55/": "Tiago Ferreira"
+        },
+        "coursesYearConclusionByUser": {
+          "https://www.linkedin.com/in/tiagommferreira55/": {
+            "MIEIC": "2016/2017"
+          }
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8.03581,
+          41.16384
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": [
+          "valongo"
+        ],
+        "students": 1,
+        "listLinkedinLinksByUser": {
+          "https://www.linkedin.com/in/ruihgomes/": "Rui Gomes"
+        },
+        "coursesYearConclusionByUser": {
+          "https://www.linkedin.com/in/ruihgomes/": {
+            "MIEIC": "2013/2014"
+          }
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8.49857,
+          41.18883
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": [
+          "villach"
+        ],
+        "students": 1,
+        "listLinkedinLinksByUser": {
+          "https://www.linkedin.com/in/tiagogpmsilva/": "Tiago da Silva"
+        },
+        "coursesYearConclusionByUser": {
+          "https://www.linkedin.com/in/tiagogpmsilva/": {
+            "LEIC": "2002/2003"
+          }
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          13.85583,
+          46.61028
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": [
+          "louzada"
+        ],
+        "students": 1,
+        "listLinkedinLinksByUser": {
+          "https://www.linkedin.com/in/diogonogueira/": "Rafael Nogueira"
+        },
+        "coursesYearConclusionByUser": {
+          "https://www.linkedin.com/in/diogonogueira/": {
+            "MIEIC": "2013/2014"
+          }
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8.27993,
+          41.27822
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": [
+          "los angeles metropolitan area"
+        ],
+        "students": 1,
+        "listLinkedinLinksByUser": {
+          "https://www.linkedin.com/in/joão-almeida-451714a8/": "João Almeida"
+        },
+        "coursesYearConclusionByUser": {
+          "https://www.linkedin.com/in/joão-almeida-451714a8/": {
+            "MIEIC": "2016/2017"
+          }
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -118.25646,
+          34.04223
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": [
+          "copenhagen"
+        ],
+        "students": 3,
+        "listLinkedinLinksByUser": {
+          "https://www.linkedin.com/in/anpalves/": "André Alves",
+          "https://www.linkedin.com/in/joanacarvalho/": "Joana Carvalho",
+          "https://www.linkedin.com/in/ricardo-pinho-409b8474/": "Ricardo Pinho"
+        },
+        "coursesYearConclusionByUser": {
+          "https://www.linkedin.com/in/anpalves/": {
+            "MIEIC": "2012/2013"
+          },
+          "https://www.linkedin.com/in/joanacarvalho/": {
+            "LEIC": "2001/2002"
+          },
+          "https://www.linkedin.com/in/ricardo-pinho-409b8474/": {
+            "MIEIC": "2013/2014"
+          }
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          12.56553,
+          55.67594
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": [
+          "cabeceiras de basto"
+        ],
+        "students": 1,
+        "listLinkedinLinksByUser": {
+          "https://www.linkedin.com/in/aisabelmarques/": "Ana Isabel Marques"
+        },
+        "coursesYearConclusionByUser": {
+          "https://www.linkedin.com/in/aisabelmarques/": {
+            "MIEIC": "2013/2014"
+          }
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -7.97198,
+          41.52079
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": [
+          "gondomar"
+        ],
+        "students": 6,
+        "listLinkedinLinksByUser": {
+          "https://www.linkedin.com/in/goncalomarantes/": "Gonçalo Marantes",
+          "https://www.linkedin.com/in/nmtc01/": "Nuno Cardoso",
+          "https://www.linkedin.com/in/pedromfmachado/": "Pedro Machado",
+          "https://www.linkedin.com/in/andré-assunção-7b57781b9/": "André Assunção",
+          "https://www.linkedin.com/in/rui-alves-119991/": "Rui Alves",
+          "https://www.linkedin.com/in/diogoemsilva/": "Diogo Silva"
+        },
+        "coursesYearConclusionByUser": {
+          "https://www.linkedin.com/in/goncalomarantes/": {},
+          "https://www.linkedin.com/in/nmtc01/": {
+            "M.EIC": "2021/2022"
+          },
+          "https://www.linkedin.com/in/pedromfmachado/": {
+            "MIEIC": "2012/2013"
+          },
+          "https://www.linkedin.com/in/andré-assunção-7b57781b9/": {},
+          "https://www.linkedin.com/in/rui-alves-119991/": {
+            "LEIC": "2000/2001"
+          },
+          "https://www.linkedin.com/in/diogoemsilva/": {
+            "MIEIC": "2015/2016"
+          }
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8.49595,
+          41.12015
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": [
+          "stockholm"
+        ],
+        "students": 1,
+        "listLinkedinLinksByUser": {
+          "https://www.linkedin.com/in/paxpacheco/": "Pedro Pacheco"
+        },
+        "coursesYearConclusionByUser": {
+          "https://www.linkedin.com/in/paxpacheco/": {
+            "MIEIC": "2009/2010"
+          }
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          18.06871,
+          59.32938
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": [
+          "ghent"
+        ],
+        "students": 1,
+        "listLinkedinLinksByUser": {
+          "https://www.linkedin.com/in/andreguimaraes/": "Andre Guimaraes"
+        },
+        "coursesYearConclusionByUser": {
+          "https://www.linkedin.com/in/andreguimaraes/": {
+            "LEIC": "2001/2002"
+          }
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          3.71667,
+          51.05
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": [
+          "felgueiras"
+        ],
+        "students": 1,
+        "listLinkedinLinksByUser": {
+          "https://www.linkedin.com/in/maurorcosta/": "Mauro Costa"
+        },
+        "coursesYearConclusionByUser": {
+          "https://www.linkedin.com/in/maurorcosta/": {
+            "MIEIC": "2016/2017"
+          }
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8.19396,
+          41.36806
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": [
+          "coimbra"
+        ],
+        "students": 2,
+        "listLinkedinLinksByUser": {
+          "https://www.linkedin.com/in/nunocruzsilva/": "Nuno Silva",
+          "https://www.linkedin.com/in/nogueiranuno/": "Nuno Nogueira"
+        },
+        "coursesYearConclusionByUser": {
+          "https://www.linkedin.com/in/nunocruzsilva/": {},
+          "https://www.linkedin.com/in/nogueiranuno/": {
+            "LEIC": "2005/2006"
+          }
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8.41955,
+          40.20564
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": [
+          "erlangen"
+        ],
+        "students": 1,
+        "listLinkedinLinksByUser": {
+          "https://www.linkedin.com/in/cristina-falcao-57b569/": "Cristina Falcao"
+        },
+        "coursesYearConclusionByUser": {
+          "https://www.linkedin.com/in/cristina-falcao-57b569/": {
+            "LEIC": "2003/2004"
+          }
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          11.00783,
+          49.59099
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": [
+          "rio tinto"
+        ],
+        "students": 1,
+        "listLinkedinLinksByUser": {
+          "https://www.linkedin.com/in/amílcar-fernandes-2635351/": "Amílcar  Fernandes"
+        },
+        "coursesYearConclusionByUser": {
+          "https://www.linkedin.com/in/amílcar-fernandes-2635351/": {}
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -35.03715,
+          -6.79673
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": [
+          "dublin"
+        ],
+        "students": 3,
+        "listLinkedinLinksByUser": {
+          "https://www.linkedin.com/in/rufernandes/": "Rui Fernandes",
+          "https://www.linkedin.com/in/xfontes/": "Xavier Fontes",
+          "https://www.linkedin.com/in/carlossilvafernandes/": "Carlos Fernandes"
+        },
+        "coursesYearConclusionByUser": {
+          "https://www.linkedin.com/in/rufernandes/": {
+            "MIEIC": "2011/2012"
+          },
+          "https://www.linkedin.com/in/xfontes/": {},
+          "https://www.linkedin.com/in/carlossilvafernandes/": {
+            "MIEIC": "2008/2009"
+          }
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.24889,
+          53.33306
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": [
+          "ljubljana"
+        ],
+        "students": 1,
+        "listLinkedinLinksByUser": {
+          "https://www.linkedin.com/in/vosferatu/": "João Mendes"
+        },
+        "coursesYearConclusionByUser": {
+          "https://www.linkedin.com/in/vosferatu/": {}
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          14.50513,
+          46.05108
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": [
+          "bragança"
+        ],
+        "students": 2,
+        "listLinkedinLinksByUser": {
+          "https://www.linkedin.com/in/freixedelo/": "Rui Freixedelo",
+          "https://www.linkedin.com/in/jmourinho/": "João Mourinho"
+        },
+        "coursesYearConclusionByUser": {
+          "https://www.linkedin.com/in/freixedelo/": {
+            "MIEIC": "2013/2014"
+          },
+          "https://www.linkedin.com/in/jmourinho/": {
+            "MIEIC": "2007/2008"
+          }
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.76346,
+          41.83615
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": [
+          "berlin"
+        ],
+        "students": 3,
+        "listLinkedinLinksByUser": {
+          "https://www.linkedin.com/in/joaonadais/": "João Nadais",
+          "https://www.linkedin.com/in/thejjoliveira/": "José Oliveira",
+          "https://www.linkedin.com/in/fpoliveira/": "Fábio Oliveira"
+        },
+        "coursesYearConclusionByUser": {
+          "https://www.linkedin.com/in/joaonadais/": {
+            "MIEIC": "2015/2016"
+          },
+          "https://www.linkedin.com/in/thejjoliveira/": {},
+          "https://www.linkedin.com/in/fpoliveira/": {
+            "MIEIC": "2007/2008"
+          }
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          13.41053,
+          52.52437
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": [
+          "los angeles"
+        ],
+        "students": 1,
+        "listLinkedinLinksByUser": {
+          "https://www.linkedin.com/in/ruigomeseu/": "Rui Gomes"
+        },
+        "coursesYearConclusionByUser": {
+          "https://www.linkedin.com/in/ruigomeseu/": {
+            "MIEIC": "2016/2017"
+          }
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -118.24368,
+          34.05223
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": [
+          "arcos de valdevez"
+        ],
+        "students": 1,
+        "listLinkedinLinksByUser": {
+          "https://www.linkedin.com/in/xico2001pt/": "Francisco Cerqueira"
+        },
+        "coursesYearConclusionByUser": {
+          "https://www.linkedin.com/in/xico2001pt/": {
+            "L.EIC": "2021/2022"
+          }
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8.41905,
+          41.84668
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": [
+          "san francisco"
+        ],
+        "students": 2,
+        "listLinkedinLinksByUser": {
+          "https://www.linkedin.com/in/nelsonjorgesilvarodrigues/": "Nelson Rodrigues",
+          "https://www.linkedin.com/in/joao-montenegro-b363884/": "Joao Montenegro"
+        },
+        "coursesYearConclusionByUser": {
+          "https://www.linkedin.com/in/nelsonjorgesilvarodrigues/": {
+            "LEIC": "2004/2005"
+          },
+          "https://www.linkedin.com/in/joao-montenegro-b363884/": {
+            "LEIC": "2001/2002"
+          }
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -87.20681,
+          14.0818
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": [
+          "greater seattle area"
+        ],
+        "students": 1,
+        "listLinkedinLinksByUser": {
+          "https://www.linkedin.com/in/andrerod/": "André Rodrigues"
+        },
+        "coursesYearConclusionByUser": {
+          "https://www.linkedin.com/in/andrerod/": {
+            "MIEIC": "2007/2008"
+          }
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -122.3765,
+          47.5224
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": [
+          "braga e região"
+        ],
+        "students": 1,
+        "listLinkedinLinksByUser": {
+          "https://www.linkedin.com/in/nunoestrada/": "Nuno Gouveia"
+        },
+        "coursesYearConclusionByUser": {
+          "https://www.linkedin.com/in/nunoestrada/": {
+            "MIEIC": "2011/2012"
+          }
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -46.89985,
+          -22.85309
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": [
+          "ovar"
+        ],
+        "students": 1,
+        "listLinkedinLinksByUser": {
+          "https://www.linkedin.com/in/helder-fontes/": "Helder Fontes"
+        },
+        "coursesYearConclusionByUser": {
+          "https://www.linkedin.com/in/helder-fontes/": {
+            "MIEIC": "2009/2010"
+          }
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8.61226,
+          40.89422
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": [
+          "vernier"
+        ],
+        "students": 1,
+        "listLinkedinLinksByUser": {
+          "https://www.linkedin.com/in/tiago--batista/": "Tiago Batista"
+        },
+        "coursesYearConclusionByUser": {
+          "https://www.linkedin.com/in/tiago--batista/": {
+            "LEIC": "2003/2004",
+            "MIEIC": "2007/2008"
+          }
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          161.15,
+          -77.96667
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": [
+          "sao mamede de infesta"
+        ],
+        "students": 1,
+        "listLinkedinLinksByUser": {
+          "https://www.linkedin.com/in/supericardoc/": "Ricardo Castro"
+        },
+        "coursesYearConclusionByUser": {
+          "https://www.linkedin.com/in/supericardoc/": {
+            "LEIC": "2004/2005"
+          }
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8.61105,
+          41.19183
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": [
+          "guimarães"
+        ],
+        "students": 2,
+        "listLinkedinLinksByUser": {
+          "https://www.linkedin.com/in/marcoaalves/": "Marco Alves",
+          "https://www.linkedin.com/in/cmpinto/": "César Pinto"
+        },
+        "coursesYearConclusionByUser": {
+          "https://www.linkedin.com/in/marcoaalves/": {
+            "MIEIC": "2010/2011"
+          },
+          "https://www.linkedin.com/in/cmpinto/": {}
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8.29619,
+          41.44443
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": [
+          "ermesinde"
+        ],
+        "students": 1,
+        "listLinkedinLinksByUser": {
+          "https://www.linkedin.com/in/filipepintoreis/": "Filipe Pinto Reis"
+        },
+        "coursesYearConclusionByUser": {
+          "https://www.linkedin.com/in/filipepintoreis/": {
+            "M.EIC": "2021/2022"
+          }
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8.55318,
+          41.21653
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": [
           "pijnacker"
         ],
         "students": 1,
@@ -6050,6 +5511,301 @@
         "coordinates": [
           4.42946,
           52.01954
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": [
+          "oliveira de azemeis"
+        ],
+        "students": 2,
+        "listLinkedinLinksByUser": {
+          "https://www.linkedin.com/in/paulo-noormahomed/": "Paulo Noormahomed",
+          "https://www.linkedin.com/in/rui-soares-/": "Rui Soares"
+        },
+        "coursesYearConclusionByUser": {
+          "https://www.linkedin.com/in/paulo-noormahomed/": {
+            "LEIC": "1999/2000"
+          },
+          "https://www.linkedin.com/in/rui-soares-/": {
+            "LEIC": "2001/2002",
+            "MIEIC": "2008/2009"
+          }
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8.47555,
+          40.84101
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": [
+          "den haag"
+        ],
+        "students": 1,
+        "listLinkedinLinksByUser": {
+          "https://www.linkedin.com/in/tpinheiro/": "Tiago Pinheiro"
+        },
+        "coursesYearConclusionByUser": {
+          "https://www.linkedin.com/in/tpinheiro/": {
+            "LEIC": "1999/2000"
+          }
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.29861,
+          52.07667
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": [
+          "aveiro"
+        ],
+        "students": 9,
+        "listLinkedinLinksByUser": {
+          "https://www.linkedin.com/in/filipe-madureira-60a99111/": "Filipe Madureira",
+          "https://www.linkedin.com/in/ei09119/": "Soraia Ferreira",
+          "https://www.linkedin.com/in/sergiobandeira/": "Sérgio Bandeira",
+          "https://www.linkedin.com/in/madureira-filipe/": "Filipe Madureira",
+          "https://www.linkedin.com/in/joaoocorreia/": "João Correia",
+          "https://www.linkedin.com/in/bcabral/": "Bruno Cabral",
+          "https://www.linkedin.com/in/ccarvalheiro/": "Cristiano Carvalheiro",
+          "https://www.linkedin.com/in/manuelgpereira/": "Manuel Pereira",
+          "https://www.linkedin.com/in/dfamonteiro/": "Daniel Monteiro"
+        },
+        "coursesYearConclusionByUser": {
+          "https://www.linkedin.com/in/filipe-madureira-60a99111/": {
+            "LEIC": "2002/2003"
+          },
+          "https://www.linkedin.com/in/ei09119/": {
+            "MIEIC": "2011/2012"
+          },
+          "https://www.linkedin.com/in/sergiobandeira/": {
+            "LEIC": "2002/2003"
+          },
+          "https://www.linkedin.com/in/madureira-filipe/": {},
+          "https://www.linkedin.com/in/joaoocorreia/": {
+            "MIEIC": "2011/2012"
+          },
+          "https://www.linkedin.com/in/bcabral/": {
+            "LEIC": "2002/2003"
+          },
+          "https://www.linkedin.com/in/ccarvalheiro/": {
+            "MIEIC": "2015/2016"
+          },
+          "https://www.linkedin.com/in/manuelgpereira/": {
+            "MIEIC": "2015/2016"
+          },
+          "https://www.linkedin.com/in/dfamonteiro/": {
+            "M.EIC": "2022/2023"
+          }
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8.64554,
+          40.64427
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": [
+          "vienna"
+        ],
+        "students": 1,
+        "listLinkedinLinksByUser": {
+          "https://www.linkedin.com/in/pedromsdias/": "Pedro Dias"
+        },
+        "coursesYearConclusionByUser": {
+          "https://www.linkedin.com/in/pedromsdias/": {
+            "MIEIC": "2013/2014"
+          }
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          16.37208,
+          48.20849
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": [
+          "luxembourg"
+        ],
+        "students": 1,
+        "listLinkedinLinksByUser": {
+          "https://www.linkedin.com/in/jrctorres/": "Ricardo Torres"
+        },
+        "coursesYearConclusionByUser": {
+          "https://www.linkedin.com/in/jrctorres/": {
+            "MIEIC": "2011/2012"
+          }
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.16667,
+          49.75
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": [
+          "vila do conde"
+        ],
+        "students": 2,
+        "listLinkedinLinksByUser": {
+          "https://www.linkedin.com/in/joaomvramos94/": "João Ramos",
+          "https://www.linkedin.com/in/pedro-dias-a293956/": "Pedro Dias"
+        },
+        "coursesYearConclusionByUser": {
+          "https://www.linkedin.com/in/joaomvramos94/": {},
+          "https://www.linkedin.com/in/pedro-dias-a293956/": {}
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8.74516,
+          41.35326
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": [
+          "helsinki"
+        ],
+        "students": 1,
+        "listLinkedinLinksByUser": {
+          "https://www.linkedin.com/in/jpmmaia/": "Joao Maia"
+        },
+        "coursesYearConclusionByUser": {
+          "https://www.linkedin.com/in/jpmmaia/": {
+            "MIEIC": "2016/2017"
+          }
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          24.93545,
+          60.16952
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": [
+          "matosinhos"
+        ],
+        "students": 16,
+        "listLinkedinLinksByUser": {
+          "https://www.linkedin.com/in/andrenasx/": "André Nascimento",
+          "https://www.linkedin.com/in/tiagoamgomes/": "Tiago Gomes",
+          "https://www.linkedin.com/in/ana-teresa-cruz/": "Ana Teresa Cruz",
+          "https://www.linkedin.com/in/jprudencio/": "João P.",
+          "https://www.linkedin.com/in/joao-d-o-santos/": "João D Santos",
+          "https://www.linkedin.com/in/armindorlsimoes/": "Rafael Simões",
+          "https://www.linkedin.com/in/antoniocastro/": "António de Castro (PhD)",
+          "https://www.linkedin.com/in/francisjssilva/": "Francisco Silva",
+          "https://www.linkedin.com/in/pedronmacedo/": "Pedro Macedo",
+          "https://www.linkedin.com/in/joaoserraseal/": "João Serra",
+          "https://www.linkedin.com/in/david-clemente/": "David Clemente",
+          "https://www.linkedin.com/in/feupesiano/": "Luís A.",
+          "https://www.linkedin.com/in/ricardogo/": "Ricardo Gonçalves",
+          "https://www.linkedin.com/in/dianaamfreitas/": "Diana Freitas",
+          "https://www.linkedin.com/in/ana-santos-556807130/": "Ana Santos",
+          "https://www.linkedin.com/in/pedromlcosta/": "Pedro Costa"
+        },
+        "coursesYearConclusionByUser": {
+          "https://www.linkedin.com/in/andrenasx/": {
+            "M.EIC": "2022/2023"
+          },
+          "https://www.linkedin.com/in/tiagoamgomes/": {
+            "LEIC": "2005/2006"
+          },
+          "https://www.linkedin.com/in/ana-teresa-cruz/": {
+            "M.EIC": "2022/2023"
+          },
+          "https://www.linkedin.com/in/jprudencio/": {},
+          "https://www.linkedin.com/in/joao-d-o-santos/": {
+            "MIEIC": "2014/2015"
+          },
+          "https://www.linkedin.com/in/armindorlsimoes/": {},
+          "https://www.linkedin.com/in/antoniocastro/": {},
+          "https://www.linkedin.com/in/francisjssilva/": {},
+          "https://www.linkedin.com/in/pedronmacedo/": {},
+          "https://www.linkedin.com/in/joaoserraseal/": {
+            "MIEIC": "2012/2013"
+          },
+          "https://www.linkedin.com/in/david-clemente/": {
+            "MIEIC": "2015/2016"
+          },
+          "https://www.linkedin.com/in/feupesiano/": {},
+          "https://www.linkedin.com/in/ricardogo/": {
+            "MIEIC": "2011/2012"
+          },
+          "https://www.linkedin.com/in/dianaamfreitas/": {},
+          "https://www.linkedin.com/in/ana-santos-556807130/": {},
+          "https://www.linkedin.com/in/pedromlcosta/": {
+            "MIEIC": "2017/2018"
+          }
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8.68908,
+          41.18207
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": [
+          "rome"
+        ],
+        "students": 1,
+        "listLinkedinLinksByUser": {
+          "https://www.linkedin.com/in/lamelas/": "André Lamelas"
+        },
+        "coursesYearConclusionByUser": {
+          "https://www.linkedin.com/in/lamelas/": {
+            "MIEIC": "2007/2008"
+          }
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          12.51133,
+          41.89193
         ]
       }
     },
@@ -6081,6 +5837,204 @@
       "type": "Feature",
       "properties": {
         "name": [
+          "new york"
+        ],
+        "students": 3,
+        "listLinkedinLinksByUser": {
+          "https://www.linkedin.com/in/ana-sa-magalhaes/": "Ana Magalhaes",
+          "https://www.linkedin.com/in/nunomaiasantos/": "Nuno Santos",
+          "https://www.linkedin.com/in/pedromcteixeira/": "Pedro Teixeira"
+        },
+        "coursesYearConclusionByUser": {
+          "https://www.linkedin.com/in/ana-sa-magalhaes/": {
+            "LEIC": "2004/2005"
+          },
+          "https://www.linkedin.com/in/nunomaiasantos/": {
+            "MIEIC": "2008/2009"
+          },
+          "https://www.linkedin.com/in/pedromcteixeira/": {
+            "MIEIC": "2015/2016"
+          }
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -74.00597,
+          40.71427
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": [
+          "vila nova de famalicão"
+        ],
+        "students": 3,
+        "listLinkedinLinksByUser": {
+          "https://www.linkedin.com/in/af-fernandes/": "Fernando Fernandes",
+          "https://www.linkedin.com/in/fbfigueiredo/": "Frederico Figueiredo",
+          "https://www.linkedin.com/in/limwa/": "André Lima"
+        },
+        "coursesYearConclusionByUser": {
+          "https://www.linkedin.com/in/af-fernandes/": {
+            "MIEIC": "2019/2020"
+          },
+          "https://www.linkedin.com/in/fbfigueiredo/": {
+            "MIEIC": "2008/2009"
+          },
+          "https://www.linkedin.com/in/limwa/": {}
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8.48511,
+          41.41223
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": [
+          "prague"
+        ],
+        "students": 1,
+        "listLinkedinLinksByUser": {
+          "https://www.linkedin.com/in/tiagoseabra/": "Tiago Seabra"
+        },
+        "coursesYearConclusionByUser": {
+          "https://www.linkedin.com/in/tiagoseabra/": {
+            "MIEIC": "2010/2011"
+          }
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          14.42076,
+          50.08804
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": [
+          "espinho"
+        ],
+        "students": 3,
+        "listLinkedinLinksByUser": {
+          "https://www.linkedin.com/in/mikespinto/": "Mike Pinto",
+          "https://www.linkedin.com/in/andrepmalheiro/": "André Malheiro",
+          "https://www.linkedin.com/in/ricardojmdoliveira/": "Ricardo Oliveira"
+        },
+        "coursesYearConclusionByUser": {
+          "https://www.linkedin.com/in/mikespinto/": {
+            "MIEIC": "2016/2017"
+          },
+          "https://www.linkedin.com/in/andrepmalheiro/": {
+            "L.EIC": "2021/2022"
+          },
+          "https://www.linkedin.com/in/ricardojmdoliveira/": {
+            "LEIC": "2004/2005"
+          }
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8.64125,
+          41.00763
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": [
+          "braga"
+        ],
+        "students": 11,
+        "listLinkedinLinksByUser": {
+          "https://www.linkedin.com/in/pedrotiagopontes/": "Pedro Tiago Pontes",
+          "https://www.linkedin.com/in/ritaapeixoto/": "rita peixoto",
+          "https://www.linkedin.com/in/rui-lopes-15159532/": "Rui Lopes",
+          "https://www.linkedin.com/in/paula-rego-1508b12/": "Paula Rego",
+          "https://www.linkedin.com/in/filipe-pinto-b2714052/": "Filipe Pinto",
+          "https://www.linkedin.com/in/rapzo/": "Rui Pedro Lima",
+          "https://www.linkedin.com/in/goncaloper/": "Gonçalo Pereira",
+          "https://www.linkedin.com/in/botelhodaniel/": "Daniel Botelho",
+          "https://www.linkedin.com/in/joao-feio-goncalves/": "João Gonçalves",
+          "https://www.linkedin.com/in/miriamcmcg/": "Miriam Gonçalves",
+          "https://www.linkedin.com/in/jd557/": "João Costa"
+        },
+        "coursesYearConclusionByUser": {
+          "https://www.linkedin.com/in/pedrotiagopontes/": {
+            "MIEIC": "2012/2013"
+          },
+          "https://www.linkedin.com/in/ritaapeixoto/": {},
+          "https://www.linkedin.com/in/rui-lopes-15159532/": {
+            "MIEIC": "2008/2009"
+          },
+          "https://www.linkedin.com/in/paula-rego-1508b12/": {},
+          "https://www.linkedin.com/in/filipe-pinto-b2714052/": {
+            "LEIC": "2001/2002"
+          },
+          "https://www.linkedin.com/in/rapzo/": {},
+          "https://www.linkedin.com/in/goncaloper/": {
+            "MIEIC": "2013/2014"
+          },
+          "https://www.linkedin.com/in/botelhodaniel/": {
+            "MIEIC": "2008/2009"
+          },
+          "https://www.linkedin.com/in/joao-feio-goncalves/": {
+            "MIEIC": "2012/2013"
+          },
+          "https://www.linkedin.com/in/miriamcmcg/": {},
+          "https://www.linkedin.com/in/jd557/": {
+            "MIEIC": "2013/2014"
+          }
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8.42005,
+          41.55032
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": [
+          "esposende"
+        ],
+        "students": 1,
+        "listLinkedinLinksByUser": {
+          "https://www.linkedin.com/in/vitor-madureira-326b1844/": "Vitor Madureira"
+        },
+        "coursesYearConclusionByUser": {
+          "https://www.linkedin.com/in/vitor-madureira-326b1844/": {
+            "MIEIC": "2009/2010"
+          }
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8.75754,
+          41.54516
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": [
           "santa maria da feira"
         ],
         "students": 1,
@@ -6103,21 +6057,21 @@
       "type": "Feature",
       "properties": {
         "name": [
-          "ljubljana"
+          "mealhada"
         ],
         "students": 1,
         "listLinkedinLinksByUser": {
-          "https://www.linkedin.com/in/vosferatu/": "João Mendes"
+          "https://www.linkedin.com/in/joão-pereira-543b26217/": "João Pereira"
         },
         "coursesYearConclusionByUser": {
-          "https://www.linkedin.com/in/vosferatu/": {}
+          "https://www.linkedin.com/in/joão-pereira-543b26217/": {}
         }
       },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          14.50513,
-          46.05108
+          -8.44781,
+          40.36273
         ]
       }
     },
@@ -6125,27 +6079,73 @@
       "type": "Feature",
       "properties": {
         "name": [
-          "tokyo"
+          "winchester"
+        ],
+        "students": 1,
+        "listLinkedinLinksByUser": {
+          "https://www.linkedin.com/in/cmiguelmonteiro/": "Miguel Monteiro"
+        },
+        "coursesYearConclusionByUser": {
+          "https://www.linkedin.com/in/cmiguelmonteiro/": {
+            "LEIC": "2006/2007"
+          }
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          115.35,
+          5.7
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": [
+          "kirkland"
+        ],
+        "students": 1,
+        "listLinkedinLinksByUser": {
+          "https://www.linkedin.com/in/miguelv/": "Miguel Vicente"
+        },
+        "coursesYearConclusionByUser": {
+          "https://www.linkedin.com/in/miguelv/": {
+            "MIEIC": "2007/2008"
+          }
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -73.86586,
+          45.45008
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": [
+          "penafiel"
         ],
         "students": 2,
         "listLinkedinLinksByUser": {
-          "https://www.linkedin.com/in/franciscobrito/": "Francisco B.",
-          "https://www.linkedin.com/in/carolinacenteiojorge/": "Carolina Centeio Jorge"
+          "https://www.linkedin.com/in/tiagoafpereira/": "Tiago Pereira",
+          "https://www.linkedin.com/in/luispedroso/": "Luis Pedroso"
         },
         "coursesYearConclusionByUser": {
-          "https://www.linkedin.com/in/franciscobrito/": {
-            "MIEIC": "2010/2011"
+          "https://www.linkedin.com/in/tiagoafpereira/": {
+            "LEIC": "2006/2007"
           },
-          "https://www.linkedin.com/in/carolinacenteiojorge/": {
-            "MIEIC": "2018/2019"
-          }
+          "https://www.linkedin.com/in/luispedroso/": {}
         }
       },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          139.69171,
-          35.6895
+          -8.28285,
+          41.20835
         ]
       }
     },
@@ -6153,23 +6153,23 @@
       "type": "Feature",
       "properties": {
         "name": [
-          "tallinn"
+          "belo horizonte"
         ],
         "students": 1,
         "listLinkedinLinksByUser": {
-          "https://www.linkedin.com/in/ricardonunoalmeida/": "Ricardo Nuno Almeida"
+          "https://www.linkedin.com/in/carlosnovaduarte/": "carlos duarte"
         },
         "coursesYearConclusionByUser": {
-          "https://www.linkedin.com/in/ricardonunoalmeida/": {
-            "LEIC": "2004/2005"
+          "https://www.linkedin.com/in/carlosnovaduarte/": {
+            "M.EIC": "2021/2022"
           }
         }
       },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          24.75353,
-          59.43696
+          -43.93778,
+          -19.92083
         ]
       }
     },
@@ -6177,23 +6177,23 @@
       "type": "Feature",
       "properties": {
         "name": [
-          "geneva metropolitan area"
+          "villeneuve"
         ],
         "students": 1,
         "listLinkedinLinksByUser": {
-          "https://www.linkedin.com/in/ticunha/": "Tiago Cunha"
+          "https://www.linkedin.com/in/andré-oliveira-68491b/": "André Oliveira"
         },
         "coursesYearConclusionByUser": {
-          "https://www.linkedin.com/in/ticunha/": {
-            "MIEIC": "2012/2013"
+          "https://www.linkedin.com/in/andré-oliveira-68491b/": {
+            "LEIC": "1999/2000"
           }
         }
       },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -88.30535,
-          41.88753
+          0.70415,
+          44.40854
         ]
       }
     }
