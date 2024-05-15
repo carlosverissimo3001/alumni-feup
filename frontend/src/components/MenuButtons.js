@@ -3,48 +3,62 @@ import setUp from '../helpers/setUp';
 import Verifiers from '../helpers/verifiers';
 import ApiDataAnalysis from '../helpers/apiDataAnalysis';
 
-const MenuButtons = ({onSelectGeoJSON, onSelectAlumni}) => {
+const MenuButtons = ({onSelectGeoJSON, onSelectAlumni,}) => {
 
     const[file, setFile]=useState('');
     const [selectedOption, setSelectedOption] = useState('countries');
     const [filteredAlumniNamesCoord, setFilteredAlumniNamesCoord] = useState([]);
     const [filteredCourse, setFilteredCourse] = useState([]);
+    const [filteredFromYears, setFilteredFromYears] = useState([]);
+    const [filteredToYears, setFilteredToYears] = useState([]);
     const [listAlumniNamesWithCoordinates, setListAlumniNamesWithCoordinates] = useState([]);
     const [searchInput, setSearchInput] = useState('');
     const [filterCourseInput, setFilterCourseInput] = useState('');
-    
+    const [loadingJson, setLoadingJson] = useState(true);
+    const [numberAlumnisShowing, setNumberAlumnisShowing] = useState(0);
+    const [yearFilter, setYearFilter] = useState(['','']);
+
+    // selects the geoJson file
+    // sets the variables to be used: nº of alumnis and an array with the info to be printed on the screen
     useEffect(() => {
-        const geoJSONData = selectedOption === 'countries' ? require('../countriesGeoJSON.json') : require('../citiesGeoJSON.json');        
-        // Get the names with their LinkedIn links
-        const namesLinkedinLinks = geoJSONData.features.flatMap((feature) => {
-            const coordinates = feature.geometry.coordinates; // Get coordinates
-            return Object.entries(feature.properties.listLinkedinLinksByUser).map(([name, link]) => ({
-              name,
-              link,
-              coordinates, 
-            }));
-        });
-        // Get the courses data with the years of conclusion
-        const namesCourseYears = geoJSONData.features.flatMap((feature) => 
-            Object.entries(feature.properties.coursesYearConclusionByUser).map(([name, courseYears]) => ({
-                name,
-                courseYears
-            }))
-        );
-        const alumniNamesWithCoords = namesLinkedinLinks.map((item) => { 
-            // Find the corresponding courses data based on name
-            const coursesData = namesCourseYears.find((courseItem) => courseItem.name === item.name);
-            return {
-                name: item.name,
-                coordinates: item.coordinates,
-                link: item.link,
-                courses: coursesData ? coursesData.courseYears : {},
-            };
-        });
-        
-        setListAlumniNamesWithCoordinates(alumniNamesWithCoords);
-        onSelectGeoJSON(selectedOption); // Use cities/countries GeoJson file
-    }, [selectedOption]);
+        try{
+            // Selects the geoJson to be used
+            const geoJSONData = selectedOption === 'countries' ? require('../countriesGeoJSON.json') : require('../citiesGeoJSON.json');        
+            
+            // Get the names with their LinkedIn links
+            const namesLinkedinLinks = geoJSONData.features.flatMap((feature) => {
+                const coordinates = feature.geometry.coordinates; // Get coordinates
+                return Object.entries(feature.properties.listLinkedinLinksByUser).map(([link, name]) => ({
+                  name,
+                  link,
+                  coordinates, 
+                }));
+            });
+            // Get the courses data with the years of conclusion
+            const namesCourseYears = geoJSONData.features.flatMap((feature) => 
+                Object.entries(feature.properties.coursesYearConclusionByUser).map(([linkedinLink, courseYears]) => ({
+                    linkedinLink,
+                    courseYears
+                }))
+            );
+            const alumniNamesWithCoords = namesLinkedinLinks.map((alumniInfo) => { 
+                // Find the corresponding courses data based on name
+                const coursesData = namesCourseYears.find((courseItem) => courseItem.linkedinLink === alumniInfo.link);
+                return {
+                    name: alumniInfo.name,
+                    coordinates: alumniInfo.coordinates,
+                    link: alumniInfo.link,
+                    coursesYears: coursesData ? coursesData.courseYears : {},
+                };
+            });
+            
+            setListAlumniNamesWithCoordinates(alumniNamesWithCoords);
+            setNumberAlumnisShowing(alumniNamesWithCoords.length);
+            onSelectGeoJSON(selectedOption); // Use cities/countries GeoJson file
+        } catch(error){
+            console.log("Attention!");
+        }
+    }, [listAlumniNamesWithCoordinates.length, onSelectGeoJSON, selectedOption]);
 
     // Filter alumni names based on search input
     useEffect(() => {
@@ -58,21 +72,53 @@ const MenuButtons = ({onSelectGeoJSON, onSelectAlumni}) => {
         }
     }, [listAlumniNamesWithCoordinates, searchInput]);
 
-    // Filter alumni names based on course input
+    // Set variables to be shownin the dropdown of the course and year filter
     useEffect(() => {
-        if (listAlumniNamesWithCoordinates && filterCourseInput.trim() !== '') {
+        if (listAlumniNamesWithCoordinates) {
+            // From the list of all alumnis and respctive courses and conclusion year:
+                //Get only the available courses
             const allCourses = listAlumniNamesWithCoordinates.flatMap((alumni) => {
-                return Object.keys(alumni.courses).filter(course =>
-                    course.toLowerCase().includes(filterCourseInput.trim().toLowerCase())
-                );
+                return Object.keys(alumni.coursesYears);
             });
-            // Remove duplicates
-            const uniqueCourses = [...new Set(allCourses)];
+                // Get only the available years
+            const allFromYears = listAlumniNamesWithCoordinates.flatMap((alumni) => {
+                return Object.values(alumni.coursesYears).map(yearRange => {
+                    return yearRange.split('/')[1]; // Split the string and take the second part
+                });
+            });
+
+            // Remove duplicates and orders
+                // in alphabetic order
+            const uniqueCourses = [...new Set(allCourses)].sort();
+                // from the most recent year to the oldest 
+            const uniqueFromYears = [...new Set(allFromYears)].sort((a, b) => b - a);
             setFilteredCourse(uniqueCourses);
+            setFilteredFromYears(uniqueFromYears);
         } else {
           setFilteredCourse([]);
+          setFilteredFromYears([]);
         }
-    }, [listAlumniNamesWithCoordinates, filterCourseInput]);
+    }, [listAlumniNamesWithCoordinates, filterCourseInput]);   
+
+    // Get the available years which are bigger than the one selected on the from field
+    useEffect(() => {
+        if (listAlumniNamesWithCoordinates && yearFilter[0].trim() !== '') {
+            // From the list of all alumnis and respective courses and conclusion year:
+                // Get only the available years wich are bigger than the one selected in the From field
+            const allToYears = listAlumniNamesWithCoordinates.flatMap((alumni) => {
+                return Object.values(alumni.coursesYears).map(yearRange => {
+                    if (parseInt(yearRange.split('/')[1]) > parseInt(yearFilter[0])) {
+                        return yearRange.split('/')[1]; // Split the string and take the second part
+                    }
+                });
+            });
+            
+            // Remove duplicates and orders
+                // from the most recent year to the oldest year
+            const uniqueToYears = [...new Set(allToYears)].sort((a, b) => b - a);
+            setFilteredToYears(uniqueToYears);
+        }
+    }, [listAlumniNamesWithCoordinates, filterCourseInput, yearFilter]);
 
     const handleSearchInputChange = (e) => {
         setSearchInput(e.target.value);
@@ -83,17 +129,19 @@ const MenuButtons = ({onSelectGeoJSON, onSelectAlumni}) => {
     };
 
     const handleAlumniSelection = (name, coordinates) => {
-        console.log("selected name: ", name);
-        console.log("selected coordinates: ", coordinates);
         onSelectAlumni(name, coordinates);
     };
 
     const handleCourseSelection = async (courseAbreviation) => {
-        if (selectedOption === "countries") {
-            await setUp.generateCountryGeoJason(courseAbreviation);
-        } else if (selectedOption === "cities") {
-            await setUp.generateCityGeoJason(courseAbreviation);
-        }
+        setFilterCourseInput(courseAbreviation);
+    }
+
+    const handleFromYearSelection = async (year) => {
+        yearFilter[0] = year;
+    }
+
+    const handleToYearSelection = async (year) => {
+        yearFilter[1] = year;
     }
 
     // Function to handle checkbox selection
@@ -160,6 +208,7 @@ const MenuButtons = ({onSelectGeoJSON, onSelectAlumni}) => {
     }
 
     // Populates the alumniEic table
+    // It receives the excel that has linnkedin links before the forms and after, alongside the courses of each alumni and year of conclusion
     const handlePopulateAlumniEICTable = async () => {
         Verifiers.checkIfExcel(file);
         const userConfirmed = window.confirm('You are about to delete the info of table AlumniEic and AlumniEic has courses and update with the setelected file');
@@ -180,12 +229,21 @@ const MenuButtons = ({onSelectGeoJSON, onSelectAlumni}) => {
 
     // Generates the coynntry geoJason
     const handleGenerateCountryGeoJason = async () => {
-        await setUp.generateCountryGeoJason("");
+        // loadingJson ensures the writing to the geoJson hapens only once the writing of the previous has finished
+        if (loadingJson) {
+            setLoadingJson(false);
+            //await setUp.generateCountryGeoJson(""); Not updated
+            setLoadingJson(true);
+        }
     }
 
     // Generates the city geoJason
     const handleGenerateCityGeoJason = async () => {
-        await setUp.generateCityGeoJason("");
+        if(loadingJson){
+            setLoadingJson(false);
+            //await setUp.generateCityGeoJson(""); Not updated
+            setLoadingJson(true);
+        }
     }    
 
     // Matches Students to LinkedIn Links. Receives an excel, updates the linkedin column and downloads the updated file
@@ -210,12 +268,36 @@ const MenuButtons = ({onSelectGeoJSON, onSelectAlumni}) => {
         ApiDataAnalysis.almnTblExcel(file);
     }
 
+    const handleYearChange = (index, value) => {
+        const newYearFilter = [...yearFilter];
+        newYearFilter[index] = value;
+        setYearFilter(newYearFilter);
+    };
+
+    // Cleans the values inserted in the fields
+    const onClickClean = async () => {
+        onClickApply("", ["", ""]);
+        setSearchInput("");         // cleans the search alumni input 
+        onSelectAlumni("", [0,0]);  // positions the user in the middle of the screen
+        setYearFilter(['', '']);  // cleans the year filter field
+        setFilterCourseInput(""); // cleans the search user input
+        setFilteredToYears([]);
+    }
+
+    // Applies the values inserted in the fields
+    const onClickApply = async (courseFilter, yearsConclusionFilters) => {
+        // Verifies if yearConclusionFilters inputs are valid or not
+        // TODO: Extract this to a method
+        
+        setUp.generateGeoJson(courseFilter, yearsConclusionFilters, selectedOption);
+    }
+
     return (
         <>
             <p>See alumni distribution across:</p>
             <div>
                 <input
-                    type="checkbox"
+                    type="radio"
                     id="countriesCheckbox"
                     value="countries"
                     checked={selectedOption === 'countries'}
@@ -225,7 +307,7 @@ const MenuButtons = ({onSelectGeoJSON, onSelectAlumni}) => {
             </div>
             <div>
                 <input
-                    type="checkbox"
+                    type="radio"
                     id="citiesCheckbox"
                     value="cities"
                     checked={selectedOption === 'cities'}
@@ -253,26 +335,61 @@ const MenuButtons = ({onSelectGeoJSON, onSelectAlumni}) => {
                 )}
             </div>
 
-            <div className="search-container">
-                <input
-                    type="text"
-                    placeholder="Filter by course..."
-                    value={filterCourseInput}
-                    className='filter-course-alumni search-bar'
-                    onChange={handleFilterCourseInputChange}
-                />
-                {filteredCourse.length > 0 && (
-                    <div className={`search-results ${filteredCourse.length > 5 ? 'scrollable' : ''}`}>
-                    {filteredCourse.map((courseAbreviation, index) => (
-                        <div key={index} onClick={() => handleCourseSelection(courseAbreviation)}>
-                            {courseAbreviation}
-                        </div>
+            <div className="search-container"> 
+                <label for="myDropdown">Course:</label>
+                <select 
+                className='filter-course-alumni search-bar' 
+                id="myDropdown"
+                value={filterCourseInput}
+                onChange={handleFilterCourseInputChange}>
+                    <option value="" > </option>
+                    {filteredCourse.map((course, index) => (
+                        <option key={index} value={course} >
+                            {course}
+                        </option>
                     ))}
-                    </div>
-                )}
+                </select>
             </div>
 
-            {/*<input type="file" className='fileInput' onChange={handleFileChange} />    
+            <div className="year-filter-container"> 
+                <div className='search-container-year'>
+                    <label for="myDropdown">From Year:</label>
+                    <select 
+                        className='filter-year-from-alumni search-bar' 
+                        id="myDropdownYearFrom"
+                        value={yearFilter[0]}
+                        onChange={e => handleYearChange(0, e.target.value)}>
+                            <option value="" > </option>
+                            {filteredFromYears.map((year, index) => (
+                                <option key={index} value={year} >
+                                    {year}
+                                </option>
+                            ))}
+                    </select>
+                </div>
+                <div className='search-container-year'>
+                    <label for="myDropdown">To Year:</label>
+                    <select 
+                        className='filter-year-to-alumni search-bar' 
+                        id="myDropdownYearTo"
+                        value={yearFilter[1]}
+                        onChange={e => handleYearChange(1, e.target.value)}>
+                            <option value="" > </option>
+                            {filteredToYears.map((year, index) => (
+                                <option key={index} value={year} >
+                                    {year}
+                                </option>
+                            ))}
+                    </select>
+                </div>
+            </div>
+
+            <button className="my-button" onClick={() => onClickApply(filterCourseInput, yearFilter)}> Apply </button>
+            <button className="my-button my-button-clean" onClick={onClickClean}> Clean </button>
+
+            <p>Total selected: {numberAlumnisShowing}</p>
+
+            {/*<input type="file" className='fileInput' onChange={handleFileChange} />  
             <button className="button butnPopAlumni" onClick={handlePopulateCoursesTable}>Populate Courses Table</button>
             
             <button className="button butnPopAlumni" onClick={handlePopulateAlumniTable}>AlumniTablePopulate</button>
@@ -288,10 +405,10 @@ const MenuButtons = ({onSelectGeoJSON, onSelectAlumni}) => {
             <button className="button butnPopCity" onClick={handlePopulateCityTable}>PopulateCityTable</button>
             <button className="button butnPopAlumniEIC" onClick={handlePopulateAlumniEICTable}>PopulateAlumniEICTable</button>*/}
 
-            <button className="button butnGenCountryGeoJason" onClick={handleGenerateCountryGeoJason}>GenerateCountryGeoJason</button>
-            <button className="button butnGenCityGeoJason" onClick={handleGenerateCityGeoJason}>GenerateCityGeoJason</button>
+            {/*<button className="button butnGenCountryGeoJason" onClick={generateCountryGeoJson}>generateCountryGeoJson</button>
+            <button className="button butnGenCityGeoJason" onClick={handleGenerateCityGeoJson}>GenerateCityGeoJson</button>
 
-            {/*<button className="button butnAlmWithoutLink" onClick={handleAlumnisMatchLinkedin}>Match Alumnis Linkedin</button>
+            <button className="button butnAlmWithoutLink" onClick={handleAlumnisMatchLinkedin}>Match Alumnis Linkedin</button>
             <button className="button btnExcelAlumniProfSitu" onClick={handleExcelAlumniProfSitu}>Excel: nomeAlumni + professionalSitu</button>
             <button className="button btnExcelAlumniTableToExcel" onClick={handleAlmnTblExcel}>Excel: Alumni table</button>*/}
         </>

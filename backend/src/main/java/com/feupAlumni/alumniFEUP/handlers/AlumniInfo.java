@@ -36,6 +36,7 @@ public class AlumniInfo {
         try {
             URL url = new URL(profilePicUrl);
             Path targetPath = Path.of(pathStoreImage + "/" + publicIdentifier + ".png");
+            System.out.println("targetPath: " + targetPath);
             try (InputStream in = url.openStream()) {
                 Files.copy(in, targetPath, StandardCopyOption.REPLACE_EXISTING);
             }
