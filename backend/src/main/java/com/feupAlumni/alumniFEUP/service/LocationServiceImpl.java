@@ -96,7 +96,7 @@ public class LocationServiceImpl implements LocationService {
                 String[] yearConclusion = course.getYearOfConclusion().split("/"); // [2023, 2024]
                 if (!yearFilter.get(1).equals("")) { // There is a To year => Interval
                     // Validates the years: if there is a value "to year", then this second value has to be bigger than the "from year"
-                    if (Integer.parseInt(yearFilter.get(0)) < Integer.parseInt(yearFilter.get(1))) {
+                    if (Integer.parseInt(yearFilter.get(0)) <= Integer.parseInt(yearFilter.get(1))) {
                         if (Integer.parseInt(yearFilter.get(0)) <= Integer.parseInt(yearConclusion[1]) &&
                             Integer.parseInt(yearFilter.get(1)) >= Integer.parseInt(yearConclusion[1])
                         ) {
@@ -104,8 +104,8 @@ public class LocationServiceImpl implements LocationService {
                         }
                     } 
                     return false;
-                } else { // There isn't a To year => unique year
-                    if (Integer.parseInt(yearFilter.get(0)) == Integer.parseInt(yearConclusion[1])) {
+                } else { // There isn't a To year => it shows from that year beyond
+                    if (Integer.parseInt(yearConclusion[1]) >= Integer.parseInt(yearFilter.get(0))) {
                         return true;
                     }
                 }
