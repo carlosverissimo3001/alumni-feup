@@ -334,7 +334,7 @@ const MenuButtons = ({onSelectGeoJSON, onSelectAlumni,}) => {
             </div>
 
             <div className="search-container"> 
-                <label for="myDropdown">Course:</label>
+                <label htmlFor="myDropdown">Course:</label>
                 <select 
                 className='filter-course-alumni search-bar' 
                 id="myDropdown"
@@ -353,7 +353,7 @@ const MenuButtons = ({onSelectGeoJSON, onSelectAlumni,}) => {
 
             <div className="year-filter-container"> 
                 <div className='search-container-year'>
-                    <label for="myDropdown">From</label>
+                    <label htmlFor="myDropdown">From</label>
                     <select 
                         className='filter-year-from-alumni search-bar' 
                         id="myDropdownYearFrom"
@@ -368,7 +368,7 @@ const MenuButtons = ({onSelectGeoJSON, onSelectAlumni,}) => {
                     </select>
                 </div>
                 <div className='search-container-year'>
-                    <label for="myDropdown">To</label>
+                    <label htmlFor="myDropdown">To</label>
                     <select 
                         className='filter-year-to-alumni search-bar' 
                         id="myDropdownYearTo"
