@@ -167,6 +167,16 @@ p {
     border-radius: 5px;
     z-index: 999; 
     width: 20%;
+    height: 38%;
+}
+
+.my-button-pagination-prev {
+    margin-right: 10px;
+    margin-top: 10px;
+}
+
+.my-button-pagination-more {
+    margin-top: 10px;
 }
 
 .link {
