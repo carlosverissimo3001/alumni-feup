@@ -8,6 +8,8 @@ const TOKEN = process.env.REACT_APP_MAPBOX_ACCESS_TOKEN;
 
 const MapCmp = () => {
 
+    const nAlumniToShow = 10;                                        // Defines the nº of alumnis to show when a hoover is preformed 
+    const nAlumniToShowScrollBar = 5;                                        // Defines the nº of alumnis in which the scroll bar is going to show 
     const mapRef = useRef(null);
     const [alumniGeoJSON, setAlumniGeoJSON] = useState(null);
     const [listPlaceName, setListPlaceName] = useState(null);
@@ -16,8 +18,12 @@ const MapCmp = () => {
     const [alumniData, setAlumniData] = useState([]);
     const [hoveredCluster, setHoveredCluster] = useState(Boolean);
     const [hoveredMouseCoords, setHoveredMouseCoords] = useState([]);
-    const [geoJSONFile, setGeoJSONFile] = useState('countries'); // by default it shows the countries
+    const [geoJSONFile, setGeoJSONFile] = useState('countries');   // By default it shows the countries
     const [selectedAlumni, setSelectedAlumni] = useState(null);
+    var   [showPrev, setShowPrev] = useState(false);               // Defines if it is to show the "...Prev"
+    var   [showMore, setShowMore] = useState(false);               // Defines if it is to show the "More..."
+    var   [startPosition, setStartPosition] = useState(0);         // Position in the array to start to read from
+    var   [endPosition, setEndPosition] = useState(nAlumniToShow-1); // Position in the array to stop reading from. 0 is also a number therefore the -1
 
     useEffect(() => {
       if (selectedAlumni) {
@@ -52,6 +58,42 @@ const MapCmp = () => {
       setGeoJSONFile(file);
     };
 
+    useEffect(() => {
+      if (startPosition <= 0) {
+        setShowPrev(false);
+      } else {
+        setShowPrev(true);
+      }
+    }, [startPosition]);
+
+    useEffect(() => {
+      if (endPosition >= (alumniData.length-1)) { // endposition assumes a value bigger than the last arrays' position
+        setShowMore(false);
+      } else {
+        setShowMore(true);
+      }
+    }, [alumniData.length, endPosition]);
+
+    const handleShowMore = () => {
+      setStartPosition(endPosition+1);
+      if (endPosition+(nAlumniToShow) > (alumniData.length -1)) {
+        setEndPosition(alumniData.length -1); // Defaults to the array's last position
+      } else {
+        setEndPosition(endPosition+(nAlumniToShow)); 
+      }
+      setShowPrev(true);
+    }
+
+    const handleShowPrev = () => {
+      setEndPosition(startPosition-1); // TODO: I think I'll have to see if it exceeds the lenngth of the array, if so it defaults to the array length
+      if (startPosition-(nAlumniToShow) < 0) {
+        setStartPosition(0); // defaults to the first position of the array
+      } else {
+        setStartPosition(startPosition-(nAlumniToShow));
+      }
+      setShowMore(true);
+    }
+
     const extractJSONObjects = (str) => {
       const jsonObjects = [];
       let depth = 0; // to keep track of nested levels
@@ -80,6 +122,12 @@ const MapCmp = () => {
     
       return jsonObjects.map((jsonStr) => JSON.parse(jsonStr));
     };
+
+    const paginationSetUp = () => {
+      // Resets the positions to read from
+      setStartPosition(0);
+      setEndPosition(nAlumniToShow-1);
+    }
 
     const onHover = async event => {
       try {
@@ -154,6 +202,8 @@ const MapCmp = () => {
               yearConclusions: yearConclusionCurrentAlumni,
             };
           });
+
+          paginationSetUp();
   
           if (listAlumniNames.length > 0 && listLinkedinLinks.length > 0 && listPlaceName.length > 0) {
             setListPlaceName(listPlaceName);
@@ -252,7 +302,7 @@ const MapCmp = () => {
 
                 <p></p>
 
-                <ul className={`list-alumni${listAlumniNames.length > 5 ? ' scrollable' : ''}`}>
+                <ul className={`list-alumni${listAlumniNames.length > nAlumniToShowScrollBar ? ' scrollable' : ''}`}>
                   <table className="alumni-table">
                     <thead>
                       <tr>
@@ -263,8 +313,8 @@ const MapCmp = () => {
                     </thead>
                     <tbody>
                       {alumniData
-                        .slice() // Create a copy of the array to avoid mutating the original
                         .sort((a, b) => a.name.localeCompare(b.name)) // Sort the array alphabetically
+                        .slice(startPosition, endPosition+1) // Create a copy of the array to avoid mutating the original // endPosition+1 because slice() doesn't include the end
                         .map((alumni, index) => (
                           <tr key={index}>
                             <td>
@@ -292,6 +342,10 @@ const MapCmp = () => {
                       }
                     </tbody>
                   </table>
+                  <div>
+                    {showPrev && <button className="my-button my-button-pagination-prev" onClick={handleShowPrev}>Prev</button>}
+                    {showMore && <button className="my-button my-button-pagination-more" onClick={handleShowMore}>More</button>}
+                  </div>
                 </ul>
               </div>
             )}
