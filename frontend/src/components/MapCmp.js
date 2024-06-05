@@ -18,13 +18,13 @@ const MapCmp = () => {
     const [alumniData, setAlumniData] = useState([]);
     const [hoveredCluster, setHoveredCluster] = useState(Boolean);
     const [hoveredMouseCoords, setHoveredMouseCoords] = useState([]);
-    const [geoJSONFile, setGeoJSONFile] = useState('countries');   // By default it shows the countries
     const [selectedAlumni, setSelectedAlumni] = useState(null);
     var   [showPrev, setShowPrev] = useState(false);               // Defines if it is to show the "...Prev"
     var   [showMore, setShowMore] = useState(false);               // Defines if it is to show the "More..."
     var   [startPosition, setStartPosition] = useState(0);         // Position in the array to start to read from
     var   [endPosition, setEndPosition] = useState(nAlumniToShow-1); // Position in the array to stop reading from. 0 is also a number therefore the -1
 
+    // Zooms to the selected alumni
     useEffect(() => {
       if (selectedAlumni) {
         const { name, coordinates } = selectedAlumni;
@@ -43,21 +43,7 @@ const MapCmp = () => {
       }
     }, [selectedAlumni]);
 
-    useEffect(() => {
-      try {
-        setTimeout(() => { // timeout so that react only renders the GeoJson once it is created
-          const alumniData = geoJSONFile === 'countries' ? require('../countriesGeoJSON.json') : require('../citiesGeoJSON.json');
-          setAlumniGeoJSON(alumniData);
-        }, 1000); 
-      } catch (error) {
-        console.log("!! error: ", error);
-      }
-    }, [geoJSONFile]);
-
-    const handleSelectGeoJSON = (file) => {
-      setGeoJSONFile(file);
-    };
-
+    // Defines the previous button of the listing when hoovering according to the startPosition value
     useEffect(() => {
       if (startPosition <= 0) {
         setShowPrev(false);
@@ -66,6 +52,7 @@ const MapCmp = () => {
       }
     }, [startPosition]);
 
+    // Defines the more button of the listing when hoovering according to the endPosition value
     useEffect(() => {
       if (endPosition >= (alumniData.length-1)) { // endposition assumes a value bigger than the last arrays' position
         setShowMore(false);
@@ -74,6 +61,7 @@ const MapCmp = () => {
       }
     }, [alumniData.length, endPosition]);
 
+    // Controls what should be done when the more button is pressed
     const handleShowMore = () => {
       setStartPosition(endPosition+1);
       if (endPosition+(nAlumniToShow) > (alumniData.length -1)) {
@@ -84,8 +72,9 @@ const MapCmp = () => {
       setShowPrev(true);
     }
 
+    // Controls what should be done when the previous button is pressed
     const handleShowPrev = () => {
-      setEndPosition(startPosition-1); // TODO: I think I'll have to see if it exceeds the lenngth of the array, if so it defaults to the array length
+      setEndPosition(startPosition-1); 
       if (startPosition-(nAlumniToShow) < 0) {
         setStartPosition(0); // defaults to the first position of the array
       } else {
@@ -94,6 +83,7 @@ const MapCmp = () => {
       setShowMore(true);
     }
 
+    // Extracts the Json objects
     const extractJSONObjects = (str) => {
       const jsonObjects = [];
       let depth = 0; // to keep track of nested levels
@@ -123,12 +113,13 @@ const MapCmp = () => {
       return jsonObjects.map((jsonStr) => JSON.parse(jsonStr));
     };
 
+    // Resets the positions to read from
     const paginationSetUp = () => {
-      // Resets the positions to read from
       setStartPosition(0);
       setEndPosition(nAlumniToShow-1);
     }
 
+    // Hoovering clusters
     const onHover = async event => {
       try {
         if (event.lngLat) {
@@ -232,10 +223,21 @@ const MapCmp = () => {
       }
     };
 
+    // Alumni selection
     const handleSelectAlumni = (name, coordinates) => {
       setSelectedAlumni({name, coordinates});
     }
 
+    // Passes the geoJson content to be displayed
+    const handleSelectGeoJSON = (geoData) => {
+      try {
+        setAlumniGeoJSON(geoData);
+      } catch (error) {
+        console.log("!! error: ", error);
+      }
+    };
+
+    // Handles cases where the images don't exist
     const handleImageError = (event) => {
       event.target.src = `/Images/noImage.png`;
     };
@@ -244,7 +246,7 @@ const MapCmp = () => {
       <>
         <div>
           <div className="menu-buttons-container">
-              <MenuButtons onSelectAlumni={handleSelectAlumni} onSelectGeoJSON={handleSelectGeoJSON} alumnisBeingDisplayed={alumniData.length} />
+              <MenuButtons onSelectAlumni={handleSelectAlumni} onSelectGeoJSON={handleSelectGeoJSON} />
           </div>
         </div>
         <div className="mapCmpDiv">
