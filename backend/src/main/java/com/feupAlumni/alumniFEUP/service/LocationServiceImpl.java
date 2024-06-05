@@ -27,13 +27,7 @@ public class LocationServiceImpl implements LocationService {
     // Creates the geoJson file based in country or city type
     private Map<File, Gson> createFile(String geoJsonType) {
         Map<File, Gson> fileGeoJson = new HashMap<>();
-        File geoJSONFile;
-        if (geoJsonType.equals("cities")) {
-            geoJSONFile = new File("frontend/src/citiesGeoJSON.json");
-            
-        } else {
-            geoJSONFile = new File("frontend/src/countriesGeoJSON.json");
-        }
+        File geoJSONFile = new File("frontend/src/locationGeoJSON.json");
         Gson gson = new GsonBuilder().setPrettyPrinting().create(); 
         Location.createEmptyGeoJSONFile(geoJSONFile);
         System.out.println("GeoJSON file created");
@@ -167,22 +161,25 @@ public class LocationServiceImpl implements LocationService {
     }
 
     @Override
-    public void generateGeoJson(String courseFilter, List<String> yearFilter, String geoJsonType) { //[2000, 2023]
+    public void generateGeoJson(String courseFilter, List<String> yearFilter, String geoJsonType) { 
         // Creates the GeoJson file depending on geoJsonType
         Map<File, Gson> fileGson = createFile(geoJsonType);
+        System.out.println("geoJsonType: " + geoJsonType);
+        if (geoJsonType.equals("countries") || geoJsonType.equals("cities")) {
+            // Group alumnis in countries or cities depending on geoJsonType
+            Map<LocationAlumnis, List<AlumniEic>> alumniByLocation = groupAlumnis(geoJsonType);
 
-        // Group alumnis in countries or cities depending on geoJsonType
-        Map<LocationAlumnis, List<AlumniEic>> alumniByLocation = groupAlumnis(geoJsonType);
+            // For each alumni associates the linkedin link he is associated with + filters applied
+            // Key: alumni linkedin link value: linkedin link
+            Map<String, String> alumniLinkedInLink = alumniLinkedInLink(courseFilter, yearFilter);
 
-        // For each alumni associates the linkedin link he is associated with + filters applied
-        // Key: alumni linkedin link value: linkedin link
-        Map<String, String> alumniLinkedInLink = alumniLinkedInLink(courseFilter, yearFilter);
+            // For each alumni associates a course with the respective year of conclusion + filters applied
+            // Key: alumni linkdin link Vlaue: map where key: course and value: year of conclusion
+            Map<String, Map<String, String>> alumniByCourseYearConclusion = alumniByCourseYearConclusion(courseFilter, yearFilter);
 
-        // For each alumni associates a course with the respective year of conclusion + filters applied
-        // Key: alumni linkdin link Vlaue: map where key: course and value: year of conclusion
-        Map<String, Map<String, String>> alumniByCourseYearConclusion = alumniByCourseYearConclusion(courseFilter, yearFilter);
+            // Adds the content to the geoJson
+            addContentInGeoJson(alumniByLocation, alumniLinkedInLink, alumniByCourseYearConclusion, fileGson);
+        }
         
-        // Adds the content to the geoJson
-        addContentInGeoJson(alumniByLocation, alumniLinkedInLink, alumniByCourseYearConclusion, fileGson);
     }
 }
