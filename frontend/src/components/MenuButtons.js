@@ -6,7 +6,7 @@ import locationGeoJSON from '../locationGeoJSON.json';
 
 const MenuButtons = ({onSelectGeoJSON, onSelectAlumni}) => {
 
-    const [file, setFile]=useState('');
+    const [file, setFile] = useState('');
     const [selectedOption, setSelectedOption] = useState('');
     const [filteredAlumniNamesCoord, setFilteredAlumniNamesCoord] = useState([]);
     const [filteredCourse, setFilteredCourse] = useState([]);
@@ -23,8 +23,8 @@ const MenuButtons = ({onSelectGeoJSON, onSelectAlumni}) => {
     useEffect(() => {
         if (selectedOption === "") {
             onClickApply("", ["", ""]);
-            setListAlumniNamesWithCoordinates([]); 
         }
+        onSelectGeoJSON(locationGeoJSON);            
     }, [selectedOption]);
 
     // sets the variables to be used: nº of alumnis and an array with the info to be printed on the screen
@@ -63,7 +63,6 @@ const MenuButtons = ({onSelectGeoJSON, onSelectAlumni}) => {
     
                     setListAlumniNamesWithCoordinates(alumniNamesWithCoords);
                     setNumberAlumnisShowing(alumniNamesWithCoords.length);
-                    onSelectGeoJSON(locationGeoJSON); // sends the geoJson content
                 } catch (error) {
                     console.log("Attention! ", error);
                 }
@@ -73,7 +72,7 @@ const MenuButtons = ({onSelectGeoJSON, onSelectAlumni}) => {
         };
     
         fetchData();
-    }, [geoCreated, onSelectGeoJSON]);
+    }, [geoCreated]);
 
     // Filter alumni names based on search input
     useEffect(() => {
@@ -162,6 +161,13 @@ const MenuButtons = ({onSelectGeoJSON, onSelectAlumni}) => {
         setYearFilter(newYearFilter);
     };
 
+    // Applies the values inserted in the fields and generates a new geoJson
+    const onClickApply = async (courseFilter, yearsConclusionFilters) => {
+        setGeoCreated(false);
+        await setUp.generateGeoJson(courseFilter, yearsConclusionFilters, selectedOption);
+        setGeoCreated(true);
+    }
+
     // Cleans the values inserted in the fields
     const onClickClean = async () => {
         setSelectedOption("");      // this will then call the onClickApply("", ["", ""]); which is responsible for regenerating the geoJson
@@ -170,13 +176,6 @@ const MenuButtons = ({onSelectGeoJSON, onSelectAlumni}) => {
         setYearFilter(['', '']);    // cleans the year filter field
         setFilterCourseInput("");   // cleans the search user input
         setFilteredToYears([]);
-    }
-
-    // Applies the values inserted in the fields and generates a new geoJson
-    const onClickApply = async (courseFilter, yearsConclusionFilters) => {
-        setGeoCreated(false);
-        await setUp.generateGeoJson(courseFilter, yearsConclusionFilters, selectedOption);
-        setGeoCreated(true);
     }
 
     const handleCourseSelection = async (courseAbreviation) => {
