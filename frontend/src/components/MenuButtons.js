@@ -25,7 +25,7 @@ const MenuButtons = ({onSelectGeoJSON, onSelectAlumni}) => {
             onClickApply("", ["", ""]);
         }
         onSelectGeoJSON(locationGeoJSON);            
-    }, [selectedOption]);
+    }, [onSelectGeoJSON, selectedOption]);
 
     // sets the variables to be used: nº of alumnis and an array with the info to be printed on the screen
     useEffect(() => {
