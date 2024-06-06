@@ -4,7 +4,7 @@ import Verifiers from '../helpers/verifiers';
 import ApiDataAnalysis from '../helpers/apiDataAnalysis';
 import locationGeoJSON from '../locationGeoJSON.json';
 
-const MenuButtons = ({onSelectGeoJSON, onSelectAlumni}) => {
+const MenuButtons = ({onLoading, onSelectGeoJSON, onSelectAlumni}) => {
 
     const [file, setFile] = useState('');
     const [selectedOption, setSelectedOption] = useState('');
@@ -18,14 +18,29 @@ const MenuButtons = ({onSelectGeoJSON, onSelectAlumni}) => {
     const [loadingJson, setLoadingJson] = useState(true);
     const [numberAlumnisShowing, setNumberAlumnisShowing] = useState(0);
     const [yearFilter, setYearFilter] = useState(['','']);
-    const [geoCreated, setGeoCreated] = useState(true);
+    const [geoCreated, setGeoCreated] = useState(true); // Inidicates if the geoJson has been created or not
+    const [loading, setLoading] = useState(true); // Loading state, if true: loading if false: not loading
 
+    // Handles changes on the load
     useEffect(() => {
-        if (selectedOption === "") {
-            onClickApply("", ["", ""]);
+        onLoading(loading);
+    }, [loading, onLoading]);
+    
+    // When selected option changes to "" which happens on Clear button or when a reload page happens
+    useEffect(() => {
+        const fetchData = async () => {
+            if (selectedOption === "") {
+                onClickApply("", ["", ""]);
+            }
+            onSelectGeoJSON(locationGeoJSON); 
+
+            // Waits a bit before setting the load to false so that the code has time to update the locationGeoJson on the MapCmp.js
+            await new Promise(resolve => setTimeout(resolve, 3000));
+            setLoading(false); // Data is ready
         }
-        onSelectGeoJSON(locationGeoJSON);            
-    }, [onSelectGeoJSON, selectedOption]);
+
+        fetchData();                 
+    }, [selectedOption]);
 
     // sets the variables to be used: nº of alumnis and an array with the info to be printed on the screen
     useEffect(() => {
@@ -86,7 +101,7 @@ const MenuButtons = ({onSelectGeoJSON, onSelectAlumni}) => {
         }
     }, [listAlumniNamesWithCoordinates, searchInput]);
 
-    // Set variables to be shownin the dropdown of the course and year filter
+    // Set variables to be shown in the dropdown of the course and year filter
     useEffect(() => {
         if (listAlumniNamesWithCoordinates) {
             // From the list of all alumnis and respctive courses and conclusion year:
@@ -163,19 +178,23 @@ const MenuButtons = ({onSelectGeoJSON, onSelectAlumni}) => {
 
     // Applies the values inserted in the fields and generates a new geoJson
     const onClickApply = async (courseFilter, yearsConclusionFilters) => {
+        setLoading(true); // Data is being updated
         setGeoCreated(false);
         await setUp.generateGeoJson(courseFilter, yearsConclusionFilters, selectedOption);
         setGeoCreated(true);
+        setLoading(false); // Data is ready
     }
 
     // Cleans the values inserted in the fields
     const onClickClean = async () => {
+        setLoading(true);           // data is being updated
         setSelectedOption("");      // this will then call the onClickApply("", ["", ""]); which is responsible for regenerating the geoJson
         setSearchInput("");         // cleans the search alumni input 
         onSelectAlumni("", [0,0]);  // positions the user in the middle of the screen
         setYearFilter(['', '']);    // cleans the year filter field
         setFilterCourseInput("");   // cleans the search user input
         setFilteredToYears([]);
+        setLoading(false);          // data is ready
     }
 
     const handleCourseSelection = async (courseAbreviation) => {
