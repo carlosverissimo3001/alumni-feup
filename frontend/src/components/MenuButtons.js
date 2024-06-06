@@ -13,10 +13,11 @@ const MenuButtons = ({onLoading, onSelectGeoJSON, onSelectAlumni}) => {
     
     const currentYear = new Date().getFullYear();
     const years = Array.from({ length: currentYear - 1920 + 1 }, (_, i) => 1920 + i).reverse();
+    const courses = ['LEIC', 'L.EIC', 'MEI', 'M.EIC', 'MIEIC'];
+
     const [file, setFile] = useState('');
     const [selectedOption, setSelectedOption] = useState('');
     const [filteredAlumniNamesCoord, setFilteredAlumniNamesCoord] = useState([]);
-    const [filteredCourse, setFilteredCourse] = useState([]);
     const [listAlumniNamesWithCoordinates, setListAlumniNamesWithCoordinates] = useState([]);
     const [searchInput, setSearchInput] = useState('');
     const [filterCourseInput, setFilterCourseInput] = useState('');
@@ -105,23 +106,6 @@ const MenuButtons = ({onLoading, onSelectGeoJSON, onSelectAlumni}) => {
             setFilteredAlumniNamesCoord([]);
         }
     }, [listAlumniNamesWithCoordinates, searchInput]);
-
-    // Set variables to be shown in the dropdown of the course and year filter
-    useEffect(() => {
-        if (listAlumniNamesWithCoordinates) {
-            // From the list of all alumnis and respctive courses and conclusion year:
-                //Get only the available courses
-            const allCourses = listAlumniNamesWithCoordinates.flatMap((alumni) => {
-                return Object.keys(alumni.coursesYears);
-            });
-
-            // Remove duplicates and orders is alphabetic order
-            const uniqueCourses = [...new Set(allCourses)].sort();
-            setFilteredCourse(uniqueCourses);
-        } else {
-          setFilteredCourse([]);
-        }
-    }, [listAlumniNamesWithCoordinates, filterCourseInput]);   
 
     // Handles changes in the search input
     const handleSearchInputChange = (e) => {
@@ -357,7 +341,7 @@ const MenuButtons = ({onLoading, onSelectGeoJSON, onSelectAlumni}) => {
                 value={filterCourseInput}
                 onChange={handleFilterCourseInputChange}>
                     <option value="" > </option>
-                    {filteredCourse.map((course, index) => (
+                    {courses.map((course, index) => (
                         <option key={index} value={course} >
                             {course}
                         </option>
