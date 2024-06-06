@@ -1,6 +1,11 @@
+/**
+* This class is responsible for managing the inputs, and generating the geoJson based on them. It also transmits these informations
+* to the MapCmp, which then redirects the needed ones to the Map View.js 
+*/
+
 import React, {useEffect, useState} from 'react';
 import setUp from '../helpers/setUp';
-import Verifiers from '../helpers/verifiers';
+import Helper from '../helpers/helper';
 import ApiDataAnalysis from '../helpers/apiDataAnalysis';
 import locationGeoJSON from '../locationGeoJSON.json';
 
@@ -223,7 +228,7 @@ const MenuButtons = ({onLoading, onSelectGeoJSON, onSelectAlumni}) => {
     // The name of the profile pics is set to the public identifier of the user, wich is retrieved by the API
     // Also stores the information in a backup file
     const handlePopulateAlumniTable = async () => {
-        Verifiers.checkIfExcel(file);        
+        Helper.checkIfExcel(file);        
 
         const userConfirmed = window.confirm('You are about to delete the info of tables and update with the setelected file');
         if(userConfirmed) {
@@ -240,7 +245,7 @@ const MenuButtons = ({onLoading, onSelectGeoJSON, onSelectAlumni}) => {
 
     // Read from a file that contains the API response of scraped profiles => avoid unecessary calls to the API
     const handlePopulateAlumniTableFileBckp = async () => {
-        Verifiers.checkIfTextFile(file);
+        Helper.checkIfTextFile(file);
        
         await setUp.setAlumniUsingBackup(file);
         console.log("Backup set in the Alumni table");
@@ -275,7 +280,7 @@ const MenuButtons = ({onLoading, onSelectGeoJSON, onSelectAlumni}) => {
     // Populates the alumniEic table
     // It receives the excel that has linnkedin links before the forms and after, alongside the courses of each alumni and year of conclusion
     const handlePopulateAlumniEICTable = async () => {
-        Verifiers.checkIfExcel(file);
+        Helper.checkIfExcel(file);
         const userConfirmed = window.confirm('You are about to delete the info of table AlumniEic and AlumniEic has courses and update with the setelected file');
         if(userConfirmed){
             await setUp.populateAlumniEICTable(file);
@@ -284,7 +289,7 @@ const MenuButtons = ({onLoading, onSelectGeoJSON, onSelectAlumni}) => {
 
     // Populates courses table
     const handlePopulateCoursesTable = async () => {
-        Verifiers.checkIfExcel(file);
+        Helper.checkIfExcel(file);
         const userConfirmed = window.confirm('You are about to delete the info of table Courses and update with the setelected file');
         if(userConfirmed) {
             await setUp.handlePopulateCoursesTable(file);
@@ -313,7 +318,7 @@ const MenuButtons = ({onLoading, onSelectGeoJSON, onSelectAlumni}) => {
 
     // Matches Students to LinkedIn Links. Receives an excel, updates the linkedin column and downloads the updated file
     const handleAlumnisMatchLinkedin = async () => {
-        Verifiers.checkIfExcel(file);    
+        Helper.checkIfExcel(file);    
         ApiDataAnalysis.matchLinkedinLinksToStudents(file); 
     }
     // This function receives an Excel and writes to it a column with all the Alumni names (this is, the students from the group)
@@ -329,7 +334,7 @@ const MenuButtons = ({onLoading, onSelectGeoJSON, onSelectAlumni}) => {
     }
     // Reads the Alumni Table and backs it up to an Excel
     const handleAlmnTblExcel = async () => {
-        Verifiers.checkIfExcel(file);
+        Helper.checkIfExcel(file);
         ApiDataAnalysis.almnTblExcel(file);
     }
 
