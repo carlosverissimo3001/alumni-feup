@@ -127,6 +127,7 @@ const MapCmp = () => {
         }
   
         if (event.features && event.features.length > 0) {
+
           // Extracts feature fields
           const feature = event.features[0];        
           var listPlaceName = feature.properties.name;
