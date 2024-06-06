@@ -10,13 +10,13 @@ import ApiDataAnalysis from '../helpers/apiDataAnalysis';
 import locationGeoJSON from '../locationGeoJSON.json';
 
 const MenuButtons = ({onLoading, onSelectGeoJSON, onSelectAlumni}) => {
-
+    
+    const currentYear = new Date().getFullYear();
+    const years = Array.from({ length: currentYear - 1920 + 1 }, (_, i) => 1920 + i).reverse();
     const [file, setFile] = useState('');
     const [selectedOption, setSelectedOption] = useState('');
     const [filteredAlumniNamesCoord, setFilteredAlumniNamesCoord] = useState([]);
     const [filteredCourse, setFilteredCourse] = useState([]);
-    const [filteredFromYears, setFilteredFromYears] = useState([]);
-    const [filteredToYears, setFilteredToYears] = useState([]);
     const [listAlumniNamesWithCoordinates, setListAlumniNamesWithCoordinates] = useState([]);
     const [searchInput, setSearchInput] = useState('');
     const [filterCourseInput, setFilterCourseInput] = useState('');
@@ -114,45 +114,14 @@ const MenuButtons = ({onLoading, onSelectGeoJSON, onSelectAlumni}) => {
             const allCourses = listAlumniNamesWithCoordinates.flatMap((alumni) => {
                 return Object.keys(alumni.coursesYears);
             });
-                // Get only the available years
-            const allFromYears = listAlumniNamesWithCoordinates.flatMap((alumni) => {
-                return Object.values(alumni.coursesYears).map(yearRange => {
-                    return yearRange.split('/')[1]; // Split the string and take the second part
-                });
-            });
 
-            // Remove duplicates and orders
-                // in alphabetic order
+            // Remove duplicates and orders is alphabetic order
             const uniqueCourses = [...new Set(allCourses)].sort();
-                // from the most recent year to the oldest 
-            const uniqueFromYears = [...new Set(allFromYears)].sort((a, b) => b - a);
             setFilteredCourse(uniqueCourses);
-            setFilteredFromYears(uniqueFromYears);
         } else {
           setFilteredCourse([]);
-          setFilteredFromYears([]);
         }
     }, [listAlumniNamesWithCoordinates, filterCourseInput]);   
-
-    // Get the available years which are bigger than the one selected on the from field
-    useEffect(() => {
-        if (listAlumniNamesWithCoordinates && yearFilter[0].trim() !== '') {
-            // From the list of all alumnis and respective courses and conclusion year:
-                // Get only the available years wich are bigger than the one selected in the From field
-            const allToYears = listAlumniNamesWithCoordinates.flatMap((alumni) => {
-                return Object.values(alumni.coursesYears).map(yearRange => {
-                    if (parseInt(yearRange.split('/')[1]) >= parseInt(yearFilter[0])) {
-                        return yearRange.split('/')[1]; // Split the string and take the second part
-                    }
-                });
-            });
-            
-            // Remove duplicates and orders
-                // from the most recent year to the oldest year
-            const uniqueToYears = [...new Set(allToYears)].sort((a, b) => b - a);
-            setFilteredToYears(uniqueToYears);
-        }
-    }, [listAlumniNamesWithCoordinates, filterCourseInput, yearFilter]);
 
     // Handles changes in the search input
     const handleSearchInputChange = (e) => {
@@ -200,7 +169,6 @@ const MenuButtons = ({onLoading, onSelectGeoJSON, onSelectAlumni}) => {
         onSelectAlumni("", [0,0]);  // positions the user in the middle of the screen
         setYearFilter(['', '']);    // cleans the year filter field
         setFilterCourseInput("");   // cleans the search user input
-        setFilteredToYears([]);
         // Waits a bit before setting the load to false so that the code has time to update the locationGeoJson on the MapCmp.js
         await new Promise(resolve => setTimeout(resolve, 3000));
         setLoading(false);          // data is ready
@@ -408,8 +376,8 @@ const MenuButtons = ({onLoading, onSelectGeoJSON, onSelectAlumni}) => {
                         value={yearFilter[0]}
                         onChange={e => handleYearChange(0, e.target.value)}>
                             <option value="" > </option>
-                            {filteredFromYears.map((year, index) => (
-                                <option key={index} value={year} >
+                            {years.map((year) => (
+                                <option key={year} value={year}>
                                     {year}
                                 </option>
                             ))}
@@ -423,10 +391,8 @@ const MenuButtons = ({onLoading, onSelectGeoJSON, onSelectAlumni}) => {
                         value={yearFilter[1]}
                         onChange={e => handleYearChange(1, e.target.value)}>
                             <option value="" > </option>
-                            {filteredToYears.map((year, index) => (
-                                <option key={index} value={year} >
-                                    {year}
-                                </option>
+                            {years.filter((year) => year > yearFilter[0]).map((year) => (
+                                <option key={year} value={year}>{year}</option>
                             ))}
                     </select>
                 </div>
