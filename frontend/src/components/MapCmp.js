@@ -3,6 +3,7 @@ import { clusterLayer, clusterCountLayer, unclusterPointLayer } from './MapLayer
 import {Map as MapGL, Source, Layer} from 'react-map-gl';
 import MenuButtons from './MenuButtons';
 import ApiDataAnalysis from '../helpers/apiDataAnalysis';
+import MapGLSource from './MapGLSource';
 
 const TOKEN = process.env.REACT_APP_MAPBOX_ACCESS_TOKEN;
 
@@ -256,115 +257,104 @@ const MapCmp = () => {
               <MenuButtons onLoading={handleLoading} onSelectAlumni={handleSelectAlumni} onSelectGeoJSON={handleSelectGeoJSON} />
           </div>
         </div>
-        {loading ? (
-          <div>Loading map...</div>
-        ) : (
-          <div className="mapCmpDiv">
-            <MapGL
-              initialViewState={{
-                  latitude: 0,
-                  longitude: 0,
-                  zoom: 3,
-                  //pitch: 45, // Set pitch to create a 3D effect         // 3D
-                  //bearing: 0, // Set bearing to control the orientation // 3D
-              }}
-              mapStyle="mapbox://styles/mapbox/dark-v11"                  // 3D preto e branco
-              //mapStyle="mapbox://styles/mapbox/dark-v9"                 // 2D
-              //mapStyle="mapbox://styles/mapbox/satellite-v9"            // 2D
-              //mapStyle="mapbox://styles/mapbox/satellite-streets-v12"   // 3D
-              mapboxAccessToken={TOKEN}
-              interactiveLayerIds={[clusterLayer.id]}
-              onMouseMove={onHover}
-              ref={mapRef}
-              >
-              <Source
-                  id="alumniDistribution"
-                  type="geojson"
-                  data={alumniGeoJSON}
-                  cluster={true}
-                  clusterMaxZoom={14}
-                  clusterRadius={50}
-                  clusterProperties={{
-                    name: ['concat', ['get', 'name']],
-                    students: ['+', ['get', 'students']],
-                    listLinkedinLinksByUser: ['concat', ['get', 'listLinkedinLinksByUser'], ';'],
-                    coursesYearConclusionByUser: ['concat', ['get', 'coursesYearConclusionByUser'], ';'],
-                  }}
-              >
-                  <Layer {...clusterLayer}/>
-                  <Layer {...clusterCountLayer}/>
-                  <Layer {...unclusterPointLayer}/>
-              </Source>
-
-              { hoveredCluster && listAlumniNames.length > 0  && listLinkedinLinks.length > 0 && listPlaceName.length > 0 && (
-                <div
-                  className="clusterRectangle"
-                  style={{
-                    position: 'absolute',
-                    top:`${hoveredMouseCoords[1]}px`,
-                    left: `${hoveredMouseCoords[0]}px`
-                  }}
-                >
-                  <span><b>Place:</b></span>
-                  <div style={{ maxHeight: listPlaceName.length > 10 ? '100px' : 'auto', overflow: 'auto' }}>
-                    {listPlaceName.map( (place, index) => (
-                      <span key={index}>{place}{index !== listPlaceName.length - 1 && ', '}</span>
-                    ))}
-                  </div>
-
-                  <p></p>
-
-                  <ul className={`list-alumni${listAlumniNames.length > nAlumniToShowScrollBar ? ' scrollable' : ''}`}>
-                    <table className="alumni-table">
-                      <thead>
-                        <tr>
-                          <th className="table-titles">Alumni</th>
-                          <th className="table-titles">Course</th>
-                          <th className="table-titles">Conclusion</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {alumniData
-                          .sort((a, b) => a.name.localeCompare(b.name)) // Sort the array alphabetically
-                          .slice(startPosition, endPosition+1) // Create a copy of the array to avoid mutating the original // endPosition+1 because slice() doesn't include the end
-                          .map((alumni, index) => (
-                            <tr key={index}>
-                              <td>
-                                <div className='alumni-cell'>
-                                  <img
-                                    className="profile-picture"
-                                    src={alumni.profilePics}
-                                    alt=""
-                                    onError={handleImageError}
-                                  />
-                                  <a
-                                    className="link"
-                                    href={alumni.linkedinLink}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                  >
-                                    {alumni.name}
-                                  </a>
-                                </div>
-                              </td>
-                              <td>{alumni.courses}</td>
-                              <td>{alumni.yearConclusions}</td>
-                            </tr>
-                          ))
-                        }
-                      </tbody>
-                    </table>
-                    <div>
-                      {showPrev && <button className="my-button my-button-pagination-prev" onClick={handleShowPrev}>Prev</button>}
-                      {showMore && <button className="my-button my-button-pagination-more" onClick={handleShowMore}>More</button>}
-                    </div>
-                  </ul>
-                </div>
-              )}
-            </MapGL>
-          </div>
-        )}
         
+        <div className="mapCmpDiv">
+          <MapGL
+            initialViewState={{
+                latitude: 0,
+                longitude: 0,
+                zoom: 3,
+                //pitch: 45, // Set pitch to create a 3D effect         // 3D
+                //bearing: 0, // Set bearing to control the orientation // 3D
+            }}
+            mapStyle="mapbox://styles/mapbox/dark-v11"                  // 3D preto e branco
+            //mapStyle="mapbox://styles/mapbox/dark-v9"                 // 2D
+            //mapStyle="mapbox://styles/mapbox/satellite-v9"            // 2D
+            //mapStyle="mapbox://styles/mapbox/satellite-streets-v12"   // 3D
+            mapboxAccessToken={TOKEN}
+            interactiveLayerIds={[clusterLayer.id]}
+            onMouseMove={onHover}
+            ref={mapRef}
+          >
+            
+            {loading ? (
+              <MapGLSource alumniGeoJSON={{ type: "FeatureCollection", features: [] }}></MapGLSource>
+            ) : (
+              <MapGLSource alumniGeoJSON={alumniGeoJSON}></MapGLSource>
+            )}
+
+            { hoveredCluster && listAlumniNames.length > 0  && listLinkedinLinks.length > 0 && listPlaceName.length > 0 && (
+              <div
+                className="clusterRectangle"
+                style={{
+                  position: 'absolute',
+                  top:`${hoveredMouseCoords[1]}px`,
+                  left: `${hoveredMouseCoords[0]}px`
+                }}
+              >
+                <span><b>Place:</b></span>
+                <div style={{ maxHeight: listPlaceName.length > 10 ? '100px' : 'auto', overflow: 'auto' }}>
+                  {listPlaceName.map( (place, index) => (
+                    <span key={index}>{place}{index !== listPlaceName.length - 1 && ', '}</span>
+                  ))}
+                </div>
+
+                <p></p>
+
+                <ul className={`list-alumni${listAlumniNames.length > nAlumniToShowScrollBar ? ' scrollable' : ''}`}>
+                  <table className="alumni-table">
+                    <thead>
+                      <tr>
+                        <th className="table-titles">Alumni</th>
+                        <th className="table-titles">Course</th>
+                        <th className="table-titles">Conclusion</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {alumniData
+                        .sort((a, b) => a.name.localeCompare(b.name)) // Sort the array alphabetically
+                        .slice(startPosition, endPosition+1) // Create a copy of the array to avoid mutating the original // endPosition+1 because slice() doesn't include the end
+                        .map((alumni, index) => (
+                          <tr key={index}>
+                            <td>
+                              <div className='alumni-cell'>
+                                <img
+                                  className="profile-picture"
+                                  src={alumni.profilePics}
+                                  alt=""
+                                  onError={handleImageError}
+                                />
+                                <a
+                                  className="link"
+                                  href={alumni.linkedinLink}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                >
+                                  {alumni.name}
+                                </a>
+                              </div>
+                            </td>
+                            <td>{alumni.courses}</td>
+                            <td>{alumni.yearConclusions}</td>
+                          </tr>
+                        ))
+                      }
+                    </tbody>
+                  </table>
+                  <div>
+                    {showPrev && <button className="my-button my-button-pagination-prev" onClick={handleShowPrev}>Prev</button>}
+                    {showMore && <button className="my-button my-button-pagination-more" onClick={handleShowMore}>More</button>}
+                  </div>
+                </ul>
+              </div>
+            )}
+          </MapGL>
+          {loading && (
+            <div className="loading-overlay">
+              <div className="loading-icon"></div>
+            </div>
+          )}
+        </div>
       </>
     );
 };

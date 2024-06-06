@@ -182,6 +182,8 @@ const MenuButtons = ({onLoading, onSelectGeoJSON, onSelectAlumni}) => {
         setGeoCreated(false);
         await setUp.generateGeoJson(courseFilter, yearsConclusionFilters, selectedOption);
         setGeoCreated(true);
+        // Waits a bit before setting the load to false so that the code has time to update the locationGeoJson on the MapCmp.js
+        await new Promise(resolve => setTimeout(resolve, 3000));
         setLoading(false); // Data is ready
     }
 
@@ -194,6 +196,8 @@ const MenuButtons = ({onLoading, onSelectGeoJSON, onSelectAlumni}) => {
         setYearFilter(['', '']);    // cleans the year filter field
         setFilterCourseInput("");   // cleans the search user input
         setFilteredToYears([]);
+        // Waits a bit before setting the load to false so that the code has time to update the locationGeoJson on the MapCmp.js
+        await new Promise(resolve => setTimeout(resolve, 3000));
         setLoading(false);          // data is ready
     }
 
