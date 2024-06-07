@@ -1,70 +1,110 @@
+/**
+* This class is responsible for managing the inputs, and generating the geoJson based on them. It also transmits these informations
+* to the MapCmp, which then redirects the needed ones to the Map View.js 
+*/
+
 import React, {useEffect, useState} from 'react';
 import setUp from '../helpers/setUp';
-import Verifiers from '../helpers/verifiers';
+import Helper from '../helpers/helper';
 import ApiDataAnalysis from '../helpers/apiDataAnalysis';
+import locationGeoJSON from '../locationGeoJSON.json';
 
-const MenuButtons = ({onSelectGeoJSON, onSelectAlumni,}) => {
+const MenuButtons = ({onLoading, onSelectGeoJSON, onSelectAlumni}) => {
+    
+    const currentYear = new Date().getFullYear();
+    const years = Array.from({ length: currentYear - 1920 + 1 }, (_, i) => 1920 + i).reverse();
+    const courses = ['LEIC', 'L.EIC', 'MEI', 'M.EIC', 'MIEIC'];
 
-    const[file, setFile]=useState('');
-    const [selectedOption, setSelectedOption] = useState('countries');
+    const [file, setFile] = useState('');
+    const [selectedOption, setSelectedOption] = useState('');
     const [filteredAlumniNamesCoord, setFilteredAlumniNamesCoord] = useState([]);
-    const [filteredCourse, setFilteredCourse] = useState([]);
-    const [filteredFromYears, setFilteredFromYears] = useState([]);
-    const [filteredToYears, setFilteredToYears] = useState([]);
     const [listAlumniNamesWithCoordinates, setListAlumniNamesWithCoordinates] = useState([]);
     const [searchInput, setSearchInput] = useState('');
     const [filterCourseInput, setFilterCourseInput] = useState('');
     const [loadingJson, setLoadingJson] = useState(true);
     const [numberAlumnisShowing, setNumberAlumnisShowing] = useState(0);
     const [yearFilter, setYearFilter] = useState(['','']);
+    const [geoCreated, setGeoCreated] = useState(true); // Inidicates if the geoJson has been created or not
+    const [loading, setLoading] = useState(true); // Loading state, if true: loading if false: not loading
 
-    // selects the geoJson file
+    // Handles changes on the load
+    useEffect(() => {
+        onLoading(loading);
+    }, [loading, onLoading]);
+    
+    // When selected option changes to "" which happens on Clear button or when a reload page happens
+    useEffect(() => {
+        const fetchData = async () => {
+            if (selectedOption === "") {
+                onClickApply("", ["", ""]);
+            }
+            onSelectGeoJSON(locationGeoJSON); 
+
+            // Waits a bit before setting the load to false so that the code has time to update the locationGeoJson on the MapCmp.js
+            await new Promise(resolve => setTimeout(resolve, 3000));
+            setLoading(false); // Data is ready
+        }
+
+        fetchData();                 
+    }, [selectedOption]);
+
     // sets the variables to be used: nº of alumnis and an array with the info to be printed on the screen
     useEffect(() => {
-        try{
-            // Selects the geoJson to be used
-            const geoJSONData = selectedOption === 'countries' ? require('../countriesGeoJSON.json') : require('../citiesGeoJSON.json');        
-            
-            // Get the names with their LinkedIn links
-            const namesLinkedinLinks = geoJSONData.features.flatMap((feature) => {
-                const coordinates = feature.geometry.coordinates; // Get coordinates
-                return Object.entries(feature.properties.listLinkedinLinksByUser).map(([link, name]) => ({
-                  name,
-                  link,
-                  coordinates, 
-                }));
-            });
-            // Get the courses data with the years of conclusion
-            const namesCourseYears = geoJSONData.features.flatMap((feature) => 
-                Object.entries(feature.properties.coursesYearConclusionByUser).map(([linkedinLink, courseYears]) => ({
-                    linkedinLink,
-                    courseYears
-                }))
-            );
-            const alumniNamesWithCoords = namesLinkedinLinks.map((alumniInfo) => { 
-                // Find the corresponding courses data based on name
-                const coursesData = namesCourseYears.find((courseItem) => courseItem.linkedinLink === alumniInfo.link);
-                return {
-                    name: alumniInfo.name,
-                    coordinates: alumniInfo.coordinates,
-                    link: alumniInfo.link,
-                    coursesYears: coursesData ? coursesData.courseYears : {},
-                };
-            });
-            
-            setListAlumniNamesWithCoordinates(alumniNamesWithCoords);
-            setNumberAlumnisShowing(alumniNamesWithCoords.length);
-            onSelectGeoJSON(selectedOption); // Use cities/countries GeoJson file
-        } catch(error){
-            console.log("Attention!");
-        }
-    }, [listAlumniNamesWithCoordinates.length, onSelectGeoJSON, selectedOption]);
+        const fetchData = async () => {
+            if (geoCreated) {
+                try {                    
+                    // Get the names with their LinkedIn links
+                    const namesLinkedinLinks = locationGeoJSON.features.flatMap((feature) => {
+                        const coordinates = feature.geometry.coordinates; // Get coordinates
+                        return Object.entries(feature.properties.listLinkedinLinksByUser).map(([link, name]) => ({
+                            name,
+                            link,
+                            coordinates,
+                        }));
+                    });
+    
+                    // Get the courses data with the years of conclusion
+                    const namesCourseYears = locationGeoJSON.features.flatMap((feature) => 
+                        Object.entries(feature.properties.coursesYearConclusionByUser).map(([linkedinLink, courseYears]) => ({
+                            linkedinLink,
+                            courseYears,
+                        }))
+                    );
+    
+                    const alumniNamesWithCoords = namesLinkedinLinks.map((alumniInfo) => { 
+                        // Find the corresponding courses data based on name
+                        const coursesData = namesCourseYears.find((courseItem) => courseItem.linkedinLink === alumniInfo.link);
+                        return {
+                            name: alumniInfo.name,
+                            coordinates: alumniInfo.coordinates,
+                            link: alumniInfo.link,
+                            coursesYears: coursesData ? coursesData.courseYears : {},
+                        };
+                    });
+    
+                    setListAlumniNamesWithCoordinates(alumniNamesWithCoords);
+                    setNumberAlumnisShowing(alumniNamesWithCoords.length);
+                } catch (error) {
+                    console.log("Attention! ", error);
+                }
+            } else {
+                console.log("GeoJson not created");
+            }
+        };
+    
+        fetchData();
+    }, [geoCreated]);
 
     // Filter alumni names based on search input
     useEffect(() => {
+        const normalizeString = (str) => {
+            return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^\w\s]/gi, '');
+        };
+
         if (listAlumniNamesWithCoordinates && searchInput.trim() !== '') {
+            const normalizedSearchInput = normalizeString(searchInput.toLowerCase());
             const filteredNamesCoord = listAlumniNamesWithCoordinates.filter(alumni => 
-                alumni.name.toLowerCase().includes(searchInput.toLowerCase())
+                normalizeString(alumni.name.toLowerCase()).includes(normalizedSearchInput)
             );
             setFilteredAlumniNamesCoord(filteredNamesCoord);
         } else {
@@ -72,65 +112,56 @@ const MenuButtons = ({onSelectGeoJSON, onSelectAlumni,}) => {
         }
     }, [listAlumniNamesWithCoordinates, searchInput]);
 
-    // Set variables to be shownin the dropdown of the course and year filter
-    useEffect(() => {
-        if (listAlumniNamesWithCoordinates) {
-            // From the list of all alumnis and respctive courses and conclusion year:
-                //Get only the available courses
-            const allCourses = listAlumniNamesWithCoordinates.flatMap((alumni) => {
-                return Object.keys(alumni.coursesYears);
-            });
-                // Get only the available years
-            const allFromYears = listAlumniNamesWithCoordinates.flatMap((alumni) => {
-                return Object.values(alumni.coursesYears).map(yearRange => {
-                    return yearRange.split('/')[1]; // Split the string and take the second part
-                });
-            });
-
-            // Remove duplicates and orders
-                // in alphabetic order
-            const uniqueCourses = [...new Set(allCourses)].sort();
-                // from the most recent year to the oldest 
-            const uniqueFromYears = [...new Set(allFromYears)].sort((a, b) => b - a);
-            setFilteredCourse(uniqueCourses);
-            setFilteredFromYears(uniqueFromYears);
-        } else {
-          setFilteredCourse([]);
-          setFilteredFromYears([]);
-        }
-    }, [listAlumniNamesWithCoordinates, filterCourseInput]);   
-
-    // Get the available years which are bigger than the one selected on the from field
-    useEffect(() => {
-        if (listAlumniNamesWithCoordinates && yearFilter[0].trim() !== '') {
-            // From the list of all alumnis and respective courses and conclusion year:
-                // Get only the available years wich are bigger than the one selected in the From field
-            const allToYears = listAlumniNamesWithCoordinates.flatMap((alumni) => {
-                return Object.values(alumni.coursesYears).map(yearRange => {
-                    if (parseInt(yearRange.split('/')[1]) >= parseInt(yearFilter[0])) {
-                        return yearRange.split('/')[1]; // Split the string and take the second part
-                    }
-                });
-            });
-            
-            // Remove duplicates and orders
-                // from the most recent year to the oldest year
-            const uniqueToYears = [...new Set(allToYears)].sort((a, b) => b - a);
-            setFilteredToYears(uniqueToYears);
-        }
-    }, [listAlumniNamesWithCoordinates, filterCourseInput, yearFilter]);
-
+    // Handles changes in the search input
     const handleSearchInputChange = (e) => {
         setSearchInput(e.target.value);
     };
 
+    // Handles changes in the filter course input
     const handleFilterCourseInputChange = (e) => {
         setFilterCourseInput(e.target.value);
     };
 
+    // Handles the filtering of a selected alumni
     const handleAlumniSelection = (name, coordinates) => {
         onSelectAlumni(name, coordinates);
     };
+
+    // Function to handle checkbox selection
+    const handleCheckboxChange = (event) => {
+        setSelectedOption(event.target.value);
+    };
+
+    // Handles changes in the year input 
+    const handleYearChange = (index, value) => {
+        const newYearFilter = [...yearFilter];
+        newYearFilter[index] = value;
+        setYearFilter(newYearFilter);
+    };
+
+    // Applies the values inserted in the fields and generates a new geoJson
+    const onClickApply = async (courseFilter, yearsConclusionFilters) => {
+        setLoading(true); // Data is being updated
+        setGeoCreated(false);
+        await setUp.generateGeoJson(courseFilter, yearsConclusionFilters, selectedOption);
+        setGeoCreated(true);
+        // Waits a bit before setting the load to false so that the code has time to update the locationGeoJson on the MapCmp.js
+        await new Promise(resolve => setTimeout(resolve, 3000));
+        setLoading(false); // Data is ready
+    }
+
+    // Cleans the values inserted in the fields
+    const onClickClean = async () => {
+        setLoading(true);           // data is being updated
+        setSelectedOption("");      // this will then call the onClickApply("", ["", ""]); which is responsible for regenerating the geoJson
+        setSearchInput("");         // cleans the search alumni input 
+        onSelectAlumni("", [0,0]);  // positions the user in the middle of the screen
+        setYearFilter(['', '']);    // cleans the year filter field
+        setFilterCourseInput("");   // cleans the search user input
+        // Waits a bit before setting the load to false so that the code has time to update the locationGeoJson on the MapCmp.js
+        await new Promise(resolve => setTimeout(resolve, 4000));
+        setLoading(false);          // data is ready
+    }
 
     const handleCourseSelection = async (courseAbreviation) => {
         setFilterCourseInput(courseAbreviation);
@@ -144,11 +175,6 @@ const MenuButtons = ({onSelectGeoJSON, onSelectAlumni,}) => {
         yearFilter[1] = year;
     }
 
-    // Function to handle checkbox selection
-    const handleCheckboxChange = (event) => {
-        setSelectedOption(event.target.value);
-    };
-
     const handleFileChange = (e) => {
         setFile(e.target.files[0]);
     };
@@ -159,7 +185,7 @@ const MenuButtons = ({onSelectGeoJSON, onSelectAlumni,}) => {
     // The name of the profile pics is set to the public identifier of the user, wich is retrieved by the API
     // Also stores the information in a backup file
     const handlePopulateAlumniTable = async () => {
-        Verifiers.checkIfExcel(file);        
+        Helper.checkIfExcel(file);        
 
         const userConfirmed = window.confirm('You are about to delete the info of tables and update with the setelected file');
         if(userConfirmed) {
@@ -176,7 +202,7 @@ const MenuButtons = ({onSelectGeoJSON, onSelectAlumni,}) => {
 
     // Read from a file that contains the API response of scraped profiles => avoid unecessary calls to the API
     const handlePopulateAlumniTableFileBckp = async () => {
-        Verifiers.checkIfTextFile(file);
+        Helper.checkIfTextFile(file);
        
         await setUp.setAlumniUsingBackup(file);
         console.log("Backup set in the Alumni table");
@@ -211,7 +237,7 @@ const MenuButtons = ({onSelectGeoJSON, onSelectAlumni,}) => {
     // Populates the alumniEic table
     // It receives the excel that has linnkedin links before the forms and after, alongside the courses of each alumni and year of conclusion
     const handlePopulateAlumniEICTable = async () => {
-        Verifiers.checkIfExcel(file);
+        Helper.checkIfExcel(file);
         const userConfirmed = window.confirm('You are about to delete the info of table AlumniEic and AlumniEic has courses and update with the setelected file');
         if(userConfirmed){
             await setUp.populateAlumniEICTable(file);
@@ -220,7 +246,7 @@ const MenuButtons = ({onSelectGeoJSON, onSelectAlumni,}) => {
 
     // Populates courses table
     const handlePopulateCoursesTable = async () => {
-        Verifiers.checkIfExcel(file);
+        Helper.checkIfExcel(file);
         const userConfirmed = window.confirm('You are about to delete the info of table Courses and update with the setelected file');
         if(userConfirmed) {
             await setUp.handlePopulateCoursesTable(file);
@@ -249,7 +275,7 @@ const MenuButtons = ({onSelectGeoJSON, onSelectAlumni,}) => {
 
     // Matches Students to LinkedIn Links. Receives an excel, updates the linkedin column and downloads the updated file
     const handleAlumnisMatchLinkedin = async () => {
-        Verifiers.checkIfExcel(file);    
+        Helper.checkIfExcel(file);    
         ApiDataAnalysis.matchLinkedinLinksToStudents(file); 
     }
     // This function receives an Excel and writes to it a column with all the Alumni names (this is, the students from the group)
@@ -265,29 +291,8 @@ const MenuButtons = ({onSelectGeoJSON, onSelectAlumni,}) => {
     }
     // Reads the Alumni Table and backs it up to an Excel
     const handleAlmnTblExcel = async () => {
-        Verifiers.checkIfExcel(file);
+        Helper.checkIfExcel(file);
         ApiDataAnalysis.almnTblExcel(file);
-    }
-
-    const handleYearChange = (index, value) => {
-        const newYearFilter = [...yearFilter];
-        newYearFilter[index] = value;
-        setYearFilter(newYearFilter);
-    };
-
-    // Cleans the values inserted in the fields
-    const onClickClean = async () => {
-        onClickApply("", ["", ""]);
-        setSearchInput("");         // cleans the search alumni input 
-        onSelectAlumni("", [0,0]);  // positions the user in the middle of the screen
-        setYearFilter(['', '']);  // cleans the year filter field
-        setFilterCourseInput(""); // cleans the search user input
-        setFilteredToYears([]);
-    }
-
-    // Applies the values inserted in the fields
-    const onClickApply = async (courseFilter, yearsConclusionFilters) => {
-        setUp.generateGeoJson(courseFilter, yearsConclusionFilters, selectedOption);
     }
 
     return (
@@ -300,6 +305,7 @@ const MenuButtons = ({onSelectGeoJSON, onSelectAlumni,}) => {
                     value="countries"
                     checked={selectedOption === 'countries'}
                     onChange={handleCheckboxChange}
+                    class="custom-radio"
                 />
                 <label htmlFor="countriesCheckbox">Countries</label>
             </div>
@@ -310,6 +316,7 @@ const MenuButtons = ({onSelectGeoJSON, onSelectAlumni,}) => {
                     value="cities"
                     checked={selectedOption === 'cities'}
                     onChange={handleCheckboxChange}
+                    class="custom-radio"
                 />
                 <label htmlFor="citiesCheckbox">Cities</label>
             </div>
@@ -341,7 +348,7 @@ const MenuButtons = ({onSelectGeoJSON, onSelectAlumni,}) => {
                 value={filterCourseInput}
                 onChange={handleFilterCourseInputChange}>
                     <option value="" > </option>
-                    {filteredCourse.map((course, index) => (
+                    {courses.map((course, index) => (
                         <option key={index} value={course} >
                             {course}
                         </option>
@@ -360,8 +367,8 @@ const MenuButtons = ({onSelectGeoJSON, onSelectAlumni,}) => {
                         value={yearFilter[0]}
                         onChange={e => handleYearChange(0, e.target.value)}>
                             <option value="" > </option>
-                            {filteredFromYears.map((year, index) => (
-                                <option key={index} value={year} >
+                            {years.map((year) => (
+                                <option key={year} value={year}>
                                     {year}
                                 </option>
                             ))}
@@ -375,10 +382,8 @@ const MenuButtons = ({onSelectGeoJSON, onSelectAlumni,}) => {
                         value={yearFilter[1]}
                         onChange={e => handleYearChange(1, e.target.value)}>
                             <option value="" > </option>
-                            {filteredToYears.map((year, index) => (
-                                <option key={index} value={year} >
-                                    {year}
-                                </option>
+                            {years.filter((year) => year > yearFilter[0]).map((year) => (
+                                <option key={year} value={year}>{year}</option>
                             ))}
                     </select>
                 </div>
