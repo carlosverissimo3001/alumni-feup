@@ -38,10 +38,11 @@ public class LocationServiceImpl implements LocationService {
     // Groups alumnis based on countries or cities
     private Map<LocationAlumnis, List<AlumniEic>> groupAlumnis(String geoJsonType) {
         List<AlumniEic> alumniList = alumniEicRepository.findAll();
+        Map<LocationAlumnis, List<AlumniEic>> alumniByLocation = new HashMap<>();
         if (geoJsonType.equals("cities")) {
-            Map<LocationAlumnis, List<AlumniEic>> alumniByLocation = new HashMap<>();
             alumniList.forEach(alumni -> {
                 if(alumni.getCity() != null) {
+                    // Grabs the alumni city
                     LocationAlumnis city = alumni.getCity();
                     
                     // Grabs the already existing list of alumnis associated with the city
@@ -54,11 +55,24 @@ public class LocationServiceImpl implements LocationService {
                     alumniByLocation.put(city, alumniListCity);
                 }
             });
-            return alumniByLocation;
         } else {
-            return alumniList.stream()
-            .collect(Collectors.groupingBy(AlumniEic::getCountry));
+            alumniList.forEach(alumni -> {
+                if (alumni.getCountry() != null) {
+                    // Grabs the alumnis' country
+                    LocationAlumnis country = alumni.getCountry();
+
+                    // Grabs the already existing list of alumnis associated with the country
+                    List<AlumniEic> alumniListCountry = alumniByLocation.getOrDefault(country, new ArrayList<>());
+
+                    // Concatenates the current alumni with the existing ones
+                    alumniListCountry.add(alumni);
+
+                    // Update the map
+                    alumniByLocation.put(country, alumniListCountry);
+                }
+            });
         }   
+        return alumniByLocation;
     }
 
     // Verifies if the alumni has at least one course that is the same as the courseFilter
@@ -141,7 +155,7 @@ public class LocationServiceImpl implements LocationService {
     // Writes the content in the geoJson
     private void addContentInGeoJson(Map<LocationAlumnis, List<AlumniEic>> alumniByLocation, Map<String, String> alumniLinkedInLink, Map<String, Map<String, String>> alumniByCourseYearConclusion, Map<File, Gson> fileGson) {
         alumniByLocation.forEach((location, alumniList) -> {
-            if (!location.getName().equals("null")) { //doesn't write null locations
+            if (!location.getName().equals("null") && alumniList.size() > 0) { //doesn't write null locations
                 // From the map of all alumnis associated with the respecitve linkedin link (alumniLinkedInLink)
                 // it only extracts the the alumnis from the alumniList of the current location
                 Map<String, String> alumniLinkedinLinkForLocation = alumniLinkedInLink.entrySet().stream()
@@ -154,8 +168,10 @@ public class LocationServiceImpl implements LocationService {
                 .filter(entry -> alumniList.stream().anyMatch(alumni -> alumni.getLinkedinLink().equals(entry.getKey())))
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
-                Map.Entry<File, Gson> fileGsonIteration = fileGson.entrySet().iterator().next();
-                Location.addLocationGeoJson(location, alumniLinkedinLinkForLocation, alumniByCourseYearConclusionForLocation, fileGsonIteration.getKey(), fileGsonIteration.getValue());
+                if (alumniLinkedinLinkForLocation.size() > 0 && alumniByCourseYearConclusionForLocation.size() > 0) {
+                    Map.Entry<File, Gson> fileGsonIteration = fileGson.entrySet().iterator().next();
+                    Location.addLocationGeoJson(location, alumniLinkedinLinkForLocation, alumniByCourseYearConclusionForLocation, fileGsonIteration.getKey(), fileGsonIteration.getValue());
+                }
             }
         });
     }
