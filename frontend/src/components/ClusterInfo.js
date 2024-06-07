@@ -73,13 +73,13 @@ const ClusterInfo = ({
         <div
             className="clusterRectangle"
             style={{
-            position: 'absolute',
-            top: `${hoveredMouseCoords[1]}px`,
-            left: `${hoveredMouseCoords[0]}px`,
+                position: 'absolute',
+                top: `${hoveredMouseCoords[1]}px`,
+                left: `${hoveredMouseCoords[0]}px`,
             }}
         >
             <span><b>Place:</b></span>
-            <div style={{ maxHeight: listPlaceName.length > 10 ? '100px' : 'auto', overflow: 'auto' }}>
+            <div style={{ maxHeight: listPlaceName.length > 10 ? '45px' : 'auto', overflow: 'auto' }}>
             {listPlaceName.map((place, index) => (
                 <span key={index}>{place}{index !== listPlaceName.length - 1 && ', '}</span>
             ))}

@@ -154,7 +154,7 @@ const MenuButtons = ({onLoading, onSelectGeoJSON, onSelectAlumni}) => {
         setYearFilter(['', '']);    // cleans the year filter field
         setFilterCourseInput("");   // cleans the search user input
         // Waits a bit before setting the load to false so that the code has time to update the locationGeoJson on the MapCmp.js
-        await new Promise(resolve => setTimeout(resolve, 3000));
+        await new Promise(resolve => setTimeout(resolve, 4000));
         setLoading(false);          // data is ready
     }
 
@@ -300,6 +300,7 @@ const MenuButtons = ({onLoading, onSelectGeoJSON, onSelectAlumni}) => {
                     value="countries"
                     checked={selectedOption === 'countries'}
                     onChange={handleCheckboxChange}
+                    class="custom-radio"
                 />
                 <label htmlFor="countriesCheckbox">Countries</label>
             </div>
@@ -310,6 +311,7 @@ const MenuButtons = ({onLoading, onSelectGeoJSON, onSelectAlumni}) => {
                     value="cities"
                     checked={selectedOption === 'cities'}
                     onChange={handleCheckboxChange}
+                    class="custom-radio"
                 />
                 <label htmlFor="citiesCheckbox">Cities</label>
             </div>
