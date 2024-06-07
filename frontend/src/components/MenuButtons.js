@@ -97,9 +97,14 @@ const MenuButtons = ({onLoading, onSelectGeoJSON, onSelectAlumni}) => {
 
     // Filter alumni names based on search input
     useEffect(() => {
+        const normalizeString = (str) => {
+            return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^\w\s]/gi, '');
+        };
+
         if (listAlumniNamesWithCoordinates && searchInput.trim() !== '') {
+            const normalizedSearchInput = normalizeString(searchInput.toLowerCase());
             const filteredNamesCoord = listAlumniNamesWithCoordinates.filter(alumni => 
-                alumni.name.toLowerCase().includes(searchInput.toLowerCase())
+                normalizeString(alumni.name.toLowerCase()).includes(normalizedSearchInput)
             );
             setFilteredAlumniNamesCoord(filteredNamesCoord);
         } else {
