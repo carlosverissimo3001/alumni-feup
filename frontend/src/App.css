@@ -35,6 +35,10 @@ p {
     100% { transform: rotate(360deg); }
 }
 
+.custom-radio{
+    accent-color: #D84201;
+}
+
 .menu-buttons-container {
     position: absolute;
     top: 20px;
@@ -189,12 +193,13 @@ p {
 .clusterRectangle {
     background-color: rgba(255, 255, 255, 0.8);
     border: 1px solid black;
+    padding-top: 10px;
     padding-left: 10px;
     padding-right: 10px;
     border-radius: 5px;
     z-index: 999; 
     width: 20%;
-    height: 38%;
+    height: 40%;
 }
 
 .my-button-pagination-prev {
@@ -226,7 +231,7 @@ p {
 }
 
 .my-button {
-    background: linear-gradient(135deg, #6b73ff, #000dff); 
+    background: linear-gradient(135deg, #D84201, #FF2200);  
     border: none; 
     border-radius: 5px; 
     color: white;
@@ -244,8 +249,8 @@ p {
 }
 
   
-.my-button-clean:hover {
-    background: linear-gradient(135deg, #000dff, #6b73ff); 
+.my-button:hover {
+    background: linear-gradient(135deg, #FF2200, #D84201); 
     box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.3); 
     transform: translateY(-2px); 
 }
