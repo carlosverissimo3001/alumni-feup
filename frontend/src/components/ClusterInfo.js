@@ -71,27 +71,27 @@ const ClusterInfo = ({
     <>
         {hoveredCluster && listAlumniNames.length > 0 && listLinkedinLinks.length > 0 && listPlaceName.length > 0 && (
         <div
-            className="clusterRectangle"
+            className="clusterRectangle letter-style"
             style={{
                 position: 'absolute',
                 top: `${hoveredMouseCoords[1]}px`,
                 left: `${hoveredMouseCoords[0]}px`,
             }}
         >
-            <span><b>Place:</b></span>
+            <span className='titles-letter'><b>LOCATION</b></span>
             <div style={{ maxHeight: listPlaceName.length > 10 ? '45px' : 'auto', overflow: 'auto' }}>
             {listPlaceName.map((place, index) => (
-                <span key={index}>{place}{index !== listPlaceName.length - 1 && ', '}</span>
+                <span key={index} className='places-name'>{place}{index !== listPlaceName.length - 1 && ', '}</span>
             ))}
             </div>
             <p></p>
-            <ul className={`list-alumni${listAlumniNames.length > nAlumniToShowScrollBar ? ' scrollable' : ''}`}>
+            <ul className="list-alumni scrollable">
             <table className="alumni-table">
                 <thead>
                 <tr>
-                    <th className="table-titles">Alumni</th>
-                    <th className="table-titles">Course</th>
-                    <th className="table-titles">Conclusion</th>
+                    <th className="table-titles titles-letter alumni-cell-name sticky-header">ALUMNI</th>
+                    <th className="table-titles titles-letter sticky-header">COURSE</th>
+                    <th className="table-titles titles-letter sticky-header">CONCLUSION</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -101,7 +101,7 @@ const ClusterInfo = ({
                     .map((alumni, index) => (
                     <tr key={index}>
                         <td>
-                        <div className='alumni-cell'>
+                        <div className='alumni-cell alumni-cell-name'>
                             <img
                             className="profile-picture"
                             src={alumni.profilePics}
@@ -109,7 +109,7 @@ const ClusterInfo = ({
                             onError={handleImageError}
                             />
                             <a
-                            className="link"
+                            className="link content-table"
                             href={alumni.linkedinLink}
                             target="_blank"
                             rel="noopener noreferrer"
@@ -118,15 +118,15 @@ const ClusterInfo = ({
                             </a>
                         </div>
                         </td>
-                        <td>{alumni.courses}</td>
-                        <td>{alumni.yearConclusions}</td>
+                        <td className='content-table'>{alumni.courses}</td>
+                        <td className='content-table'>{alumni.yearConclusions}</td>
                     </tr>
                     ))}
                 </tbody>
             </table>
             <div>
-                {showPrev && <button className="my-button my-button-pagination-prev" onClick={handleShowPrev}>Prev</button>}
-                {showMore && <button className="my-button my-button-pagination-more" onClick={handleShowMore}>More</button>}
+                {showPrev && <span className="forms-button my-button-pagination-prev" onClick={handleShowPrev}> Prev </span>}
+                {showMore && <span className="my-button-pagination-more forms-button" onClick={handleShowMore}> More </span>}
             </div>
             </ul>
         </div>
