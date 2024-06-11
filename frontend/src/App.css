@@ -304,8 +304,8 @@ p {
     padding-right: 10px;
     border-radius: 5px;
     z-index: 999; 
-    width: 20%;
-    height: 40%;
+    width: 25%;
+    height: 45%;
 }
 
 .titles-letter {
@@ -335,6 +335,7 @@ p {
     size: 16px;
     line-height: 24px;
     color: #515150;
+    padding-right: 30px;
 }
 
 .link {
@@ -344,6 +345,10 @@ p {
 .alumni-cell {
     display: flex; 
     align-items: center; 
+}
+
+.alumni-cell-name {
+    width: 160px;
 }
 
 .profile-picture {
@@ -372,7 +377,7 @@ p {
     padding: 0;
 }
 .list-alumni.scrollable {
-    max-height: 200px; 
-    max-width: 500px; 
+    max-height: 250px; 
+    max-width: 400px; 
     overflow-y: auto;
 }
