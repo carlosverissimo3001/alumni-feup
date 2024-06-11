@@ -5,7 +5,7 @@ export const clusterLayer = {
     source: 'alumniPerCountry',
     filter: ['>', 'students', 0],
     paint: {
-        'circle-color': ['step', ['get', 'students'], '#51bbd6', 50, '#f1f075', 100, '#f28cb1'],
+        'circle-color': ['step', ['get', 'students'], '#7DCEA0', 50, '#e5c100', 100, '#E74C3C'],
         'circle-radius': ['step', ['get', 'students'], 20, 100, 30, 750, 40]
     }
 };
@@ -19,6 +19,9 @@ export const clusterCountLayer = {
         'text-field': '{students}',
         'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Bold'],
         'text-size': 12
+    },
+    paint: {
+        'text-color': 'black'
     }
 };
 

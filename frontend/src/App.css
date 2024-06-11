@@ -2,11 +2,36 @@ html, body {
     overflow: hidden;
 }
 
-
 p {
     margin-top: 15px;
     margin-bottom: 10px;
 }
+
+.letter-style {
+    font-family: 'Inter', sans-serif;
+}
+
+.scrollable {
+    max-height: 200px; 
+    overflow-y: auto;
+}
+
+.text {
+    font-weight: 700;
+    size: 19px;
+    line-height: 20px;
+    color: #515150;
+    margin: 0px;
+}
+
+/*---- Map ----*/
+
+.mapCmpDiv{
+    height: 100vh;
+    position: relative;
+}
+
+/*----- Loading -----*/
 
 .loading-overlay {
     position: absolute;
@@ -35,15 +60,13 @@ p {
     100% { transform: rotate(360deg); }
 }
 
-.custom-radio{
-    accent-color: #D84201;
-}
+/*---- Menu Buttons ----*/
 
 .menu-buttons-container {
     position: absolute;
     top: 20px;
     left: 20px;
-    background-color: rgba(255, 255, 255, 0.5); 
+    background-color: #EDEDEC; 
     padding-top: 0px;
     padding-left: 10px; 
     padding-right: 10px;
@@ -52,9 +75,99 @@ p {
     z-index: 3;
 }
 
-.mapCmpDiv{
-    height: 100vh;
-    position: relative;
+.text-distribution {
+    margin-top: 20px;
+    padding-left: 3px;
+}
+
+.text-conclusion-year {
+    padding-bottom: 5px;
+    margin-top: 10px;
+}
+
+.custom-radio{
+    display: none;
+}
+
+.radio-buttons {
+    display: flex;
+    padding-top: 5px;
+}
+
+.custom-radio-label {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    width: 138px;
+    height: 40px; 
+    border-top: 2px solid #CACAC9; 
+    border-bottom: 2px solid #CACAC9; 
+    background-color: white;
+    color: #515150;
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.custom-radio-label-left-button {
+    border-radius: 5px 0px 0px 5px;
+    border-left: 2px solid #CACAC9; 
+    border-right: 2px solid #CACAC9; 
+}
+
+.custom-radio-label-right-button {
+    border-radius: 0px 5px 5px 0px;
+    border-right: 2px solid #CACAC9; 
+}
+
+.custom-radio:checked + .custom-radio-label {
+    background-color: #A02D20;
+    border: 2px solid #A02D20;
+    color: #FAFAFA;
+}
+
+.search-bar {
+    width: 95%;
+    height: 40px;
+    border: 1px solid #CACAC9;
+    border-radius: 5px; 
+    box-shadow: none; 
+    padding: 0px 8px; 
+    outline: none; 
+    color: #969695;
+    gap: 8px;
+}
+
+
+/* Additional styles for the dropdown options */
+.search-bar option {
+    background-color: white; /* Initial background color */
+    color: black; /* Text color */
+    padding: 5px; /* Padding inside options */
+    transition: background-color 0.3s ease; /* Smooth transition */
+}
+
+.search-bar-alumni {
+    margin-top: 20px;
+    margin-bottom: 10px;
+}
+
+.search-results div {
+    cursor: pointer; 
+}
+
+.filter-course-alumni {
+    margin-top: 10px;
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+.content-filter-course {
+    color: #CACAC9;
+}
+
+.content-filter-options {
+    color: #515150;
 }
 
 .button{
@@ -78,7 +191,6 @@ p {
     top: 210px;
     left: 20px;
 }
-
 
 .butnPopCountry{
     top: 270px;
@@ -115,20 +227,6 @@ p {
     left: 20px;
 }
 
-.search-bar {
-    border: 1px solid gray;
-    border-radius: 5px; 
-    box-shadow: none; 
-    padding: 5px; 
-    outline: none; 
-    width: 95%;
-}
-
-.filter-course-alumni {
-    width: 100%;
-    margin-bottom: 10px;
-}
-
 .year-filter-container {
     display: flex;
     margin-bottom: 10px;
@@ -139,24 +237,6 @@ p {
     display: inline-block;
 }
 
-.filter-year-to-alumni {
-    margin-left: 5px;
-}
-
-.search-bar-alumni {
-    margin-top: 10px;
-    margin-bottom: 10px;
-}
-
-.text {
-    margin: 0px;
-}
-
-.text-distribution {
-    padding-left: 6px;
-    margin-top: 10px;
-}
-
 .fileInput{
     position: absolute;
     top: 30px;
@@ -165,15 +245,119 @@ p {
     color: white;
 }
 
-.scrollable {
-    max-height: 200px; 
-    overflow-y: auto;
+.button-container {
+    display: flex;
+    justify-content: space-between;
+}
+
+.button-group {
+    display: flex;
+    align-items: center;
+    margin-top: 10px;
+}
+
+.forms-button {
+    color: #A02D20;
+    font-weight: 700;
+    padding-right: 7px;
+    size: 14px;
+    line-height: 20px;
+    cursor: pointer;
+}
+
+.icon-apply{
+    color: #A02D20;
+    font-size: 15px;
+    padding-right: 3px;
+    cursor: pointer;
+}
+
+.icon-delete {
+    color: #A02D20;
+    font-size: 24px;
+    cursor: pointer;
+}
+
+.alumnis-total-number {
+    display: flex;
+    color: #515150;
+    padding: 10px 0px  2px 0px;
+}
+
+.text-num-alumnus {
+    font-weight: 400px;
+    size: 16px;
+    line-height: 24px;
+    padding-right: 5px;
+}
+
+.feedback-links {
+    margin-right: 10px;
+}
+
+/*------ Cluster Rectangle Content ------*/
+
+.clusterRectangle {
+    background-color: #EDEDEC;
+    padding-top: 10px;
+    padding-left: 10px;
+    padding-right: 10px;
+    border-radius: 5px;
+    z-index: 999; 
+    width: 25%;
+    height: 45%;
+}
+
+.titles-letter {
+    font-variant: small-caps;
+    font-weight: 700;
+    size: 14px;
+    line-height: 20px;
+    color: #A02D20;
+    letter-spacing: 5%;
+    width: 77px;
+    height: 20px;
+}
+
+.table-titles {
+    text-align: left;
+}
+
+.sticky-header {
+    position: -webkit-sticky; 
+    position: sticky;
+    top: 0;
+    background-color: #EDEDEC; 
+    z-index: 1; 
+}
+
+.places-name {
+    font-weight: 400;
+    size: 16px;
+    line-height: 24px;
+    color: #18180A;
+}
+
+.content-table {
+    font-weight: 400;
+    size: 16px;
+    line-height: 24px;
+    color: #515150;
+    padding-right: 30px;
+}
+
+.link {
+    text-decoration: none;
 }
 
 .alumni-cell {
     display: flex; 
     align-items: center; 
-  }
+}
+
+.alumni-cell-name {
+    width: 160px;
+}
 
 .profile-picture {
     max-height: 30px;
@@ -186,21 +370,6 @@ p {
     align-items: center;
 }
 
-.search-results div {
-    cursor: pointer; 
-}
-
-.clusterRectangle {
-    background-color: rgba(255, 255, 255, 0.8);
-    border: 1px solid black;
-    padding-top: 10px;
-    padding-left: 10px;
-    padding-right: 10px;
-    border-radius: 5px;
-    z-index: 999; 
-    width: 20%;
-    height: 40%;
-}
 
 .my-button-pagination-prev {
     margin-right: 10px;
@@ -211,51 +380,12 @@ p {
     margin-top: 10px;
 }
 
-.link {
-    color: black;
-    text-decoration: none;
-}
-
 .list-alumni {
     list-style-type: none;
     padding: 0;
 }
 .list-alumni.scrollable {
-    max-height: 200px; 
-    max-width: 500px; 
+    max-height: 250px; 
+    max-width: 400px; 
     overflow-y: auto;
-}
-
-.table-titles {
-    text-align: left;
-}
-
-.my-button {
-    background: linear-gradient(135deg, #D84201, #FF2200);  
-    border: none; 
-    border-radius: 5px; 
-    color: white;
-    padding: 5px 10px; 
-    font-size: 10px; 
-    font-weight: bold; 
-    text-transform: uppercase; 
-    cursor: pointer; 
-    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2); 
-    transition: all 0.3s ease; 
-}
-
-.my-button-clean {
-    margin-left: 10px;
-}
-
-  
-.my-button:hover {
-    background: linear-gradient(135deg, #FF2200, #D84201); 
-    box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.3); 
-    transform: translateY(-2px); 
-}
-
-.feedback-links {
-    color: black;
-    margin-right: 10px;
 }
