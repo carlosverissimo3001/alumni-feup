@@ -71,17 +71,17 @@ const ClusterInfo = ({
     <>
         {hoveredCluster && listAlumniNames.length > 0 && listLinkedinLinks.length > 0 && listPlaceName.length > 0 && (
         <div
-            className="clusterRectangle"
+            className="clusterRectangle letter-style"
             style={{
                 position: 'absolute',
                 top: `${hoveredMouseCoords[1]}px`,
                 left: `${hoveredMouseCoords[0]}px`,
             }}
         >
-            <span><b>Place:</b></span>
+            <span className='titles-letter'><b>LOCATION</b></span>
             <div style={{ maxHeight: listPlaceName.length > 10 ? '45px' : 'auto', overflow: 'auto' }}>
             {listPlaceName.map((place, index) => (
-                <span key={index}>{place}{index !== listPlaceName.length - 1 && ', '}</span>
+                <span key={index} className='places-name'>{place}{index !== listPlaceName.length - 1 && ', '}</span>
             ))}
             </div>
             <p></p>
@@ -89,9 +89,9 @@ const ClusterInfo = ({
             <table className="alumni-table">
                 <thead>
                 <tr>
-                    <th className="table-titles">Alumni</th>
-                    <th className="table-titles">Course</th>
-                    <th className="table-titles">Conclusion</th>
+                    <th className="table-titles titles-letter">ALUMNI</th>
+                    <th className="table-titles titles-letter">COURSE</th>
+                    <th className="table-titles titles-letter">CONCLUSION</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -109,7 +109,7 @@ const ClusterInfo = ({
                             onError={handleImageError}
                             />
                             <a
-                            className="link"
+                            className="link content-table"
                             href={alumni.linkedinLink}
                             target="_blank"
                             rel="noopener noreferrer"
@@ -118,8 +118,8 @@ const ClusterInfo = ({
                             </a>
                         </div>
                         </td>
-                        <td>{alumni.courses}</td>
-                        <td>{alumni.yearConclusions}</td>
+                        <td className='content-table'>{alumni.courses}</td>
+                        <td className='content-table'>{alumni.yearConclusions}</td>
                     </tr>
                     ))}
                 </tbody>

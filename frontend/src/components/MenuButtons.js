@@ -8,6 +8,8 @@ import setUp from '../helpers/setUp';
 import Helper from '../helpers/helper';
 import ApiDataAnalysis from '../helpers/apiDataAnalysis';
 import locationGeoJSON from '../locationGeoJSON.json';
+import { TiDelete } from "react-icons/ti";
+import { FaCheckCircle } from "react-icons/fa";
 
 const MenuButtons = ({onLoading, onSelectGeoJSON, onSelectAlumni}) => {
     
@@ -298,27 +300,25 @@ const MenuButtons = ({onLoading, onSelectGeoJSON, onSelectAlumni}) => {
     return (
         <>
             <p className='text text-distribution'>See alumni distribution across:</p>
-            <div>
+            <div className="radio-buttons">
                 <input
                     type="radio"
                     id="countriesCheckbox"
                     value="countries"
                     checked={selectedOption === 'countries'}
                     onChange={handleCheckboxChange}
-                    class="custom-radio"
+                    className="custom-radio"
                 />
-                <label htmlFor="countriesCheckbox">Countries</label>
-            </div>
-            <div>
+                <label htmlFor="countriesCheckbox" className="custom-radio-label custom-radio-label-left-button">Countries</label>
                 <input
                     type="radio"
                     id="citiesCheckbox"
                     value="cities"
                     checked={selectedOption === 'cities'}
                     onChange={handleCheckboxChange}
-                    class="custom-radio"
+                    className="custom-radio"
                 />
-                <label htmlFor="citiesCheckbox">Cities</label>
+                <label htmlFor="citiesCheckbox" className="custom-radio-label custom-radio-label-right-button">Cities</label>
             </div>
 
             <div className="search-container">
@@ -341,60 +341,69 @@ const MenuButtons = ({onLoading, onSelectGeoJSON, onSelectAlumni}) => {
             </div>
 
             <div className="search-container"> 
-                <label htmlFor="myDropdown">Course:</label>
                 <select 
                 className='filter-course-alumni search-bar' 
                 id="myDropdown"
                 value={filterCourseInput}
                 onChange={handleFilterCourseInputChange}>
-                    <option value="" > </option>
+                    <option className="content-filter-course" value="">Filter by course</option>
                     {courses.map((course, index) => (
-                        <option key={index} value={course} >
+                        <option className="content-filter-options" key={index} value={course} >
                             {course}
                         </option>
                     ))}
                 </select>
             </div>
 
-            <p className='text'>Conclusion year:</p>
+            <p className='text text-conclusion-year'>Conclusion year:</p>
 
             <div className="year-filter-container"> 
                 <div className='search-container-year'>
-                    <label htmlFor="myDropdown">From</label>
                     <select 
-                        className='filter-year-from-alumni search-bar' 
+                        className='search-bar' 
                         id="myDropdownYearFrom"
                         value={yearFilter[0]}
                         onChange={e => handleYearChange(0, e.target.value)}>
-                            <option value="" > </option>
+                            <option value="" >From</option>
                             {years.map((year) => (
-                                <option key={year} value={year}>
+                                <option className="content-filter-options" key={year} value={year}>
                                     {year}
                                 </option>
                             ))}
                     </select>
                 </div>
                 <div className='search-container-year'>
-                    <label htmlFor="myDropdown">To</label>
                     <select 
-                        className='filter-year-to-alumni search-bar' 
+                        className='search-bar' 
                         id="myDropdownYearTo"
                         value={yearFilter[1]}
                         onChange={e => handleYearChange(1, e.target.value)}>
-                            <option value="" > </option>
+                            <option value="" >To</option>
                             {years.filter((year) => year > yearFilter[0]).map((year) => (
-                                <option key={year} value={year}>{year}</option>
+                                <option className="content-filter-options" key={year} value={year}>{year}</option>
                             ))}
                     </select>
                 </div>
             </div>
 
-            <button className="my-button" onClick={() => onClickApply(filterCourseInput, yearFilter)}> Apply </button>
-            <button className="my-button my-button-clean" onClick={onClickClean}> Clear </button>
+            <div className='button-container'>
+                <div className='button-group'>
+                    <FaCheckCircle className="icon-apply" onClick={() => onClickApply(filterCourseInput, yearFilter)}/>
+                    <span className='forms-button' onClick={() => onClickApply(filterCourseInput, yearFilter)}> Apply </span>
+                </div>
+                <div className='button-group'>
+                    <TiDelete className="icon-delete" onClick={onClickClean}/>
+                    <span className='forms-button' onClick={onClickClean}> Clear </span> 
+                </div>
+            </div>
 
-            <p>Total selected: {numberAlumnisShowing}</p>
-            <a className="feedback-links" href="https://docs.google.com/forms/d/e/1FAIpQLScPMdQzqv9Dy1llc-nGdr33q33r7GnSZjmYtxwwT1v_oy3Y7Q/viewform" target="_blank" rel="noopener noreferrer">Join us</a>
-            <a className="feedback-links" href="https://forms.gle/iNQ8mrakT9ToZcLT7" target="_blank" rel="noopener noreferrer">Give Feedback</a>
+            <div className='alumnis-total-number'>
+                <p className='letter-style text-num-alumnus'>Total number of alumnus: </p> 
+                <p>{numberAlumnisShowing}</p>
+            </div>
+
+            <a className="text feedback-links" href="https://docs.google.com/forms/d/e/1FAIpQLScPMdQzqv9Dy1llc-nGdr33q33r7GnSZjmYtxwwT1v_oy3Y7Q/viewform" target="_blank" rel="noopener noreferrer">Join us</a>
+            <a className="text feedback-links" href="https://forms.gle/iNQ8mrakT9ToZcLT7" target="_blank" rel="noopener noreferrer">Give Feedback</a>
           
 
             {/*<input type="file" className='fileInput' onChange={handleFileChange} />  
