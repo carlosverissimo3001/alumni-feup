@@ -323,6 +323,14 @@ p {
     text-align: left;
 }
 
+.sticky-header {
+    position: -webkit-sticky; 
+    position: sticky;
+    top: 0;
+    background-color: #EDEDEC; 
+    z-index: 1; 
+}
+
 .places-name {
     font-weight: 400;
     size: 16px;
