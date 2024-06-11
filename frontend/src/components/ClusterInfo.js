@@ -85,11 +85,11 @@ const ClusterInfo = ({
             ))}
             </div>
             <p></p>
-            <ul className={`list-alumni${listAlumniNames.length > nAlumniToShowScrollBar ? ' scrollable' : ''}`}>
+            <ul className="list-alumni scrollable">
             <table className="alumni-table">
                 <thead>
                 <tr>
-                    <th className="table-titles titles-letter">ALUMNI</th>
+                    <th className="table-titles titles-letter alumni-cell-name">ALUMNI</th>
                     <th className="table-titles titles-letter">COURSE</th>
                     <th className="table-titles titles-letter">CONCLUSION</th>
                 </tr>
@@ -101,7 +101,7 @@ const ClusterInfo = ({
                     .map((alumni, index) => (
                     <tr key={index}>
                         <td>
-                        <div className='alumni-cell'>
+                        <div className='alumni-cell alumni-cell-name'>
                             <img
                             className="profile-picture"
                             src={alumni.profilePics}
@@ -125,8 +125,8 @@ const ClusterInfo = ({
                 </tbody>
             </table>
             <div>
-                {showPrev && <button className="my-button my-button-pagination-prev" onClick={handleShowPrev}>Prev</button>}
-                {showMore && <button className="my-button my-button-pagination-more" onClick={handleShowMore}>More</button>}
+                {showPrev && <span className="forms-button my-button-pagination-prev" onClick={handleShowPrev}> Prev </span>}
+                {showMore && <span className="my-button-pagination-more forms-button" onClick={handleShowMore}> More </span>}
             </div>
             </ul>
         </div>
