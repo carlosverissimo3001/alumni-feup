@@ -89,9 +89,9 @@ const ClusterInfo = ({
             <table className="alumni-table">
                 <thead>
                 <tr>
-                    <th className="table-titles titles-letter alumni-cell-name">ALUMNI</th>
-                    <th className="table-titles titles-letter">COURSE</th>
-                    <th className="table-titles titles-letter">CONCLUSION</th>
+                    <th className="table-titles titles-letter alumni-cell-name sticky-header">ALUMNI</th>
+                    <th className="table-titles titles-letter sticky-header">COURSE</th>
+                    <th className="table-titles titles-letter sticky-header">CONCLUSION</th>
                 </tr>
                 </thead>
                 <tbody>
