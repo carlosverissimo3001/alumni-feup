@@ -11,7 +11,7 @@ import locationGeoJSON from '../locationGeoJSON.json';
 import { TiDelete } from "react-icons/ti";
 import { FaCheckCircle } from "react-icons/fa";
 
-const MenuButtons = ({onLoading, onSelectGeoJSON, onSelectAlumni, yearUrl}) => {
+const MenuButtons = ({menuVisible, onLoading, onSelectGeoJSON, onSelectAlumni, yearUrl}) => {
     
     const currentYear = new Date().getFullYear();
     const years = Array.from({ length: currentYear - 1920 + 1 }, (_, i) => 1920 + i).reverse();
@@ -320,135 +320,139 @@ const MenuButtons = ({onLoading, onSelectGeoJSON, onSelectAlumni, yearUrl}) => {
 
     return (
         <>
-            <p className='text text-distribution'>See alumni distribution across:</p>
-            <div className="radio-buttons">
-                <input
-                    type="radio"
-                    id="countriesCheckbox"
-                    value="countries"
-                    checked={selectedOption === 'countries'}
-                    onChange={handleCheckboxChange}
-                    className="custom-radio"
-                />
-                <label htmlFor="countriesCheckbox" className="custom-radio-label custom-radio-label-left-button">Countries</label>
-                <input
-                    type="radio"
-                    id="citiesCheckbox"
-                    value="cities"
-                    checked={selectedOption === 'cities'}
-                    onChange={handleCheckboxChange}
-                    className="custom-radio"
-                />
-                <label htmlFor="citiesCheckbox" className="custom-radio-label custom-radio-label-right-button">Cities</label>
-            </div>
+            { menuVisible && (
+              <>
+                <p className='text text-distribution'>See alumni distribution across:</p>
+                <div className="radio-buttons">
+                    <input
+                        type="radio"
+                        id="countriesCheckbox"
+                        value="countries"
+                        checked={selectedOption === 'countries'}
+                        onChange={handleCheckboxChange}
+                        className="custom-radio"
+                    />
+                    <label htmlFor="countriesCheckbox" className="custom-radio-label custom-radio-label-left-button">Countries</label>
+                    <input
+                        type="radio"
+                        id="citiesCheckbox"
+                        value="cities"
+                        checked={selectedOption === 'cities'}
+                        onChange={handleCheckboxChange}
+                        className="custom-radio"
+                    />
+                    <label htmlFor="citiesCheckbox" className="custom-radio-label custom-radio-label-right-button">Cities</label>
+                </div>
 
-            <div className="search-container">
-                <input
-                    type="text"
-                    placeholder="Search alumni..."
-                    value={searchInput}
-                    className='search-bar-alumni search-bar'
-                    onChange={handleSearchInputChange}
-                />
-                {filteredAlumniNamesCoord.length > 0 && (
-                    <div className={`search-results ${filteredAlumniNamesCoord.length > 5 ? 'scrollable' : ''}`}>
-                    {filteredAlumniNamesCoord.map((alumniData, index) => (
-                        <div key={index} onClick={() => handleAlumniSelection(alumniData.name, alumniData.coordinates)}>
-                            {alumniData.name}
+                <div className="search-container">
+                    <input
+                        type="text"
+                        placeholder="Search alumni..."
+                        value={searchInput}
+                        className='search-bar-alumni search-bar'
+                        onChange={handleSearchInputChange}
+                    />
+                    {filteredAlumniNamesCoord.length > 0 && (
+                        <div className={`search-results ${filteredAlumniNamesCoord.length > 5 ? 'scrollable' : ''}`}>
+                        {filteredAlumniNamesCoord.map((alumniData, index) => (
+                            <div key={index} onClick={() => handleAlumniSelection(alumniData.name, alumniData.coordinates)}>
+                                {alumniData.name}
+                            </div>
+                        ))}
                         </div>
-                    ))}
+                    )}
+                </div>
+
+                <div className="search-container"> 
+                    <select 
+                    className='filter-course-alumni search-bar' 
+                    id="myDropdown"
+                    value={filterCourseInput}
+                    onChange={handleFilterCourseInputChange}>
+                        <option className="content-filter-course" value="">Filter by course</option>
+                        {courses.map((course, index) => (
+                            <option className="content-filter-options" key={index} value={course} >
+                                {course}
+                            </option>
+                        ))}
+                    </select>
+                </div>
+
+                <p className='text text-conclusion-year'>Conclusion year:</p>
+
+                <div className="year-filter-container"> 
+                    <div className='search-container-year'>
+                        <select 
+                            className='search-bar' 
+                            id="myDropdownYearFrom"
+                            value={yearFilter[0]}
+                            onChange={e => handleYearChange(0, e.target.value)}>
+                                <option value="" >From</option>
+                                {years.map((year) => (
+                                    <option className="content-filter-options" key={year} value={year}>
+                                        {year}
+                                    </option>
+                                ))}
+                        </select>
                     </div>
-                )}
-            </div>
-
-            <div className="search-container"> 
-                <select 
-                className='filter-course-alumni search-bar' 
-                id="myDropdown"
-                value={filterCourseInput}
-                onChange={handleFilterCourseInputChange}>
-                    <option className="content-filter-course" value="">Filter by course</option>
-                    {courses.map((course, index) => (
-                        <option className="content-filter-options" key={index} value={course} >
-                            {course}
-                        </option>
-                    ))}
-                </select>
-            </div>
-
-            <p className='text text-conclusion-year'>Conclusion year:</p>
-
-            <div className="year-filter-container"> 
-                <div className='search-container-year'>
-                    <select 
-                        className='search-bar' 
-                        id="myDropdownYearFrom"
-                        value={yearFilter[0]}
-                        onChange={e => handleYearChange(0, e.target.value)}>
-                            <option value="" >From</option>
-                            {years.map((year) => (
-                                <option className="content-filter-options" key={year} value={year}>
-                                    {year}
-                                </option>
-                            ))}
-                    </select>
+                    <div className='search-container-year'>
+                        <select 
+                            className='search-bar' 
+                            id="myDropdownYearTo"
+                            value={yearFilter[1]}
+                            onChange={e => handleYearChange(1, e.target.value)}>
+                                <option value="" >To</option>
+                                {years.filter((year) => year > yearFilter[0]).map((year) => (
+                                    <option className="content-filter-options" key={year} value={year}>{year}</option>
+                                ))}
+                        </select>
+                    </div>
                 </div>
-                <div className='search-container-year'>
-                    <select 
-                        className='search-bar' 
-                        id="myDropdownYearTo"
-                        value={yearFilter[1]}
-                        onChange={e => handleYearChange(1, e.target.value)}>
-                            <option value="" >To</option>
-                            {years.filter((year) => year > yearFilter[0]).map((year) => (
-                                <option className="content-filter-options" key={year} value={year}>{year}</option>
-                            ))}
-                    </select>
+
+                <div className='button-container'>
+                    <div className='button-group'>
+                        <FaCheckCircle className="icon-apply" onClick={() => onClickApply(filterCourseInput, yearFilter)}/>
+                        <span className='forms-button' onClick={() => onClickApply(filterCourseInput, yearFilter)}> Apply </span>
+                    </div>
+                    <div className='button-group'>
+                        <TiDelete className="icon-delete" onClick={onClickClean}/>
+                        <span className='forms-button' onClick={onClickClean}> Clear </span> 
+                    </div>
                 </div>
-            </div>
 
-            <div className='button-container'>
-                <div className='button-group'>
-                    <FaCheckCircle className="icon-apply" onClick={() => onClickApply(filterCourseInput, yearFilter)}/>
-                    <span className='forms-button' onClick={() => onClickApply(filterCourseInput, yearFilter)}> Apply </span>
+                <div className='alumnis-total-number'>
+                    <p className='letter-style text-num-alumnus'>Total number of alumnus: </p> 
+                    <p>{numberAlumnisShowing}</p>
                 </div>
-                <div className='button-group'>
-                    <TiDelete className="icon-delete" onClick={onClickClean}/>
-                    <span className='forms-button' onClick={onClickClean}> Clear </span> 
-                </div>
-            </div>
 
-            <div className='alumnis-total-number'>
-                <p className='letter-style text-num-alumnus'>Total number of alumnus: </p> 
-                <p>{numberAlumnisShowing}</p>
-            </div>
-
-            <a className="text feedback-links" href="https://docs.google.com/forms/d/e/1FAIpQLScPMdQzqv9Dy1llc-nGdr33q33r7GnSZjmYtxwwT1v_oy3Y7Q/viewform" target="_blank" rel="noopener noreferrer">Join us</a>
-            <a className="text feedback-links" href="https://forms.gle/iNQ8mrakT9ToZcLT7" target="_blank" rel="noopener noreferrer">Give Feedback</a>
-          
-
-            {/*<input type="file" className='fileInput' onChange={handleFileChange} />  
-            <button className="button butnPopAlumni" onClick={handlePopulateCoursesTable}>Populate Courses Table</button>
+                <a className="text feedback-links" href="https://docs.google.com/forms/d/e/1FAIpQLScPMdQzqv9Dy1llc-nGdr33q33r7GnSZjmYtxwwT1v_oy3Y7Q/viewform" target="_blank" rel="noopener noreferrer">Join us</a>
+                <a className="text feedback-links" href="https://forms.gle/iNQ8mrakT9ToZcLT7" target="_blank" rel="noopener noreferrer">Give Feedback</a>
             
-            <button className="button butnPopAlumni" onClick={handlePopulateAlumniTable}>AlumniTablePopulate</button>
-            <button className="button butnBackAlumni" onClick={handleBackupTableAlumni}>BackupTableAlumni</button>
-            <button className="button butnBackAlumniWFile" onClick={handlePopulateAlumniTableFileBckp}>AlumniTablePopulate - backup file</button>
-            <button className="button btnMissingLinkedinLinks" onClick={handleLinkedinLinksAlumniTable}>MissingLinkedinLinks</button>
 
-            <button className="button butnPopCountry" onClick={handleDeleteRepeatedAlumnis}>DeleteRepeatedAlumnis</button>
-            <button className="button butnPopCity" onClick={handleRefactorlinkdinLinkAlumnis}>RefactorlinkdinLinkAlumnis</button>
+                {/*<input type="file" className='fileInput' onChange={handleFileChange} />  
+                <button className="button butnPopAlumni" onClick={handlePopulateCoursesTable}>Populate Courses Table</button>
+                
+                <button className="button butnPopAlumni" onClick={handlePopulateAlumniTable}>AlumniTablePopulate</button>
+                <button className="button butnBackAlumni" onClick={handleBackupTableAlumni}>BackupTableAlumni</button>
+                <button className="button butnBackAlumniWFile" onClick={handlePopulateAlumniTableFileBckp}>AlumniTablePopulate - backup file</button>
+                <button className="button btnMissingLinkedinLinks" onClick={handleLinkedinLinksAlumniTable}>MissingLinkedinLinks</button>
+
+                <button className="button butnPopCountry" onClick={handleDeleteRepeatedAlumnis}>DeleteRepeatedAlumnis</button>
+                <button className="button butnPopCity" onClick={handleRefactorlinkdinLinkAlumnis}>RefactorlinkdinLinkAlumnis</button>
 
 
-            <button className="button butnPopCountry" onClick={handlePopulateCountryTable}>PopulateCoutryTable</button>
-            <button className="button butnPopCity" onClick={handlePopulateCityTable}>PopulateCityTable</button>
-            <button className="button butnPopAlumniEIC" onClick={handlePopulateAlumniEICTable}>PopulateAlumniEICTable</button>*/}
+                <button className="button butnPopCountry" onClick={handlePopulateCountryTable}>PopulateCoutryTable</button>
+                <button className="button butnPopCity" onClick={handlePopulateCityTable}>PopulateCityTable</button>
+                <button className="button butnPopAlumniEIC" onClick={handlePopulateAlumniEICTable}>PopulateAlumniEICTable</button>*/}
 
-            {/*<button className="button butnGenCountryGeoJson" onClick={generateCountryGeoJson}>generateCountryGeoJson</button>
-            <button className="button butnGenCityGeoJson" onClick={handleGenerateCityGeoJson}>GenerateCityGeoJson</button>
+                {/*<button className="button butnGenCountryGeoJson" onClick={generateCountryGeoJson}>generateCountryGeoJson</button>
+                <button className="button butnGenCityGeoJson" onClick={handleGenerateCityGeoJson}>GenerateCityGeoJson</button>
 
-            <button className="button butnAlmWithoutLink" onClick={handleAlumnisMatchLinkedin}>Match Alumnis Linkedin</button>
-            <button className="button btnExcelAlumniProfSitu" onClick={handleExcelAlumniProfSitu}>Excel: nomeAlumni + professionalSitu</button>
-            <button className="button btnExcelAlumniTableToExcel" onClick={handleAlmnTblExcel}>Excel: Alumni table</button>*/}
+                <button className="button butnAlmWithoutLink" onClick={handleAlumnisMatchLinkedin}>Match Alumnis Linkedin</button>
+                <button className="button btnExcelAlumniProfSitu" onClick={handleExcelAlumniProfSitu}>Excel: nomeAlumni + professionalSitu</button>
+                <button className="button btnExcelAlumniTableToExcel" onClick={handleAlmnTblExcel}>Excel: Alumni table</button>*/}
+              </>
+            )}
         </>
     );
 };
