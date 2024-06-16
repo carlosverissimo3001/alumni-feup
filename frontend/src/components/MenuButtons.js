@@ -11,7 +11,7 @@ import locationGeoJSON from '../locationGeoJSON.json';
 import { TiDelete } from "react-icons/ti";
 import { FaCheckCircle } from "react-icons/fa";
 
-const MenuButtons = ({onLoading, onSelectGeoJSON, onSelectAlumni}) => {
+const MenuButtons = ({onLoading, onSelectGeoJSON, onSelectAlumni, yearUrl}) => {
     
     const currentYear = new Date().getFullYear();
     const years = Array.from({ length: currentYear - 1920 + 1 }, (_, i) => 1920 + i).reverse();
@@ -28,18 +28,34 @@ const MenuButtons = ({onLoading, onSelectGeoJSON, onSelectAlumni}) => {
     const [yearFilter, setYearFilter] = useState(['','']);
     const [geoCreated, setGeoCreated] = useState(true); // Inidicates if the geoJson has been created or not
     const [loading, setLoading] = useState(true); // Loading state, if true: loading if false: not loading
+    const [yearUrlReceived, setYearUrlReceived] = useState(true); // used to avoid the useEffect that calls the onClickApply to enter into a loop
+    const [firstEffectComplete, setFirstEffectComplete] = useState(false); // used to wait for the useEffect that reads the year on the link to finish
 
-    // Handles changes on the load
+    // Reads the year parameter on the URL
     useEffect(() => {
-        onLoading(loading);
-    }, [loading, onLoading]);
+        const fetchData = async () => {
+            if (yearUrl && yearUrlReceived) {
+                setSelectedOption("countries");
+                setYearFilter([yearUrl, '']);   
+                setYearUrlReceived(true);
+            }
+            setFirstEffectComplete(true);
+        }
+        fetchData();
+    }, [yearUrl, yearUrlReceived]);
     
     // When selected option changes to "" which happens on Clear button or when a reload page happens
     useEffect(() => {
+        if (!firstEffectComplete) return; // waits for the useEffect that reads the year on the link to finish
+
         const fetchData = async () => {
-            if (selectedOption === "") {
+            if (selectedOption === ""  && !yearUrlReceived) {
                 onClickApply("", ["", ""]);
-            }
+            } 
+            else if (yearUrlReceived) {
+                onClickApply(filterCourseInput, yearFilter);
+                setYearUrlReceived(false);
+            } 
             onSelectGeoJSON(locationGeoJSON); 
 
             // Waits a bit before setting the load to false so that the code has time to update the locationGeoJson on the MapCmp.js
@@ -48,7 +64,12 @@ const MenuButtons = ({onLoading, onSelectGeoJSON, onSelectAlumni}) => {
         }
 
         fetchData();                 
-    }, [selectedOption]);
+    }, [firstEffectComplete, selectedOption, filterCourseInput, yearFilter, yearUrlReceived]);
+
+    // Handles changes on the load
+    useEffect(() => {
+        onLoading(loading);
+    }, [loading, onLoading]);
 
     // sets the variables to be used: nº of alumnis and an array with the info to be printed on the screen
     useEffect(() => {

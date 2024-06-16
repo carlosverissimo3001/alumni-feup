@@ -5,11 +5,13 @@ import React, { useState } from 'react';
 import { clusterLayer } from './MapLayers';
 import MenuButtons from './MenuButtons';
 import MapView from './MapView';
+import { useParams } from 'react-router-dom';
 
 const MapCmp = () => { 
     const [alumniGeoJSON, setAlumniGeoJSON] = useState(null);     // GeoJson to be displayed. Created on the MenuButtons.js and used in the MapView.js 
     const [selectedAlumni, setSelectedAlumni] = useState(null);   // Contains the alumni the user is search for. Set by the MenuButtons.js and used by MapView.js to position the map where that alumni is
     const [loading, setLoading] = useState(true);                 // Loading state. Set on the MenuButtons.js and used in the MapView.js
+    const { yearUrl } = useParams();
 
     // Alumni selection
     const handleSelectAlumni = (name, coordinates) => {
@@ -38,7 +40,7 @@ const MapCmp = () => {
     return (
       <>
         <div className="menu-buttons-container">
-            <MenuButtons onLoading={handleLoading} onSelectAlumni={handleSelectAlumni} onSelectGeoJSON={handleSelectGeoJSON} />
+            <MenuButtons onLoading={handleLoading} onSelectAlumni={handleSelectAlumni} onSelectGeoJSON={handleSelectGeoJSON} yearUrl={yearUrl}/>
         </div>
         
         <MapView
