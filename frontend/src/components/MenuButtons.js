@@ -36,7 +36,7 @@ const MenuButtons = ({onLoading, onSelectGeoJSON, onSelectAlumni, yearUrl}) => {
         const fetchData = async () => {
             if (yearUrl && yearUrlReceived) {
                 setSelectedOption("countries");
-                setYearFilter([yearUrl, '']);   
+                setYearFilter([yearUrl, yearUrl]);   
                 setYearUrlReceived(true);
             }
             setFirstEffectComplete(true);
