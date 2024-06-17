@@ -5,27 +5,23 @@
       "type": "Feature",
       "properties": {
         "name": [
-          "netherlands"
+          "united kingdom"
         ],
-        "students": 2,
+        "students": 1,
         "listLinkedinLinksByUser": {
-          "https://www.linkedin.com/in/pedrompontes/": "Pedro Pontes",
-          "https://www.linkedin.com/in/joaomnogueira/": "João Nogueira"
+          "https://www.linkedin.com/in/mgmesquita/": "Mario Mesquita"
         },
         "coursesYearConclusionByUser": {
-          "https://www.linkedin.com/in/pedrompontes/": {
-            "MIEIC": "2017/2018"
-          },
-          "https://www.linkedin.com/in/joaomnogueira/": {
-            "MIEIC": "2017/2018"
+          "https://www.linkedin.com/in/mgmesquita/": {
+            "M.EIC": "2022/2023"
           }
         }
       },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          4.88969,
-          52.37403
+          -0.12574,
+          51.50853
         ]
       }
     },
@@ -35,101 +31,106 @@
         "name": [
           "portugal"
         ],
-        "students": 23,
+        "students": 24,
         "listLinkedinLinksByUser": {
-          "https://www.linkedin.com/in/duartemrpinto/": "duarte pinto",
-          "https://www.linkedin.com/in/claudiomonteiro391/": "Cláudio Monteiro",
-          "https://www.linkedin.com/in/filipa-ivars/": "Filipa Ivars Silva",
-          "https://www.linkedin.com/in/diogobarroso/": "Diogo Barroso",
-          "https://www.linkedin.com/in/fabioamarante/": "Fábio Amarante",
-          "https://www.linkedin.com/in/amarald/": "Diogo Amaral",
-          "https://www.linkedin.com/in/ruivilares/": "Rui Vilares",
-          "https://www.linkedin.com/in/franciscojlveiga/": "Francisco Veiga",
-          "https://www.linkedin.com/in/pedrovlmartins/": "Pedro Martins",
-          "https://www.linkedin.com/in/andre-lago/": "André Lago",
-          "https://www.linkedin.com/in/hugo-matos-7166b6107/": "Hugo Matos",
-          "https://www.linkedin.com/in/revtut/": "João Oliveira e Silva",
-          "https://www.linkedin.com/in/diana-pinto-48b1b5116/": "Diana Pinto",
-          "https://www.linkedin.com/in/pedromvsilva/": "Pedro Silva",
-          "https://www.linkedin.com/in/danielsilvareis/": "Daniel Reis",
-          "https://www.linkedin.com/in/luis-carvalho-6b966794/": "Luis Carvalho",
-          "https://www.linkedin.com/in/silva95gustavo/": "Gustavo Silva",
-          "https://www.linkedin.com/in/antoniodcasimiro/": "António Casimiro",
-          "https://www.linkedin.com/in/marina-ff-camilo/": "Marina Camilo",
-          "https://www.linkedin.com/in/franciscocrodrigues/": "Francisco Rodrigues",
-          "https://www.linkedin.com/in/pedromlcosta/": "Pedro Costa",
-          "https://www.linkedin.com/in/ivolimasilva/": "Ivo Silva",
-          "https://www.linkedin.com/in/sapdomingues/": "Sérgio D."
+          "https://www.linkedin.com/in/anriii/": "Henrique Pereira",
+          "https://www.linkedin.com/in/a-francisco-miranda/": "Francisco  Miranda ",
+          "https://www.linkedin.com/in/tiagoogomess/": "Tiago Gomes",
+          "https://www.linkedin.com/in/vascoguedes/": "Vasco Guedes",
+          "https://www.linkedin.com/in/dmfrodrigues/": "diogo rodrigues",
+          "https://www.linkedin.com/in/ana-teresa-cruz/": "Ana Teresa Cruz",
+          "https://www.linkedin.com/in/andrenasx/": "André Nascimento",
+          "https://www.linkedin.com/in/guilherme-bica/": "Guilherme Bica",
+          "https://www.linkedin.com/in/antbezerra/": "antónio bezerra",
+          "https://www.linkedin.com/in/diogocosta876/": "Diogo Costa",
+          "https://www.linkedin.com/in/-marcio-duarte-/": "Márcio Duarte",
+          "https://www.linkedin.com/in/catarina-fernandes-9801841a6/": "Catarina Fernandes",
+          "https://www.linkedin.com/in/mariana-teixeira-baa658219/": "Mariana Teixeira",
+          "https://www.linkedin.com/in/anete-pereira-8b3726216/": "Anete Pereira",
+          "https://www.linkedin.com/in/zmcastro/": "José Castro",
+          "https://www.linkedin.com/in/diogosamuel/": "Diogo Samuel Fernandes",
+          "https://www.linkedin.com/in/josemacedo99/": "José Macedo",
+          "https://www.linkedin.com/in/luismarquestorres/": "Luis Marques Torres E Silva",
+          "https://www.linkedin.com/in/ptozin/": "João Araújo",
+          "https://www.linkedin.com/in/biamendes1/": "Beatriz Mendes",
+          "https://www.linkedin.com/in/tiagoalves123/": "Tiago Alves",
+          "https://www.linkedin.com/in/ca-moes/": "andré gomes",
+          "https://www.linkedin.com/in/pjfmoreira/": "Pedro Moreira",
+          "https://www.linkedin.com/in/dfamonteiro/": "Daniel Monteiro"
         },
         "coursesYearConclusionByUser": {
-          "https://www.linkedin.com/in/duartemrpinto/": {
-            "MIEIC": "2017/2018"
+          "https://www.linkedin.com/in/anriii/": {
+            "M.EIC": "2022/2023"
           },
-          "https://www.linkedin.com/in/claudiomonteiro391/": {
-            "MIEIC": "2017/2018"
+          "https://www.linkedin.com/in/a-francisco-miranda/": {
+            "L.EIC": "2022/2023",
+            "M.EIC": "2022/2023"
           },
-          "https://www.linkedin.com/in/filipa-ivars/": {
-            "MIEIC": "2017/2018"
+          "https://www.linkedin.com/in/tiagoogomess/": {
+            "M.EIC": "2022/2023"
           },
-          "https://www.linkedin.com/in/diogobarroso/": {
-            "MIEIC": "2017/2018"
+          "https://www.linkedin.com/in/vascoguedes/": {
+            "L.EIC": "2022/2023"
           },
-          "https://www.linkedin.com/in/fabioamarante/": {
-            "MIEIC": "2017/2018"
+          "https://www.linkedin.com/in/dmfrodrigues/": {
+            "M.EIC": "2022/2023"
           },
-          "https://www.linkedin.com/in/amarald/": {
-            "MIEIC": "2017/2018"
+          "https://www.linkedin.com/in/ana-teresa-cruz/": {
+            "M.EIC": "2022/2023"
           },
-          "https://www.linkedin.com/in/ruivilares/": {
-            "MIEIC": "2017/2018"
+          "https://www.linkedin.com/in/andrenasx/": {
+            "M.EIC": "2022/2023"
           },
-          "https://www.linkedin.com/in/franciscojlveiga/": {
-            "MIEIC": "2017/2018"
+          "https://www.linkedin.com/in/guilherme-bica/": {
+            "L.EIC": "2022/2023"
           },
-          "https://www.linkedin.com/in/pedrovlmartins/": {
-            "MIEIC": "2017/2018"
+          "https://www.linkedin.com/in/antbezerra/": {
+            "M.EIC": "2022/2023"
           },
-          "https://www.linkedin.com/in/andre-lago/": {
-            "MIEIC": "2017/2018"
+          "https://www.linkedin.com/in/diogocosta876/": {
+            "L.EIC": "2022/2023"
           },
-          "https://www.linkedin.com/in/hugo-matos-7166b6107/": {
-            "MIEIC": "2017/2018"
+          "https://www.linkedin.com/in/-marcio-duarte-/": {
+            "M.EIC": "2022/2023"
           },
-          "https://www.linkedin.com/in/revtut/": {
-            "MIEIC": "2017/2018"
+          "https://www.linkedin.com/in/catarina-fernandes-9801841a6/": {
+            "M.EIC": "2022/2023"
           },
-          "https://www.linkedin.com/in/diana-pinto-48b1b5116/": {
-            "MIEIC": "2017/2018"
+          "https://www.linkedin.com/in/mariana-teixeira-baa658219/": {
+            "L.EIC": "2022/2023"
           },
-          "https://www.linkedin.com/in/pedromvsilva/": {
-            "MIEIC": "2017/2018"
+          "https://www.linkedin.com/in/anete-pereira-8b3726216/": {
+            "L.EIC": "2022/2023"
           },
-          "https://www.linkedin.com/in/danielsilvareis/": {
-            "MIEIC": "2017/2018"
+          "https://www.linkedin.com/in/zmcastro/": {
+            "L.EIC": "2022/2023"
           },
-          "https://www.linkedin.com/in/luis-carvalho-6b966794/": {
-            "MIEIC": "2017/2018"
+          "https://www.linkedin.com/in/diogosamuel/": {
+            "M.EIC": "2022/2023"
           },
-          "https://www.linkedin.com/in/silva95gustavo/": {
-            "MIEIC": "2017/2018"
+          "https://www.linkedin.com/in/josemacedo99/": {
+            "L.EIC": "2022/2023"
           },
-          "https://www.linkedin.com/in/antoniodcasimiro/": {
-            "MIEIC": "2017/2018"
+          "https://www.linkedin.com/in/luismarquestorres/": {
+            "M.EIC": "2022/2023"
           },
-          "https://www.linkedin.com/in/marina-ff-camilo/": {
-            "MIEIC": "2017/2018"
+          "https://www.linkedin.com/in/ptozin/": {
+            "L.EIC": "2022/2023"
           },
-          "https://www.linkedin.com/in/franciscocrodrigues/": {
-            "MIEIC": "2017/2018"
+          "https://www.linkedin.com/in/biamendes1/": {
+            "M.EIC": "2022/2023"
           },
-          "https://www.linkedin.com/in/pedromlcosta/": {
-            "MIEIC": "2017/2018"
+          "https://www.linkedin.com/in/tiagoalves123/": {
+            "M.EIC": "2022/2023"
           },
-          "https://www.linkedin.com/in/ivolimasilva/": {
-            "MIEIC": "2017/2018"
+          "https://www.linkedin.com/in/ca-moes/": {
+            "M.EIC": "2022/2023"
           },
-          "https://www.linkedin.com/in/sapdomingues/": {
-            "MIEIC": "2017/2018"
+          "https://www.linkedin.com/in/pjfmoreira/": {
+            "L.EIC": "2022/2023"
+          },
+          "https://www.linkedin.com/in/dfamonteiro/": {
+            "M.EIC": "2022/2023"
           }
         }
       },
@@ -138,30 +139,6 @@
         "coordinates": [
           -9.13333,
           38.71667
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "name": [
-          "austria"
-        ],
-        "students": 1,
-        "listLinkedinLinksByUser": {
-          "https://www.linkedin.com/in/ruibotto/": "Rui Botto"
-        },
-        "coursesYearConclusionByUser": {
-          "https://www.linkedin.com/in/ruibotto/": {
-            "MIEIC": "2017/2018"
-          }
-        }
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          16.37208,
-          48.20849
         ]
       }
     }
