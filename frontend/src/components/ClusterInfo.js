@@ -13,7 +13,6 @@ const ClusterInfo = ({
   handleImageError
 }) => {
     const nAlumniToShow = 10;                                                // Defines the nº of alumnis to show when a hoover is preformed
-    const nAlumniToShowScrollBar = 5;                                        // Defines the nº of alumnis in which the scroll bar is going to show
     var   [startPosition, setStartPosition] = useState(0);                   // Position in the array to start to read from
     var   [endPosition, setEndPosition] = useState(nAlumniToShow-1);         // Position in the array to stop reading from. 0 is also a number therefore the -1
     var   [showPrev, setShowPrev] = useState(false);                        // Defines if it is to show the "...Prev"
@@ -90,7 +89,7 @@ const ClusterInfo = ({
                 <thead>
                 <tr>
                     <th className="table-titles titles-letter alumni-cell-name sticky-header">ALUMNI</th>
-                    <th className="table-titles titles-letter sticky-header">COURSE</th>
+                    <th className="table-titles titles-letter sticky-header">DEGREE</th>
                     <th className="table-titles titles-letter sticky-header">CONCLUSION</th>
                 </tr>
                 </thead>

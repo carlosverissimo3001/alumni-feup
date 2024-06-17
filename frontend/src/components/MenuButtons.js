@@ -14,7 +14,7 @@ import { FaCheckCircle } from "react-icons/fa";
 const MenuButtons = ({menuVisible, onLoading, onSelectGeoJSON, onSelectAlumni, yearUrl}) => {
     
     const currentYear = new Date().getFullYear();
-    const years = Array.from({ length: currentYear - 1920 + 1 }, (_, i) => 1920 + i).reverse();
+    const years = Array.from({ length: currentYear - 1994 + 1 }, (_, i) => 1994 + i).reverse();
     const courses = ['LEIC', 'L.EIC', 'MEI', 'M.EIC', 'MIEIC'];
 
     const [file, setFile] = useState('');
