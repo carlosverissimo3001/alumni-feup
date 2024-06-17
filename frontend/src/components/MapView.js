@@ -63,8 +63,8 @@ const MapView = ({
     }
   }
 
-  // Hoovering clusters
-  const onHover = async event => {
+  // Clusters content
+  const showClusterContent = async event => {
     try {
       if (event.lngLat) {
         setHoveredMouseCoords([event.point.x, event.point.y]);
@@ -101,7 +101,8 @@ const MapView = ({
         mapStyle="mapbox://styles/mapbox/dark-v11"
         mapboxAccessToken={TOKEN}
         interactiveLayerIds={[clusterLayer.id]}
-        onMouseMove={onHover}
+        onMouseMove={showClusterContent}
+        onClick={showClusterContent}
         ref={mapRef}
       >
         {loading ? (
