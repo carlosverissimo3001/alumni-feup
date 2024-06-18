@@ -26,10 +26,11 @@ const MenuButtons = ({menuVisible, onLoading, onSelectGeoJSON, onSelectAlumni, y
     const [loadingJson, setLoadingJson] = useState(true);
     const [numberAlumnisShowing, setNumberAlumnisShowing] = useState(0);
     const [yearFilter, setYearFilter] = useState(['','']);
-    const [geoCreated, setGeoCreated] = useState(true); // Inidicates if the geoJson has been created or not
-    const [loading, setLoading] = useState(true); // Loading state, if true: loading if false: not loading
-    const [yearUrlReceived, setYearUrlReceived] = useState(true); // used to avoid the useEffect that calls the onClickApply to enter into a loop
-    const [firstEffectComplete, setFirstEffectComplete] = useState(false); // used to wait for the useEffect that reads the year on the link to finish
+    const [geoCreated, setGeoCreated] = useState(true);                    // Inidicates if the geoJson has been created or not
+    const [loading, setLoading] = useState(true);                          // Loading state, if true: loading if false: not loading
+    const [yearUrlReceived, setYearUrlReceived] = useState(true);          // Used to avoid the useEffect that calls the onClickApply to enter into a loop
+    const [firstEffectComplete, setFirstEffectComplete] = useState(false); // Used to wait for the useEffect that reads the year on the link to finish
+    const [applyButtonDisabled, setApplyButtonDisabled] = useState(true);  // Defines if the Apply and Clear button are enabled or disabled
 
     // Reads the year parameter on the URL
     useEffect(() => {
@@ -64,7 +65,7 @@ const MenuButtons = ({menuVisible, onLoading, onSelectGeoJSON, onSelectAlumni, y
         }
 
         fetchData();                 
-    }, [firstEffectComplete, selectedOption, filterCourseInput, yearFilter, yearUrlReceived]);
+    }, [firstEffectComplete]);
 
     // Handles changes on the load
     useEffect(() => {
@@ -153,6 +154,7 @@ const MenuButtons = ({menuVisible, onLoading, onSelectGeoJSON, onSelectAlumni, y
     // Function to handle checkbox selection
     const handleCheckboxChange = (event) => {
         setSelectedOption(event.target.value);
+        setApplyButtonDisabled(false); // enable the apply button when an option is selected
     };
 
     // Handles changes in the year input 
@@ -175,6 +177,7 @@ const MenuButtons = ({menuVisible, onLoading, onSelectGeoJSON, onSelectAlumni, y
 
     // Cleans the values inserted in the fields
     const onClickClean = async () => {
+        setApplyButtonDisabled(true);
         setLoading(true);           // data is being updated
         setSelectedOption("");      // this will then call the onClickApply("", ["", ""]); which is responsible for regenerating the geoJson
         setSearchInput("");         // cleans the search alumni input 
@@ -411,12 +414,28 @@ const MenuButtons = ({menuVisible, onLoading, onSelectGeoJSON, onSelectAlumni, y
 
                 <div className='button-container'>
                     <div className='button-group'>
-                        <FaCheckCircle className="icon-apply" onClick={() => onClickApply(filterCourseInput, yearFilter)}/>
-                        <span className='forms-button' onClick={() => onClickApply(filterCourseInput, yearFilter)}> Apply </span>
+                        <FaCheckCircle 
+                            className={`icon-apply ${applyButtonDisabled ? 'disabled' : ''}`} 
+                            onClick={() => !applyButtonDisabled && onClickApply(filterCourseInput, yearFilter)}
+                        />
+                        <span 
+                            className={`forms-button ${applyButtonDisabled ? 'disabled' : ''}`}
+                            onClick={() => !applyButtonDisabled && onClickApply(filterCourseInput, yearFilter)}
+                        > 
+                            Apply 
+                        </span>
                     </div>
                     <div className='button-group'>
-                        <TiDelete className="icon-delete" onClick={onClickClean}/>
-                        <span className='forms-button' onClick={onClickClean}> Clear </span> 
+                        <TiDelete 
+                            className={`icon-delete ${applyButtonDisabled ? 'disabled' : ''}`}
+                            onClick={() => !applyButtonDisabled && onClickClean()}
+                        />
+                        <span 
+                            className={`forms-button ${applyButtonDisabled ? 'disabled' : ''}`}
+                            onClick={() => !applyButtonDisabled && onClickClean()}
+                        >
+                            Clear 
+                        </span> 
                     </div>
                 </div>
 
