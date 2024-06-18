@@ -1,29 +1,27 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import bcrypt from 'bcryptjs';
+import setUp from '../../helpers/setUp';
 
 const Admin = () => {
     const navigate = useNavigate();
     const [password, setPassword] = useState('');
 
     const onNext = async () => {
-        // Number of salr rounds for hashing
-        const saltRounds = 10;
         try {
-            // Hash the password
-            const hashedPassword = await bcrypt.hash(password, saltRounds);
-            
             // Verifies if it is the correct password
-            
-
+            const validPass = await setUp.verifyCorrectPassword(password);
+            console.log("validPass: ", validPass);
+            if (validPass) {
+                console.log("HOME SCREEN");
+                //navigate('/home');
+            } else {
+                // Send warning pop up of incorrect pass
+                console.log("NOT HOME SCREEN");
+            }
         } catch (error) {
             console.error('Error hashing password: ', error);
         }
     };
-
-    const handleContinue = () => {
-        navigate('/home');
-    }
 
     return (
         <>
