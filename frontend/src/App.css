@@ -382,6 +382,11 @@ p {
     margin-top: 10px;
 }
 
+.disabled {
+    opacity: 0.5;
+    pointer-events: none;
+}
+
 .forms-button {
     color: #A02D20;
     font-weight: 700;
