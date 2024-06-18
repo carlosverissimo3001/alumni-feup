@@ -10,7 +10,6 @@ const Admin = () => {
         try {
             // Verifies if it is the correct password
             const validPass = await setUp.verifyCorrectPassword(password);
-            console.log("validPass: ", validPass);
             if (validPass) {
                 console.log("HOME SCREEN");
                 //navigate('/home');
