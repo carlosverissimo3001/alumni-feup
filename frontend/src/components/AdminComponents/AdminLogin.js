@@ -1,75 +1,29 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-//import {useWeb3} from '../helpers/web3Client';
-//import UserApp from '../helpers/UserApp'
-//import InfoPopup from './Infos/InfoPopup';
-import { FcHighPriority } from "react-icons/fc";
+import bcrypt from 'bcryptjs';
 
 const Admin = () => {
-    const [showInfoNamePopup, setShowInfoNamePopup] = useState(false); // controls the info name popup visibility
-    const [message, setMessage] = useState("");
-    const [titleInfoNamePopup, setTitleInfoNamePopup] = useState("");
     const navigate = useNavigate();
-    //const {fileManagerFacadeInstance} = useWeb3();
     const [password, setPassword] = useState('');
 
-    // On page refresh redirects the user to the WalletConnection page
-    /*useEffect(() => {
-        async function fetchData() {
-            if (fileManagerFacadeInstance.current == null) {
-                navigate("/");
-            }
-        }
-        fetchData();
-    }, [fileManagerFacadeInstance, navigate]);*/
-
     const onNext = async () => {
-        // Hashes the inserted mnemonic
-        /*var hashedMnemonic = await fileManagerFacadeInstance.current.hashMnemonicSymmetricEncryption(mnemonic);
-        // Verifies if the entered mnemonic belongs to a given user
-        UserApp.verifyMnemonic(hashedMnemonic, fileManagerFacadeInstance.current).then(async (correctMnemonic)=>{
-            if (correctMnemonic) {
-                // Regenerates the public and private keys for the given mnomonic and sets on the local storage 
-                const {privateKey, publicKey, address} = await fileManagerFacadeInstance.current.generateKeysFromMnemonic(mnemonic);
-                await fileManagerFacadeInstance.current.storeLocalSotrage(privateKey, publicKey, address);
-
-                // Logs in the user in the backend
-                await fileManagerFacadeInstance.current.logsInUser();
-                
-                // Redirects the user to the home page
-                handleContinue();
-                return;
-            } 
+        // Number of salr rounds for hashing
+        const saltRounds = 10;
+        try {
+            // Hash the password
+            const hashedPassword = await bcrypt.hash(password, saltRounds);
             
-            setShowInfoNamePopup(true);
-            setMessage("Oops! That doesn't look like the correct seed. Please make sure you've entered the seed given to you when you first logged in. Remember, it's private and should not be shared.");
-            setTitleInfoNamePopup("Attention");
-        }).catch(err=>{
-            console.log(err);
-        })   */
+            // Verifies if it is the correct password
+            
+
+        } catch (error) {
+            console.error('Error hashing password: ', error);
+        }
     };
 
     const handleContinue = () => {
-        cleanFields();
         navigate('/home');
     }
-
-    const handleContinueName = () => {
-        cleanFields();
-        navigate('/login');
-    }
-
-    const cleanFields = () => {
-        setShowInfoNamePopup(false);
-        setMessage("");
-        setTitleInfoNamePopup("");
-    }
-
-    const handleBack = async () => {
-        navigate('/');
-    }
-
-    const iconComponent = FcHighPriority;
 
     return (
         <>
@@ -84,7 +38,7 @@ const Admin = () => {
                         <div className='login-column'>
                             <div className='input-button-container-welcome'>
                                 <input
-                                    type="text"
+                                    type="password"
                                     id="password"
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}
