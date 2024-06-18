@@ -250,7 +250,12 @@ class setUp {
         } catch (error) {
             console.log('Error while generating the geoJson', error);
         }
-   } 
+    }
+    
+    // Verifies if the password is correct
+    static async verifyCorrctPassword(password){
+        
+    }
 }
 
 export default setUp;
