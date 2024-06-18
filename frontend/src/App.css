@@ -2,6 +2,10 @@ html, body {
     overflow: hidden;
 }
 
+body {
+    background-color: #EDEDEC;
+}
+
 p {
     margin-top: 15px;
     margin-bottom: 10px;
@@ -23,6 +27,121 @@ p {
     color: #515150;
     margin: 0px;
 }
+
+/*---- Admin ----*/
+
+.content-container{
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    height: 100vh; 
+    width: 99vw;  
+}
+
+.login-wrapper {
+    width: 50%; 
+    margin-top: 240px;
+}
+
+.content-wrapper{
+    position: absolute;
+    display: flex;
+    background-color: white;
+    border-radius: 20px;
+    padding-left: 5%;
+    padding-right: 3%;
+    padding-bottom: 3%;
+    padding-top: 3%;
+    margin-top: 175px;
+}
+
+.shadow-overlay {
+    position: absolute;
+    left:3%;
+    width: 100%;
+    height: 100%;
+    background-color: #C3C3C3;
+    border-radius: 20px;
+    z-index: -1;
+}
+
+.shadow-overlay-login {
+    top: 13%;
+}
+
+.login-column {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    flex: 1;
+    padding-right: 30px;
+}
+  
+.content-column {
+    display: flex;
+    flex-direction: column;
+    color: #2E231D;
+}
+
+.admin-heading {
+    color: #A02D20; 
+    margin-bottom: 0;
+}
+
+.admin-description {
+    color: #2E231D;
+    font-weight: bold;
+}
+
+.input-button-container-welcome {
+    width: 100%;
+    margin-left: 35%;
+    position: relative;
+    display: flex;
+    gap: 10px;
+}
+
+.input-username {
+    border: 1px solid #ddd;
+    border-radius: 10px; 
+}
+.input-username:focus {
+    outline: 2px solid #C0C0C0;
+}
+
+.input-usernameWelcome {
+    width: 50%;
+}
+
+.app-button {
+    background-color: #2E231D;
+    color: white;
+    border: none;
+    border-radius: 10px; 
+    cursor: pointer;
+    opacity: 90%;
+    font-weight: bold;
+}
+
+.app-button:hover {
+    background-color: #A02D20;
+    font-weight: bold;
+}
+
+.app-button__welcome {
+    padding: 3% 10%;
+    margin-right: 10px;
+}
+
+.app-button__welcome:focus {
+    outline: 1px solid #2E231D;
+}
+
+.app-button__welcome:hover {
+    outline: 0px;
+}
+
 
 /*---- Map ----*/
 
@@ -261,6 +380,11 @@ p {
     display: flex;
     align-items: center;
     margin-top: 10px;
+}
+
+.disabled {
+    opacity: 0.5;
+    pointer-events: none;
 }
 
 .forms-button {

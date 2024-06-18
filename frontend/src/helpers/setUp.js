@@ -250,7 +250,30 @@ class setUp {
         } catch (error) {
             console.log('Error while generating the geoJson', error);
         }
-   } 
+    }
+    
+    // Verifies if the password is correct
+    static async verifyCorrectPassword(password){
+        try{
+            const data = JSON.stringify({ password });
+            const response = await fetch('http://localhost:8080/admin/verifyPass', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',  // Set the content type to JSON
+                },
+                body: data,
+            });
+            if (response.ok){
+                const data = await response.json();
+                console.log("data.validPassword: ", data.validPassword);
+                return data.validPassword;
+            } else {
+                console.error('Password unsuccessfully verified.');
+            }
+        } catch (error) {
+            console.log('Error while verifying password', error);
+        }  
+    }
 }
 
 export default setUp;
