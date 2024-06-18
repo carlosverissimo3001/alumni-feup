@@ -1,5 +1,8 @@
 package com.feupAlumni.alumniFEUP.service;
 
-public class AdminService {
+public interface AdminService {
     
+    // Verify hashed password
+    public Boolean verifyPassword(String password);
+
 }
