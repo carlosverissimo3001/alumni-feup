@@ -65,7 +65,7 @@ const MenuButtons = ({menuVisible, onLoading, onSelectGeoJSON, onSelectAlumni, y
         }
 
         fetchData();                 
-    }, [firstEffectComplete]);
+    }, [firstEffectComplete, selectedOption, yearUrlReceived]);
 
     // Handles changes on the load
     useEffect(() => {
