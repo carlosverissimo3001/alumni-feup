@@ -1,4 +1,22 @@
 class Helper {
+  // Converts Blob to GeoJson
+  static async convertBlobToGeoJSON(blob) {
+    const geoJson = await new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => {
+          try {
+              const json = JSON.parse(reader.result);
+              resolve(json);
+          } catch (error) {   
+              reject('Failed to parse JSON');
+          }
+      };
+      reader.onerror = () => reject("Error reading blob");
+      reader.readAsText(blob);
+    });
+    return  geoJson;
+  }
+
   // Checks if the selected file is an excel file
   static async checkIfExcel(file) {
       const allowedFileTypes = ['application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'application/vnd.ms-excel'];
