@@ -51,11 +51,11 @@ public class SetupLocationController {
     @PostMapping("/generateGeoJson")
     public ResponseEntity<String> handleGeoJson(@RequestBody String filters){
         try{
-            ObjectMapper objectMapper = new ObjectMapper(); // Use ObjectMapper to convert JSON string to Map
+            ObjectMapper objectMapper = new ObjectMapper();                            // Use ObjectMapper to convert JSON string to Map
             Map<String, Object> map = objectMapper.readValue(filters, Map.class);
             
             String geoJsonType = (String) map.get("geoJsonType");
-            String courseFilter = (String) map.get("courseFilter"); // Extract courseFilter from the Map            
+            String courseFilter = (String) map.get("courseFilter");                    // Extract courseFilter from the Map            
             List<String> yearFilter = (List<String>) map.get("yearsConclusionFilter"); // Extract yearsConclusionFilter from the Map
             
             locationService.generateGeoJson(courseFilter, yearFilter, geoJsonType);
