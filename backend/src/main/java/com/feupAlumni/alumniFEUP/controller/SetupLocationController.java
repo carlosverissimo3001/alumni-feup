@@ -1,6 +1,7 @@
 package com.feupAlumni.alumniFEUP.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -10,8 +11,17 @@ import com.feupAlumni.alumniFEUP.service.CityService;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import java.io.File;
 
 @RestController
 @RequestMapping("/setupLocation")
@@ -47,21 +57,32 @@ public class SetupLocationController {
         }
     }
 
-    // Generates the geoJson
-    @PostMapping("/generateGeoJson")
-    public ResponseEntity<String> handleGeoJson(@RequestBody String filters){
-        try{
-            ObjectMapper objectMapper = new ObjectMapper();                            // Use ObjectMapper to convert JSON string to Map
-            Map<String, Object> map = objectMapper.readValue(filters, Map.class);
-            
-            String geoJsonType = (String) map.get("geoJsonType");
-            String courseFilter = (String) map.get("courseFilter");                    // Extract courseFilter from the Map            
-            List<String> yearFilter = (List<String>) map.get("yearsConclusionFilter"); // Extract yearsConclusionFilter from the Map
-            
+    @GetMapping("/getGeoJson")
+    public ResponseEntity<InputStreamResource> getGeoJson(
+        @RequestParam String courseFilter,
+        @RequestParam String yearsConclusionFilter,
+        @RequestParam String geoJsonType
+    ) {
+        try {
+            List<String> yearFilter = new ObjectMapper().readValue(yearsConclusionFilter, List.class);
+            System.out.println("yearFilter: " + yearFilter);
             locationService.generateGeoJson(courseFilter, yearFilter, geoJsonType);
-            return ResponseEntity.ok("GeoJson successfully created.");
-        } catch (Exception e) {
-            return ResponseEntity.status(500).body("Error during geoJson generation: " + e.getMessage());
+
+            File geoJsonFile = new File("backend/src/locationGeoJSON.json");
+            InputStreamResource resource = new InputStreamResource(new FileInputStream(geoJsonFile));
+
+            HttpHeaders headers = new HttpHeaders();
+            headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=locationGeoJSON.json");
+            headers.setContentType(MediaType.APPLICATION_JSON);
+
+            return ResponseEntity.ok()
+                .headers(headers)
+                .contentLength(geoJsonFile.length())
+                .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                .body(resource);
+        } catch (IOException e) {
+            return ResponseEntity.status(500).body(null);
         }
     }
+    
 }
