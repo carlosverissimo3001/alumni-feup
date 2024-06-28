@@ -27,7 +27,7 @@ public class LocationServiceImpl implements LocationService {
     // Creates the geoJson file based in country or city type
     private Map<File, Gson> createFile(String geoJsonType) {
         Map<File, Gson> fileGeoJson = new HashMap<>();
-        File geoJSONFile = new File("frontend/src/locationGeoJSON.json");
+        File geoJSONFile = new File("backend/src/locationGeoJSON.json");
         Gson gson = new GsonBuilder().setPrettyPrinting().create(); 
         Location.createEmptyGeoJSONFile(geoJSONFile);
         System.out.println("GeoJSON file created");

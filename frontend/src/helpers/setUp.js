@@ -229,26 +229,26 @@ class setUp {
     }
 
     /**
-    * Generates the geoJson
-    * geoJsonType refers if is e country geojson or a city geojson
+    * Fetches the geoJson
     */
-    static async generateGeoJson(courseFilter, yearsConclusionFilter, geoJsonType) {
-        try{
-            const data = JSON.stringify({ courseFilter, yearsConclusionFilter, geoJsonType });
-            const response = await fetch('http://localhost:8080/setupLocation/generateGeoJson', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',  // Set the content type to JSON
-                },
-                body: data,
+    static async fetchGeoJson(courseFilter, yearsConclusionFilter, geoJsonType) {
+        try {
+            const params = new URLSearchParams({
+                courseFilter: courseFilter,
+                yearsConclusionFilter: JSON.stringify(yearsConclusionFilter),
+                geoJsonType: geoJsonType,
             });
-            if (response.ok){
-                console.log('GeoJson successfully created.');
+
+            const response = await fetch(`http://localhost:8080/setupLocation/getGeoJson?${params.toString()}`);
+            if (response.ok) {
+                const blob = await response.blob();
+                console.log('GeoJson blob successfully fetched.');
+                return blob;
             } else {
-                console.error('GeoJson creation failed.');
+                console.error('GeoJson fetching failed.');
             }
-        } catch (error) {
-            console.log('Error while generating the geoJson', error);
+        } catch (e) {
+            console.log('Error while fetching the geoJson', e);
         }
     }
     
