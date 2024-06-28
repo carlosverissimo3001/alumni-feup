@@ -7,7 +7,6 @@ import React, {useEffect, useState} from 'react';
 import setUp from '../helpers/setUp';
 import Helper from '../helpers/helper';
 import ApiDataAnalysis from '../helpers/apiDataAnalysis';
-import locationGeoJSON from '../locationGeoJSON.json';
 import { TiDelete } from "react-icons/ti";
 import { FaCheckCircle } from "react-icons/fa";
 
@@ -26,11 +25,11 @@ const MenuButtons = ({menuVisible, onLoading, onSelectGeoJSON, onSelectAlumni, y
     const [loadingJson, setLoadingJson] = useState(true);
     const [numberAlumnisShowing, setNumberAlumnisShowing] = useState(0);
     const [yearFilter, setYearFilter] = useState(['','']);
-    const [geoCreated, setGeoCreated] = useState(true);                    // Inidicates if the geoJson has been created or not
     const [loading, setLoading] = useState(true);                          // Loading state, if true: loading if false: not loading
     const [yearUrlReceived, setYearUrlReceived] = useState(true);          // Used to avoid the useEffect that calls the onClickApply to enter into a loop
     const [firstEffectComplete, setFirstEffectComplete] = useState(false); // Used to wait for the useEffect that reads the year on the link to finish
     const [applyButtonDisabled, setApplyButtonDisabled] = useState(true);  // Defines if the Apply and Clear button are enabled or disabled
+    const [locationGeoJSON, setLocationGeoJSON] = useState(null);          // Stores the geoJson file to be used in the world map
 
     // Reads the year parameter on the URL
     useEffect(() => {
@@ -57,7 +56,6 @@ const MenuButtons = ({menuVisible, onLoading, onSelectGeoJSON, onSelectAlumni, y
                 onClickApply(filterCourseInput, yearFilter);
                 setYearUrlReceived(false);
             } 
-            onSelectGeoJSON(locationGeoJSON); 
 
             // Waits a bit before setting the load to false so that the code has time to update the locationGeoJson on the MapCmp.js
             await new Promise(resolve => setTimeout(resolve, 3000));
@@ -65,7 +63,7 @@ const MenuButtons = ({menuVisible, onLoading, onSelectGeoJSON, onSelectAlumni, y
         }
 
         fetchData();                 
-    }, [firstEffectComplete]);
+    }, [firstEffectComplete, selectedOption, yearUrlReceived]);
 
     // Handles changes on the load
     useEffect(() => {
@@ -74,8 +72,8 @@ const MenuButtons = ({menuVisible, onLoading, onSelectGeoJSON, onSelectAlumni, y
 
     // sets the variables to be used: nº of alumnis and an array with the info to be printed on the screen
     useEffect(() => {
-        const fetchData = async () => {
-            if (geoCreated) {
+        const fetchData = async () => { 
+            if (locationGeoJSON) {
                 try {                    
                     // Get the names with their LinkedIn links
                     const namesLinkedinLinks = locationGeoJSON.features.flatMap((feature) => {
@@ -111,13 +109,14 @@ const MenuButtons = ({menuVisible, onLoading, onSelectGeoJSON, onSelectAlumni, y
                 } catch (error) {
                     console.log("Attention! ", error);
                 }
+                onSelectGeoJSON(locationGeoJSON);
             } else {
                 console.log("GeoJson not created");
             }
         };
     
         fetchData();
-    }, [geoCreated]);
+    }, [locationGeoJSON]);
 
     // Filter alumni names based on search input
     useEffect(() => {
@@ -167,9 +166,14 @@ const MenuButtons = ({menuVisible, onLoading, onSelectGeoJSON, onSelectAlumni, y
     // Applies the values inserted in the fields and generates a new geoJson
     const onClickApply = async (courseFilter, yearsConclusionFilters) => {
         setLoading(true); // Data is being updated
-        setGeoCreated(false);
-        await setUp.generateGeoJson(courseFilter, yearsConclusionFilters, selectedOption);
-        setGeoCreated(true);
+
+        // Receives the blob with the required filters
+        var locationGeoJsonBlob = await setUp.fetchGeoJson(courseFilter, yearsConclusionFilters, selectedOption);
+        // Converts the blob to geoJson
+        var locationGeoJsonGeoJSON = await Helper.convertBlobToGeoJSON(locationGeoJsonBlob);
+
+        setLocationGeoJSON(locationGeoJsonGeoJSON);
+
         // Waits a bit before setting the load to false so that the code has time to update the locationGeoJson on the MapCmp.js
         await new Promise(resolve => setTimeout(resolve, 3000));
         setLoading(false); // Data is ready
