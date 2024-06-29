@@ -92,5 +92,4 @@ public class SetupLocationController {
             return ResponseEntity.status(500).body(null);
         }
     }
-    
 }
