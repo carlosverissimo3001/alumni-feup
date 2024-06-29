@@ -24,14 +24,13 @@ public class LocationServiceImpl implements LocationService {
     @Autowired
     private AlumniEicRepository alumniEicRepository;
 
-    // Creates the geoJson file based in country or city type
-    private Map<File, Gson> createFile(String geoJsonType) {
-        Map<File, Gson> fileGeoJson = new HashMap<>();
-        File geoJSONFile = new File("backend/src/locationGeoJSON.json");
+    // Creates tge geoJson file on the received parameters: country or city // course // year conclusion
+    private Map<File, Gson> createFile(File locationGeoJSON) {
+        Map<File, Gson> fileGeoJson = new HashMap<>();        
         Gson gson = new GsonBuilder().setPrettyPrinting().create(); 
-        Location.createEmptyGeoJSONFile(geoJSONFile);
+        Location.createEmptyGeoJSONFile(locationGeoJSON);
         System.out.println("GeoJSON file created");
-        fileGeoJson.put(geoJSONFile, gson);
+        fileGeoJson.put(locationGeoJSON, gson);
         return fileGeoJson;
     }      
 
@@ -177,10 +176,9 @@ public class LocationServiceImpl implements LocationService {
     }
 
     @Override
-    public void generateGeoJson(String courseFilter, List<String> yearFilter, String geoJsonType) { 
+    public void generateGeoJson(File locationGeoJSON, String courseFilter, List<String> yearFilter, String geoJsonType) { 
         // Creates the GeoJson file depending on geoJsonType
-        Map<File, Gson> fileGson = createFile(geoJsonType);
-        System.out.println("geoJsonType: " + geoJsonType);
+        Map<File, Gson> fileGson = createFile(locationGeoJSON);
         if (geoJsonType.equals("countries") || geoJsonType.equals("cities")) {
             // Group alumnis in countries or cities depending on geoJsonType
             Map<LocationAlumnis, List<AlumniEic>> alumniByLocation = groupAlumnis(geoJsonType);
