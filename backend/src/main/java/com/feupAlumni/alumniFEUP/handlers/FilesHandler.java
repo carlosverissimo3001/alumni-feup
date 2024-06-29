@@ -11,6 +11,17 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 
 public class FilesHandler {
     
+    // Determines the file name based on the filter inputs: geoJsonType(country/city), course, conclusion year
+    public static String determineFileName(String geoJsonType, String course, List<String> conclusionYears) {
+        var fileName = "";
+        if (geoJsonType.equals("") && course.equals("") && conclusionYears.get(0).equals("") && conclusionYears.get(1).equals("")) {
+            fileName = "emptyFileLocation.json";
+        } else {
+            fileName = geoJsonType + course + conclusionYears.get(0) + conclusionYears.get(1) + ".json";
+        }
+        return fileName;
+    }
+
     // Stores infromation in a given file
     public static void storeInfoInFile(String information, String filePath) {
         try (FileWriter writer = new FileWriter(filePath, true)) {
