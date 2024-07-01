@@ -1,7 +1,8 @@
 package com.feupAlumni.alumniFEUP.service;
 
 import com.feupAlumni.alumniFEUP.handlers.AlumniInfo;
-import com.feupAlumni.alumniFEUP.handlers.FilesHandler;
+import com.feupAlumni.alumniFEUP.handlers.ExcelFilesHandler;
+import com.feupAlumni.alumniFEUP.handlers.JsonFileHandler;
 import com.feupAlumni.alumniFEUP.handlers.ManageApiData;
 import com.feupAlumni.alumniFEUP.model.Alumni;
 import com.feupAlumni.alumniFEUP.repository.AlumniRepository;
@@ -96,7 +97,7 @@ public class AlumniServiceImpl implements AlumniService{
             String[][] fields = ManageApiData.getFields();
             
             // Write Excel Titles
-            FilesHandler.createHeaders(sheet, fields);
+            ExcelFilesHandler.createHeaders(sheet, fields);
 
             // Iterate over each row of the excel and writes the content of the tiles written before
             Iterator<Alumni> alumniIterator = alumniRepository.findAll().iterator();
@@ -105,7 +106,7 @@ public class AlumniServiceImpl implements AlumniService{
                 Alumni alumni = alumniIterator.next();
                 String linkedinInfo = alumni.getLinkedinInfo();
 
-                int lastWrittenRow = FilesHandler.writeAlumniDataToRow(alumni, rowIndex, linkedinInfo, sheet, fields);
+                int lastWrittenRow = ExcelFilesHandler.writeAlumniDataToRow(alumni, rowIndex, linkedinInfo, sheet, fields);
 
                 rowIndex = lastWrittenRow;
             }
@@ -153,7 +154,7 @@ public class AlumniServiceImpl implements AlumniService{
         // Puts in a map the cites (as keys) and the number of alumni for each city (as value)
         for (Alumni alumni : alumniList) {
             String linkedinInfo = alumni.getLinkedinInfo();
-            String city = FilesHandler.extractFieldFromJson("city", linkedinInfo);
+            String city = JsonFileHandler.extractFieldFromJson("city", linkedinInfo);
 
             // Ensures consistency across fields
             city = city.toLowerCase();
@@ -173,8 +174,8 @@ public class AlumniServiceImpl implements AlumniService{
         // Puts in a map the countries (as keys) and the number of alumni for each country (as value)
         for (Alumni alumni : alumniList) {
             String linkedinInfo = alumni.getLinkedinInfo();
-            String country = FilesHandler.extractFieldFromJson("country_full_name", linkedinInfo);
-            String countryCode = FilesHandler.extractFieldFromJson("country", linkedinInfo);
+            String country = JsonFileHandler.extractFieldFromJson("country_full_name", linkedinInfo);
+            String countryCode = JsonFileHandler.extractFieldFromJson("country", linkedinInfo);
             if(countryCode.toUpperCase().equals("SI")){
                 System.out.println("alumni: " + alumni.getLinkedinInfo());
                 count++;

@@ -9,7 +9,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.feupAlumni.alumniFEUP.handlers.FilesHandler;
+import com.feupAlumni.alumniFEUP.handlers.JsonFileHandler;
 import com.feupAlumni.alumniFEUP.model.Alumni;
 import com.feupAlumni.alumniFEUP.model.AlumniEic;
 import com.feupAlumni.alumniFEUP.model.AlumniEic_has_Course;
@@ -40,12 +40,12 @@ public class AlumniEicServiceImpl implements AlumniEicService{
         for (Alumni alumni : alumniList) { // Adds the alumni to the AlumniEIC table
             // Get data from the alumni
             String linkedinInfo = alumni.getLinkedinInfo();
-            String firstName = FilesHandler.extractFieldFromJson("first_name", linkedinInfo);
-            String lastName = FilesHandler.extractFieldFromJson("last_name", linkedinInfo);
+            String firstName = JsonFileHandler.extractFieldFromJson("first_name", linkedinInfo);
+            String lastName = JsonFileHandler.extractFieldFromJson("last_name", linkedinInfo);
             String fullName = firstName + " " + lastName;
-            String countryName = FilesHandler.extractFieldFromJson("country_full_name", linkedinInfo);
-            String cityName = FilesHandler.extractFieldFromJson("city", linkedinInfo);
-            String publicIdentifier = FilesHandler.extractFieldFromJson("public_identifier", linkedinInfo);
+            String countryName = JsonFileHandler.extractFieldFromJson("country_full_name", linkedinInfo);
+            String cityName = JsonFileHandler.extractFieldFromJson("city", linkedinInfo);
+            String publicIdentifier = JsonFileHandler.extractFieldFromJson("public_identifier", linkedinInfo);
             String linkedinFullLink = "https://www.linkedin.com/in/" + publicIdentifier + "/";
 
             City city = cityService.findCityByName(cityName);
@@ -62,7 +62,7 @@ public class AlumniEicServiceImpl implements AlumniEicService{
     @Override
     public void generateGeoJsonAlumniEic(File locationGeoJSON, String courseFilter, List<String> yearFilter, String geoJsonType) {
         // Creates the GeoJson file depending on geoJsonType
-        Map<File, Gson> fileGson = FilesHandler.createFile(locationGeoJSON);
+        Map<File, Gson> fileGson = JsonFileHandler.createFile(locationGeoJSON);
         if (geoJsonType.equals("countries") || geoJsonType.equals("cities")) {
             // Group alumnis in countries or cities depending on geoJsonType
             Map<LocationAlumnis, List<AlumniEic>> alumniByLocation = groupAlumnis(geoJsonType);
@@ -76,7 +76,7 @@ public class AlumniEicServiceImpl implements AlumniEicService{
             Map<String, Map<String, String>> alumniByCourseYearConclusion = alumniByCourseYearConclusion(courseFilter, yearFilter);
 
             // Adds the content to the geoJson
-            FilesHandler.addContentInGeoJson(alumniByLocation, alumniLinkedInLink, alumniByCourseYearConclusion, fileGson);
+            JsonFileHandler.addContentInGeoJson(alumniByLocation, alumniLinkedInLink, alumniByCourseYearConclusion, fileGson);
         }
     }
 

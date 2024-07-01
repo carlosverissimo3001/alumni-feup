@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.feupAlumni.alumniFEUP.handlers.FilesHandler;
+import com.feupAlumni.alumniFEUP.handlers.ExcelFilesHandler;
 import com.feupAlumni.alumniFEUP.model.AlumniEic;
 import com.feupAlumni.alumniFEUP.model.AlumniEic_has_Course;
 import com.feupAlumni.alumniFEUP.model.Course;
@@ -28,7 +28,7 @@ public class AlumniEicHasCoursesServiceImpl implements AlumniEicHasCoursesServic
     @Override
     public void populateAlumniEicHasCoursesTable(MultipartFile file) {
         // Key: linkedin links Value: corresponding row 
-        Map<String, Row> excelLinkedinLinksToRows = FilesHandler.excelLinkedinLinksToRows(file);
+        Map<String, Row> excelLinkedinLinksToRows = ExcelFilesHandler.excelLinkedinLinksToRows(file);
 
         // Iterates over the alumniEic table 
         List<AlumniEic> alumniEicList = alumniEicService.getAllAlumniEic();
