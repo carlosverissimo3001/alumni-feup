@@ -1,29 +1,6 @@
 // Has functions related with the setup of the project when a new Alumni data is received
 class setUp {
 
-    /* Sets the table Alumni by reading from the file which contains the response of the LinkdIn API.
-    * This way, if something happens to the DB we avoid having to call the API unecessarly. 
-    */
-    static async setAlumniUsingBackup(file) {
-        try {
-            const formData = new FormData();
-            formData.append('fileBackup', file);
-
-            const response = await fetch('http://localhost:8080/alumni/uploadBackupFile', {
-                method: 'POST',
-                body: formData,
-            });
-
-            if (response.ok){
-                console.log('Alumni table populated using the backup file.');
-            } else {
-                console.error('Failed to populate the alumni table using the backup file.');
-            }
-        } catch (error) {
-            console.error('Error during the population of the alumni table using the backup file.', error);
-        }
-    }
-
     /**
     * Fetches the geoJson
     */
@@ -91,6 +68,78 @@ class setUp {
         } catch (error) {
             console.log('Error while replacing alumnus data', error);
         }
+    }
+
+    // Backup Alumni table to an Excel file which is later downloaded
+    static async backupAlumnusExcel() {
+        try {
+    
+            const response = await fetch('http://localhost:8080/admin/readToExcel', {
+                method: 'POST',
+                body: "",
+            });
+    
+            if (!response.ok) {
+                throw new Error('Failed to store the alumni information in the excel.');
+            }
+    
+            const excelBlob = await response.blob();
+            const url = window.URL.createObjectURL(new Blob([excelBlob]));
+            const link = document.createElement('a');
+            link.href = url;
+            link.setAttribute('download', 'alumniInformationAPI.xlsx');
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        } catch (error) {
+            console.error('Error: ', error);
+        }
+    }
+
+
+    // Doesn't delete de alumni table. It adds alumni to it. Only calls the API for the alumnis that are not already in the DB
+    // All other tables are updated
+    static async addAlumnusData(uploadedFile) {
+        try {
+            const formData = new FormData();
+            formData.append('file', uploadedFile);
+            const response = await fetch('http://localhost:8080/admin/addAlumnus', {
+                method: 'POST',
+                body: formData,
+            });
+
+            if (response.ok){
+                console.log('Alumnus data added successfully');
+                return true;
+            } else {
+                console.error('Alumnus data added failed');
+                return false;
+            }
+        } catch (error) {
+            console.log('Error while adding alumnus data', error);
+        }
+    }
+
+    // Backs up the Alumni table (which the data was extracted using the API) to an Excel file
+    static async backupAlumniDataExcel() {
+        try{
+            const response = await fetch('http://localhost:8080/admin/readToExcel', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',  // Set the content type to JSON
+                },
+                body: "",
+            });
+            if (response.ok){
+                console.log('Alumnus data backedup successfully');
+                return true;
+            } else {
+                console.error('Alumnus data backedup failed');
+                return false;
+            }
+        } catch (error) {
+            console.log('Error while backing up Alumnus data', error);
+        }  
     }
 
 }

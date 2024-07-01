@@ -92,9 +92,9 @@ public class AdminController {
 
     // Backs up the alumni table to an excel file
     @PostMapping("/readToExcel")
-    public ResponseEntity<byte[]> handleAlmTblExcel(@RequestParam("excelData") MultipartFile file) throws IOException {
+    public ResponseEntity<byte[]> handleAlmTblExcel() throws IOException {
         try {
-            byte[] modifiedExcelBytes = alumniService.alumniTableToExcel(file);
+            byte[] modifiedExcelBytes = alumniService.alumniTableToExcel();
             // Set the response headers
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);

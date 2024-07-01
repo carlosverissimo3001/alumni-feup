@@ -19,7 +19,7 @@ public interface AlumniService {
     public void populateAlumniTable(MultipartFile file) throws IOException, InterruptedException;
 
     // Writes the alumni table to an Excel file
-    public byte[] alumniTableToExcel(MultipartFile file);
+    public byte[] alumniTableToExcel();
 
     // Populates table
     public void addAlumni(Alumni alumni);
