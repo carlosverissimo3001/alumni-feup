@@ -1,7 +1,7 @@
 package com.feupAlumni.alumniFEUP.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.feupAlumni.alumniFEUP.handlers.FilesHandler;
+import com.feupAlumni.alumniFEUP.handlers.JsonFileHandler;
 import com.feupAlumni.alumniFEUP.service.AdminService;
 import com.feupAlumni.alumniFEUP.service.AlumniService;
 import com.feupAlumni.alumniFEUP.service.DataPopulationService;
@@ -57,7 +57,7 @@ public class AdminController {
             dataPopulationService.cleanTables(new ReplaceAlumnusStrategy());
 
             // Cleans GeoJson files
-            FilesHandler.cleanGeoJsonFiles("backend/src/resources/locationGeoJson");
+            JsonFileHandler.cleanGeoJsonFiles("backend/src/resources/locationGeoJson");
 
             // Populates tables 
             dataPopulationService.populateTables(file);
@@ -79,7 +79,7 @@ public class AdminController {
             dataPopulationService.cleanTables(new AddAlumnusStrategy());
 
             // Cleans GeoJson files
-            FilesHandler.cleanGeoJsonFiles("backend/src/resources/locationGeoJson");
+            JsonFileHandler.cleanGeoJsonFiles("backend/src/resources/locationGeoJson");
 
             // Populates tables: alumnis it adds up, and the others it repopulates again
             dataPopulationService.populateTables(file);

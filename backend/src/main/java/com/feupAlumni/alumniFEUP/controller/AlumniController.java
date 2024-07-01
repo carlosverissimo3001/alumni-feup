@@ -6,8 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.feupAlumni.alumniFEUP.service.AlumniEicService;
-import com.feupAlumni.alumniFEUP.handlers.FilesHandler;
-
+import com.feupAlumni.alumniFEUP.handlers.JsonFileHandler;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.FileInputStream;
@@ -37,7 +36,7 @@ public class AlumniController {
             List<String> yearFilter = new ObjectMapper().readValue(yearsConclusionFilter, List.class);
             
             // Determines the file name based on the input filters received
-            var fileName = FilesHandler.determineFileName(geoJsonType, courseFilter, yearFilter);
+            var fileName = JsonFileHandler.determineFileName(geoJsonType, courseFilter, yearFilter);
 
             // Defines a directory where the files are stored
             String directoryPath = "backend/src/resources/locationGeoJson";

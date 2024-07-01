@@ -9,7 +9,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 public class ManageApiData {
-    
+
     public static String[][] getFields() {
         String[][] fields = {
             {"0", "Not_Subtitles","Linkedin Link", "public_identifier", "profile_pic_url", "background_cover_image_url", "first_name", "last_name", "full_name", "follower_count", "occupation", "headline", "summary", "country", "country_full_name", "city", "state"},
@@ -123,27 +123,43 @@ public class ManageApiData {
         return valuesFieldNameFromJson;
     }
 
+    // Extracts nested field unitl 1 level 
+    private static String extractOneLevelNestedFiled(JsonNode jsonNode, String fieldToExtract, String nestedFrom) {
+        JsonNode fieldNode = jsonNode.get(fieldToExtract);
+
+        if (fieldNode != null) { 
+            return fieldNode.asText();
+        } else {
+            // Handle nested structures untill 1 level
+            JsonNode nestedNode = jsonNode.get(nestedFrom);
+            if (nestedNode != null) {
+                return extractOneLevelNestedFiled(nestedNode, fieldToExtract, null);
+            }
+            return null;
+        }
+    }
+
     // Returns the fields of the experience field
-    public static List<ObjectNode> getValuesExperiences(JsonNode experiences, ObjectMapper objectMapper) {
+    private static List<ObjectNode> getValuesExperiences(JsonNode experiences, ObjectMapper objectMapper) {
         ObjectNode resultNode = null;
         List<ObjectNode> resultNodesList = new ArrayList<>();
         if (experiences != null && experiences.isArray()) {
             for (JsonNode experience : experiences) {
-                String yearStartDay = FilesHandler.extractOneLevelNestedFiled(experience, "day", "starts_at");
-                String yearStartMonth = FilesHandler.extractOneLevelNestedFiled(experience, "month", "starts_at");
-                String yearStartYear = FilesHandler.extractOneLevelNestedFiled(experience, "year", "starts_at");
+                String yearStartDay = extractOneLevelNestedFiled(experience, "day", "starts_at");
+                String yearStartMonth = extractOneLevelNestedFiled(experience, "month", "starts_at");
+                String yearStartYear = extractOneLevelNestedFiled(experience, "year", "starts_at");
 
-                String yearEndDay = FilesHandler.extractOneLevelNestedFiled(experience, "day", "ends_at");
-                String yearEndMonth = FilesHandler.extractOneLevelNestedFiled(experience, "month", "ends_at");
-                String yearEndYear = FilesHandler.extractOneLevelNestedFiled(experience, "year", "ends_at");
+                String yearEndDay = extractOneLevelNestedFiled(experience, "day", "ends_at");
+                String yearEndMonth = extractOneLevelNestedFiled(experience, "month", "ends_at");
+                String yearEndYear = extractOneLevelNestedFiled(experience, "year", "ends_at");
 
                 String time = yearStartDay + "/" + yearStartMonth + "/" + yearStartYear + " - " + yearEndDay + "/" + yearEndMonth + "/" + yearEndYear;
-                String company = FilesHandler.extractOneLevelNestedFiled(experience, "company", null);
-                String company_linkedin_profile_url = FilesHandler.extractOneLevelNestedFiled(experience, "company_linkedin_profile_url", null);
-                String title = FilesHandler.extractOneLevelNestedFiled(experience, "title", null);
-                String description = FilesHandler.extractOneLevelNestedFiled(experience, "description", null);
-                String location = FilesHandler.extractOneLevelNestedFiled(experience, "location", null);
-                String logo_url = FilesHandler.extractOneLevelNestedFiled(experience, "logo_url", null);
+                String company = extractOneLevelNestedFiled(experience, "company", null);
+                String company_linkedin_profile_url = extractOneLevelNestedFiled(experience, "company_linkedin_profile_url", null);
+                String title = extractOneLevelNestedFiled(experience, "title", null);
+                String description = extractOneLevelNestedFiled(experience, "description", null);
+                String location = extractOneLevelNestedFiled(experience, "location", null);
+                String logo_url = extractOneLevelNestedFiled(experience, "logo_url", null);
 
                 resultNode = objectMapper.createObjectNode();
                 resultNode.put("time", time);
@@ -159,28 +175,28 @@ public class ManageApiData {
         return resultNodesList;
     }
 
-    public static List<ObjectNode> getValuesEducation(JsonNode educations, ObjectMapper objectMapper) {
+    private static List<ObjectNode> getValuesEducation(JsonNode educations, ObjectMapper objectMapper) {
         ObjectNode resultNode = null;
         List<ObjectNode> resultNodesList = new ArrayList<>();
         if (educations != null && educations.isArray()) {
             for (JsonNode education : educations) {
-                String yearStartDay = FilesHandler.extractOneLevelNestedFiled(education, "day", "starts_at");
-                String yearStartMonth = FilesHandler.extractOneLevelNestedFiled(education, "month", "starts_at");
-                String yearStartYear = FilesHandler.extractOneLevelNestedFiled(education, "year", "starts_at");
+                String yearStartDay = extractOneLevelNestedFiled(education, "day", "starts_at");
+                String yearStartMonth = extractOneLevelNestedFiled(education, "month", "starts_at");
+                String yearStartYear = extractOneLevelNestedFiled(education, "year", "starts_at");
 
-                String yearEndDay = FilesHandler.extractOneLevelNestedFiled(education, "day", "ends_at");
-                String yearEndMonth = FilesHandler.extractOneLevelNestedFiled(education, "month", "ends_at");
-                String yearEndYear = FilesHandler.extractOneLevelNestedFiled(education, "year", "ends_at");
+                String yearEndDay = extractOneLevelNestedFiled(education, "day", "ends_at");
+                String yearEndMonth = extractOneLevelNestedFiled(education, "month", "ends_at");
+                String yearEndYear = extractOneLevelNestedFiled(education, "year", "ends_at");
 
                 String time = yearStartDay + "/" + yearStartMonth + "/" + yearStartYear + " - " + yearEndDay + "/" + yearEndMonth + "/" + yearEndYear;
-                String fieldOfStudy = FilesHandler.extractOneLevelNestedFiled(education, "field_of_study", null);
-                String degreeName = FilesHandler.extractOneLevelNestedFiled(education, "degree_name", null);
-                String school = FilesHandler.extractOneLevelNestedFiled(education, "school", null);
-                String schoolLinkedinProfileUrl = FilesHandler.extractOneLevelNestedFiled(education, "school_linkedin_profile_url", null);
-                String description = FilesHandler.extractOneLevelNestedFiled(education, "description", null);
-                String logoUrl = FilesHandler.extractOneLevelNestedFiled(education, "logo_url", null);
-                String grade = FilesHandler.extractOneLevelNestedFiled(education, "grade", null);
-                String activitiesAndSocieties = FilesHandler.extractOneLevelNestedFiled(education, "activities_and_societies", null);
+                String fieldOfStudy = extractOneLevelNestedFiled(education, "field_of_study", null);
+                String degreeName = extractOneLevelNestedFiled(education, "degree_name", null);
+                String school = extractOneLevelNestedFiled(education, "school", null);
+                String schoolLinkedinProfileUrl = extractOneLevelNestedFiled(education, "school_linkedin_profile_url", null);
+                String description = extractOneLevelNestedFiled(education, "description", null);
+                String logoUrl = extractOneLevelNestedFiled(education, "logo_url", null);
+                String grade = extractOneLevelNestedFiled(education, "grade", null);
+                String activitiesAndSocieties = extractOneLevelNestedFiled(education, "activities_and_societies", null);
 
                 resultNode = objectMapper.createObjectNode();
                 resultNode.put("time", time);
@@ -198,23 +214,23 @@ public class ManageApiData {
         return resultNodesList;        
     }
 
-    public static List<ObjectNode> getValuesAccomplishmentOrganisations (JsonNode accompOrganisations, ObjectMapper objectMapper) {
+    private static List<ObjectNode> getValuesAccomplishmentOrganisations (JsonNode accompOrganisations, ObjectMapper objectMapper) {
         ObjectNode resultNode = null;
         List<ObjectNode> resultNodesList = new ArrayList<>();
         if (accompOrganisations != null && accompOrganisations.isArray()) {
             for (JsonNode accompOrganisation : accompOrganisations) {
-                String yearStartDay = FilesHandler.extractOneLevelNestedFiled(accompOrganisation, "day", "starts_at");
-                String yearStartMonth = FilesHandler.extractOneLevelNestedFiled(accompOrganisation, "month", "starts_at");
-                String yearStartYear = FilesHandler.extractOneLevelNestedFiled(accompOrganisation, "year", "starts_at");
+                String yearStartDay = extractOneLevelNestedFiled(accompOrganisation, "day", "starts_at");
+                String yearStartMonth = extractOneLevelNestedFiled(accompOrganisation, "month", "starts_at");
+                String yearStartYear = extractOneLevelNestedFiled(accompOrganisation, "year", "starts_at");
 
-                String yearEndDay = FilesHandler.extractOneLevelNestedFiled(accompOrganisation, "day", "ends_at");
-                String yearEndMonth = FilesHandler.extractOneLevelNestedFiled(accompOrganisation, "month", "ends_at");
-                String yearEndYear = FilesHandler.extractOneLevelNestedFiled(accompOrganisation, "year", "ends_at");
+                String yearEndDay = extractOneLevelNestedFiled(accompOrganisation, "day", "ends_at");
+                String yearEndMonth = extractOneLevelNestedFiled(accompOrganisation, "month", "ends_at");
+                String yearEndYear = extractOneLevelNestedFiled(accompOrganisation, "year", "ends_at");
 
                 String time = yearStartDay + "/" + yearStartMonth + "/" + yearStartYear + " - " + yearEndDay + "/" + yearEndMonth + "/" + yearEndYear;
-                String orgName = FilesHandler.extractOneLevelNestedFiled(accompOrganisation, "org_name", null);
-                String title = FilesHandler.extractOneLevelNestedFiled(accompOrganisation, "title", null);
-                String description = FilesHandler.extractOneLevelNestedFiled(accompOrganisation, "description", null);
+                String orgName = extractOneLevelNestedFiled(accompOrganisation, "org_name", null);
+                String title = extractOneLevelNestedFiled(accompOrganisation, "title", null);
+                String description = extractOneLevelNestedFiled(accompOrganisation, "description", null);
 
                 resultNode = objectMapper.createObjectNode();
                 resultNode.put("time", time);
@@ -227,20 +243,20 @@ public class ManageApiData {
         return resultNodesList;
     }
 
-    public static List<ObjectNode> getValuesAccomplishmentPublications (JsonNode accompPublications, ObjectMapper objectMapper) {
+    private static List<ObjectNode> getValuesAccomplishmentPublications (JsonNode accompPublications, ObjectMapper objectMapper) {
         ObjectNode resultNode = null;
         List<ObjectNode> resultNodesList = new ArrayList<>();
         if (accompPublications != null && accompPublications.isArray()) {
             for (JsonNode accompPublication : accompPublications) { 
-                String dayPublished = FilesHandler.extractOneLevelNestedFiled(accompPublication, "day", "published_on");
-                String monthPublished = FilesHandler.extractOneLevelNestedFiled(accompPublication, "month", "published_on");
-                String yearPublished = FilesHandler.extractOneLevelNestedFiled(accompPublication, "year", "published_on");
+                String dayPublished = extractOneLevelNestedFiled(accompPublication, "day", "published_on");
+                String monthPublished = extractOneLevelNestedFiled(accompPublication, "month", "published_on");
+                String yearPublished = extractOneLevelNestedFiled(accompPublication, "year", "published_on");
                 
-                String name = FilesHandler.extractOneLevelNestedFiled(accompPublication, "name", null);
-                String publisher = FilesHandler.extractOneLevelNestedFiled(accompPublication, "publisher", null);
+                String name = extractOneLevelNestedFiled(accompPublication, "name", null);
+                String publisher = extractOneLevelNestedFiled(accompPublication, "publisher", null);
                 String publishedOn = dayPublished + "/" + monthPublished + "/" + yearPublished;
-                String description = FilesHandler.extractOneLevelNestedFiled(accompPublication, "description", null);
-                String url = FilesHandler.extractOneLevelNestedFiled(accompPublication, "url", null);
+                String description = extractOneLevelNestedFiled(accompPublication, "description", null);
+                String url = extractOneLevelNestedFiled(accompPublication, "url", null);
                 
                 resultNode = objectMapper.createObjectNode();
                 resultNode.put("name", name);
@@ -255,19 +271,19 @@ public class ManageApiData {
         
     }
 
-    public static List<ObjectNode> getValuesAccomplishmentHonorsAwards (JsonNode accompHonorsAwards, ObjectMapper objectMapper) {
+    private static List<ObjectNode> getValuesAccomplishmentHonorsAwards (JsonNode accompHonorsAwards, ObjectMapper objectMapper) {
         ObjectNode resultNode = null;
         List<ObjectNode> resultNodesList = new ArrayList<>();
         if (accompHonorsAwards != null && accompHonorsAwards.isArray()) {
             for (JsonNode accompHnorAward : accompHonorsAwards) { 
-                String dayIssuedOn = FilesHandler.extractOneLevelNestedFiled(accompHnorAward, "day", "issued_on");
-                String monthIssuedOn = FilesHandler.extractOneLevelNestedFiled(accompHnorAward, "month", "issued_on");
-                String yearIssuedOn = FilesHandler.extractOneLevelNestedFiled(accompHnorAward, "year", "issued_on");
+                String dayIssuedOn = extractOneLevelNestedFiled(accompHnorAward, "day", "issued_on");
+                String monthIssuedOn = extractOneLevelNestedFiled(accompHnorAward, "month", "issued_on");
+                String yearIssuedOn = extractOneLevelNestedFiled(accompHnorAward, "year", "issued_on");
                 
-                String title = FilesHandler.extractOneLevelNestedFiled(accompHnorAward, "title", null);
-                String issuer = FilesHandler.extractOneLevelNestedFiled(accompHnorAward, "issuer", null);
+                String title = extractOneLevelNestedFiled(accompHnorAward, "title", null);
+                String issuer = extractOneLevelNestedFiled(accompHnorAward, "issuer", null);
                 String issuedOn = dayIssuedOn + "/" + monthIssuedOn + "/" + yearIssuedOn;
-                String description = FilesHandler.extractOneLevelNestedFiled(accompHnorAward, "description", null);
+                String description = extractOneLevelNestedFiled(accompHnorAward, "description", null);
                 
                 resultNode = objectMapper.createObjectNode();
                 resultNode.put("title", title);
@@ -280,22 +296,22 @@ public class ManageApiData {
         return resultNodesList;
     }
 
-    public static List<ObjectNode> getValuesAccomplishmentPatents (JsonNode accompPattents, ObjectMapper objectMapper) {
+    private static List<ObjectNode> getValuesAccomplishmentPatents (JsonNode accompPattents, ObjectMapper objectMapper) {
         ObjectNode resultNode = null;
         List<ObjectNode> resultNodesList = new ArrayList<>();
         if (accompPattents != null && accompPattents.isArray()) {
             for (JsonNode accompPattent : accompPattents) { 
-                String dayIssuedOn = FilesHandler.extractOneLevelNestedFiled(accompPattent, "day", "issued_on");
-                String monthIssuedOn = FilesHandler.extractOneLevelNestedFiled(accompPattent, "month", "issued_on");
-                String yearIssuedOn = FilesHandler.extractOneLevelNestedFiled(accompPattent, "year", "issued_on");
+                String dayIssuedOn = extractOneLevelNestedFiled(accompPattent, "day", "issued_on");
+                String monthIssuedOn = extractOneLevelNestedFiled(accompPattent, "month", "issued_on");
+                String yearIssuedOn = extractOneLevelNestedFiled(accompPattent, "year", "issued_on");
                 
-                String title = FilesHandler.extractOneLevelNestedFiled(accompPattent, "title", null);
-                String issuer = FilesHandler.extractOneLevelNestedFiled(accompPattent, "issuer", null);
+                String title = extractOneLevelNestedFiled(accompPattent, "title", null);
+                String issuer = extractOneLevelNestedFiled(accompPattent, "issuer", null);
                 String issuedOn = dayIssuedOn + "/" + monthIssuedOn + "/" + yearIssuedOn;
-                String description = FilesHandler.extractOneLevelNestedFiled(accompPattent, "description", null);
-                String applicationNumber = FilesHandler.extractOneLevelNestedFiled(accompPattent, "application_number", null);
-                String patentNumber = FilesHandler.extractOneLevelNestedFiled(accompPattent, "patent_number", null);
-                String url = FilesHandler.extractOneLevelNestedFiled(accompPattent, "url", null);
+                String description = extractOneLevelNestedFiled(accompPattent, "description", null);
+                String applicationNumber = extractOneLevelNestedFiled(accompPattent, "application_number", null);
+                String patentNumber = extractOneLevelNestedFiled(accompPattent, "patent_number", null);
+                String url = extractOneLevelNestedFiled(accompPattent, "url", null);
 
                 resultNode = objectMapper.createObjectNode();
                 resultNode.put("title", title);
@@ -311,13 +327,13 @@ public class ManageApiData {
         return resultNodesList;
     }
 
-    public static List<ObjectNode> getValuesAccomplishmentCourses (JsonNode accompCourses, ObjectMapper objectMapper) {
+    private static List<ObjectNode> getValuesAccomplishmentCourses (JsonNode accompCourses, ObjectMapper objectMapper) {
         ObjectNode resultNode = null;
         List<ObjectNode> resultNodesList = new ArrayList<>();
         if (accompCourses != null && accompCourses.isArray()) {
             for (JsonNode accompCourse : accompCourses) {                    
-                String name = FilesHandler.extractOneLevelNestedFiled(accompCourse, "name", null);
-                String number = FilesHandler.extractOneLevelNestedFiled(accompCourse, "number", null);
+                String name = extractOneLevelNestedFiled(accompCourse, "name", null);
+                String number = extractOneLevelNestedFiled(accompCourse, "number", null);
                 resultNode = objectMapper.createObjectNode();
                 resultNode.put("name", name);
                 resultNode.put("number", number);
@@ -327,23 +343,23 @@ public class ManageApiData {
         return resultNodesList;
     }
 
-    public static List<ObjectNode> getValuesAccomplishmentProjects (JsonNode accompProjects, ObjectMapper objectMapper) {
+    private static List<ObjectNode> getValuesAccomplishmentProjects (JsonNode accompProjects, ObjectMapper objectMapper) {
         ObjectNode resultNode = null;
         List<ObjectNode> resultNodesList = new ArrayList<>();
         if (accompProjects != null && accompProjects.isArray()) {
             for (JsonNode accompProject : accompProjects) {             
-                String dayStart = FilesHandler.extractOneLevelNestedFiled(accompProject, "day", "starts_at");
-                String monthStart = FilesHandler.extractOneLevelNestedFiled(accompProject, "month", "starts_at");
-                String yearStart = FilesHandler.extractOneLevelNestedFiled(accompProject, "year", "starts_at");
+                String dayStart = extractOneLevelNestedFiled(accompProject, "day", "starts_at");
+                String monthStart = extractOneLevelNestedFiled(accompProject, "month", "starts_at");
+                String yearStart = extractOneLevelNestedFiled(accompProject, "year", "starts_at");
 
-                String dayEnd = FilesHandler.extractOneLevelNestedFiled(accompProject, "day", "ends_at");
-                String monthEnd = FilesHandler.extractOneLevelNestedFiled(accompProject, "month", "ends_at");
-                String yearEnd = FilesHandler.extractOneLevelNestedFiled(accompProject, "year", "ends_at");
+                String dayEnd = extractOneLevelNestedFiled(accompProject, "day", "ends_at");
+                String monthEnd = extractOneLevelNestedFiled(accompProject, "month", "ends_at");
+                String yearEnd = extractOneLevelNestedFiled(accompProject, "year", "ends_at");
                 
                 String time = dayStart + "/" + monthStart + "/" + yearStart + " - " + dayEnd + "/" + monthEnd + "/" + yearEnd;
-                String title = FilesHandler.extractOneLevelNestedFiled(accompProject, "title", null);
-                String description = FilesHandler.extractOneLevelNestedFiled(accompProject, "description", null);
-                String url = FilesHandler.extractOneLevelNestedFiled(accompProject, "url", null);
+                String title = extractOneLevelNestedFiled(accompProject, "title", null);
+                String description = extractOneLevelNestedFiled(accompProject, "description", null);
+                String url = extractOneLevelNestedFiled(accompProject, "url", null);
 
                 resultNode = objectMapper.createObjectNode();
                 resultNode.put("time", time);
@@ -356,19 +372,19 @@ public class ManageApiData {
         return resultNodesList;
     }
 
-    public static List<ObjectNode> getValuesAccomplishmentTestScores (JsonNode accompTestScores, ObjectMapper objectMapper) {
+    private static List<ObjectNode> getValuesAccomplishmentTestScores (JsonNode accompTestScores, ObjectMapper objectMapper) {
         ObjectNode resultNode = null;
         List<ObjectNode> resultNodesList = new ArrayList<>();
         if (accompTestScores != null && accompTestScores.isArray()) {
             for (JsonNode accompTestScore : accompTestScores) {             
-                String dateOnDay = FilesHandler.extractOneLevelNestedFiled(accompTestScore, "day", "date_on");
-                String dateOnMonth = FilesHandler.extractOneLevelNestedFiled(accompTestScore, "month", "date_on");
-                String dateOnYear = FilesHandler.extractOneLevelNestedFiled(accompTestScore, "year", "date_on");
+                String dateOnDay = extractOneLevelNestedFiled(accompTestScore, "day", "date_on");
+                String dateOnMonth = extractOneLevelNestedFiled(accompTestScore, "month", "date_on");
+                String dateOnYear = extractOneLevelNestedFiled(accompTestScore, "year", "date_on");
 
-                String name = FilesHandler.extractOneLevelNestedFiled(accompTestScore, "name", null);
-                String score = FilesHandler.extractOneLevelNestedFiled(accompTestScore, "score", null);
+                String name = extractOneLevelNestedFiled(accompTestScore, "name", null);
+                String score = extractOneLevelNestedFiled(accompTestScore, "score", null);
                 String dateOn = dateOnDay + "/" + dateOnMonth + "/" + dateOnYear;
-                String description = FilesHandler.extractOneLevelNestedFiled(accompTestScore, "description", null);
+                String description = extractOneLevelNestedFiled(accompTestScore, "description", null);
 
                 resultNode = objectMapper.createObjectNode();
                 resultNode.put("name", name);
@@ -381,26 +397,26 @@ public class ManageApiData {
         return resultNodesList;     
     }
 
-    public static List<ObjectNode> getValuesVolunteerWork (JsonNode accompVolunteerWorks, ObjectMapper objectMapper) {
+    private static List<ObjectNode> getValuesVolunteerWork (JsonNode accompVolunteerWorks, ObjectMapper objectMapper) {
         ObjectNode resultNode = null;
         List<ObjectNode> resultNodesList = new ArrayList<>();
         if (accompVolunteerWorks != null && accompVolunteerWorks.isArray()) {
             for (JsonNode accompVolunteerWork : accompVolunteerWorks) {             
-                String startDay = FilesHandler.extractOneLevelNestedFiled(accompVolunteerWork, "day", "starts_at");
-                String startMonth = FilesHandler.extractOneLevelNestedFiled(accompVolunteerWork, "month", "starts_at");
-                String startYear = FilesHandler.extractOneLevelNestedFiled(accompVolunteerWork, "year", "starts_at");
+                String startDay = extractOneLevelNestedFiled(accompVolunteerWork, "day", "starts_at");
+                String startMonth = extractOneLevelNestedFiled(accompVolunteerWork, "month", "starts_at");
+                String startYear = extractOneLevelNestedFiled(accompVolunteerWork, "year", "starts_at");
 
-                String endDay = FilesHandler.extractOneLevelNestedFiled(accompVolunteerWork, "day", "ends_at");
-                String endMonth = FilesHandler.extractOneLevelNestedFiled(accompVolunteerWork, "month", "ends_at");
-                String endYear = FilesHandler.extractOneLevelNestedFiled(accompVolunteerWork, "year", "ends_at");
+                String endDay = extractOneLevelNestedFiled(accompVolunteerWork, "day", "ends_at");
+                String endMonth = extractOneLevelNestedFiled(accompVolunteerWork, "month", "ends_at");
+                String endYear = extractOneLevelNestedFiled(accompVolunteerWork, "year", "ends_at");
 
                 String time = startDay + "/" + startMonth + "/" + startYear + " - " + endDay + "/" + endMonth + "/" + endYear;
-                String title = FilesHandler.extractOneLevelNestedFiled(accompVolunteerWork, "title", null);
-                String cause = FilesHandler.extractOneLevelNestedFiled(accompVolunteerWork, "cause", null);
-                String company = FilesHandler.extractOneLevelNestedFiled(accompVolunteerWork, "company", null);
-                String companyLinkedinProfileUrl = FilesHandler.extractOneLevelNestedFiled(accompVolunteerWork, "company_linkedin_profile_url", null);
-                String description = FilesHandler.extractOneLevelNestedFiled(accompVolunteerWork, "description", null);
-                String logoUrl = FilesHandler.extractOneLevelNestedFiled(accompVolunteerWork, "logo_url", null);
+                String title = extractOneLevelNestedFiled(accompVolunteerWork, "title", null);
+                String cause = extractOneLevelNestedFiled(accompVolunteerWork, "cause", null);
+                String company = extractOneLevelNestedFiled(accompVolunteerWork, "company", null);
+                String companyLinkedinProfileUrl = extractOneLevelNestedFiled(accompVolunteerWork, "company_linkedin_profile_url", null);
+                String description = extractOneLevelNestedFiled(accompVolunteerWork, "description", null);
+                String logoUrl = extractOneLevelNestedFiled(accompVolunteerWork, "logo_url", null);
 
                 resultNode = objectMapper.createObjectNode();
                 resultNode.put("time", time);
@@ -416,25 +432,25 @@ public class ManageApiData {
         return resultNodesList;
     }
 
-    public static List<ObjectNode> getValuesCertifications (JsonNode certifications, ObjectMapper objectMapper) {
+    private static List<ObjectNode> getValuesCertifications (JsonNode certifications, ObjectMapper objectMapper) {
         ObjectNode resultNode = null;
         List<ObjectNode> resultNodesList = new ArrayList<>();
         if (certifications != null && certifications.isArray()) {
             for (JsonNode certification : certifications) {             
-                String startDay = FilesHandler.extractOneLevelNestedFiled(certification, "day", "starts_at");
-                String startMonth = FilesHandler.extractOneLevelNestedFiled(certification, "month", "starts_at");
-                String startYear = FilesHandler.extractOneLevelNestedFiled(certification, "year", "starts_at");
+                String startDay = extractOneLevelNestedFiled(certification, "day", "starts_at");
+                String startMonth = extractOneLevelNestedFiled(certification, "month", "starts_at");
+                String startYear = extractOneLevelNestedFiled(certification, "year", "starts_at");
 
-                String endDay = FilesHandler.extractOneLevelNestedFiled(certification, "day", "ends_at");
-                String endMonth = FilesHandler.extractOneLevelNestedFiled(certification, "month", "ends_at");
-                String endYear = FilesHandler.extractOneLevelNestedFiled(certification, "year", "ends_at");
+                String endDay = extractOneLevelNestedFiled(certification, "day", "ends_at");
+                String endMonth = extractOneLevelNestedFiled(certification, "month", "ends_at");
+                String endYear = extractOneLevelNestedFiled(certification, "year", "ends_at");
 
                 String time = startDay + "/" + startMonth + "/" + startYear + " - " + endDay + "/" + endMonth + "/" + endYear;
-                String name = FilesHandler.extractOneLevelNestedFiled(certification, "name", null);
-                String licenseNumber = FilesHandler.extractOneLevelNestedFiled(certification, "license_number", null);
-                String displaySource = FilesHandler.extractOneLevelNestedFiled(certification, "display_source", null);
-                String authority = FilesHandler.extractOneLevelNestedFiled(certification, "authority", null);
-                String url = FilesHandler.extractOneLevelNestedFiled(certification, "url", null);
+                String name = extractOneLevelNestedFiled(certification, "name", null);
+                String licenseNumber = extractOneLevelNestedFiled(certification, "license_number", null);
+                String displaySource = extractOneLevelNestedFiled(certification, "display_source", null);
+                String authority = extractOneLevelNestedFiled(certification, "authority", null);
+                String url = extractOneLevelNestedFiled(certification, "url", null);
 
                 resultNode = objectMapper.createObjectNode();
                 resultNode.put("time", time);
@@ -449,15 +465,15 @@ public class ManageApiData {
         return resultNodesList;
     }
 
-    public static List<ObjectNode> getValuesPeopleAlsoViewed (JsonNode peopleAlsoViewed, ObjectMapper objectMapper) {
+    private static List<ObjectNode> getValuesPeopleAlsoViewed (JsonNode peopleAlsoViewed, ObjectMapper objectMapper) {
         ObjectNode resultNode = null;
         List<ObjectNode> resultNodesList = new ArrayList<>();
         if (peopleAlsoViewed != null && peopleAlsoViewed.isArray()) {
             for (JsonNode personAlsoViewed : peopleAlsoViewed) {             
-                String link = FilesHandler.extractOneLevelNestedFiled(personAlsoViewed, "link", null);
-                String name = FilesHandler.extractOneLevelNestedFiled(personAlsoViewed, "name", null);
-                String summary = FilesHandler.extractOneLevelNestedFiled(personAlsoViewed, "summary", null);
-                String location = FilesHandler.extractOneLevelNestedFiled(personAlsoViewed, "location", null);
+                String link = extractOneLevelNestedFiled(personAlsoViewed, "link", null);
+                String name = extractOneLevelNestedFiled(personAlsoViewed, "name", null);
+                String summary = extractOneLevelNestedFiled(personAlsoViewed, "summary", null);
+                String location = extractOneLevelNestedFiled(personAlsoViewed, "location", null);
 
                 resultNode = objectMapper.createObjectNode();
                 resultNode.put("link", link);
@@ -470,14 +486,14 @@ public class ManageApiData {
         return resultNodesList;
     }
 
-    public static List<ObjectNode> getValuesActivities (JsonNode activities, ObjectMapper objectMapper) {
+    private static List<ObjectNode> getValuesActivities (JsonNode activities, ObjectMapper objectMapper) {
         ObjectNode resultNode = null;
         List<ObjectNode> resultNodesList = new ArrayList<>();
         if (activities != null && activities.isArray()) {
             for (JsonNode activity : activities) {             
-                String title = FilesHandler.extractOneLevelNestedFiled(activity, "title", null);
-                String link = FilesHandler.extractOneLevelNestedFiled(activity, "link", null);
-                String activityStatus = FilesHandler.extractOneLevelNestedFiled(activity, "activity_status", null);
+                String title = extractOneLevelNestedFiled(activity, "title", null);
+                String link = extractOneLevelNestedFiled(activity, "link", null);
+                String activityStatus = extractOneLevelNestedFiled(activity, "activity_status", null);
 
                 resultNode = objectMapper.createObjectNode();
                 resultNode.put("title", title);
@@ -490,15 +506,15 @@ public class ManageApiData {
         
     }
 
-    public static List<ObjectNode> getValuesSimilarlyNamedProfiles (JsonNode similarlyNamedProfiles, ObjectMapper objectMapper) {
+    private static List<ObjectNode> getValuesSimilarlyNamedProfiles (JsonNode similarlyNamedProfiles, ObjectMapper objectMapper) {
         ObjectNode resultNode = null;
         List<ObjectNode> resultNodesList = new ArrayList<>();
         if (similarlyNamedProfiles != null && similarlyNamedProfiles.isArray()) {
             for (JsonNode similarlyNamedProfile : similarlyNamedProfiles) {             
-                String name = FilesHandler.extractOneLevelNestedFiled(similarlyNamedProfile, "name", null);
-                String link = FilesHandler.extractOneLevelNestedFiled(similarlyNamedProfile, "link", null);
-                String summary = FilesHandler.extractOneLevelNestedFiled(similarlyNamedProfile, "summary", null);
-                String location = FilesHandler.extractOneLevelNestedFiled(similarlyNamedProfile, "location", null);
+                String name = extractOneLevelNestedFiled(similarlyNamedProfile, "name", null);
+                String link = extractOneLevelNestedFiled(similarlyNamedProfile, "link", null);
+                String summary = extractOneLevelNestedFiled(similarlyNamedProfile, "summary", null);
+                String location = extractOneLevelNestedFiled(similarlyNamedProfile, "location", null);
 
                 resultNode = objectMapper.createObjectNode();
                 resultNode.put("name", name);
@@ -511,20 +527,20 @@ public class ManageApiData {
         return resultNodesList;
     }
 
-    public static List<ObjectNode> getValuesArticles (JsonNode articles, ObjectMapper objectMapper) {
+    private static List<ObjectNode> getValuesArticles (JsonNode articles, ObjectMapper objectMapper) {
         ObjectNode resultNode = null;
         List<ObjectNode> resultNodesList = new ArrayList<>();
         if (articles != null && articles.isArray()) {
             for (JsonNode article : articles) {             
-                String publishedDay = FilesHandler.extractOneLevelNestedFiled(article, "day", "published_date");
-                String publishedMonth = FilesHandler.extractOneLevelNestedFiled(article, "month", "published_date");
-                String publishedYear = FilesHandler.extractOneLevelNestedFiled(article, "year", "published_date");
+                String publishedDay = extractOneLevelNestedFiled(article, "day", "published_date");
+                String publishedMonth = extractOneLevelNestedFiled(article, "month", "published_date");
+                String publishedYear = extractOneLevelNestedFiled(article, "year", "published_date");
 
-                String title = FilesHandler.extractOneLevelNestedFiled(article, "title", null);
-                String link = FilesHandler.extractOneLevelNestedFiled(article, "link", null);
+                String title = extractOneLevelNestedFiled(article, "title", null);
+                String link = extractOneLevelNestedFiled(article, "link", null);
                 String publishedDate = publishedDay + "/" + publishedMonth + "/" + publishedYear;
-                String author = FilesHandler.extractOneLevelNestedFiled(article, "author", null);
-                String imageUrl = FilesHandler.extractOneLevelNestedFiled(article, "image_url", null);
+                String author = extractOneLevelNestedFiled(article, "author", null);
+                String imageUrl = extractOneLevelNestedFiled(article, "image_url", null);
 
                 resultNode = objectMapper.createObjectNode();
                 resultNode.put("title", title);
@@ -538,14 +554,14 @@ public class ManageApiData {
         return resultNodesList;
     }
 
-    public static List<ObjectNode> getValuesGroups (JsonNode groups, ObjectMapper objectMapper) {
+    private static List<ObjectNode> getValuesGroups (JsonNode groups, ObjectMapper objectMapper) {
         ObjectNode resultNode = null;
         List<ObjectNode> resultNodesList = new ArrayList<>();
         if (groups != null && groups.isArray()) {
             for (JsonNode group : groups) {             
-                String profilePicUrl = FilesHandler.extractOneLevelNestedFiled(group, "profile_pic_url", null);
-                String name = FilesHandler.extractOneLevelNestedFiled(group, "name", null);
-                String url = FilesHandler.extractOneLevelNestedFiled(group, "url", null);
+                String profilePicUrl = extractOneLevelNestedFiled(group, "profile_pic_url", null);
+                String name = extractOneLevelNestedFiled(group, "name", null);
+                String url = extractOneLevelNestedFiled(group, "url", null);
 
                 resultNode = objectMapper.createObjectNode();
                 resultNode.put("profile_pic_url", profilePicUrl);
