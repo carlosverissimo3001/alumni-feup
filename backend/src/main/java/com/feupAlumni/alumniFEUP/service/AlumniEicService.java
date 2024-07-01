@@ -31,5 +31,6 @@ public interface AlumniEicService {
 
     // Cleans data from the AlumniEic table
     public void celanAlumniEicTable();
+
 }
 

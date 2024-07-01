@@ -30,8 +30,54 @@ public class AlumniEicServiceImpl implements AlumniEicService{
     private CityService cityService;
     @Autowired
     private AlumniService alumniService;
-    @Autowired
-    private AlumniEicHasCoursesService alumniEicHasCoursesService;
+
+    // Verifies if the alumniEic has at least one course that is the same as the courseFilter
+    private boolean isFromCourse(AlumniEic alumni, String courseFilter) {
+        if (!courseFilter.equals("")) {
+            List<AlumniEic_has_Course> alumniCourses = alumni.getAlumniEicHasCourse();
+            for (AlumniEic_has_Course course : alumniCourses) {
+                String abrev = course.getCourse().getAbbreviation();
+                if (abrev.equals(courseFilter)) {
+                    return true;
+                }
+            }
+            return false;
+        }
+        return true;
+    }
+
+    // Verifies if the alumniEic has at least one course that finished in the yearFilter
+    // yearFilter.get(0) => From year
+    // yearFilter.get(1) => To year
+    // Validations: If from year has value to year also has to have value
+    //                        "From year" might have value and "to year" don't
+    //                        Both fields can be empty
+    //                        If both have value, then the "to year" should be bigger than the "from year"
+    private boolean isFromConclusionYear(AlumniEic alumni, List<String> yearFilter) {
+        if (!yearFilter.get(0).equals("")) { // There is a From year
+            List<AlumniEic_has_Course> alumniCourses = alumni.getAlumniEicHasCourse();
+            for (AlumniEic_has_Course course : alumniCourses) {
+                String[] yearConclusion = course.getYearOfConclusion().split("/"); // [2023, 2024]
+                if (!yearFilter.get(1).equals("")) { // There is a To year => Interval
+                    // Validates the years: if there is a value "to year", then this second value has to be bigger than the "from year"
+                    if (Integer.parseInt(yearFilter.get(0)) <= Integer.parseInt(yearFilter.get(1))) {
+                        if (Integer.parseInt(yearFilter.get(0)) <= Integer.parseInt(yearConclusion[1]) &&
+                            Integer.parseInt(yearFilter.get(1)) >= Integer.parseInt(yearConclusion[1])
+                        ) {
+                            return true;
+                        }
+                    } 
+                    return false;
+                } else { // There isn't a To year => it shows from that year beyond
+                    if (Integer.parseInt(yearConclusion[1]) >= Integer.parseInt(yearFilter.get(0))) {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+        return true;
+    }
 
     @Override
     public void populateAlumniEicTable() {
@@ -121,7 +167,7 @@ public class AlumniEicServiceImpl implements AlumniEicService{
         for (AlumniEic alumni : allAlumniEic) {
             String linkdeinLink = alumni.getLinkedinLink();
             String alumniName = alumni.getAlumniName();
-            if (alumniEicHasCoursesService.isFromCourse(alumni, courseFilter) && alumniEicHasCoursesService.isFromConclusionYear(alumni, yearFilter)) {
+            if (isFromCourse(alumni, courseFilter) && isFromConclusionYear(alumni, yearFilter)) {
                 listLinkedinLinksByUser.put(linkdeinLink, alumniName);
             }
         }
@@ -134,7 +180,7 @@ public class AlumniEicServiceImpl implements AlumniEicService{
         List<AlumniEic> allAlumniEic = getAllAlumniEic();
         for (AlumniEic alumni : allAlumniEic) {
             Map<String, String> coursesYearConclusion = new HashMap<>();
-            if (alumniEicHasCoursesService.isFromCourse(alumni, courseFilter) && alumniEicHasCoursesService.isFromConclusionYear(alumni, yearFilter)) {
+            if (isFromCourse(alumni, courseFilter) && isFromConclusionYear(alumni, yearFilter)) {
                 for (AlumniEic_has_Course alumniCourse : alumni.getAlumniEicHasCourse()) {
                     String courseAbrev = alumniCourse.getCourse().getAbbreviation();
                     coursesYearConclusion.put(courseAbrev, alumniCourse.getYearOfConclusion());
