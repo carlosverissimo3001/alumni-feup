@@ -79,49 +79,6 @@ public class AlumniEicHasCoursesServiceImpl implements AlumniEicHasCoursesServic
     }
 
     @Override
-    public boolean isFromCourse(AlumniEic alumni, String courseFilter) {
-        if (!courseFilter.equals("")) {
-            List<AlumniEic_has_Course> alumniCourses = alumni.getAlumniEicHasCourse();
-            for (AlumniEic_has_Course course : alumniCourses) {
-                String abrev = course.getCourse().getAbbreviation();
-                if (abrev.equals(courseFilter)) {
-                    return true;
-                }
-            }
-            return false;
-        }
-        return true;
-    }
-
-    
-    @Override
-    public boolean isFromConclusionYear(AlumniEic alumni, List<String> yearFilter) {
-        if (!yearFilter.get(0).equals("")) { // There is a From year
-            List<AlumniEic_has_Course> alumniCourses = alumni.getAlumniEicHasCourse();
-            for (AlumniEic_has_Course course : alumniCourses) {
-                String[] yearConclusion = course.getYearOfConclusion().split("/"); // [2023, 2024]
-                if (!yearFilter.get(1).equals("")) { // There is a To year => Interval
-                    // Validates the years: if there is a value "to year", then this second value has to be bigger than the "from year"
-                    if (Integer.parseInt(yearFilter.get(0)) <= Integer.parseInt(yearFilter.get(1))) {
-                        if (Integer.parseInt(yearFilter.get(0)) <= Integer.parseInt(yearConclusion[1]) &&
-                            Integer.parseInt(yearFilter.get(1)) >= Integer.parseInt(yearConclusion[1])
-                        ) {
-                            return true;
-                        }
-                    } 
-                    return false;
-                } else { // There isn't a To year => it shows from that year beyond
-                    if (Integer.parseInt(yearConclusion[1]) >= Integer.parseInt(yearFilter.get(0))) {
-                        return true;
-                    }
-                }
-            }
-            return false;
-        }
-        return true;
-    }
-
-    @Override
     public void saveRelationAlumniCourse(AlumniEic_has_Course alumniEicHasCourse) {
         alumniEic_has_CourseRepository.save(alumniEicHasCourse);
     }
