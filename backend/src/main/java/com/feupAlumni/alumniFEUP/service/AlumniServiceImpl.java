@@ -85,14 +85,12 @@ public class AlumniServiceImpl implements AlumniService{
     }
 
     @Override
-    public byte[] alumniTableToExcel(MultipartFile file) {
+    public byte[] alumniTableToExcel() {
         // Load the Excel file
-        Workbook workbook = null;
-        try (InputStream inputStream = file.getInputStream()) {
-            // Read and iterate over the excel file
-            workbook = new XSSFWorkbook(inputStream);
+        Workbook workbook = new XSSFWorkbook(); // Creates a new workbook
+        Sheet sheet = workbook.createSheet("Alumni"); // Create a new sheet
 
-            Sheet sheet = workbook.getSheetAt(0);   // 1st sheet
+        try {
             // 1st on the sublist is the row where which title should be 
             String[][] fields = ManageApiData.getFields();
             

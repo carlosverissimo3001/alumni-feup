@@ -10,11 +10,29 @@ const AdminSettings = () => {
         const file = event.target.files[0];
         console.log('Uploaded file:', file);
         setUploadedFile(file);
-        // Handle file upload logic here
     };
 
+    // Backsup the Alumni table to an excel
+    const handleBackupAlumnus = async () => {
+        await setUp.backupAlumnusExcel();
+    }
+
+    // Deletes the Alumni information and repopulates all tables with new updated information from the LinkedinLink API
     const handleReplaceAlumnus = async () => {
+        // TODO: SHOULD ENSURE THE FILE IS AN EXCEL FILE AND THAT THERE IS A FILE
         await setUp.replaceAlumnus(uploadedFile);
+    }
+
+    // Only calls the API to alumnis that don't already exist in the app
+    const handleAddAlumnusData = async () => {
+        // TODO: SHOULD ENSURE THE FILE IS AN EXCEL FILE AND THAT THERE IS A FILE
+        await setUp.addAlumnusData(uploadedFile);
+    }
+
+    // TODO: MISSING TO IMPLEMENT THIS
+    // Updates the user's password
+    const handleChangePass = async () => {
+
     }
 
     return (
@@ -26,6 +44,7 @@ const AdminSettings = () => {
                         <div className='row-admin-title'>
                             <h1 className='admin-heading'> <FcSettings /> Adimin Settings</h1>
                         </div>
+                        <button className='admin-button' onClick={handleBackupAlumnus}>Backup Alumnus Data</button>
                         <div className='row-admin-menu'>
                             <div className='input-row'>
                                 <label htmlFor='fileUpload' className='input-label'>Add Alumnus:</label>
@@ -44,7 +63,7 @@ const AdminSettings = () => {
                                 </label>
                                 <div className='buttons-alumnus'>
                                     <button className='admin-button' onClick={handleReplaceAlumnus}>Replace Alumnus Data</button>
-                                    <button className='admin-button'>Add Alumnus Data</button>
+                                    <button className='admin-button' onClick={handleAddAlumnusData}>Add Alumnus Data</button>
                                 </div>
                             </div>
                             <div className='input-row'>
@@ -57,6 +76,7 @@ const AdminSettings = () => {
                                     placeholder='New password'
                                     className='input-pass-admin input-field'
                                 />
+                                <button className='admin-button' onClick={handleChangePass}>Done</button>
                             </div>
                         </div>
                     </div>
