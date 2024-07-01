@@ -56,11 +56,11 @@ public class AdminController {
             // Clean Tables
             dataPopulationService.cleanTables(new ReplaceAlumnusStrategy());
 
-            // Cleans GeoJson files
-            JsonFileHandler.cleanGeoJsonFiles("backend/src/resources/locationGeoJson");
-
-            // Populates tables 
-            dataPopulationService.populateTables(file);
+            // Cleans GeoJson files C:\alumniProject\backend\src\main\resources\locationGeoJson
+            JsonFileHandler.cleanGeoJsonFiles("backend/src/main/resources/locationGeoJson");
+            
+            // Populates tables TODO: UNCOMMENT THIS - I COMMENTED SO THE API DOESN'T GET CALLED 
+            //dataPopulationService.populateTables(file);
 
             return ResponseEntity.ok().body("");
         } catch (Exception e) {
@@ -81,8 +81,9 @@ public class AdminController {
             // Cleans GeoJson files
             JsonFileHandler.cleanGeoJsonFiles("backend/src/resources/locationGeoJson");
 
-            // Populates tables: alumnis it adds up, and the others it repopulates again
-            dataPopulationService.populateTables(file);
+            // Populates tables: alumnis it adds up, and the others it repopulates again 
+            // TODO: UNCOMMENT THIS - I COMMENTED SO THE API DOESN'T GET CALLED 
+            //dataPopulationService.populateTables(file);
 
             return ResponseEntity.ok().body("");
         } catch (Exception e) {
