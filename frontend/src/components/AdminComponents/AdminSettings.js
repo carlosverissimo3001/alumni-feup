@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { FcSettings, FcPlus } from "react-icons/fc";
+import setUp from "../../helpers/setUp";
 
 const AdminSettings = () => {
     const [newPassword, setNewPassword] = useState('');
@@ -11,6 +12,10 @@ const AdminSettings = () => {
         setUploadedFile(file);
         // Handle file upload logic here
     };
+
+    const handleReplaceAlumnus = async () => {
+        await setUp.replaceAlumnus(uploadedFile);
+    }
 
     return (
         <>
@@ -38,8 +43,8 @@ const AdminSettings = () => {
                                     </span>
                                 </label>
                                 <div className='buttons-alumnus'>
-                                    <button className='admin-button'>Replace Alumnus Data</button>
-                                    <button className='admin-button'>Update Alumnus Data</button>
+                                    <button className='admin-button' onClick={handleReplaceAlumnus}>Replace Alumnus Data</button>
+                                    <button className='admin-button'>Add Alumnus Data</button>
                                 </div>
                             </div>
                             <div className='input-row'>
