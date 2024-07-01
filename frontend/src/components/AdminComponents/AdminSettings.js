@@ -30,9 +30,11 @@ const AdminSettings = () => {
     }
 
     // TODO: MISSING TO IMPLEMENT THIS
+    // TODO: It should ask first for the actual pass. Then for a new one. The backend then validates if the passwords match and if so
+    //       updates the password
     // Updates the user's password
     const handleChangePass = async () => {
-
+        await setUp.changePass();
     }
 
     return (

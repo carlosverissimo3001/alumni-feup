@@ -6,7 +6,6 @@
 import React, {useEffect, useState} from 'react';
 import setUp from '../helpers/setUp';
 import Helper from '../helpers/helper';
-import ApiDataAnalysis from '../helpers/apiDataAnalysis';
 import { TiDelete } from "react-icons/ti";
 import { FaCheckCircle } from "react-icons/fa";
 
@@ -16,7 +15,6 @@ const MenuButtons = ({menuVisible, onLoading, onSelectGeoJSON, onSelectAlumni, y
     const years = Array.from({ length: currentYear - 1994 + 1 }, (_, i) => 1994 + i).reverse();
     const courses = ['LEIC', 'L.EIC', 'MEI', 'M.EIC', 'MIEIC'];
 
-    const [file, setFile] = useState('');
     const [selectedOption, setSelectedOption] = useState('');
     const [filteredAlumniNamesCoord, setFilteredAlumniNamesCoord] = useState([]);
     const [listAlumniNamesWithCoordinates, setListAlumniNamesWithCoordinates] = useState([]);
@@ -192,21 +190,6 @@ const MenuButtons = ({menuVisible, onLoading, onSelectGeoJSON, onSelectAlumni, y
         setLoading(false);          // data is ready
     }
 
-
-    // Read from a file that contains the API response of scraped profiles => avoid unecessary calls to the API
-    const handlePopulateAlumniTableFileBckp = async () => {
-        Helper.checkIfTextFile(file);
-       
-        await setUp.setAlumniUsingBackup(file);
-        console.log("Backup set in the Alumni table");
-    }
-    
-    // Reads the Alumni Table and backs it up to an Excel
-    const handleAlmnTblExcel = async () => {
-        Helper.checkIfExcel(file);
-        ApiDataAnalysis.almnTblExcel(file);
-    }
-
     return (
         <>
             { menuVisible && (
@@ -333,12 +316,6 @@ const MenuButtons = ({menuVisible, onLoading, onSelectGeoJSON, onSelectAlumni, y
                 <a className="text feedback-links" href="https://docs.google.com/forms/d/e/1FAIpQLScPMdQzqv9Dy1llc-nGdr33q33r7GnSZjmYtxwwT1v_oy3Y7Q/viewform" target="_blank" rel="noopener noreferrer">Join us</a>
                 <a className="text feedback-links" href="https://forms.gle/iNQ8mrakT9ToZcLT7" target="_blank" rel="noopener noreferrer">Give Feedback</a>
             
-
-                {/* 
-                
-                <button className="button butnBackAlumniWFile" onClick={handlePopulateAlumniTableFileBckp}>AlumniTablePopulate - backup file</button>
-                
-                <button className="button btnExcelAlumniTableToExcel" onClick={handleAlmnTblExcel}>Excel: Alumni table</button>*/}
               </>
             )}
         </>
