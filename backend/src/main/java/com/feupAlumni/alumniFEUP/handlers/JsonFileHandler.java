@@ -146,19 +146,23 @@ public class JsonFileHandler {
 
     // Clens the geoJson files previously generated
     public static void cleanGeoJsonFiles(String directoryPath) throws IOException {
-        Path dir = Paths.get(directoryPath);
-        if (Files.exists(dir) && Files.isDirectory(dir)) {
-            try (Stream<Path> files = Files.list(dir)) {
-                files.forEach(file -> {
-                    try {
-                        Files.delete(file);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                });
+        try {
+            Path dir = Paths.get(directoryPath);
+            if (Files.exists(dir) && Files.isDirectory(dir)) {
+                try (Stream<Path> files = Files.list(dir)) {
+                    files.forEach(file -> {
+                        try {
+                            Files.delete(file);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    });
+                }
+            } else {
+                System.out.println("Directory not found: " + directoryPath);
             }
-        } else {
-            throw new IOException("Directory not found: " + directoryPath);
+        } catch (Error e) {
+            System.out.println("Something wen wrong while trying to delete geoJsonFiles: " + e);
         }
     }
     
