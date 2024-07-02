@@ -72,7 +72,7 @@ const AdminSettings = () => {
                                 <label htmlFor='newPassword' className='input-label'>Change Password:</label>
                                 <input
                                     type='password'
-                                    id='newPassword'
+                                    id='newPasswordwwww'
                                     value={newPassword}
                                     onChange={(e) => setNewPassword(e.target.value)}
                                     placeholder='New password'
