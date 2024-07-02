@@ -39,7 +39,7 @@ public class AlumniController {
             var fileName = JsonFileHandler.determineFileName(geoJsonType, courseFilter, yearFilter);
 
             // Defines a directory where the files are stored
-            String directoryPath = "backend/src/resources/locationGeoJson";
+            String directoryPath = "backend/src/locationGeoJson";
 
             // Checks if the file already exists
             File locationGeoJSON = new File(directoryPath, fileName);
@@ -48,11 +48,14 @@ public class AlumniController {
                 alumniEicService.generateGeoJsonAlumniEic(locationGeoJSON, courseFilter, yearFilter, geoJsonType);
             }
 
+            System.out.println("locationGeoJSON: " + locationGeoJSON);
+            System.out.println("fileName: " + fileName);
+
             // Grabs the file and returns it 
             InputStreamResource resource = new InputStreamResource(new FileInputStream(locationGeoJSON));
             HttpHeaders headers = new HttpHeaders();
             headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + fileName);
-            headers.setContentType(MediaType.APPLICATION_JSON);
+            headers.setContentType(MediaType.APPLICATION_JSON);        
 
             return ResponseEntity.ok()
                 .headers(headers)
