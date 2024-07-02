@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -145,9 +146,9 @@ public class AlumniServiceImpl implements AlumniService{
     } 
 
     @Override
-    public void getAlumniDistCity(Map<String, Integer> cityAlumniCount) {
-        // Accesses the Alumni table and populates the City table
+    public Map<String, Integer> getAlumniDistCity() {
         List<Alumni> alumniList = alumniRepository.findAll();
+        Map<String, Integer> cityAlumniCount = new HashMap<>();;
 
         // Puts in a map the cites (as keys) and the number of alumni for each city (as value)
         for (Alumni alumni : alumniList) {
@@ -161,6 +162,8 @@ public class AlumniServiceImpl implements AlumniService{
             // Update the count for the city in the map
             cityAlumniCount.put(city, cityAlumniCount.getOrDefault(city, 0) + 1);
         }
+
+        return cityAlumniCount;
     } 
 
     // Gets the alumni distribution per country

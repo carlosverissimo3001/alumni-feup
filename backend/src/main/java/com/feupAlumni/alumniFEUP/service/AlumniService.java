@@ -31,7 +31,7 @@ public interface AlumniService {
     public boolean linkedinExists(String linkValue);
 
     // Gets the alumni distribution per city
-    public void getAlumniDistCity(Map<String, Integer> cityAlumniCount);
+    public Map<String, Integer> getAlumniDistCity();
 
     // Gets the alumni distribution per country
     public void getAlumniDistCountry(Map<String, Integer> countryAlumniCount, Map<String, String> countryCodes);

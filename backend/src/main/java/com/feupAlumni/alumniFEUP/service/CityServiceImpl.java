@@ -20,8 +20,7 @@ public class CityServiceImpl implements CityService {
 
     @Override
     public void populateCityTable() {
-        Map<String, Integer> cityAlumniCount = new HashMap<>();
-        alumniService.getAlumniDistCity(cityAlumniCount);
+        Map<String, Integer> cityAlumniCount = alumniService.getAlumniDistCity();
 
         // Iterate over the map and save the data to city table
         for(Map.Entry<String, Integer> entry : cityAlumniCount.entrySet()){
@@ -32,7 +31,7 @@ public class CityServiceImpl implements CityService {
             String coordinates = "";
             if(city != "null"){
                 try{
-                    coordinates = Location.getCityCoordinates(city);
+                    coordinates = Location.getCityCoordinates(city, country);
                     // Saves the data in the table
                     City citySave = new City(city, coordinates, alumniCount);
                     saveCity(citySave);
