@@ -14,9 +14,10 @@ class setUp {
 
             const response = await fetch(`http://localhost:8080/setupLocation/getGeoJson?${params.toString()}`);
             if (response.ok) {
-                const blob = await response.blob();
+                /*const blob = await response.blob();
                 console.log('GeoJson blob successfully fetched.');
-                return blob;
+                return blob;*/
+                return null;
             } else {
                 console.error('GeoJson fetching failed.');
             }
