@@ -243,6 +243,7 @@ p {
 .mapCmpDiv{
     height: 100vh;
     position: relative;
+    background-color: orange;
 }
 
 /*----- Loading -----*/
@@ -530,8 +531,7 @@ p {
     padding-right: 10px;
     border-radius: 5px;
     z-index: 999; 
-    width: 50%;
-    height: 45%;
+    max-width: 30%; 
 }
 
 .titles-letter {
@@ -565,7 +565,7 @@ p {
 }
 
 .content-table {
-    font-weight: 400;
+    font-weight: 400px;
     size: 16px;
     line-height: 24px;
     color: #515150;
@@ -582,7 +582,7 @@ p {
 }
 
 .alumni-cell-name {
-    width: 160px;
+    width: 190px;
 }
 
 .profile-picture {
@@ -612,6 +612,5 @@ p {
 }
 .list-alumni.scrollable {
     max-height: 250px; 
-    max-width: 400px; 
     overflow-y: auto;
 }
