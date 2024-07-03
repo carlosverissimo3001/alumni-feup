@@ -240,7 +240,7 @@ p {
 .mapCmpDiv{
     height: 100vh;
     position: relative;
-    background-color: orange;
+    background-color: #515150;
 }
 
 /*----- Loading -----*/

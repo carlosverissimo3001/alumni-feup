@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.*;
 
 import com.feupAlumni.alumniFEUP.service.AlumniEicService;
 import com.feupAlumni.alumniFEUP.handlers.JsonFileHandler;
-import com.feupAlumni.alumniFEUP.handlers.Location;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.FileInputStream;
