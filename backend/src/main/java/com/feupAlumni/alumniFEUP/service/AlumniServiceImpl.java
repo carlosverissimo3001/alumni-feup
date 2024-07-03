@@ -155,6 +155,31 @@ public class AlumniServiceImpl implements AlumniService{
         Map<String, Integer> cityCoordinateAlumniCount = new HashMap<>(); // Key: City Coordinate Value: Alumni Count
         Map<String, String> failedAttemptsAPI = new HashMap<>(); // Stores the city names that the API was not able to get the coordinates. It's stored on a map for easy access
         
+        Map<String, String> convertCityNames = new HashMap<>(); // Converts unacceptable city names to acceptable ones
+        convertCityNames.put("porto metropolitan area", "porto");
+        convertCityNames.put("brussels metropolitan area", "brussels"); 
+        convertCityNames.put("porto e região", "porto"); 
+        convertCityNames.put("kraków i okolice", "kraków");
+        convertCityNames.put("greater guimaraes area", "guimarães"); 
+        convertCityNames.put("hamburg und umgebung", "hamburg"); 
+        convertCityNames.put("braga e região", "braga"); 
+        convertCityNames.put("greater viana do castelo area", "viana do castelo"); 
+        convertCityNames.put("antwerp metropolitan area", "antwerp"); 
+        convertCityNames.put("metropolregion berlin/brandenburg", "berlin"); 
+        convertCityNames.put("greater ipswich area", "ipswich"); 
+        convertCityNames.put("greater madrid metropolitan area", "madrid"); 
+        convertCityNames.put("pontevedra y alrededores", "pontevedra"); 
+        convertCityNames.put("greater cambridge area", "cambridge"); 
+        convertCityNames.put("oslo og omegn", "oslo"); 
+        convertCityNames.put("greater tokyo area", "tokyo");
+        convertCityNames.put("greater barcelona metropolitan area", "barcelona"); 
+        convertCityNames.put("greater cardiff area", "cardiff"); 
+        convertCityNames.put("greater oslo region", "oslo");
+        convertCityNames.put("greater aveiro area", "aveiro"); 
+        convertCityNames.put("the randstad", "randstad"); 
+        convertCityNames.put("geneva metropolitan area", "geneva");
+
+
         for (Alumni alumni : alumniList) { 
             String linkedinInfo = alumni.getLinkedinInfo();
             String city = JsonFileHandler.extractFieldFromJson("city", linkedinInfo);
@@ -163,8 +188,18 @@ public class AlumniServiceImpl implements AlumniService{
             // This algorithm avoids unecessary calls to the API that returns city coordinates (there is a limit of ccredits/hour)
             String cityCoordinates = null;
             if (cityCoordinatesCountries.get(city) == null && failedAttemptsAPI.get(city) == null) {
-                // Grabs the coordinates from the API
-                cityCoordinates = Location.getCityCoordinates(city, countryAcronym);
+                // Verifies if it is a valid city name, if not, grabs the correct one
+                String lowerCaseCity = city.toLowerCase();
+                String correctCityName = convertCityNames.get(lowerCaseCity);
+
+                if (correctCityName != null) {
+                    // Grabs the coordinates from the API
+                    cityCoordinates = Location.getCityCoordinates(correctCityName, countryAcronym);
+                } else {
+                    // Grabs the coordinates from the API
+                    cityCoordinates = Location.getCityCoordinates(city, countryAcronym);
+                }
+
             } else if (cityCoordinatesCountries.get(city) != null && failedAttemptsAPI.get(city) == null) {
                 // Grabs the coordinates from the already existing one on the Map
                 cityCoordinates = cityCoordinatesCountries.get(city);
@@ -178,7 +213,7 @@ public class AlumniServiceImpl implements AlumniService{
                 failedAttemptsAPI.put(city, "");
             }
         }
-        System.out.println("OUT OF");
+        
         // Convert cityCoordinateAlumniCount to a Map<String, String>
         Map<String, String> cityCoordinateAlumniCountStr = new HashMap<>();
         for (Map.Entry<String, Integer> cityAlumniCount : cityCoordinateAlumniCount.entrySet()) {
