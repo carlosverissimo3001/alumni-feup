@@ -48,7 +48,6 @@ public class CourseServiceImpl implements CourseService{
                         // Sees if the course exists in the table
                         Boolean courseExists = courseExists(course);
                         if(!courseExists){
-                            System.out.println("----" + course);
                             // Stores the information in the DB
                             Course courseDb = new Course(course);
                             savesCourse(courseDb);

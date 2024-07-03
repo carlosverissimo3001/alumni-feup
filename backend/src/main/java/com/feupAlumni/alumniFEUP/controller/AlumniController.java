@@ -49,9 +49,6 @@ public class AlumniController {
                 alumniEicService.generateGeoJsonAlumniEic(locationGeoJSON, courseFilter, yearFilter, geoJsonType);
             }
 
-            System.out.println("locationGeoJSON: " + locationGeoJSON);
-            System.out.println("fileName: " + fileName);
-
             // Grabs the file and returns it 
             InputStreamResource resource = new InputStreamResource(new FileInputStream(locationGeoJSON));
             HttpHeaders headers = new HttpHeaders();

@@ -14,10 +14,9 @@ class setUp {
 
             const response = await fetch(`http://localhost:8080/setupLocation/getGeoJson?${params.toString()}`);
             if (response.ok) {
-                /*const blob = await response.blob();
+                const blob = await response.blob();
                 console.log('GeoJson blob successfully fetched.');
-                return blob;*/
-                return null;
+                return blob;
             } else {
                 console.error('GeoJson fetching failed.');
             }
@@ -71,6 +70,29 @@ class setUp {
         }
     }
 
+    // Doesn't delete de alumni table. It adds alumni to it. Only calls the API for the alumnis that are not already in the DB
+    // All other tables are updated
+    static async addAlumnusData(uploadedFile) {
+        try {
+            const formData = new FormData();
+            formData.append('file', uploadedFile);
+            const response = await fetch('http://localhost:8080/admin/addAlumnus', {
+                method: 'POST',
+                body: formData,
+            });
+
+            if (response.ok){
+                console.log('Alumnus data added successfully');
+                return true;
+            } else {
+                console.error('Alumnus data added failed');
+                return false;
+            }
+        } catch (error) {
+            console.log('Error while adding alumnus data', error);
+        }
+    }
+
     // Backup Alumni table to an Excel file which is later downloaded
     static async backupAlumnusExcel() {
         try {
@@ -94,30 +116,6 @@ class setUp {
             document.body.removeChild(link);
         } catch (error) {
             console.error('Error: ', error);
-        }
-    }
-
-
-    // Doesn't delete de alumni table. It adds alumni to it. Only calls the API for the alumnis that are not already in the DB
-    // All other tables are updated
-    static async addAlumnusData(uploadedFile) {
-        try {
-            const formData = new FormData();
-            formData.append('file', uploadedFile);
-            const response = await fetch('http://localhost:8080/admin/addAlumnus', {
-                method: 'POST',
-                body: formData,
-            });
-
-            if (response.ok){
-                console.log('Alumnus data added successfully');
-                return true;
-            } else {
-                console.error('Alumnus data added failed');
-                return false;
-            }
-        } catch (error) {
-            console.log('Error while adding alumnus data', error);
         }
     }
 

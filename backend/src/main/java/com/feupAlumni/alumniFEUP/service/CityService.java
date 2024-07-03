@@ -1,10 +1,12 @@
 package com.feupAlumni.alumniFEUP.service;
 
+import java.io.IOException;
+
 import com.feupAlumni.alumniFEUP.model.City;
 
 public interface CityService {
     // Populates the table with updated information
-    public void populateCityTable();
+    public void populateCityTable() throws IOException, InterruptedException;
 
     // Saves the city in the city table
     public void saveCity(City citySave);

@@ -50,7 +50,6 @@ public class Location {
 
     // Calls on the API which gets the information about a given city (including their latitude and longitude)
     private static JsonNode getCoordinatesForCity(String city, String country) throws IOException, InterruptedException {
-
         String username = "jenifer12345";
         String encodedCityName = URLEncoder.encode(city, "UTF-8");
         String apiUrl = "http://api.geonames.org/searchJSON?q=" + encodedCityName + "&country=" + country + "&maxRows=1&username=" + username;
@@ -59,7 +58,7 @@ public class Location {
         URL url = new URL(apiUrl);
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setRequestMethod("GET");
-
+        
         // Get the response
         BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
         StringBuilder response = new StringBuilder();
@@ -99,10 +98,15 @@ public class Location {
 
         JsonNode geonamesNode = jsonResponse.path("geonames");
         JsonNode firstResultNode = geonamesNode.get(0);
-        double latitude = firstResultNode.get("lat").asDouble();
-        double longitude = firstResultNode.get("lng").asDouble();
+        if (firstResultNode != null) {
+            double latitude = firstResultNode.get("lat").asDouble();
+            double longitude = firstResultNode.get("lng").asDouble();
+            return "[" + latitude + "," + longitude + "]";
+        } else {
+            System.out.println("Coordinates API was not able to find coordinates for city: " + city + " country: " + country + " firstResultNode: " + firstResultNode);
+        }
         
-        return "[" + latitude + "," + longitude + "]";
+        return null;        
     }
 
 }

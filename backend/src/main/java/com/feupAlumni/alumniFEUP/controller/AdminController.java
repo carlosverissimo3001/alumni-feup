@@ -50,7 +50,7 @@ public class AdminController {
     // Deletes the alumni information in the DB 
     // By calling the API, repopulates the tables with new information 
     // file: Excel File
-    @PostMapping("replaceAlumnus")
+    /* TODO: UNCOMMENT THIS @PostMapping("replaceAlumnus")
     public ResponseEntity<String> handleReplaceAlumnus(@RequestBody MultipartFile file){
         try {
             // Clean Tables
@@ -66,7 +66,7 @@ public class AdminController {
         } catch (Exception e) {
             return ResponseEntity.status(500).body("Error while replacing the alumnus data: " + e.getMessage());
         }  
-    }
+    }*/
 
     // Calls the API only for the alumnis that are not alreay in the DB
     // file: Excel File
@@ -79,7 +79,7 @@ public class AdminController {
             dataPopulationService.cleanTables(new AddAlumnusStrategy());
 
             // Cleans GeoJson files
-            JsonFileHandler.cleanGeoJsonFiles("backend/src/resources/locationGeoJson");
+            JsonFileHandler.cleanGeoJsonFiles("backend/src/locationGeoJson");
 
             // Populates tables: alumnis it adds up, and the others it repopulates again 
             // TODO: UNCOMMENT THIS - I COMMENTED SO THE API DOESN'T GET CALLED 

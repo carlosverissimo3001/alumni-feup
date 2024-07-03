@@ -1,6 +1,7 @@
 package com.feupAlumni.alumniFEUP.service;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -28,10 +29,12 @@ public interface AlumniService {
     public List<Alumni> getAllAlumnis();
 
     // Sees if the linkedin link exists in the tabel 
-    public boolean linkedinExists(String linkValue);
+    public boolean linkedinExists(String linkValue);    
 
-    // Gets the alumni distribution per city
-    public Map<String, Integer> getAlumniDistCity();
+    // cityInformation[0] => map where Key: cityName Value: cityCoordinates
+    // cityInformation[1] => map where Key: cityCoordinates Value: Nº of Alumnis in the city coordinates
+    // This had to be implemented like this in order to avoid calling the API that gets the city coordinates twice
+    public ArrayList<Map<String, String>> getCityInformation() throws IOException, InterruptedException;
 
     // Gets the alumni distribution per country
     public void getAlumniDistCountry(Map<String, Integer> countryAlumniCount, Map<String, String> countryCodes);
