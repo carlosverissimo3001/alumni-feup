@@ -11,8 +11,7 @@ const Admin = () => {
             // Verifies if it is the correct password
             const validPass = await setUp.verifyCorrectPassword(password);
             if (validPass) {
-                console.log("HOME SCREEN");
-                //navigate('/home');
+                navigate('/AdminDefinitions');
             } else {
                 // Send warning pop up of incorrect pass
                 console.log("NOT HOME SCREEN");

@@ -28,8 +28,7 @@ p {
     margin: 0px;
 }
 
-/*---- Admin ----*/
-
+/*---- Admin: Login ----*/
 .content-container{
     display: flex;
     align-items: flex-start;
@@ -142,12 +141,106 @@ p {
     outline: 0px;
 }
 
+/*---- Admin: main page ----*/
+
+.admin-wrapper{
+    display: flex;
+    flex-direction: column;
+}
+
+.row-admin-menu{
+    padding-top: 20px;
+}
+
+.input-row {
+    display: flex;
+    margin-bottom: 20px;
+}
+
+.input-label {
+    width: 150px;
+    margin-right: 10px;
+    font-size: 16px;
+    text-align: left;
+}
+
+.input-field {
+    flex: 1;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.insert-file{
+    display: none;
+}
+
+.upload-icon{
+    cursor: pointer;
+    border: 3px solid #ccc;
+    border-radius: 4px;
+    width: 250px;
+    padding: 10px;
+    background-color: white;
+    color: #5d5d5a;
+    display: flex;
+    align-items: center;
+}
+
+.input-pass-admin{
+    border: 3px solid #ccc;
+    border-radius: 4px;
+    width: 150px;
+    padding: 10px;
+    background-color: white;
+    color: #969695;
+}
+
+.file-name-admin-wrapp{
+    margin-left: 5px;
+    max-width: 250px;
+    word-wrap: break-word;
+    white-space: normal;    
+}
+
+.upload-file-admin{
+    margin-right: 10px;
+}
+
+.admin-button {
+    background-color: #515150;
+    border: none;
+    border-radius: 10px; 
+    color: white;
+    padding: 5px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.3s ease; 
+    height: 40px;
+    margin-top: 10px;
+    margin-left: 10px;
+}
+
+.admin-button:hover {
+    background-color: #A02D20;
+}
+
+.buttons-alumnus{
+    display: flex;
+    flex-direction: column;
+}
+
 
 /*---- Map ----*/
 
 .mapCmpDiv{
     height: 100vh;
     position: relative;
+    background-color: orange;
 }
 
 /*----- Loading -----*/
@@ -435,8 +528,7 @@ p {
     padding-right: 10px;
     border-radius: 5px;
     z-index: 999; 
-    width: 50%;
-    height: 45%;
+    max-width: 30%; 
 }
 
 .titles-letter {
@@ -470,7 +562,7 @@ p {
 }
 
 .content-table {
-    font-weight: 400;
+    font-weight: 400px;
     size: 16px;
     line-height: 24px;
     color: #515150;
@@ -487,7 +579,7 @@ p {
 }
 
 .alumni-cell-name {
-    width: 160px;
+    width: 190px;
 }
 
 .profile-picture {
@@ -517,6 +609,5 @@ p {
 }
 .list-alumni.scrollable {
     max-height: 250px; 
-    max-width: 400px; 
     overflow-y: auto;
 }

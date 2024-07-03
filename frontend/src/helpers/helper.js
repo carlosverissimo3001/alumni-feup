@@ -25,6 +25,20 @@ class Helper {
     }
   }
 
+  /**
+   * Extracts the profile pics of a linkedin user
+   */
+  static async extractPathToProfilePics(linkedinLinks) {
+    const pathsToProfileImage = [];
+    linkedinLinks.forEach(link => {
+      const parts = link.split('/');
+      const profileIdentifier = parts[parts.length-2];
+      const pathToProfileImage = `/Images/${profileIdentifier}.png`;
+      pathsToProfileImage.push(pathToProfileImage);
+    });
+    return pathsToProfileImage;
+  }
+
   // Checks if the selected file is an excel file
   static async checkIfExcel(file) {
       const allowedFileTypes = ['application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'application/vnd.ms-excel'];
@@ -33,16 +47,9 @@ class Helper {
           return;
       }
   }
-  // Checks if the selected file is a text file
-  static async checkIfTextFile(file) {
-      const allowedFileTypes = ['text/plain'];
-      if (!allowedFileTypes.includes(file.type)) {
-          alert('Invalid file type. Please upload a text file.');
-          return;
-      }
-  }
 
   // Extracts the Json objects
+  // ONLY USED INSDIE OF THIS CLASS
   static async extractJSONObjects(str) {
       const jsonObjects = [];
       let depth = 0; // to keep track of nested levels
@@ -73,6 +80,7 @@ class Helper {
   };
 
   // Function to flatten nested arrays
+  // ONLY USED BY THE parsePlaceNames
   static flattenArray(arr) {
     if (!Array.isArray(arr)) return [arr];
     let flattened = [];
