@@ -94,12 +94,14 @@ public class AlumniEicServiceImpl implements AlumniEicService{
             String publicIdentifier = JsonFileHandler.extractFieldFromJson("public_identifier", linkedinInfo);
             String linkedinFullLink = "https://www.linkedin.com/in/" + publicIdentifier + "/";
 
-            City city = cityService.findCityByName(cityName);
-            Country country = countryService.getCountryByName(countryName);
+            City city = cityService.findCityByName(cityName.toLowerCase());
+            if (city != null) {
+                Country country = countryService.getCountryByName(countryName);
 
-            // Saves the alumni in the DB
-            AlumniEic alumniEic = new AlumniEic(fullName, linkedinFullLink, city, country);
-            savesAlumniEic(alumniEic);
+                // Saves the alumni in the DB
+                AlumniEic alumniEic = new AlumniEic(fullName, linkedinFullLink, city, country);
+                savesAlumniEic(alumniEic);
+            }
         }
         System.out.println("AlumniEIC table re-populated");
         System.out.println("-----"); 

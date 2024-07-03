@@ -3,6 +3,7 @@ package com.feupAlumni.alumniFEUP.service;
 import com.feupAlumni.alumniFEUP.handlers.AlumniInfo;
 import com.feupAlumni.alumniFEUP.handlers.ExcelFilesHandler;
 import com.feupAlumni.alumniFEUP.handlers.JsonFileHandler;
+import com.feupAlumni.alumniFEUP.handlers.Location;
 import com.feupAlumni.alumniFEUP.handlers.ManageApiData;
 import com.feupAlumni.alumniFEUP.model.Alumni;
 import com.feupAlumni.alumniFEUP.repository.AlumniRepository;
@@ -17,6 +18,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -146,42 +148,61 @@ public class AlumniServiceImpl implements AlumniService{
     } 
 
     @Override
-    public Map<String, Integer> getAlumniDistCity() {
-        List<Alumni> alumniList = alumniRepository.findAll();
-        Map<String, Integer> cityAlumniCount = new HashMap<>();;
+    public ArrayList<Map<String, String>> getCityInformation() throws IOException, InterruptedException {
 
-        // Puts in a map the cites (as keys) and the number of alumni for each city (as value)
-        for (Alumni alumni : alumniList) {
+        List<Alumni> alumniList = alumniRepository.findAll();
+        Map<String, String> cityCoordinatesCountries = new HashMap<>(); // Keys: citiy name Value: city coordinates
+        Map<String, Integer> cityCoordinateAlumniCount = new HashMap<>(); // Key: City Coordinate Value: Alumni Count
+        Map<String, String> failedAttemptsAPI = new HashMap<>(); // Stores the city names that the API was not able to get the coordinates. It's stored on a map for easy access
+        
+        for (Alumni alumni : alumniList) { 
             String linkedinInfo = alumni.getLinkedinInfo();
             String city = JsonFileHandler.extractFieldFromJson("city", linkedinInfo);
+            String countryAcronym = JsonFileHandler.extractFieldFromJson("country", linkedinInfo);
 
-            // Ensures consistency across fields
-            city = city.toLowerCase();
-            city = city.replaceAll("ü", "u");
-            
-            // Update the count for the city in the map
-            cityAlumniCount.put(city, cityAlumniCount.getOrDefault(city, 0) + 1);
+            // This algorithm avoids unecessary calls to the API that returns city coordinates (there is a limit of ccredits/hour)
+            String cityCoordinates = null;
+            if (cityCoordinatesCountries.get(city) == null && failedAttemptsAPI.get(city) == null) {
+                // Grabs the coordinates from the API
+                cityCoordinates = Location.getCityCoordinates(city, countryAcronym);
+            } else if (cityCoordinatesCountries.get(city) != null && failedAttemptsAPI.get(city) == null) {
+                // Grabs the coordinates from the already existing one on the Map
+                cityCoordinates = cityCoordinatesCountries.get(city);
+            }
+
+            if (cityCoordinates != null) {
+                // Updates the map 
+                cityCoordinatesCountries.put(city, cityCoordinates);
+                cityCoordinateAlumniCount.put(cityCoordinates, cityCoordinateAlumniCount.getOrDefault(cityCoordinates, 0) + 1);
+            } else {
+                failedAttemptsAPI.put(city, "");
+            }
+        }
+        System.out.println("OUT OF");
+        // Convert cityCoordinateAlumniCount to a Map<String, String>
+        Map<String, String> cityCoordinateAlumniCountStr = new HashMap<>();
+        for (Map.Entry<String, Integer> cityAlumniCount : cityCoordinateAlumniCount.entrySet()) {
+            cityCoordinateAlumniCountStr.put(cityAlumniCount.getKey(), String.valueOf(cityAlumniCount.getValue()));
         }
 
-        return cityAlumniCount;
-    } 
+        // Adds the arrays to the ArrayList
+        ArrayList<Map<String, String>> result = new ArrayList<>();
+        result.add(cityCoordinatesCountries);
+        result.add(cityCoordinateAlumniCountStr);
+
+        return result;
+    }
 
     // Gets the alumni distribution per country
     @Override
     public void getAlumniDistCountry(Map<String, Integer> countryAlumniCount, Map<String, String> countryCodes) {
         // Accesses the Alumni table and populates the ViewAlumniCountry table
         List<Alumni> alumniList = alumniRepository.findAll();
-        var count = 0;
         // Puts in a map the countries (as keys) and the number of alumni for each country (as value)
         for (Alumni alumni : alumniList) {
             String linkedinInfo = alumni.getLinkedinInfo();
             String country = JsonFileHandler.extractFieldFromJson("country_full_name", linkedinInfo);
             String countryCode = JsonFileHandler.extractFieldFromJson("country", linkedinInfo);
-            if(countryCode.toUpperCase().equals("SI")){
-                System.out.println("alumni: " + alumni.getLinkedinInfo());
-                count++;
-                System.out.println("----------------------------------------------------------------");
-            }
 
             // Ensures consistency across fields
             country = country.toLowerCase();
@@ -192,7 +213,6 @@ public class AlumniServiceImpl implements AlumniService{
             // Adds the country code
             countryCodes.put(country, countryCode);
         }
-        System.out.println("count: " + count);
     } 
 
     @Override

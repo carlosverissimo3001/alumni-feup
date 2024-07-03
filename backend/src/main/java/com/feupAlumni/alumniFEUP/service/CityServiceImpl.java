@@ -1,12 +1,12 @@
 package com.feupAlumni.alumniFEUP.service;
 
-import java.util.HashMap;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.feupAlumni.alumniFEUP.handlers.Location;
 import com.feupAlumni.alumniFEUP.model.City;
 import com.feupAlumni.alumniFEUP.repository.CityRepository;
 
@@ -19,29 +19,47 @@ public class CityServiceImpl implements CityService {
     private AlumniService alumniService;
 
     @Override
-    public void populateCityTable() {
-        Map<String, Integer> cityAlumniCount = alumniService.getAlumniDistCity();
+    public void populateCityTable() throws IOException, InterruptedException {
+        try {
 
-        // Iterate over the map and save the data to city table
-        for(Map.Entry<String, Integer> entry : cityAlumniCount.entrySet()){
-            String city = entry.getKey();
-            Integer alumniCount = entry.getValue();
+            // cityInformation[0] => map where Key: cityName Value: cityCoordinates
+            // cityInformation[1] => map where Key: cityCoordinates Value: Nº of Alumnis in the city coordinates
+            // This had to be implemented like this in order to avoid calling the API that gets the city coordinates twice
+            ArrayList<Map<String, String>> cityInformation = alumniService.getCityInformation();
 
-            // Get City Coordinates
-            String coordinates = "";
-            if(city != "null"){
-                try{
-                    coordinates = Location.getCityCoordinates(city, country);
+            // Gets the city names for each city coordinate
+            // Key: city name Value: city coordinate
+            Map<String, String> cityNameCityCoordinate = cityInformation.get(0);
+
+            // Gets the number of alumnis across each city
+            // Key: city coordinates Value: nº alumnis
+            Map<String, String> cityAlumniCount = cityInformation.get(1);
+
+            // Iterates over the map and saves the data on the city table
+            for(Map.Entry<String, String> cityCoordinate : cityNameCityCoordinate.entrySet()){
+                String cityName = cityCoordinate.getKey();
+                String coordinateOfCity = cityCoordinate.getValue();
+
+                Integer alumniCount = Integer.parseInt(cityAlumniCount.get(coordinateOfCity));
+
+                try {
                     // Saves the data in the table
-                    City citySave = new City(city, coordinates, alumniCount);
-                    saveCity(citySave);
-                } catch (Exception e) {
-                    System.out.println("city: " + city + " was not considered. Number of alumnis: " + alumniCount + " error:" + e);
+                    City city = findCityByName(cityName.toLowerCase());
+                    if (city == null) { // If there is no register already with this name
+                        String cityNameLowerCase = cityName.toLowerCase();
+                        City citySave = new City(cityNameLowerCase, coordinateOfCity, alumniCount);
+                        saveCity(citySave);
+                    }
+                } catch (Error e) {
+                    System.out.println("error: " + e);
                 }
             }
+            
+            System.out.println("City Table repopulated.");
+            System.out.println("-----");
+        } catch (Error e) {
+            System.out.println("Something went wrong while trying to populate the city table: " + e);
         }
-        System.out.println("City Table repopulated.");
-        System.out.println("-----");
     }
 
     @Override
