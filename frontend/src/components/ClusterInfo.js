@@ -78,56 +78,60 @@ const ClusterInfo = ({
             }}
         >
             <span className='titles-letter'><b>LOCATION</b></span>
+            
             <div style={{ maxHeight: listPlaceName.length > 10 ? '45px' : 'auto', overflow: 'auto' }}>
             {listPlaceName.map((place, index) => (
                 <span key={index} className='places-name'>{place}{index !== listPlaceName.length - 1 && ', '}</span>
             ))}
             </div>
+
             <p></p>
+
             <ul className="list-alumni scrollable">
-            <table className="alumni-table">
-                <thead>
-                <tr>
-                    <th className="table-titles titles-letter alumni-cell-name sticky-header">ALUMNI</th>
-                    <th className="table-titles titles-letter sticky-header">DEGREE</th>
-                    <th className="table-titles titles-letter sticky-header">CONCLUSION</th>
-                </tr>
-                </thead>
-                <tbody>
-                {alumniData
-                    .sort((a, b) => a.name.localeCompare(b.name)) // Sort the array alphabetically
-                    .slice(startPosition, endPosition + 1) // endPosition+1 because slice() doesn't include the end
-                    .map((alumni, index) => (
-                    <tr key={index}>
-                        <td>
-                        <div className='alumni-cell alumni-cell-name'>
-                            <img
-                            className="profile-picture"
-                            src={alumni.profilePics}
-                            alt=""
-                            onError={handleImageError}
-                            />
-                            <a
-                            className="link content-table"
-                            href={alumni.linkedinLink}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            >
-                            {alumni.name}
-                            </a>
-                        </div>
-                        </td>
-                        <td className='content-table'>{alumni.courses}</td>
-                        <td className='content-table'>{alumni.yearConclusions}</td>
+                <table className="alumni-table">
+                    <thead>
+                    <tr>
+                        <th className="table-titles titles-letter alumni-cell-name sticky-header">ALUMNI</th>
+                        <th className="table-titles titles-letter sticky-header">DEGREE</th>
+                        <th className="table-titles titles-letter sticky-header">CONCLUSION</th>
                     </tr>
-                    ))}
-                </tbody>
-            </table>
-            <div>
-                {showPrev && <span className="forms-button my-button-pagination-prev" onClick={handleShowPrev}> Prev </span>}
-                {showMore && <span className="my-button-pagination-more forms-button" onClick={handleShowMore}> More </span>}
-            </div>
+                    </thead>
+                    <tbody>
+                    {alumniData
+                        .sort((a, b) => a.name.localeCompare(b.name)) // Sort the array alphabetically
+                        .slice(startPosition, endPosition + 1) // endPosition+1 because slice() doesn't include the end
+                        .map((alumni, index) => (
+                        <tr key={index}>
+                            <td>
+                            <div className='alumni-cell alumni-cell-name'>
+                                <img
+                                className="profile-picture"
+                                src={alumni.profilePics}
+                                alt=""
+                                onError={handleImageError}
+                                />
+                                <a
+                                className="link content-table"
+                                href={alumni.linkedinLink}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                >
+                                {alumni.name}
+                                </a>
+                            </div>
+                            </td>
+                            <td className='content-table'>{alumni.courses}</td>
+                            <td className='content-table'>{alumni.yearConclusions}</td>
+                        </tr>
+                        ))}
+                    </tbody>
+                </table>
+                <div>
+                    {showPrev && <span className="forms-button my-button-pagination-prev" onClick={handleShowPrev}> Prev </span>}
+                    {showMore && <span className="my-button-pagination-more forms-button" onClick={handleShowMore}> More </span>}
+                </div>
             </ul>
+            
         </div>
         )}
     </>

@@ -1,14 +1,15 @@
 package com.feupAlumni.alumniFEUP.service;
 
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+
 import com.feupAlumni.alumniFEUP.model.Admin;
 import com.feupAlumni.alumniFEUP.repository.AdminRepository;
 
-
 @Service
-public class AldminServiceImpl implements AdminService{
+public class AdminServiceImpl implements AdminService{
 
     @Autowired
     private AdminRepository adminRepository;

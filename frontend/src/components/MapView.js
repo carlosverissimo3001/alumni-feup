@@ -6,7 +6,6 @@ import React, {useState, useEffect, useRef} from 'react';
 import { Map as MapGL } from 'react-map-gl';
 import MapGLSource from './MapGLSource';
 import ClusterInfo from './ClusterInfo';
-import ApiDataAnalysis from '../helpers/apiDataAnalysis';
 import Helper from '../helpers/helper';
 
 const TOKEN = process.env.REACT_APP_MAPBOX_ACCESS_TOKEN;
@@ -76,7 +75,7 @@ const MapView = ({
         const feature = event.features[0]; 
         const {listPlaceName, listLinkedinLinks, listAlumniNames, coursesYearConclusionByUser} = await Helper.extractFeatureFields(feature);
         
-        var profilePics = await ApiDataAnalysis.extractPathToProfilePics(listLinkedinLinks);
+        var profilePics = await Helper.extractPathToProfilePics(listLinkedinLinks);
         var mapUserCoursesYears = await Helper.extractCoursesYears(coursesYearConclusionByUser);
         var alumniData = await Helper.buildAlumniData(listLinkedinLinks, listAlumniNames, profilePics, mapUserCoursesYears);
         var parsedFlattenedPlaceNames = await Helper.parsePlaceNames(listPlaceName);
