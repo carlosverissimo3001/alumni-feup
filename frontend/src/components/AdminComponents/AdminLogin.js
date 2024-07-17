@@ -5,6 +5,11 @@ import setUp from '../../helpers/setUp';
 const Admin = () => {
     const navigate = useNavigate();
     const [password, setPassword] = useState('');
+    const [showPassword, setShowPassword] = useState(false);
+
+    const togglePasswordVisibility = () => {
+        setShowPassword(!showPassword);
+    };
 
     const onNext = async () => {
         try {
@@ -34,13 +39,21 @@ const Admin = () => {
                         <div className='login-column'>
                             <div className='input-button-container-welcome'>
                                 <input
-                                    type="password"
+                                    type={showPassword ? 'text' : 'password'}
                                     id="password"
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}
                                     placeholder='password'
                                     className='input-username input-usernameWelcome'
                                 />
+                                <button
+                                    type="button"
+                                    onClick={togglePasswordVisibility}
+                                    className='password-toggle-button password-toggle-button-login'
+                                    aria-label={showPassword ? 'Hide password' : 'Show password'}
+                                >
+                                    {showPassword ? '👁️' : '👁️'}
+                                </button>
                                 <button className='app-button app-button__welcome' onClick={onNext}>Next</button>
                             </div>
                         </div>

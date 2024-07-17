@@ -4,7 +4,13 @@ import setUp from "../../helpers/setUp";
 
 const AdminSettings = () => {
     const [newPassword, setNewPassword] = useState('');
+    const [oldPassword, setOldPassword] = useState('');
+    const [showPassword, setShowPassword] = useState(false);
     const [uploadedFile, setUploadedFile] = useState(null);
+
+    const togglePasswordVisibility = () => {
+        setShowPassword(!showPassword);
+    };
 
     const handleFileUpload = (event) => {
         const file = event.target.files[0];
@@ -33,8 +39,8 @@ const AdminSettings = () => {
     // TODO: It should ask first for the actual pass. Then for a new one. The backend then validates if the passwords match and if so
     //       updates the password
     // Updates the user's password
-    const handleChangePass = async () => {
-        await setUp.changePass();
+    const handleChangePass = async (newPass) => {
+        await setUp.changePass(newPass);
     }
 
     return (
@@ -71,14 +77,34 @@ const AdminSettings = () => {
                             <div className='input-row'>
                                 <label htmlFor='newPassword' className='input-label'>Change Password:</label>
                                 <input
-                                    type='password'
-                                    id='newPasswordwwww'
+                                    type={showPassword ? 'text' : 'password'}
+                                    id='oldPassword'
+                                    value={oldPassword}
+                                    onChange={(e) => setOldPassword(e.target.value)}
+                                    placeholder='Old password'
+                                    className='input-pass-admin input-field'
+                                    autoComplete="new-password"
+                                />
+
+                                <input
+                                    type={showPassword ? 'text' : 'password'}
+                                    id='newPassword'
                                     value={newPassword}
                                     onChange={(e) => setNewPassword(e.target.value)}
                                     placeholder='New password'
                                     className='input-pass-admin input-field'
+                                    autoComplete="new-password"
                                 />
-                                <button className='admin-button' onClick={handleChangePass}>Done</button>
+                                <button
+                                    type="button"
+                                    onClick={togglePasswordVisibility}
+                                    className='password-toggle-button'
+                                    aria-label={showPassword ? 'Hide password' : 'Show password'}
+                                >
+                                    {showPassword ? '👁️' : '👁️'}
+                                </button>
+
+                                <button className='admin-button' onClick={() => handleChangePass(newPassword)}>Done</button>
                             </div>
                         </div>
                     </div>

@@ -48,6 +48,29 @@ class setUp {
         }  
     }
 
+    // Updates the admin password
+    static async changePass(newPass) {
+        try {
+            const data = JSON.stringify({ newPass });
+            const response = await fetch('http://localhost:8080/admin/changeAdminPass', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',  // Set the content type to JSON
+                },
+                body: data,
+            });
+            if (response.ok){
+                const data = await response.json();
+                console.log("data.success: ", data.success);
+                return data.success;
+            } else {
+                console.error('Password unsuccessfully updated.');
+            }
+        } catch (error) {
+            console.log('Error while updating password', error);
+        }
+    }
+
     // Deletes the alumni information in the DB and repopulates the tables with new information from the LinkdinLink API
     static async replaceAlumnus(uploadedFile) {
         try {

@@ -5,4 +5,7 @@ public interface AdminService {
     // Verify hashed password
     public Boolean verifyPassword(String password);
 
+    // Changes admin password
+    public Boolean changeAdminPass(String password);
+
 }

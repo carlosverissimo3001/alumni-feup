@@ -52,6 +52,7 @@ p {
     padding-bottom: 3%;
     padding-top: 3%;
     margin-top: 175px;
+    width: auto;
 }
 
 .shadow-overlay {
@@ -91,6 +92,7 @@ p {
 .admin-description {
     color: #2E231D;
     font-weight: bold;
+    margin: 0;
 }
 
 .input-button-container-welcome {
@@ -104,6 +106,7 @@ p {
 .input-username {
     border: 1px solid #ddd;
     border-radius: 10px; 
+    width: auto;
 }
 .input-username:focus {
     outline: 2px solid #C0C0C0;
@@ -111,6 +114,12 @@ p {
 
 .input-usernameWelcome {
     width: 50%;
+}
+
+.password-toggle-button-login {
+    position: absolute;
+    margin-left: 35%;
+    margin-top: 1px;
 }
 
 .app-button {
@@ -139,6 +148,13 @@ p {
 
 .app-button__welcome:hover {
     outline: 0px;
+}
+
+.password-toggle-button{
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1rem;
 }
 
 /*---- Admin: main page ----*/
