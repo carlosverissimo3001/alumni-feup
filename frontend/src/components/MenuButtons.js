@@ -233,10 +233,12 @@ const MenuButtons = ({menuVisible, onLoading, onSelectGeoJSON, onSelectAlumni, y
                     <label htmlFor="citiesCheckbox" className="custom-radio-label custom-radio-label-right-button">Cities</label>
                 </div>
 
+                <p className='text text-conclusion-year'>Search</p>
+
                 <div className="search-container">
                     <input
                         type="text"
-                        placeholder="Search alumni..."
+                        placeholder="By alumni name"
                         value={searchInput}
                         className='search-bar-alumni search-bar'
                         onChange={handleSearchInputChange}
@@ -252,13 +254,15 @@ const MenuButtons = ({menuVisible, onLoading, onSelectGeoJSON, onSelectAlumni, y
                     )}
                 </div>
 
+                <p className='text text-conclusion-year'>Filter</p>
+
                 <div className="search-container"> 
                     <select 
                     className='filter-course-alumni search-bar' 
                     id="myDropdown"
                     value={filterCourseInput}
                     onChange={handleFilterCourseInputChange}>
-                        <option className="content-filter-course" value="">Filter by course</option>
+                        <option className="content-filter-course" value="">By course</option>
                         {courses.map((course, index) => (
                             <option className="content-filter-options" key={index} value={course} >
                                 {course}
@@ -267,8 +271,6 @@ const MenuButtons = ({menuVisible, onLoading, onSelectGeoJSON, onSelectAlumni, y
                     </select>
                 </div>
 
-                <p className='text text-conclusion-year'>Conclusion year:</p>
-
                 <div className="year-filter-container"> 
                     <div className='search-container-year'>
                         <select 
@@ -276,7 +278,7 @@ const MenuButtons = ({menuVisible, onLoading, onSelectGeoJSON, onSelectAlumni, y
                             id="myDropdownYear"
                             value={yearRangeFilter}
                             onChange={e => handleYearRangeChange(e.target.value)}>
-                                <option value="" >Select Year Range</option>
+                                <option value="" >By conclusion year</option>
                                 {yearRanges.map((yearRange, index) => (
                                     <option className="content-filter-options" key={index} value={yearRange}>
                                         {yearRange}

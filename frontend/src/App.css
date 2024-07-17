@@ -367,10 +367,12 @@ p {
 }
 
 .search-bar-alumni {
-    margin-top: 20px;
     margin-bottom: 10px;
     width: 94%;
+}
 
+.search-bar-alumni::placeholder {
+    color: #999; /* Change placeholder text color */
 }
 
 .dropdown-search-names {
@@ -380,11 +382,11 @@ p {
 }
 
 .search-results div {
-    cursor: pointer; 
+    cursor: pointer;
 }
 
 .filter-course-alumni {
-    margin-top: 10px;
+    margin-top: 3px;
     width: 100%;
     margin-bottom: 10px;
 }
