@@ -313,9 +313,8 @@ const MenuButtons = ({menuVisible, onLoading, onSelectGeoJSON, onSelectAlumni, y
                     </div>
                 </div>
 
-                <div className='alumnis-total-number'>
-                    <p className='letter-style text-num-alumnus'>Total number of alumni: </p> 
-                    <p className='letter-style text-num-alumnus'>{numberAlumnisShowing}</p>
+                <div className='alumnis-total-number'> 
+                    <p className='letter-style text-num-alumnus'>{filterCourseInput !== '' || yearRangeFilter !== '' ? `${numberAlumnisShowing} alumni selected` : `Total number of alumni: ${numberAlumnisShowing}`}</p>
                 </div>
 
                 <a className="text feedback-links" href="https://docs.google.com/forms/d/e/1FAIpQLScPMdQzqv9Dy1llc-nGdr33q33r7GnSZjmYtxwwT1v_oy3Y7Q/viewform" target="_blank" rel="noopener noreferrer">Join us</a>
