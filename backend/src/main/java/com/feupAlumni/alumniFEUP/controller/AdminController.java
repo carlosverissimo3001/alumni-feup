@@ -49,15 +49,25 @@ public class AdminController {
 
     // Change admin password
     @PostMapping("/changeAdminPass")
-    public ResponseEntity<String> handleChangeAdminPass(@RequestBody String newPass) {
+    public ResponseEntity<String> handleChangeAdminPass(@RequestBody String requestBody) {
         try {
-            // Gets the password
-            ObjectMapper objectMapper = new ObjectMapper(); // Use ObjectMapper to convert JSON string to Map
-            Map<String, Object> map = objectMapper.readValue(newPass, Map.class);
-            String password = (String) map.get("newPass");
-            var success = adminService.changeAdminPass(password);
+            // ObjectMapper to convert JSON string to Map
+            ObjectMapper objectMapper = new ObjectMapper();
+            Map<String, Object> map = objectMapper.readValue(requestBody, Map.class);
+
+            // Get oldPass and newPass from the map
+            String newPass = (String) map.get("newPass");
+            String oldPass = (String) map.get("oldPass");
+
+            // Verify if the old pass is correct
+            Boolean validPassword = adminService.verifyPassword(oldPass);
+            Boolean changedSuccess = false;
+            if (validPassword) {
+                // Changes the password to the new one
+                changedSuccess = adminService.changeAdminPass(newPass);
+            }
             
-            return ResponseEntity.ok().body("{\"success\":" + success + "}");
+            return ResponseEntity.ok().body("{\"success\":" + changedSuccess + "}");
         } catch (Exception e) {
             return ResponseEntity.status(500).body("Error while password verification: " + e.getMessage());
         }        

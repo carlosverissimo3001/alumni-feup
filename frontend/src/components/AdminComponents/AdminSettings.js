@@ -39,8 +39,8 @@ const AdminSettings = () => {
     // TODO: It should ask first for the actual pass. Then for a new one. The backend then validates if the passwords match and if so
     //       updates the password
     // Updates the user's password
-    const handleChangePass = async (newPass) => {
-        await setUp.changePass(newPass);
+    const handleChangePass = async (newPass, oldPassword) => {
+        await setUp.changePass(newPass, oldPassword);
     }
 
     return (
@@ -104,7 +104,7 @@ const AdminSettings = () => {
                                     {showPassword ? '👁️' : '👁️'}
                                 </button>
 
-                                <button className='admin-button' onClick={() => handleChangePass(newPassword)}>Done</button>
+                                <button className='admin-button' onClick={() => handleChangePass(newPassword, oldPassword)}>Done</button>
                             </div>
                         </div>
                     </div>
