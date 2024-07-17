@@ -360,15 +360,21 @@ p {
 
 /* Additional styles for the dropdown options */
 .search-bar option {
-    background-color: white; /* Initial background color */
-    color: black; /* Text color */
-    padding: 5px; /* Padding inside options */
-    transition: background-color 0.3s ease; /* Smooth transition */
+    background-color: white;
+    color: black; 
+    padding: 5px;
+    transition: background-color 0.3s ease;
 }
 
 .search-bar-alumni {
     margin-top: 20px;
     margin-bottom: 10px;
+}
+
+.dropdown-search-names {
+    width: 95%;
+    padding-left: 8px; 
+    color: #515150;
 }
 
 .search-results div {
