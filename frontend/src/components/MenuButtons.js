@@ -28,6 +28,11 @@ const MenuButtons = ({menuVisible, onLoading, onSelectGeoJSON, onSelectAlumni, y
     const [applyButtonDisabled, setApplyButtonDisabled] = useState(true);  // Defines if the Apply and Clear button are enabled or disabled
     const [locationGeoJSON, setLocationGeoJSON] = useState(null);          // Stores the geoJson file to be used in the world map
 
+    useEffect(() => {
+        setSelectedOption("countries");
+        setApplyButtonDisabled(false); // enable the apply button when an option is selected
+    }, []);
+
     // Reads the year parameter on the URL
     useEffect(() => {
         const fetchData = async () => {
