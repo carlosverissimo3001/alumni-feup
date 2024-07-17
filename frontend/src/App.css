@@ -532,6 +532,7 @@ p {
 /*------ Cluster Rectangle Content ------*/
 
 .clusterRectangle {
+    height: 45%;
     background-color: #EDEDEC;
     padding-top: 10px;
     padding-left: 10px;
