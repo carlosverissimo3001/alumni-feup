@@ -13,7 +13,7 @@ function App() {
         <Routes>
           <Route path="/:yearUrl?" element={<MapCmp/>} />
           <Route path="/admin" element={<AdminLogin/>} />
-          <Route path="/AdminDefinitions" element={<AdminSettings/>} />
+          <Route path="/adminDefinitions" element={<AdminSettings/>} />
           <Route path="/" element={<MapCmp/>} />
         </Routes>
       </Router>

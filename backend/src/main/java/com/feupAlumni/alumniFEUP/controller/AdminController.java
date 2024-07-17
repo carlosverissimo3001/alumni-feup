@@ -47,6 +47,22 @@ public class AdminController {
         }        
     }
 
+    // Change admin password
+    @PostMapping("/changeAdminPass")
+    public ResponseEntity<String> handleChangeAdminPass(@RequestBody String newPass) {
+        try {
+            // Gets the password
+            ObjectMapper objectMapper = new ObjectMapper(); // Use ObjectMapper to convert JSON string to Map
+            Map<String, Object> map = objectMapper.readValue(newPass, Map.class);
+            String password = (String) map.get("newPass");
+            var success = adminService.changeAdminPass(password);
+            
+            return ResponseEntity.ok().body("{\"success\":" + success + "}");
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Error while password verification: " + e.getMessage());
+        }        
+    }
+
     // Deletes the alumni information in the DB 
     // By calling the API, repopulates the tables with new information 
     // file: Excel File
@@ -106,4 +122,5 @@ public class AdminController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         } 
     }
+
 }
