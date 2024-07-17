@@ -1,0 +1,216 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "name": [
+          "portugal"
+        ],
+        "students": 29,
+        "listLinkedinLinksByUser": {
+          "https://www.linkedin.com/in/a-francisco-miranda/": "Francisco  Miranda ",
+          "https://www.linkedin.com/in/nmtc01/": "Nuno Cardoso",
+          "https://www.linkedin.com/in/ana-teresa-cruz/": "Ana Teresa Cruz",
+          "https://www.linkedin.com/in/matheus-pereirag/": "Matheus Gonçalves",
+          "https://www.linkedin.com/in/luisnoites/": "Luis Noites",
+          "https://www.linkedin.com/in/daviddiassilva/": "David Silva",
+          "https://www.linkedin.com/in/silviavrocha/": "sílvia rocha",
+          "https://www.linkedin.com/in/biamendes1/": "Beatriz Mendes",
+          "https://www.linkedin.com/in/ca-moes/": "andré gomes",
+          "https://www.linkedin.com/in/claudiarmamede/": "Cláudia Mamede",
+          "https://www.linkedin.com/in/dfamonteiro/": "Daniel Monteiro",
+          "https://www.linkedin.com/in/anriii/": "Henrique Pereira",
+          "https://www.linkedin.com/in/maria-helena-ferreira-654627178/": "Maria Helena Ferreira",
+          "https://www.linkedin.com/in/tiagoogomess/": "Tiago Gomes",
+          "https://www.linkedin.com/in/dmfrodrigues/": "diogo rodrigues",
+          "https://www.linkedin.com/in/andrenasx/": "André Nascimento",
+          "https://www.linkedin.com/in/anamargaridarl/": "Ana Loureiro",
+          "https://www.linkedin.com/in/jotapsa/": "joão sá",
+          "https://www.linkedin.com/in/antbezerra/": "antónio bezerra",
+          "https://www.linkedin.com/in/anatdiass/": "Ana Teresa Silva",
+          "https://www.linkedin.com/in/-marcio-duarte-/": "Márcio Duarte",
+          "https://www.linkedin.com/in/macedomario/": "Mário Macedo",
+          "https://www.linkedin.com/in/diogosamuel/": "Diogo Samuel Fernandes",
+          "https://www.linkedin.com/in/miguelrpires/": "Miguel Pires",
+          "https://www.linkedin.com/in/luismarquestorres/": "Luis Marques Torres E Silva",
+          "https://www.linkedin.com/in/vitorhugo13/": "Vítor Hugo Gonçalves",
+          "https://www.linkedin.com/in/filipepintoreis/": "Filipe Pinto Reis",
+          "https://www.linkedin.com/in/tiagoalves123/": "Tiago Alves",
+          "https://www.linkedin.com/in/diogo-mendes-54b449247/": "Diogo Mendes"
+        },
+        "coursesYearConclusionByUser": {
+          "https://www.linkedin.com/in/a-francisco-miranda/": {
+            "L.EIC": "2022/2023",
+            "M.EIC": "2022/2023"
+          },
+          "https://www.linkedin.com/in/nmtc01/": {
+            "M.EIC": "2021/2022"
+          },
+          "https://www.linkedin.com/in/ana-teresa-cruz/": {
+            "M.EIC": "2022/2023"
+          },
+          "https://www.linkedin.com/in/matheus-pereirag/": {
+            "M.EIC": "2021/2022"
+          },
+          "https://www.linkedin.com/in/luisnoites/": {
+            "LEIC": "2004/2005",
+            "M.EIC": "2021/2022"
+          },
+          "https://www.linkedin.com/in/daviddiassilva/": {
+            "M.EIC": "2021/2022"
+          },
+          "https://www.linkedin.com/in/silviavrocha/": {
+            "M.EIC": "2021/2022"
+          },
+          "https://www.linkedin.com/in/biamendes1/": {
+            "M.EIC": "2022/2023"
+          },
+          "https://www.linkedin.com/in/ca-moes/": {
+            "M.EIC": "2022/2023"
+          },
+          "https://www.linkedin.com/in/claudiarmamede/": {
+            "M.EIC": "2021/2022"
+          },
+          "https://www.linkedin.com/in/dfamonteiro/": {
+            "M.EIC": "2022/2023"
+          },
+          "https://www.linkedin.com/in/anriii/": {
+            "M.EIC": "2022/2023"
+          },
+          "https://www.linkedin.com/in/maria-helena-ferreira-654627178/": {
+            "M.EIC": "2021/2022"
+          },
+          "https://www.linkedin.com/in/tiagoogomess/": {
+            "M.EIC": "2022/2023"
+          },
+          "https://www.linkedin.com/in/dmfrodrigues/": {
+            "M.EIC": "2022/2023"
+          },
+          "https://www.linkedin.com/in/andrenasx/": {
+            "M.EIC": "2022/2023"
+          },
+          "https://www.linkedin.com/in/anamargaridarl/": {
+            "M.EIC": "2021/2022"
+          },
+          "https://www.linkedin.com/in/jotapsa/": {
+            "M.EIC": "2021/2022"
+          },
+          "https://www.linkedin.com/in/antbezerra/": {
+            "M.EIC": "2022/2023"
+          },
+          "https://www.linkedin.com/in/anatdiass/": {
+            "M.EIC": "2021/2022"
+          },
+          "https://www.linkedin.com/in/-marcio-duarte-/": {
+            "M.EIC": "2022/2023"
+          },
+          "https://www.linkedin.com/in/macedomario/": {
+            "M.EIC": "2021/2022"
+          },
+          "https://www.linkedin.com/in/diogosamuel/": {
+            "M.EIC": "2022/2023"
+          },
+          "https://www.linkedin.com/in/miguelrpires/": {
+            "M.EIC": "2021/2022"
+          },
+          "https://www.linkedin.com/in/luismarquestorres/": {
+            "M.EIC": "2022/2023"
+          },
+          "https://www.linkedin.com/in/vitorhugo13/": {
+            "M.EIC": "2021/2022"
+          },
+          "https://www.linkedin.com/in/filipepintoreis/": {
+            "M.EIC": "2021/2022"
+          },
+          "https://www.linkedin.com/in/tiagoalves123/": {
+            "M.EIC": "2022/2023"
+          },
+          "https://www.linkedin.com/in/diogo-mendes-54b449247/": {
+            "L.EIC": "2021/2022",
+            "M.EIC": "2022/2023"
+          }
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -9.13333,
+          38.71667
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": [
+          "ireland"
+        ],
+        "students": 1,
+        "listLinkedinLinksByUser": {
+          "https://www.linkedin.com/in/mark-timothy-meehan/": "Mark Meehan"
+        },
+        "coursesYearConclusionByUser": {
+          "https://www.linkedin.com/in/mark-timothy-meehan/": {
+            "M.EIC": "2021/2022"
+          }
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.24889,
+          53.33306
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": [
+          "brazil"
+        ],
+        "students": 1,
+        "listLinkedinLinksByUser": {
+          "https://www.linkedin.com/in/carlosnovaduarte/": "carlos duarte"
+        },
+        "coursesYearConclusionByUser": {
+          "https://www.linkedin.com/in/carlosnovaduarte/": {
+            "M.EIC": "2021/2022"
+          }
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -43.18223,
+          -22.90642
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": [
+          "united kingdom"
+        ],
+        "students": 1,
+        "listLinkedinLinksByUser": {
+          "https://www.linkedin.com/in/mgmesquita/": "Mario Mesquita"
+        },
+        "coursesYearConclusionByUser": {
+          "https://www.linkedin.com/in/mgmesquita/": {
+            "M.EIC": "2022/2023"
+          }
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -0.12574,
+          51.50853
+        ]
+      }
+    }
+  ]
+}
