@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import { FcSettings, FcPlus } from "react-icons/fc";
 import setUp from "../../helpers/setUp";
+import { useNavigate } from 'react-router-dom';
 
 const AdminSettings = () => {
+    const navigate = useNavigate();
     const [newPassword, setNewPassword] = useState('');
     const [oldPassword, setOldPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
@@ -29,15 +31,25 @@ const AdminSettings = () => {
         await setUp.replaceAlumnus(uploadedFile);
     }
 
-    // Only calls the API to alumnis that don't already exist in the app
+    // Only calls the API to alumnis that don't already exist in the app. If the alumni exists it doesn't call the API again
     const handleAddAlumnusData = async () => {
         // TODO: SHOULD ENSURE THE FILE IS AN EXCEL FILE AND THAT THERE IS A FILE
         await setUp.addAlumnusData(uploadedFile);
     }
 
+    // Calls the API for the alumnis that don't exist. If the alumni exists, updates the alumni information
+    const handleUpdateAlumnusData = async () => {
+
+    }
+
     // Updates the user's password
     const handleChangePass = async (newPass, oldPassword) => {
         await setUp.changePass(newPass, oldPassword);
+    }
+
+    // Logs the user out
+    const handleLogoutButton = async () => {
+        navigate('/admin');
     }
 
     return (
@@ -51,12 +63,9 @@ const AdminSettings = () => {
                         </div>
                         <button className='admin-button' onClick={handleBackupAlumnus}>Backup Alumnus Data</button>
                         <div className='row-admin-menu'>
-
                             <div className='grid-container'>
                                 <div className='grid-item label-column'>
                                     <label htmlFor='fileUpload' className='input-label'>Add Alumnus</label>
-                                    <label htmlFor='newPassword' className='input-label input-label-change-pass'>Change Password</label>
-                                    <button className='logout-button' onClick={handleAddAlumnusData}>Logout</button>
                                 </div>
 
                                 <div className='grid-item input-column'>
@@ -75,7 +84,23 @@ const AdminSettings = () => {
                                             </span>
                                         </label>
                                     </div>
+                                </div>
 
+                                <div className='grid-item button-column'>
+                                    <div className='file-buttons'>
+                                        <button className='admin-button' onClick={handleReplaceAlumnus}>Replace Alumnus Data</button>
+                                        <button className='admin-button' onClick={handleAddAlumnusData}>Add Alumnus Data</button>
+                                        <button className='admin-button' onClick={handleUpdateAlumnusData}>Update Alumnus Data</button>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div className='grid-container'>
+                                <div className='grid-item label-column'>
+                                    <label htmlFor='newPassword' className='input-label'>Change Password</label>
+                                </div>
+
+                                <div className='grid-item input-column'>
                                     <div className='password-input-container'>
                                         <input
                                             type={showPassword ? 'text' : 'password'}
@@ -105,12 +130,15 @@ const AdminSettings = () => {
                                         </button>
                                     </div>
                                 </div>
+
                                 <div className='grid-item button-column'>
-                                    <div className='file-buttons'>
-                                        <button className='admin-button' onClick={handleReplaceAlumnus}>Replace Alumnus Data</button>
-                                        <button className='admin-button' onClick={handleAddAlumnusData}>Add Alumnus Data</button>
-                                    </div>
                                     <button className='admin-button' onClick={() => handleChangePass(newPassword, oldPassword)}>Done</button>
+                                </div>
+                                
+                            </div>
+                            <div className='grid-container'>
+                                <div className='grid-item label-column'>
+                                    <button className='logout-button' onClick={handleLogoutButton}>Logout</button>
                                 </div>
                             </div>
                         </div>
