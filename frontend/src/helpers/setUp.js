@@ -49,9 +49,9 @@ class setUp {
     }
 
     // Updates the admin password
-    static async changePass(newPass) {
+    static async changePass(newPass, oldPass) {
         try {
-            const data = JSON.stringify({ newPass });
+            const data = JSON.stringify({ newPass, oldPass });
             const response = await fetch('http://localhost:8080/admin/changeAdminPass', {
                 method: 'POST',
                 headers: {
