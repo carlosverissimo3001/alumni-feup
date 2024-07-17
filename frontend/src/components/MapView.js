@@ -92,9 +92,9 @@ const MapView = ({
   return (
     <div className="mapCmpDiv">
       <MapGL
-        initialViewState={{
-          latitude: 0,
-          longitude: 0,
+        initialViewState={{ // By default it presents the map in Portugal
+          latitude: 38.736946,
+          longitude: -9.142685,
           zoom: 3,
         }}
         mapStyle="mapbox://styles/mapbox/dark-v11"

@@ -10,9 +10,13 @@ import { TiDelete } from "react-icons/ti";
 import { FaCheckCircle } from "react-icons/fa";
 
 const MenuButtons = ({menuVisible, onLoading, onSelectGeoJSON, onSelectAlumni, yearUrl}) => {
-    
+       
     const currentYear = new Date().getFullYear();
-    const years = Array.from({ length: currentYear - 1994 + 1 }, (_, i) => 1994 + i).reverse();
+    const years = Array.from({ length: currentYear - 1994 + 1 }, (_, i) => 1994 + i);
+    const yearRanges = years.map((year, index) => 
+        index < years.length - 1 ? `${years[index]}/${years[index + 1]}` : null
+    ).filter(Boolean).reverse(); // Reverse the array to get ranges in descending order
+
     const courses = ['LEIC', 'L.EIC', 'MEI', 'M.EIC', 'MIEIC'];
 
     const [selectedOption, setSelectedOption] = useState('');
@@ -22,11 +26,17 @@ const MenuButtons = ({menuVisible, onLoading, onSelectGeoJSON, onSelectAlumni, y
     const [filterCourseInput, setFilterCourseInput] = useState('');
     const [numberAlumnisShowing, setNumberAlumnisShowing] = useState(0);
     const [yearFilter, setYearFilter] = useState(['','']);
+    const [yearRangeFilter, setYearRangeFilter] = useState('');
     const [loading, setLoading] = useState(true);                          // Loading state, if true: loading if false: not loading
     const [yearUrlReceived, setYearUrlReceived] = useState(true);          // Used to avoid the useEffect that calls the onClickApply to enter into a loop
     const [firstEffectComplete, setFirstEffectComplete] = useState(false); // Used to wait for the useEffect that reads the year on the link to finish
     const [applyButtonDisabled, setApplyButtonDisabled] = useState(true);  // Defines if the Apply and Clear button are enabled or disabled
     const [locationGeoJSON, setLocationGeoJSON] = useState(null);          // Stores the geoJson file to be used in the world map
+
+    useEffect(() => {
+        setSelectedOption("countries");
+        setApplyButtonDisabled(false); // enable the apply button when an option is selected
+    }, []);
 
     // Reads the year parameter on the URL
     useEffect(() => {
@@ -156,12 +166,15 @@ const MenuButtons = ({menuVisible, onLoading, onSelectGeoJSON, onSelectAlumni, y
         setApplyButtonDisabled(false); // enable the apply button when an option is selected
     };
 
-    // Handles changes in the year input 
-    const handleYearChange = (index, value) => {
+    const handleYearRangeChange = (value) => {
+        const splitYearsRange = value.split("/"); // 2017/2018
         const newYearFilter = [...yearFilter];
-        newYearFilter[index] = value;
+        newYearFilter[0] = splitYearsRange[0]; // 2017
+        newYearFilter[1] = splitYearsRange[1]; // 2018
         setYearFilter(newYearFilter);
+        setYearRangeFilter(value);
     };
+
 
     // Applies the values inserted in the fields and generates a new geoJson
     const onClickApply = async (courseFilter, yearsConclusionFilters) => {
@@ -182,15 +195,16 @@ const MenuButtons = ({menuVisible, onLoading, onSelectGeoJSON, onSelectAlumni, y
     // Cleans the values inserted in the fields
     const onClickClean = async () => {
         setApplyButtonDisabled(true);
-        setLoading(true);           // data is being updated
-        setSelectedOption("");      // this will then call the onClickApply("", ["", ""]); which is responsible for regenerating the geoJson
-        setSearchInput("");         // cleans the search alumni input 
-        onSelectAlumni("", [0,0]);  // positions the user in the middle of the screen
-        setYearFilter(['', '']);    // cleans the year filter field
-        setFilterCourseInput("");   // cleans the search user input
+        setLoading(true);                            // data is being updated
+        setSelectedOption("");                       // this will then call the onClickApply("", ["", ""]); which is responsible for regenerating the geoJson
+        setSearchInput("");                          // cleans the search alumni input 
+        onSelectAlumni("", [-9.142685, 38.736946]);  // positions the user in Portugal 
+        setYearFilter(['', '']);                     // cleans the year filter field
+        setYearRangeFilter('');
+        setFilterCourseInput("");                    // cleans the search user input
         // Waits a bit before setting the load to false so that the code has time to update the locationGeoJson on the MapCmp.js
         await new Promise(resolve => setTimeout(resolve, 4000));
-        setLoading(false);          // data is ready
+        setLoading(false);                           // data is ready
     }
 
     return (
@@ -219,10 +233,12 @@ const MenuButtons = ({menuVisible, onLoading, onSelectGeoJSON, onSelectAlumni, y
                     <label htmlFor="citiesCheckbox" className="custom-radio-label custom-radio-label-right-button">Cities</label>
                 </div>
 
+                <p className='text text-conclusion-search'>Search</p>
+
                 <div className="search-container">
                     <input
                         type="text"
-                        placeholder="Search alumni..."
+                        placeholder="By alumni name"
                         value={searchInput}
                         className='search-bar-alumni search-bar'
                         onChange={handleSearchInputChange}
@@ -230,7 +246,7 @@ const MenuButtons = ({menuVisible, onLoading, onSelectGeoJSON, onSelectAlumni, y
                     {filteredAlumniNamesCoord.length > 0 && (
                         <div className={`search-results ${filteredAlumniNamesCoord.length > 5 ? 'scrollable' : ''}`}>
                         {filteredAlumniNamesCoord.map((alumniData, index) => (
-                            <div key={index} onClick={() => handleAlumniSelection(alumniData.name, alumniData.coordinates)}>
+                            <div  className='dropdown-search-names' key={index} onClick={() => handleAlumniSelection(alumniData.name, alumniData.coordinates)}>
                                 {alumniData.name}
                             </div>
                         ))}
@@ -238,13 +254,15 @@ const MenuButtons = ({menuVisible, onLoading, onSelectGeoJSON, onSelectAlumni, y
                     )}
                 </div>
 
+                <p className='text text-conclusion-year'>Filter</p>
+
                 <div className="search-container"> 
                     <select 
                     className='filter-course-alumni search-bar' 
                     id="myDropdown"
                     value={filterCourseInput}
                     onChange={handleFilterCourseInputChange}>
-                        <option className="content-filter-course" value="">Filter by course</option>
+                        <option className="content-filter-course" value="">By course</option>
                         {courses.map((course, index) => (
                             <option className="content-filter-options" key={index} value={course} >
                                 {course}
@@ -253,32 +271,18 @@ const MenuButtons = ({menuVisible, onLoading, onSelectGeoJSON, onSelectAlumni, y
                     </select>
                 </div>
 
-                <p className='text text-conclusion-year'>Conclusion year:</p>
-
                 <div className="year-filter-container"> 
                     <div className='search-container-year'>
                         <select 
                             className='search-bar' 
-                            id="myDropdownYearFrom"
-                            value={yearFilter[0]}
-                            onChange={e => handleYearChange(0, e.target.value)}>
-                                <option value="" >From</option>
-                                {years.map((year) => (
-                                    <option className="content-filter-options" key={year} value={year}>
-                                        {year}
+                            id="myDropdownYear"
+                            value={yearRangeFilter}
+                            onChange={e => handleYearRangeChange(e.target.value)}>
+                                <option value="" >By conclusion year</option>
+                                {yearRanges.map((yearRange, index) => (
+                                    <option className="content-filter-options" key={index} value={yearRange}>
+                                        {yearRange}
                                     </option>
-                                ))}
-                        </select>
-                    </div>
-                    <div className='search-container-year'>
-                        <select 
-                            className='search-bar' 
-                            id="myDropdownYearTo"
-                            value={yearFilter[1]}
-                            onChange={e => handleYearChange(1, e.target.value)}>
-                                <option value="" >To</option>
-                                {years.filter((year) => year > yearFilter[0]).map((year) => (
-                                    <option className="content-filter-options" key={year} value={year}>{year}</option>
                                 ))}
                         </select>
                     </div>
@@ -311,14 +315,17 @@ const MenuButtons = ({menuVisible, onLoading, onSelectGeoJSON, onSelectAlumni, y
                     </div>
                 </div>
 
-                <div className='alumnis-total-number'>
-                    <p className='letter-style text-num-alumnus'>Total number of alumni: </p> 
-                    <p className='letter-style text-num-alumnus'>{numberAlumnisShowing}</p>
+                <div className='alumnis-total-number'> 
+                    <p className='letter-style text-num-alumnus'>{filterCourseInput !== '' || yearRangeFilter !== '' ? `${numberAlumnisShowing} alumni selected` : `Total number of alumni: ${numberAlumnisShowing}`}</p>
                 </div>
 
+                
                 <a className="text feedback-links" href="https://docs.google.com/forms/d/e/1FAIpQLScPMdQzqv9Dy1llc-nGdr33q33r7GnSZjmYtxwwT1v_oy3Y7Q/viewform" target="_blank" rel="noopener noreferrer">Join us</a>
                 <a className="text feedback-links" href="https://forms.gle/iNQ8mrakT9ToZcLT7" target="_blank" rel="noopener noreferrer">Give Feedback</a>
-            
+                <div className='logos'>
+                    <img className="logo-picture" src="/Images/alumniei.png" alt="" />
+                    <img className="logo-picture" src="/Images/feup-logo.png" alt="" />
+                </div>
               </>
             )}
         </>

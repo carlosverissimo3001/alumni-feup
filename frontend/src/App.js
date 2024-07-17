@@ -5,14 +5,10 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import MapCmp from './components/MapCmp';
 import AdminLogin from './components/AdminComponents/AdminLogin';
 import AdminSettings from './components/AdminComponents/AdminSettings';
-//import WebSocketServiceCmp from './components/WebSocketServiceCmp';
 
 function App() {
   return (   
     <>
-      {/*
-      <WebSocketServiceCmp />
-      */}
       <Router>
         <Routes>
           <Route path="/:yearUrl?" element={<MapCmp/>} />
