@@ -173,6 +173,7 @@ p {
 
 .label-column label {
     margin-bottom: 20px;
+    padding-left: 13px;
 }
 
 .input-label-change-pass {
@@ -219,6 +220,26 @@ p {
 
 .row-admin-menu{
     padding-top: 20px;
+}
+
+.row-admin-title {
+    display: flex;
+    flex-direction: row;
+}
+.logout-button {
+    background-color: #A02D20;
+    border: none;
+    border-radius: 10px; 
+    color: white;
+    margin-top: 44px;
+    height: 30px;
+    width: 50%;
+    margin-left: 13px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 11px;
+    cursor: pointer;
 }
 
 .input-row {

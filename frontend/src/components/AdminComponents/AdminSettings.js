@@ -56,6 +56,7 @@ const AdminSettings = () => {
                                 <div className='grid-item label-column'>
                                     <label htmlFor='fileUpload' className='input-label'>Add Alumnus</label>
                                     <label htmlFor='newPassword' className='input-label input-label-change-pass'>Change Password</label>
+                                    <button className='logout-button' onClick={handleAddAlumnusData}>Logout</button>
                                 </div>
 
                                 <div className='grid-item input-column'>
