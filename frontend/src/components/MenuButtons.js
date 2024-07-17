@@ -317,9 +317,13 @@ const MenuButtons = ({menuVisible, onLoading, onSelectGeoJSON, onSelectAlumni, y
                     <p className='letter-style text-num-alumnus'>{filterCourseInput !== '' || yearRangeFilter !== '' ? `${numberAlumnisShowing} alumni selected` : `Total number of alumni: ${numberAlumnisShowing}`}</p>
                 </div>
 
+                
                 <a className="text feedback-links" href="https://docs.google.com/forms/d/e/1FAIpQLScPMdQzqv9Dy1llc-nGdr33q33r7GnSZjmYtxwwT1v_oy3Y7Q/viewform" target="_blank" rel="noopener noreferrer">Join us</a>
                 <a className="text feedback-links" href="https://forms.gle/iNQ8mrakT9ToZcLT7" target="_blank" rel="noopener noreferrer">Give Feedback</a>
-            
+                <div className='logos'>
+                    <img className="logo-picture" src="/Images/alumniei.png" alt="" />
+                    <img className="logo-picture" src="/Images/feup-logo.png" alt="" />
+                </div>
               </>
             )}
         </>
