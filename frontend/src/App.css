@@ -527,6 +527,7 @@ p {
 
 .feedback-links {
     margin-right: 10px;
+    font-size: 13px; 
 }
 
 /*------ Cluster Rectangle Content ------*/
@@ -621,4 +622,13 @@ p {
 .list-alumni.scrollable {
     max-height: 250px; 
     overflow-y: auto;
+}
+
+.logo-picture {
+    max-height: 25px;
+    margin-right: 10px;
+} 
+
+.logos{
+    margin-top: 5px;
 }
