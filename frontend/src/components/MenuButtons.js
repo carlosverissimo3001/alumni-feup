@@ -233,7 +233,7 @@ const MenuButtons = ({menuVisible, onLoading, onSelectGeoJSON, onSelectAlumni, y
                     <label htmlFor="citiesCheckbox" className="custom-radio-label custom-radio-label-right-button">Cities</label>
                 </div>
 
-                <p className='text text-conclusion-year'>Search</p>
+                <p className='text text-conclusion-search'>Search</p>
 
                 <div className="search-container">
                     <input
