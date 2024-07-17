@@ -195,16 +195,16 @@ const MenuButtons = ({menuVisible, onLoading, onSelectGeoJSON, onSelectAlumni, y
     // Cleans the values inserted in the fields
     const onClickClean = async () => {
         setApplyButtonDisabled(true);
-        setLoading(true);           // data is being updated
-        setSelectedOption("");      // this will then call the onClickApply("", ["", ""]); which is responsible for regenerating the geoJson
-        setSearchInput("");         // cleans the search alumni input 
+        setLoading(true);                            // data is being updated
+        setSelectedOption("");                       // this will then call the onClickApply("", ["", ""]); which is responsible for regenerating the geoJson
+        setSearchInput("");                          // cleans the search alumni input 
         onSelectAlumni("", [-9.142685, 38.736946]);  // positions the user in Portugal 
-        setYearFilter(['', '']);    // cleans the year filter field
+        setYearFilter(['', '']);                     // cleans the year filter field
         setYearRangeFilter('');
-        setFilterCourseInput("");   // cleans the search user input
+        setFilterCourseInput("");                    // cleans the search user input
         // Waits a bit before setting the load to false so that the code has time to update the locationGeoJson on the MapCmp.js
         await new Promise(resolve => setTimeout(resolve, 4000));
-        setLoading(false);          // data is ready
+        setLoading(false);                           // data is ready
     }
 
     return (
