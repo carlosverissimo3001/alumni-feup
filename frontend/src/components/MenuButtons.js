@@ -100,6 +100,9 @@ const MenuButtons = ({menuVisible, onLoading, onSelectGeoJSON, onSelectAlumni, y
                             coursesYears: coursesData ? coursesData.courseYears : {},
                         };
                     });
+
+                    // Sort the alumni names alphabetically
+                    alumniNamesWithCoords.sort((a, b) => a.name.localeCompare(b.name));
     
                     setListAlumniNamesWithCoordinates(alumniNamesWithCoords);
                     setNumberAlumnisShowing(alumniNamesWithCoords.length);
@@ -309,8 +312,8 @@ const MenuButtons = ({menuVisible, onLoading, onSelectGeoJSON, onSelectAlumni, y
                 </div>
 
                 <div className='alumnis-total-number'>
-                    <p className='letter-style text-num-alumnus'>Total number of alumnus: </p> 
-                    <p>{numberAlumnisShowing}</p>
+                    <p className='letter-style text-num-alumnus'>Total number of alumni: </p> 
+                    <p className='letter-style text-num-alumnus'>{numberAlumnisShowing}</p>
                 </div>
 
                 <a className="text feedback-links" href="https://docs.google.com/forms/d/e/1FAIpQLScPMdQzqv9Dy1llc-nGdr33q33r7GnSZjmYtxwwT1v_oy3Y7Q/viewform" target="_blank" rel="noopener noreferrer">Join us</a>
