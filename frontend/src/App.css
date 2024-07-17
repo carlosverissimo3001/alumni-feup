@@ -159,6 +159,59 @@ p {
 
 /*---- Admin: main page ----*/
 
+.grid-container {
+    display: grid;
+    grid-template-columns: 1fr 2fr 1fr;
+    gap: 20px;
+    align-items: start;
+}
+
+.grid-item {
+    display: flex;
+    flex-direction: column;
+}
+
+.label-column label {
+    margin-bottom: 20px;
+}
+
+.input-label-change-pass {
+    margin-top: 87px;
+}
+
+.file-upload-container {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.insert-file {
+    flex-grow: 1;
+    margin-right: 10px;
+    display: none;
+}
+
+.password-input-container {
+    display: flex;
+    margin-top: 60px;
+}
+
+.new-pass-space{
+    margin-left: 10px;
+}
+
+.password-toggle-button {
+    margin-top: 2px;
+}
+
+.button-column .file-buttons {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 20px;
+}
+
 .admin-wrapper{
     display: flex;
     flex-direction: column;
@@ -186,10 +239,7 @@ p {
     font-size: 16px;
     border: 1px solid #ccc;
     border-radius: 4px;
-}
-
-.insert-file{
-    display: none;
+    width: 100%;
 }
 
 .upload-icon{
@@ -201,6 +251,7 @@ p {
     background-color: white;
     color: #5d5d5a;
     display: flex;
+    flex-grow: 1;
     align-items: center;
 }
 
