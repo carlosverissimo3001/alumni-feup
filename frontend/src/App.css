@@ -159,6 +159,17 @@ p {
 
 /*---- Admin: main page ----*/
 
+.row-admin-menu{
+    padding-top: 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+.row-content-admin{
+    display: flex;
+    flex-direction: column;
+}
+
 .grid-container {
     display: grid;
     grid-template-columns: 1fr 2fr 1fr;
@@ -172,12 +183,7 @@ p {
 }
 
 .label-column label {
-    margin-bottom: 20px;
-    padding-left: 13px;
-}
-
-.input-label-change-pass {
-    margin-top: 87px;
+    padding-left: 14px;
 }
 
 .file-upload-container {
@@ -196,7 +202,6 @@ p {
 
 .password-input-container {
     display: flex;
-    margin-top: 60px;
 }
 
 .new-pass-space{
@@ -216,10 +221,6 @@ p {
 .admin-wrapper{
     display: flex;
     flex-direction: column;
-}
-
-.row-admin-menu{
-    padding-top: 20px;
 }
 
 .row-admin-title {
