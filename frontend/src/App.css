@@ -47,10 +47,10 @@ p {
     display: flex;
     background-color: white;
     border-radius: 20px;
-    padding-left: 5%;
+    padding-left: 3%;
     padding-right: 3%;
     padding-bottom: 3%;
-    padding-top: 3%;
+    padding-top: 1%;
     margin-top: 175px;
     width: auto;
 }
