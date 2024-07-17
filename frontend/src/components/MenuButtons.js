@@ -230,7 +230,7 @@ const MenuButtons = ({menuVisible, onLoading, onSelectGeoJSON, onSelectAlumni, y
                     {filteredAlumniNamesCoord.length > 0 && (
                         <div className={`search-results ${filteredAlumniNamesCoord.length > 5 ? 'scrollable' : ''}`}>
                         {filteredAlumniNamesCoord.map((alumniData, index) => (
-                            <div key={index} onClick={() => handleAlumniSelection(alumniData.name, alumniData.coordinates)}>
+                            <div  className='dropdown-search-names' key={index} onClick={() => handleAlumniSelection(alumniData.name, alumniData.coordinates)}>
                                 {alumniData.name}
                             </div>
                         ))}
