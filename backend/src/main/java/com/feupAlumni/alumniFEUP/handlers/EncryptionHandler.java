@@ -25,8 +25,10 @@ public class EncryptionHandler {
 
     // Encrypts a given value 
     public static String encrypt(String value, String key) throws Exception {
-        SecretKeySpec secretKey = new SecretKeySpec(Base64.getDecoder().decode(key), "AES");
-        Cipher cipher = Cipher.getInstance("AES");
+        String symmetricEncryptionAlgorithm = JsonFileHandler.getPropertyFromApplicationProperties("encryption.algorithm");
+
+        SecretKeySpec secretKey = new SecretKeySpec(Base64.getDecoder().decode(key), symmetricEncryptionAlgorithm);
+        Cipher cipher = Cipher.getInstance(symmetricEncryptionAlgorithm);
         cipher.init(Cipher.ENCRYPT_MODE, secretKey);
         byte[] encryptedValue = cipher.doFinal(value.getBytes());
         return Base64.getEncoder().encodeToString(encryptedValue);
@@ -34,8 +36,10 @@ public class EncryptionHandler {
 
     // decrypts a given value
     public static String decrypt(String value, String key) throws Exception {
-        SecretKeySpec secretKey = new SecretKeySpec(Base64.getDecoder().decode(key), "AES");
-        Cipher cipher = Cipher.getInstance("AES");
+        String symmetricEncryptionAlgorithm = JsonFileHandler.getPropertyFromApplicationProperties("encryption.algorithm");
+
+        SecretKeySpec secretKey = new SecretKeySpec(Base64.getDecoder().decode(key), symmetricEncryptionAlgorithm);
+        Cipher cipher = Cipher.getInstance(symmetricEncryptionAlgorithm);
         cipher.init(Cipher.DECRYPT_MODE, secretKey);
         byte[] decodedValue = Base64.getDecoder().decode(value);
         byte[] decryptedValue = cipher.doFinal(decodedValue);

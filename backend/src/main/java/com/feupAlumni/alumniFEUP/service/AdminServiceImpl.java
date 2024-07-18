@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import com.feupAlumni.alumniFEUP.handlers.EncryptionHandler;
+import com.feupAlumni.alumniFEUP.handlers.JsonFileHandler;
 import com.feupAlumni.alumniFEUP.model.Admin;
 import com.feupAlumni.alumniFEUP.repository.AdminRepository;
 import org.springframework.beans.factory.annotation.Value;
@@ -23,12 +24,14 @@ public class AdminServiceImpl implements AdminService{
     private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     private String getAdminHashedPass() {
-        Admin adminInfo = adminRepository.findByUserName("admin");
+        String adminUsername = JsonFileHandler.getPropertyFromApplicationProperties("admin.username");
+        Admin adminInfo = adminRepository.findByUserName(adminUsername);
         return adminInfo.getPasswordHash();
     }
 
     private Boolean updateAdminHashedPass(String hashedPassword) {
-        Admin admin = adminRepository.findByUserName("admin");
+        String adminUsername = JsonFileHandler.getPropertyFromApplicationProperties("admin.username");
+        Admin admin = adminRepository.findByUserName(adminUsername);
 
         if (admin != null) {
             admin.setPasswordHash(hashedPassword);
@@ -58,7 +61,8 @@ public class AdminServiceImpl implements AdminService{
         String encryptedApiKey = EncryptionHandler.encrypt(apiKey, encryptionKey);
 
         // Stores the API Key on the Database
-        Admin admin = adminRepository.findByUserName("admin");
+        String adminUsername = JsonFileHandler.getPropertyFromApplicationProperties("admin.username");
+        Admin admin = adminRepository.findByUserName(adminUsername);
         if (admin != null) {
             admin.setEncryptedApiKey(encryptedApiKey);
             adminRepository.save(admin);
@@ -70,7 +74,8 @@ public class AdminServiceImpl implements AdminService{
 
     @Override
     public String getEncryptedApiKey() {
-        Admin admin = adminRepository.findByUserName("admin");
+        String adminUsername = JsonFileHandler.getPropertyFromApplicationProperties("admin.username");
+        Admin admin = adminRepository.findByUserName(adminUsername);
         if (admin != null) {
             return admin.getEncryptedApiKey();
         }
