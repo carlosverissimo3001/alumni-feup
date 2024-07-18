@@ -1,11 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState, useContext  } from 'react';
 import { useNavigate } from 'react-router-dom';
 import setUp from '../../helpers/setUp';
+import { AuthContext } from '../../App'; 
 
 const Admin = () => {
     const navigate = useNavigate();
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
+    const { login } = useContext(AuthContext);
 
     const togglePasswordVisibility = () => {
         setShowPassword(!showPassword);
@@ -16,6 +18,7 @@ const Admin = () => {
             // Verifies if it is the correct password
             const validPass = await setUp.verifyCorrectPassword(password);
             if (validPass) {
+                login(); //logs the user in
                 navigate('/adminDefinitions');
             } else {
                 // Send warning pop up of incorrect pass
