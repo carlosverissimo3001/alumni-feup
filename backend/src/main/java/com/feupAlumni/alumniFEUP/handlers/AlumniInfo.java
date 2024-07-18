@@ -1,6 +1,5 @@
 package com.feupAlumni.alumniFEUP.handlers;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URL;
@@ -10,34 +9,15 @@ import java.net.http.HttpResponse;
 import java.nio.file.Path;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
-import java.util.Properties;
 
 public class AlumniInfo {
-
-    // Get the symmetric key from the application.properties file
-    private static String getSymmetricKeyFromConfig() {
-        Properties properties = new Properties();
-        try (InputStream input = AlumniInfo.class.getClassLoader().getResourceAsStream("application.properties")) {
-            if (input == null) {
-                System.out.println("Unable to find application.properties");
-                return null;
-            }
-           
-            properties.load(input);
-    
-            return properties.getProperty("encryption.key");
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
 
     // Download an image URL to the given path 
     public static String downloadAndSaveImage(String profilePicUrl, String pathStoreImage, String publicIdentifier) {
         try {
             URL url = new URL(profilePicUrl);
             Path targetPath = Path.of(pathStoreImage + "/" + publicIdentifier + ".png");
-            System.out.println("targetPath: " + targetPath);
+            
             try (InputStream in = url.openStream()) {
                 Files.copy(in, targetPath, StandardCopyOption.REPLACE_EXISTING);
             }
@@ -50,8 +30,8 @@ public class AlumniInfo {
 
     // Calls on the API which scrapes the user linkedin's profile
     public static HttpResponse<String> getLinkedinProfileInfo(String linkedinLink, String apiKeyEncrypted) throws Exception {
-        String apiEndpoint = "https://nubela.co/proxycurl/api/v2/linkedin";
-        String symmetricKey = getSymmetricKeyFromConfig();
+        String apiEndpoint = JsonFileHandler.getPropertyFromApplicationProperties("apiLinkedin.endpoint");
+        String symmetricKey = JsonFileHandler.getPropertyFromApplicationProperties("encryption.key");
         String apiKeyDecrypted = EncryptionHandler.decrypt(apiKeyEncrypted, symmetricKey);
 
         HttpClient client = HttpClient.newHttpClient();

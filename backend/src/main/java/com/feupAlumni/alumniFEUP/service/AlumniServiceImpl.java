@@ -107,30 +107,7 @@ public class AlumniServiceImpl implements AlumniService{
         Map<String, Integer> cityCoordinateAlumniCount = new HashMap<>(); // Key: City Coordinate Value: Alumni Count
         Map<String, String> failedAttemptsAPI = new HashMap<>(); // Stores the city names that the API was not able to get the coordinates. It's stored on a map for easy access
         
-        Map<String, String> convertCityNames = new HashMap<>(); // Converts unacceptable city names to acceptable ones
-        convertCityNames.put("porto metropolitan area", "porto");
-        convertCityNames.put("brussels metropolitan area", "brussels"); 
-        convertCityNames.put("porto e região", "porto"); 
-        convertCityNames.put("kraków i okolice", "kraków");
-        convertCityNames.put("greater guimaraes area", "guimarães"); 
-        convertCityNames.put("hamburg und umgebung", "hamburg"); 
-        convertCityNames.put("braga e região", "braga"); 
-        convertCityNames.put("greater viana do castelo area", "viana do castelo"); 
-        convertCityNames.put("antwerp metropolitan area", "antwerp"); 
-        convertCityNames.put("metropolregion berlin/brandenburg", "berlin"); 
-        convertCityNames.put("greater ipswich area", "ipswich"); 
-        convertCityNames.put("greater madrid metropolitan area", "madrid"); 
-        convertCityNames.put("pontevedra y alrededores", "pontevedra"); 
-        convertCityNames.put("greater cambridge area", "cambridge"); 
-        convertCityNames.put("oslo og omegn", "oslo"); 
-        convertCityNames.put("greater tokyo area", "tokyo");
-        convertCityNames.put("greater barcelona metropolitan area", "barcelona"); 
-        convertCityNames.put("greater cardiff area", "cardiff"); 
-        convertCityNames.put("greater oslo region", "oslo");
-        convertCityNames.put("greater aveiro area", "aveiro"); 
-        convertCityNames.put("the randstad", "randstad"); 
-        convertCityNames.put("geneva metropolitan area", "geneva");
-
+        Map<String, String> convertCityNames = Location.convertUnrecognizableCities();
 
         for (Alumni alumni : alumniList) { 
             String linkedinInfo = alumni.getLinkedinInfo();

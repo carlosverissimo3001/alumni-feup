@@ -9,6 +9,8 @@ import java.net.URL;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.util.HashMap;
+import java.util.Map;
 import java.net.http.HttpClient.Version;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -21,8 +23,8 @@ public class Location {
     // Calls on the API which gets the information about a given country (inlcuding their latitude and longitude)
     private static JsonNode getCoordinatesForCountry (String countryCode) throws IOException, InterruptedException {
             
-        String API_URL = "http://api.geonames.org/searchJSON";
-        String USERNAME = "jenifer12345";
+        String API_URL = JsonFileHandler.getPropertyFromApplicationProperties("apiGeoCoordinates.url");
+        String USERNAME = JsonFileHandler.getPropertyFromApplicationProperties("apiGeoCoordinates.username");
         String url = String.format("%s?country=%s&maxRows=1&username=%s", API_URL, countryCode, USERNAME);
 
         HttpClient httpClient = HttpClient.newHttpClient();
@@ -48,9 +50,10 @@ public class Location {
 
     // Calls on the API which gets the information about a given city (including their latitude and longitude)
     private static JsonNode getCoordinatesForCity(String city, String country) throws IOException, InterruptedException {
-        String username = "jenifer12345";
+        String API_URL = JsonFileHandler.getPropertyFromApplicationProperties("apiGeoCoordinates.url");
+        String username = JsonFileHandler.getPropertyFromApplicationProperties("apiGeoCoordinates.username");
         String encodedCityName = URLEncoder.encode(city, "UTF-8");
-        String apiUrl = "http://api.geonames.org/searchJSON?q=" + encodedCityName + "&country=" + country + "&maxRows=1&username=" + username;
+        String apiUrl = API_URL+"?q=" + encodedCityName + "&country=" + country + "&maxRows=1&username=" + username;
 
         // Create an HTTP connection
         URL url = new URL(apiUrl);
@@ -105,6 +108,34 @@ public class Location {
         }
         
         return null;        
+    }
+
+    // Converts city names that the GeoCoordinates API doesn't recognize to recognizable ones
+    public static Map<String, String> convertUnrecognizableCities(){
+        Map<String, String> convertCityNames = new HashMap<>(); // Converts unacceptable city names to acceptable ones
+        convertCityNames.put("porto metropolitan area", "porto");
+        convertCityNames.put("brussels metropolitan area", "brussels"); 
+        convertCityNames.put("porto e região", "porto"); 
+        convertCityNames.put("kraków i okolice", "kraków");
+        convertCityNames.put("greater guimaraes area", "guimarães"); 
+        convertCityNames.put("hamburg und umgebung", "hamburg"); 
+        convertCityNames.put("braga e região", "braga"); 
+        convertCityNames.put("greater viana do castelo area", "viana do castelo"); 
+        convertCityNames.put("antwerp metropolitan area", "antwerp"); 
+        convertCityNames.put("metropolregion berlin/brandenburg", "berlin"); 
+        convertCityNames.put("greater ipswich area", "ipswich"); 
+        convertCityNames.put("greater madrid metropolitan area", "madrid"); 
+        convertCityNames.put("pontevedra y alrededores", "pontevedra"); 
+        convertCityNames.put("greater cambridge area", "cambridge"); 
+        convertCityNames.put("oslo og omegn", "oslo"); 
+        convertCityNames.put("greater tokyo area", "tokyo");
+        convertCityNames.put("greater barcelona metropolitan area", "barcelona"); 
+        convertCityNames.put("greater cardiff area", "cardiff"); 
+        convertCityNames.put("greater oslo region", "oslo");
+        convertCityNames.put("greater aveiro area", "aveiro"); 
+        convertCityNames.put("the randstad", "randstad"); 
+        convertCityNames.put("geneva metropolitan area", "geneva");
+        return convertCityNames;
     }
 
 }

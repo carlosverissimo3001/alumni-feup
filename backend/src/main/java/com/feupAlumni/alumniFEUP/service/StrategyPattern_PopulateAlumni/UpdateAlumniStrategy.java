@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.feupAlumni.alumniFEUP.handlers.AlumniInfo;
+import com.feupAlumni.alumniFEUP.handlers.JsonFileHandler;
 import com.feupAlumni.alumniFEUP.model.Alumni;
 import com.feupAlumni.alumniFEUP.service.AdminService;
 import com.feupAlumni.alumniFEUP.service.AlumniService;
@@ -63,7 +64,8 @@ public class UpdateAlumniStrategy implements AlumniStrategy {
                             String publicIdentifier = jsonResponse.optString("public_identifier", null);
 
                             // downloads and saves the pic in a local folder
-                            AlumniInfo.downloadAndSaveImage(profilePicUrl, "C:/alumniProject/frontend/public/Images", publicIdentifier);
+                            String savePicFolderPath = JsonFileHandler.getPropertyFromApplicationProperties("apiLinkedin.savePicFolder");
+                            AlumniInfo.downloadAndSaveImage(profilePicUrl, savePicFolderPath, publicIdentifier);
                             
                             Alumni alumni;
                             if (linkedinExists) { // needs to update the alumni information
