@@ -16,6 +16,7 @@ public class Admin {
     private String userName;
     private String passwordHash;
     private Timestamp createdAt;
+    private String encryptedApiKey;
 
     public Admin(){
 
@@ -39,6 +40,10 @@ public class Admin {
         return createdAt;
     }
 
+    public String getEncryptedApiKey(){
+        return encryptedApiKey;
+    }
+
     public void setUserName(String userName) {
         this.userName = userName;
     }
@@ -49,5 +54,9 @@ public class Admin {
 
     public void setCreatedAt(Timestamp createdAt){
         this.createdAt = createdAt;
+    }
+
+    public void setEncryptedApiKey(String encryptedApiKey){
+        this.encryptedApiKey = encryptedApiKey;
     }
 }
