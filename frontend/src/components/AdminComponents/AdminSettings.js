@@ -7,12 +7,18 @@ const AdminSettings = () => {
     const navigate = useNavigate();
     const [newPassword, setNewPassword] = useState('');
     const [oldPassword, setOldPassword] = useState('');
+    const [apiKey, setApiKey] = useState('');
     const [showPassword, setShowPassword] = useState(false);
+    const [showApiKey, setShowApiKey] = useState(false);
     const [uploadedFile, setUploadedFile] = useState(null);
 
     const togglePasswordVisibility = () => {
         setShowPassword(!showPassword);
     };
+
+    const toggleApiKeyVisibility = () => {
+        setShowApiKey(!showApiKey);
+    }
 
     const handleFileUpload = (event) => {
         const file = event.target.files[0];
@@ -135,7 +141,37 @@ const AdminSettings = () => {
                                 <div className='grid-item button-column'>
                                     <button className='button-no-margin admin-button' onClick={() => handleChangePass(newPassword, oldPassword)}>Done</button>
                                 </div>
-                                
+                            </div>
+                            <div className='grid-container'>
+                                <div className='grid-item label-column'>
+                                    <label htmlFor='newPassword' className='input-label'>Insert API Key</label>
+                                </div>
+
+                                <div className='grid-item input-column'>
+                                    <div className='password-input-container'>
+                                        <input
+                                            type={showApiKey ? 'text' : 'password'}
+                                            id='apiKey'
+                                            value={apiKey}
+                                            onChange={(e) => setApiKey(e.target.value)}
+                                            placeholder='API Key'
+                                            className='input-pass-admin input-field'
+                                            autoComplete="new-password"
+                                        />
+                                        <button
+                                            type="button"
+                                            onClick={toggleApiKeyVisibility}
+                                            className='password-toggle-button'
+                                            aria-label={showPassword ? 'Hide password' : 'Show password'}
+                                        >
+                                            {showPassword ? '👁️' : '👁️'}
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div className='grid-item button-column'>
+                                    <button className='button-no-margin admin-button' onClick={() => handleChangePass(newPassword, oldPassword)}>Done</button>
+                                </div>
                             </div>
                             <div className='grid-container'>
                                 <div className='grid-item label-column'>
