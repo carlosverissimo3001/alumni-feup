@@ -6,15 +6,13 @@ import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Iterator;
 
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.feupAlumni.alumniFEUP.handlers.AlumniInfo;
 import com.feupAlumni.alumniFEUP.model.Alumni;
+import com.feupAlumni.alumniFEUP.service.AdminService;
 import com.feupAlumni.alumniFEUP.service.AlumniService;
 
 import org.springframework.stereotype.Service;
@@ -26,6 +24,8 @@ public class AddAlumniStrategy implements AlumniStrategy {
 
     @Autowired
     private AlumniService alumniService;
+    @Autowired
+    private AdminService adminService;
 
     @Override
     public void populateAlumniTable(MultipartFile file) throws IOException, InterruptedException {
@@ -53,8 +53,11 @@ public class AddAlumniStrategy implements AlumniStrategy {
                     Boolean linkedinExists = alumniService.linkedinExists(linkValue);
 
                     if(!linkedinExists && linkValue.length()!=0 ){
+                        // Get the Encrypted API Key from the DB
+                        String apiKeyEncrypted = adminService.getEncryptedApiKey();
+
                         // Call the API that gets the information of a linkedin profile 
-                        var linkedinInfoResponse = AlumniInfo.getLinkedinProfileInfo(linkValue);
+                        var linkedinInfoResponse = AlumniInfo.getLinkedinProfileInfo(linkValue, apiKeyEncrypted);
                         if(linkedinInfoResponse.statusCode() == 200){
                             // Get the profile pic URL
                             JSONObject jsonResponse = new JSONObject(linkedinInfoResponse.body());

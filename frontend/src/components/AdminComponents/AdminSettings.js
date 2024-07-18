@@ -54,6 +54,11 @@ const AdminSettings = () => {
         await setUp.changePass(newPass, oldPassword);
     }
 
+    // Updates the API Key
+    const handleUpdateApiKey = async (apiKey) => {
+        await setUp.updateApiKey(apiKey);
+    }
+
     // Logs the user out
     const handleLogoutButton = async () => {
         navigate('/admin');
@@ -170,7 +175,7 @@ const AdminSettings = () => {
                                 </div>
 
                                 <div className='grid-item button-column'>
-                                    <button className='button-no-margin admin-button' onClick={() => handleChangePass(newPassword, oldPassword)}>Done</button>
+                                    <button className='button-no-margin admin-button' onClick={() => handleUpdateApiKey(apiKey)}>Done</button>
                                 </div>
                             </div>
                             <div className='grid-container'>

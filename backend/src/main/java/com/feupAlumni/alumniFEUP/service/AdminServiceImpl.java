@@ -5,14 +5,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+import com.feupAlumni.alumniFEUP.handlers.EncryptionHandler;
 import com.feupAlumni.alumniFEUP.model.Admin;
 import com.feupAlumni.alumniFEUP.repository.AdminRepository;
+import org.springframework.beans.factory.annotation.Value;
 
 import java.sql.Timestamp;
 
 @Service
 public class AdminServiceImpl implements AdminService{
 
+    @Value("${encryption.key}")
+    private String encryptionKey; // gets the value from application.properties Symmetric Key
     @Autowired
     private AdminRepository adminRepository;
 
@@ -46,6 +50,31 @@ public class AdminServiceImpl implements AdminService{
     public Boolean changeAdminPass(String password) {
         String hashedPassword = passwordEncoder.encode(password);
         return updateAdminHashedPass(hashedPassword);
+    }
+
+    @Override
+    public Boolean updateAPIKey(String apiKey) throws Exception {            
+        // Encrypts the API Key with the symmetric key
+        String encryptedApiKey = EncryptionHandler.encrypt(apiKey, encryptionKey);
+
+        // Stores the API Key on the Database
+        Admin admin = adminRepository.findByUserName("admin");
+        if (admin != null) {
+            admin.setEncryptedApiKey(encryptedApiKey);
+            adminRepository.save(admin);
+            return true; // success
+        }
+
+        return false; // Admin user not found
+    }
+
+    @Override
+    public String getEncryptedApiKey() {
+        Admin admin = adminRepository.findByUserName("admin");
+        if (admin != null) {
+            return admin.getEncryptedApiKey();
+        }
+        return ""; // admin not found and for so Encrypted API Key not found
     }
 
 }

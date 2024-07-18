@@ -8,4 +8,10 @@ public interface AdminService {
     // Changes admin password
     public Boolean changeAdminPass(String password);
 
+    // Updates API Key
+    public Boolean updateAPIKey(String apiKey) throws Exception;
+
+    // Returns the Encrypted API Key of the Admin
+    public String getEncryptedApiKey();
+
 }

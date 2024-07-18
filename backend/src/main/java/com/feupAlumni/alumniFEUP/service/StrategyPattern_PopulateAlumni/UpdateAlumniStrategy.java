@@ -12,6 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.feupAlumni.alumniFEUP.handlers.AlumniInfo;
 import com.feupAlumni.alumniFEUP.model.Alumni;
+import com.feupAlumni.alumniFEUP.service.AdminService;
 import com.feupAlumni.alumniFEUP.service.AlumniService;
 
 import org.apache.poi.ss.usermodel.*;
@@ -21,6 +22,8 @@ public class UpdateAlumniStrategy implements AlumniStrategy {
     
     @Autowired
     private AlumniService alumniService;
+    @Autowired
+    private AdminService adminService;
 
     @Override
     public void populateAlumniTable(MultipartFile file) throws IOException, InterruptedException {
@@ -48,8 +51,11 @@ public class UpdateAlumniStrategy implements AlumniStrategy {
                     Boolean linkedinExists = alumniService.linkedinExists(linkValue);
 
                     if(linkValue.length()!=0 ){
+                        // Get Encrypted the API Key from the DB
+                        String apiKeyEncrypted = adminService.getEncryptedApiKey();
+
                         // Call the API that gets the information of a linkedin profile 
-                        var linkedinInfoResponse = AlumniInfo.getLinkedinProfileInfo(linkValue);
+                        var linkedinInfoResponse = AlumniInfo.getLinkedinProfileInfo(linkValue, apiKeyEncrypted);
                         if(linkedinInfoResponse.statusCode() == 200){
                             // Get the profile pic URL
                             JSONObject jsonResponse = new JSONObject(linkedinInfoResponse.body());

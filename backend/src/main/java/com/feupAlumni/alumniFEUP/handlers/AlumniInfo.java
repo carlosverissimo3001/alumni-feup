@@ -14,8 +14,8 @@ import java.util.Properties;
 
 public class AlumniInfo {
 
-    // Gets the API Key from the files' configuration 
-    private static String getApiKeyFromConfig() throws IOException {
+    // Get the symmetric key from the application.properties file
+    private static String getSymmetricKeyFromConfig() {
         Properties properties = new Properties();
         try (InputStream input = AlumniInfo.class.getClassLoader().getResourceAsStream("application.properties")) {
             if (input == null) {
@@ -25,7 +25,7 @@ public class AlumniInfo {
            
             properties.load(input);
     
-            return properties.getProperty("linkedin.api.key");
+            return properties.getProperty("encryption.key");
         } catch (IOException e) {
             e.printStackTrace();
             return null;
@@ -49,14 +49,15 @@ public class AlumniInfo {
     }
 
     // Calls on the API which scrapes the user linkedin's profile
-    public static HttpResponse<String> getLinkedinProfileInfo(String linkedinLink) throws IOException, InterruptedException {
+    public static HttpResponse<String> getLinkedinProfileInfo(String linkedinLink, String apiKeyEncrypted) throws Exception {
         String apiEndpoint = "https://nubela.co/proxycurl/api/v2/linkedin";
-        String apiKey = getApiKeyFromConfig();
+        String symmetricKey = getSymmetricKeyFromConfig();
+        String apiKeyDecrypted = EncryptionHandler.decrypt(apiKeyEncrypted, symmetricKey);
 
         HttpClient client = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(apiEndpoint + "?twitter_profile_url=&facebook_profile_url&linkedin_profile_url=" + linkedinLink))
-                .headers("Authorization", "Bearer " + apiKey)
+                .headers("Authorization", "Bearer " + apiKeyDecrypted)
                 .build();
 
         return client.send(request, HttpResponse.BodyHandlers.ofString());

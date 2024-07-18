@@ -71,6 +71,29 @@ class setUp {
         }
     }
 
+    // Updates the API Key
+    static async updateApiKey(apiKey) {
+        try {
+            const data = JSON.stringify({ apiKey });
+            const response = await fetch('http://localhost:8080/admin/updateApiKey', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',  // Set the content type to JSON
+                },
+                body: data,
+            });
+            if (response.ok){
+                const data = await response.json();
+                console.log("data.success: ", data.success);
+                return data.success;
+            } else {
+                console.error('API Key unsuccessfully updated.');
+            }
+        } catch (error) {
+            console.log('Error while updating API Key', error);
+        }
+    }
+
     // Deletes the alumni information in the DB and repopulates the tables with new information from the LinkdinLink API
     static async replaceAlumnus(uploadedFile) {
         try {

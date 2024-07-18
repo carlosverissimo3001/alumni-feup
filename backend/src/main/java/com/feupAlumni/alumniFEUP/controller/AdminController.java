@@ -75,6 +75,26 @@ public class AdminController {
         }        
     }
 
+    // Updates API Key
+    @PostMapping("/updateApiKey")
+    public ResponseEntity<String> handleUpdateAPIKey(@RequestBody String requestBody) {
+        try {
+            //ObjectMapper to convert JSON string to Map
+            ObjectMapper objectMapper = new ObjectMapper();
+            Map<String, Object> map = objectMapper.readValue(requestBody, Map.class);
+
+            // Get apiKey
+            String apiKey = (String) map.get("apiKey");
+
+            // Updates the apiKey
+            Boolean updateSuccess = adminService.updateAPIKey(apiKey);
+
+            return ResponseEntity.ok().body("{\"success\":" + updateSuccess + "}");
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Error while updating API Key: " + e.getMessage());
+        }      
+    }
+
     // Deletes the alumni information in the DB 
     // By calling the API, repopulates the tables with new information 
     // file: Excel File
