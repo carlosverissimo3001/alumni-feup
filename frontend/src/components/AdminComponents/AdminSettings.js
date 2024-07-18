@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { FcSettings, FcPlus } from "react-icons/fc";
 import setUp from "../../helpers/setUp";
 import { useNavigate } from 'react-router-dom';
+import { AuthContext } from '../../App'; 
 
 const AdminSettings = () => {
     const navigate = useNavigate();
@@ -11,6 +12,7 @@ const AdminSettings = () => {
     const [showPassword, setShowPassword] = useState(false);
     const [showApiKey, setShowApiKey] = useState(false);
     const [uploadedFile, setUploadedFile] = useState(null);
+    const { logout } = useContext(AuthContext);
 
     const togglePasswordVisibility = () => {
         setShowPassword(!showPassword);
@@ -22,7 +24,6 @@ const AdminSettings = () => {
 
     const handleFileUpload = (event) => {
         const file = event.target.files[0];
-        console.log('Uploaded file:', file);
         setUploadedFile(file);
     };
 
@@ -61,6 +62,7 @@ const AdminSettings = () => {
 
     // Logs the user out
     const handleLogoutButton = async () => {
+        logout();
         navigate('/admin');
     }
 
