@@ -7,6 +7,8 @@ import com.feupAlumni.alumniFEUP.service.AlumniService;
 import com.feupAlumni.alumniFEUP.service.DataPopulationService;
 import com.feupAlumni.alumniFEUP.service.StrategyPattern_Clean.AddAlumnusStrategy;
 import com.feupAlumni.alumniFEUP.service.StrategyPattern_Clean.ReplaceAlumnusStrategy;
+import com.feupAlumni.alumniFEUP.service.StrategyPattern_PopulateAlumni.AddAlumniStrategy;
+import com.feupAlumni.alumniFEUP.service.StrategyPattern_PopulateAlumni.UpdateAlumniStrategy;
 
 import java.io.IOException;
 import java.util.Map;
@@ -109,13 +111,38 @@ public class AdminController {
 
             // Populates tables: alumnis it adds up, and the others it repopulates again 
             // TODO: UNCOMMENT THIS - I COMMENTED SO THE API DOESN'T GET CALLED 
-            //dataPopulationService.populateTables(file);
+            //dataPopulationService.populateTables(file, new AddAlumniStrategy());
 
             return ResponseEntity.ok().body("");
         } catch (Exception e) {
             return ResponseEntity.status(500).body("Error while replacing the alumnus data: " + e.getMessage());
         }  
     }
+
+    // Calls the API for: alumnis already on the db (updates their data)
+    //                    alumnis that are not on the db (adds their information)
+    // file: Excel File
+    @PostMapping("updateAlumnus")
+    public ResponseEntity<String> handleUpdateAlumnus(@RequestBody MultipartFile file){
+        try {
+            // Clean Tables
+                // Clean: AlumniEic, Course, City, Country, AlumniEic_Has_Course tables
+                // Doesn't delete alumni table because we want to add alumnis and update the already existing ones
+            dataPopulationService.cleanTables(new AddAlumnusStrategy());
+
+            // Cleans GeoJson files
+            JsonFileHandler.cleanGeoJsonFiles("backend/src/locationGeoJson");
+
+            // Populates tables: registers are added and updated on the alumni table, and other tabler are repopulated again 
+            // TODO: UNCOMMENT THIS - I COMMENTED SO THE API DOESN'T GET CALLED 
+            //dataPopulationService.populateTables(file, new UpdateAlumniStrategy());
+
+            return ResponseEntity.ok().body("");
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Error while replacing the alumnus data: " + e.getMessage());
+        }  
+    }
+
 
     // Backs up the alumni table to an excel file
     @PostMapping("/readToExcel")

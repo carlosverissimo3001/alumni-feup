@@ -1,23 +1,19 @@
 package com.feupAlumni.alumniFEUP.service;
 
-import com.feupAlumni.alumniFEUP.handlers.AlumniInfo;
 import com.feupAlumni.alumniFEUP.handlers.ExcelFilesHandler;
 import com.feupAlumni.alumniFEUP.handlers.JsonFileHandler;
 import com.feupAlumni.alumniFEUP.handlers.Location;
 import com.feupAlumni.alumniFEUP.handlers.ManageApiData;
 import com.feupAlumni.alumniFEUP.model.Alumni;
 import com.feupAlumni.alumniFEUP.repository.AlumniRepository;
+import com.feupAlumni.alumniFEUP.service.StrategyPattern_PopulateAlumni.AlumniStrategy;
 
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.URLDecoder;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -34,57 +30,8 @@ public class AlumniServiceImpl implements AlumniService{
     private AlumniRepository alumniRepository;
 
     @Override
-    public void populateAlumniTable(MultipartFile file) throws IOException, InterruptedException {
-        try (InputStream inputStream = file.getInputStream()){
-            // Read the excel file
-            Workbook workbook = WorkbookFactory.create(inputStream);
-            Sheet sheet = workbook.getSheetAt(1);   // 2nd sheet
-            Iterator<Row> rowIterator = sheet.iterator();
-
-            // Skip the first two rows
-            for (int i=0; i<2; i++){
-                if(rowIterator.hasNext()){
-                    rowIterator.next();
-                } 
-            }
-
-            // Iterate over the excel file
-            while (rowIterator.hasNext()) {
-                try {
-                    Row row = rowIterator.next();
-
-                    // Grabs the linkedin link 
-                    String linkValue = row.getCell(4).getStringCellValue();                     
-                    linkValue = URLDecoder.decode(linkValue, StandardCharsets.UTF_8.toString());
-                    Boolean linkedinExists = linkedinExists(linkValue);
-
-                    if(!linkedinExists && linkValue.length()!=0 ){
-                        // Call the API that gets the information of a linkedin profile 
-                        var linkedinInfoResponse = AlumniInfo.getLinkedinProfileInfo(linkValue);
-                        if(linkedinInfoResponse.statusCode() == 200){
-                            // Get the profile pic URL
-                            JSONObject jsonResponse = new JSONObject(linkedinInfoResponse.body());
-                            String profilePicUrl = jsonResponse.optString("profile_pic_url", null); 
-                            String publicIdentifier = jsonResponse.optString("public_identifier", null);
-
-                            // downloads and saves the pic in a local folder
-                            AlumniInfo.downloadAndSaveImage(profilePicUrl, "C:/alumniProject/frontend/public/Images", publicIdentifier);
-                            
-                            // Stores the information in the Alumni Table
-                            Alumni alumni = new Alumni(linkValue, linkedinInfoResponse.body()); // Creates the alumni object with the constructor that needs the linkedinLink and the linkedinInfo
-                            addAlumni(alumni);
-                        } else {
-                            System.out.println("API call failed with status code: " + linkedinInfoResponse.statusCode() + linkedinInfoResponse.body() + " For profile: " + linkValue);
-                        }
-                    }                    
-                } catch (Exception error) {
-                    System.out.println("error: " + error);
-                }
-            }
-            System.out.println("Alumni table populated with the API scraped information.");
-        } catch (Exception e) {
-            throw new RuntimeException("Error processing file", e);
-        }
+    public void populateAlumniTable(MultipartFile file, AlumniStrategy strategy) throws IOException, InterruptedException {
+        strategy.populateAlumniTable(file);
     }
 
     @Override
@@ -146,6 +93,11 @@ public class AlumniServiceImpl implements AlumniService{
     public boolean linkedinExists(String linkValue) {
         return alumniRepository.existsByLinkedinLink(linkValue);
     } 
+
+    @Override
+    public Alumni findByLinkedinLink(String linkValue) {
+        return alumniRepository.findByLinkedinLink(linkValue);
+    }
 
     @Override
     public ArrayList<Map<String, String>> getCityInformation() throws IOException, InterruptedException {

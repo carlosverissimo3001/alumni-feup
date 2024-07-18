@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.feupAlumni.alumniFEUP.service.StrategyPattern_Clean.CleanTablesStrategy;
+import com.feupAlumni.alumniFEUP.service.StrategyPattern_PopulateAlumni.AlumniStrategy;
 
 @Service
 public class DataPopulationServiceImpl implements DataPopulationService{
@@ -25,9 +26,9 @@ public class DataPopulationServiceImpl implements DataPopulationService{
     private AlumniEicHasCoursesService alumniEic_has_coursesService;
     
     @Override
-    public void populateTables(MultipartFile file) throws IOException, InterruptedException {
+    public void populateTables(MultipartFile file, AlumniStrategy strategy) throws IOException, InterruptedException {
         // Populates the Alumni table with the API information
-        alumniService.populateAlumniTable(file);
+        alumniService.populateAlumniTable(file, strategy);
         // Country and city need to be first populated since alumni_eic has a foregin key.
         // AlumniEic and courses need to be populated before AlumniEIC_HAS_COURSE since this middle table has a foregin key of each of these tables
         cityService.populateCityTable();

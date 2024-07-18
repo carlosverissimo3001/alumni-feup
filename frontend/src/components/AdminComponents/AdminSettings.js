@@ -39,7 +39,8 @@ const AdminSettings = () => {
 
     // Calls the API for the alumnis that don't exist. If the alumni exists, updates the alumni information
     const handleUpdateAlumnusData = async () => {
-
+        // TODO: SHOULD ENSURE THE FILE IS AN EXCEL FILE AND THAT THERE IS A FILE
+        await setUp.updateAlumnusData(uploadedFile);
     }
 
     // Updates the user's password
