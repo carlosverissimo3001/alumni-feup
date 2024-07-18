@@ -1,7 +1,6 @@
 class Helper {
   // Converts Blob to GeoJson
   static async convertBlobToGeoJSON(blob) {
-    console.log("blob: ", blob);
     if (blob) {
       const geoJson = await new Promise((resolve, reject) => {
         const reader = new FileReader();
