@@ -93,7 +93,7 @@ class setUp {
         }
     }
 
-    // Doesn't delete de alumni table. It adds alumni to it. Only calls the API for the alumnis that are not already in the DB
+    // Doesn't delete the alumni table. It adds alumni to it. Only calls the API for the alumnis that are not already in the DB
     // All other tables are updated
     static async addAlumnusData(uploadedFile) {
         try {
@@ -113,6 +113,29 @@ class setUp {
             }
         } catch (error) {
             console.log('Error while adding alumnus data', error);
+        }
+    }
+
+    // Doesn't delete the alumni table. It adds alumni to it. Calls the API for alumnis that don't exist in the DB and Updates the data
+    // of alumnis that already exist.
+    static async updateAlumnusData(uploadedFile) {
+        try {
+            const formData = new FormData();
+            formData.append('file', uploadedFile);
+            const response = await fetch('http://localhost:8080/admin/updateAlumnus', {
+                method: 'POST',
+                body: formData,
+            });
+
+            if (response.ok){
+                console.log('Alumnus data updated successfully');
+                return true;
+            } else {
+                console.error('Alumnus data updated failed');
+                return false;
+            }
+        } catch (error) {
+            console.log('Error while updating alumnus data', error);
         }
     }
 

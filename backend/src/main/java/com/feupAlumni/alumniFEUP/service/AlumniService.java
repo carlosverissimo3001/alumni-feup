@@ -8,6 +8,7 @@ import java.util.Map;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.feupAlumni.alumniFEUP.model.Alumni;
+import com.feupAlumni.alumniFEUP.service.StrategyPattern_PopulateAlumni.AlumniStrategy;
 
 public interface AlumniService {
 
@@ -17,7 +18,7 @@ public interface AlumniService {
     // Profile Pic: Uploades the profile pics to the folder: "C:/alimniProject/backend/src/main/java/com/feupAlumni/alumniFEUP/Images"
     //              The name of the profile pics is set to the public identifier of the user, which is retrieved by the API
     // file: Excel File
-    public void populateAlumniTable(MultipartFile file) throws IOException, InterruptedException;
+    public void populateAlumniTable(MultipartFile file, AlumniStrategy strategy) throws IOException, InterruptedException;
 
     // Writes the alumni table to an Excel file
     public byte[] alumniTableToExcel();
@@ -30,6 +31,9 @@ public interface AlumniService {
 
     // Sees if the linkedin link exists in the tabel 
     public boolean linkedinExists(String linkValue);    
+
+    // Finds the alumni based on its linkedin link
+    public Alumni findByLinkedinLink(String linkValue);
 
     // cityInformation[0] => map where Key: cityName Value: cityCoordinates
     // cityInformation[1] => map where Key: cityCoordinates Value: Nº of Alumnis in the city coordinates
