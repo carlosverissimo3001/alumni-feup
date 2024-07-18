@@ -107,7 +107,7 @@ const AdminSettings = () => {
                                     <label htmlFor='newPassword' className='input-label'>Change Password</label>
                                 </div>
 
-                                <div className='grid-item input-column'>
+                                <div className='grid-item'>
                                     <div className='password-input-container'>
                                         <input
                                             type={showPassword ? 'text' : 'password'}

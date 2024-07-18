@@ -221,6 +221,7 @@ p {
 .admin-wrapper{
     display: flex;
     flex-direction: column;
+    margin-top: 80px;
 }
 
 .row-admin-title {
@@ -280,7 +281,7 @@ p {
 .input-pass-admin{
     border: 3px solid #ccc;
     border-radius: 4px;
-    width: 150px;
+    width: 100%;
     padding: 10px;
     background-color: white;
     color: #969695;
