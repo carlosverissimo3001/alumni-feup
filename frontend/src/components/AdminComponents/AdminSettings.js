@@ -88,7 +88,7 @@ const AdminSettings = () => {
 
                                 <div className='grid-item button-column'>
                                     <div className='file-buttons'>
-                                        <button className='admin-button' onClick={handleReplaceAlumnus}>Replace Alumnus Data</button>
+                                        <button className='admin-button button-no-margin' onClick={handleReplaceAlumnus}>Replace Alumnus Data</button>
                                         <button className='admin-button' onClick={handleAddAlumnusData}>Add Alumnus Data</button>
                                         <button className='admin-button' onClick={handleUpdateAlumnusData}>Update Alumnus Data</button>
                                     </div>
@@ -132,7 +132,7 @@ const AdminSettings = () => {
                                 </div>
 
                                 <div className='grid-item button-column'>
-                                    <button className='admin-button' onClick={() => handleChangePass(newPassword, oldPassword)}>Done</button>
+                                    <button className='button-no-margin admin-button' onClick={() => handleChangePass(newPassword, oldPassword)}>Done</button>
                                 </div>
                                 
                             </div>
