@@ -28,19 +28,19 @@ const AdminSettings = () => {
     // Deletes the Alumni information and repopulates all tables with new updated information from the LinkedinLink API
     const handleReplaceAlumnus = async () => {
         // TODO: SHOULD ENSURE THE FILE IS AN EXCEL FILE AND THAT THERE IS A FILE
-        await setUp.replaceAlumnus(uploadedFile);
+        // await setUp.replaceAlumnus(uploadedFile); Commented meanwhile
     }
 
     // Only calls the API to alumnis that don't already exist in the app. If the alumni exists it doesn't call the API again
     const handleAddAlumnusData = async () => {
         // TODO: SHOULD ENSURE THE FILE IS AN EXCEL FILE AND THAT THERE IS A FILE
-        await setUp.addAlumnusData(uploadedFile);
+        // await setUp.addAlumnusData(uploadedFile); Commented meanwhile
     }
 
     // Calls the API for the alumnis that don't exist. If the alumni exists, updates the alumni information
     const handleUpdateAlumnusData = async () => {
         // TODO: SHOULD ENSURE THE FILE IS AN EXCEL FILE AND THAT THERE IS A FILE
-        await setUp.updateAlumnusData(uploadedFile);
+        // await setUp.updateAlumnusData(uploadedFile); Commented meanwhile
     }
 
     // Updates the user's password
