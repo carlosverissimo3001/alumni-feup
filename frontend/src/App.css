@@ -314,6 +314,10 @@ p {
     margin-left: 10px;
 }
 
+.button-no-margin{
+    margin-top: 0px;
+}
+
 .admin-button:hover {
     background-color: #A02D20;
 }
