@@ -328,7 +328,6 @@ p {
     flex-direction: column;
 }
 
-
 /*---- Map ----*/
 
 .mapCmpDiv{
@@ -558,13 +557,11 @@ p {
 .year-filter-container {
     display: flex;
     margin-bottom: 10px;
-    background-color: red;
 }
 
 .search-container-year {
     width: 100%;
     display: inline-block;
-    background-color: pink;
 }
 
 .fileInput{

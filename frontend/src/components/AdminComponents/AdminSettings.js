@@ -77,7 +77,7 @@ const AdminSettings = () => {
                         <div className='row-admin-menu'>
                             <div className='grid-container'>
                                 <div className='grid-item label-column'>
-                                    <label htmlFor='fileUpload' className='input-label'>Add Alumnus</label>
+                                    <label htmlFor='fileUpload' className='admin-description input-label'>Add Alumnus</label>
                                 </div>
 
                                 <div className='grid-item input-column'>
@@ -109,7 +109,7 @@ const AdminSettings = () => {
                             </div>
                             <div className='grid-container'>
                                 <div className='grid-item label-column'>
-                                    <label htmlFor='newPassword' className='input-label'>Change Password</label>
+                                    <label htmlFor='newPassword' className='admin-description input-label'>Change Password</label>
                                 </div>
 
                                 <div className='grid-item'>
@@ -149,7 +149,7 @@ const AdminSettings = () => {
                             </div>
                             <div className='grid-container'>
                                 <div className='grid-item label-column'>
-                                    <label htmlFor='newPassword' className='input-label'>Insert API Key</label>
+                                    <label htmlFor='newPassword' className='admin-description input-label'>Change API Key</label>
                                 </div>
 
                                 <div className='grid-item input-column'>
