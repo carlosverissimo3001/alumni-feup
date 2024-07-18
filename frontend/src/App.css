@@ -180,6 +180,7 @@ p {
 .grid-item {
     display: flex;
     flex-direction: column;
+    padding-bottom: 10px;
 }
 
 .label-column label {
@@ -215,7 +216,6 @@ p {
 .button-column .file-buttons {
     display: flex;
     flex-direction: column;
-    margin-bottom: 20px;
 }
 
 .admin-wrapper{

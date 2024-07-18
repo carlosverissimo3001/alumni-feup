@@ -14,6 +14,7 @@ import java.util.Properties;
 
 public class AlumniInfo {
 
+    // Gets the API Key from the files' configuration 
     private static String getApiKeyFromConfig() throws IOException {
         Properties properties = new Properties();
         try (InputStream input = AlumniInfo.class.getClassLoader().getResourceAsStream("application.properties")) {

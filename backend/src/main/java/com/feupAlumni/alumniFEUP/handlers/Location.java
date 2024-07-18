@@ -18,8 +18,6 @@ import java.net.URLEncoder;
 
 public class Location {
 
-    
-
     // Calls on the API which gets the information about a given country (inlcuding their latitude and longitude)
     private static JsonNode getCoordinatesForCountry (String countryCode) throws IOException, InterruptedException {
             
