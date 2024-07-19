@@ -71,7 +71,7 @@ public class AdminController {
             
             return ResponseEntity.ok().body("{\"success\":" + changedSuccess + "}");
         } catch (Exception e) {
-            return ResponseEntity.status(500).body("Error while password verification: " + e.getMessage());
+            return ResponseEntity.status(500).body("Error while password update: " + e.getMessage());
         }        
     }
 
