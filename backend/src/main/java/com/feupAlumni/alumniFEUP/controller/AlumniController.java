@@ -26,6 +26,7 @@ public class AlumniController {
     @Autowired
     private AlumniEicService alumniEicService;
 
+    // Returns the geoJson file created based on the user's filters: course, year and geoJsonType (country or city) 
     @GetMapping("/getGeoJson")
     public ResponseEntity<InputStreamResource> getGeoJson(
         @RequestParam String courseFilter,
