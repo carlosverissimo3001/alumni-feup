@@ -159,7 +159,7 @@ public class AdminController {
 
             return ResponseEntity.ok().body("");
         } catch (Exception e) {
-            return ResponseEntity.status(500).body("Error while replacing the alumnus data: " + e.getMessage());
+            return ResponseEntity.status(500).body("Error while updating the alumnus data: " + e.getMessage());
         }  
     }
 
