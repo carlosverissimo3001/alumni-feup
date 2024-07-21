@@ -108,7 +108,7 @@ public class AdminController {
             JsonFileHandler.cleanGeoJsonFiles("backend/src/main/resources/locationGeoJson");
             
             // Populates tables TODO: UNCOMMENT THIS - I COMMENTED SO THE API DOESN'T GET CALLED 
-            //dataPopulationService.populateTables(file);
+            //dataPopulationService.populateTables(file, new AddAlumniStrategy());
 
             return ResponseEntity.ok().body("");
         } catch (Exception e) {
