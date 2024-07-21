@@ -116,7 +116,7 @@ public class AlumniEicServiceImpl implements AlumniEicService{
             Map<LocationAlumnis, List<AlumniEic>> alumniByLocation = groupAlumnis(geoJsonType);
 
             // For each alumni associates the linkedin link he is associated with + filters applied
-            // Key: alumni linkedin link value: linkedin link
+            // Key: alumni linkedin link value: alumni name
             Map<String, String> alumniLinkedInLink = alumniLinkedInLink(courseFilter, yearFilter);
 
             // For each alumni associates a course with the respective year of conclusion + filters applied
