@@ -113,6 +113,7 @@ public class AlumniEicServiceImpl implements AlumniEicService{
         Map<File, Gson> fileGson = JsonFileHandler.createFile(locationGeoJSON);
         if (geoJsonType.equals("countries") || geoJsonType.equals("cities")) {
             // Group alumnis in countries or cities depending on geoJsonType
+            // Key: city or country Value: List of alumnis in that location
             Map<LocationAlumnis, List<AlumniEic>> alumniByLocation = groupAlumnis(geoJsonType);
 
             // For each alumni associates the linkedin link he is associated with + filters applied
