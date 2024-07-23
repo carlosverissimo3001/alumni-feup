@@ -38,15 +38,6 @@ class Helper {
     return pathsToProfileImage;
   }
 
-  // Checks if the selected file is an excel file
-  static async checkIfExcel(file) {
-      const allowedFileTypes = ['application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'application/vnd.ms-excel'];
-      if (!allowedFileTypes.includes(file.type)) {
-          return false;
-      }
-      return true;
-  }
-
   // Extracts the Json objects
   // ONLY USED INSDIE OF THIS CLASS
   static async extractJSONObjects(str) {
