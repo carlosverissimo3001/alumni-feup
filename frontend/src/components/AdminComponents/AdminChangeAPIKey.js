@@ -50,7 +50,7 @@ const AdminChangeAPIKey = () => {
         <>                  
             <div className='grid-container'>
                 <div className='grid-item label-column'>
-                    <label htmlFor='newPassword' className='admin-description input-label'>Change API Key</label>
+                    <label htmlFor='newPassword' className='admin-description input-label'>Change proxycurl API Key</label>
                 </div>
 
                 <div className='grid-item input-column'>
