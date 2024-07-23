@@ -116,7 +116,7 @@ const AdminPopulate = () => {
         <>                  
             <div className='grid-container'>
                 <div className='grid-item label-column'>
-                    <label htmlFor='fileUpload' className='admin-description input-label'>Add Alumnus</label>
+                    <label htmlFor='fileUpload' className='admin-description input-label'>Alumnus Data</label>
                 </div>
 
                 <div className='grid-item input-column'>
