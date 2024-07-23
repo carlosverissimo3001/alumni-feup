@@ -65,6 +65,7 @@ class setUp {
                 return data.success;
             } else {
                 console.error('Password unsuccessfully updated.');
+                return false;
             }
         } catch (error) {
             console.log('Error while updating password', error);
@@ -88,6 +89,7 @@ class setUp {
                 return data.success;
             } else {
                 console.error('API Key unsuccessfully updated.');
+                return false;
             }
         } catch (error) {
             console.log('Error while updating API Key', error);
