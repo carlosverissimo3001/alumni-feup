@@ -110,7 +110,7 @@ public class AdminController {
             // Populates tables TODO: UNCOMMENT THIS - I COMMENTED SO THE API DOESN'T GET CALLED 
             //dataPopulationService.populateTables(file, new AddAlumniStrategy());
 
-            return ResponseEntity.ok().body("");
+            return ResponseEntity.ok().body("Alumni replaced successfully");
         } catch (Exception e) {
             return ResponseEntity.status(500).body("Error while replacing the alumnus data: " + e.getMessage());
         }  
@@ -134,7 +134,7 @@ public class AdminController {
             // TODO: UNCOMMENT THIS - I COMMENTED SO THE API DOESN'T GET CALLED 
             //dataPopulationService.populateTables(file, new AddAlumniStrategy());
 
-            return ResponseEntity.ok().body("");
+            return ResponseEntity.ok().body("Alumni added successfully");
         } catch (Exception e) {
             return ResponseEntity.status(500).body("Error while replacing the alumnus data: " + e.getMessage());
         }  
@@ -159,7 +159,7 @@ public class AdminController {
             // TODO: UNCOMMENT THIS - I COMMENTED SO THE API DOESN'T GET CALLED 
             //dataPopulationService.populateTables(file, new UpdateAlumniStrategy());
 
-            return ResponseEntity.ok().body("");
+            return ResponseEntity.ok().body("Alumni updated successfully");
         } catch (Exception e) {
             return ResponseEntity.status(500).body("Error while updating the alumnus data: " + e.getMessage());
         }  
