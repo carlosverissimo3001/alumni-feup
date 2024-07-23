@@ -26,6 +26,7 @@ public class AlumniController {
     @Autowired
     private AlumniEicService alumniEicService;
 
+    // Returns the geoJson file created based on the user's filters: course, year and geoJsonType (country or city) 
     @GetMapping("/getGeoJson")
     public ResponseEntity<InputStreamResource> getGeoJson(
         @RequestParam String courseFilter,
@@ -39,7 +40,7 @@ public class AlumniController {
             var fileName = JsonFileHandler.determineFileName(geoJsonType, courseFilter, yearFilter);
 
             // Defines a directory where the files are stored
-            String directoryPath = "backend/src/locationGeoJson";
+            String directoryPath = JsonFileHandler.getPropertyFromApplicationProperties("json.fileLocation");
 
             // Checks if the file already exists
             File locationGeoJSON = new File(directoryPath, fileName);

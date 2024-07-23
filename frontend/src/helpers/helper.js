@@ -1,7 +1,6 @@
 class Helper {
   // Converts Blob to GeoJson
   static async convertBlobToGeoJSON(blob) {
-    console.log("blob: ", blob);
     if (blob) {
       const geoJson = await new Promise((resolve, reject) => {
         const reader = new FileReader();
@@ -37,15 +36,6 @@ class Helper {
       pathsToProfileImage.push(pathToProfileImage);
     });
     return pathsToProfileImage;
-  }
-
-  // Checks if the selected file is an excel file
-  static async checkIfExcel(file) {
-      const allowedFileTypes = ['application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'application/vnd.ms-excel'];
-      if (!allowedFileTypes.includes(file.type)) {
-          alert('Invalid file type. Please upload an Excel file.');
-          return;
-      }
   }
 
   // Extracts the Json objects

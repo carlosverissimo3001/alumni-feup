@@ -5,6 +5,30 @@
       "type": "Feature",
       "properties": {
         "name": [
+          "finland"
+        ],
+        "students": 1,
+        "listLinkedinLinksByUser": {
+          "https://www.linkedin.com/in/jpmmaia/": "Joao Maia"
+        },
+        "coursesYearConclusionByUser": {
+          "https://www.linkedin.com/in/jpmmaia/": {
+            "MIEIC": "2016/2017"
+          }
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          24.93545,
+          60.16952
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": [
           "netherlands"
         ],
         "students": 3,
@@ -37,6 +61,62 @@
       "type": "Feature",
       "properties": {
         "name": [
+          "belgium"
+        ],
+        "students": 2,
+        "listLinkedinLinksByUser": {
+          "https://www.linkedin.com/in/mjmtavares/": "Miguel Tavares",
+          "https://www.linkedin.com/in/josepinto91/": "José Pinto"
+        },
+        "coursesYearConclusionByUser": {
+          "https://www.linkedin.com/in/mjmtavares/": {
+            "MIEIC": "2016/2017"
+          },
+          "https://www.linkedin.com/in/josepinto91/": {
+            "MIEIC": "2016/2017"
+          }
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.34878,
+          50.85045
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": [
+          "united states of america"
+        ],
+        "students": 2,
+        "listLinkedinLinksByUser": {
+          "https://www.linkedin.com/in/joão-almeida-451714a8/": "João Almeida",
+          "https://www.linkedin.com/in/ruigomeseu/": "Rui Gomes"
+        },
+        "coursesYearConclusionByUser": {
+          "https://www.linkedin.com/in/joão-almeida-451714a8/": {
+            "MIEIC": "2016/2017"
+          },
+          "https://www.linkedin.com/in/ruigomeseu/": {
+            "MIEIC": "2016/2017"
+          }
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -118.24368,
+          34.05223
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": [
           "spain"
         ],
         "students": 1,
@@ -54,6 +134,30 @@
         "coordinates": [
           -3.70256,
           40.4165
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": [
+          "austria"
+        ],
+        "students": 1,
+        "listLinkedinLinksByUser": {
+          "https://www.linkedin.com/in/ruibotto/": "Rui Botto"
+        },
+        "coursesYearConclusionByUser": {
+          "https://www.linkedin.com/in/ruibotto/": {
+            "MIEIC": "2017/2018"
+          }
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          16.37208,
+          48.20849
         ]
       }
     },
@@ -322,110 +426,6 @@
         "coordinates": [
           -9.13333,
           38.71667
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "name": [
-          "belgium"
-        ],
-        "students": 2,
-        "listLinkedinLinksByUser": {
-          "https://www.linkedin.com/in/mjmtavares/": "Miguel Tavares",
-          "https://www.linkedin.com/in/josepinto91/": "José Pinto"
-        },
-        "coursesYearConclusionByUser": {
-          "https://www.linkedin.com/in/mjmtavares/": {
-            "MIEIC": "2016/2017"
-          },
-          "https://www.linkedin.com/in/josepinto91/": {
-            "MIEIC": "2016/2017"
-          }
-        }
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          4.34878,
-          50.85045
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "name": [
-          "austria"
-        ],
-        "students": 1,
-        "listLinkedinLinksByUser": {
-          "https://www.linkedin.com/in/ruibotto/": "Rui Botto"
-        },
-        "coursesYearConclusionByUser": {
-          "https://www.linkedin.com/in/ruibotto/": {
-            "MIEIC": "2017/2018"
-          }
-        }
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          16.37208,
-          48.20849
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "name": [
-          "united states of america"
-        ],
-        "students": 2,
-        "listLinkedinLinksByUser": {
-          "https://www.linkedin.com/in/joão-almeida-451714a8/": "João Almeida",
-          "https://www.linkedin.com/in/ruigomeseu/": "Rui Gomes"
-        },
-        "coursesYearConclusionByUser": {
-          "https://www.linkedin.com/in/joão-almeida-451714a8/": {
-            "MIEIC": "2016/2017"
-          },
-          "https://www.linkedin.com/in/ruigomeseu/": {
-            "MIEIC": "2016/2017"
-          }
-        }
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -118.24368,
-          34.05223
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "name": [
-          "finland"
-        ],
-        "students": 1,
-        "listLinkedinLinksByUser": {
-          "https://www.linkedin.com/in/jpmmaia/": "Joao Maia"
-        },
-        "coursesYearConclusionByUser": {
-          "https://www.linkedin.com/in/jpmmaia/": {
-            "MIEIC": "2016/2017"
-          }
-        }
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          24.93545,
-          60.16952
         ]
       }
     }

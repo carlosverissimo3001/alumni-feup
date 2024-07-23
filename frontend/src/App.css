@@ -47,11 +47,12 @@ p {
     display: flex;
     background-color: white;
     border-radius: 20px;
-    padding-left: 5%;
+    padding-left: 3%;
     padding-right: 3%;
     padding-bottom: 3%;
-    padding-top: 3%;
+    padding-top: 1%;
     margin-top: 175px;
+    width: auto;
 }
 
 .shadow-overlay {
@@ -91,6 +92,7 @@ p {
 .admin-description {
     color: #2E231D;
     font-weight: bold;
+    margin: 0;
 }
 
 .input-button-container-welcome {
@@ -104,6 +106,7 @@ p {
 .input-username {
     border: 1px solid #ddd;
     border-radius: 10px; 
+    width: auto;
 }
 .input-username:focus {
     outline: 2px solid #C0C0C0;
@@ -111,6 +114,12 @@ p {
 
 .input-usernameWelcome {
     width: 50%;
+}
+
+.password-toggle-button-login {
+    position: absolute;
+    margin-left: 35%;
+    margin-top: 1px;
 }
 
 .app-button {
@@ -141,15 +150,98 @@ p {
     outline: 0px;
 }
 
+.password-toggle-button{
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1rem;
+}
+
 /*---- Admin: main page ----*/
 
-.admin-wrapper{
+.row-admin-menu{
+    padding-top: 20px;
     display: flex;
     flex-direction: column;
 }
 
-.row-admin-menu{
-    padding-top: 20px;
+.row-content-admin{
+    display: flex;
+    flex-direction: column;
+}
+
+.grid-container {
+    display: grid;
+    grid-template-columns: 1fr 2fr 1fr;
+    gap: 20px;
+    align-items: start;
+}
+
+.grid-item {
+    display: flex;
+    flex-direction: column;
+    padding-bottom: 10px;
+}
+
+.label-column label {
+    padding-left: 14px;
+}
+
+.file-upload-container {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.insert-file {
+    flex-grow: 1;
+    margin-right: 10px;
+    display: none;
+}
+
+.password-input-container {
+    display: flex;
+}
+
+.new-pass-space{
+    margin-left: 10px;
+}
+
+.password-toggle-button {
+    margin-top: 2px;
+}
+
+.button-column .file-buttons {
+    display: flex;
+    flex-direction: column;
+}
+
+.admin-wrapper{
+    display: flex;
+    flex-direction: column;
+    margin-top: 80px;
+}
+
+.row-admin-title {
+    display: flex;
+    flex-direction: row;
+}
+.logout-button {
+    background-color: #A02D20;
+    border: none;
+    border-radius: 10px; 
+    color: white;
+    margin-top: 44px;
+    height: 30px;
+    width: 50%;
+    margin-left: 13px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 11px;
+    cursor: pointer;
 }
 
 .input-row {
@@ -170,10 +262,7 @@ p {
     font-size: 16px;
     border: 1px solid #ccc;
     border-radius: 4px;
-}
-
-.insert-file{
-    display: none;
+    width: 100%;
 }
 
 .upload-icon{
@@ -185,13 +274,14 @@ p {
     background-color: white;
     color: #5d5d5a;
     display: flex;
+    flex-grow: 1;
     align-items: center;
 }
 
 .input-pass-admin{
     border: 3px solid #ccc;
     border-radius: 4px;
-    width: 150px;
+    width: 100%;
     padding: 10px;
     background-color: white;
     color: #969695;
@@ -225,6 +315,10 @@ p {
     margin-left: 10px;
 }
 
+.button-no-margin{
+    margin-top: 0px;
+}
+
 .admin-button:hover {
     background-color: #A02D20;
 }
@@ -233,7 +327,6 @@ p {
     display: flex;
     flex-direction: column;
 }
-
 
 /*---- Map ----*/
 
@@ -301,7 +394,7 @@ p {
 
 .text-conclusion-search{
     padding-bottom: 5px;
-    margin-top: 15px;
+    margin-top: 5px;
 }
 
 .text-conclusion-year {
@@ -316,6 +409,7 @@ p {
 .radio-buttons {
     display: flex;
     padding-top: 5px;
+    padding-bottom: 5px;
 }
 
 .custom-radio-label {
@@ -464,13 +558,11 @@ p {
 .year-filter-container {
     display: flex;
     margin-bottom: 10px;
-    background-color: red;
 }
 
 .search-container-year {
     width: 100%;
     display: inline-block;
-    background-color: pink;
 }
 
 .fileInput{
@@ -638,4 +730,65 @@ p {
 
 .logos{
     margin-top: 5px;
+}
+
+/*----------- Warning -----------*/
+.warning-icon {
+    padding-right: 2%;
+}
+
+.warning-title {
+    color: #2E231D;
+    padding: 0;
+    margin: 0;
+}
+
+.warning-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.warning-content {
+    background-color: white;
+    padding: 20px;
+    border-radius: 5px;
+    text-align: center;
+    width: 30%;
+}
+
+.warning-button {
+    padding: 10px 20px;
+    margin: 0 10px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s ease;
+}
+
+.warning-button:first-of-type {
+    background-color: #4CAF50; /* Green color */
+    color: white;
+}
+
+.warning-button:last-of-type {
+    background-color: #f44336; /* Red color */
+    color: white;
+}
+
+.warning-button:hover {
+    opacity: 0.8;
+}
+
+.message {
+    padding-top: 5px;
+    padding-bottom: 14px;
 }

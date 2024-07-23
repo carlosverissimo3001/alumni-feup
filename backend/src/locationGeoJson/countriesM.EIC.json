@@ -144,30 +144,6 @@
       "type": "Feature",
       "properties": {
         "name": [
-          "ireland"
-        ],
-        "students": 1,
-        "listLinkedinLinksByUser": {
-          "https://www.linkedin.com/in/mark-timothy-meehan/": "Mark Meehan"
-        },
-        "coursesYearConclusionByUser": {
-          "https://www.linkedin.com/in/mark-timothy-meehan/": {
-            "M.EIC": "2021/2022"
-          }
-        }
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -6.24889,
-          53.33306
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "name": [
           "brazil"
         ],
         "students": 1,
@@ -209,6 +185,30 @@
         "coordinates": [
           -0.12574,
           51.50853
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": [
+          "ireland"
+        ],
+        "students": 1,
+        "listLinkedinLinksByUser": {
+          "https://www.linkedin.com/in/mark-timothy-meehan/": "Mark Meehan"
+        },
+        "coursesYearConclusionByUser": {
+          "https://www.linkedin.com/in/mark-timothy-meehan/": {
+            "M.EIC": "2021/2022"
+          }
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.24889,
+          53.33306
         ]
       }
     }

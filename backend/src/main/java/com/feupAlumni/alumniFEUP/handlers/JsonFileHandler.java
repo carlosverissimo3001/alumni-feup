@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -13,6 +14,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -99,7 +101,7 @@ public class JsonFileHandler {
     public static String determineFileName(String geoJsonType, String course, List<String> conclusionYears) {
         var fileName = "";
         if (geoJsonType.equals("") && course.equals("") && conclusionYears.get(0).equals("") && conclusionYears.get(1).equals("")) {
-            fileName = "emptyFileLocation.json";
+            fileName = JsonFileHandler.getPropertyFromApplicationProperties("json.defaultFileName");
         } else {
             fileName = geoJsonType + course + conclusionYears.get(0) + conclusionYears.get(1) + ".json";
         }
@@ -139,7 +141,7 @@ public class JsonFileHandler {
         Map<File, Gson> fileGeoJson = new HashMap<>();        
         Gson gson = new GsonBuilder().setPrettyPrinting().create(); 
         createEmptyGeoJSONFile(locationGeoJSON);
-        System.out.println("GeoJSON file created");
+        
         fileGeoJson.put(locationGeoJSON, gson);
         return fileGeoJson;
     } 
@@ -188,6 +190,24 @@ public class JsonFileHandler {
                 }
             }
         });
+    }
+
+    // Get the symmetric key from the application.properties file
+    public static String getPropertyFromApplicationProperties(String property) {
+        Properties properties = new Properties();
+        try (InputStream input = AlumniInfo.class.getClassLoader().getResourceAsStream("application.properties")) {
+            if (input == null) {
+                System.out.println("Unable to find application.properties");
+                return null;
+            }
+           
+            properties.load(input);
+    
+            return properties.getProperty(property);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
 }
