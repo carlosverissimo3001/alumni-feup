@@ -48,6 +48,54 @@ class setUp {
         }  
     }
 
+    // Updates the admin password
+    static async changePass(newPass, oldPass) {
+        try {
+            const data = JSON.stringify({ newPass, oldPass });
+            const response = await fetch('http://localhost:8080/admin/changeAdminPass', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',  // Set the content type to JSON
+                },
+                body: data,
+            });
+            if (response.ok){
+                const data = await response.json();
+                console.log("data.success: ", data.success);
+                return data.success;
+            } else {
+                console.error('Password unsuccessfully updated.');
+                return false;
+            }
+        } catch (error) {
+            console.log('Error while updating password', error);
+        }
+    }
+
+    // Updates the API Key
+    static async updateApiKey(apiKey) {
+        try {
+            const data = JSON.stringify({ apiKey });
+            const response = await fetch('http://localhost:8080/admin/updateApiKey', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',  // Set the content type to JSON
+                },
+                body: data,
+            });
+            if (response.ok){
+                const data = await response.json();
+                console.log("data.success: ", data.success);
+                return data.success;
+            } else {
+                console.error('API Key unsuccessfully updated.');
+                return false;
+            }
+        } catch (error) {
+            console.log('Error while updating API Key', error);
+        }
+    }
+
     // Deletes the alumni information in the DB and repopulates the tables with new information from the LinkdinLink API
     static async replaceAlumnus(uploadedFile) {
         try {
@@ -70,7 +118,7 @@ class setUp {
         }
     }
 
-    // Doesn't delete de alumni table. It adds alumni to it. Only calls the API for the alumnis that are not already in the DB
+    // Doesn't delete the alumni table. It adds alumni to it. Only calls the API for the alumnis that are not already in the DB
     // All other tables are updated
     static async addAlumnusData(uploadedFile) {
         try {
@@ -90,6 +138,29 @@ class setUp {
             }
         } catch (error) {
             console.log('Error while adding alumnus data', error);
+        }
+    }
+
+    // Doesn't delete the alumni table. It adds alumni to it. Calls the API for alumnis that don't exist in the DB and Updates the data
+    // of alumnis that already exist.
+    static async updateAlumnusData(uploadedFile) {
+        try {
+            const formData = new FormData();
+            formData.append('file', uploadedFile);
+            const response = await fetch('http://localhost:8080/admin/updateAlumnus', {
+                method: 'POST',
+                body: formData,
+            });
+
+            if (response.ok){
+                console.log('Alumnus data updated successfully');
+                return true;
+            } else {
+                console.error('Alumnus data updated failed');
+                return false;
+            }
+        } catch (error) {
+            console.log('Error while updating alumnus data', error);
         }
     }
 

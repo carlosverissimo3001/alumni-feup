@@ -5,10 +5,11 @@ import java.io.IOException;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.feupAlumni.alumniFEUP.service.StrategyPattern_Clean.CleanTablesStrategy;
+import com.feupAlumni.alumniFEUP.service.StrategyPattern_PopulateAlumni.AlumniStrategy;
 
 public interface DataPopulationService {
     // Populates all tables
-    public void populateTables(MultipartFile file) throws IOException, InterruptedException;
+    public void populateTables(MultipartFile file, AlumniStrategy strategy) throws IOException, InterruptedException;
 
     // Cleans Tables
     public void cleanTables(CleanTablesStrategy strategy);
