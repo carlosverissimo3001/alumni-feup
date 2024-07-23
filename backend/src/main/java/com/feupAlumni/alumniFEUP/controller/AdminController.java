@@ -127,7 +127,8 @@ public class AdminController {
             dataPopulationService.cleanTables(new AddAlumnusStrategy());
 
             // Cleans GeoJson files
-            JsonFileHandler.cleanGeoJsonFiles("backend/src/locationGeoJson");
+            String fileLocation = JsonFileHandler.getPropertyFromApplicationProperties("json.fileLocation");
+            JsonFileHandler.cleanGeoJsonFiles(fileLocation);
 
             // Populates tables: alumnis it adds up, and the others it repopulates again 
             // TODO: UNCOMMENT THIS - I COMMENTED SO THE API DOESN'T GET CALLED 
@@ -151,7 +152,8 @@ public class AdminController {
             dataPopulationService.cleanTables(new AddAlumnusStrategy());
 
             // Cleans GeoJson files
-            JsonFileHandler.cleanGeoJsonFiles("backend/src/locationGeoJson");
+            String fileLocation = JsonFileHandler.getPropertyFromApplicationProperties("json.fileLocation");
+            JsonFileHandler.cleanGeoJsonFiles(fileLocation);
 
             // Populates tables: registers are added and updated on the alumni table, and other tabler are repopulated again 
             // TODO: UNCOMMENT THIS - I COMMENTED SO THE API DOESN'T GET CALLED 
