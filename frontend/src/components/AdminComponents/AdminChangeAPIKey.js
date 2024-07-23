@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import setUp from "../../helpers/setUp";
-import Warning from '../Warning'; 
+import Warning from './Warning'; 
 
 const AdminChangeAPIKey = () => {
     const [apiKey, setApiKey] = useState('');
