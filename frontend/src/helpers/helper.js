@@ -42,9 +42,9 @@ class Helper {
   static async checkIfExcel(file) {
       const allowedFileTypes = ['application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'application/vnd.ms-excel'];
       if (!allowedFileTypes.includes(file.type)) {
-          alert('Invalid file type. Please upload an Excel file.');
-          return;
+          return false;
       }
+      return true;
   }
 
   // Extracts the Json objects
