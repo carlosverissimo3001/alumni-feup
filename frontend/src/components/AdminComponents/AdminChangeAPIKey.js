@@ -1,11 +1,15 @@
 import React, { useState } from 'react';
 import setUp from "../../helpers/setUp";
 import Warning from './Warning'; 
+import Success from './Success';
+import Error from './Error';
 
 const AdminChangeAPIKey = () => {
     const [apiKey, setApiKey] = useState('');
     const [showApiKey, setShowApiKey] = useState(false);
     const [showWarningAPI, setShowWarningAPI] = useState(false);
+    const [showSuccess, setShowSuccess] = useState(false);
+    const [showError, setShowError] = useState(false);
 
     const toggleApiKeyVisibility = () => {
         setShowApiKey(!showApiKey);
@@ -13,7 +17,12 @@ const AdminChangeAPIKey = () => {
 
     // Updates the API Key
     const handleUpdateApiKey = async (apiKey) => {
-        await setUp.updateApiKey(apiKey);
+        var successUdateAPIKey = await setUp.updateApiKey(apiKey);
+        if (successUdateAPIKey) {
+            setShowSuccess(true); 
+        } else {
+            setShowError(true);
+        }
         setShowWarningAPI(false);
     }
 
@@ -29,6 +38,13 @@ const AdminChangeAPIKey = () => {
         setShowWarningAPI(false);
     };
 
+    const handleConfirmSuccess = () => {
+        setShowSuccess(false);
+    };
+
+    const handleConfirmError = () => {
+        setShowError(false);
+    }
 
     return (
         <>                  
@@ -65,11 +81,23 @@ const AdminChangeAPIKey = () => {
             </div>  
             {showWarningAPI && (
                 <Warning
-                    message="Are you sure you want to change the APII Key of ProxyCurl?"
+                    message="Are you sure you want to change the API Key of ProxyCurl?"
                     onConfirm={handleConfirm}
                     onCancel={handleCancel}
                 />
-            )}     
+            )}
+            {showSuccess && (
+                <Success
+                    message="Great! API Key Updated Successfully."
+                    onConfirm={handleConfirmSuccess}
+                />
+            )}  
+            {showError && (
+                <Error
+                    message="Ups, something went wrong while trying to update API Key."
+                    onConfirm={handleConfirmError}
+                />
+            )}   
         </>
     );
 }

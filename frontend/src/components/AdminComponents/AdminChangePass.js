@@ -1,12 +1,16 @@
 import React, { useState } from 'react';
 import setUp from "../../helpers/setUp";
 import Warning from './Warning'; 
+import Success from './Success';
+import Error from './Error';
 
 const AdminChangePass = () => {
     const [newPassword, setNewPassword] = useState('');
     const [oldPassword, setOldPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
     const [showWarning, setShowWarning] = useState(false);
+    const [showSuccess, setShowSuccess] = useState(false);
+    const [showError, setShowError] = useState(false);
 
     const togglePasswordVisibility = () => {
         setShowPassword(!showPassword);
@@ -14,7 +18,12 @@ const AdminChangePass = () => {
 
     // Updates the user's password
     const handleChangePass = async (newPass, oldPassword) => {
-        await setUp.changePass(newPass, oldPassword);
+        var success = await setUp.changePass(newPass, oldPassword);
+        if (success) {
+            setShowSuccess(true);
+        } else {
+            setShowError(true);
+        }
         setShowWarning(false); // Hide the warning afteer executing the action
     }
 
@@ -23,13 +32,21 @@ const AdminChangePass = () => {
         setShowWarning(true);
     }
 
-    const handleConfirm = () => {
+    const handleConfirmWarning = () => {
         handleChangePass(newPassword, oldPassword);
     };
 
     const handleCancel = () => {
         setShowWarning(false);
     };
+
+    const handleConfirmSuccess = () => {
+        setShowSuccess(false);
+    };
+
+    const handleConfirmError = () => {
+        setShowError(false);
+    }
 
     return (
         <>
@@ -76,8 +93,20 @@ const AdminChangePass = () => {
             {showWarning && (
                 <Warning
                     message="Are you sure you want to change the password?"
-                    onConfirm={handleConfirm}
+                    onConfirm={handleConfirmWarning}
                     onCancel={handleCancel}
+                />
+            )}
+            {showSuccess && (
+                <Success
+                    message="Great! Password Updated Successfully."
+                    onConfirm={handleConfirmSuccess}
+                />
+            )}
+            {showError && (
+                <Error
+                    message="Ups, something went wrong while trying to update password. Ensure the old password is correct."
+                    onConfirm={handleConfirmError}
                 />
             )}
         </>
