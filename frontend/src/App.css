@@ -394,7 +394,7 @@ p {
 
 .text-conclusion-search{
     padding-bottom: 5px;
-    margin-top: 15px;
+    margin-top: 5px;
 }
 
 .text-conclusion-year {
@@ -409,6 +409,7 @@ p {
 .radio-buttons {
     display: flex;
     padding-top: 5px;
+    padding-bottom: 5px;
 }
 
 .custom-radio-label {
