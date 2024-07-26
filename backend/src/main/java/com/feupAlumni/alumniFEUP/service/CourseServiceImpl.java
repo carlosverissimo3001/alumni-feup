@@ -1,15 +1,15 @@
 package com.feupAlumni.alumniFEUP.service;
 
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.feupAlumni.alumniFEUP.handlers.JsonFileHandler;
 import com.feupAlumni.alumniFEUP.model.Course;
 import com.feupAlumni.alumniFEUP.repository.CourseRepository;
 
@@ -27,24 +27,37 @@ public class CourseServiceImpl implements CourseService{
         try (InputStream inputStream = file.getInputStream()){
             // Read and iterate over the excel file
             Workbook workbook = WorkbookFactory.create(inputStream);
-            Sheet sheet = workbook.getSheetAt(1);   // 2nd sheet
+            int sheetToReafFrom = Integer.parseInt(JsonFileHandler.getPropertyFromApplicationProperties("excel.sheet"));
+            Sheet sheet = workbook.getSheetAt(sheetToReafFrom);   // Selects the sheet
             Iterator<Row> rowIterator = sheet.iterator();
 
-            // Skip the first two rows
-            for (int i=0; i<2; i++){
+            // Skip the first row, which corresponds to headers
+            for (int i=0; i<1; i++){
                 if(rowIterator.hasNext()){
                     rowIterator.next();
                 } 
             }
 
+            // Iterate over each row
             while (rowIterator.hasNext()) {
                 try {
-                    // Reads the course of the current row
+                    // Reads the courses and conclusion years of the current row
+                    int cellCoursesConclusionYears = Integer.parseInt(JsonFileHandler.getPropertyFromApplicationProperties("excel.rowForCursos"));
                     Row row = rowIterator.next();
-                    String courses = row.getCell(10).getStringCellValue();
-                    String[] coursesArray = courses.split(" ");
+                    String coursesConclusionYears  = row.getCell(cellCoursesConclusionYears).getStringCellValue();
+
+                    List<String> courses = new ArrayList<>();
+
+                    // Removes leading/trailing whitespaces
+                    coursesConclusionYears = coursesConclusionYears.trim();
+                    // Split by spaces
+                    String[] coursesConclusionYearsParts = coursesConclusionYears.split("\\s+");
+                    for (int i=0; i<coursesConclusionYearsParts.length; i+=2) {
+                        courses.add(coursesConclusionYearsParts[i]);
+                    }
                     
-                    for (String course : coursesArray) {
+                    // Adds course to DB
+                    for (String course : courses) {
                         // Sees if the course exists in the table
                         Boolean courseExists = courseExists(course);
                         if(!courseExists){

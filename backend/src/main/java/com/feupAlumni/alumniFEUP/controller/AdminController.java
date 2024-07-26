@@ -111,14 +111,14 @@ public class AdminController {
             File fileWithExcelStructureError = ExcelFilesHandler.validateExcelFile(file);
             if (fileWithExcelStructureError.length() == 0) { // Valid Excel file
                 // Clean Tables
-                //dataPopulationService.cleanTables(new ReplaceAlumnusStrategy());
+                dataPopulationService.cleanTables(new ReplaceAlumnusStrategy());
 
                 // Cleans GeoJson files 
-                //String fileLocation = JsonFileHandler.getPropertyFromApplicationProperties("json.fileLocation");
-                //JsonFileHandler.cleanGeoJsonFiles(fileLocation);
+                String fileLocation = JsonFileHandler.getPropertyFromApplicationProperties("json.fileLocation");
+                JsonFileHandler.cleanGeoJsonFiles(fileLocation);
 
                 // Populates tables 
-                //dataPopulationService.populateTables(file, new AddAlumniStrategy());
+                dataPopulationService.populateTables(file, new AddAlumniStrategy());
 
                 return ResponseEntity.ok().body(null);
             }
