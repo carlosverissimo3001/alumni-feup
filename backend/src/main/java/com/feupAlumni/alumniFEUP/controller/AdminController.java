@@ -1,6 +1,7 @@
 package com.feupAlumni.alumniFEUP.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.feupAlumni.alumniFEUP.handlers.ExcelFilesHandler;
 import com.feupAlumni.alumniFEUP.handlers.JsonFileHandler;
 import com.feupAlumni.alumniFEUP.service.AdminService;
 import com.feupAlumni.alumniFEUP.service.AlumniService;
@@ -14,12 +15,17 @@ import java.io.IOException;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.core.io.Resource;
+
+import java.io.File;
+import java.io.FileInputStream;
 
 @RestController
 @RequestMapping("/admin")
@@ -98,45 +104,72 @@ public class AdminController {
     // Deletes the alumni information in the DB 
     // By calling the API, repopulates the tables with new information 
     // file: Excel File
-    /* TODO: UNCOMMENT THIS @PostMapping("replaceAlumnus")
-    public ResponseEntity<String> handleReplaceAlumnus(@RequestBody MultipartFile file){
+    @PostMapping("replaceAlumnus")
+    public ResponseEntity<Resource> handleReplaceAlumnus(@RequestBody MultipartFile file){
         try {
-            // Clean Tables
-            dataPopulationService.cleanTables(new ReplaceAlumnusStrategy());
+            // Validates if the Excel File is valid. If not sends an error indicating what is the error
+            File fileWithExcelStructureError = ExcelFilesHandler.validateExcelFile(file);
+            if (fileWithExcelStructureError.length() == 0) { // Valid Excel file
+                // Clean Tables
+                //dataPopulationService.cleanTables(new ReplaceAlumnusStrategy());
 
-            // Cleans GeoJson files C:\alumniProject\backend\src\main\resources\locationGeoJson
-            JsonFileHandler.cleanGeoJsonFiles("backend/src/main/resources/locationGeoJson");
-            
-            // Populates tables TODO: UNCOMMENT THIS - I COMMENTED SO THE API DOESN'T GET CALLED 
-            //dataPopulationService.populateTables(file, new AddAlumniStrategy());
+                // Cleans GeoJson files 
+                //String fileLocation = JsonFileHandler.getPropertyFromApplicationProperties("json.fileLocation");
+                //JsonFileHandler.cleanGeoJsonFiles(fileLocation);
 
-            return ResponseEntity.ok().body("Alumni replaced successfully");
+                // Populates tables 
+                //dataPopulationService.populateTables(file, new AddAlumniStrategy());
+
+                return ResponseEntity.ok().body(null);
+            }
+            // Return the file with errors for download
+            InputStreamResource resource = new InputStreamResource(new FileInputStream(fileWithExcelStructureError));
+            HttpHeaders headers = new HttpHeaders();
+            headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=errorMessages.txt");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                                .headers(headers)
+                                .contentLength(fileWithExcelStructureError.length())
+                                .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                                .body(resource);        
         } catch (Exception e) {
-            return ResponseEntity.status(500).body("Error while replacing the alumnus data: " + e.getMessage());
+            return ResponseEntity.status(500).body(null);
         }  
-    }*/
+    }
 
     // Calls the API only for the alumnis that are not alreay in the DB
     // file: Excel File
     @PostMapping("addAlumnus")
-    public ResponseEntity<String> handleAddAlumnus(@RequestBody MultipartFile file){
+    public ResponseEntity<Resource> handleAddAlumnus(@RequestBody MultipartFile file){
         try {
-            // Clean Tables
+            // Validates if the Excel File is valid. If not sends an error indicating what is the error
+            File fileWithExcelStructureError = ExcelFilesHandler.validateExcelFile(file);
+            if (fileWithExcelStructureError.length() == 0) { // Valid Excel file 
+                // Clean Tables
                 // Clean: AlumniEic, Course, City, Country, AlumniEic_Has_Course tables
                 // Doesn't delete alumni table because we want to add alumnis
-            dataPopulationService.cleanTables(new AddAlumnusStrategy());
+                dataPopulationService.cleanTables(new AddAlumnusStrategy());
 
-            // Cleans GeoJson files
-            String fileLocation = JsonFileHandler.getPropertyFromApplicationProperties("json.fileLocation");
-            JsonFileHandler.cleanGeoJsonFiles(fileLocation);
+                // Cleans GeoJson files
+                String fileLocation = JsonFileHandler.getPropertyFromApplicationProperties("json.fileLocation");
+                JsonFileHandler.cleanGeoJsonFiles(fileLocation);
 
-            // Populates tables: alumnis it adds up, and the others it repopulates again 
-            // TODO: UNCOMMENT THIS - I COMMENTED SO THE API DOESN'T GET CALLED 
-            //dataPopulationService.populateTables(file, new AddAlumniStrategy());
+                // Populates tables: alumnis it adds up, and the others it repopulates again 
+                // TODO: UNCOMMENT THIS - I COMMENTED SO THE API DOESN'T GET CALLED 
+                //dataPopulationService.populateTables(file, new AddAlumniStrategy());
 
-            return ResponseEntity.ok().body("Alumni added successfully");
+                return ResponseEntity.ok().body(null);
+            }
+            // Return the file with errors for download
+            InputStreamResource resource = new InputStreamResource(new FileInputStream(fileWithExcelStructureError));
+            HttpHeaders headers = new HttpHeaders();
+            headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=errorMessages.txt");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                                .headers(headers)
+                                .contentLength(fileWithExcelStructureError.length())
+                                .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                                .body(resource); 
         } catch (Exception e) {
-            return ResponseEntity.status(500).body("Error while replacing the alumnus data: " + e.getMessage());
+            return ResponseEntity.status(500).body(null);
         }  
     }
 
@@ -144,24 +177,37 @@ public class AdminController {
     //                    alumnis that are not on the db (adds their information)
     // file: Excel File
     @PostMapping("updateAlumnus")
-    public ResponseEntity<String> handleUpdateAlumnus(@RequestBody MultipartFile file){
+    public ResponseEntity<Resource> handleUpdateAlumnus(@RequestBody MultipartFile file){
         try {
-            // Clean Tables
+            // Validates if the Excel File is valid. If not sends an error indicating what is the error
+            File fileWithExcelStructureError = ExcelFilesHandler.validateExcelFile(file);
+            if (fileWithExcelStructureError.length() == 0) { // Valid Excel file 
+                // Clean Tables
                 // Clean: AlumniEic, Course, City, Country, AlumniEic_Has_Course tables
                 // Doesn't delete alumni table because we want to add alumnis and update the already existing ones
-            dataPopulationService.cleanTables(new AddAlumnusStrategy());
+                dataPopulationService.cleanTables(new AddAlumnusStrategy());
 
-            // Cleans GeoJson files
-            String fileLocation = JsonFileHandler.getPropertyFromApplicationProperties("json.fileLocation");
-            JsonFileHandler.cleanGeoJsonFiles(fileLocation);
+                // Cleans GeoJson files
+                String fileLocation = JsonFileHandler.getPropertyFromApplicationProperties("json.fileLocation");
+                JsonFileHandler.cleanGeoJsonFiles(fileLocation);
 
-            // Populates tables: registers are added and updated on the alumni table, and other tabler are repopulated again 
-            // TODO: UNCOMMENT THIS - I COMMENTED SO THE API DOESN'T GET CALLED 
-            //dataPopulationService.populateTables(file, new UpdateAlumniStrategy());
+                // Populates tables: registers are added and updated on the alumni table, and other tabler are repopulated again 
+                // TODO: UNCOMMENT THIS - I COMMENTED SO THE API DOESN'T GET CALLED 
+                //dataPopulationService.populateTables(file, new UpdateAlumniStrategy());
 
-            return ResponseEntity.ok().body("Alumni updated successfully");
+                return ResponseEntity.ok().body(null);
+            }
+            // Return the file with errors for download
+            InputStreamResource resource = new InputStreamResource(new FileInputStream(fileWithExcelStructureError));
+            HttpHeaders headers = new HttpHeaders();
+            headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=errorMessages.txt");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                                .headers(headers)
+                                .contentLength(fileWithExcelStructureError.length())
+                                .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                                .body(resource); 
         } catch (Exception e) {
-            return ResponseEntity.status(500).body("Error while updating the alumnus data: " + e.getMessage());
+            return ResponseEntity.status(500).body(null);
         }  
     }
 

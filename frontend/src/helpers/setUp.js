@@ -111,6 +111,19 @@ class setUp {
                 return true;
             } else {
                 console.error('Alumnus data replacement failed');
+                // If the response status is 400 (BAD_REQUEST), it means there is a file to download
+                if (response.status === 400) {
+                    const blob = await response.blob();
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.style.display = 'none';
+                    a.href = url;
+                    a.download = 'errorMessages.txt';
+                    document.body.appendChild(a);
+                    a.click();
+                    window.URL.revokeObjectURL(url);
+                    console.log('Downloaded error messages file');
+                }
                 return false;
             }
         } catch (error) {
