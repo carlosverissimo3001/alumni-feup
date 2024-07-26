@@ -3,6 +3,7 @@ import Warning from './Warning';
 import { FcPlus } from "react-icons/fc";
 import Success from './Success';
 import Error from './Error';
+import setUp from '../../helpers/setUp';
 
 const AdminPopulate = () => {
     const [showWarningAdminReplace, setShowWarningAdminReplace] = useState(false);
@@ -26,15 +27,15 @@ const AdminPopulate = () => {
             setShowError(true);
             setErrorMessage("Ups! No Excel file has been selected.");
         } else {
-            /*var successReplace = await setUp.replaceAlumnus(uploadedFile); Commented meanwhile
+            var successReplace = await setUp.replaceAlumnus(uploadedFile);
             if (successReplace) {
                 setShowSuccess(true);
                 setSuccessMessage("Great! Alumni information has been replaced."); 
             }  else {
                 setShowError(true);
-                setErrorMessage("Ups! Something went wrong while trying to replace alumni data.");
+                setErrorMessage("Ups! Something went wrong while trying to replace alumni data.  A file with the errors was downloaded.");
             }
-            setShowWarningAdminReplace(false);*/
+            setShowWarningAdminReplace(false);
         }
     }
 

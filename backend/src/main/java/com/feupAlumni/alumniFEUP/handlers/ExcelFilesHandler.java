@@ -1,5 +1,9 @@
 package com.feupAlumni.alumniFEUP.handlers;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -16,7 +20,7 @@ import com.feupAlumni.alumniFEUP.model.Alumni;
 import org.apache.poi.ss.usermodel.*;
 
 public class ExcelFilesHandler {
-    
+
     // Create a row header
     private static void createHeaderRow (Sheet sheet, int rowIndex, int startColumn, String[] titles) {
         Row headerRow = sheet.getRow(rowIndex); // Create a new row
@@ -77,6 +81,211 @@ public class ExcelFilesHandler {
             lastWrittenRow++;
         }
         return lastWrittenRow;
+    }
+
+    // Validates First column of values: they all should be a 9 digit number and can't be empty
+    // Validate the value of the first column (0) of the current row
+    private static void validateFirstColumnValueOfCurrentRow (Cell cell, List<String> errorMessages, int rowIndex, int colIndex) {
+        Double cellValueScientificNotation = cell.getNumericCellValue();
+        String cellValue = String.format("%.0f", cellValueScientificNotation); // Without Scientific Notation
+        if (!(cellValue.length() == 9)) {
+            String messageError = "Row: " + (rowIndex+1) + " Column: " + (colIndex+1) + " should have 9 digits and it has: " + String.valueOf(cellValue).length() + " cellValue: " + cellValue;
+            errorMessages.add(messageError);
+        }
+    }
+
+    // Validates Second column of values: they need to be a string and can't be empty
+    // Validate the value of the second column (1) of the current row
+    private static void validateSecondColumnValueOfCurrentRow (Cell cell, List<String> errorMessages, int rowIndex, int colIndex) {
+        if (cell == null) {
+            String messageError = "Row: " + (rowIndex+1) + " Column: " + (colIndex+1) + " should of type string and have a value but it's currently null.";
+            errorMessages.add(messageError);
+        } else  {
+            if (!(cell.getCellType() == CellType.FORMULA) && !(cell.getCellType() == CellType.STRING)) {
+                String messageError = "Row: " + (rowIndex+1) + " Column: " + (colIndex+1) + " should of type Formula";
+                errorMessages.add(messageError);
+            }
+        }
+    }
+
+    // Validates Third column of values: they shoudl start with https://www.linkedin.com/in/ and end with '/' and can't be empty
+    // Validate the value of the third column (2) of the current row
+    private static void validateThirdColumnValueOfCurrentRow (Cell cell, List<String> errorMessages, int rowIndex, int colIndex) {
+        if (cell.getCellType() == CellType.FORMULA || cell.getCellType() == CellType.STRING) {
+            String cellValue = cell.getStringCellValue();
+            if (cellValue == null || cellValue.isEmpty()) {
+                String messageError = "Row " + (rowIndex+1) + " Column " + (colIndex+1) + " should not be empty.";
+                errorMessages.add(messageError);
+                return;
+            }
+            String urlPrefix = JsonFileHandler.getPropertyFromApplicationProperties("excel.linkedinPerfix");
+            if (!cellValue.startsWith(urlPrefix)) {
+                String messageError = "Row " + (rowIndex+1) + " Column " + (colIndex+1) + " should start with '" + urlPrefix + "'.";
+                errorMessages.add(messageError);
+            }
+            if (!cellValue.endsWith("/")) {
+                errorMessages.add("Row " + (rowIndex+1) + " Column " + (colIndex+1) + " should end with '/'.");
+            }
+        } else {
+            String messageError = "Row " + (rowIndex+1) + " Column " + (colIndex+1) + " should be of type Formula and is from type: " + cell.getCellType();
+            errorMessages.add(messageError);
+        }
+    }
+
+    // Validates the Forth column of values: should be MIEIC, L.EIC, M.EIC, MEI, LEIC and should have the following year xxxx/yyyy
+    //                                       should have the structure {course} / {lective year}
+    // Validate the value of the forth column (3) of the current row
+    private static void validateForthColumnValueOfCurrentRow (Cell cell, List<String> errorMessages, int rowIndex, int colIndex) {
+        List<String> courses = new ArrayList<>();
+        List<String> years = new ArrayList<>();
+        String cellValue = cell.getStringCellValue();
+
+        // Trim the cell value to remove leading and trailing whitespace
+        cellValue = cellValue.trim();
+        
+        // Split the cell value based on spaces
+        String[] parts = cellValue.split("\\s+");
+        for (String part : parts) {
+            if (part.matches("\\d{4}/\\d{4}")) { // Check if the part is a year by using a regex to match a year pattern
+                years.add(part);
+            } else {
+                courses.add(part); // If not a year, it's a course
+            }
+        }
+
+        // Validate courses
+        for (String course : courses) {
+            if (!course.equals("MIEIC") && !course.equals("L.EIC") && !course.equals("M.EIC") && !course.equals("MEI") && !course.equals("LEIC")) {
+                String messageError = "Row " + (rowIndex+1) + " Column " + (colIndex+1) + " has the value: '" + course + "' but it should be on of these: MIEIC, L.EIC, M.EIC, MEI, LEIC.";
+                errorMessages.add(messageError);
+            }
+        }
+        // Validate years structure
+        for (String year : years) {
+            String[] yearSplited = year.split("/");
+            if (Integer.parseInt(yearSplited[0])+1 != Integer.parseInt(yearSplited[1])) {
+                String messageError = "Row " + (rowIndex+1) + " Column " + (colIndex+1) + " has an invalid conclusion year: '" + yearSplited[0] + "' should be less by one falue from '" + yearSplited[1] + "'. The expected structure is e.g. 2022/2023.";
+                errorMessages.add(messageError);
+            }
+        }
+        if (courses.size()!=years.size()) {
+            String messageError = "Row " + (rowIndex+1) + " Column " + (colIndex+1) + " has an invalid structure. It should have this structure e.g.: 'MIEIC 2016/2027 L.EIC 2022/2023' and it is: " + cellValue + ".";
+            errorMessages.add(messageError);
+        }
+    }
+
+    // validates the headers names: can't be empty and should be the same ones as the ones defined in the application.properties file.
+    // If no errors are found it returns no error message.
+    private static void validateHeadersExcelFile (Row firstRow, List<String> errorMessages) {
+        // Gets the headers of the Excel file defined on the application.properties 
+        String firstHeader = JsonFileHandler.getPropertyFromApplicationProperties("excel.firstColumnName");
+        String secondHeader = JsonFileHandler.getPropertyFromApplicationProperties("excel.secondColumnName");
+        String thirdHeader = JsonFileHandler.getPropertyFromApplicationProperties("excel.thirdColumnName");
+        String forthHeader = JsonFileHandler.getPropertyFromApplicationProperties("excel.forthColumnName");
+
+        List<String> headers = new ArrayList<>();
+        headers.add(firstHeader);
+        headers.add(secondHeader);
+        headers.add(thirdHeader);
+        headers.add(forthHeader);
+
+        if (firstRow == null) {
+            String messageError = "The first row should have the headers: " + firstHeader + ", " + secondHeader + ", "  + thirdHeader + ", "  + forthHeader + ", " 
+                + " and it's currently empty. Ensure you have this information in the first sheet of your Excel file.";
+            errorMessages.add(messageError);
+            return;
+        }
+
+        // Iterates through all the headers which are in the first row and verifies if they have the currect name
+        for (int i=0; i<headers.size(); i++) {
+            Cell cell = firstRow.getCell(i);
+            String valueCellNotNormalized = cell.getStringCellValue();
+            String currentCellValue = valueCellNotNormalized;
+            if (!currentCellValue.equals(headers.get(i))) {
+                String messageError = "The cell nº: " + i + " of the first row should have the header: '" + headers.get(0) + "'' and is currently: '" + currentCellValue + "''. Ensure you have this information in the first sheet of your Excel file.";
+                System.out.println("messageError: " + messageError);
+                errorMessages.add(messageError);
+            }
+        }
+        return;
+    }
+
+    // Validates the content of each eather in the Excel file
+    private static void validateHeadersContent(Sheet sheet, Row firstRow, List<String> errorMessages) {
+        Integer columnNumber = Integer.parseInt(JsonFileHandler.getPropertyFromApplicationProperties("excel.columnNumber"));
+        for (int rowIndex = 1; rowIndex < sheet.getLastRowNum(); rowIndex++) { // Iterates over every Excel row starting  on the second row, row nº1 (the first row are header and were already validated)
+            Row row = sheet.getRow(rowIndex);
+            for (int colIndex = 0; colIndex < columnNumber; colIndex++) { // Iterates over the columns of the current row
+                Cell cell = row.getCell(colIndex);
+                switch (colIndex) {
+                    case 0:
+                        validateFirstColumnValueOfCurrentRow(cell, errorMessages, rowIndex, colIndex);
+                        break;
+                    case 1:
+                        validateSecondColumnValueOfCurrentRow(cell, errorMessages, rowIndex, colIndex);
+                        break;
+                    case 2:    
+                        validateThirdColumnValueOfCurrentRow(cell, errorMessages, rowIndex, colIndex);
+                        break;
+                    case 3:
+                        validateForthColumnValueOfCurrentRow(cell, errorMessages, rowIndex, colIndex);
+                        break;
+                    default:
+                        String messageError = "The excel file should have a maximum of 4 columns.";
+                        errorMessages.add(messageError);
+                        break;
+                }
+            }
+        }
+    }
+
+    // If there is any error with the Excel file structure adds to the erroMessages so they can be sent at once
+    public static File validateExcelFile(MultipartFile file) throws IOException {
+        List<String> errorMessages = new ArrayList<>(); // Stores the errors
+
+        // Validates if a file has been received
+        if (file == null) {
+            String messageError = "No file received.";
+            errorMessages.add(messageError);
+        } 
+        // Validates if the file is empty
+        if (file.isEmpty()) {
+            String messageError = "File is empty";
+            errorMessages.add(messageError);
+        } 
+        // Validates if is an Excel file
+        String fileName = file.getOriginalFilename();
+        if (fileName == null || !(fileName.endsWith(".xls") || fileName.endsWith(".xlsx"))) {
+            String messageError = "The file is not an Excel file. Please upload a file with .xls or .xlsx extension.";
+            errorMessages.add(messageError);
+        }
+        
+        // Validates the Excel file content: goes through the Excel file 
+        try (InputStream inputStream = file.getInputStream()) {
+            Workbook workbook = WorkbookFactory.create(inputStream);
+            Sheet sheet = workbook.getSheetAt(0); // First sheet
+
+            // Validates Headers
+            Row firstRow = sheet.getRow(0); // first row        
+            validateHeadersExcelFile(firstRow, errorMessages);
+            
+            // Validates values of each Header. 
+            validateHeadersContent(sheet, firstRow, errorMessages);
+        }
+
+        // Returns a report file of invalid Excel features
+        if (errorMessages.isEmpty()) {
+            return new File("");
+        } else {
+            File errorFile = File.createTempFile("excelFileInvalid", ".txt");
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter(errorFile))) {
+                for (String errorMessage : errorMessages) {
+                    writer.write(errorMessage);
+                    writer.newLine();
+                }
+            }
+            return errorFile;
+        }
     }
 
     // Goes through the Excel file and returns the row in which the linkedin link is in 
