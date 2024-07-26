@@ -64,6 +64,7 @@ public class UpdateAlumniStrategy implements AlumniStrategy {
 
                         // Call the API that gets the information of a linkedin profile 
                         var linkedinInfoResponse = AlumniInfo.getLinkedinProfileInfo(linkValue, apiKeyEncrypted);
+
                         if(linkedinInfoResponse.statusCode() == 200){
                             // Get the profile pic URL
                             JSONObject jsonResponse = new JSONObject(linkedinInfoResponse.body());
