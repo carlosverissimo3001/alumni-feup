@@ -409,7 +409,7 @@ p {
 .radio-buttons {
     display: flex;
     padding-top: 5px;
-    padding-bottom: 5px;
+    padding-bottom: 8px;
 }
 
 .custom-radio-label {
