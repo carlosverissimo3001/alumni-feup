@@ -10,6 +10,7 @@ import com.feupAlumni.alumniFEUP.service.DataPopulationService;
 import com.feupAlumni.alumniFEUP.service.StrategyPattern_Clean.AddAlumnusStrategy;
 import com.feupAlumni.alumniFEUP.service.StrategyPattern_Clean.ReplaceAlumnusStrategy;
 import com.feupAlumni.alumniFEUP.service.StrategyPattern_PopulateAlumni.AddAlumniStrategy;
+import com.feupAlumni.alumniFEUP.service.StrategyPattern_PopulateAlumni.UpdateAlumniStrategy;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -160,9 +161,9 @@ public class AdminController {
                 String fileLocation = JsonFileHandler.getPropertyFromApplicationProperties("json.fileLocation");
                 JsonFileHandler.cleanGeoJsonFiles(fileLocation);
 
-                // Populates tables: alumnis it adds up, and the others it repopulates again 
-                // TODO: UNCOMMENT THIS - I COMMENTED SO THE API DOESN'T GET CALLED 
-                //arrayWithPopulationErrors = dataPopulationService.populateTables(file, new AddAlumniStrategy(alumniService, adminService));
+                // Populates tables: alumnis it adds up, and repopulates other tables with the Alumni table again
+                //                   if the alumni already exist in the DB, the ProxyCurl API doesn't get called again 
+                arrayWithPopulationErrors = dataPopulationService.populateTables(file, new AddAlumniStrategy(alumniService, adminService));
             }
 
             File errorFile = TxtFilesHandler.writeErrorFile(arrayWithExcelStructureError, arrayWithPopulationErrors);
@@ -202,14 +203,14 @@ public class AdminController {
                 JsonFileHandler.cleanGeoJsonFiles(fileLocation);
 
                 // Populates tables: registers are added and updated on the alumni table, and other tabler are repopulated again 
-                // TODO: UNCOMMENT THIS - I COMMENTED SO THE API DOESN'T GET CALLED 
-                //arrayWithPopulationErrors = dataPopulationService.populateTables(file, new UpdateAlumniStrategy(alumniService, adminService));
+                arrayWithPopulationErrors = dataPopulationService.populateTables(file, new UpdateAlumniStrategy(alumniService, adminService));
             }
 
             File errorFile = TxtFilesHandler.writeErrorFile(arrayWithExcelStructureError, arrayWithPopulationErrors);
             if (errorFile.length() == 0) {
                 return ResponseEntity.ok().body(null);
             }
+            // Return the file with errors for download
             InputStreamResource resource = new InputStreamResource(new FileInputStream(errorFile));
             HttpHeaders headers = new HttpHeaders();
             headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=errorMessages.txt");
@@ -217,7 +218,7 @@ public class AdminController {
                                 .headers(headers)
                                 .contentLength(errorFile.length())
                                 .contentType(MediaType.APPLICATION_OCTET_STREAM)
-                                .body(resource);
+                                .body(resource);        
         } catch (Exception e) {
             return ResponseEntity.status(500).body(null);
         }  

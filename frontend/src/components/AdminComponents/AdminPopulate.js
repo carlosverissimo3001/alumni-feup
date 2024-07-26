@@ -33,7 +33,7 @@ const AdminPopulate = () => {
                 setSuccessMessage("Great! Alumni information has been replaced."); 
             }  else {
                 setShowError(true);
-                setErrorMessage("Ups! Something went wrong while trying to replace alumni data.  A file with the errors was downloaded.");
+                setErrorMessage("Ups! Something went wrong while trying to replace alumni data. A file with the errors was downloaded.");
             }
             setShowWarningAdminReplace(false);
         }
@@ -46,15 +46,15 @@ const AdminPopulate = () => {
             setShowError(true);
             setErrorMessage("Ups! No Excel file has been selected.");
         } else {
-            /*var successReplace = await setUp.addAlumnusData(uploadedFile); Commented meanwhile
+            var successReplace = await setUp.addAlumnusData(uploadedFile);
             if (successReplace) {
                 setShowSuccess(true);
                 setSuccessMessage("Great! New Alumni information has been added the system."); 
             } else {
                 setShowError(true);
-                setErrorMessage("Ups! Something went wrong while trying to add alumni data.");
+                setErrorMessage("Ups! Something went wrong while trying to add alumni data. A file with the errors was downloaded.");
             }
-            setShowWarningAdminAdd(false);*/   
+            setShowWarningAdminAdd(false);
         }
     }
 
@@ -65,15 +65,15 @@ const AdminPopulate = () => {
             setShowError(true);
             setErrorMessage("Ups! No Excel file has been selected.");
         } else {
-            /* var successReplace = await setUp.updateAlumnusData(uploadedFile); Commented meanwhile
+            var successReplace = await setUp.updateAlumnusData(uploadedFile);
             if (successReplace) {
                 setShowSuccess(true);
                 setSuccessMessage("Great! Alumni information has been updated."); 
             } else {
                 setShowError(true);
-                setErrorMessage("Ups! Something went wrong while trying to update alumni data.");
+                setErrorMessage("Ups! Something went wrong while trying to update alumni data. A file with the errors was downloaded.");
             }
-            setShowWarningAdminUpdate(false);*/
+            setShowWarningAdminUpdate(false);
         }
     }
 
@@ -150,7 +150,7 @@ const AdminPopulate = () => {
 
             {showWarningAdminReplace && (
                 <Warning
-                    message="Alumni Table is going to be deleted, it's adviced to backup alumni first. Ensure your API Key is correct, if not Alumni registers will be deleted anyways. Proxycurl API is going to be called and spend credits."
+                    message="Alumni Table is going to be deleted, it's adviced to backup alumni first. Ensure your API Key is correct, if not Alumni registers will be deleted anyways. Proxycurl API is going to be called and credits will be spent."
                     onConfirm={handleConfirmReplace}
                     onCancel={handleCancel}
                 />
@@ -158,7 +158,7 @@ const AdminPopulate = () => {
 
             {showWarningAdminAdd && (
                 <Warning
-                    message="New Alumni are going to be added to the Alumni Table, it's adviced to backup alumni first. Proxycurl API is going to be called and spend credits."
+                    message="New Alumni are going to be added to the Alumni Table, it's adviced to backup alumni first. Proxycurl API is going to be called for alumnis that are not already in the DB and credits will be spent."
                     onConfirm={handleConfirmAdd}
                     onCancel={handleCancel}
                 />
@@ -166,7 +166,7 @@ const AdminPopulate = () => {
 
             {showWarningAdminUpdate && (
                 <Warning
-                    message="Alumni in the Alumni Table will be updated and new ones added, it's adviced to backup alumni first. Proxycurl API is going to be called and spend credits."
+                    message="Alumni in the Alumni Table will be updated and new ones added, it's adviced to backup alumni first. Proxycurl API is going to be called and credits will be spent."
                     onConfirm={handleConfirmUpdate}
                     onCancel={handleCancel}
                 />

@@ -18,7 +18,13 @@ public class AlumniInfo {
         try {
             URL url = new URL(profilePicUrl);
             Path targetPath = Path.of(pathStoreImage + "/" + publicIdentifier + ".png");
-            
+            // Check if the file already exists and delete it if it does
+            if (Files.exists(targetPath)) {
+                Files.delete(targetPath);
+            }
+            // Ensure the parent directory exists
+            Files.createDirectories(targetPath.getParent());
+            // Download and save the image
             try (InputStream in = url.openStream()) {
                 Files.copy(in, targetPath, StandardCopyOption.REPLACE_EXISTING);
             }
