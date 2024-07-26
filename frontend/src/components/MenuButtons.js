@@ -211,6 +211,28 @@ const MenuButtons = ({menuVisible, onLoading, onSelectGeoJSON, onSelectAlumni, y
         <>
             { menuVisible && (
               <>
+                <p className='text text-conclusion-search'>Group By</p>
+                
+                <div className="radio-buttons">
+                    <input
+                        type="radio"
+                        id="countriesCheckbox"
+                        value="countries"
+                        checked={selectedOption === 'countries'}
+                        onChange={handleCheckboxChange}
+                        className="custom-radio"
+                    />
+                    <label htmlFor="countriesCheckbox" className="custom-radio-label custom-radio-label-left-button">Countries</label>
+                    <input
+                        type="radio"
+                        id="citiesCheckbox"
+                        value="cities"
+                        checked={selectedOption === 'cities'}
+                        onChange={handleCheckboxChange}
+                        className="custom-radio"
+                    />
+                    <label htmlFor="citiesCheckbox" className="custom-radio-label custom-radio-label-right-button">Cities</label>
+                </div>
 
                 <p className='text text-conclusion-search'>Search</p>
 
@@ -234,27 +256,6 @@ const MenuButtons = ({menuVisible, onLoading, onSelectGeoJSON, onSelectAlumni, y
                 </div>
 
                 <p className='text text-conclusion-year'>Filter</p>
-
-                <div className="radio-buttons">
-                    <input
-                        type="radio"
-                        id="countriesCheckbox"
-                        value="countries"
-                        checked={selectedOption === 'countries'}
-                        onChange={handleCheckboxChange}
-                        className="custom-radio"
-                    />
-                    <label htmlFor="countriesCheckbox" className="custom-radio-label custom-radio-label-left-button">Countries</label>
-                    <input
-                        type="radio"
-                        id="citiesCheckbox"
-                        value="cities"
-                        checked={selectedOption === 'cities'}
-                        onChange={handleCheckboxChange}
-                        className="custom-radio"
-                    />
-                    <label htmlFor="citiesCheckbox" className="custom-radio-label custom-radio-label-right-button">Cities</label>
-                </div>
 
                 <div className="search-container"> 
                     <select 
