@@ -25,7 +25,7 @@ public class EncryptionHandler {
 
     // Encrypts a given value 
     public static String encrypt(String value, String key) throws Exception {
-        String symmetricEncryptionAlgorithm = JsonFileHandler.getPropertyFromApplicationProperties("encryption.algorithm");
+        String symmetricEncryptionAlgorithm = JsonFileHandler.getPropertyFromApplicationProperties("encryption.algorithm").trim();
 
         SecretKeySpec secretKey = new SecretKeySpec(Base64.getDecoder().decode(key), symmetricEncryptionAlgorithm);
         Cipher cipher = Cipher.getInstance(symmetricEncryptionAlgorithm);
@@ -36,7 +36,7 @@ public class EncryptionHandler {
 
     // decrypts a given value
     public static String decrypt(String value, String key) throws Exception {
-        String symmetricEncryptionAlgorithm = JsonFileHandler.getPropertyFromApplicationProperties("encryption.algorithm");
+        String symmetricEncryptionAlgorithm = JsonFileHandler.getPropertyFromApplicationProperties("encryption.algorithm").trim();
 
         SecretKeySpec secretKey = new SecretKeySpec(Base64.getDecoder().decode(key), symmetricEncryptionAlgorithm);
         Cipher cipher = Cipher.getInstance(symmetricEncryptionAlgorithm);

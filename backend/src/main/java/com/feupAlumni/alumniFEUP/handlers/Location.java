@@ -23,8 +23,8 @@ public class Location {
     // Calls on the API which gets the information about a given country (inlcuding their latitude and longitude)
     private static JsonNode getCoordinatesForCountry (String countryCode) throws IOException, InterruptedException {
             
-        String API_URL = JsonFileHandler.getPropertyFromApplicationProperties("apiGeoCoordinates.url");
-        String USERNAME = JsonFileHandler.getPropertyFromApplicationProperties("apiGeoCoordinates.username");
+        String API_URL = JsonFileHandler.getPropertyFromApplicationProperties("apiGeoCoordinates.url").trim();
+        String USERNAME = JsonFileHandler.getPropertyFromApplicationProperties("apiGeoCoordinates.username").trim();
         String url = String.format("%s?country=%s&maxRows=1&username=%s", API_URL, countryCode, USERNAME);
 
         HttpClient httpClient = HttpClient.newHttpClient();
@@ -50,8 +50,8 @@ public class Location {
 
     // Calls on the API which gets the information about a given city (including their latitude and longitude)
     private static JsonNode getCoordinatesForCity(String city, String country) throws IOException, InterruptedException {
-        String API_URL = JsonFileHandler.getPropertyFromApplicationProperties("apiGeoCoordinates.url");
-        String username = JsonFileHandler.getPropertyFromApplicationProperties("apiGeoCoordinates.username");
+        String API_URL = JsonFileHandler.getPropertyFromApplicationProperties("apiGeoCoordinates.url").trim();
+        String username = JsonFileHandler.getPropertyFromApplicationProperties("apiGeoCoordinates.username").trim();
         String encodedCityName = URLEncoder.encode(city, "UTF-8");
         String apiUrl = API_URL+"?q=" + encodedCityName + "&country=" + country + "&maxRows=1&username=" + username;
 
@@ -96,7 +96,6 @@ public class Location {
     // Gets the coordinates of a given city
     public static String getCityCoordinates(String city, String country) throws IOException, InterruptedException {
         JsonNode jsonResponse = getCoordinatesForCity(city, country);
-
         JsonNode geonamesNode = jsonResponse.path("geonames");
         JsonNode firstResultNode = geonamesNode.get(0);
         if (firstResultNode != null) {

@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Iterator;
+import java.util.List;
 
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,21 +22,26 @@ import org.apache.poi.ss.usermodel.*;
 
 public class UpdateAlumniStrategy implements AlumniStrategy {
     
+    private final AlumniService alumniService;
+    private final AdminService adminService;
+
     @Autowired
-    private AlumniService alumniService;
-    @Autowired
-    private AdminService adminService;
+    public UpdateAlumniStrategy(AlumniService alumniService, AdminService adminService) {
+        this.alumniService = alumniService;
+        this.adminService = adminService;
+    }
 
     @Override
-    public void populateAlumniTable(MultipartFile file) throws IOException, InterruptedException {
+    public void populateAlumniTable(MultipartFile file, List<String> errorMessages) throws IOException, InterruptedException {
         try (InputStream inputStream = file.getInputStream()){
             // Read the excel file
             Workbook workbook = WorkbookFactory.create(inputStream);
-            Sheet sheet = workbook.getSheetAt(1);   // 2nd sheet
+            int sheetReadFrom = Integer.parseInt(JsonFileHandler.getPropertyFromApplicationProperties("excel.sheet").trim());
+            Sheet sheet = workbook.getSheetAt(sheetReadFrom);   // selects the sheet to read from
             Iterator<Row> rowIterator = sheet.iterator();
 
-            // Skip the first two rows
-            for (int i=0; i<2; i++){
+            // Skip the first row which corresponds to header
+            for (int i=0; i<1; i++){
                 if(rowIterator.hasNext()){
                     rowIterator.next();
                 } 
@@ -47,7 +53,8 @@ public class UpdateAlumniStrategy implements AlumniStrategy {
                     Row row = rowIterator.next();
 
                     // Grabs the linkedin link 
-                    String linkValue = row.getCell(4).getStringCellValue();                     
+                    int cellForLinkedInLink = Integer.parseInt(JsonFileHandler.getPropertyFromApplicationProperties("excel.rowForLinkedInLink").trim());
+                    String linkValue = row.getCell(cellForLinkedInLink).getStringCellValue();                     
                     linkValue = URLDecoder.decode(linkValue, StandardCharsets.UTF_8.toString());
                     Boolean linkedinExists = alumniService.linkedinExists(linkValue);
 
@@ -57,6 +64,7 @@ public class UpdateAlumniStrategy implements AlumniStrategy {
 
                         // Call the API that gets the information of a linkedin profile 
                         var linkedinInfoResponse = AlumniInfo.getLinkedinProfileInfo(linkValue, apiKeyEncrypted);
+
                         if(linkedinInfoResponse.statusCode() == 200){
                             // Get the profile pic URL
                             JSONObject jsonResponse = new JSONObject(linkedinInfoResponse.body());
@@ -64,8 +72,8 @@ public class UpdateAlumniStrategy implements AlumniStrategy {
                             String publicIdentifier = jsonResponse.optString("public_identifier", null);
 
                             // downloads and saves the pic in a local folder
-                            String savePicFolderPath = JsonFileHandler.getPropertyFromApplicationProperties("apiLinkedin.savePicFolder");
-                            AlumniInfo.downloadAndSaveImage(profilePicUrl, savePicFolderPath, publicIdentifier);
+                            String savePicFolderPath = JsonFileHandler.getPropertyFromApplicationProperties("apiLinkedin.savePicFolder").trim();
+                            AlumniInfo.downloadAndSaveImage(profilePicUrl, savePicFolderPath, publicIdentifier, errorMessages);
                             
                             Alumni alumni;
                             if (linkedinExists) { // needs to update the alumni information
@@ -76,7 +84,9 @@ public class UpdateAlumniStrategy implements AlumniStrategy {
                             }
                             alumniService.addAlumni(alumni);
                         } else {
-                            System.out.println("API call failed with status code: " + linkedinInfoResponse.statusCode() + linkedinInfoResponse.body() + " For profile: " + linkValue);
+                            JSONObject jsonResponse = new JSONObject(linkedinInfoResponse.body());
+                            String errorDescription = jsonResponse.optString("description", "No description provided");
+                            errorMessages.add("API call failed with status code: " + linkedinInfoResponse.statusCode() + " - " + errorDescription + " For profile: " + linkValue);
                         }
                     }                    
                 } catch (Exception error) {

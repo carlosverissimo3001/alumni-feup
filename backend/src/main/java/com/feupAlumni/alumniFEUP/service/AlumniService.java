@@ -18,7 +18,7 @@ public interface AlumniService {
     // Profile Pic: Uploades the profile pics to the folder: "C:/alimniProject/backend/src/main/java/com/feupAlumni/alumniFEUP/Images"
     //              The name of the profile pics is set to the public identifier of the user, which is retrieved by the API
     // file: Excel File
-    public void populateAlumniTable(MultipartFile file, AlumniStrategy strategy) throws IOException, InterruptedException;
+    public void populateAlumniTable(MultipartFile file, List<String> errorMessages, AlumniStrategy strategy) throws IOException, InterruptedException;
 
     // Writes the alumni table to an Excel file
     public byte[] alumniTableToExcel();
@@ -38,7 +38,7 @@ public interface AlumniService {
     // cityInformation[0] => map where Key: cityName Value: cityCoordinates
     // cityInformation[1] => map where Key: cityCoordinates Value: Nº of Alumnis in the city coordinates
     // This had to be implemented like this in order to avoid calling the API that gets the city coordinates twice
-    public ArrayList<Map<String, String>> getCityInformation() throws IOException, InterruptedException;
+    public ArrayList<Map<String, String>> getCityInformation(List<String> errorMessages) throws IOException, InterruptedException;
 
     // Gets the alumni distribution per country
     public void getAlumniDistCountry(Map<String, Integer> countryAlumniCount, Map<String, String> countryCodes);
