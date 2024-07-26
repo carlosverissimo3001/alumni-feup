@@ -336,6 +336,10 @@ p {
     background-color: #515150;
 }
 
+.attnetion-message {
+    font-size: 55%;
+}
+
 /*----- Loading -----*/
 
 .loading-overlay {
