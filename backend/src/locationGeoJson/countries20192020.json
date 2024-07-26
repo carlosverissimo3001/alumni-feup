@@ -1,0 +1,57 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "name": [
+          "portugal"
+        ],
+        "students": 8,
+        "listLinkedinLinksByUser": {
+          "https://www.linkedin.com/in/josé-oliveira-311505b1/": "José Oliveira",
+          "https://www.linkedin.com/in/jpdamas/": "João Damas",
+          "https://www.linkedin.com/in/joaoalmeida225/": "João Almeida",
+          "https://www.linkedin.com/in/matilde-freilao/": "Matilde Freilão",
+          "https://www.linkedin.com/in/daniel-p-nunes/": "Daniel Nunes",
+          "https://www.linkedin.com/in/af-fernandes/": "Fernando Fernandes",
+          "https://www.linkedin.com/in/pedro-silva-1200a9160/": "Pedro Silva",
+          "https://www.linkedin.com/in/sofialcfsilva/": "Sofia Silva"
+        },
+        "coursesYearConclusionByUser": {
+          "https://www.linkedin.com/in/josé-oliveira-311505b1/": {
+            "MIEIC": "2019/2020"
+          },
+          "https://www.linkedin.com/in/jpdamas/": {
+            "MIEIC": "2019/2020"
+          },
+          "https://www.linkedin.com/in/joaoalmeida225/": {
+            "MIEIC": "2019/2020"
+          },
+          "https://www.linkedin.com/in/matilde-freilao/": {
+            "MIEIC": "2019/2020"
+          },
+          "https://www.linkedin.com/in/daniel-p-nunes/": {
+            "MIEIC": "2019/2020"
+          },
+          "https://www.linkedin.com/in/af-fernandes/": {
+            "MIEIC": "2019/2020"
+          },
+          "https://www.linkedin.com/in/pedro-silva-1200a9160/": {
+            "MIEIC": "2019/2020"
+          },
+          "https://www.linkedin.com/in/sofialcfsilva/": {
+            "MIEIC": "2019/2020"
+          }
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -9.13333,
+          38.71667
+        ]
+      }
+    }
+  ]
+}
