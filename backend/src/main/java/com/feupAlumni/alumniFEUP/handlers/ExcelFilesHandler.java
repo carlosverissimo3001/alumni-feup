@@ -263,7 +263,8 @@ public class ExcelFilesHandler {
         // Validates the Excel file content: goes through the Excel file 
         try (InputStream inputStream = file.getInputStream()) {
             Workbook workbook = WorkbookFactory.create(inputStream);
-            Sheet sheet = workbook.getSheetAt(0); // First sheet
+            Integer excelSheet = Integer.parseInt(JsonFileHandler.getPropertyFromApplicationProperties("excel.sheet"));
+            Sheet sheet = workbook.getSheetAt(excelSheet); // Reeds from the sheet indicated in the application.properties
 
             // Validates Headers
             Row firstRow = sheet.getRow(0); // first row        
@@ -294,11 +295,12 @@ public class ExcelFilesHandler {
 
         try (InputStream inputStream = file.getInputStream()) {
             Workbook workbook = WorkbookFactory.create(inputStream);
-            Sheet sheet = workbook.getSheetAt(1); // Second sheet
+            int sheetReadFrom = Integer.parseInt(JsonFileHandler.getPropertyFromApplicationProperties("excel.sheet"));
+            Sheet sheet = workbook.getSheetAt(sheetReadFrom); // Sheet to read from
             Iterator<Row> rowIterator = sheet.iterator();
 
-            // Skip the first two rows
-            for (int i = 0; i < 2; i++) {
+            // Skip the first row which corresponds to headers
+            for (int i = 0; i < 1; i++) {
                 if (rowIterator.hasNext()) {
                     rowIterator.next();
                 }
@@ -306,7 +308,8 @@ public class ExcelFilesHandler {
 
             while (rowIterator.hasNext()) {
                 Row row = rowIterator.next();
-                String linkedinLink = row.getCell(4).getStringCellValue();
+                int cellForLinkedInLink = Integer.parseInt(JsonFileHandler.getPropertyFromApplicationProperties("excel.rowForLinkedInLink"));
+                String linkedinLink = row.getCell(cellForLinkedInLink).getStringCellValue();
                 if (!linkedinLink.isEmpty()) {
                     excelLinkedinMap.put(linkedinLink, row);
                 }

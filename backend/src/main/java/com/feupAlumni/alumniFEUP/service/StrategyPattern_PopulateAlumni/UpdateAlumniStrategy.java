@@ -31,11 +31,12 @@ public class UpdateAlumniStrategy implements AlumniStrategy {
         try (InputStream inputStream = file.getInputStream()){
             // Read the excel file
             Workbook workbook = WorkbookFactory.create(inputStream);
-            Sheet sheet = workbook.getSheetAt(1);   // 2nd sheet
+            int sheetReadFrom = Integer.parseInt(JsonFileHandler.getPropertyFromApplicationProperties("excel.sheet"));
+            Sheet sheet = workbook.getSheetAt(sheetReadFrom);   // selects the sheet to read from
             Iterator<Row> rowIterator = sheet.iterator();
 
-            // Skip the first two rows
-            for (int i=0; i<2; i++){
+            // Skip the first row which corresponds to header
+            for (int i=0; i<1; i++){
                 if(rowIterator.hasNext()){
                     rowIterator.next();
                 } 
@@ -47,7 +48,8 @@ public class UpdateAlumniStrategy implements AlumniStrategy {
                     Row row = rowIterator.next();
 
                     // Grabs the linkedin link 
-                    String linkValue = row.getCell(4).getStringCellValue();                     
+                    int cellForLinkedInLink = Integer.parseInt(JsonFileHandler.getPropertyFromApplicationProperties("excel.rowForLinkedInLink"));
+                    String linkValue = row.getCell(cellForLinkedInLink).getStringCellValue();                     
                     linkValue = URLDecoder.decode(linkValue, StandardCharsets.UTF_8.toString());
                     Boolean linkedinExists = alumniService.linkedinExists(linkValue);
 
