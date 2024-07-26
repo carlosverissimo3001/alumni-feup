@@ -1,8 +1,5 @@
 package com.feupAlumni.alumniFEUP.handlers;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -118,7 +115,7 @@ public class ExcelFilesHandler {
                 errorMessages.add(messageError);
                 return;
             }
-            String urlPrefix = JsonFileHandler.getPropertyFromApplicationProperties("excel.linkedinPerfix");
+            String urlPrefix = JsonFileHandler.getPropertyFromApplicationProperties("excel.linkedinPerfix").trim();
             if (!cellValue.startsWith(urlPrefix)) {
                 String messageError = "Row " + (rowIndex+1) + " Column " + (colIndex+1) + " should start with '" + urlPrefix + "'.";
                 errorMessages.add(messageError);
@@ -178,10 +175,10 @@ public class ExcelFilesHandler {
     // If no errors are found it returns no error message.
     private static void validateHeadersExcelFile (Row firstRow, List<String> errorMessages) {
         // Gets the headers of the Excel file defined on the application.properties 
-        String firstHeader = JsonFileHandler.getPropertyFromApplicationProperties("excel.firstColumnName");
-        String secondHeader = JsonFileHandler.getPropertyFromApplicationProperties("excel.secondColumnName");
-        String thirdHeader = JsonFileHandler.getPropertyFromApplicationProperties("excel.thirdColumnName");
-        String forthHeader = JsonFileHandler.getPropertyFromApplicationProperties("excel.forthColumnName");
+        String firstHeader = JsonFileHandler.getPropertyFromApplicationProperties("excel.firstColumnName").trim();
+        String secondHeader = JsonFileHandler.getPropertyFromApplicationProperties("excel.secondColumnName").trim();
+        String thirdHeader = JsonFileHandler.getPropertyFromApplicationProperties("excel.thirdColumnName").trim();
+        String forthHeader = JsonFileHandler.getPropertyFromApplicationProperties("excel.forthColumnName").trim();
 
         List<String> headers = new ArrayList<>();
         headers.add(firstHeader);
@@ -212,7 +209,7 @@ public class ExcelFilesHandler {
 
     // Validates the content of each eather in the Excel file
     private static void validateHeadersContent(Sheet sheet, Row firstRow, List<String> errorMessages) {
-        Integer columnNumber = Integer.parseInt(JsonFileHandler.getPropertyFromApplicationProperties("excel.columnNumber"));
+        Integer columnNumber = Integer.parseInt(JsonFileHandler.getPropertyFromApplicationProperties("excel.columnNumber").trim());
         for (int rowIndex = 1; rowIndex < sheet.getLastRowNum(); rowIndex++) { // Iterates over every Excel row starting  on the second row, row nº1 (the first row are header and were already validated)
             Row row = sheet.getRow(rowIndex);
             for (int colIndex = 0; colIndex < columnNumber; colIndex++) { // Iterates over the columns of the current row
@@ -240,7 +237,7 @@ public class ExcelFilesHandler {
     }
 
     // If there is any error with the Excel file structure adds to the erroMessages so they can be sent at once
-    public static File validateExcelFile(MultipartFile file) throws IOException {
+    public static List<String> validateExcelFile(MultipartFile file) throws IOException {
         List<String> errorMessages = new ArrayList<>(); // Stores the errors
 
         // Validates if a file has been received
@@ -263,7 +260,7 @@ public class ExcelFilesHandler {
         // Validates the Excel file content: goes through the Excel file 
         try (InputStream inputStream = file.getInputStream()) {
             Workbook workbook = WorkbookFactory.create(inputStream);
-            Integer excelSheet = Integer.parseInt(JsonFileHandler.getPropertyFromApplicationProperties("excel.sheet"));
+            Integer excelSheet = Integer.parseInt(JsonFileHandler.getPropertyFromApplicationProperties("excel.sheet").trim());
             Sheet sheet = workbook.getSheetAt(excelSheet); // Reeds from the sheet indicated in the application.properties
 
             // Validates Headers
@@ -274,19 +271,7 @@ public class ExcelFilesHandler {
             validateHeadersContent(sheet, firstRow, errorMessages);
         }
 
-        // Returns a report file of invalid Excel features
-        if (errorMessages.isEmpty()) {
-            return new File("");
-        } else {
-            File errorFile = File.createTempFile("excelFileInvalid", ".txt");
-            try (BufferedWriter writer = new BufferedWriter(new FileWriter(errorFile))) {
-                for (String errorMessage : errorMessages) {
-                    writer.write(errorMessage);
-                    writer.newLine();
-                }
-            }
-            return errorFile;
-        }
+        return errorMessages;
     }
 
     // Goes through the Excel file and returns the row in which the linkedin link is in 
@@ -295,7 +280,7 @@ public class ExcelFilesHandler {
 
         try (InputStream inputStream = file.getInputStream()) {
             Workbook workbook = WorkbookFactory.create(inputStream);
-            int sheetReadFrom = Integer.parseInt(JsonFileHandler.getPropertyFromApplicationProperties("excel.sheet"));
+            int sheetReadFrom = Integer.parseInt(JsonFileHandler.getPropertyFromApplicationProperties("excel.sheet").trim());
             Sheet sheet = workbook.getSheetAt(sheetReadFrom); // Sheet to read from
             Iterator<Row> rowIterator = sheet.iterator();
 
@@ -308,7 +293,7 @@ public class ExcelFilesHandler {
 
             while (rowIterator.hasNext()) {
                 Row row = rowIterator.next();
-                int cellForLinkedInLink = Integer.parseInt(JsonFileHandler.getPropertyFromApplicationProperties("excel.rowForLinkedInLink"));
+                int cellForLinkedInLink = Integer.parseInt(JsonFileHandler.getPropertyFromApplicationProperties("excel.rowForLinkedInLink").trim());
                 String linkedinLink = row.getCell(cellForLinkedInLink).getStringCellValue();
                 if (!linkedinLink.isEmpty()) {
                     excelLinkedinMap.put(linkedinLink, row);

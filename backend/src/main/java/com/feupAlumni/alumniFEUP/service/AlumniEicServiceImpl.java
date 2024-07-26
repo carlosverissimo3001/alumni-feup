@@ -92,7 +92,7 @@ public class AlumniEicServiceImpl implements AlumniEicService{
             String countryName = JsonFileHandler.extractFieldFromJson("country_full_name", linkedinInfo);
             String cityName = JsonFileHandler.extractFieldFromJson("city", linkedinInfo);
             String publicIdentifier = JsonFileHandler.extractFieldFromJson("public_identifier", linkedinInfo);
-            String linkedInPerfix = JsonFileHandler.getPropertyFromApplicationProperties("excel.linkedinPerfix");
+            String linkedInPerfix = JsonFileHandler.getPropertyFromApplicationProperties("excel.linkedinPerfix").trim();
             String linkedinFullLink = linkedInPerfix + publicIdentifier + "/";
             
             City city = cityService.findCityByName(cityName.toLowerCase());

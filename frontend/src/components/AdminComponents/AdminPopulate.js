@@ -150,7 +150,7 @@ const AdminPopulate = () => {
 
             {showWarningAdminReplace && (
                 <Warning
-                    message="Alumni Table is going to be deleted, it's adviced to backup alumni first. Proxycurl API is going to be called and spend credits."
+                    message="Alumni Table is going to be deleted, it's adviced to backup alumni first. Ensure your API Key is correct, if not Alumni registers will be deleted anyways. Proxycurl API is going to be called and spend credits."
                     onConfirm={handleConfirmReplace}
                     onCancel={handleCancel}
                 />

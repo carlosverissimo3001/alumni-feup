@@ -27,7 +27,7 @@ public class CourseServiceImpl implements CourseService{
         try (InputStream inputStream = file.getInputStream()){
             // Read and iterate over the excel file
             Workbook workbook = WorkbookFactory.create(inputStream);
-            int sheetToReafFrom = Integer.parseInt(JsonFileHandler.getPropertyFromApplicationProperties("excel.sheet"));
+            int sheetToReafFrom = Integer.parseInt(JsonFileHandler.getPropertyFromApplicationProperties("excel.sheet").trim());
             Sheet sheet = workbook.getSheetAt(sheetToReafFrom);   // Selects the sheet
             Iterator<Row> rowIterator = sheet.iterator();
 
@@ -42,7 +42,7 @@ public class CourseServiceImpl implements CourseService{
             while (rowIterator.hasNext()) {
                 try {
                     // Reads the courses and conclusion years of the current row
-                    int cellCoursesConclusionYears = Integer.parseInt(JsonFileHandler.getPropertyFromApplicationProperties("excel.rowForCursos"));
+                    int cellCoursesConclusionYears = Integer.parseInt(JsonFileHandler.getPropertyFromApplicationProperties("excel.rowForCursos").trim());
                     Row row = rowIterator.next();
                     String coursesConclusionYears  = row.getCell(cellCoursesConclusionYears).getStringCellValue();
 
@@ -71,6 +71,7 @@ public class CourseServiceImpl implements CourseService{
                 }
             }
             System.out.println("Course Table Populated.");
+            System.out.println("-----");
         } catch (Exception e) {
             throw new RuntimeException("Error processing file", e);
         }

@@ -3,15 +3,17 @@ package com.feupAlumni.alumniFEUP.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.feupAlumni.alumniFEUP.handlers.ExcelFilesHandler;
 import com.feupAlumni.alumniFEUP.handlers.JsonFileHandler;
+import com.feupAlumni.alumniFEUP.handlers.TxtFilesHandler;
 import com.feupAlumni.alumniFEUP.service.AdminService;
 import com.feupAlumni.alumniFEUP.service.AlumniService;
 import com.feupAlumni.alumniFEUP.service.DataPopulationService;
 import com.feupAlumni.alumniFEUP.service.StrategyPattern_Clean.AddAlumnusStrategy;
 import com.feupAlumni.alumniFEUP.service.StrategyPattern_Clean.ReplaceAlumnusStrategy;
 import com.feupAlumni.alumniFEUP.service.StrategyPattern_PopulateAlumni.AddAlumniStrategy;
-import com.feupAlumni.alumniFEUP.service.StrategyPattern_PopulateAlumni.UpdateAlumniStrategy;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -108,8 +110,9 @@ public class AdminController {
     public ResponseEntity<Resource> handleReplaceAlumnus(@RequestBody MultipartFile file){
         try {
             // Validates if the Excel File is valid. If not sends an error indicating what is the error
-            File fileWithExcelStructureError = ExcelFilesHandler.validateExcelFile(file);
-            if (fileWithExcelStructureError.length() == 0) { // Valid Excel file
+            List<String> arrayWithExcelStructureError = ExcelFilesHandler.validateExcelFile(file);
+            List<String> arrayWithPopulationErrors = new ArrayList<>();
+            if (arrayWithExcelStructureError.size() == 0) { // Valid Excel file
                 // Clean Tables
                 dataPopulationService.cleanTables(new ReplaceAlumnusStrategy());
 
@@ -118,17 +121,20 @@ public class AdminController {
                 JsonFileHandler.cleanGeoJsonFiles(fileLocation);
 
                 // Populates tables 
-                dataPopulationService.populateTables(file, new AddAlumniStrategy());
+                arrayWithPopulationErrors = dataPopulationService.populateTables(file, new AddAlumniStrategy(alumniService, adminService));
+            }
 
+            File errorFile = TxtFilesHandler.writeErrorFile(arrayWithExcelStructureError, arrayWithPopulationErrors);
+            if (errorFile.length() == 0) {
                 return ResponseEntity.ok().body(null);
             }
             // Return the file with errors for download
-            InputStreamResource resource = new InputStreamResource(new FileInputStream(fileWithExcelStructureError));
+            InputStreamResource resource = new InputStreamResource(new FileInputStream(errorFile));
             HttpHeaders headers = new HttpHeaders();
             headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=errorMessages.txt");
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                                 .headers(headers)
-                                .contentLength(fileWithExcelStructureError.length())
+                                .contentLength(errorFile.length())
                                 .contentType(MediaType.APPLICATION_OCTET_STREAM)
                                 .body(resource);        
         } catch (Exception e) {
@@ -142,8 +148,9 @@ public class AdminController {
     public ResponseEntity<Resource> handleAddAlumnus(@RequestBody MultipartFile file){
         try {
             // Validates if the Excel File is valid. If not sends an error indicating what is the error
-            File fileWithExcelStructureError = ExcelFilesHandler.validateExcelFile(file);
-            if (fileWithExcelStructureError.length() == 0) { // Valid Excel file 
+            List<String> arrayWithExcelStructureError = ExcelFilesHandler.validateExcelFile(file);
+            List<String> arrayWithPopulationErrors = new ArrayList<>();
+            if (arrayWithExcelStructureError.size() == 0) { // Valid Excel file 
                 // Clean Tables
                 // Clean: AlumniEic, Course, City, Country, AlumniEic_Has_Course tables
                 // Doesn't delete alumni table because we want to add alumnis
@@ -155,19 +162,21 @@ public class AdminController {
 
                 // Populates tables: alumnis it adds up, and the others it repopulates again 
                 // TODO: UNCOMMENT THIS - I COMMENTED SO THE API DOESN'T GET CALLED 
-                //dataPopulationService.populateTables(file, new AddAlumniStrategy());
+                //arrayWithPopulationErrors = dataPopulationService.populateTables(file, new AddAlumniStrategy(alumniService, adminService));
+            }
 
+            File errorFile = TxtFilesHandler.writeErrorFile(arrayWithExcelStructureError, arrayWithPopulationErrors);
+            if (errorFile.length() == 0) {
                 return ResponseEntity.ok().body(null);
             }
-            // Return the file with errors for download
-            InputStreamResource resource = new InputStreamResource(new FileInputStream(fileWithExcelStructureError));
+            InputStreamResource resource = new InputStreamResource(new FileInputStream(errorFile));
             HttpHeaders headers = new HttpHeaders();
             headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=errorMessages.txt");
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                                 .headers(headers)
-                                .contentLength(fileWithExcelStructureError.length())
+                                .contentLength(errorFile.length())
                                 .contentType(MediaType.APPLICATION_OCTET_STREAM)
-                                .body(resource); 
+                                .body(resource);   
         } catch (Exception e) {
             return ResponseEntity.status(500).body(null);
         }  
@@ -180,8 +189,9 @@ public class AdminController {
     public ResponseEntity<Resource> handleUpdateAlumnus(@RequestBody MultipartFile file){
         try {
             // Validates if the Excel File is valid. If not sends an error indicating what is the error
-            File fileWithExcelStructureError = ExcelFilesHandler.validateExcelFile(file);
-            if (fileWithExcelStructureError.length() == 0) { // Valid Excel file 
+            List<String> arrayWithExcelStructureError = ExcelFilesHandler.validateExcelFile(file);
+            List<String> arrayWithPopulationErrors = new ArrayList<>();
+            if (arrayWithExcelStructureError.size() == 0) { // Valid Excel file 
                 // Clean Tables
                 // Clean: AlumniEic, Course, City, Country, AlumniEic_Has_Course tables
                 // Doesn't delete alumni table because we want to add alumnis and update the already existing ones
@@ -193,19 +203,21 @@ public class AdminController {
 
                 // Populates tables: registers are added and updated on the alumni table, and other tabler are repopulated again 
                 // TODO: UNCOMMENT THIS - I COMMENTED SO THE API DOESN'T GET CALLED 
-                //dataPopulationService.populateTables(file, new UpdateAlumniStrategy());
+                //arrayWithPopulationErrors = dataPopulationService.populateTables(file, new UpdateAlumniStrategy(alumniService, adminService));
+            }
 
+            File errorFile = TxtFilesHandler.writeErrorFile(arrayWithExcelStructureError, arrayWithPopulationErrors);
+            if (errorFile.length() == 0) {
                 return ResponseEntity.ok().body(null);
             }
-            // Return the file with errors for download
-            InputStreamResource resource = new InputStreamResource(new FileInputStream(fileWithExcelStructureError));
+            InputStreamResource resource = new InputStreamResource(new FileInputStream(errorFile));
             HttpHeaders headers = new HttpHeaders();
             headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=errorMessages.txt");
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                                 .headers(headers)
-                                .contentLength(fileWithExcelStructureError.length())
+                                .contentLength(errorFile.length())
                                 .contentType(MediaType.APPLICATION_OCTET_STREAM)
-                                .body(resource); 
+                                .body(resource);
         } catch (Exception e) {
             return ResponseEntity.status(500).body(null);
         }  

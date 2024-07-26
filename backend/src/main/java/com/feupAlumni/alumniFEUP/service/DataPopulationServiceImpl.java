@@ -1,6 +1,8 @@
 package com.feupAlumni.alumniFEUP.service;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,16 +28,18 @@ public class DataPopulationServiceImpl implements DataPopulationService{
     private AlumniEicHasCoursesService alumniEic_has_coursesService;
     
     @Override
-    public void populateTables(MultipartFile file, AlumniStrategy strategy) throws IOException, InterruptedException {
+    public List<String> populateTables(MultipartFile file, AlumniStrategy strategy) throws IOException, InterruptedException {
+        List<String> errorMessages = new ArrayList<>(); // Stores the errors
         // Populates the Alumni table with the API information
-        alumniService.populateAlumniTable(file, strategy);
+        alumniService.populateAlumniTable(file, errorMessages, strategy);
         // Country and city need to be first populated since alumni_eic has a foregin key.
         // AlumniEic and courses need to be populated before AlumniEIC_HAS_COURSE since this middle table has a foregin key of each of these tables
-        cityService.populateCityTable();
-        countryService.populateCountryTable();
+        cityService.populateCityTable(errorMessages);
+        countryService.populateCountryTable(errorMessages);
         courseService.populateCoursesTable(file);
         alumniEicService.populateAlumniEicTable();
         alumniEic_has_coursesService.populateAlumniEicHasCoursesTable(file);
+        return errorMessages;
     }
 
     @Override

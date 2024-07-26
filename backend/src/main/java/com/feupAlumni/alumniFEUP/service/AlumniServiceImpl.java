@@ -30,8 +30,8 @@ public class AlumniServiceImpl implements AlumniService{
     private AlumniRepository alumniRepository;
 
     @Override
-    public void populateAlumniTable(MultipartFile file, AlumniStrategy strategy) throws IOException, InterruptedException {
-        strategy.populateAlumniTable(file);
+    public void populateAlumniTable(MultipartFile file, List<String> errorMessages, AlumniStrategy strategy) throws IOException, InterruptedException {
+        strategy.populateAlumniTable(file, errorMessages);
     }
 
     @Override
@@ -100,8 +100,7 @@ public class AlumniServiceImpl implements AlumniService{
     }
 
     @Override
-    public ArrayList<Map<String, String>> getCityInformation() throws IOException, InterruptedException {
-
+    public ArrayList<Map<String, String>> getCityInformation(List<String> errorMessages) throws IOException, InterruptedException {
         List<Alumni> alumniList = alumniRepository.findAll();
         Map<String, String> cityCoordinatesCountries = new HashMap<>(); // Keys: citiy name Value: city coordinates
         Map<String, Integer> cityCoordinateAlumniCount = new HashMap<>(); // Key: City Coordinate Value: Alumni Count
@@ -114,7 +113,7 @@ public class AlumniServiceImpl implements AlumniService{
             String city = JsonFileHandler.extractFieldFromJson("city", linkedinInfo);
             String countryAcronym = JsonFileHandler.extractFieldFromJson("country", linkedinInfo);
 
-            // This algorithm avoids unecessary calls to the API that returns city coordinates (there is a limit of ccredits/hour)
+            // This algorithm avoids unecessary calls to the API that returns city coordinates (there is a limit of credits/hour)
             String cityCoordinates = null;
             if (cityCoordinatesCountries.get(city) == null && failedAttemptsAPI.get(city) == null) {
                 // Verifies if it is a valid city name, if not, grabs the correct one
@@ -139,6 +138,7 @@ public class AlumniServiceImpl implements AlumniService{
                 cityCoordinatesCountries.put(city, cityCoordinates);
                 cityCoordinateAlumniCount.put(cityCoordinates, cityCoordinateAlumniCount.getOrDefault(cityCoordinates, 0) + 1);
             } else {
+                errorMessages.add("City: " + city + " was not recognized by GeoNames API. It's coordinates were not found.");
                 failedAttemptsAPI.put(city, "");
             }
         }
