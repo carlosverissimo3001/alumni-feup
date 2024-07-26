@@ -150,7 +150,7 @@ const AdminPopulate = () => {
 
             {showWarningAdminReplace && (
                 <Warning
-                    message="Alumni Table is going to be deleted, it's adviced to backup alumni first. Ensure your API Key is correct, if not Alumni registers will be deleted anyways. Proxycurl API is going to be called and credits will be spent."
+                    message="It's adviced to backup alumni first. Ensure your API Key is correct. Credits of Proxycurl API will be spent and Alumni table deleted. IMPORTANT: this might take a few seconds, wait for the feedback message."
                     onConfirm={handleConfirmReplace}
                     onCancel={handleCancel}
                 />
@@ -158,7 +158,7 @@ const AdminPopulate = () => {
 
             {showWarningAdminAdd && (
                 <Warning
-                    message="New Alumni are going to be added to the Alumni Table, it's adviced to backup alumni first. Proxycurl API is going to be called for alumnis that are not already in the DB and credits will be spent."
+                    message="It's adviced to backup alumni first. Proxycurl API is going to be called for alumnis that are not already in the DB and credits will be spent. IMPORTANT: this might take a few seconds, wait for the feedback message."
                     onConfirm={handleConfirmAdd}
                     onCancel={handleCancel}
                 />
@@ -166,7 +166,7 @@ const AdminPopulate = () => {
 
             {showWarningAdminUpdate && (
                 <Warning
-                    message="Alumni in the Alumni Table will be updated and new ones added, it's adviced to backup alumni first. Proxycurl API is going to be called and credits will be spent."
+                    message="It's adviced to backup alumni first. Proxycurl API is going to be called and credits will be spent. IMPORTANT: this might take a few seconds, wait for the feedback message."
                     onConfirm={handleConfirmUpdate}
                     onCancel={handleCancel}
                 />
