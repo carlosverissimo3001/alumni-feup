@@ -1,6 +1,7 @@
 package com.feupAlumni.alumniFEUP.service;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +20,7 @@ public class CountryServiceImpl implements CountryService{
     private AlumniService alumniService;
 
     @Override
-    public void populateCountryTable() {
+    public void populateCountryTable(List<String> errorMessages) {
         Map<String, Integer> countryAlumniCount = new HashMap<>();
         Map<String, String> countryCodes = new HashMap<>();
         alumniService.getAlumniDistCountry(countryAlumniCount, countryCodes);
@@ -35,6 +36,9 @@ public class CountryServiceImpl implements CountryService{
                 String coordinates = "";
                 if(country != "null"){
                     coordinates = Location.getCountryCoordinates(countryCode);
+                } 
+                if (coordinates == "") {
+                    errorMessages.add("Country: " + country + " was not recognized by GeoNames API. It's coordinates were not found.");
                 }
 
                 // Saves the data in the table

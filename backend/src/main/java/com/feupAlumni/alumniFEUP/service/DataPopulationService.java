@@ -1,6 +1,7 @@
 package com.feupAlumni.alumniFEUP.service;
 
 import java.io.IOException;
+import java.util.List;
 
 import org.springframework.web.multipart.MultipartFile;
 
@@ -9,7 +10,7 @@ import com.feupAlumni.alumniFEUP.service.StrategyPattern_PopulateAlumni.AlumniSt
 
 public interface DataPopulationService {
     // Populates all tables
-    public void populateTables(MultipartFile file, AlumniStrategy strategy) throws IOException, InterruptedException;
+    public List<String> populateTables(MultipartFile file, AlumniStrategy strategy) throws IOException, InterruptedException;
 
     // Cleans Tables
     public void cleanTables(CleanTablesStrategy strategy);

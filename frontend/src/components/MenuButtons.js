@@ -211,6 +211,28 @@ const MenuButtons = ({menuVisible, onLoading, onSelectGeoJSON, onSelectAlumni, y
         <>
             { menuVisible && (
               <>
+                <p className='text text-conclusion-search'>Group By</p>
+
+                <div className="radio-buttons">
+                    <input
+                        type="radio"
+                        id="countriesCheckbox"
+                        value="countries"
+                        checked={selectedOption === 'countries'}
+                        onChange={handleCheckboxChange}
+                        className="custom-radio"
+                    />
+                    <label htmlFor="countriesCheckbox" className="custom-radio-label custom-radio-label-left-button">Countries</label>
+                    <input
+                        type="radio"
+                        id="citiesCheckbox"
+                        value="cities"
+                        checked={selectedOption === 'cities'}
+                        onChange={handleCheckboxChange}
+                        className="custom-radio"
+                    />
+                    <label htmlFor="citiesCheckbox" className="custom-radio-label custom-radio-label-right-button">Cities</label>
+                </div>
 
                 <p className='text text-conclusion-search'>Search</p>
 
@@ -234,27 +256,6 @@ const MenuButtons = ({menuVisible, onLoading, onSelectGeoJSON, onSelectAlumni, y
                 </div>
 
                 <p className='text text-conclusion-year'>Filter</p>
-
-                <div className="radio-buttons">
-                    <input
-                        type="radio"
-                        id="countriesCheckbox"
-                        value="countries"
-                        checked={selectedOption === 'countries'}
-                        onChange={handleCheckboxChange}
-                        className="custom-radio"
-                    />
-                    <label htmlFor="countriesCheckbox" className="custom-radio-label custom-radio-label-left-button">Countries</label>
-                    <input
-                        type="radio"
-                        id="citiesCheckbox"
-                        value="cities"
-                        checked={selectedOption === 'cities'}
-                        onChange={handleCheckboxChange}
-                        className="custom-radio"
-                    />
-                    <label htmlFor="citiesCheckbox" className="custom-radio-label custom-radio-label-right-button">Cities</label>
-                </div>
 
                 <div className="search-container"> 
                     <select 
@@ -319,7 +320,7 @@ const MenuButtons = ({menuVisible, onLoading, onSelectGeoJSON, onSelectAlumni, y
                     <p className='letter-style text-num-alumnus'>{filterCourseInput !== '' || yearRangeFilter !== '' ? `${numberAlumnisShowing} alumni selected` : `Total number of alumni: ${numberAlumnisShowing}`}</p>
                 </div>
 
-                
+                <p className='text attnetion-message'>*Data from LinkedIn profiles and Sigarra</p>
                 <a className="text feedback-links" href="https://docs.google.com/forms/d/e/1FAIpQLScPMdQzqv9Dy1llc-nGdr33q33r7GnSZjmYtxwwT1v_oy3Y7Q/viewform" target="_blank" rel="noopener noreferrer">Join us</a>
                 <a className="text feedback-links" href="https://forms.gle/iNQ8mrakT9ToZcLT7" target="_blank" rel="noopener noreferrer">Give Feedback</a>
                 <div className='logos'>

@@ -9,31 +9,38 @@ import java.net.http.HttpResponse;
 import java.nio.file.Path;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
+import java.util.List;
 
 public class AlumniInfo {
 
     // Download an image URL to the given path 
-    public static String downloadAndSaveImage(String profilePicUrl, String pathStoreImage, String publicIdentifier) {
+    public static String downloadAndSaveImage(String profilePicUrl, String pathStoreImage, String publicIdentifier, List<String> errorMessages) {
         try {
             URL url = new URL(profilePicUrl);
             Path targetPath = Path.of(pathStoreImage + "/" + publicIdentifier + ".png");
-            
+            // Check if the file already exists and delete it if it does
+            if (Files.exists(targetPath)) {
+                Files.delete(targetPath);
+            }
+            // Ensure the parent directory exists
+            Files.createDirectories(targetPath.getParent());
+            // Download and save the image
             try (InputStream in = url.openStream()) {
                 Files.copy(in, targetPath, StandardCopyOption.REPLACE_EXISTING);
             }
             return targetPath.toString();
         } catch (Exception e) {
-            System.out.println("Failed to download or save image: " + e.getMessage());
+            errorMessages.add("Failed to download or save image: " + e.getMessage());
             return null;
         }
     }
 
     // Calls on the API which scrapes the user linkedin's profile
     public static HttpResponse<String> getLinkedinProfileInfo(String linkedinLink, String apiKeyEncrypted) throws Exception {
-        String apiEndpoint = JsonFileHandler.getPropertyFromApplicationProperties("apiLinkedin.endpoint");
-        String symmetricKey = JsonFileHandler.getPropertyFromApplicationProperties("encryption.key");
+        String apiEndpoint = JsonFileHandler.getPropertyFromApplicationProperties("apiLinkedin.endpoint").trim();
+        String symmetricKey = JsonFileHandler.getPropertyFromApplicationProperties("encryption.key").trim();
         String apiKeyDecrypted = EncryptionHandler.decrypt(apiKeyEncrypted, symmetricKey);
-
+        
         HttpClient client = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(apiEndpoint + "?twitter_profile_url=&facebook_profile_url&linkedin_profile_url=" + linkedinLink))

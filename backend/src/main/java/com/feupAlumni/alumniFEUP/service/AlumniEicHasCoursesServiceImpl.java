@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.feupAlumni.alumniFEUP.handlers.ExcelFilesHandler;
+import com.feupAlumni.alumniFEUP.handlers.JsonFileHandler;
 import com.feupAlumni.alumniFEUP.model.AlumniEic;
 import com.feupAlumni.alumniFEUP.model.AlumniEic_has_Course;
 import com.feupAlumni.alumniFEUP.model.Course;
@@ -35,42 +36,34 @@ public class AlumniEicHasCoursesServiceImpl implements AlumniEicHasCoursesServic
         for (AlumniEic alumniEic : alumniEicList) { 
             Row correspondingRow = excelLinkedinLinksToRows.get(alumniEic.getLinkedinLink());
             if (correspondingRow != null) {
-                // From the Excel: gets the courses and years of conclusion
-                String courses = correspondingRow.getCell(10).getStringCellValue();
-                String[] coursesArray = courses.split(" ");
-                Map<Course, String> courseYearMap = new HashMap<>();
-                
-                for (String course : coursesArray) {
-                    String yearConclusion = "";
-                    Course courseMap;
-                    switch (course) {
-                        case "LEIC":
-                            yearConclusion = correspondingRow.getCell(12).getStringCellValue();
-                            break;
-                        case "MEI":
-                            yearConclusion = correspondingRow.getCell(14).getStringCellValue();
-                            break;
-                        case "MIEIC":
-                            yearConclusion = correspondingRow.getCell(16).getStringCellValue();
-                            break;
-                        case "L.EIC":
-                            yearConclusion = correspondingRow.getCell(18).getStringCellValue();
-                            break;
-                        case "M.EIC":
-                            yearConclusion = correspondingRow.getCell(20).getStringCellValue();
-                            break;
-                        default:
-                            break;
-                    }
-                    courseMap = courseService.findCourseByAbreviation(course);
-                    courseYearMap.put(courseMap, yearConclusion);
+                // From the Excel: gets the courses and conclusion years
+                int rowForCoursesConclusionYears = Integer.parseInt(JsonFileHandler.getPropertyFromApplicationProperties("excel.rowForCursos").trim());
+                String coursesConclusionYears = correspondingRow.getCell(rowForCoursesConclusionYears).getStringCellValue();
 
-                    // Saves the relationship
-                    for (Course courseEntry : courseYearMap.keySet()) {
-                        String yearOfConclusion = courseYearMap.get(courseEntry);
-                        AlumniEic_has_Course alumniEicHasCourse = new AlumniEic_has_Course(alumniEic, courseEntry, yearOfConclusion);
-                        saveRelationAlumniCourse(alumniEicHasCourse);
+                // Remove leading/trailing whitespaces
+                coursesConclusionYears = coursesConclusionYears.trim();
+                // Split by spaces
+                String[] coursesConclusionYearsParts = coursesConclusionYears.split("\\s+");
+
+                // Stores the courses and respective cocnlusion years in a map
+                // Key: course  Value: conclusion year
+                Map<String, String> coursesYearsMap = new HashMap<>();
+                for (int i = 0; i < coursesConclusionYearsParts.length; i += 2) {
+                    if (i + 1 < coursesConclusionYearsParts.length) {
+                        coursesYearsMap.put(coursesConclusionYearsParts[i], coursesConclusionYearsParts[i + 1]);
+                    } else {
+                        // Handle the case where the course doesn't have a corresponding year
+                        coursesYearsMap.put(coursesConclusionYearsParts[i], "No Year");
                     }
+                }
+                
+                // Stores the course and respective cocnlusion year in the DB
+                for (String courseEntry : coursesYearsMap.keySet()) {
+                    Course foundCourse = courseService.findCourseByAbreviation(courseEntry);
+                    String foundYearOfConclusion = coursesYearsMap.get(courseEntry);
+                    // Saves the Relationship
+                    AlumniEic_has_Course alumniEicHasCourse = new AlumniEic_has_Course(alumniEic, foundCourse, foundYearOfConclusion);
+                    saveRelationAlumniCourse(alumniEicHasCourse);
                 }
             }
         }
