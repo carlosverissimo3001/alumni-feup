@@ -24,13 +24,13 @@ public class AdminServiceImpl implements AdminService{
     private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     private String getAdminHashedPass() {
-        String adminUsername = JsonFileHandler.getPropertyFromApplicationProperties("admin.username");
+        String adminUsername = JsonFileHandler.getPropertyFromApplicationProperties("admin.username").trim();
         Admin adminInfo = adminRepository.findByUserName(adminUsername);
         return adminInfo.getPasswordHash();
     }
 
     private Boolean updateAdminHashedPass(String hashedPassword) {
-        String adminUsername = JsonFileHandler.getPropertyFromApplicationProperties("admin.username");
+        String adminUsername = JsonFileHandler.getPropertyFromApplicationProperties("admin.username").trim();
         Admin admin = adminRepository.findByUserName(adminUsername);
 
         if (admin != null) {
@@ -61,7 +61,7 @@ public class AdminServiceImpl implements AdminService{
         String encryptedApiKey = EncryptionHandler.encrypt(apiKey, encryptionKey);
 
         // Stores the API Key on the Database
-        String adminUsername = JsonFileHandler.getPropertyFromApplicationProperties("admin.username");
+        String adminUsername = JsonFileHandler.getPropertyFromApplicationProperties("admin.username").trim();
         Admin admin = adminRepository.findByUserName(adminUsername);
         if (admin != null) {
             admin.setEncryptedApiKey(encryptedApiKey);
@@ -74,7 +74,7 @@ public class AdminServiceImpl implements AdminService{
 
     @Override
     public String getEncryptedApiKey() {
-        String adminUsername = JsonFileHandler.getPropertyFromApplicationProperties("admin.username");
+        String adminUsername = JsonFileHandler.getPropertyFromApplicationProperties("admin.username").trim();
         Admin admin = adminRepository.findByUserName(adminUsername);
         if (admin != null) {
             return admin.getEncryptedApiKey();

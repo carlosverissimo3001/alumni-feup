@@ -102,7 +102,7 @@ public class JsonFileHandler {
     public static String determineFileName(String geoJsonType, String course, List<String> conclusionYears) {
         var fileName = "";
         if (geoJsonType.equals("") && course.equals("") && conclusionYears.get(0).equals("") && conclusionYears.get(1).equals("")) {
-            fileName = JsonFileHandler.getPropertyFromApplicationProperties("json.defaultFileName");
+            fileName = JsonFileHandler.getPropertyFromApplicationProperties("json.defaultFileName").trim();
         } else {
             fileName = geoJsonType + course + conclusionYears.get(0) + conclusionYears.get(1) + ".json";
         }

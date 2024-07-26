@@ -1,10 +1,12 @@
 package com.feupAlumni.alumniFEUP.service;
 
+import java.util.List;
+
 import com.feupAlumni.alumniFEUP.model.Country;
 
 public interface CountryService {
     // Populates the table with updated information.
-    public void populateCountryTable();
+    public void populateCountryTable(List<String> errorMessages);
 
     // Saves the country in the Table
     public void saveCountry(Country country);

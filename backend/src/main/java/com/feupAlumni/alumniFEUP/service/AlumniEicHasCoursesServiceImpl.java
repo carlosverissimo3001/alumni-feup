@@ -37,7 +37,7 @@ public class AlumniEicHasCoursesServiceImpl implements AlumniEicHasCoursesServic
             Row correspondingRow = excelLinkedinLinksToRows.get(alumniEic.getLinkedinLink());
             if (correspondingRow != null) {
                 // From the Excel: gets the courses and conclusion years
-                int rowForCoursesConclusionYears = Integer.parseInt(JsonFileHandler.getPropertyFromApplicationProperties("excel.rowForCursos"));
+                int rowForCoursesConclusionYears = Integer.parseInt(JsonFileHandler.getPropertyFromApplicationProperties("excel.rowForCursos").trim());
                 String coursesConclusionYears = correspondingRow.getCell(rowForCoursesConclusionYears).getStringCellValue();
 
                 // Remove leading/trailing whitespaces

@@ -2,6 +2,7 @@ package com.feupAlumni.alumniFEUP.service;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,13 +20,12 @@ public class CityServiceImpl implements CityService {
     private AlumniService alumniService;
 
     @Override
-    public void populateCityTable() throws IOException, InterruptedException {
+    public void populateCityTable(List<String> errorMessages) throws IOException, InterruptedException {
         try {
-
             // cityInformation[0] => map where Key: cityName Value: cityCoordinates
             // cityInformation[1] => map where Key: cityCoordinates Value: Nº of Alumnis in the city coordinates
             // This had to be implemented like this in order to avoid calling the API that gets the city coordinates twice
-            ArrayList<Map<String, String>> cityInformation = alumniService.getCityInformation();
+            ArrayList<Map<String, String>> cityInformation = alumniService.getCityInformation(errorMessages);
 
             // Gets the city names for each city coordinate
             // Key: city name Value: city coordinate
