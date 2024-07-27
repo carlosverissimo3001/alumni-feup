@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { FcSettings } from "react-icons/fc";
 import setUp from "../../helpers/setUp";
 import { useNavigate } from 'react-router-dom';
@@ -6,13 +6,17 @@ import { AuthContext } from '../../App';
 import AdminChangePass from './AdminChangePass';
 import AdminChangeAPIKey from './AdminChangeAPIKey';
 import AdminPopulate from './AdminPopulate';
+import Information from './Information'; 
 
 const AdminSettings = () => {
     const navigate = useNavigate();
     const { logout } = useContext(AuthContext);
+    const [showWarningAPIResultExcel, setShowWarningAPIResultExcel] = useState(false);
+
 
     // Puts the call to the API in an Excel file
     const handleGetAPIResultExcel = async () => {
+        setShowWarningAPIResultExcel(true);
         await setUp.getAPIResultExcel();
     }
 
@@ -21,6 +25,10 @@ const AdminSettings = () => {
         logout();
         navigate('/admin');
     }
+
+    const handleConfirm = () => {
+        setShowWarningAPIResultExcel(false);
+    };
 
     return (
         <>
@@ -45,6 +53,12 @@ const AdminSettings = () => {
                     </div>
                 </div>
             </div>
+            {showWarningAPIResultExcel && (
+                <Information
+                    message="This might take a few seconds. Wait a little."
+                    onConfirm={handleConfirm}
+                />
+            )}   
         </>
     );
 }
