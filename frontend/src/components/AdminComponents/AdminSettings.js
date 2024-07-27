@@ -32,6 +32,7 @@ const AdminSettings = () => {
                             <h1 className='admin-heading'> <FcSettings /> Adimin Settings</h1>
                         </div>
                         <button className='admin-button' onClick={handleBackupAlumnus}>Backup Alumnus Data</button>
+                        <button className='admin-button' onClick={handleBackupAlumnus}>Get API Call to Excel</button>
                         <div className='row-admin-menu'>
                             <AdminPopulate/>
                             <AdminChangePass/>
