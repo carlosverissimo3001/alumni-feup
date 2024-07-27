@@ -16,11 +16,6 @@ const AdminSettings = () => {
         await setUp.getAPIResultExcel();
     }
 
-    // Backsup the Alumni table to an excel
-    const handleBackupAlumnus = async () => {
-        await setUp.backupAlumniDataExcel();
-    }
-
     // Logs the user out
     const handleLogoutButton = async () => {
         logout();
@@ -36,7 +31,6 @@ const AdminSettings = () => {
                         <div className='row-admin-title'>
                             <h1 className='admin-heading'> <FcSettings /> Adimin Settings</h1>
                         </div>
-                        <button className='admin-button' onClick={handleBackupAlumnus}>Backup Alumnus Data</button>
                         <button className='admin-button' onClick={handleGetAPIResultExcel}>Get API Result to Excel</button>
                         <div className='row-admin-menu'>
                             <AdminPopulate/>

@@ -23,9 +23,6 @@ public interface AlumniService {
     // Writes the API result to an Excel file
     public byte[] apiResultToExcel();
 
-    // Writes the Alumni table in an Excel file
-    public byte[] alumniTableToExcel();
-
     // Populates table
     public void addAlumni(Alumni alumni);
 

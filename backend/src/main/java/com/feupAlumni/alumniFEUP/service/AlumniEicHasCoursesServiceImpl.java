@@ -72,6 +72,13 @@ public class AlumniEicHasCoursesServiceImpl implements AlumniEicHasCoursesServic
     }
 
     @Override
+    public List<AlumniEic_has_Course> getCourseConclusionYearAlumniEic(AlumniEic alumniEic) {
+        List<AlumniEic_has_Course> alumniEicHasCourses = alumniEic_has_CourseRepository.findByAlumniEic(alumniEic);
+        //System.out.println("Obtained: " + alumniEicHasCourses.get(0).getCourse().getAbbreviation() + alumniEicHasCourses.get(1).getCourse().getAbbreviation() + alumniEicHasCourses.get(2).getCourse().getAbbreviation());
+        return alumniEicHasCourses;
+    }
+
+    @Override
     public void saveRelationAlumniCourse(AlumniEic_has_Course alumniEicHasCourse) {
         alumniEic_has_CourseRepository.save(alumniEicHasCourse);
     }

@@ -140,9 +140,9 @@ const AdminPopulate = () => {
 
                 <div className='grid-item button-column'>
                     <div className='file-buttons'>
-                        <button className='admin-button button-no-margin' onClick={handleReplaceAlumniClick}>Replace Alumnus Data</button>
-                        <button className='admin-button' onClick={handleAddAlumniClick}>Add Alumnus Data</button>
-                        <button className='admin-button' onClick={handleUpdateAlumniClick}>Update Alumnus Data</button>
+                        <button className='admin-button button-no-margin' onClick={handleReplaceAlumniClick}>Replace</button>
+                        <button className='admin-button' onClick={handleAddAlumniClick}>Add</button>
+                        <button className='admin-button' onClick={handleUpdateAlumniClick}>Update</button>
                     </div>
                 </div>
 
