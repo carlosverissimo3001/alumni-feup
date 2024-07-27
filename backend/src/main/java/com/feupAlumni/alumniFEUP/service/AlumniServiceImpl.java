@@ -35,7 +35,7 @@ public class AlumniServiceImpl implements AlumniService{
     }
 
     @Override
-    public byte[] alumniTableToExcel() {
+    public byte[] apiResultToExcel() {
         // Load the Excel file
         Workbook workbook = new XSSFWorkbook(); // Creates a new workbook
         Sheet sheet = workbook.createSheet("Alumni"); // Create a new sheet
@@ -54,7 +54,7 @@ public class AlumniServiceImpl implements AlumniService{
                 Alumni alumni = alumniIterator.next();
                 String linkedinInfo = alumni.getLinkedinInfo();
 
-                int lastWrittenRow = ExcelFilesHandler.writeAlumniDataToRow(alumni, rowIndex, linkedinInfo, sheet, fields);
+                int lastWrittenRow = ExcelFilesHandler.writeAPIResultToRow(alumni, rowIndex, linkedinInfo, sheet, fields);
 
                 rowIndex = lastWrittenRow;
             }

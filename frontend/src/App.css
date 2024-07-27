@@ -233,7 +233,6 @@ p {
     border: none;
     border-radius: 10px; 
     color: white;
-    margin-top: 44px;
     height: 30px;
     width: 50%;
     margin-left: 13px;
@@ -242,6 +241,10 @@ p {
     display: inline-block;
     font-size: 11px;
     cursor: pointer;
+}
+
+.adlumni-excel-button {
+    margin-top: 44px;
 }
 
 .input-row {
