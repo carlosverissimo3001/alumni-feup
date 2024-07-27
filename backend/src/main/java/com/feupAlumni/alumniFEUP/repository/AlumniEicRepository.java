@@ -7,5 +7,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface AlumniEicRepository extends JpaRepository<AlumniEic, Integer> {
-    
+    AlumniEic findByLinkedinLink(String linkedinLink);
+
 }
