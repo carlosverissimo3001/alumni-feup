@@ -203,11 +203,36 @@ class setUp {
         }
     }
 
-    // Backup Alumni table to an Excel file which is later downloaded
-    static async backupAlumnusExcel() {
+    // Puts the call to the API in an Excel file
+    static async getAPIResultExcel() {
         try {
     
-            const response = await fetch('http://localhost:8080/admin/readToExcel', {
+            const response = await fetch('http://localhost:8080/admin/readAPIResultToExcel', {
+                method: 'POST',
+                body: "",
+            });
+    
+            if (!response.ok) {
+                throw new Error('Failed to store the API result in the excel.');
+            }
+    
+            const excelBlob = await response.blob();
+            const url = window.URL.createObjectURL(new Blob([excelBlob]));
+            const link = document.createElement('a');
+            link.href = url;
+            link.setAttribute('download', 'resultAPI.xlsx');
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        } catch (error) {
+            console.error('Error: ', error);
+        }
+    }
+
+    // Backsup the Alumni table to an excel
+    static async backupAlumniDataExcel() {
+        try {
+            const response = await fetch('http://localhost:8080/admin/alumniToExcel', {
                 method: 'POST',
                 body: "",
             });
@@ -227,28 +252,6 @@ class setUp {
         } catch (error) {
             console.error('Error: ', error);
         }
-    }
-
-    // Backs up the Alumni table (which the data was extracted using the API) to an Excel file
-    static async backupAlumniDataExcel() {
-        try{
-            const response = await fetch('http://localhost:8080/admin/readToExcel', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',  // Set the content type to JSON
-                },
-                body: "",
-            });
-            if (response.ok){
-                console.log('Alumnus data backedup successfully');
-                return true;
-            } else {
-                console.error('Alumnus data backedup failed');
-                return false;
-            }
-        } catch (error) {
-            console.log('Error while backing up Alumnus data', error);
-        }  
     }
 
 }

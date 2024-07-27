@@ -20,7 +20,10 @@ public interface AlumniService {
     // file: Excel File
     public void populateAlumniTable(MultipartFile file, List<String> errorMessages, AlumniStrategy strategy) throws IOException, InterruptedException;
 
-    // Writes the alumni table to an Excel file
+    // Writes the API result to an Excel file
+    public byte[] apiResultToExcel();
+
+    // Writes the Alumni table in an Excel file
     public byte[] alumniTableToExcel();
 
     // Populates table

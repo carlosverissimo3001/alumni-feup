@@ -225,9 +225,25 @@ public class AdminController {
     }
 
 
-    // Backs up the alumni table to an excel file
-    @PostMapping("/readToExcel")
+    // Puts the call to the API in an Excel file
+    @PostMapping("/readAPIResultToExcel")
     public ResponseEntity<byte[]> handleAlmTblExcel() throws IOException {
+        try {
+            byte[] modifiedExcelBytes = alumniService.apiResultToExcel();
+            // Set the response headers
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+            headers.setContentDispositionFormData("filename", "alumniInformationAPI.xlsx");
+
+            return new ResponseEntity<>(modifiedExcelBytes, headers, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        } 
+    }
+
+    // Backsup the Alumni table to an excel
+    @PostMapping("/alumniToExcel")
+    public ResponseEntity<byte[]> handleBackupAlumniDataExcel() throws IOException {
         try {
             byte[] modifiedExcelBytes = alumniService.alumniTableToExcel();
             // Set the response headers

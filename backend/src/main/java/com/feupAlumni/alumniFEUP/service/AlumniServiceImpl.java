@@ -35,7 +35,7 @@ public class AlumniServiceImpl implements AlumniService{
     }
 
     @Override
-    public byte[] alumniTableToExcel() {
+    public byte[] apiResultToExcel() {
         // Load the Excel file
         Workbook workbook = new XSSFWorkbook(); // Creates a new workbook
         Sheet sheet = workbook.createSheet("Alumni"); // Create a new sheet
@@ -54,7 +54,7 @@ public class AlumniServiceImpl implements AlumniService{
                 Alumni alumni = alumniIterator.next();
                 String linkedinInfo = alumni.getLinkedinInfo();
 
-                int lastWrittenRow = ExcelFilesHandler.writeAlumniDataToRow(alumni, rowIndex, linkedinInfo, sheet, fields);
+                int lastWrittenRow = ExcelFilesHandler.writeAPIResultToRow(alumni, rowIndex, linkedinInfo, sheet, fields);
 
                 rowIndex = lastWrittenRow;
             }
@@ -78,6 +78,53 @@ public class AlumniServiceImpl implements AlumniService{
             }
         }
     }
+
+    @Override
+    public byte[] alumniTableToExcel() {
+        // Load the Excel file
+        Workbook workbook = new XSSFWorkbook(); // Creates a new workbook
+        Sheet sheet = workbook.createSheet("Alumni"); // Create a new sheet
+
+        try {
+            // Get Headers
+            String firstHeader = JsonFileHandler.getPropertyFromApplicationProperties("alumnitable.firstHeader").trim();
+            String secondHeader = JsonFileHandler.getPropertyFromApplicationProperties("alumnitable.secondHeader").trim();
+            String[] headers = { firstHeader, secondHeader };
+
+            // Write Excel Headers
+            ExcelFilesHandler.createHeaderRow(sheet, 0, 0, headers); // Starts to write them in row 0, column 0 
+            
+            // Iterate over each row of the excel and writes the content of the headers written before
+            Iterator<Alumni> alumniIterator = alumniRepository.findAll().iterator();
+            int rowIndex=1; // Write after the headers
+            while (alumniIterator.hasNext()) {
+                Alumni alumni = alumniIterator.next();
+                String linkedinInfo = alumni.getLinkedinInfo();
+                String alumniLinkedinLink = alumni.getLinkedinLink();
+                String[] infoToAddOrderColumn = {linkedinInfo, alumniLinkedinLink}; // Contains the information to add to the Excel by the column order
+                ExcelFilesHandler.writeAlumniDataToRow(sheet, rowIndex, infoToAddOrderColumn);
+                rowIndex++;
+            }
+
+            // Save the modified workbook to a byte array
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            workbook.write(outputStream);
+            byte[] modifiedExcelBytes = outputStream.toByteArray();
+            return modifiedExcelBytes;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        } finally {
+            // Close the workbook in the finally block to ensure it's always closed
+            if (workbook != null) {
+                try {
+                    workbook.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }   
  
     @Override
     public void addAlumni(Alumni alumni) {
