@@ -18,19 +18,6 @@ import org.apache.poi.ss.usermodel.*;
 
 public class ExcelFilesHandler {
 
-    // Create a row header
-    private static void createHeaderRow (Sheet sheet, int rowIndex, int startColumn, String[] titles) {
-        Row headerRow = sheet.getRow(rowIndex); // Create a new row
-        if (headerRow == null) {
-            headerRow = sheet.createRow(rowIndex);
-        }
-        for (int i=2; i<titles.length; i++) {
-            Cell cell = headerRow.createCell(startColumn);
-            cell.setCellValue(titles[i]);
-            startColumn++;
-        }
-    }
-
     // Writes the main titles values. Returns the last written row. 
     private static int writeFieldMainTitleContent (Alumni alumni, Sheet sheet, int rowIndex, int columnIndex, String[] titles, String linkedinInfo) {
         int lastWrittenRow = rowIndex;       
@@ -91,9 +78,8 @@ public class ExcelFilesHandler {
         }
     }
 
-    // Validates Second column of values: they need to be a string and can't be empty
-    // Validate the value of the second column (1) of the current row
-    private static void validateSecondColumnValueOfCurrentRow (Cell cell, List<String> errorMessages, int rowIndex, int colIndex) {
+    // Validates if the cell content is a string or formula: they need to be a string and can't be empty
+    private static void validateCellStringFromula (Cell cell, List<String> errorMessages, int rowIndex, int colIndex) {
         if (cell == null) {
             String messageError = "Row: " + (rowIndex+1) + " Column: " + (colIndex+1) + " should of type string and have a value but it's currently null.";
             errorMessages.add(messageError);
@@ -105,9 +91,8 @@ public class ExcelFilesHandler {
         }
     }
 
-    // Validates Third column of values: they shoudl start with https://www.linkedin.com/in/ and end with '/' and can't be empty
-    // Validate the value of the third column (2) of the current row
-    private static void validateThirdColumnValueOfCurrentRow (Cell cell, List<String> errorMessages, int rowIndex, int colIndex) {
+    // Validates valid LinkedIn Link: they shoudl start with https://www.linkedin.com/in/ and end with '/' and can't be empty
+    private static void validateValidLinkedInLink (Cell cell, List<String> errorMessages, int rowIndex, int colIndex) {
         if (cell.getCellType() == CellType.FORMULA || cell.getCellType() == CellType.STRING) {
             String cellValue = cell.getStringCellValue();
             if (cellValue == null || cellValue.isEmpty()) {
@@ -173,22 +158,13 @@ public class ExcelFilesHandler {
 
     // validates the headers names: can't be empty and should be the same ones as the ones defined in the application.properties file.
     // If no errors are found it returns no error message.
-    private static void validateHeadersExcelFile (Row firstRow, List<String> errorMessages) {
-        // Gets the headers of the Excel file defined on the application.properties 
-        String firstHeader = JsonFileHandler.getPropertyFromApplicationProperties("excel.firstColumnName").trim();
-        String secondHeader = JsonFileHandler.getPropertyFromApplicationProperties("excel.secondColumnName").trim();
-        String thirdHeader = JsonFileHandler.getPropertyFromApplicationProperties("excel.thirdColumnName").trim();
-        String forthHeader = JsonFileHandler.getPropertyFromApplicationProperties("excel.forthColumnName").trim();
-
-        List<String> headers = new ArrayList<>();
-        headers.add(firstHeader);
-        headers.add(secondHeader);
-        headers.add(thirdHeader);
-        headers.add(forthHeader);
-
+    private static void validateHeadersExcelFile (List<String> headers, Row firstRow, List<String> errorMessages) {
         if (firstRow == null) {
-            String messageError = "The first row should have the headers: " + firstHeader + ", " + secondHeader + ", "  + thirdHeader + ", "  + forthHeader + ", " 
-                + " and it's currently empty. Ensure you have this information in the first sheet of your Excel file.";
+            String messageError = "The first row should have the headers: ";
+            for (String header : headers) {
+                messageError += header + ", ";
+            }
+            messageError += " and it's currently empty. Ensure you have this information in the first sheet of your Excel file.";
             errorMessages.add(messageError);
             return;
         }
@@ -207,10 +183,10 @@ public class ExcelFilesHandler {
         return;
     }
 
-    // Validates the content of each eather in the Excel file
-    private static void validateHeadersContent(Sheet sheet, Row firstRow, List<String> errorMessages) {
+    // Validates the content of each heather in the Excel file
+    private static void validateHeadersContent(Sheet sheet, List<String> errorMessages) {
         Integer columnNumber = Integer.parseInt(JsonFileHandler.getPropertyFromApplicationProperties("excel.columnNumber").trim());
-        for (int rowIndex = 1; rowIndex < sheet.getLastRowNum(); rowIndex++) { // Iterates over every Excel row starting  on the second row, row nº1 (the first row are header and were already validated)
+        for (int rowIndex = 1; rowIndex < sheet.getLastRowNum(); rowIndex++) { // Iterates over every Excel row starting  on the second row, row nº1 (the first row are headers and were already validated)
             Row row = sheet.getRow(rowIndex);
             for (int colIndex = 0; colIndex < columnNumber; colIndex++) { // Iterates over the columns of the current row
                 Cell cell = row.getCell(colIndex);
@@ -219,10 +195,12 @@ public class ExcelFilesHandler {
                         validateFirstColumnValueOfCurrentRow(cell, errorMessages, rowIndex, colIndex);
                         break;
                     case 1:
-                        validateSecondColumnValueOfCurrentRow(cell, errorMessages, rowIndex, colIndex);
+                        // Validate the value of the second column (1) of the current row
+                        validateCellStringFromula(cell, errorMessages, rowIndex, colIndex);
                         break;
-                    case 2:    
-                        validateThirdColumnValueOfCurrentRow(cell, errorMessages, rowIndex, colIndex);
+                    case 2:   
+                        // Validate the value of the third column (2) of the current row
+                        validateValidLinkedInLink(cell, errorMessages, rowIndex, colIndex);
                         break;
                     case 3:
                         validateForthColumnValueOfCurrentRow(cell, errorMessages, rowIndex, colIndex);
@@ -236,10 +214,7 @@ public class ExcelFilesHandler {
         }
     }
 
-    // If there is any error with the Excel file structure adds to the erroMessages so they can be sent at once
-    public static List<String> validateExcelFile(MultipartFile file) throws IOException {
-        List<String> errorMessages = new ArrayList<>(); // Stores the errors
-
+    private static void excelStandardValidations(MultipartFile file, List<String> errorMessages) {
         // Validates if a file has been received
         if (file == null) {
             String messageError = "No file received.";
@@ -256,7 +231,25 @@ public class ExcelFilesHandler {
             String messageError = "The file is not an Excel file. Please upload a file with .xls or .xlsx extension.";
             errorMessages.add(messageError);
         }
-        
+    }
+
+    // Create a row header
+    public static void createHeaderRow (Sheet sheet, int rowIndex, int startColumn, String[] titles) {
+        Row headerRow = sheet.getRow(rowIndex); // Create a new row
+        if (headerRow == null) {
+            headerRow = sheet.createRow(rowIndex);
+        }
+        for (int i=0; i<titles.length; i++) {
+            Cell cell = headerRow.createCell(startColumn);
+            cell.setCellValue(titles[i]);
+            startColumn++;
+        }
+    }
+
+    // If there is any error with the Excel file structure adds to the erroMessages so they can be sent at once
+    public static List<String> validateExcelFile(MultipartFile file) throws IOException {
+        List<String> errorMessages = new ArrayList<>(); // Stores the errors
+        excelStandardValidations(file, errorMessages);
         // Validates the Excel file content: goes through the Excel file 
         try (InputStream inputStream = file.getInputStream()) {
             Workbook workbook = WorkbookFactory.create(inputStream);
@@ -264,13 +257,22 @@ public class ExcelFilesHandler {
             Sheet sheet = workbook.getSheetAt(excelSheet); // Reeds from the sheet indicated in the application.properties
 
             // Validates Headers
+            // Gets the headers of the Excel file defined on the application.properties 
+            String firstHeader = JsonFileHandler.getPropertyFromApplicationProperties("excel.firstColumnName").trim();
+            String secondHeader = JsonFileHandler.getPropertyFromApplicationProperties("excel.secondColumnName").trim();
+            String thirdHeader = JsonFileHandler.getPropertyFromApplicationProperties("excel.thirdColumnName").trim();
+            String forthHeader = JsonFileHandler.getPropertyFromApplicationProperties("excel.forthColumnName").trim();
+            List<String> headers = new ArrayList<>();
+            headers.add(firstHeader);
+            headers.add(secondHeader);
+            headers.add(thirdHeader);
+            headers.add(forthHeader);
             Row firstRow = sheet.getRow(0); // first row        
-            validateHeadersExcelFile(firstRow, errorMessages);
+            validateHeadersExcelFile(headers, firstRow, errorMessages);
             
             // Validates values of each Header. 
-            validateHeadersContent(sheet, firstRow, errorMessages);
+            validateHeadersContent(sheet, errorMessages);
         }
-
         return errorMessages;
     }
 
@@ -316,7 +318,7 @@ public class ExcelFilesHandler {
     }
 
     // Writes the alumni data to the row
-    public static int writeAlumniDataToRow (Alumni alumni, int rowIndex, String linkedinInfo, Sheet sheet, String[][] fields) {
+    public static int writeAPIResultToRow (Alumni alumni, int rowIndex, String linkedinInfo, Sheet sheet, String[][] fields) {
         try {
             int columnIndex = 1;
             List<Integer> lastRowsWritten = new ArrayList<>();     

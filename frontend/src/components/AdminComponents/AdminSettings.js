@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { FcSettings } from "react-icons/fc";
 import setUp from "../../helpers/setUp";
 import { useNavigate } from 'react-router-dom';
@@ -6,14 +6,18 @@ import { AuthContext } from '../../App';
 import AdminChangePass from './AdminChangePass';
 import AdminChangeAPIKey from './AdminChangeAPIKey';
 import AdminPopulate from './AdminPopulate';
+import Information from './Information'; 
 
 const AdminSettings = () => {
     const navigate = useNavigate();
     const { logout } = useContext(AuthContext);
+    const [showWarningAPIResultExcel, setShowWarningAPIResultExcel] = useState(false);
 
-    // Backsup the Alumni table to an excel
-    const handleBackupAlumnus = async () => {
-        await setUp.backupAlumnusExcel();
+
+    // Puts the call to the API in an Excel file
+    const handleGetAPIResultExcel = async () => {
+        setShowWarningAPIResultExcel(true);
+        await setUp.getAPIResultExcel();
     }
 
     // Logs the user out
@@ -21,6 +25,10 @@ const AdminSettings = () => {
         logout();
         navigate('/admin');
     }
+
+    const handleConfirm = () => {
+        setShowWarningAPIResultExcel(false);
+    };
 
     return (
         <>
@@ -31,7 +39,7 @@ const AdminSettings = () => {
                         <div className='row-admin-title'>
                             <h1 className='admin-heading'> <FcSettings /> Adimin Settings</h1>
                         </div>
-                        <button className='admin-button' onClick={handleBackupAlumnus}>Backup Alumnus Data</button>
+                        <button className='admin-button' onClick={handleGetAPIResultExcel}>Get API Result to Excel</button>
                         <div className='row-admin-menu'>
                             <AdminPopulate/>
                             <AdminChangePass/>
@@ -45,6 +53,12 @@ const AdminSettings = () => {
                     </div>
                 </div>
             </div>
+            {showWarningAPIResultExcel && (
+                <Information
+                    message="This might take a few seconds. Wait a little."
+                    onConfirm={handleConfirm}
+                />
+            )}   
         </>
     );
 }
