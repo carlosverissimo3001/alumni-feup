@@ -11,9 +11,14 @@ const AdminSettings = () => {
     const navigate = useNavigate();
     const { logout } = useContext(AuthContext);
 
+    // Puts the call to the API in an Excel file
+    const handleGetAPIResultExcel = async () => {
+        await setUp.getAPIResultExcel();
+    }
+
     // Backsup the Alumni table to an excel
     const handleBackupAlumnus = async () => {
-        await setUp.backupAlumnusExcel();
+        await setUp.backupAlumniDataExcel();
     }
 
     // Logs the user out
@@ -32,7 +37,7 @@ const AdminSettings = () => {
                             <h1 className='admin-heading'> <FcSettings /> Adimin Settings</h1>
                         </div>
                         <button className='admin-button' onClick={handleBackupAlumnus}>Backup Alumnus Data</button>
-                        <button className='admin-button' onClick={handleBackupAlumnus}>Get API Call to Excel</button>
+                        <button className='admin-button' onClick={handleGetAPIResultExcel}>Get API Result to Excel</button>
                         <div className='row-admin-menu'>
                             <AdminPopulate/>
                             <AdminChangePass/>

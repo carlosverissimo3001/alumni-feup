@@ -18,19 +18,6 @@ import org.apache.poi.ss.usermodel.*;
 
 public class ExcelFilesHandler {
 
-    // Create a row header
-    private static void createHeaderRow (Sheet sheet, int rowIndex, int startColumn, String[] titles) {
-        Row headerRow = sheet.getRow(rowIndex); // Create a new row
-        if (headerRow == null) {
-            headerRow = sheet.createRow(rowIndex);
-        }
-        for (int i=2; i<titles.length; i++) {
-            Cell cell = headerRow.createCell(startColumn);
-            cell.setCellValue(titles[i]);
-            startColumn++;
-        }
-    }
-
     // Writes the main titles values. Returns the last written row. 
     private static int writeFieldMainTitleContent (Alumni alumni, Sheet sheet, int rowIndex, int columnIndex, String[] titles, String linkedinInfo) {
         int lastWrittenRow = rowIndex;       
@@ -236,6 +223,20 @@ public class ExcelFilesHandler {
         }
     }
 
+    // Create a row header
+    public static void createHeaderRow (Sheet sheet, int rowIndex, int startColumn, String[] titles) {
+        Row headerRow = sheet.getRow(rowIndex); // Create a new row
+        if (headerRow == null) {
+            headerRow = sheet.createRow(rowIndex);
+        }
+        System.out.println("titles.length: " + titles.length);
+        for (int i=0; i<titles.length; i++) {
+            Cell cell = headerRow.createCell(startColumn);
+            cell.setCellValue(titles[i]);
+            startColumn++;
+        }
+    }
+
     // If there is any error with the Excel file structure adds to the erroMessages so they can be sent at once
     public static List<String> validateExcelFile(MultipartFile file) throws IOException {
         List<String> errorMessages = new ArrayList<>(); // Stores the errors
@@ -315,8 +316,26 @@ public class ExcelFilesHandler {
         }
     }
 
+    // Writes the alumni information in an Excel file
+    public static void writeAlumniDataToRow(Sheet sheet, int rowIndex, String[] infoToAddOrderColumn) {
+        try {
+            int columnIndex = 0;  
+            Row contentRow = sheet.getRow(rowIndex); // Create a new row
+            if (contentRow == null) {
+                contentRow = sheet.createRow(rowIndex);
+            }
+            for (int i=0; i<infoToAddOrderColumn.length; i++) {
+                Cell cell = contentRow.createCell(columnIndex);
+                cell.setCellValue(infoToAddOrderColumn[i]);
+                columnIndex++;
+            }
+        } catch (Exception e) {
+            System.out.println("Exception: " + e);
+        }
+    }
+
     // Writes the alumni data to the row
-    public static int writeAlumniDataToRow (Alumni alumni, int rowIndex, String linkedinInfo, Sheet sheet, String[][] fields) {
+    public static int writeAPIResultToRow (Alumni alumni, int rowIndex, String linkedinInfo, Sheet sheet, String[][] fields) {
         try {
             int columnIndex = 1;
             List<Integer> lastRowsWritten = new ArrayList<>();     
