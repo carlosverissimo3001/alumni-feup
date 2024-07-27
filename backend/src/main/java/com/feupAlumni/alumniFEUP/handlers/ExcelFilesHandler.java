@@ -186,7 +186,7 @@ public class ExcelFilesHandler {
     // Validates the content of each heather in the Excel file
     private static void validateHeadersContent(Sheet sheet, List<String> errorMessages) {
         Integer columnNumber = Integer.parseInt(JsonFileHandler.getPropertyFromApplicationProperties("excel.columnNumber").trim());
-        for (int rowIndex = 1; rowIndex < sheet.getLastRowNum(); rowIndex++) { // Iterates over every Excel row starting  on the second row, row nº1 (the first row are headers and were already validated)
+        for (int rowIndex = 1; rowIndex <= sheet.getLastRowNum(); rowIndex++) { // Iterates over every Excel row starting  on the second row, row nº1 (the first row are headers and were already validated)
             Row row = sheet.getRow(rowIndex);
             for (int colIndex = 0; colIndex < columnNumber; colIndex++) { // Iterates over the columns of the current row
                 Cell cell = row.getCell(colIndex);
