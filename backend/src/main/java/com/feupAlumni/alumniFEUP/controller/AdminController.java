@@ -18,7 +18,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -26,9 +25,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.core.io.Resource;
-
-import java.io.File;
-import java.io.FileInputStream;
 
 @RestController
 @RequestMapping("/admin")
@@ -125,19 +121,7 @@ public class AdminController {
                 arrayWithPopulationErrors = dataPopulationService.populateTables(file, new AddAlumniStrategy(alumniService, adminService));
             }
 
-            File errorFile = TxtFilesHandler.writeErrorFile(arrayWithExcelStructureError, arrayWithPopulationErrors);
-            if (errorFile.length() == 0) {
-                return ResponseEntity.ok().body(null);
-            }
-            // Return the file with errors for download
-            InputStreamResource resource = new InputStreamResource(new FileInputStream(errorFile));
-            HttpHeaders headers = new HttpHeaders();
-            headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=errorMessages.txt");
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                                .headers(headers)
-                                .contentLength(errorFile.length())
-                                .contentType(MediaType.APPLICATION_OCTET_STREAM)
-                                .body(resource);        
+            return TxtFilesHandler.preparesTxtDownload(arrayWithPopulationErrors, arrayWithExcelStructureError);        
         } catch (Exception e) {
             return ResponseEntity.status(500).body(null);
         }  
@@ -166,18 +150,7 @@ public class AdminController {
                 arrayWithPopulationErrors = dataPopulationService.populateTables(file, new AddAlumniStrategy(alumniService, adminService));
             }
 
-            File errorFile = TxtFilesHandler.writeErrorFile(arrayWithExcelStructureError, arrayWithPopulationErrors);
-            if (errorFile.length() == 0) {
-                return ResponseEntity.ok().body(null);
-            }
-            InputStreamResource resource = new InputStreamResource(new FileInputStream(errorFile));
-            HttpHeaders headers = new HttpHeaders();
-            headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=errorMessages.txt");
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                                .headers(headers)
-                                .contentLength(errorFile.length())
-                                .contentType(MediaType.APPLICATION_OCTET_STREAM)
-                                .body(resource);   
+            return TxtFilesHandler.preparesTxtDownload(arrayWithPopulationErrors, arrayWithExcelStructureError);
         } catch (Exception e) {
             return ResponseEntity.status(500).body(null);
         }  
@@ -206,19 +179,7 @@ public class AdminController {
                 arrayWithPopulationErrors = dataPopulationService.populateTables(file, new UpdateAlumniStrategy(alumniService, adminService));
             }
 
-            File errorFile = TxtFilesHandler.writeErrorFile(arrayWithExcelStructureError, arrayWithPopulationErrors);
-            if (errorFile.length() == 0) {
-                return ResponseEntity.ok().body(null);
-            }
-            // Return the file with errors for download
-            InputStreamResource resource = new InputStreamResource(new FileInputStream(errorFile));
-            HttpHeaders headers = new HttpHeaders();
-            headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=errorMessages.txt");
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                                .headers(headers)
-                                .contentLength(errorFile.length())
-                                .contentType(MediaType.APPLICATION_OCTET_STREAM)
-                                .body(resource);        
+            return TxtFilesHandler.preparesTxtDownload(arrayWithPopulationErrors, arrayWithExcelStructureError);
         } catch (Exception e) {
             return ResponseEntity.status(500).body(null);
         }  
