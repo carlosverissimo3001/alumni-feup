@@ -38,7 +38,9 @@ public class CountryServiceImpl implements CountryService{
                     coordinates = Location.getCountryCoordinates(countryCode);
                 } 
                 if (coordinates == "") {
-                    errorMessages.add("Country: " + country + " was not recognized by GeoNames API. It's coordinates were not found.");
+                    String messageError = "Country: " + country + " was not recognized by GeoNames API. It's coordinates were not found."; 
+                    errorMessages.add(messageError);
+                    System.out.println("!! messageError: " + messageError);
                 }
 
                 // Saves the data in the table
