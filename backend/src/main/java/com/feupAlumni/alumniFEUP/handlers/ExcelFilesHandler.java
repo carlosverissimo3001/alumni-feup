@@ -75,6 +75,7 @@ public class ExcelFilesHandler {
         if (!(cellValue.length() == 9)) {
             String messageError = "Row: " + (rowIndex+1) + " Column: " + (colIndex+1) + " should have 9 digits and it has: " + String.valueOf(cellValue).length() + " cellValue: " + cellValue;
             errorMessages.add(messageError);
+            System.out.println("!! messageError: " + messageError);
         }
     }
 
@@ -83,10 +84,12 @@ public class ExcelFilesHandler {
         if (cell == null) {
             String messageError = "Row: " + (rowIndex+1) + " Column: " + (colIndex+1) + " should of type string and have a value but it's currently null.";
             errorMessages.add(messageError);
+            System.out.println("!! messageError: " + messageError);
         } else  {
             if (!(cell.getCellType() == CellType.FORMULA) && !(cell.getCellType() == CellType.STRING)) {
                 String messageError = "Row: " + (rowIndex+1) + " Column: " + (colIndex+1) + " should of type Formula";
                 errorMessages.add(messageError);
+                System.out.println("!! messageError: " + messageError);
             }
         }
     }
@@ -98,12 +101,14 @@ public class ExcelFilesHandler {
             if (cellValue == null || cellValue.isEmpty()) {
                 String messageError = "Row " + (rowIndex+1) + " Column " + (colIndex+1) + " should not be empty.";
                 errorMessages.add(messageError);
+                System.out.println("!! messageError: " + messageError);
                 return;
             }
             String urlPrefix = JsonFileHandler.getPropertyFromApplicationProperties("excel.linkedinPerfix").trim();
             if (!cellValue.startsWith(urlPrefix)) {
                 String messageError = "Row " + (rowIndex+1) + " Column " + (colIndex+1) + " should start with '" + urlPrefix + "'.";
                 errorMessages.add(messageError);
+                System.out.println("!! messageError: " + messageError);
             }
             if (!cellValue.endsWith("/")) {
                 errorMessages.add("Row " + (rowIndex+1) + " Column " + (colIndex+1) + " should end with '/'.");
@@ -111,6 +116,7 @@ public class ExcelFilesHandler {
         } else {
             String messageError = "Row " + (rowIndex+1) + " Column " + (colIndex+1) + " should be of type Formula and is from type: " + cell.getCellType();
             errorMessages.add(messageError);
+            System.out.println("!! messageError: " + messageError);
         }
     }
 
@@ -140,6 +146,7 @@ public class ExcelFilesHandler {
             if (!course.equals("MIEIC") && !course.equals("L.EIC") && !course.equals("M.EIC") && !course.equals("MEI") && !course.equals("LEIC")) {
                 String messageError = "Row " + (rowIndex+1) + " Column " + (colIndex+1) + " has the value: '" + course + "' but it should be on of these: MIEIC, L.EIC, M.EIC, MEI, LEIC.";
                 errorMessages.add(messageError);
+                System.out.println("!! messageError: " + messageError);
             }
         }
         // Validate years structure
@@ -148,11 +155,13 @@ public class ExcelFilesHandler {
             if (Integer.parseInt(yearSplited[0])+1 != Integer.parseInt(yearSplited[1])) {
                 String messageError = "Row " + (rowIndex+1) + " Column " + (colIndex+1) + " has an invalid conclusion year: '" + yearSplited[0] + "' should be less by one falue from '" + yearSplited[1] + "'. The expected structure is e.g. 2022/2023.";
                 errorMessages.add(messageError);
+                System.out.println("!! messageError: " + messageError);
             }
         }
         if (courses.size()!=years.size()) {
             String messageError = "Row " + (rowIndex+1) + " Column " + (colIndex+1) + " has an invalid structure. It should have this structure e.g.: 'MIEIC 2016/2027 L.EIC 2022/2023' and it is: " + cellValue + ".";
             errorMessages.add(messageError);
+            System.out.println("!! messageError: " + messageError);
         }
     }
 
@@ -166,6 +175,7 @@ public class ExcelFilesHandler {
             }
             messageError += " and it's currently empty. Ensure you have this information in the first sheet of your Excel file.";
             errorMessages.add(messageError);
+            System.out.println("!! messageError: " + messageError);
             return;
         }
 
@@ -178,6 +188,7 @@ public class ExcelFilesHandler {
                 String messageError = "The cell nº: " + i + " of the first row should have the header: '" + headers.get(0) + "'' and is currently: '" + currentCellValue + "''. Ensure you have this information in the first sheet of your Excel file.";
                 System.out.println("messageError: " + messageError);
                 errorMessages.add(messageError);
+                System.out.println("!! messageError: " + messageError);
             }
         }
         return;
@@ -208,6 +219,7 @@ public class ExcelFilesHandler {
                     default:
                         String messageError = "The excel file should have a maximum of 4 columns.";
                         errorMessages.add(messageError);
+                        System.out.println("!! messageError: " + messageError);
                         break;
                 }
             }
@@ -219,17 +231,20 @@ public class ExcelFilesHandler {
         if (file == null) {
             String messageError = "No file received.";
             errorMessages.add(messageError);
+            System.out.println("!! messageError: " + messageError);
         } 
         // Validates if the file is empty
         if (file.isEmpty()) {
             String messageError = "File is empty";
             errorMessages.add(messageError);
+            System.out.println("!! messageError: " + messageError);
         } 
         // Validates if is an Excel file
         String fileName = file.getOriginalFilename();
         if (fileName == null || !(fileName.endsWith(".xls") || fileName.endsWith(".xlsx"))) {
             String messageError = "The file is not an Excel file. Please upload a file with .xls or .xlsx extension.";
             errorMessages.add(messageError);
+            System.out.println("!! messageError: " + messageError);
         }
     }
 
