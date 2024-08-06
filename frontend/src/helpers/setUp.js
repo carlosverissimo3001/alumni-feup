@@ -1,3 +1,5 @@
+import Helper from "./helper";
+
 // Has functions related with the setup of the project when a new Alumni data is received
 class setUp {
 
@@ -105,27 +107,7 @@ class setUp {
                 method: 'POST',
                 body: formData,
             });
-
-            if (response.ok){
-                console.log('Alumnus data replaced successfully');
-                return true;
-            } else {
-                console.error('Alumnus data replacement failed');
-                // If the response status is 400 (BAD_REQUEST), it means there is a file to download
-                if (response.status === 400) {
-                    const blob = await response.blob();
-                    const url = window.URL.createObjectURL(blob);
-                    const a = document.createElement('a');
-                    a.style.display = 'none';
-                    a.href = url;
-                    a.download = 'errorMessages.txt';
-                    document.body.appendChild(a);
-                    a.click();
-                    window.URL.revokeObjectURL(url);
-                    console.log('Downloaded error messages file');
-                }
-                return false;
-            }
+            return Helper.prepareResponsePopDataBase(response);
         } catch (error) {
             console.log('Error while replacing alumnus data', error);
         }
@@ -142,26 +124,7 @@ class setUp {
                 body: formData,
             });
 
-            if (response.ok){
-                console.log('Alumnus data added successfully');
-                return true;
-            } else {
-                console.error('Alumnus data added failed');
-                // If the response status is 400 (BAD_REQUEST), it means there is a file to download
-                if (response.status === 400) {
-                    const blob = await response.blob();
-                    const url = window.URL.createObjectURL(blob);
-                    const a = document.createElement('a');
-                    a.style.display = 'none';
-                    a.href = url;
-                    a.download = 'errorMessages.txt';
-                    document.body.appendChild(a);
-                    a.click();
-                    window.URL.revokeObjectURL(url);
-                    console.log('Downloaded error messages file');
-                }
-                return false;
-            }
+            return Helper.prepareResponsePopDataBase(response);
         } catch (error) {
             console.log('Error while adding alumnus data', error);
         }
@@ -178,26 +141,7 @@ class setUp {
                 body: formData,
             });
 
-            if (response.ok){
-                console.log('Alumnus data updated successfully');
-                return true;
-            } else {
-                console.error('Alumnus data updated failed');
-                // If the response status is 400 (BAD_REQUEST), it means there is a file to download
-                if (response.status === 400) {
-                    const blob = await response.blob();
-                    const url = window.URL.createObjectURL(blob);
-                    const a = document.createElement('a');
-                    a.style.display = 'none';
-                    a.href = url;
-                    a.download = 'errorMessages.txt';
-                    document.body.appendChild(a);
-                    a.click();
-                    window.URL.revokeObjectURL(url);
-                    console.log('Downloaded error messages file');
-                }
-                return false;
-            }
+            return Helper.prepareResponsePopDataBase(response);
         } catch (error) {
             console.log('Error while updating alumnus data', error);
         }

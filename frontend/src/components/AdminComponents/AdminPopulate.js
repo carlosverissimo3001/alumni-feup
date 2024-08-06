@@ -68,7 +68,7 @@ const AdminPopulate = () => {
             var successReplace = await setUp.updateAlumnusData(uploadedFile);
             if (successReplace) {
                 setShowSuccess(true);
-                setSuccessMessage("Great! Alumni information has been updated."); 
+                setSuccessMessage("Great! Alumni information has been updated. A warning file might be downloaded in case something that is not trivial happened."); 
             } else {
                 setShowError(true);
                 setErrorMessage("Ups! Something went wrong while trying to update alumni data. A file with the errors was downloaded.");
