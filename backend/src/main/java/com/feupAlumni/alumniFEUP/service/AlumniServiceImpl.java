@@ -138,7 +138,9 @@ public class AlumniServiceImpl implements AlumniService{
                 cityCoordinatesCountries.put(city, cityCoordinates);
                 cityCoordinateAlumniCount.put(cityCoordinates, cityCoordinateAlumniCount.getOrDefault(cityCoordinates, 0) + 1);
             } else {
-                errorMessages.add("City: " + city + " was not recognized by GeoNames API. It's coordinates were not found.");
+                String messageError = "City: " + city + " was not recognized by GeoNames API. It's coordinates were not found."; 
+                errorMessages.add(messageError);
+                System.out.println("!! messageError: " + messageError);
                 failedAttemptsAPI.put(city, "");
             }
         }
