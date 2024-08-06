@@ -780,6 +780,16 @@ p {
     font-size: 14px;
     transition: background-color 0.3s ease;
 }
+.warning-button.disabled {
+    background-color: #515150;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+.warning-button:disabled {
+    background-color: #515150;
+    cursor: not-allowed;
+}
 
 .warning-button:first-of-type {
     background-color: #4CAF50; /* Green color */

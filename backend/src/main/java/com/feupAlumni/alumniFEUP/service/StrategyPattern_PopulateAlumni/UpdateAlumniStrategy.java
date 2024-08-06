@@ -86,7 +86,9 @@ public class UpdateAlumniStrategy implements AlumniStrategy {
                         } else {
                             JSONObject jsonResponse = new JSONObject(linkedinInfoResponse.body());
                             String errorDescription = jsonResponse.optString("description", "No description provided");
-                            errorMessages.add("API call failed with status code: " + linkedinInfoResponse.statusCode() + " - " + errorDescription + " For profile: " + linkValue);
+                            String messageError = "API call failed with status code: " + linkedinInfoResponse.statusCode() + " - " + errorDescription + " For profile: " + linkValue; 
+                            errorMessages.add(messageError);
+                            System.out.println("!! messageError: " + messageError);
                         }
                     }                    
                 } catch (Exception error) {

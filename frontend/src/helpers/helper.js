@@ -145,6 +145,41 @@ class Helper {
     });
   }
 
+  // Prepares response to the endpoint of populating the DB
+  static async prepareResponsePopDataBase(response){
+    if (response.ok){
+      console.log('Success');
+      // If any warnings such as a country not recognized by the API were detected then a file with these will be downloaded
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.style.display = 'none';
+      a.href = url;
+      a.download = 'warningsAlumnusData.txt';
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(url);
+      console.log('Downloaded File!');
+      return true;
+    } else {
+        console.error('Action FAILED.');
+        // If the response status is 400 (BAD_REQUEST), it means there is a file to download
+        if (response.status === 400) {
+            const blob = await response.blob();
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.style.display = 'none';
+            a.href = url;
+            a.download = 'errorMessages.txt';
+            document.body.appendChild(a);
+            a.click();
+            window.URL.revokeObjectURL(url);
+            console.log('Downloaded file!');
+        }
+        return false;
+    }
+  }
+
 }
 
 export default Helper;
