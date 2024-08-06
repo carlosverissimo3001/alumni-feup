@@ -14,6 +14,9 @@ const AdminPopulate = () => {
     const [successMessage, setSuccessMessage] = useState(false);
     const [ errorMessage, setErrorMessage] = useState(false);
     const [showError, setShowError] = useState(false);
+    const [executingReplace, setExecutingReplace] = useState(false);
+    const [executingAdd, setExecutingAdd] = useState(false);
+    const [executingUpdate, setExecutingUpdate] = useState(false);
 
     const handleFileUpload = (event) => {
         const file = event.target.files[0];
@@ -22,6 +25,7 @@ const AdminPopulate = () => {
 
     // Deletes the Alumni information and repopulates all tables with new updated information from the LinkedinLink API
     const handleReplaceAlumnus = async () => {
+        setExecutingReplace(true);
         if (uploadedFile == null) {
             setShowWarningAdminReplace(false);
             setShowError(true);
@@ -37,10 +41,12 @@ const AdminPopulate = () => {
             }
             setShowWarningAdminReplace(false);
         }
+        setExecutingReplace(false);
     }
 
     // Only calls the API to alumnis that don't already exist in the app. If the alumni exists it doesn't call the API again
     const handleAddAlumnusData = async () => {
+        setExecutingAdd(true);
         if (uploadedFile == null) {
             setShowWarningAdminReplace(false);
             setShowError(true);
@@ -56,10 +62,12 @@ const AdminPopulate = () => {
             }
             setShowWarningAdminAdd(false);
         }
+        setExecutingAdd(false);
     }
 
     // Calls the API for the alumnis that don't exist. If the alumni exists, updates the alumni information
     const handleUpdateAlumnusData = async () => {
+        setExecutingUpdate(true);
         if (uploadedFile == null) {
             setShowWarningAdminReplace(false);
             setShowError(true);
@@ -75,6 +83,7 @@ const AdminPopulate = () => {
             }
             setShowWarningAdminUpdate(false);
         }
+        setExecutingUpdate(false);
     }
 
     const handleReplaceAlumniClick = async () => {
@@ -88,16 +97,6 @@ const AdminPopulate = () => {
     const handleUpdateAlumniClick = async () => {
         setShowWarningAdminUpdate(true);
     }
-
-    const handleConfirmReplace = () => {
-        handleReplaceAlumnus();
-    };
-    const handleConfirmAdd = () => {
-        handleAddAlumnusData();
-    };
-    const handleConfirmUpdate = () => {
-        handleUpdateAlumnusData();
-    };
 
     const handleConfirmSuccess = () => {
         setShowSuccess(false);
@@ -151,24 +150,27 @@ const AdminPopulate = () => {
             {showWarningAdminReplace && (
                 <Warning
                     message="It's adviced to backup alumni first. Ensure your API Key is correct. Credits of Proxycurl API will be spent and Alumni table deleted. IMPORTANT: this might take a few seconds, wait for the feedback message."
-                    onConfirm={handleConfirmReplace}
+                    onConfirm={handleReplaceAlumnus}
                     onCancel={handleCancel}
+                    executing={executingReplace}
                 />
             )}   
 
             {showWarningAdminAdd && (
                 <Warning
                     message="It's adviced to backup alumni first. Proxycurl API is going to be called for alumnis that are not already in the DB and credits will be spent. IMPORTANT: this might take a few seconds, wait for the feedback message."
-                    onConfirm={handleConfirmAdd}
+                    onConfirm={handleAddAlumnusData}
                     onCancel={handleCancel}
+                    executing={executingAdd}
                 />
             )}   
 
             {showWarningAdminUpdate && (
                 <Warning
                     message="It's adviced to backup alumni first. Proxycurl API is going to be called and credits will be spent. IMPORTANT: this might take a few seconds, wait for the feedback message."
-                    onConfirm={handleConfirmUpdate}
+                    onConfirm={handleUpdateAlumnusData}
                     onCancel={handleCancel}
+                    executing={executingUpdate}
                 />
             )}  
 
