@@ -1,10 +1,11 @@
 package com.feupAlumni.alumniFEUP.service;
 
+import java.io.InputStream;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.poi.ss.usermodel.Row;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -15,6 +16,9 @@ import com.feupAlumni.alumniFEUP.model.AlumniEic;
 import com.feupAlumni.alumniFEUP.model.AlumniEic_has_Course;
 import com.feupAlumni.alumniFEUP.model.Course;
 import com.feupAlumni.alumniFEUP.repository.AlumniEicHasCourseRepository;
+
+
+import org.apache.poi.ss.usermodel.*;
 
 @Service
 public class AlumniEicHasCoursesServiceImpl implements AlumniEicHasCoursesService{
@@ -94,5 +98,45 @@ public class AlumniEicHasCoursesServiceImpl implements AlumniEicHasCoursesServic
                 e.printStackTrace();
             }
         } 
+    }
+
+    @Override
+    public void cleanAssociation(MultipartFile file) {
+        // Iterate over the excel file
+        try (InputStream inputStream = file.getInputStream()) {
+            Workbook workbook = WorkbookFactory.create(inputStream);
+            int sheetReadFrom = Integer.parseInt(JsonFileHandler.getPropertyFromApplicationProperties("excel.sheet").trim());
+            Sheet sheet = workbook.getSheetAt(sheetReadFrom); // Sheet to read from
+            Iterator<Row> rowIterator = sheet.iterator();
+
+            // Skip the first row which corresponds to headers
+            for (int i = 0; i < 1; i++) {
+                if (rowIterator.hasNext()) {
+                    rowIterator.next();
+                }
+            }
+
+            while (rowIterator.hasNext()) {
+                Row row = rowIterator.next();
+                int cellForLinkedInLink = Integer.parseInt(JsonFileHandler.getPropertyFromApplicationProperties("excel.rowForLinkedInLink").trim());
+                String linkedinLink = row.getCell(cellForLinkedInLink).getStringCellValue();
+                if (!linkedinLink.isEmpty()) {
+                    // Get the AlumniEic
+                    AlumniEic alumniEic = alumniEicService.getAlumniEic(linkedinLink);
+
+                    // Get the association
+                    List<AlumniEic_has_Course> alumniEicHasCourses = alumniEic_has_CourseRepository.findByAlumniEic(alumniEic);
+
+                    // Deletes the association
+                    for (AlumniEic_has_Course alumniCourse : alumniEicHasCourses ) {
+                        alumniEic_has_CourseRepository.delete(alumniCourse);
+                    }
+                }
+            }
+            System.out.println("-----");
+            System.out.println("Registers are going to be deteled from: " + alumniEic_has_CourseRepository);
+        } catch (Exception  e) {
+            System.out.println("Error !!!!: " + e);
+        }
     }
 }

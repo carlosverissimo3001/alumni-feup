@@ -44,8 +44,17 @@ public class CountryServiceImpl implements CountryService{
                 }
 
                 // Saves the data in the table
-                Country countryToSave = new Country(country, countryCode, alumniCount, coordinates);
-                saveCountry(countryToSave);
+                Country exisCountry = getCountryByName(country);
+                if (exisCountry != null) {
+                    exisCountry.setCountry(country);
+                    exisCountry.setCountryCode(countryCode);
+                    exisCountry.setCountryCoordinates(coordinates);
+                    exisCountry.setNAlumni(alumniCount);
+                    saveCountry(exisCountry);
+                } else { // If there is no register already with this name
+                    Country countryToSave = new Country(country, countryCode, alumniCount, coordinates);
+                    saveCountry(countryToSave);
+                }
             } catch (Exception e) {
                 e.printStackTrace();
             }
