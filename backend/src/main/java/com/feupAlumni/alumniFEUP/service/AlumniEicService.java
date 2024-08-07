@@ -29,8 +29,14 @@ public interface AlumniEicService {
     // Returns all AlumniEic in the table
     public List<AlumniEic> getAllAlumniEic();
 
+    // Returns a specific AlumniEic in the table
+    public AlumniEic getAlumniEic(String alumniEicLinkedinLink);
+
     // Cleans data from the AlumniEic table
     public void celanAlumniEicTable();
+
+    // Deletes repeated entries
+    public void deleteRepeatedEntries();
 
 }
 

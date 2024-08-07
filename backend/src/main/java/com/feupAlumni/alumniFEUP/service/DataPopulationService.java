@@ -13,5 +13,5 @@ public interface DataPopulationService {
     public List<String> populateTables(MultipartFile file, AlumniStrategy strategy) throws IOException, InterruptedException;
 
     // Cleans Tables
-    public void cleanTables(CleanTablesStrategy strategy);
+    public void cleanTables(MultipartFile file, CleanTablesStrategy strategy);
 }

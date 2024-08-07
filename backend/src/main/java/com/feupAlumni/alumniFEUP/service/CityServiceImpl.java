@@ -45,8 +45,13 @@ public class CityServiceImpl implements CityService {
                 try {
                     // Saves the data in the table
                     City city = findCityByName(cityName.toLowerCase());
-                    if (city == null) { // If there is no register already with this name
-                        String cityNameLowerCase = cityName.toLowerCase();
+                    String cityNameLowerCase = cityName.toLowerCase();
+                    if (city != null) {
+                        city.setCity(cityNameLowerCase);
+                        city.setCityCoordinates(coordinateOfCity);
+                        city.setNAlumni(alumniCount);
+                        saveCity(city);
+                    } else { // If there is no register already with this name
                         City citySave = new City(cityNameLowerCase, coordinateOfCity, alumniCount);
                         saveCity(citySave);
                     }
