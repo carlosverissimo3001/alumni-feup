@@ -5,6 +5,7 @@ import com.feupAlumni.alumniFEUP.handlers.ExcelFilesHandler;
 import com.feupAlumni.alumniFEUP.handlers.JsonFileHandler;
 import com.feupAlumni.alumniFEUP.handlers.TxtFilesHandler;
 import com.feupAlumni.alumniFEUP.service.AdminService;
+import com.feupAlumni.alumniFEUP.service.AlumniEicService;
 import com.feupAlumni.alumniFEUP.service.AlumniService;
 import com.feupAlumni.alumniFEUP.service.DataPopulationService;
 import com.feupAlumni.alumniFEUP.service.StrategyPattern_Clean.AddAlumnusStrategy;
@@ -37,6 +38,8 @@ public class AdminController {
     private DataPopulationService dataPopulationService;
     @Autowired
     private AlumniService alumniService;
+    @Autowired
+    private AlumniEicService alumniEicService;
 
     // Verifies if the admin password is correct
     @PostMapping("/verifyPass")
@@ -111,7 +114,8 @@ public class AdminController {
             List<String> arrayWithPopulationErrors = new ArrayList<>();
             if (arrayWithExcelStructureError.size() == 0) { // Valid Excel file
                 // Clean Tables
-                dataPopulationService.cleanTables(new ReplaceAlumnusStrategy());
+                // Clean: Alumni, AlumniEic, Course, City, Country, AlumniEic_Has_Course tables
+                dataPopulationService.cleanTables(file, new ReplaceAlumnusStrategy());
 
                 // Cleans GeoJson files 
                 String fileLocation = JsonFileHandler.getPropertyFromApplicationProperties("json.fileLocation");
@@ -139,7 +143,7 @@ public class AdminController {
                 // Clean Tables
                 // Clean: AlumniEic, Course, City, Country, AlumniEic_Has_Course tables
                 // Doesn't delete alumni table because we want to add alumnis
-                dataPopulationService.cleanTables(new AddAlumnusStrategy());
+                dataPopulationService.cleanTables(file, new AddAlumnusStrategy());
 
                 // Cleans GeoJson files
                 String fileLocation = JsonFileHandler.getPropertyFromApplicationProperties("json.fileLocation");
@@ -169,7 +173,7 @@ public class AdminController {
                 // Clean Tables
                 // Clean: AlumniEic, Course, City, Country, AlumniEic_Has_Course tables
                 // Doesn't delete alumni table because we want to add alumnis and update the already existing ones
-                dataPopulationService.cleanTables(new AddAlumnusStrategy());
+                dataPopulationService.cleanTables(file, new AddAlumnusStrategy());
 
                 // Cleans GeoJson files
                 String fileLocation = JsonFileHandler.getPropertyFromApplicationProperties("json.fileLocation");

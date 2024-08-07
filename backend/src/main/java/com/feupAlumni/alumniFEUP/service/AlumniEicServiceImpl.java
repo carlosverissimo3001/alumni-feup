@@ -1,10 +1,6 @@
 package com.feupAlumni.alumniFEUP.service;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,6 +14,8 @@ import com.feupAlumni.alumniFEUP.model.Country;
 import com.feupAlumni.alumniFEUP.model.LocationAlumnis;
 import com.feupAlumni.alumniFEUP.repository.AlumniEicRepository;
 import com.google.gson.Gson;
+
+import java.util.*;
 
 @Service
 public class AlumniEicServiceImpl implements AlumniEicService{
@@ -88,9 +86,19 @@ public class AlumniEicServiceImpl implements AlumniEicService{
             if (city != null) {
                 Country country = countryService.getCountryByName(countryName);
 
-                // Saves the alumni in the DB
-                AlumniEic alumniEic = new AlumniEic(fullName, linkedinFullLink, city, country);
-                savesAlumniEic(alumniEic);
+                AlumniEic exisAlumniEic = alumniEicRepository.findByLinkedinLink(linkedinFullLink);
+                if (exisAlumniEic != null) {
+                    // Update the existing entry
+                    exisAlumniEic.setAlumniName(fullName);
+                    exisAlumniEic.setCity(city);
+                    exisAlumniEic.setCountry(country);
+                    savesAlumniEic(exisAlumniEic);
+                } else {
+                    // Saves the alumni in the DB
+                    AlumniEic alumniEic = new AlumniEic(fullName, linkedinFullLink, city, country);
+                    savesAlumniEic(alumniEic);
+                }
+
             }
         }
         System.out.println("AlumniEIC table re-populated");
@@ -195,6 +203,11 @@ public class AlumniEicServiceImpl implements AlumniEicService{
     }
 
     @Override
+    public AlumniEic getAlumniEic(String alumniEicLinkedinLink) {
+        return alumniEicRepository.findByLinkedinLink(alumniEicLinkedinLink);
+    }
+
+    @Override
     public void celanAlumniEicTable() {
         if (alumniEicRepository.count() > 0) {
             try {
@@ -205,6 +218,25 @@ public class AlumniEicServiceImpl implements AlumniEicService{
                 e.printStackTrace();
             }
         } 
+    }
+
+    @Override
+    public void deleteRepeatedEntries() {
+        List<AlumniEic> alumniEicList = getAllAlumniEic();
+        Set<String> uniqueLinks = new HashSet<>();
+        List<AlumniEic> duplicates = new ArrayList<>();
+        for (AlumniEic alumniEic : alumniEicList) { 
+            String linkedinLink = alumniEic.getLinkedinLink();
+            if (!uniqueLinks.add(linkedinLink)) {
+                duplicates.add(alumniEic);
+            }
+        }
+
+        System.out.println("---DUPLICATES---");
+        for (AlumniEic alumniEic : duplicates) {
+            System.out.println("alumniEic: " + alumniEic.getLinkedinLink());
+        }
+        alumniEicRepository.deleteAll(duplicates);
     }
 
 }

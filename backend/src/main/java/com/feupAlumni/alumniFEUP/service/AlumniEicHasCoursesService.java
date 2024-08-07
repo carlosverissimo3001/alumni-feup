@@ -22,5 +22,8 @@ public interface AlumniEicHasCoursesService {
     // Cleans the AlumniEicHasCourse Table
     public void cleanAlumniEicHasCourseTable();
 
+    // Cleand the association between a alumniEic and courses
+    public void cleanAssociation(MultipartFile file);
+
 }
 
