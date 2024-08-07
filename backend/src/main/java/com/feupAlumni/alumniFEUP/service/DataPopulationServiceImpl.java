@@ -43,7 +43,7 @@ public class DataPopulationServiceImpl implements DataPopulationService{
     }
 
     @Override
-    public void cleanTables(CleanTablesStrategy strategy) {
-        strategy.cleanTables(alumniService, alumniEicService, courseService, alumniEic_has_coursesService , cityService, countryService);
+    public void cleanTables(MultipartFile file, CleanTablesStrategy strategy) {
+        strategy.cleanTables(file, alumniService, alumniEicService, courseService, alumniEic_has_coursesService , cityService, countryService);
     }
 }
