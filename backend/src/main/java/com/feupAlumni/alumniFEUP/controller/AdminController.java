@@ -114,12 +114,12 @@ public class AdminController {
                 // Clean: Alumni, AlumniEic, Course, City, Country, AlumniEic_Has_Course tables
                 dataPopulationService.cleanTables(file, new ReplaceAlumnusStrategy());
 
-                // Cleans GeoJson files 
-                String fileLocation = JsonFileHandler.getPropertyFromApplicationProperties("json.fileLocation");
-                JsonFileHandler.cleanGeoJsonFiles(fileLocation);
-
                 // Populates tables 
                 arrayWithPopulationErrors = dataPopulationService.populateTables(file, new AddAlumniStrategy(alumniService, adminService));
+            
+                // Cleans GeoJson files
+                String fileLocation = JsonFileHandler.getPropertyFromApplicationProperties("json.fileLocation");
+                JsonFileHandler.cleanGeoJsonFiles(fileLocation);
             }
 
             return TxtFilesHandler.preparesTxtDownload(arrayWithPopulationErrors, arrayWithExcelStructureError);        
@@ -142,13 +142,13 @@ public class AdminController {
                 // Doesn't delete alumni table because we want to add alumnis
                 dataPopulationService.cleanTables(file, new AddAlumnusStrategy());
 
-                // Cleans GeoJson files
-                String fileLocation = JsonFileHandler.getPropertyFromApplicationProperties("json.fileLocation");
-                JsonFileHandler.cleanGeoJsonFiles(fileLocation);
-
                 // Populates tables: alumnis it adds up, and repopulates other tables with the Alumni table again
                 //                   if the alumni already exist in the DB, the ProxyCurl API doesn't get called again 
                 arrayWithPopulationErrors = dataPopulationService.populateTables(file, new AddAlumniStrategy(alumniService, adminService));
+            
+                // Cleans GeoJson files
+                String fileLocation = JsonFileHandler.getPropertyFromApplicationProperties("json.fileLocation");
+                JsonFileHandler.cleanGeoJsonFiles(fileLocation);
             }
 
             return TxtFilesHandler.preparesTxtDownload(arrayWithPopulationErrors, arrayWithExcelStructureError);
@@ -172,12 +172,12 @@ public class AdminController {
                 // Doesn't delete alumni table because we want to add alumnis and update the already existing ones
                 dataPopulationService.cleanTables(file, new AddAlumnusStrategy());
 
+                // Populates tables: registers are added and updated on the alumni table, and other tabler are repopulated again 
+                arrayWithPopulationErrors = dataPopulationService.populateTables(file, new UpdateAlumniStrategy(alumniService, adminService));
+            
                 // Cleans GeoJson files
                 String fileLocation = JsonFileHandler.getPropertyFromApplicationProperties("json.fileLocation");
                 JsonFileHandler.cleanGeoJsonFiles(fileLocation);
-
-                // Populates tables: registers are added and updated on the alumni table, and other tabler are repopulated again 
-                arrayWithPopulationErrors = dataPopulationService.populateTables(file, new UpdateAlumniStrategy(alumniService, adminService));
             }
 
             return TxtFilesHandler.preparesTxtDownload(arrayWithPopulationErrors, arrayWithExcelStructureError);
