@@ -5,7 +5,6 @@ import com.feupAlumni.alumniFEUP.handlers.ExcelFilesHandler;
 import com.feupAlumni.alumniFEUP.handlers.JsonFileHandler;
 import com.feupAlumni.alumniFEUP.handlers.TxtFilesHandler;
 import com.feupAlumni.alumniFEUP.service.AdminService;
-import com.feupAlumni.alumniFEUP.service.AlumniEicService;
 import com.feupAlumni.alumniFEUP.service.AlumniService;
 import com.feupAlumni.alumniFEUP.service.DataPopulationService;
 import com.feupAlumni.alumniFEUP.service.StrategyPattern_Clean.AddAlumnusStrategy;
@@ -38,8 +37,6 @@ public class AdminController {
     private DataPopulationService dataPopulationService;
     @Autowired
     private AlumniService alumniService;
-    @Autowired
-    private AlumniEicService alumniEicService;
 
     // Verifies if the admin password is correct
     @PostMapping("/verifyPass")

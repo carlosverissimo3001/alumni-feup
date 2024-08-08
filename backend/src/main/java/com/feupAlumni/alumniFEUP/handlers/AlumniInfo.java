@@ -45,7 +45,7 @@ public class AlumniInfo {
         
         HttpClient client = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(apiEndpoint + "?twitter_profile_url=&facebook_profile_url&linkedin_profile_url=" + linkedinLink))
+                .uri(URI.create(apiEndpoint + "?twitter_profile_url=&facebook_profile_url&linkedin_profile_url=" + linkedinLink + "/&use_cache=if-recent"))
                 .headers("Authorization", "Bearer " + apiKeyDecrypted)
                 .build();
 

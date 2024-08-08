@@ -185,7 +185,7 @@ public class ExcelFilesHandler {
             String valueCellNotNormalized = cell.getStringCellValue();
             String currentCellValue = valueCellNotNormalized;
             if (!currentCellValue.equals(headers.get(i))) {
-                String messageError = "The cell nº: " + i + " of the first row should have the header: '" + headers.get(0) + "'' and is currently: '" + currentCellValue + "''. Ensure you have this information in the first sheet of your Excel file.";
+                String messageError = "The cell nº: " + (i+1) + " of the first row should have the header: '" + headers.get(i) + "'' and is currently: '" + currentCellValue + "''. Ensure you have this information in the first sheet of your Excel file.";
                 System.out.println("messageError: " + messageError);
                 errorMessages.add(messageError);
                 System.out.println("!! messageError: " + messageError);
