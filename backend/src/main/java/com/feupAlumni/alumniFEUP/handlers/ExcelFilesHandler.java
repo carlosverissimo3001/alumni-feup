@@ -96,28 +96,37 @@ public class ExcelFilesHandler {
 
     // Validates valid LinkedIn Link: they shoudl start with https://www.linkedin.com/in/ and end with '/' and can't be empty
     private static void validateValidLinkedInLink (Cell cell, List<String> errorMessages, int rowIndex, int colIndex) {
-        if (cell.getCellType() == CellType.FORMULA || cell.getCellType() == CellType.STRING) {
-            String cellValue = cell.getStringCellValue();
-            if (cellValue == null || cellValue.isEmpty()) {
-                String messageError = "Row " + (rowIndex+1) + " Column " + (colIndex+1) + " should not be empty.";
+        try {
+            if (cell.getCellType() == CellType.FORMULA || cell.getCellType() == CellType.STRING) {
+                String cellValue = cell.getStringCellValue();
+                if (cellValue == null || cellValue.isEmpty()) {
+                    String messageError = "Row " + (rowIndex+1) + " Column " + (colIndex+1) + " should not be empty.";
+                    errorMessages.add(messageError);
+                    System.out.println("!! messageError: " + messageError);
+                    return;
+                }
+                String urlPrefix = JsonFileHandler.getPropertyFromApplicationProperties("excel.linkedinPerfix").trim();
+                if (!cellValue.startsWith(urlPrefix)) {
+                    String messageError = "Row " + (rowIndex+1) + " Column " + (colIndex+1) + " should start with '" + urlPrefix + "'.";
+                    errorMessages.add(messageError);
+                    System.out.println("!! messageError: " + messageError);
+                }
+                if (!cellValue.endsWith("/")) {
+                    String messageError = "Row " + (rowIndex+1) + " Column " + (colIndex+1) + " should end with '/'."; 
+                    errorMessages.add("Row " + (rowIndex+1) + " Column " + (colIndex+1) + " should end with '/'.");
+                    System.out.println("!! messageError: " + messageError);
+                }
+            } else {
+                String messageError = "Row " + (rowIndex+1) + " Column " + (colIndex+1) + " should be of type Formula and is from type: " + cell.getCellType();
                 errorMessages.add(messageError);
                 System.out.println("!! messageError: " + messageError);
-                return;
             }
-            String urlPrefix = JsonFileHandler.getPropertyFromApplicationProperties("excel.linkedinPerfix").trim();
-            if (!cellValue.startsWith(urlPrefix)) {
-                String messageError = "Row " + (rowIndex+1) + " Column " + (colIndex+1) + " should start with '" + urlPrefix + "'.";
-                errorMessages.add(messageError);
-                System.out.println("!! messageError: " + messageError);
-            }
-            if (!cellValue.endsWith("/")) {
-                errorMessages.add("Row " + (rowIndex+1) + " Column " + (colIndex+1) + " should end with '/'.");
-            }
-        } else {
-            String messageError = "Row " + (rowIndex+1) + " Column " + (colIndex+1) + " should be of type Formula and is from type: " + cell.getCellType();
+        } catch (Exception e) {
+            String messageError = "Row " + (rowIndex+1) + " Column " + (colIndex+1) + " is not a string corresponding to a linkedin link.";
             errorMessages.add(messageError);
             System.out.println("!! messageError: " + messageError);
         }
+        
     }
 
     // Validates the Forth column of values: should be MIEIC, L.EIC, M.EIC, MEI, LEIC and should have the following year xxxx/yyyy
