@@ -218,7 +218,7 @@ public class ExcelFilesHandler {
                         // Validate the value of the second column (1) of the current row
                         validateCellStringFromula(cell, errorMessages, rowIndex, colIndex);
                         break;
-                    case 2:   
+                    case 2:  
                         // Validate the value of the third column (2) of the current row
                         validateValidLinkedInLink(cell, errorMessages, rowIndex, colIndex);
                         break;
@@ -291,9 +291,8 @@ public class ExcelFilesHandler {
             headers.add(secondHeader);
             headers.add(thirdHeader);
             headers.add(forthHeader);
-            Row firstRow = sheet.getRow(0); // first row        
+            Row firstRow = sheet.getRow(0); // first row    
             validateHeadersExcelFile(headers, firstRow, errorMessages);
-            
             // Validates values of each Header. 
             validateHeadersContent(sheet, errorMessages);
         }
