@@ -1,0 +1,122 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "name": [
+          "united kingdom"
+        ],
+        "students": 1,
+        "listLinkedinLinksByUser": {
+          "https://www.linkedin.com/in/monicasantos/": "Mónica Santos, PhD"
+        },
+        "coursesYearConclusionByUser": {
+          "https://www.linkedin.com/in/monicasantos/": {
+            "LEIC": "2002/2003",
+            "MEI": "2006/2007"
+          }
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -0.12574,
+          51.50853
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": [
+          "norway"
+        ],
+        "students": 1,
+        "listLinkedinLinksByUser": {
+          "https://www.linkedin.com/in/lcabral/": "Luís Cabral"
+        },
+        "coursesYearConclusionByUser": {
+          "https://www.linkedin.com/in/lcabral/": {
+            "MEI": "2006/2007"
+          }
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.32415,
+          60.39299
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": [
+          "switzerland"
+        ],
+        "students": 1,
+        "listLinkedinLinksByUser": {
+          "https://www.linkedin.com/in/jorge-amaral-pt/": "Jorge Amaral"
+        },
+        "coursesYearConclusionByUser": {
+          "https://www.linkedin.com/in/jorge-amaral-pt/": {
+            "MEI": "2005/2006"
+          }
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          8.55,
+          47.36667
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": [
+          "portugal"
+        ],
+        "students": 5,
+        "listLinkedinLinksByUser": {
+          "https://www.linkedin.com/in/rui-gomes-3441a31/": "Rui Gomes",
+          "https://www.linkedin.com/in/jorgeesparteirogarcia/": "Jorge Esparteiro Garcia",
+          "https://www.linkedin.com/in/nunoflores/": "Nuno Flores",
+          "https://www.linkedin.com/in/luisramos/": "Luis Ramos",
+          "https://www.linkedin.com/in/ricardofrpinto/": "Ricardo Pinto"
+        },
+        "coursesYearConclusionByUser": {
+          "https://www.linkedin.com/in/rui-gomes-3441a31/": {
+            "LEIC": "2000/2001",
+            "MEI": "2006/2007"
+          },
+          "https://www.linkedin.com/in/jorgeesparteirogarcia/": {
+            "MEI": "2006/2007"
+          },
+          "https://www.linkedin.com/in/nunoflores/": {
+            "LEIC": "1998/1999",
+            "MEI": "2005/2006"
+          },
+          "https://www.linkedin.com/in/luisramos/": {
+            "LEIC": "2001/2002",
+            "MEI": "2006/2007"
+          },
+          "https://www.linkedin.com/in/ricardofrpinto/": {
+            "LEIC": "2004/2005",
+            "MEI": "2007/2008"
+          }
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -9.13333,
+          38.71667
+        ]
+      }
+    }
+  ]
+}

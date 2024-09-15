@@ -30,7 +30,7 @@ public class AlumniInfo {
             }
             return targetPath.toString();
         } catch (Exception e) {
-            String messageError = "Failed to download or save image: " + e.getMessage();
+            String messageError = "Failed to download or save image: " + e.getMessage() + " for: " + publicIdentifier;
             errorMessages.add(messageError);
             System.out.println(messageError);
             return null;
