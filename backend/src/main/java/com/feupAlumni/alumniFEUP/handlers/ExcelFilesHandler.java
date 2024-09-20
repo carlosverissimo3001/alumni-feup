@@ -263,7 +263,7 @@ public class ExcelFilesHandler {
         if (headerRow == null) {
             headerRow = sheet.createRow(rowIndex);
         }
-        for (int i=0; i<titles.length; i++) {
+        for (int i=2; i<titles.length; i++) {
             Cell cell = headerRow.createCell(startColumn);
             cell.setCellValue(titles[i]);
             startColumn++;
