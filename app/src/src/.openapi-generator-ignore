@@ -1,0 +1,8 @@
+# Don't generate anything by default
+**/*
+
+# Whitelist files to be generated
+!modules/*
+!apis/*
+!runtime.ts
+!index.ts

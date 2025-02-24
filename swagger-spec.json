@@ -1,0 +1,200 @@
+{
+  "openapi": "3.0.0",
+  "paths": {
+    "/api/alumni": {
+      "get": {
+        "operationId": "AlumniController_findAll",
+        "parameters": [],
+        "responses": {
+          "default": {
+            "description": "Returns all alumni",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Alumni"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "Get all alumni",
+        "tags": [
+          "v1"
+        ]
+      }
+    },
+    "/api/alumni/{id}": {
+      "get": {
+        "operationId": "AlumniController_findOne",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": "Returns the alumni with the given id",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Alumni"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Get alumni by id",
+        "tags": [
+          "v1"
+        ]
+      }
+    },
+    "/api/company": {
+      "get": {
+        "operationId": "CompanyController_findAll",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "All companies"
+          }
+        },
+        "summary": "Get all companies",
+        "tags": [
+          "v1"
+        ]
+      }
+    },
+    "/api/company/{id}": {
+      "get": {
+        "operationId": "CompanyController_findOne",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Company by id"
+          }
+        },
+        "summary": "Get company by id",
+        "tags": [
+          "v1"
+        ]
+      }
+    }
+  },
+  "info": {
+    "title": "API",
+    "description": "API description",
+    "version": "1.0",
+    "contact": {}
+  },
+  "tags": [],
+  "servers": [],
+  "components": {
+    "securitySchemes": {
+      "bearer": {
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "type": "http"
+      }
+    },
+    "schemas": {
+      "Role": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The id of the role"
+          },
+          "alumni_id": {
+            "type": "string",
+            "description": "The id of the alumni"
+          },
+          "company_id": {
+            "type": "string",
+            "description": "The id of the company"
+          },
+          "start_date": {
+            "format": "date-time",
+            "type": "string",
+            "description": "The start date of the role"
+          },
+          "end_date": {
+            "type": "object",
+            "description": "The end date of the role",
+            "nullable": true
+          },
+          "seniority_level": {
+            "type": "string",
+            "description": "The seniority level of the role"
+          },
+          "esco_l1": {
+            "type": "string",
+            "description": "The level 1 of the role"
+          },
+          "esco_l2": {
+            "type": "string",
+            "description": "The level 2 of the role"
+          }
+        },
+        "required": [
+          "id",
+          "alumni_id",
+          "company_id",
+          "start_date",
+          "seniority_level",
+          "esco_l1",
+          "esco_l2"
+        ]
+      },
+      "Alumni": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The id of the alumni"
+          },
+          "first_name": {
+            "type": "string",
+            "description": "The first name of the alumni"
+          },
+          "last_name": {
+            "type": "string",
+            "description": "The last name of the alumni"
+          },
+          "linkedin_url": {
+            "type": "string",
+            "description": "The linkedin url of the alumni"
+          },
+          "roles": {
+            "description": "The roles of the alumni",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Role"
+            }
+          }
+        },
+        "required": [
+          "id",
+          "first_name",
+          "last_name"
+        ]
+      }
+    }
+  }
+}
