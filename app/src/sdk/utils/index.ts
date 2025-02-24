@@ -1,0 +1,1 @@
+export { bindClassMethods } from './utils';
