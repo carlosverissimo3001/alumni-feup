@@ -16,13 +16,33 @@ import { Button } from "../ui/button";
 import Image from "next/image";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { useNavbar } from "@/contexts/NavbarContext";
+import { useEffect, useRef } from "react";
 
 const Navbar = () => {
   const { isCollapsed, setIsCollapsed } = useNavbar();
   const pathname = usePathname();
+  const navbarRef = useRef<HTMLDivElement>(null);
 
   // TODO: Replace this with an actual Auth Context
   const isLoggedIn = false;
+
+  // Add click outside handler
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        !isCollapsed && 
+        navbarRef.current && 
+        !navbarRef.current.contains(event.target as Node)
+      ) {
+        setIsCollapsed(true);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isCollapsed, setIsCollapsed]);
 
   const routes = [
     {
@@ -48,6 +68,7 @@ const Navbar = () => {
 
   return (
     <div
+      ref={navbarRef}
       className={cn(
         "relative space-y-4 py-4 flex flex-col h-full bg-zinc-900 text-white transition-all duration-300 z-50",
         isCollapsed ? "w-20" : "w-56"

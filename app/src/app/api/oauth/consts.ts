@@ -10,7 +10,7 @@ export interface ProfileResponse {
     name: string;
     given_name: string;
     family_name: string;
-    picture_url: string;
+    picture: string;
     locale: {
         country: string;
         language: string;
