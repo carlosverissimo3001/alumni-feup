@@ -1,4 +1,4 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { IsString, IsOptional, IsInt, IsEnum } from '@nestjs/class-validator';
 import { COURSE_STATUS, COURSE_TYPE } from '@prisma/client';
 
@@ -19,12 +19,12 @@ export class Course {
   @IsInt()
   start_year: number;
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     description: 'The end year of the course, if it is not active',
   })
   @IsOptional()
   @IsInt()
-  end_year?: number;
+  end_year?: number | null;
 
   @ApiProperty({ description: 'The status of the course' })
   @IsString()
@@ -35,15 +35,14 @@ export class Course {
   @IsString()
   faculty_id: string;
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     description: 'The name of the course in the international language',
   })
   @IsOptional()
   @IsString()
-  name_int?: string;
+  name_int?: string | null;
 
   @ApiProperty({ description: 'The type of the course' })
-  @IsOptional()
   @IsEnum(COURSE_TYPE)
-  course_type?: COURSE_TYPE;
+  course_type: COURSE_TYPE;
 }
