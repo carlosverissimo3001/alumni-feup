@@ -10,13 +10,44 @@ import Helper from './helper/helper';
 import { clusterLayer } from './mapLayers';
 import { cn } from '@/lib/utils';
 import { useNavbar } from '@/contexts/NavbarContext';
+import { ArrowUp, ArrowDown } from 'lucide-react';
+import MenuButtons from '@/components/map/mapFilters';
 
 interface MapViewProps {
   className?: string;
   loading: boolean;
-  alumniGeoJSON: any;
+  alumniGeoJSON: {
+    type: string;
+    features: Array<{
+      type: string;
+      properties: Record<string, unknown>;
+      geometry: {
+        type: string;
+        coordinates: [number, number];
+      };
+    }>;
+  };
+  clusterLayer: {
+    id: string;
+    type: string;
+    source: string;
+    [key: string]: unknown;
+  };
   handleImageError: (event: React.SyntheticEvent<HTMLImageElement, Event>) => void;
-  selectedAlumni: any;
+  selectedAlumni: {
+    name: string;
+    coordinates: { lat: number; lng: number } | null;
+  } | null;
+  handleLoading: (loading: boolean) => void;
+  handleSelectAlumni: (name: string, coordinates: { lat: number; lng: number }) => void;
+  handleSelectGeoJSON: (geoJSON: unknown) => void;
+  yearUrl?: string;
+}
+
+interface AlumniData {
+  name: string;
+  linkedinLink: string;
+  location: string;
 }
 
 const MapView = ({
@@ -26,19 +57,23 @@ const MapView = ({
   alumniGeoJSON,
   handleImageError,
   selectedAlumni,
+  handleLoading,
+  handleSelectAlumni,
+  handleSelectGeoJSON,
+  yearUrl,
 }: MapViewProps) => {
   
-  const [hoveredMouseCoords, setHoveredMouseCoords] = useState([]);
-  const [listPlaceName, setListPlaceName] = useState(null);
-  const [listAlumniNames, setListAlumniNames] = useState(null);
-  const [listLinkedinLinks, setListLinkedinLinks] = useState(null);
-  const [alumniData, setAlumniData] = useState([]);
-  const [hoveredCluster, setHoveredCluster] = useState(Boolean);
-  const mapRef = useRef(null);
+  const [hoveredMouseCoords, setHoveredMouseCoords] = useState<[number, number] | null>(null);
+  const [listPlaceName, setListPlaceName] = useState<string[]>([]);
+  const [listAlumniNames, setListAlumniNames] = useState<string[]>([]);
+  const [listLinkedinLinks, setListLinkedinLinks] = useState<string[]>([]);
+  const [alumniData, setAlumniData] = useState<AlumniData[]>([]);
+  const [hoveredCluster, setHoveredCluster] = useState(false);
+  const mapRef = useRef<any>(null);
 
   const [mapLoaded, setMapLoaded] = useState(false);
 
-  const { isCollapsed } = useNavbar();
+  const { isCollapsed, menuVisible, toggleMenuVisibility } = useNavbar();
 
   const onMapLoad = useCallback(() => {
     setMapLoaded(true);
@@ -63,7 +98,12 @@ const MapView = ({
     }
   }, [selectedAlumni, mapLoaded]);
 
-  const updateState = (listPlaceName, listAlumniNames, listLinkedinLinks, alumniData) => {
+  const updateState = (
+    listPlaceName: string[],
+    listAlumniNames: string[],
+    listLinkedinLinks: string[],
+    alumniData: AlumniData[]
+  ) => {
     if (listAlumniNames.length > 0 && listLinkedinLinks.length > 0 && listPlaceName.length > 0) {
       setListPlaceName(listPlaceName);
       setListAlumniNames(listAlumniNames);
@@ -81,10 +121,10 @@ const MapView = ({
   }
 
   // Clusters content
-  const showClusterContent = async event => {
+  const showClusterContent = async (event: any) => {
     try {
-      // Add null checks for event and event.lngLat
       if (!event || !event.features) {
+        updateState([], [], [], []);
         return;
       }
 
@@ -107,7 +147,7 @@ const MapView = ({
         updateState([], [], [], []);
       }
     } catch (error) {
-      console.error("Map interaction error:", error);
+      console.error('Error in showClusterContent:', error);
       updateState([], [], [], []);
     }
   };
@@ -120,8 +160,9 @@ const MapView = ({
         "absolute inset-0 bg-black transition-opacity duration-300 z-10 pointer-events-none",
         !isCollapsed ? "opacity-20" : "opacity-0"
       )} />
+
       <MapGL
-        initialViewState={{ // By default it presents the map in Portugal
+        initialViewState={{
           latitude: 38.736946,
           longitude: -9.142685,
           zoom: 3,
@@ -134,7 +175,6 @@ const MapView = ({
         ref={mapRef} 
         cursor="pointer"
         onLoad={onMapLoad}
-
       >
         {loading ? (
           <MapGLSource alumniGeoJSON={{ type: "FeatureCollection", features: [] }}></MapGLSource>

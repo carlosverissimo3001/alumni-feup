@@ -6,7 +6,7 @@ class setUp {
     /**
     * Fetches the geoJson
     */
-    static async fetchGeoJson(courseFilter, yearsConclusionFilter, geoJsonType) {
+    static async fetchGeoJson(courseFilter: string, yearsConclusionFilter: number, geoJsonType: string) {
         try {
             const params = new URLSearchParams({
                 courseFilter: courseFilter,
@@ -27,7 +27,7 @@ class setUp {
         }
     }
     
-    // Verifies if the password is correct
+    /* // Verifies if the password is correct
     static async verifyCorrectPassword(password){
         try{
             const data = JSON.stringify({ password });
@@ -96,7 +96,7 @@ class setUp {
         } catch (error) {
             console.log('Error while updating API Key', error);
         }
-    }
+    } 
 
     // Deletes the alumni information in the DB and repopulates the tables with new information from the LinkdinLink API
     static async replaceAlumnus(uploadedFile) {
@@ -171,7 +171,7 @@ class setUp {
         } catch (error) {
             console.error('Error: ', error);
         }
-    }
+    } */
 }
 
 export default setUp;

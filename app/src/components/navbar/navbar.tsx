@@ -19,7 +19,7 @@ import { useNavbar } from "@/contexts/NavbarContext";
 import { useEffect, useRef } from "react";
 
 const Navbar = () => {
-  const { isCollapsed, setIsCollapsed } = useNavbar();
+  const { isCollapsed, toggleCollapse } = useNavbar();
   const pathname = usePathname();
   const navbarRef = useRef<HTMLDivElement>(null);
 
@@ -34,7 +34,7 @@ const Navbar = () => {
         navbarRef.current && 
         !navbarRef.current.contains(event.target as Node)
       ) {
-        setIsCollapsed(true);
+        toggleCollapse();
       }
     };
 
@@ -42,7 +42,7 @@ const Navbar = () => {
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [isCollapsed, setIsCollapsed]);
+  }, [isCollapsed, toggleCollapse]);
 
   const routes = [
     {
@@ -102,7 +102,7 @@ const Navbar = () => {
             variant="ghost"
             size="icon"
             className="hover:bg-white/10"
-            onClick={() => setIsCollapsed(!isCollapsed)}
+            onClick={toggleCollapse}
           >
             {isCollapsed ? (
               <PanelLeftOpen size={20} />
