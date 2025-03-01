@@ -1,0 +1,22 @@
+import { Controller, Post } from '@nestjs/common';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { UserService } from './user.service';
+import { LinkedinAuthDto } from './dtos/linkedin-auth.dto';
+import { Body } from '@nestjs/common';
+import { Alumni } from 'src/entities';
+
+@ApiTags('V1', 'User')
+@Controller('user')
+export class UserController {
+  constructor(private readonly userService: UserService) {}
+
+  @Post('linkedinAuth')
+  @ApiOperation({ summary: 'Authenticate a user with LinkedIn' })
+  @ApiResponse({
+    type: Alumni,
+    description: 'User authenticated and/or matched successfully',
+  })
+  async linkedinAuth(@Body() body: LinkedinAuthDto): Promise<Alumni> {
+    return this.userService.linkedinAuth(body);
+  }
+}

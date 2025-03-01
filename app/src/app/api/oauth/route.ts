@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { TokenResponse, ProfileResponse } from './consts';
 import fetch from 'node-fetch'; 
+import { authenticateWithLinkedin } from '@/hooks/auth/use-auth';
+import { LinkedinAuthDto } from '@/sdk/api';
 
 
 export async function GET(req: NextRequest) {
@@ -33,22 +35,34 @@ export async function GET(req: NextRequest) {
 
     if (tokenResponse.ok) {
       const accessToken = tokenData.access_token;
-
+      
+      // Here, we get the user's profile data from LinkedIn
       const profileResponse = await fetch('https://api.linkedin.com/v2/userinfo', {
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },
       });
 
+      const profileData : ProfileResponse = await profileResponse.json() as ProfileResponse;
 
-      const profileData: ProfileResponse = await profileResponse.json() as ProfileResponse;
-      console.table(profileData);
+      const linkedinAuthData: LinkedinAuthDto = {
+          person_id: profileData.sub,
+          first_name: profileData.given_name,
+          last_name: profileData.family_name,
+          institutional_email: profileData.email,
+          profile_picture_url: profileData.picture,
+      } 
 
+      try {
+        await authenticateWithLinkedin(linkedinAuthData);
+      } catch (error) {
+        return NextResponse.json({ error: (error as Error).message }, { status: 400 });
+      }
 
       const redirectUrl = new URL('/', process.env.NEXT_PUBLIC_APP_URL).toString();
-      const response = NextResponse.redirect(redirectUrl);
+      const responseRedirect = NextResponse.redirect(redirectUrl);
       
-      return response;
+      return responseRedirect;
     } else {
       return NextResponse.json({ error: tokenData.error_description || 'Failed to get access token' }, { status: 400 });
     }
