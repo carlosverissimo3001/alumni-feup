@@ -1,12 +1,12 @@
 import { Process, Processor } from '@nestjs/bull';
 import { InjectQueue } from '@nestjs/bull';
-import { Logger, OnModuleInit } from '@nestjs/common';
+import { Logger /* , OnModuleInit */ } from '@nestjs/common';
 import { Queue } from 'bull';
 import { Jobs, QueueName } from 'src/consts';
 import { GeolocationService } from './geolocation.service';
 
 @Processor(QueueName.GEOLOCATION)
-export class GeolocationConsumer implements OnModuleInit {
+export class GeolocationConsumer /* implements OnModuleInit */ {
   constructor(
     private readonly service: GeolocationService,
     @InjectQueue(QueueName.GEOLOCATION)
@@ -14,7 +14,7 @@ export class GeolocationConsumer implements OnModuleInit {
     private readonly logger: Logger,
   ) {}
 
-  async onModuleInit() {
+  /* async onModuleInit() {
     await this.queue.add(
       Jobs.geolocation.EXTRACT_COORDINATES,
       { data: null },
@@ -25,7 +25,7 @@ export class GeolocationConsumer implements OnModuleInit {
         },
       },
     );
-  }
+  } */
 
   @Process(Jobs.geolocation.EXTRACT_COORDINATES)
   async extractCoordinates() {
