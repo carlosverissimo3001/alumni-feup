@@ -20,9 +20,41 @@
             }
           }
         },
-        "summary": "Get all alumni",
+        "summary": "Get all alumni, enriched with location, graduations and roles",
         "tags": [
-          "v1"
+          "V1",
+          "Alumni"
+        ]
+      },
+      "post": {
+        "operationId": "AlumniController_create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateAlumniDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "default": {
+            "description": "Returns the created alumni",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Alumni"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Create a new alumni",
+        "tags": [
+          "V1",
+          "Alumni"
         ]
       }
     },
@@ -41,7 +73,7 @@
         ],
         "responses": {
           "default": {
-            "description": "Returns the alumni with the given id",
+            "description": "Returns the alumni with the given id, enriched with location, graduations and roles",
             "content": {
               "application/json": {
                 "schema": {
@@ -51,9 +83,10 @@
             }
           }
         },
-        "summary": "Get alumni by id",
+        "summary": "Get alumni by id, enriched with location, graduations and roles",
         "tags": [
-          "v1"
+          "V1",
+          "Alumni"
         ]
       }
     },
@@ -68,7 +101,8 @@
         },
         "summary": "Get all companies",
         "tags": [
-          "v1"
+          "V1",
+          "Company"
         ]
       }
     },
@@ -92,7 +126,67 @@
         },
         "summary": "Get company by id",
         "tags": [
-          "v1"
+          "V1",
+          "Company"
+        ]
+      }
+    },
+    "/api/user/linkedinAuth": {
+      "post": {
+        "operationId": "UserController_linkedinAuth",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LinkedinAuthDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "default": {
+            "description": "User authenticated and/or matched successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Alumni"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Authenticate a user with LinkedIn",
+        "tags": [
+          "V1",
+          "User"
+        ]
+      }
+    },
+    "/api/extractions/upload": {
+      "post": {
+        "operationId": "ExtractionsController_uploadFile",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UploadExtractionDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "summary": "Upload a CSV file for faculty extractions",
+        "tags": [
+          "V1",
+          "Extractions"
         ]
       }
     }
@@ -162,6 +256,73 @@
           "esco_l2"
         ]
       },
+      "Location": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The id of the location"
+          },
+          "city": {
+            "type": "string",
+            "description": "The city of the location"
+          },
+          "country": {
+            "type": "string",
+            "description": "The country of the location"
+          },
+          "latitude": {
+            "type": "number",
+            "description": "The latitude of the location"
+          },
+          "longitude": {
+            "type": "number",
+            "description": "The longitude of the location"
+          },
+          "country_code": {
+            "type": "string",
+            "description": "The country code of the location"
+          }
+        },
+        "required": [
+          "id",
+          "city",
+          "country",
+          "country_code"
+        ]
+      },
+      "Graduation": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The id of the graduation"
+          },
+          "alumni_id": {
+            "type": "string",
+            "description": "The id of the alumni"
+          },
+          "course_id": {
+            "type": "string",
+            "description": "The id of the course"
+          },
+          "status": {
+            "type": "string",
+            "description": "The status of the graduation"
+          },
+          "conclusion_year": {
+            "type": "number",
+            "description": "The conclusion year of the graduation"
+          }
+        },
+        "required": [
+          "id",
+          "alumni_id",
+          "course_id",
+          "status",
+          "conclusion_year"
+        ]
+      },
       "Alumni": {
         "type": "object",
         "properties": {
@@ -187,12 +348,113 @@
             "items": {
               "$ref": "#/components/schemas/Role"
             }
+          },
+          "location": {
+            "description": "The current location of the alumni",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Location"
+              }
+            ]
+          },
+          "graduations": {
+            "description": "The graduation status(es) of the alumni",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Graduation"
+            }
           }
         },
         "required": [
           "id",
           "first_name",
+          "last_name",
+          "location"
+        ]
+      },
+      "CreateAlumniDto": {
+        "type": "object",
+        "properties": {
+          "first_name": {
+            "type": "string",
+            "description": "The first name of the alumni",
+            "example": "John"
+          },
+          "last_name": {
+            "type": "string",
+            "description": "The last name of the alumni",
+            "example": "Doe"
+          },
+          "linkedin_url": {
+            "type": "string",
+            "description": "The LinkedIn URL of the alumni",
+            "example": "https://www.linkedin.com/in/john-doe/"
+          },
+          "institutional_email": {
+            "type": "string",
+            "description": "The institutional email of the alumni",
+            "example": "john.doe@stanford.edu"
+          },
+          "personal_email": {
+            "type": "string",
+            "description": "The personal email of the alumni",
+            "example": "john.doe@gmail.com"
+          },
+          "person_id": {
+            "type": "string",
+            "description": "Application specific person ID",
+            "example": "v_n1dAL1gO"
+          }
+        },
+        "required": [
+          "first_name",
+          "last_name",
+          "linkedin_url"
+        ]
+      },
+      "LinkedinAuthDto": {
+        "type": "object",
+        "properties": {
+          "person_id": {
+            "type": "string",
+            "description": "A unique identifying value for the member. Referenced as personId in other API documentation pages."
+          },
+          "first_name": {
+            "type": "string",
+            "description": "The first name of the member."
+          },
+          "last_name": {
+            "type": "string",
+            "description": "The first name of the member."
+          },
+          "institutional_email": {
+            "type": "string",
+            "description": "The personal email of the member."
+          },
+          "profile_picture_url": {
+            "type": "string",
+            "description": "The URL of the member's profile picture."
+          }
+        },
+        "required": [
+          "person_id",
+          "first_name",
           "last_name"
+        ]
+      },
+      "UploadExtractionDto": {
+        "type": "object",
+        "properties": {
+          "faculty_id": {
+            "type": "string"
+          },
+          "course_id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "faculty_id",
+          "course_id"
         ]
       }
     }

@@ -1,0 +1,204 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Alumni {
+  id                  String       @id @default(uuid())
+  first_name          String
+  last_name           String
+  linkedin_url        String
+  personal_email      String?
+  current_location_id String?
+  created_at          DateTime     @default(now()) @db.Timestamp(6)
+  created_by          String?
+  updated_at          DateTime?    @db.Timestamp(6)
+  updated_by          String?
+  profile_picture_url String?
+  person_id           String?
+  student_id          String?
+  Location            Location?    @relation(fields: [current_location_id], references: [id])
+  Graduations         Graduation[]
+  Roles               Role[]
+
+  @@index([current_location_id])
+  @@index([first_name, last_name])
+  @@index([linkedin_url])
+  @@map("alumni")
+}
+
+model AlumniRaw {
+  id         String   @id
+  created_at DateTime @default(now()) @db.Timestamp(6)
+
+  @@map("alumni_raw")
+}
+
+model Company {
+  id           String   @id @default(uuid())
+  name         String
+  linkedin_url String?
+  industry_id  String
+  Industry     Industry @relation(fields: [industry_id], references: [id])
+  Role         Role[]
+
+  @@index([industry_id])
+  @@map("company")
+}
+
+model Course {
+  id                 String               @id @default(uuid())
+  name               String
+  created_at         DateTime             @default(now()) @db.Timestamp(6)
+  acronym            String
+  end_year           Int?
+  status             COURSE_STATUS        @default(ACTIVE)
+  faculty_id         String
+  name_int           String?
+  course_type        COURSE_TYPE?
+  start_year         Int
+  Faculty_Extraction Faculty_Extraction[]
+  Graduation         Graduation[]
+
+  @@map("course")
+}
+
+model Faculty {
+  id                 String               @id
+  name               String
+  name_int           String?
+  acronym            String?
+  Faculty_Extraction Faculty_Extraction[]
+
+  @@map("faculty")
+}
+
+model Faculty_Extraction {
+  id         String            @id
+  faculty_id String
+  course_id  String
+  student_id String
+  status     GRADUATION_STATUS
+  year       Int
+  Course     Course            @relation(fields: [course_id], references: [id])
+  Faculty    Faculty           @relation(fields: [faculty_id], references: [id])
+
+  @@map("faculty_extraction")
+}
+
+model Graduation {
+  id              String            @id
+  alumni_id       String
+  course_id       String
+  status          GRADUATION_STATUS
+  conclusion_year Int?
+  Alumni          Alumni            @relation(fields: [alumni_id], references: [id])
+  Course          Course            @relation(fields: [course_id], references: [id])
+
+  @@index([alumni_id])
+  @@index([course_id])
+  @@map("graduation")
+}
+
+model Industry {
+  id      String    @id @default(dbgenerated("gen_random_uuid()"))
+  name    String
+  Company Company[]
+
+  @@index([name])
+  @@map("industry")
+}
+
+model JobClassification {
+  id         String   @id
+  title      String
+  level      Int      @db.SmallInt
+  esco_code  String?
+  role_id    String
+  confidence Float
+  created_at DateTime @default(now()) @db.Timestamp(6)
+  Role       Role     @relation(fields: [role_id], references: [id])
+
+  @@index([role_id])
+  @@index([title])
+  @@map("job_classification")
+}
+
+model Location {
+  id           String   @id
+  city         String
+  country      String
+  latitude     Float?
+  longitude    Float?
+  country_code String
+  Alumni       Alumni[]
+  Role         Role[]
+  Problematic ProblematicLocation[]
+  @@index([city, country])
+  @@index([country_code])
+  @@index([latitude, longitude])
+  @@map("location")
+}
+
+// These are locations for which we cannot find coordinates
+// Manual work is thus needed :(
+model ProblematicLocation {
+  id          String   @id @default(uuid())
+  location_id String
+  Location Location @relation(fields: [location_id], references: [id])
+
+  @@map("problematic_location")
+}
+
+model Role {
+  id                String              @id
+  alumni_id         String
+  company_id        String
+  start_date        DateTime            @db.Timestamptz(6)
+  end_date          DateTime?           @db.Timestamptz(6)
+  seniority_level   SENIORITY_LEVEL
+  location_id       String?
+  JobClassification JobClassification[]
+  Alumni            Alumni              @relation(fields: [alumni_id], references: [id])
+  Company           Company             @relation(fields: [company_id], references: [id])
+  Location          Location?           @relation(fields: [location_id], references: [id])
+
+  @@index([alumni_id])
+  @@index([company_id])
+  @@index([location_id])
+  @@map("role")
+}
+
+enum COURSE_TYPE {
+  INTEGRATED
+  BACHELORS
+  MASTERS
+  DOCTORATE
+}
+
+enum GRADUATION_STATUS {
+  ACTIVE
+  GRADUATED
+  DROPOUT
+  EXTERNAL
+  NOT_ENROLLED
+}
+
+enum COURSE_STATUS {
+  ACTIVE
+  INACTIVE
+}
+
+enum SENIORITY_LEVEL {
+  INTERN
+  ENTRY_LEVEL
+  ASSOCIATE
+  MID_SENIOR_LEVEL
+  DIRECTOR
+  EXECUTIVE
+  C_LEVEL
+}

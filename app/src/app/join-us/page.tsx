@@ -24,7 +24,6 @@ const JoinPage = () => {
         </div>
 
         <div className="space-y-4">
-          {/* Privacy Policy Checkbox */}
           <div className="flex items-center space-x-2">
             <Checkbox 
               id="privacy" 
@@ -39,7 +38,6 @@ const JoinPage = () => {
             </label>
           </div>
 
-          {/* LinkedIn Option */}
           <Button
             onClick={onSignIn}
             disabled={!acceptedPolicy}
