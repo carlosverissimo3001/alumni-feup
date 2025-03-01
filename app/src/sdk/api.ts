@@ -59,6 +59,18 @@ export interface Alumni {
      * @memberof Alumni
      */
     'roles'?: Array<Role>;
+    /**
+     * The current location of the alumni
+     * @type {Location}
+     * @memberof Alumni
+     */
+    'location': Location;
+    /**
+     * The graduation status(es) of the alumni
+     * @type {Array<Graduation>}
+     * @memberof Alumni
+     */
+    'graduations'?: Array<Graduation>;
 }
 /**
  * 
@@ -106,6 +118,43 @@ export interface CreateAlumniDto {
 /**
  * 
  * @export
+ * @interface Graduation
+ */
+export interface Graduation {
+    /**
+     * The id of the graduation
+     * @type {string}
+     * @memberof Graduation
+     */
+    'id': string;
+    /**
+     * The id of the alumni
+     * @type {string}
+     * @memberof Graduation
+     */
+    'alumni_id': string;
+    /**
+     * The id of the course
+     * @type {string}
+     * @memberof Graduation
+     */
+    'course_id': string;
+    /**
+     * The status of the graduation
+     * @type {string}
+     * @memberof Graduation
+     */
+    'status': string;
+    /**
+     * The conclusion year of the graduation
+     * @type {number}
+     * @memberof Graduation
+     */
+    'conclusion_year': number;
+}
+/**
+ * 
+ * @export
  * @interface LinkedinAuthDto
  */
 export interface LinkedinAuthDto {
@@ -139,6 +188,49 @@ export interface LinkedinAuthDto {
      * @memberof LinkedinAuthDto
      */
     'profile_picture_url'?: string;
+}
+/**
+ * 
+ * @export
+ * @interface Location
+ */
+export interface Location {
+    /**
+     * The id of the location
+     * @type {string}
+     * @memberof Location
+     */
+    'id': string;
+    /**
+     * The city of the location
+     * @type {string}
+     * @memberof Location
+     */
+    'city': string;
+    /**
+     * The country of the location
+     * @type {string}
+     * @memberof Location
+     */
+    'country': string;
+    /**
+     * The latitude of the location
+     * @type {number}
+     * @memberof Location
+     */
+    'latitude'?: number;
+    /**
+     * The longitude of the location
+     * @type {number}
+     * @memberof Location
+     */
+    'longitude'?: number;
+    /**
+     * The country code of the location
+     * @type {string}
+     * @memberof Location
+     */
+    'country_code': string;
 }
 /**
  * 
@@ -195,6 +287,756 @@ export interface Role {
      */
     'esco_l2': string;
 }
+/**
+ * 
+ * @export
+ * @interface UploadExtractionDto
+ */
+export interface UploadExtractionDto {
+    /**
+     * 
+     * @type {string}
+     * @memberof UploadExtractionDto
+     */
+    'faculty_id': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof UploadExtractionDto
+     */
+    'course_id': string;
+}
+
+/**
+ * AlumniApi - axios parameter creator
+ * @export
+ */
+export const AlumniApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * 
+         * @summary Create a new alumni
+         * @param {CreateAlumniDto} createAlumniDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        alumniControllerCreate: async (createAlumniDto: CreateAlumniDto, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'createAlumniDto' is not null or undefined
+            assertParamExists('alumniControllerCreate', 'createAlumniDto', createAlumniDto)
+            const localVarPath = `/api/alumni`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(createAlumniDto, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Get all alumni, enriched with location, graduations and roles
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        alumniControllerFindAll: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/api/alumni`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Get alumni by id, enriched with location, graduations and roles
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        alumniControllerFindOne: async (id: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('alumniControllerFindOne', 'id', id)
+            const localVarPath = `/api/alumni/{id}`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * AlumniApi - functional programming interface
+ * @export
+ */
+export const AlumniApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = AlumniApiAxiosParamCreator(configuration)
+    return {
+        /**
+         * 
+         * @summary Create a new alumni
+         * @param {CreateAlumniDto} createAlumniDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async alumniControllerCreate(createAlumniDto: CreateAlumniDto, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Alumni>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.alumniControllerCreate(createAlumniDto, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['AlumniApi.alumniControllerCreate']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @summary Get all alumni, enriched with location, graduations and roles
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async alumniControllerFindAll(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<Alumni>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.alumniControllerFindAll(options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['AlumniApi.alumniControllerFindAll']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @summary Get alumni by id, enriched with location, graduations and roles
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async alumniControllerFindOne(id: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Alumni>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.alumniControllerFindOne(id, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['AlumniApi.alumniControllerFindOne']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+    }
+};
+
+/**
+ * AlumniApi - factory interface
+ * @export
+ */
+export const AlumniApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = AlumniApiFp(configuration)
+    return {
+        /**
+         * 
+         * @summary Create a new alumni
+         * @param {CreateAlumniDto} createAlumniDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        alumniControllerCreate(createAlumniDto: CreateAlumniDto, options?: RawAxiosRequestConfig): AxiosPromise<Alumni> {
+            return localVarFp.alumniControllerCreate(createAlumniDto, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Get all alumni, enriched with location, graduations and roles
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        alumniControllerFindAll(options?: RawAxiosRequestConfig): AxiosPromise<Array<Alumni>> {
+            return localVarFp.alumniControllerFindAll(options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Get alumni by id, enriched with location, graduations and roles
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        alumniControllerFindOne(id: string, options?: RawAxiosRequestConfig): AxiosPromise<Alumni> {
+            return localVarFp.alumniControllerFindOne(id, options).then((request) => request(axios, basePath));
+        },
+    };
+};
+
+/**
+ * AlumniApi - interface
+ * @export
+ * @interface AlumniApi
+ */
+export interface AlumniApiInterface {
+    /**
+     * 
+     * @summary Create a new alumni
+     * @param {CreateAlumniDto} createAlumniDto 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof AlumniApiInterface
+     */
+    alumniControllerCreate(createAlumniDto: CreateAlumniDto, options?: RawAxiosRequestConfig): AxiosPromise<Alumni>;
+
+    /**
+     * 
+     * @summary Get all alumni, enriched with location, graduations and roles
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof AlumniApiInterface
+     */
+    alumniControllerFindAll(options?: RawAxiosRequestConfig): AxiosPromise<Array<Alumni>>;
+
+    /**
+     * 
+     * @summary Get alumni by id, enriched with location, graduations and roles
+     * @param {string} id 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof AlumniApiInterface
+     */
+    alumniControllerFindOne(id: string, options?: RawAxiosRequestConfig): AxiosPromise<Alumni>;
+
+}
+
+/**
+ * AlumniApi - object-oriented interface
+ * @export
+ * @class AlumniApi
+ * @extends {BaseAPI}
+ */
+export class AlumniApi extends BaseAPI implements AlumniApiInterface {
+    /**
+     * 
+     * @summary Create a new alumni
+     * @param {CreateAlumniDto} createAlumniDto 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof AlumniApi
+     */
+    public alumniControllerCreate(createAlumniDto: CreateAlumniDto, options?: RawAxiosRequestConfig) {
+        return AlumniApiFp(this.configuration).alumniControllerCreate(createAlumniDto, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Get all alumni, enriched with location, graduations and roles
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof AlumniApi
+     */
+    public alumniControllerFindAll(options?: RawAxiosRequestConfig) {
+        return AlumniApiFp(this.configuration).alumniControllerFindAll(options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Get alumni by id, enriched with location, graduations and roles
+     * @param {string} id 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof AlumniApi
+     */
+    public alumniControllerFindOne(id: string, options?: RawAxiosRequestConfig) {
+        return AlumniApiFp(this.configuration).alumniControllerFindOne(id, options).then((request) => request(this.axios, this.basePath));
+    }
+}
+
+
+
+/**
+ * CompanyApi - axios parameter creator
+ * @export
+ */
+export const CompanyApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * 
+         * @summary Get all companies
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        companyControllerFindAll: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/api/company`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Get company by id
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        companyControllerFindOne: async (id: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('companyControllerFindOne', 'id', id)
+            const localVarPath = `/api/company/{id}`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * CompanyApi - functional programming interface
+ * @export
+ */
+export const CompanyApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = CompanyApiAxiosParamCreator(configuration)
+    return {
+        /**
+         * 
+         * @summary Get all companies
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async companyControllerFindAll(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.companyControllerFindAll(options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['CompanyApi.companyControllerFindAll']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @summary Get company by id
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async companyControllerFindOne(id: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.companyControllerFindOne(id, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['CompanyApi.companyControllerFindOne']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+    }
+};
+
+/**
+ * CompanyApi - factory interface
+ * @export
+ */
+export const CompanyApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = CompanyApiFp(configuration)
+    return {
+        /**
+         * 
+         * @summary Get all companies
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        companyControllerFindAll(options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.companyControllerFindAll(options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Get company by id
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        companyControllerFindOne(id: string, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.companyControllerFindOne(id, options).then((request) => request(axios, basePath));
+        },
+    };
+};
+
+/**
+ * CompanyApi - interface
+ * @export
+ * @interface CompanyApi
+ */
+export interface CompanyApiInterface {
+    /**
+     * 
+     * @summary Get all companies
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof CompanyApiInterface
+     */
+    companyControllerFindAll(options?: RawAxiosRequestConfig): AxiosPromise<void>;
+
+    /**
+     * 
+     * @summary Get company by id
+     * @param {string} id 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof CompanyApiInterface
+     */
+    companyControllerFindOne(id: string, options?: RawAxiosRequestConfig): AxiosPromise<void>;
+
+}
+
+/**
+ * CompanyApi - object-oriented interface
+ * @export
+ * @class CompanyApi
+ * @extends {BaseAPI}
+ */
+export class CompanyApi extends BaseAPI implements CompanyApiInterface {
+    /**
+     * 
+     * @summary Get all companies
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof CompanyApi
+     */
+    public companyControllerFindAll(options?: RawAxiosRequestConfig) {
+        return CompanyApiFp(this.configuration).companyControllerFindAll(options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Get company by id
+     * @param {string} id 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof CompanyApi
+     */
+    public companyControllerFindOne(id: string, options?: RawAxiosRequestConfig) {
+        return CompanyApiFp(this.configuration).companyControllerFindOne(id, options).then((request) => request(this.axios, this.basePath));
+    }
+}
+
+
+
+/**
+ * ExtractionsApi - axios parameter creator
+ * @export
+ */
+export const ExtractionsApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * 
+         * @summary Upload a CSV file for faculty extractions
+         * @param {UploadExtractionDto} uploadExtractionDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        extractionsControllerUploadFile: async (uploadExtractionDto: UploadExtractionDto, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'uploadExtractionDto' is not null or undefined
+            assertParamExists('extractionsControllerUploadFile', 'uploadExtractionDto', uploadExtractionDto)
+            const localVarPath = `/api/extractions/upload`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(uploadExtractionDto, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * ExtractionsApi - functional programming interface
+ * @export
+ */
+export const ExtractionsApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = ExtractionsApiAxiosParamCreator(configuration)
+    return {
+        /**
+         * 
+         * @summary Upload a CSV file for faculty extractions
+         * @param {UploadExtractionDto} uploadExtractionDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async extractionsControllerUploadFile(uploadExtractionDto: UploadExtractionDto, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.extractionsControllerUploadFile(uploadExtractionDto, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['ExtractionsApi.extractionsControllerUploadFile']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+    }
+};
+
+/**
+ * ExtractionsApi - factory interface
+ * @export
+ */
+export const ExtractionsApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = ExtractionsApiFp(configuration)
+    return {
+        /**
+         * 
+         * @summary Upload a CSV file for faculty extractions
+         * @param {UploadExtractionDto} uploadExtractionDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        extractionsControllerUploadFile(uploadExtractionDto: UploadExtractionDto, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.extractionsControllerUploadFile(uploadExtractionDto, options).then((request) => request(axios, basePath));
+        },
+    };
+};
+
+/**
+ * ExtractionsApi - interface
+ * @export
+ * @interface ExtractionsApi
+ */
+export interface ExtractionsApiInterface {
+    /**
+     * 
+     * @summary Upload a CSV file for faculty extractions
+     * @param {UploadExtractionDto} uploadExtractionDto 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ExtractionsApiInterface
+     */
+    extractionsControllerUploadFile(uploadExtractionDto: UploadExtractionDto, options?: RawAxiosRequestConfig): AxiosPromise<void>;
+
+}
+
+/**
+ * ExtractionsApi - object-oriented interface
+ * @export
+ * @class ExtractionsApi
+ * @extends {BaseAPI}
+ */
+export class ExtractionsApi extends BaseAPI implements ExtractionsApiInterface {
+    /**
+     * 
+     * @summary Upload a CSV file for faculty extractions
+     * @param {UploadExtractionDto} uploadExtractionDto 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ExtractionsApi
+     */
+    public extractionsControllerUploadFile(uploadExtractionDto: UploadExtractionDto, options?: RawAxiosRequestConfig) {
+        return ExtractionsApiFp(this.configuration).extractionsControllerUploadFile(uploadExtractionDto, options).then((request) => request(this.axios, this.basePath));
+    }
+}
+
+
+
+/**
+ * UserApi - axios parameter creator
+ * @export
+ */
+export const UserApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * 
+         * @summary Authenticate a user with LinkedIn
+         * @param {LinkedinAuthDto} linkedinAuthDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        userControllerLinkedinAuth: async (linkedinAuthDto: LinkedinAuthDto, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'linkedinAuthDto' is not null or undefined
+            assertParamExists('userControllerLinkedinAuth', 'linkedinAuthDto', linkedinAuthDto)
+            const localVarPath = `/api/user/linkedinAuth`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(linkedinAuthDto, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * UserApi - functional programming interface
+ * @export
+ */
+export const UserApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = UserApiAxiosParamCreator(configuration)
+    return {
+        /**
+         * 
+         * @summary Authenticate a user with LinkedIn
+         * @param {LinkedinAuthDto} linkedinAuthDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async userControllerLinkedinAuth(linkedinAuthDto: LinkedinAuthDto, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Alumni>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.userControllerLinkedinAuth(linkedinAuthDto, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['UserApi.userControllerLinkedinAuth']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+    }
+};
+
+/**
+ * UserApi - factory interface
+ * @export
+ */
+export const UserApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = UserApiFp(configuration)
+    return {
+        /**
+         * 
+         * @summary Authenticate a user with LinkedIn
+         * @param {LinkedinAuthDto} linkedinAuthDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        userControllerLinkedinAuth(linkedinAuthDto: LinkedinAuthDto, options?: RawAxiosRequestConfig): AxiosPromise<Alumni> {
+            return localVarFp.userControllerLinkedinAuth(linkedinAuthDto, options).then((request) => request(axios, basePath));
+        },
+    };
+};
+
+/**
+ * UserApi - interface
+ * @export
+ * @interface UserApi
+ */
+export interface UserApiInterface {
+    /**
+     * 
+     * @summary Authenticate a user with LinkedIn
+     * @param {LinkedinAuthDto} linkedinAuthDto 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof UserApiInterface
+     */
+    userControllerLinkedinAuth(linkedinAuthDto: LinkedinAuthDto, options?: RawAxiosRequestConfig): AxiosPromise<Alumni>;
+
+}
+
+/**
+ * UserApi - object-oriented interface
+ * @export
+ * @class UserApi
+ * @extends {BaseAPI}
+ */
+export class UserApi extends BaseAPI implements UserApiInterface {
+    /**
+     * 
+     * @summary Authenticate a user with LinkedIn
+     * @param {LinkedinAuthDto} linkedinAuthDto 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof UserApi
+     */
+    public userControllerLinkedinAuth(linkedinAuthDto: LinkedinAuthDto, options?: RawAxiosRequestConfig) {
+        return UserApiFp(this.configuration).userControllerLinkedinAuth(linkedinAuthDto, options).then((request) => request(this.axios, this.basePath));
+    }
+}
+
+
 
 /**
  * V1Api - axios parameter creator
@@ -240,7 +1082,7 @@ export const V1ApiAxiosParamCreator = function (configuration?: Configuration) {
         },
         /**
          * 
-         * @summary Get all alumni
+         * @summary Get all alumni, enriched with location, graduations and roles
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -270,7 +1112,7 @@ export const V1ApiAxiosParamCreator = function (configuration?: Configuration) {
         },
         /**
          * 
-         * @summary Get alumni by id
+         * @summary Get alumni by id, enriched with location, graduations and roles
          * @param {string} id 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -369,16 +1211,13 @@ export const V1ApiAxiosParamCreator = function (configuration?: Configuration) {
         /**
          * 
          * @summary Upload a CSV file for faculty extractions
-         * @param {string} facultyId 
-         * @param {string} courseId 
+         * @param {UploadExtractionDto} uploadExtractionDto 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        extractionsControllerUploadFile: async (facultyId: string, courseId: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'facultyId' is not null or undefined
-            assertParamExists('extractionsControllerUploadFile', 'facultyId', facultyId)
-            // verify required parameter 'courseId' is not null or undefined
-            assertParamExists('extractionsControllerUploadFile', 'courseId', courseId)
+        extractionsControllerUploadFile: async (uploadExtractionDto: UploadExtractionDto, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'uploadExtractionDto' is not null or undefined
+            assertParamExists('extractionsControllerUploadFile', 'uploadExtractionDto', uploadExtractionDto)
             const localVarPath = `/api/extractions/upload`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -390,24 +1229,15 @@ export const V1ApiAxiosParamCreator = function (configuration?: Configuration) {
             const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
-            const localVarFormParams = new ((configuration && configuration.formDataCtor) || FormData)();
 
 
-            if (facultyId !== undefined) { 
-                localVarFormParams.append('faculty_id', facultyId as any);
-            }
     
-            if (courseId !== undefined) { 
-                localVarFormParams.append('course_id', courseId as any);
-            }
-    
-    
-            localVarHeaderParameter['Content-Type'] = 'multipart/form-data';
-    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = localVarFormParams;
+            localVarRequestOptions.data = serializeDataIfNeeded(uploadExtractionDto, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -475,7 +1305,7 @@ export const V1ApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
-         * @summary Get all alumni
+         * @summary Get all alumni, enriched with location, graduations and roles
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -487,7 +1317,7 @@ export const V1ApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
-         * @summary Get alumni by id
+         * @summary Get alumni by id, enriched with location, graduations and roles
          * @param {string} id 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -526,13 +1356,12 @@ export const V1ApiFp = function(configuration?: Configuration) {
         /**
          * 
          * @summary Upload a CSV file for faculty extractions
-         * @param {string} facultyId 
-         * @param {string} courseId 
+         * @param {UploadExtractionDto} uploadExtractionDto 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async extractionsControllerUploadFile(facultyId: string, courseId: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.extractionsControllerUploadFile(facultyId, courseId, options);
+        async extractionsControllerUploadFile(uploadExtractionDto: UploadExtractionDto, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.extractionsControllerUploadFile(uploadExtractionDto, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['V1Api.extractionsControllerUploadFile']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -572,7 +1401,7 @@ export const V1ApiFactory = function (configuration?: Configuration, basePath?: 
         },
         /**
          * 
-         * @summary Get all alumni
+         * @summary Get all alumni, enriched with location, graduations and roles
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -581,7 +1410,7 @@ export const V1ApiFactory = function (configuration?: Configuration, basePath?: 
         },
         /**
          * 
-         * @summary Get alumni by id
+         * @summary Get alumni by id, enriched with location, graduations and roles
          * @param {string} id 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -611,13 +1440,12 @@ export const V1ApiFactory = function (configuration?: Configuration, basePath?: 
         /**
          * 
          * @summary Upload a CSV file for faculty extractions
-         * @param {string} facultyId 
-         * @param {string} courseId 
+         * @param {UploadExtractionDto} uploadExtractionDto 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        extractionsControllerUploadFile(facultyId: string, courseId: string, options?: RawAxiosRequestConfig): AxiosPromise<void> {
-            return localVarFp.extractionsControllerUploadFile(facultyId, courseId, options).then((request) => request(axios, basePath));
+        extractionsControllerUploadFile(uploadExtractionDto: UploadExtractionDto, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.extractionsControllerUploadFile(uploadExtractionDto, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -650,7 +1478,7 @@ export interface V1ApiInterface {
 
     /**
      * 
-     * @summary Get all alumni
+     * @summary Get all alumni, enriched with location, graduations and roles
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof V1ApiInterface
@@ -659,7 +1487,7 @@ export interface V1ApiInterface {
 
     /**
      * 
-     * @summary Get alumni by id
+     * @summary Get alumni by id, enriched with location, graduations and roles
      * @param {string} id 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -689,13 +1517,12 @@ export interface V1ApiInterface {
     /**
      * 
      * @summary Upload a CSV file for faculty extractions
-     * @param {string} facultyId 
-     * @param {string} courseId 
+     * @param {UploadExtractionDto} uploadExtractionDto 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof V1ApiInterface
      */
-    extractionsControllerUploadFile(facultyId: string, courseId: string, options?: RawAxiosRequestConfig): AxiosPromise<void>;
+    extractionsControllerUploadFile(uploadExtractionDto: UploadExtractionDto, options?: RawAxiosRequestConfig): AxiosPromise<void>;
 
     /**
      * 
@@ -730,7 +1557,7 @@ export class V1Api extends BaseAPI implements V1ApiInterface {
 
     /**
      * 
-     * @summary Get all alumni
+     * @summary Get all alumni, enriched with location, graduations and roles
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof V1Api
@@ -741,7 +1568,7 @@ export class V1Api extends BaseAPI implements V1ApiInterface {
 
     /**
      * 
-     * @summary Get alumni by id
+     * @summary Get alumni by id, enriched with location, graduations and roles
      * @param {string} id 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -777,14 +1604,13 @@ export class V1Api extends BaseAPI implements V1ApiInterface {
     /**
      * 
      * @summary Upload a CSV file for faculty extractions
-     * @param {string} facultyId 
-     * @param {string} courseId 
+     * @param {UploadExtractionDto} uploadExtractionDto 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof V1Api
      */
-    public extractionsControllerUploadFile(facultyId: string, courseId: string, options?: RawAxiosRequestConfig) {
-        return V1ApiFp(this.configuration).extractionsControllerUploadFile(facultyId, courseId, options).then((request) => request(this.axios, this.basePath));
+    public extractionsControllerUploadFile(uploadExtractionDto: UploadExtractionDto, options?: RawAxiosRequestConfig) {
+        return V1ApiFp(this.configuration).extractionsControllerUploadFile(uploadExtractionDto, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
