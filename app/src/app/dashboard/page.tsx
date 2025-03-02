@@ -83,7 +83,7 @@ export default function Dashboard() {
           <h2 className="text-xl font-semibold text-gray-800">Coming Soon Features</h2>
           <ul className="text-gray-600 space-y-2">
             <li>📊 Detailed Alumni Statistics</li>
-            <li>🌍 Global Distribution Map</li>
+            <li>🌍 (Enhanced) Global Distribution Map</li>
             <li>🎓 Graduation Year Trends</li>
             <li>💼 Industry Sector Analysis</li>
           </ul>

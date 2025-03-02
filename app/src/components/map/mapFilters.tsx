@@ -244,7 +244,8 @@ const MapFilters = ({
     <div
       className={cn(
         "fixed top-5 z-50 transition-all duration-300",
-        isCollapsed ? "left-24" : "left-64"
+        isCollapsed ? "left-24" : "left-64",
+        !isVisible && "pointer-events-none"
       )}
     >
       {/* Toggle Button Container */}
@@ -252,7 +253,8 @@ const MapFilters = ({
         onClick={toggleVisibility}
         className={cn(
           "bg-[#EDEDEC] rounded-md p-2 flex items-center justify-between gap-2 transition-all cursor-pointer duration-300 h-10",
-          isVisible ? "rounded-b-none" : "hover:bg-[#E5E5E4] "
+          isVisible ? "rounded-b-none" : "hover:bg-[#E5E5E4]",
+          !isVisible && "pointer-events-auto"
         )}
       >
         {!isVisible && (
@@ -333,6 +335,7 @@ const MapFilters = ({
               variant="inverted"
               maxCount={4}
               disabled={isLoadingCourses || !Array.isArray(courses)}
+              allowSelectAll={true}
             />
           </div>
 
