@@ -250,7 +250,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/Course"
+                    "$ref": "#/components/schemas/CourseExtended"
                   }
                 }
               }
@@ -283,7 +283,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Course"
+                  "$ref": "#/components/schemas/CourseExtended"
                 }
               }
             }
@@ -577,6 +577,56 @@
         "required": [
           "faculty_id",
           "course_id"
+        ]
+      },
+      "CourseExtended": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "The name of the course"
+          },
+          "acronym": {
+            "type": "string",
+            "description": "The acronym of the course"
+          },
+          "id": {
+            "type": "string",
+            "description": "The id of the course"
+          },
+          "start_year": {
+            "type": "number",
+            "description": "The start year of the course"
+          },
+          "end_year": {
+            "type": "object",
+            "description": "The end year of the course, if it is not active"
+          },
+          "status": {
+            "type": "string",
+            "description": "The status of the course"
+          },
+          "faculty_id": {
+            "type": "string",
+            "description": "The faculty id of the course"
+          },
+          "name_int": {
+            "type": "object",
+            "description": "The name of the course in the international language"
+          },
+          "course_type": {
+            "type": "string",
+            "description": "The type of the course"
+          }
+        },
+        "required": [
+          "name",
+          "acronym",
+          "id",
+          "start_year",
+          "status",
+          "faculty_id",
+          "course_type"
         ]
       }
     }
