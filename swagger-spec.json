@@ -58,6 +58,54 @@
         ]
       }
     },
+    "/api/alumni/geoJSON": {
+      "get": {
+        "operationId": "AlumniController_findAllGeoJSON",
+        "parameters": [
+          {
+            "name": "courseIds",
+            "required": false,
+            "in": "query",
+            "description": "The ID(s) of the course(s)",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "conclusionYears",
+            "required": false,
+            "in": "query",
+            "description": "The year(s) of conclusion(s)",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": "Returns all alumni to be displayed in the map",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GeoJSONFeatureCollection"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Get all alumni to be displayed in the map",
+        "tags": [
+          "V1",
+          "Alumni"
+        ]
+      }
+    },
     "/api/alumni/{id}": {
       "get": {
         "operationId": "AlumniController_findOne",
@@ -189,6 +237,64 @@
           "Extractions"
         ]
       }
+    },
+    "/api/course": {
+      "get": {
+        "operationId": "CourseController_findAll",
+        "parameters": [],
+        "responses": {
+          "default": {
+            "description": "Returns all courses",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Course"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "Get all courses",
+        "tags": [
+          "V1",
+          "Course"
+        ]
+      }
+    },
+    "/api/course/{id}": {
+      "get": {
+        "operationId": "CourseController_findOne",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": "Returns a course",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Course"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Get a course by id",
+        "tags": [
+          "V1",
+          "Course"
+        ]
+      }
     }
   },
   "info": {
@@ -256,71 +362,47 @@
           "esco_l2"
         ]
       },
-      "Location": {
+      "Course": {
         "type": "object",
         "properties": {
-          "id": {
+          "name": {
             "type": "string",
-            "description": "The id of the location"
+            "description": "The name of the course"
           },
-          "city": {
+          "acronym": {
             "type": "string",
-            "description": "The city of the location"
-          },
-          "country": {
-            "type": "string",
-            "description": "The country of the location"
-          },
-          "latitude": {
-            "type": "number",
-            "description": "The latitude of the location"
-          },
-          "longitude": {
-            "type": "number",
-            "description": "The longitude of the location"
-          },
-          "country_code": {
-            "type": "string",
-            "description": "The country code of the location"
+            "description": "The acronym of the course"
           }
         },
         "required": [
-          "id",
-          "city",
-          "country",
-          "country_code"
+          "name",
+          "acronym"
         ]
       },
       "Graduation": {
         "type": "object",
         "properties": {
-          "id": {
-            "type": "string",
-            "description": "The id of the graduation"
-          },
-          "alumni_id": {
-            "type": "string",
-            "description": "The id of the alumni"
-          },
-          "course_id": {
-            "type": "string",
-            "description": "The id of the course"
-          },
           "status": {
             "type": "string",
             "description": "The status of the graduation"
           },
           "conclusion_year": {
-            "type": "number",
+            "type": "object",
             "description": "The conclusion year of the graduation"
+          },
+          "Course": {
+            "description": "The course of the graduation",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Course"
+              }
+            ]
           }
         },
         "required": [
-          "id",
-          "alumni_id",
-          "course_id",
           "status",
-          "conclusion_year"
+          "conclusion_year",
+          "Course"
         ]
       },
       "Alumni": {
@@ -349,15 +431,11 @@
               "$ref": "#/components/schemas/Role"
             }
           },
-          "location": {
-            "description": "The current location of the alumni",
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/Location"
-              }
-            ]
+          "Location": {
+            "type": "object",
+            "description": "The current location of the alumni"
           },
-          "graduations": {
+          "Graduations": {
             "description": "The graduation status(es) of the alumni",
             "type": "array",
             "items": {
@@ -368,8 +446,46 @@
         "required": [
           "id",
           "first_name",
-          "last_name",
-          "location"
+          "last_name"
+        ]
+      },
+      "GeoJSONFeature": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "example": "Feature"
+          },
+          "geometry": {
+            "type": "object"
+          },
+          "properties": {
+            "type": "object"
+          }
+        },
+        "required": [
+          "type",
+          "geometry",
+          "properties"
+        ]
+      },
+      "GeoJSONFeatureCollection": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "example": "FeatureCollection"
+          },
+          "features": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/GeoJSONFeature"
+            }
+          }
+        },
+        "required": [
+          "type",
+          "features"
         ]
       },
       "CreateAlumniDto": {
@@ -404,12 +520,18 @@
             "type": "string",
             "description": "Application specific person ID",
             "example": "v_n1dAL1gO"
+          },
+          "created_by": {
+            "type": "string",
+            "description": "The creator of the alumni",
+            "example": "alumni-api"
           }
         },
         "required": [
           "first_name",
           "last_name",
-          "linkedin_url"
+          "linkedin_url",
+          "created_by"
         ]
       },
       "LinkedinAuthDto": {

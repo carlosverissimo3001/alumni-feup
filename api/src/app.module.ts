@@ -7,6 +7,7 @@ import { BullModule } from '@nestjs/bull';
 import { ExtractionsModule } from './extractions/extractions.module';
 import { GeolocationModule } from './geolocation/geolocation.module';
 import { ConfigModule } from '@nestjs/config';
+import { CourseModule } from './course/course.module';
 @Module({
   imports: [
     BullModule.forRoot({
@@ -26,6 +27,7 @@ import { ConfigModule } from '@nestjs/config';
     BrightdataModule,
     ExtractionsModule,
     GeolocationModule,
+    CourseModule,
   ],
 })
 export class AppModule {}

@@ -1,40 +1,56 @@
 /**
-* This class is responsable for the display of the world map Based on the filetrs and searches performed on the MenuButton.js Component.
-* This class communicates with the MenuButton component through the MapCmp.js
-*/
-import React, {useState, useEffect, useRef, useCallback} from 'react';
-import { Map as MapGL } from 'react-map-gl/mapbox';
-import MapGLSource from './mapGlSource';
-import ClusterInfo from './clusterInfo';
-import Helper from './helper/helper';
-import { clusterLayer } from './mapLayers';
-import { cn } from '@/lib/utils';
-import { useNavbar } from '@/contexts/NavbarContext';
+ * This class is responsible for the display of the world map based on the filters and searches performed in the MapFilters.tsx component.
+ * This class communicates with the filters through the parent component, the "main" component.
+ */
+import React, { useState, useEffect, useRef, useCallback } from "react";
+import { Map as MapGL } from "react-map-gl/mapbox";
+import MapGLSource from "./mapGlSource";
+import ClusterInfo from "./clusterInfo";
+import { cn } from "@/lib/utils";
+import { clusterLayer } from "./mapLayers";
+import { useNavbar } from "@/contexts/NavbarContext";
+import {
+  parsePlaceNames,
+  buildAlumniData,
+  extractCoursesYears,
+  extractFeatureFields,
+} from "./utils/helper";
+import { GeoJSONFeatureCollection } from "@/sdk";
+import 'mapbox-gl/dist/mapbox-gl.css';
 
-interface MapViewProps {
-  className?: string;
-  loading: boolean;
-  alumniGeoJSON: any;
-  handleImageError: (event: React.SyntheticEvent<HTMLImageElement, Event>) => void;
-  selectedAlumni: any;
+interface AlumniData {
+  name: string;
+  linkedinLink: string;
+  location: string;
 }
 
+type MapViewProps = {
+  loading: boolean;
+  alumniGeoJSON: GeoJSONFeatureCollection | null;
+  selectedAlumni: {
+    name: string;
+    coordinates: { lat: number; lng: number } | null;
+  } | null;
+  handleSelectAlumni: (name: string, coordinates: number[]) => void;
+  handleSelectGeoJSON: (geoData: GeoJSONFeatureCollection) => void;
+};
+
 const MapView = ({
-  className,
-  clusterLayer,
   loading,
   alumniGeoJSON,
-  handleImageError,
   selectedAlumni,
+  handleSelectAlumni,
+  handleSelectGeoJSON,
 }: MapViewProps) => {
-  
-  const [hoveredMouseCoords, setHoveredMouseCoords] = useState([]);
-  const [listPlaceName, setListPlaceName] = useState(null);
-  const [listAlumniNames, setListAlumniNames] = useState(null);
-  const [listLinkedinLinks, setListLinkedinLinks] = useState(null);
-  const [alumniData, setAlumniData] = useState([]);
-  const [hoveredCluster, setHoveredCluster] = useState(Boolean);
-  const mapRef = useRef(null);
+  const [hoveredMouseCoords, setHoveredMouseCoords] = useState<
+    [number, number] | null
+  >(null);
+  const [listPlaceName, setListPlaceName] = useState<string[]>([]);
+  const [listAlumniNames, setListAlumniNames] = useState<string[]>([]);
+  const [listLinkedinLinks, setListLinkedinLinks] = useState<string[]>([]);
+  const [alumniData, setAlumniData] = useState<AlumniData[]>([]);
+  const [hoveredCluster, setHoveredCluster] = useState(false);
+  const mapRef = useRef<any>(null);
 
   const [mapLoaded, setMapLoaded] = useState(false);
 
@@ -44,13 +60,12 @@ const MapView = ({
     setMapLoaded(true);
   }, []);
 
-
   // Zooms to the selected alumni
   useEffect(() => {
     if (selectedAlumni && mapLoaded && mapRef.current) {
       const { name, coordinates } = selectedAlumni;
       const zoom = name.length !== 0 ? 10 : 3;
-      
+
       if (coordinates) {
         const map = mapRef.current.getMap();
         if (map) {
@@ -63,8 +78,17 @@ const MapView = ({
     }
   }, [selectedAlumni, mapLoaded]);
 
-  const updateState = (listPlaceName, listAlumniNames, listLinkedinLinks, alumniData) => {
-    if (listAlumniNames.length > 0 && listLinkedinLinks.length > 0 && listPlaceName.length > 0) {
+  const updateState = (
+    listPlaceName: string[],
+    listAlumniNames: string[],
+    listLinkedinLinks: string[],
+    alumniData: AlumniData[]
+  ) => {
+    if (
+      listAlumniNames.length > 0 &&
+      listLinkedinLinks.length > 0 &&
+      listPlaceName.length > 0
+    ) {
       setListPlaceName(listPlaceName);
       setListAlumniNames(listAlumniNames);
       setListLinkedinLinks(listLinkedinLinks);
@@ -78,13 +102,13 @@ const MapView = ({
       setHoveredCluster(false);
       setHoveredMouseCoords(null);
     }
-  }
+  };
 
   // Clusters content
-  const showClusterContent = async event => {
+  const showClusterContent = async (event: any) => {
     try {
-      // Add null checks for event and event.lngLat
       if (!event || !event.features) {
+        updateState([], [], [], []);
         return;
       }
 
@@ -94,64 +118,79 @@ const MapView = ({
 
       if (event.features && event.features.length > 0) {
         // Extracts feature fields
-        const feature = event.features[0]; 
-        const {listPlaceName, listLinkedinLinks, listAlumniNames, coursesYearConclusionByUser} = await Helper.extractFeatureFields(feature);
-        
-        const profilePics = await Helper.extractPathToProfilePics(listLinkedinLinks);
-        const mapUserCoursesYears = await Helper.extractCoursesYears(coursesYearConclusionByUser);
-        const alumniData = await Helper.buildAlumniData(listLinkedinLinks, listAlumniNames, profilePics, mapUserCoursesYears);
-        const parsedFlattenedPlaceNames = await Helper.parsePlaceNames(listPlaceName);
+        const feature = event.features[0];
+        const {
+          listPlaceName,
+          listLinkedinLinks,
+          listAlumniNames,
+          coursesYearConclusionByUser,
+        } = await extractFeatureFields(feature);
 
-        updateState(parsedFlattenedPlaceNames, listAlumniNames, listLinkedinLinks, alumniData);
+        const profilePics = await extractPathToProfilePics(listLinkedinLinks);
+        const mapUserCoursesYears = await extractCoursesYears(
+          coursesYearConclusionByUser
+        );
+        const alumniData = await buildAlumniData(
+          listLinkedinLinks,
+          listAlumniNames,
+          profilePics,
+          mapUserCoursesYears
+        );
+        const parsedFlattenedPlaceNames = await parsePlaceNames(listPlaceName);
+
+        updateState(
+          parsedFlattenedPlaceNames,
+          listAlumniNames,
+          listLinkedinLinks,
+          alumniData
+        );
       } else {
         updateState([], [], [], []);
       }
     } catch (error) {
-      console.error("Map interaction error:", error);
+      console.error("Error in showClusterContent:", error);
       updateState([], [], [], []);
     }
   };
 
-  const TOKEN = 'pk.eyJ1IjoiamVuaWZlcjEyMyIsImEiOiJjbHJndXUyNnAwamF1MmptamwwMjNqZm0xIn0.vUNEIrEka3ibQKmb8jzgFQ'
+  const TOKEN =
+    "pk.eyJ1IjoiamVuaWZlcjEyMyIsImEiOiJjbHJndXUyNnAwamF1MmptamwwMjNqZm0xIn0.vUNEIrEka3ibQKmb8jzgFQ";
 
   return (
     <div className="fixed inset-0 w-screen h-screen">
-      <div className={cn(
-        "absolute inset-0 bg-black transition-opacity duration-300 z-10 pointer-events-none",
-        !isCollapsed ? "opacity-20" : "opacity-0"
-      )} />
+      <div
+        className={cn(
+          "absolute inset-0 bg-black transition-opacity duration-300 z-10 pointer-events-none",
+          !isCollapsed ? "opacity-20" : "opacity-0"
+        )}
+      />
+
       <MapGL
-        initialViewState={{ // By default it presents the map in Portugal
+        initialViewState={{
           latitude: 38.736946,
           longitude: -9.142685,
-          zoom: 3,
+          zoom: 3
         }}
         mapStyle="mapbox://styles/mapbox/dark-v11"
         mapboxAccessToken={TOKEN}
-        interactiveLayerIds={[clusterLayer.id]}
-        onMouseMove={showClusterContent}
-        onClick={showClusterContent}
-        ref={mapRef} 
-        cursor="pointer"
+        ref={mapRef}
         onLoad={onMapLoad}
-
       >
-        {loading ? (
-          <MapGLSource alumniGeoJSON={{ type: "FeatureCollection", features: [] }}></MapGLSource>
-        ) : (
-          <MapGLSource alumniGeoJSON={alumniGeoJSON}></MapGLSource>
+        {mapLoaded && alumniGeoJSON && (
+          <MapGLSource
+            key={`alumni-source-${JSON.stringify(alumniGeoJSON)}`}
+            alumniGeoJSON={alumniGeoJSON}
+            mapRef={mapRef}
+          />
         )}
-
         <ClusterInfo
           hoveredCluster={hoveredCluster}
           listAlumniNames={listAlumniNames}
           listLinkedinLinks={listLinkedinLinks}
           listPlaceName={listPlaceName}
-          hoveredMouseCoords={hoveredMouseCoords}
+          hoveredMouseCoords={hoveredMouseCoords || [0, 0]}
           alumniData={alumniData}
-          handleImageError={handleImageError}
         />
-        
       </MapGL>
       {loading && (
         <div className="loading-overlay">

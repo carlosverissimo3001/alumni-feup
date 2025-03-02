@@ -1,9 +1,17 @@
-import { Controller, Get, HttpCode, HttpStatus, Post } from '@nestjs/common';
-import { AlumniService } from '../services/alumni.service';
-import { Alumni } from 'src/entities/alumni.entity';
-import { Param, Body } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Post,
+  Param,
+  Body,
+  Query,
+} from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { CreateAlumniDto } from '../../dto/create-alumni.dto';
+import { AlumniService } from '../services/alumni.service';
+import { Alumni, GeoJSONFeatureCollection } from '@/entities';
+import { CreateAlumniDto, GetGeoJSONDto } from '@/dto';
 
 @ApiTags('V1', 'Alumni')
 @Controller('alumni')
@@ -21,6 +29,21 @@ export class AlumniController {
   })
   async findAll(): Promise<Alumni[]> {
     return this.alumniService.findAll();
+  }
+
+  @Get('geoJSON')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({
+    summary: 'Get all alumni to be displayed in the map',
+  })
+  @ApiResponse({
+    description: 'Returns all alumni to be displayed in the map',
+    type: GeoJSONFeatureCollection,
+  })
+  async findAllGeoJSON(
+    @Query() getGeoJSONDto: GetGeoJSONDto,
+  ): Promise<GeoJSONFeatureCollection> {
+    return this.alumniService.findAllGeoJSON(getGeoJSONDto);
   }
 
   @Get(':id')
