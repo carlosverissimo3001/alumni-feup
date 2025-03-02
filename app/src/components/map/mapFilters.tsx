@@ -1,133 +1,145 @@
-/**
- * This class is responsible for managing the inputs, and generating the geoJson based on them. It also transmits these informations
- * to the MapCmp, which then redirects the needed ones to the Map View.js
- */
-
 import React, { useEffect, useState } from "react";
-import setUp from "./helper/setup";
-import Helper from "./helper/helper";
-import { ChevronDown, ChevronUp, FilterIcon, XCircleIcon } from "lucide-react";
+import { getYearList } from "./utils/helper";
+import { MenuIcon } from "lucide-react";
 import { useNavbar } from "@/contexts/NavbarContext";
 import { cn } from "@/lib/utils";
-import { Course } from "@/consts";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Button } from "../ui/button";
+import { useListCourses } from "@/hooks/courses/useListCourses";
+import { MultiSelect } from "../ui/multi-select";
+import { useFetchGeoJson } from "@/hooks/alumni/useFetchGeoJson";
+import { GeoJSONFeatureCollection } from "@/sdk";
+import { Feature, Point } from 'geojson';
+
+export interface GeoJSONProperties {
+  name: string[];
+  students: number;
+  listLinkedinLinksByUser: { [key: string]: string };
+  coursesYearConclusionByUser: { [key: string]: { [key: string]: string } };
+}
+
+enum GROUP_BY {
+  COUNTRIES = "countries",
+  CITIES = "cities",
+}
 
 type props = {
-  onLoading: (loading: boolean) => void;
-  onSelectGeoJSON: (geoJson: GeoJSON.FeatureCollection) => void;
+  handleLoading: (loading: boolean) => void;
+  onSelectGeoJSON: (geoJson: GeoJSONFeatureCollection) => void;
   onSelectAlumni: (name: string, coordinates: number[]) => void;
-  yearUrl: string;
+  yearUrl?: string;
 };
 
+export type AlumniInfo = {
+  name: string;
+  coordinates: number[];
+  link: string;
+  coursesYears: { [key: string]: string };
+}
+
+
 const MapFilters = ({
-  onLoading,
+  handleLoading,
   onSelectGeoJSON,
   onSelectAlumni,
-  yearUrl,
 }: props) => {
+  // Global navbar state
   const { isCollapsed } = useNavbar();
+
+  // Panel state
   const [isVisible, setIsVisible] = useState(true);
 
-  const currentYear = new Date().getFullYear();
-  const years = Array.from(
-    { length: currentYear - 1994 + 1 },
-    (_, i) => currentYear - i
-  );
+  // Options
+  const { data: courses, isLoading: isLoadingCourses } = useListCourses();
+  const yearList = getYearList();
+  
+  /** Selectors & Filters **/
+  // Search input
+  const [searchInput, setSearchInput] = useState<string>("");
+  const handleSearchInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchInput(e.target.value);
+  };
+  // Group by
+  const [selectGroupBy, setSelectGroupBy] = useState<GROUP_BY>(GROUP_BY.COUNTRIES);
+  // Conclusion years
+  const [conclusionYears, setConclusionYears] = useState<number[]>([]);
+  // Course
+  const [courseIds, setCourseIds] = useState<string[]>([]);
+  
+  const { data: geoJson, refetch: refetchGeoJson, isLoading: isLoadingGeoJson } = useFetchGeoJson({
+    courseIds,
+    conclusionYears,
+  });
 
-  const courses = Object.values(Course);
+  // State variables
+  const [cleanButtonEnabled, setCleanButtonEnabled] = useState(false)
+  const [paramsCleaned, setParamsCleaned] = useState(false)
 
-  const [selectedOption, setSelectedOption] = useState("");
-  const [filteredAlumniNamesCoord, setFilteredAlumniNamesCoord] = useState([]);
+  const [hadYear, setHadYear] = useState(false)
+
+  useEffect(() => {
+    // Extract year from URL path
+    const urlParams = new URLSearchParams(window.location.search);
+    const year = urlParams.get('year');
+    // Check if the last part is actually a year
+    if (year && /^\d{4}$/.test(year)) {
+      setConclusionYears([Number(year)]);
+      setHadYear(true)
+
+      // We enable the clean button because we have a year
+      setCleanButtonEnabled(true)
+    }
+    // Only fetch after setting the year
+    else {
+      refetchGeoJson();
+    }
+  }, [refetchGeoJson]);
+
+  useEffect(() => {
+    // Only show loading for geoJson updates
+    handleLoading(isLoadingGeoJson);
+  }, [isLoadingGeoJson, handleLoading]);
+
+  // Panel state
+  const [filteredAlumniNamesCoord, setFilteredAlumniNamesCoord] = useState<AlumniInfo[]>([]);
   const [listAlumniNamesWithCoordinates, setListAlumniNamesWithCoordinates] =
-    useState([]);
-  const [searchInput, setSearchInput] = useState("");
-  const [filterCourseInput, setFilterCourseInput] = useState("");
-  const [numberAlumnisShowing, setNumberAlumnisShowing] = useState(0);
-  const [yearFilter, setYearFilter] = useState(""); // Changed from array to single string
-  const [loading, setLoading] = useState(true); // Loading state, if true: loading if false: not loading
-  const [yearUrlReceived, setYearUrlReceived] = useState(true); // Used to avoid the useEffect that calls the onClickApply to enter into a loop
-  const [firstEffectComplete, setFirstEffectComplete] = useState(false); // Used to wait for the useEffect that reads the year on the link to finish
-  const [applyButtonDisabled, setApplyButtonDisabled] = useState(true); // Defines if the Apply and Clear button are enabled or disabled
-  const [locationGeoJSON, setLocationGeoJSON] = useState(null); // Stores the geoJson file to be used in the world map
+    useState<AlumniInfo[]>([]);
+  const [alumniLength, setAlumniLength] = useState(0);
 
+  // Use the data when it changes
   useEffect(() => {
-    setSelectedOption("countries");
-    setApplyButtonDisabled(false); // enable the apply button when an option is selected
-  }, []);
-
-  // Reads the year parameter on the URL
-  useEffect(() => {
-    const fetchData = async () => {
-      if (yearUrl && yearUrlReceived) {
-        setSelectedOption("countries");
-        setYearFilter(yearUrl);
-        setYearUrlReceived(true);
-      }
-      setFirstEffectComplete(true);
-    };
-    fetchData();
-  }, [yearUrl, yearUrlReceived]);
-
-  // When selected option changes to "" which happens on Clear button or when a reload page happens
-  useEffect(() => {
-    if (!firstEffectComplete) return; // waits for the useEffect that reads the year on the link to finish
-
-    const fetchData = async () => {
-      if (selectedOption === "" && !yearUrlReceived) {
-        onClickApply("", "");
-      } else if (yearUrlReceived) {
-        onClickApply(filterCourseInput, yearFilter);
-        setYearUrlReceived(false);
-      }
-
-      // Waits a bit before setting the load to false so that the code has time to update the locationGeoJson on the MapCmp.js
-      await new Promise((resolve) => setTimeout(resolve, 3000));
-      setLoading(false); // Data is ready
-    };
-
-    fetchData();
-  }, [firstEffectComplete, selectedOption, yearUrlReceived]);
-
-  // Handles changes on the load
-  useEffect(() => {
-    onLoading(loading);
-  }, [loading, onLoading]);
+    if (geoJson) {
+      onSelectGeoJSON(geoJson);
+    }
+  }, [geoJson, onSelectGeoJSON]);
 
   // sets the variables to be used: nº of alumnis and an array with the info to be printed on the screen
   useEffect(() => {
     const fetchData = async () => {
-      if (locationGeoJSON) {
+      if (geoJson) {
         try {
           // Get the names with their LinkedIn links
-          const namesLinkedinLinks = locationGeoJSON.features.flatMap(
+          const namesLinkedinLinks = (geoJson.features as Feature<Point, GeoJSONProperties>[]).flatMap(
             (feature) => {
-              const coordinates = feature.geometry.coordinates; // Get coordinates
-              return Object.entries(
-                feature.properties.listLinkedinLinksByUser
-              ).map(([link, name]) => ({
-                name,
-                link,
-                coordinates,
-              }));
+              const coordinates = feature.geometry.coordinates;
+              return Object.entries(feature.properties.listLinkedinLinksByUser)
+                .map(([link, name]) => ({
+                  name,
+                  link,
+                  coordinates,
+                }));
             }
           );
 
           // Get the courses data with the years of conclusion
-          const namesCourseYears = locationGeoJSON.features.flatMap((feature) =>
+          const namesCourseYears = (geoJson.features as Feature<Point, GeoJSONProperties>[]).flatMap((feature) =>
             Object.entries(feature.properties.coursesYearConclusionByUser).map(
               ([linkedinLink, courseYears]) => ({
                 linkedinLink,
                 courseYears,
               })
             )
-          );
+          )
+
 
           const alumniNamesWithCoords = namesLinkedinLinks.map((alumniInfo) => {
             // Find the corresponding courses data based on name
@@ -142,26 +154,27 @@ const MapFilters = ({
             };
           });
 
+          
           // Sort the alumni names alphabetically
           alumniNamesWithCoords.sort((a, b) => a.name.localeCompare(b.name));
-
+          
           setListAlumniNamesWithCoordinates(alumniNamesWithCoords);
-          setNumberAlumnisShowing(alumniNamesWithCoords.length);
+          setAlumniLength(alumniNamesWithCoords.length);
+          
         } catch (error) {
           console.log("Attention! ", error);
         }
-        onSelectGeoJSON(locationGeoJSON);
       } else {
         console.log("GeoJson not created");
       }
     };
 
     fetchData();
-  }, [locationGeoJSON]);
+  }, [geoJson]);
 
   // Filter alumni names based on search input
   useEffect(() => {
-    const normalizeString = (str) => {
+    const normalizeString = (str: string) => {
       return str
         .normalize("NFD")
         .replace(/[\u0300-\u036f]/g, "")
@@ -182,114 +195,117 @@ const MapFilters = ({
     }
   }, [listAlumniNamesWithCoordinates, searchInput]);
 
-  // Handles changes in the search input
-  const handleSearchInputChange = (e) => {
-    setSearchInput(e.target.value);
-  };
-
-  // Handles the filtering of a selected alumni
-  const handleAlumniSelection = (name, coordinates) => {
-    onSelectAlumni(name, coordinates);
-  };
-
-  // Function to handle checkbox selection
-  const handleCheckboxChange = (event) => {
-    setSelectedOption(event.target.value);
-    setApplyButtonDisabled(false); // enable the apply button when an option is selected
-  };
-
-  // Applies the values inserted in the fields and generates a new geoJson
-  const onClickApply = async (courseFilter: string, yearFilter: string) => {
-    setLoading(true);
-    var locationGeoJsonBlob = await setUp.fetchGeoJson(
-      courseFilter,
-      [yearFilter, yearFilter],
-      selectedOption
-    );
-    var locationGeoJsonGeoJSON = await Helper.convertBlobToGeoJSON(
-      locationGeoJsonBlob
-    );
-    setLocationGeoJSON(locationGeoJsonGeoJSON);
-    await new Promise((resolve) => setTimeout(resolve, 3000));
-    setLoading(false);
-  };
-
-  // Cleans the values inserted in the fields
-  const onClickClean = async () => {
-    setApplyButtonDisabled(true);
-    setLoading(true);
-    setSelectedOption("");
+ 
+  const onClickClean = () => {
+    // Reset the filters
+    setSelectGroupBy(GROUP_BY.COUNTRIES);
     setSearchInput("");
+    setConclusionYears([]);
+    setCourseIds([]);
+    
+    // Reset alumni selection
     onSelectAlumni("", [-9.142685, 38.736946]);
-    setYearFilter("");
-    setFilterCourseInput("");
-    await new Promise((resolve) => setTimeout(resolve, 4000));
-    setLoading(false);
+
+    // Only refetch if we have courses data
+    if (courses) {
+      // Use a slight delay to ensure state updates first
+      setTimeout(() => {
+        refetchGeoJson();
+      }, 50);
+    }
+    clearUrlParams();
   };
 
-  // Add toggle function
+  const clearUrlParams = () => {
+    if (paramsCleaned || !hadYear) 
+      return;
+    
+    const urlParams = new URLSearchParams(window.location.search);
+    urlParams.delete('year');
+    urlParams.delete('course');
+    window.history.replaceState({}, '', window.location.pathname + '?' + urlParams.toString());
+    setParamsCleaned(true);
+  }
+
   const toggleVisibility = () => setIsVisible(!isVisible);
 
+  useEffect(() => {
+    // Button is enabled if any filter has a value
+    const hasFilters = 
+      courseIds.length > 0 || 
+      conclusionYears.length > 0 || 
+      searchInput.trim() !== '';
+
+    setCleanButtonEnabled(hasFilters);
+  }, [courseIds, conclusionYears, selectGroupBy, searchInput]);
+
+
   return (
-    <div className={cn(
-      "fixed top-5 z-50 transition-all duration-300",
-      isCollapsed ? "left-24" : "left-64"
-    )}>
+    <div
+      className={cn(
+        "fixed top-5 z-50 transition-all duration-300",
+        isCollapsed ? "left-24" : "left-64"
+      )}
+    >
       {/* Toggle Button Container */}
-      <div onClick={toggleVisibility} className={cn(
-        "bg-[#EDEDEC] rounded-md p-2 flex items-center justify-between gap-2 transition-all cursor-pointer duration-300 h-10",
-        isVisible ? "rounded-b-none" : "hover:bg-[#E5E5E4] "
-      )}>
-        {/* Show a label when menu is collapsed */}
+      <div
+        onClick={toggleVisibility}
+        className={cn(
+          "bg-[#EDEDEC] rounded-md p-2 flex items-center justify-between gap-2 transition-all cursor-pointer duration-300 h-10",
+          isVisible ? "rounded-b-none" : "hover:bg-[#E5E5E4] "
+        )}
+      >
         {!isVisible && (
-          <span className="text-[#A02D20] text-sm font-medium px-2">
+          <span className="text-[#A02D20] text-md font-medium px-2">
             Map Filters
           </span>
         )}
         {!isVisible && (
-          <FilterIcon className="text-[#A02D20] w-6 h-6 cursor-pointer hover:opacity-80" /> 
+          <MenuIcon className="text-[#A02D20] w-6 h-6 cursor-pointer hover:opacity-80" />
         )}
       </div>
 
       {/* Main Content */}
-      <div className={cn(
-        "bg-white rounded-b-lg shadow-lg overflow-hidden w-80 transition-all duration-300",
-        isVisible ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-2 pointer-events-none"
-      )}>
-        <div className="p-4 border-b">
+      <div
+        className={cn(
+          "bg-white rounded-b-lg shadow-lg overflow-hidden w-96 transition-all duration-300",
+          isVisible
+            ? "opacity-100 translate-y-0"
+            : "opacity-0 -translate-y-2 pointer-events-none"
+        )}
+      >
+        <div className="p-6 border-b">
           <h2 className="text-lg font-semibold text-gray-800">Group By</h2>
         </div>
 
         {/* Group By Toggle */}
-        <div className="flex border-b">
-          <Button
-            onClick={() => handleCheckboxChange({ target: { value: "countries" } })}
-            variant="ghost"
+        <div className="flex">
+          <div
+            onClick={() => setSelectGroupBy(GROUP_BY.COUNTRIES)}
             className={cn(
-              "flex-1 rounded-none border-0",
-              selectedOption === "countries"
-                ? "bg-red-800 text-white hover:bg-red-800"
-                : "bg-transparent text-gray-900 hover:bg-gray-100"
+              "flex-1 text-center py-2 cursor-pointer",
+              selectGroupBy === GROUP_BY.COUNTRIES
+                ? "bg-red-800 text-white"
+                : "bg-gray-100 text-gray-900"
             )}
           >
             Countries
-          </Button>
-          <Button
-            onClick={() => handleCheckboxChange({ target: { value: "cities" } })}
-            variant="ghost"
+          </div>
+          <div
+            onClick={() => setSelectGroupBy(GROUP_BY.CITIES)}
             className={cn(
-              "flex-1 rounded-none border-0",
-              selectedOption === "cities"
-                ? "bg-red-800 text-white hover:bg-red-800"
-                : "bg-transparent text-gray-900 hover:bg-gray-100"
+              "flex-1 text-center py-2 cursor-pointer",
+              selectGroupBy === GROUP_BY.CITIES
+                ? "bg-red-800 text-white"
+                : "bg-gray-100 text-gray-900"
             )}
           >
             Cities
-          </Button>
+          </div>
         </div>
 
         {/* Search Section */}
-        <div className="p-4 border-b">
+        <div className="p-6 border-b">
           <h3 className="text-lg font-semibold text-gray-800 mb-2">Search</h3>
           <input
             type="text"
@@ -301,61 +317,51 @@ const MapFilters = ({
         </div>
 
         {/* Filter Section */}
-        <div className="p-4">
+        <div className="p-6">
           <h3 className="text-lg font-semibold text-gray-800 mb-4">Filter</h3>
 
           {/* Course Dropdown */}
           <div className="mb-4">
-            <Select
-              value={filterCourseInput}
-              onValueChange={setFilterCourseInput}
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="By course" />
-              </SelectTrigger>
-              <SelectContent>
-                {courses.map((course) => (
-                  <SelectItem key={course} value={course}>
-                    {course}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            <MultiSelect
+              options={Array.isArray(courses) ? courses.map((course) => ({
+                label: course.acronym,
+                value: course.id,
+              })) : []}
+              onValueChange={(values) => setCourseIds(values || [])}
+              value={courseIds}
+              placeholder={isLoadingCourses ? "Loading courses..." : "Select course"}
+              variant="inverted"
+              maxCount={4}
+              disabled={isLoadingCourses || !Array.isArray(courses)}
+            />
           </div>
 
           {/* Year Dropdown */}
           <div className="mb-4">
-            <Select value={yearFilter} onValueChange={setYearFilter}>
-              <SelectTrigger>
-                <SelectValue placeholder="By conclusion year" />
-              </SelectTrigger>
-              <SelectContent>
-                {years.map((year) => (
-                  <SelectItem key={year} value={year.toString()}>
-                    {year}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            <MultiSelect
+              options={yearList.map((year) => ({
+                label: year,
+                value: year,
+              }))}
+              onValueChange={(values) => setConclusionYears(values.map(Number))}
+              value={conclusionYears.map(String)}
+              placeholder="Select conclusion year"
+              variant="inverted"
+              maxCount={4}
+            />
           </div>
 
           {/* Action Buttons */}
           <div className="flex gap-2">
             <Button
-              onClick={() => onClickApply(filterCourseInput, yearFilter)}
-              disabled={applyButtonDisabled}
-              className={cn(
-                "flex-1 px-4 py-2 rounded-md text-white flex items-center justify-center gap-2",
-                applyButtonDisabled
-                  ? "bg-gray-400 cursor-not-allowed"
-                  : "bg-red-800 hover:bg-red-900"
-              )}
-            >
-              Apply
-            </Button>
-            <Button
               onClick={onClickClean}
-              className="flex-1 px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700"
+              disabled={!cleanButtonEnabled}
+              className={cn(
+                "flex-1 px-4 py-2 rounded-md text-white",
+                !cleanButtonEnabled
+                  ? "bg-gray-400 cursor-not-allowed"
+                  : "bg-gray-600 hover:bg-gray-700"
+              )}
             >
               Clear
             </Button>
@@ -363,12 +369,12 @@ const MapFilters = ({
         </div>
 
         {/* Stats Footer */}
-        <div className="px-4 py-3 bg-gray-50 border-t">
+        <div className="px-6 py-4 bg-gray-50 border-t">
           <p className="text-sm text-gray-600">
-            Total number of alumni: {numberAlumnisShowing}
+            Total number of alumni: {alumniLength}
           </p>
           <p className="text-xs text-gray-500 mt-1">
-            *Data from LinkedIn profiles and Sigarra
+            *Data from LinkedIn profiles and SIGARRA
           </p>
         </div>
       </div>
