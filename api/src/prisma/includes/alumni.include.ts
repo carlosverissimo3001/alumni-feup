@@ -18,35 +18,39 @@ export const graduationSelect = {
   },
 } satisfies Prisma.GraduationSelect;
 
-export const roleSelect = {
+/* export const roleSelect = {
   Company: {
     select: {
       name: true,
     },
   },
-  /* Location: {
+   Location: {
     select: locationSelect,
-  }, */
+  }, 
   JobClassification: {
     select: {
       title: true,
       level: true,
     },
   },
-} satisfies Prisma.RoleSelect;
+} satisfies Prisma.RoleSelect; */
 
-export const alumniSelect = {
+export const alumniBasic = {
   id: true,
   first_name: true,
   last_name: true,
   linkedin_url: true,
+} satisfies Prisma.AlumniSelect;
+
+export const alumniSelect = {
+  ...alumniBasic,
   Location: {
     select: locationSelect,
   },
   Graduations: {
     select: graduationSelect,
   },
-  Roles: {
+  /* Roles: {
     select: roleSelect,
-  },
+  }, */
 } satisfies Prisma.AlumniSelect;
