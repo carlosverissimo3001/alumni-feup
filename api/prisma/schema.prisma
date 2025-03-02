@@ -59,7 +59,7 @@ model Course {
   status             COURSE_STATUS        @default(ACTIVE)
   faculty_id         String
   name_int           String?
-  course_type        COURSE_TYPE?
+  course_type        COURSE_TYPE
   start_year         Int
   Faculty_Extraction Faculty_Extraction[]
   Graduation         Graduation[]

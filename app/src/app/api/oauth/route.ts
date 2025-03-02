@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { TokenResponse, ProfileResponse } from './consts';
 import fetch from 'node-fetch'; 
-import { authenticateWithLinkedin } from '@/hooks/auth/use-auth';
+import { authenticateWithLinkedin } from '@/hooks/auth/useAuth';
 import { LinkedinAuthDto } from '@/sdk/api';
 
 
