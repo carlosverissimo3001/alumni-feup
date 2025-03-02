@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useJsonFromResponse } from "@/commom";
 import NestAPI from "@/api";
 import { AxiosResponse } from "axios";
-import { Course } from "@/sdk";
+import { CourseExtended as Course } from "@/sdk";
 
 const arrangeCourses = (courses: Course[]) => {
     // Note: We need to do this in the FE because we can't store dots(.) in the database
