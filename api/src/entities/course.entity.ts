@@ -2,7 +2,6 @@ import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { IsString, IsOptional, IsInt, IsEnum } from '@nestjs/class-validator';
 import { COURSE_STATUS, COURSE_TYPE } from '@prisma/client';
 
-
 export class Course {
   @ApiProperty({ description: 'The name of the course' })
   @IsString()
