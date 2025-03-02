@@ -9,7 +9,7 @@ import { Role } from './role.entity';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import { Graduation } from './graduation.entity';
-import { Location } from './location.entity';
+import { Location, LocationGeo } from './location.entity';
 
 export class Alumni {
   @ApiProperty({ description: 'The id of the alumni' })
@@ -29,7 +29,7 @@ export class Alumni {
   @IsUrl()
   linkedin_url?: string;
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     description: 'The roles of the alumni',
     type: () => [Role],
     required: false,
@@ -40,13 +40,13 @@ export class Alumni {
   @Type(() => Role)
   roles?: Role[];
 
-  @ApiProperty({ description: 'The current location of the alumni' })
+  @ApiPropertyOptional({ description: 'The current location of the alumni' })
   @IsOptional()
   @ValidateNested()
-  @Type(() => Location)
-  location?: Location;
+  @Type(() => LocationGeo)
+  Location?: LocationGeo | null;
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     description: 'The graduation status(es) of the alumni',
     type: () => [Graduation],
     required: false,
@@ -54,7 +54,7 @@ export class Alumni {
   @IsOptional()
   @ValidateNested({ each: true })
   @Type(() => Graduation)
-  graduations?: Graduation[];
+  Graduations?: Graduation[];
 
   constructor(data: Alumni) {
     this.id = data.id;
@@ -62,7 +62,7 @@ export class Alumni {
     this.last_name = data.last_name;
     this.linkedin_url = data.linkedin_url;
     this.roles = data.roles;
-    this.location = data.location;
-    this.graduations = data.graduations;
+    this.Location = data.Location;
+    this.Graduations = data.Graduations;
   }
 }
