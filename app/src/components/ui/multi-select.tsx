@@ -124,6 +124,12 @@ interface MultiSelectProps
    * Optional, defaults to false.
    */
   disabled?: boolean;
+
+  /**
+   * Whether to allow selecting all options.
+   * Optional, defaults to false.
+   */
+  allowSelectAll?: boolean;
 }
 
 export const MultiSelect = React.forwardRef<
@@ -141,7 +147,7 @@ export const MultiSelect = React.forwardRef<
       animation = 0,
       maxCount = 3,
       modalPopover = false,
-      asChild = false,
+      allowSelectAll = false,
       className,
       disabled = false,
       ...props
@@ -319,6 +325,25 @@ export const MultiSelect = React.forwardRef<
             <CommandList>
               <CommandEmpty>No results found.</CommandEmpty>
               <CommandGroup>
+                {allowSelectAll && (
+                   <CommandItem
+                   key="all"
+                   onSelect={toggleAll}
+                   className="cursor-pointer"
+                 >
+                   <div
+                     className={cn(
+                       "mr-2 flex h-4 w-4 items-center justify-center rounded-sm border border-primary",
+                       selectedValues.length === options.length
+                         ? "bg-primary text-primary-foreground"
+                         : "opacity-50 [&_svg]:invisible"
+                     )}
+                   >
+                     <CheckIcon className="h-4 w-4" />
+                    </div>
+                    <span>(Select All)</span>
+                  </CommandItem>
+                )}
                 {options.map((option) => {
                   const isSelected = selectedValues.includes(option.value);
                   return (
