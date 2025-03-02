@@ -7,11 +7,7 @@ import {
 } from '@nestjs/class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
-export class Location {
-  @ApiProperty({ description: 'The id of the location' })
-  @IsString()
-  id: string;
-
+export class LocationGeo {
   @ApiProperty({ description: 'The city of the location' })
   @IsString()
   city: string;
@@ -23,12 +19,18 @@ export class Location {
   @ApiPropertyOptional({ description: 'The latitude of the location' })
   @IsOptional()
   @IsLatitude()
-  latitude: number;
+  latitude?: number | null;
 
   @ApiPropertyOptional({ description: 'The longitude of the location' })
   @IsOptional()
   @IsLongitude()
-  longitude: number;
+  longitude?: number | null;
+}
+
+export class Location extends LocationGeo {
+  @ApiProperty({ description: 'The id of the location' })
+  @IsString()
+  id: string;
 
   @ApiProperty({ description: 'The country code of the location' })
   @IsString()

@@ -2,11 +2,8 @@ import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { IsString, IsOptional, IsInt, IsEnum } from '@nestjs/class-validator';
 import { COURSE_STATUS, COURSE_TYPE } from '@prisma/client';
 
-export class Course {
-  @ApiProperty({ description: 'The id of the course' })
-  @IsString()
-  id: string;
 
+export class Course {
   @ApiProperty({ description: 'The name of the course' })
   @IsString()
   name: string;
@@ -14,6 +11,12 @@ export class Course {
   @ApiProperty({ description: 'The acronym of the course' })
   @IsString()
   acronym: string;
+}
+
+export class CourseExtended extends Course {
+  @ApiProperty({ description: 'The id of the course' })
+  @IsString()
+  id: string;
 
   @ApiProperty({ description: 'The start year of the course' })
   @IsInt()
