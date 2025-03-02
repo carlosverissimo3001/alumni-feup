@@ -17,6 +17,11 @@
     "noImplicitAny": true,
     "strictBindCallApply": true,
     "noFallthroughCasesInSwitch": true,
+    "paths": {
+      "@/*": ["src/*"],
+      "@dto": ["src/dto"],
+      "@entities": ["src/entities"]
+    }
   },
   "include": ["src/**/*.ts"],
   "exclude": ["node_modules"]
