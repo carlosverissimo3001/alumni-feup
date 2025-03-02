@@ -333,6 +333,7 @@ const MapFilters = ({
               variant="inverted"
               maxCount={4}
               disabled={isLoadingCourses || !Array.isArray(courses)}
+              allowSelectAll={true}
             />
           </div>
 
