@@ -61,16 +61,16 @@ export interface Alumni {
     'roles'?: Array<Role>;
     /**
      * The current location of the alumni
-     * @type {Location}
+     * @type {object}
      * @memberof Alumni
      */
-    'location': Location;
+    'Location'?: object;
     /**
      * The graduation status(es) of the alumni
      * @type {Array<Graduation>}
      * @memberof Alumni
      */
-    'graduations'?: Array<Graduation>;
+    'Graduations'?: Array<Graduation>;
 }
 /**
  * 
@@ -78,12 +78,6 @@ export interface Alumni {
  * @interface Course
  */
 export interface Course {
-    /**
-     * The id of the course
-     * @type {string}
-     * @memberof Course
-     */
-    'id': string;
     /**
      * The name of the course
      * @type {string}
@@ -96,40 +90,65 @@ export interface Course {
      * @memberof Course
      */
     'acronym': string;
+}
+/**
+ * 
+ * @export
+ * @interface CourseExtended
+ */
+export interface CourseExtended {
+    /**
+     * The name of the course
+     * @type {string}
+     * @memberof CourseExtended
+     */
+    'name': string;
+    /**
+     * The acronym of the course
+     * @type {string}
+     * @memberof CourseExtended
+     */
+    'acronym': string;
+    /**
+     * The id of the course
+     * @type {string}
+     * @memberof CourseExtended
+     */
+    'id': string;
     /**
      * The start year of the course
      * @type {number}
-     * @memberof Course
+     * @memberof CourseExtended
      */
     'start_year': number;
     /**
      * The end year of the course, if it is not active
      * @type {object}
-     * @memberof Course
+     * @memberof CourseExtended
      */
     'end_year'?: object;
     /**
      * The status of the course
      * @type {string}
-     * @memberof Course
+     * @memberof CourseExtended
      */
     'status': string;
     /**
      * The faculty id of the course
      * @type {string}
-     * @memberof Course
+     * @memberof CourseExtended
      */
     'faculty_id': string;
     /**
      * The name of the course in the international language
      * @type {object}
-     * @memberof Course
+     * @memberof CourseExtended
      */
     'name_int'?: object;
     /**
      * The type of the course
      * @type {string}
-     * @memberof Course
+     * @memberof CourseExtended
      */
     'course_type': string;
 }
@@ -233,24 +252,6 @@ export interface GeoJSONFeatureCollection {
  */
 export interface Graduation {
     /**
-     * The id of the graduation
-     * @type {string}
-     * @memberof Graduation
-     */
-    'id': string;
-    /**
-     * The id of the alumni
-     * @type {string}
-     * @memberof Graduation
-     */
-    'alumni_id': string;
-    /**
-     * The id of the course
-     * @type {string}
-     * @memberof Graduation
-     */
-    'course_id': string;
-    /**
      * The status of the graduation
      * @type {string}
      * @memberof Graduation
@@ -258,10 +259,16 @@ export interface Graduation {
     'status': string;
     /**
      * The conclusion year of the graduation
-     * @type {number}
+     * @type {object}
      * @memberof Graduation
      */
-    'conclusion_year': number;
+    'conclusion_year': object;
+    /**
+     * The course of the graduation
+     * @type {Course}
+     * @memberof Graduation
+     */
+    'Course': Course;
 }
 /**
  * 
@@ -299,49 +306,6 @@ export interface LinkedinAuthDto {
      * @memberof LinkedinAuthDto
      */
     'profile_picture_url'?: string;
-}
-/**
- * 
- * @export
- * @interface Location
- */
-export interface Location {
-    /**
-     * The id of the location
-     * @type {string}
-     * @memberof Location
-     */
-    'id': string;
-    /**
-     * The city of the location
-     * @type {string}
-     * @memberof Location
-     */
-    'city': string;
-    /**
-     * The country of the location
-     * @type {string}
-     * @memberof Location
-     */
-    'country': string;
-    /**
-     * The latitude of the location
-     * @type {number}
-     * @memberof Location
-     */
-    'latitude'?: number;
-    /**
-     * The longitude of the location
-     * @type {number}
-     * @memberof Location
-     */
-    'longitude'?: number;
-    /**
-     * The country code of the location
-     * @type {string}
-     * @memberof Location
-     */
-    'country_code': string;
 }
 /**
  * 
@@ -494,11 +458,11 @@ export const AlumniApiAxiosParamCreator = function (configuration?: Configuratio
          * 
          * @summary Get all alumni to be displayed in the map
          * @param {Array<string>} [courseIds] The ID(s) of the course(s)
-         * @param {Array<number>} [conclusionYears] The year(s) of conclusion(s)
+         * @param {Array<string>} [conclusionYears] The year(s) of conclusion(s)
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        alumniControllerFindAllGeoJSON: async (courseIds?: Array<string>, conclusionYears?: Array<number>, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        alumniControllerFindAllGeoJSON: async (courseIds?: Array<string>, conclusionYears?: Array<string>, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             const localVarPath = `/api/alumni/geoJSON`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -603,11 +567,11 @@ export const AlumniApiFp = function(configuration?: Configuration) {
          * 
          * @summary Get all alumni to be displayed in the map
          * @param {Array<string>} [courseIds] The ID(s) of the course(s)
-         * @param {Array<number>} [conclusionYears] The year(s) of conclusion(s)
+         * @param {Array<string>} [conclusionYears] The year(s) of conclusion(s)
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async alumniControllerFindAllGeoJSON(courseIds?: Array<string>, conclusionYears?: Array<number>, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GeoJSONFeatureCollection>> {
+        async alumniControllerFindAllGeoJSON(courseIds?: Array<string>, conclusionYears?: Array<string>, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GeoJSONFeatureCollection>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.alumniControllerFindAllGeoJSON(courseIds, conclusionYears, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['AlumniApi.alumniControllerFindAllGeoJSON']?.[localVarOperationServerIndex]?.url;
@@ -659,11 +623,11 @@ export const AlumniApiFactory = function (configuration?: Configuration, basePat
          * 
          * @summary Get all alumni to be displayed in the map
          * @param {Array<string>} [courseIds] The ID(s) of the course(s)
-         * @param {Array<number>} [conclusionYears] The year(s) of conclusion(s)
+         * @param {Array<string>} [conclusionYears] The year(s) of conclusion(s)
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        alumniControllerFindAllGeoJSON(courseIds?: Array<string>, conclusionYears?: Array<number>, options?: RawAxiosRequestConfig): AxiosPromise<GeoJSONFeatureCollection> {
+        alumniControllerFindAllGeoJSON(courseIds?: Array<string>, conclusionYears?: Array<string>, options?: RawAxiosRequestConfig): AxiosPromise<GeoJSONFeatureCollection> {
             return localVarFp.alumniControllerFindAllGeoJSON(courseIds, conclusionYears, options).then((request) => request(axios, basePath));
         },
         /**
@@ -708,12 +672,12 @@ export interface AlumniApiInterface {
      * 
      * @summary Get all alumni to be displayed in the map
      * @param {Array<string>} [courseIds] The ID(s) of the course(s)
-     * @param {Array<number>} [conclusionYears] The year(s) of conclusion(s)
+     * @param {Array<string>} [conclusionYears] The year(s) of conclusion(s)
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof AlumniApiInterface
      */
-    alumniControllerFindAllGeoJSON(courseIds?: Array<string>, conclusionYears?: Array<number>, options?: RawAxiosRequestConfig): AxiosPromise<GeoJSONFeatureCollection>;
+    alumniControllerFindAllGeoJSON(courseIds?: Array<string>, conclusionYears?: Array<string>, options?: RawAxiosRequestConfig): AxiosPromise<GeoJSONFeatureCollection>;
 
     /**
      * 
@@ -761,12 +725,12 @@ export class AlumniApi extends BaseAPI implements AlumniApiInterface {
      * 
      * @summary Get all alumni to be displayed in the map
      * @param {Array<string>} [courseIds] The ID(s) of the course(s)
-     * @param {Array<number>} [conclusionYears] The year(s) of conclusion(s)
+     * @param {Array<string>} [conclusionYears] The year(s) of conclusion(s)
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof AlumniApi
      */
-    public alumniControllerFindAllGeoJSON(courseIds?: Array<string>, conclusionYears?: Array<number>, options?: RawAxiosRequestConfig) {
+    public alumniControllerFindAllGeoJSON(courseIds?: Array<string>, conclusionYears?: Array<string>, options?: RawAxiosRequestConfig) {
         return AlumniApiFp(this.configuration).alumniControllerFindAllGeoJSON(courseIds, conclusionYears, options).then((request) => request(this.axios, this.basePath));
     }
 
@@ -1068,7 +1032,7 @@ export const CourseApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async courseControllerFindAll(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<Course>>> {
+        async courseControllerFindAll(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<CourseExtended>>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.courseControllerFindAll(options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['CourseApi.courseControllerFindAll']?.[localVarOperationServerIndex]?.url;
@@ -1081,7 +1045,7 @@ export const CourseApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async courseControllerFindOne(id: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Course>> {
+        async courseControllerFindOne(id: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<CourseExtended>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.courseControllerFindOne(id, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['CourseApi.courseControllerFindOne']?.[localVarOperationServerIndex]?.url;
@@ -1103,7 +1067,7 @@ export const CourseApiFactory = function (configuration?: Configuration, basePat
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        courseControllerFindAll(options?: RawAxiosRequestConfig): AxiosPromise<Array<Course>> {
+        courseControllerFindAll(options?: RawAxiosRequestConfig): AxiosPromise<Array<CourseExtended>> {
             return localVarFp.courseControllerFindAll(options).then((request) => request(axios, basePath));
         },
         /**
@@ -1113,7 +1077,7 @@ export const CourseApiFactory = function (configuration?: Configuration, basePat
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        courseControllerFindOne(id: string, options?: RawAxiosRequestConfig): AxiosPromise<Course> {
+        courseControllerFindOne(id: string, options?: RawAxiosRequestConfig): AxiosPromise<CourseExtended> {
             return localVarFp.courseControllerFindOne(id, options).then((request) => request(axios, basePath));
         },
     };
@@ -1132,7 +1096,7 @@ export interface CourseApiInterface {
      * @throws {RequiredError}
      * @memberof CourseApiInterface
      */
-    courseControllerFindAll(options?: RawAxiosRequestConfig): AxiosPromise<Array<Course>>;
+    courseControllerFindAll(options?: RawAxiosRequestConfig): AxiosPromise<Array<CourseExtended>>;
 
     /**
      * 
@@ -1142,7 +1106,7 @@ export interface CourseApiInterface {
      * @throws {RequiredError}
      * @memberof CourseApiInterface
      */
-    courseControllerFindOne(id: string, options?: RawAxiosRequestConfig): AxiosPromise<Course>;
+    courseControllerFindOne(id: string, options?: RawAxiosRequestConfig): AxiosPromise<CourseExtended>;
 
 }
 
@@ -1511,11 +1475,11 @@ export const V1ApiAxiosParamCreator = function (configuration?: Configuration) {
          * 
          * @summary Get all alumni to be displayed in the map
          * @param {Array<string>} [courseIds] The ID(s) of the course(s)
-         * @param {Array<number>} [conclusionYears] The year(s) of conclusion(s)
+         * @param {Array<string>} [conclusionYears] The year(s) of conclusion(s)
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        alumniControllerFindAllGeoJSON: async (courseIds?: Array<string>, conclusionYears?: Array<number>, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        alumniControllerFindAllGeoJSON: async (courseIds?: Array<string>, conclusionYears?: Array<string>, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             const localVarPath = `/api/alumni/geoJSON`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -1820,11 +1784,11 @@ export const V1ApiFp = function(configuration?: Configuration) {
          * 
          * @summary Get all alumni to be displayed in the map
          * @param {Array<string>} [courseIds] The ID(s) of the course(s)
-         * @param {Array<number>} [conclusionYears] The year(s) of conclusion(s)
+         * @param {Array<string>} [conclusionYears] The year(s) of conclusion(s)
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async alumniControllerFindAllGeoJSON(courseIds?: Array<string>, conclusionYears?: Array<number>, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GeoJSONFeatureCollection>> {
+        async alumniControllerFindAllGeoJSON(courseIds?: Array<string>, conclusionYears?: Array<string>, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GeoJSONFeatureCollection>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.alumniControllerFindAllGeoJSON(courseIds, conclusionYears, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['V1Api.alumniControllerFindAllGeoJSON']?.[localVarOperationServerIndex]?.url;
@@ -1874,7 +1838,7 @@ export const V1ApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async courseControllerFindAll(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<Course>>> {
+        async courseControllerFindAll(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<CourseExtended>>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.courseControllerFindAll(options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['V1Api.courseControllerFindAll']?.[localVarOperationServerIndex]?.url;
@@ -1887,7 +1851,7 @@ export const V1ApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async courseControllerFindOne(id: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Course>> {
+        async courseControllerFindOne(id: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<CourseExtended>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.courseControllerFindOne(id, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['V1Api.courseControllerFindOne']?.[localVarOperationServerIndex]?.url;
@@ -1952,11 +1916,11 @@ export const V1ApiFactory = function (configuration?: Configuration, basePath?: 
          * 
          * @summary Get all alumni to be displayed in the map
          * @param {Array<string>} [courseIds] The ID(s) of the course(s)
-         * @param {Array<number>} [conclusionYears] The year(s) of conclusion(s)
+         * @param {Array<string>} [conclusionYears] The year(s) of conclusion(s)
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        alumniControllerFindAllGeoJSON(courseIds?: Array<string>, conclusionYears?: Array<number>, options?: RawAxiosRequestConfig): AxiosPromise<GeoJSONFeatureCollection> {
+        alumniControllerFindAllGeoJSON(courseIds?: Array<string>, conclusionYears?: Array<string>, options?: RawAxiosRequestConfig): AxiosPromise<GeoJSONFeatureCollection> {
             return localVarFp.alumniControllerFindAllGeoJSON(courseIds, conclusionYears, options).then((request) => request(axios, basePath));
         },
         /**
@@ -1994,7 +1958,7 @@ export const V1ApiFactory = function (configuration?: Configuration, basePath?: 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        courseControllerFindAll(options?: RawAxiosRequestConfig): AxiosPromise<Array<Course>> {
+        courseControllerFindAll(options?: RawAxiosRequestConfig): AxiosPromise<Array<CourseExtended>> {
             return localVarFp.courseControllerFindAll(options).then((request) => request(axios, basePath));
         },
         /**
@@ -2004,7 +1968,7 @@ export const V1ApiFactory = function (configuration?: Configuration, basePath?: 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        courseControllerFindOne(id: string, options?: RawAxiosRequestConfig): AxiosPromise<Course> {
+        courseControllerFindOne(id: string, options?: RawAxiosRequestConfig): AxiosPromise<CourseExtended> {
             return localVarFp.courseControllerFindOne(id, options).then((request) => request(axios, basePath));
         },
         /**
@@ -2059,12 +2023,12 @@ export interface V1ApiInterface {
      * 
      * @summary Get all alumni to be displayed in the map
      * @param {Array<string>} [courseIds] The ID(s) of the course(s)
-     * @param {Array<number>} [conclusionYears] The year(s) of conclusion(s)
+     * @param {Array<string>} [conclusionYears] The year(s) of conclusion(s)
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof V1ApiInterface
      */
-    alumniControllerFindAllGeoJSON(courseIds?: Array<string>, conclusionYears?: Array<number>, options?: RawAxiosRequestConfig): AxiosPromise<GeoJSONFeatureCollection>;
+    alumniControllerFindAllGeoJSON(courseIds?: Array<string>, conclusionYears?: Array<string>, options?: RawAxiosRequestConfig): AxiosPromise<GeoJSONFeatureCollection>;
 
     /**
      * 
@@ -2102,7 +2066,7 @@ export interface V1ApiInterface {
      * @throws {RequiredError}
      * @memberof V1ApiInterface
      */
-    courseControllerFindAll(options?: RawAxiosRequestConfig): AxiosPromise<Array<Course>>;
+    courseControllerFindAll(options?: RawAxiosRequestConfig): AxiosPromise<Array<CourseExtended>>;
 
     /**
      * 
@@ -2112,7 +2076,7 @@ export interface V1ApiInterface {
      * @throws {RequiredError}
      * @memberof V1ApiInterface
      */
-    courseControllerFindOne(id: string, options?: RawAxiosRequestConfig): AxiosPromise<Course>;
+    courseControllerFindOne(id: string, options?: RawAxiosRequestConfig): AxiosPromise<CourseExtended>;
 
     /**
      * 
@@ -2170,12 +2134,12 @@ export class V1Api extends BaseAPI implements V1ApiInterface {
      * 
      * @summary Get all alumni to be displayed in the map
      * @param {Array<string>} [courseIds] The ID(s) of the course(s)
-     * @param {Array<number>} [conclusionYears] The year(s) of conclusion(s)
+     * @param {Array<string>} [conclusionYears] The year(s) of conclusion(s)
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof V1Api
      */
-    public alumniControllerFindAllGeoJSON(courseIds?: Array<string>, conclusionYears?: Array<number>, options?: RawAxiosRequestConfig) {
+    public alumniControllerFindAllGeoJSON(courseIds?: Array<string>, conclusionYears?: Array<string>, options?: RawAxiosRequestConfig) {
         return V1ApiFp(this.configuration).alumniControllerFindAllGeoJSON(courseIds, conclusionYears, options).then((request) => request(this.axios, this.basePath));
     }
 
