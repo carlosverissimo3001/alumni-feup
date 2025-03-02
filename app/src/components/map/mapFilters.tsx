@@ -373,7 +373,7 @@ const MapFilters = ({
 
         {/* Stats Footer */}
         <div className="px-6 py-4 bg-gray-50 border-t">
-          <p className="text-sm text-gray-600">
+          <p className="text-xl text-gray-600 font-bold">
             Total number of alumni: {alumniLength}
           </p>
           <p className="text-xs text-gray-500 mt-1">
