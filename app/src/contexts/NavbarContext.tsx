@@ -1,10 +1,10 @@
 'use client'
 
-import { createContext, useContext, useState, ReactNode } from 'react';
+import React, { createContext, useContext, useState, ReactNode } from 'react';
 
 interface NavbarContextType {
   isCollapsed: boolean;
-  setIsCollapsed: (value: boolean) => void;
+  toggleCollapse: () => void;
 }
 
 const NavbarContext = createContext<NavbarContextType | undefined>(undefined);
@@ -12,8 +12,13 @@ const NavbarContext = createContext<NavbarContextType | undefined>(undefined);
 export function NavbarProvider({ children }: { children: ReactNode }) {
   const [isCollapsed, setIsCollapsed] = useState(true);
 
+  const toggleCollapse = () => setIsCollapsed(!isCollapsed);
+
   return (
-    <NavbarContext.Provider value={{ isCollapsed, setIsCollapsed }}>
+    <NavbarContext.Provider value={{ 
+      isCollapsed, 
+      toggleCollapse,
+    }}>
       {children}
     </NavbarContext.Provider>
   );

@@ -40,4 +40,10 @@ export class CreateAlumniDto {
   })
   @IsOptional()
   person_id?: string;
+
+  @ApiProperty({
+    description: 'The creator of the alumni',
+    example: 'alumni-api',
+  })
+  created_by: string;
 }

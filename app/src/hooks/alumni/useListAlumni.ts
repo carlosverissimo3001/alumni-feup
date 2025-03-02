@@ -1,14 +1,14 @@
 import { useMutation } from "@tanstack/react-query";
 import { useJsonFromResponse, ResponseError } from "@/commom";
-import AlumniApi from "@/api";
+import NestAPI from "@/api";
 
 type Input = {
     onSuccess?: () => void | Promise<void>
 }
 
-export const useAlumniList = ({ onSuccess }: Input) => {
+export const useListAlumni = ({ onSuccess }: Input) => {
     const mutation = useMutation({
-        mutationFn: () => AlumniApi.alumniControllerFindAll(),
+        mutationFn: () => NestAPI.alumniControllerFindAll(),
         onSuccess
     });
 

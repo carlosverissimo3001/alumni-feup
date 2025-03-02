@@ -2,7 +2,17 @@
 * This class is responsible for listing the alumnis in a certain cluster. It also handles with Pagination 
 */
 import React, {useEffect, useState} from 'react';
+import Image from 'next/image';
+import { AlumniInfo } from './mapFilters';
 
+type props = {
+  hoveredCluster: boolean;
+  listAlumniNames: string[];
+  listLinkedinLinks: string[];
+  listPlaceName: string[];
+  hoveredMouseCoords: number[];
+  alumniData: AlumniInfo[];
+}
 const ClusterInfo = ({
   hoveredCluster,
   listAlumniNames,
@@ -10,8 +20,7 @@ const ClusterInfo = ({
   listPlaceName,
   hoveredMouseCoords,
   alumniData,
-  handleImageError
-}) => {
+}: props) => {
     const nAlumniToShow = 10;                                                // Defines the nº of alumnis to show when a hoover is preformed
     const [startPosition, setStartPosition] = useState(0);                   // Position in the array to start to read from
     const [endPosition, setEndPosition] = useState(nAlumniToShow-1);         // Position in the array to stop reading from. 0 is also a number therefore the -1
@@ -104,11 +113,10 @@ const ClusterInfo = ({
                         <tr key={index}>
                             <td>
                             <div className='alumni-cell alumni-cell-name'>
-                                <img
+                                <Image 
                                 className="profile-picture"
                                 src={alumni.profilePics}
                                 alt=""
-                                onError={handleImageError}
                                 />
                                 <a
                                 className="link content-table"

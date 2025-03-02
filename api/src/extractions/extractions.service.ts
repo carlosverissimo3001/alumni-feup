@@ -3,7 +3,7 @@ import { PrismaService } from '../prisma/prisma.service';
 import * as csv from 'csv-parser';
 import { Readable } from 'stream';
 import { GRADUATION_STATUS } from '@prisma/client';
-import { FacultyExtraction } from 'src/entities/faculty_extraction.entity';
+import { FacultyExtraction } from 'src/entities/faculty-extraction.entity';
 import { createReadStream } from 'fs';
 import { UploadExtractionDto } from 'src/dto/upload-extraction.dto';
 

@@ -7,7 +7,7 @@ import {
 } from '@nestjs/class-validator';
 import { Role } from './role.entity';
 import { Type } from 'class-transformer';
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 export class Company {
   @ApiProperty({ description: 'The id of the company' })
   @IsString()
@@ -17,7 +17,7 @@ export class Company {
   @IsString()
   name: string;
 
-  @ApiProperty({ description: 'The linkedin url of the company' })
+  @ApiPropertyOptional({ description: 'The linkedin url of the company' })
   @IsOptional()
   @IsUrl()
   linkedin_url?: string | null;
