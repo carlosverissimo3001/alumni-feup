@@ -7,8 +7,8 @@ const configuration = new Configuration({
     basePath: BASE_URL,
 });
 
-const AlumniApi = new V1Api(configuration);
+const NestAPI = new V1Api(configuration);
 
-bindClassMethods(AlumniApi, V1Api)
+bindClassMethods(NestAPI, V1Api)
 
-export default AlumniApi;
+export default NestAPI;
