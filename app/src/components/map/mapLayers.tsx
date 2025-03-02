@@ -1,19 +1,24 @@
-export const clusterLayer = {
+import { LayerProps } from "react-map-gl/mapbox";
+
+const LAYER_TYPE = 'circle' as const;
+const SOURCE_ID = 'alumni';
+
+export const clusterLayer: LayerProps = {
     id: 'clusters',
-    type: 'circle',
-    source: 'alumniPerCountry',
-    filter: ['>', 'students', 0],
+    type: LAYER_TYPE,
+    source: SOURCE_ID,
+    filter: ['>', ['get', 'students'], 0],
     paint: {
         'circle-color': ['step', ['get', 'students'], '#7DCEA0', 50, '#e5c100', 100, '#E74C3C'],
-        'circle-radius': ['step', ['get', 'students'], 20, 100, 30, 750, 40]
+        'circle-radius': 20 // FOR TESTING
     }
 };
 
-export const clusterCountLayer = {
+export const clusterCountLayer: LayerProps = {
     id: 'cluster-count',
     type: 'symbol',
-    source: 'alumniPerCountry',
-    filter: ['>', 'students', 0],
+    source: SOURCE_ID,
+    filter: ['>', ['get', 'students'], 0],
     layout: {
         'text-field': '{students}',
         'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Bold'],
@@ -24,10 +29,10 @@ export const clusterCountLayer = {
     }
 };
 
-export const unclusterPointLayer = {
+export const unclusterPointLayer: LayerProps = {
     id: 'unclustered-point',
-    type: 'circle',
-    source: 'alumniPerCountry',
+    type: LAYER_TYPE,
+    source: SOURCE_ID,
     filter: ['!', ['has', 'students']],
     paint: {
         'circle-color': '#11b4da',
