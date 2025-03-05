@@ -16,7 +16,7 @@ const JoinPage = () => {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100">
+    <div className="h-full w-full flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100">
       <div className="max-w-md w-full space-y-8 p-10 bg-white rounded-2xl shadow-xl">
         <div className="text-center space-y-2">
           <h2 className="text-3xl font-bold text-gray-900">Join 30EIC</h2>
