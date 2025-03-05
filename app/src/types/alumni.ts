@@ -1,6 +1,8 @@
-export type Alumni = {
-  id: string;
-  first_name: string;
-  last_name: string;
+export type AlumniData = {
+  name: string;
   linkedin_url?: string;
+  profile_pic_url?: string;
+  courses?: string;
+  yearConclusions?: string;
 }
+  

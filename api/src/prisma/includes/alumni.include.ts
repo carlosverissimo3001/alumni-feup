@@ -40,6 +40,7 @@ export const alumniBasic = {
   first_name: true,
   last_name: true,
   linkedin_url: true,
+  profile_picture_url: true,
 } satisfies Prisma.AlumniSelect;
 
 export const alumniSelect = {

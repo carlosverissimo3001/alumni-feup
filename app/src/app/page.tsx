@@ -1,9 +1,8 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import MapFilters from '@/components/map/mapFilters';
 import MapView from '@/components/map/mapView';
-import { clusterLayer } from '@/components/map/mapLayers';
 import { useNavbar } from "@/contexts/NavbarContext";
 import { cn } from "@/lib/utils";
 import { GeoJSONFeatureCollection } from "@/sdk";
@@ -21,8 +20,11 @@ interface SelectedAlumni {
   coordinates: Coordinates;
 }
 
-const MapCmp = () => {
+const MapComponent = () => {
   const [alumniGeoJSON, setAlumniGeoJSON] = useState<GeoJSONFeatureCollection | null>(null);
+
+  // The alumni the user is searching for.
+  // Set in the filters -> Used in the mapView to center the map on the alumni.
   const [selectedAlumni, setSelectedAlumni] = useState<SelectedAlumni | null>(null);
   const { isCollapsed } = useNavbar();
   const [loading, setLoading] = useState(false);
@@ -75,4 +77,4 @@ const MapCmp = () => {
   );
 };
 
-export default MapCmp;
+export default MapComponent;
