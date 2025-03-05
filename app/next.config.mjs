@@ -9,6 +9,14 @@ const nextConfig = {
     LINKEDIN_SCOPE: process.env.LINKEDIN_SCOPE,
     NEXT_PUBLIC_APP_URL: process.env.NEXT_PUBLIC_APP_URL,
   },
+  images: {
+    remotePatterns: [
+      {
+        hostname: "**",
+      },
+    ],
+  },
+
 };
 
 export default nextConfig;
