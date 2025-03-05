@@ -146,7 +146,8 @@ const ClusterInfo = ({
                             </a>
                           </div>
                         </TableCell>
-                        <TableCell className="text-sm text-gray-600 font-bold   ">{alumni.courses?.replace(/_/g, ".")}</TableCell>
+                        {/* Note, this is a hotfix since we cannot store dots in the database, please solve this in the future */}
+                        <TableCell className="text-sm text-gray-600 font-bold">{alumni.courses?.replace(/_/g, ".")}</TableCell>
                         <TableCell className="text-sm text-gray-600 font-bold">
                           {alumni.yearConclusions}
                         </TableCell>
