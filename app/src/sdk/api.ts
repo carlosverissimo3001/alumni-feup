@@ -54,6 +54,12 @@ export interface Alumni {
      */
     'linkedin_url'?: string;
     /**
+     * The profile picture of the alumni
+     * @type {object}
+     * @memberof Alumni
+     */
+    'profile_picture_url'?: object;
+    /**
      * The roles of the alumni
      * @type {Array<Role>}
      * @memberof Alumni
