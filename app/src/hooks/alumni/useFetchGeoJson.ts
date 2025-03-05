@@ -19,7 +19,10 @@ export const useFetchGeoJson = ({ courseIds, conclusionYears }: Props) => {
   const query = useQuery({
     queryKey: ["geoJson", { courseIds, conclusionYears }],
     queryFn: () =>
-      NestAPI.alumniControllerFindAllGeoJSON(courseIds || [], conclusionYears || [])
+      NestAPI.alumniControllerFindAllGeoJSON(
+        courseIds || [], 
+        (conclusionYears || []).map(year => year.toString())
+      )
         .then((response: AxiosResponse<GeoJSONFeatureCollection>) => response.data),
     staleTime: 1000 * 60 * 60 * 24, // Fresh for 24 hours
     gcTime: 1000 * 60 * 60 * 24 * 7, // Cache for 7 days

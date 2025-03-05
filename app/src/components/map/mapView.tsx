@@ -3,10 +3,11 @@
  * This class communicates with the filters through the parent component, the "main" component.
  */
 import React, { useState, useEffect, useRef, useCallback } from "react";
-import { Map as MapGL } from "react-map-gl/mapbox";
+import { Map as MapGL, MapMouseEvent } from "react-map-gl/mapbox";
 import MapGLSource from "./mapGlSource";
 import ClusterInfo from "./clusterInfo";
 import { cn } from "@/lib/utils";
+import { Feature, Geometry } from "geojson";
 import { clusterLayer } from "./mapLayers";
 import { useNavbar } from "@/contexts/NavbarContext";
 import {
@@ -17,12 +18,8 @@ import {
 } from "./utils/helper";
 import { GeoJSONFeatureCollection } from "@/sdk";
 import 'mapbox-gl/dist/mapbox-gl.css';
-
-interface AlumniData {
-  name: string;
-  linkedinLink: string;
-  location: string;
-}
+import { GeoJSONProperties } from "./mapFilters";
+import { AlumniData } from "@/types/alumni";
 
 type MapViewProps = {
   loading: boolean;
@@ -39,8 +36,6 @@ const MapView = ({
   loading,
   alumniGeoJSON,
   selectedAlumni,
-  handleSelectAlumni,
-  handleSelectGeoJSON,
 }: MapViewProps) => {
   const [hoveredMouseCoords, setHoveredMouseCoords] = useState<
     [number, number] | null
@@ -50,6 +45,7 @@ const MapView = ({
   const [listLinkedinLinks, setListLinkedinLinks] = useState<string[]>([]);
   const [alumniData, setAlumniData] = useState<AlumniData[]>([]);
   const [hoveredCluster, setHoveredCluster] = useState(false);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const mapRef = useRef<any>(null);
 
   const [mapLoaded, setMapLoaded] = useState(false);
@@ -105,7 +101,7 @@ const MapView = ({
   };
 
   // Clusters content
-  const showClusterContent = async (event: any) => {
+  const showClusterContent = async (event: MapMouseEvent) => {
     try {
       if (!event || !event.features) {
         updateState([], [], [], []);
@@ -124,19 +120,21 @@ const MapView = ({
           listLinkedinLinks,
           listAlumniNames,
           coursesYearConclusionByUser,
-        } = await extractFeatureFields(feature);
+          profilePics
+        } = await extractFeatureFields(feature as unknown as Feature<Geometry, GeoJSONProperties>);
 
-        const profilePics = await extractPathToProfilePics(listLinkedinLinks);
         const mapUserCoursesYears = await extractCoursesYears(
           coursesYearConclusionByUser
         );
-        const alumniData = await buildAlumniData(
+        const alumniData = buildAlumniData(
           listLinkedinLinks,
           listAlumniNames,
           profilePics,
           mapUserCoursesYears
         );
-        const parsedFlattenedPlaceNames = await parsePlaceNames(listPlaceName);
+        const parsedFlattenedPlaceNames = parsePlaceNames(listPlaceName);
+
+        console.log(alumniData);
 
         updateState(
           parsedFlattenedPlaceNames,
@@ -173,6 +171,9 @@ const MapView = ({
         }}
         mapStyle="mapbox://styles/mapbox/dark-v11"
         mapboxAccessToken={TOKEN}
+        interactiveLayerIds={clusterLayer.id ? [clusterLayer.id] : []}
+        onMouseMove={showClusterContent}
+        onClick={showClusterContent}
         ref={mapRef}
         onLoad={onMapLoad}
       >
