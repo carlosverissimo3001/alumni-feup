@@ -23,6 +23,7 @@ type AlumniGrouped = {
   alumni: Array<{
     name: string;
     linkedin_url: string;
+    profile_pic: string;
     graduations: Array<{
       course_acronym: string;
       conclusion_year: number | null;
@@ -76,6 +77,7 @@ export class AlumniService {
       acc[country].alumni.push({
         name: `${alumnus.first_name} ${alumnus.last_name}`,
         linkedin_url: alumnus.linkedin_url || '',
+        profile_pic: alumnus.profile_picture_url || '',
         graduations:
           alumnus.Graduations?.map((grad: GraduationWithCourse) => ({
             course_acronym: grad.Course.acronym,
@@ -101,6 +103,15 @@ export class AlumniService {
           (acc, curr) => {
             if (curr.linkedin_url) {
               acc[curr.linkedin_url] = curr.name;
+            }
+            return acc;
+          },
+          {} as { [key: string]: string },
+        ),
+        profilePics: data.alumni.reduce(
+          (acc, curr) => {
+            if (curr.profile_pic) {
+              acc[curr.linkedin_url] = curr.profile_pic;
             }
             return acc;
           },
@@ -163,6 +174,7 @@ export class AlumniService {
       acc[country].alumni.push({
         name: `${alumnus.first_name} ${alumnus.last_name}`,
         linkedin_url: alumnus.linkedin_url || '',
+        profile_pic: alumnus.profile_picture_url || '',
         graduations:
           alumnus.Graduations?.map((grad: GraduationWithCourse) => ({
             course_acronym: grad.Course.acronym,
@@ -195,6 +207,7 @@ export class AlumniService {
       acc[city].alumni.push({
         name: `${alumnus.first_name} ${alumnus.last_name}`,
         linkedin_url: alumnus.linkedin_url || '',
+        profile_pic: alumnus.profile_picture_url || '',
         graduations:
           alumnus.Graduations?.map((grad: GraduationWithCourse) => ({
             course_acronym: grad.Course.acronym,

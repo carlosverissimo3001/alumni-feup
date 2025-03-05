@@ -6,6 +6,7 @@ export interface CustomProperties {
   students: number;
   listLinkedinLinksByUser: { [key: string]: string };
   coursesYearConclusionByUser: { [key: string]: { [key: string]: string } };
+  profilePics: { [key: string]: string };
 }
 
 export class GeoJSONFeature implements Feature<Point, CustomProperties> {
@@ -29,6 +30,7 @@ export class GeoJSONFeature implements Feature<Point, CustomProperties> {
       students: 0,
       listLinkedinLinksByUser: {},
       coursesYearConclusionByUser: {},
+      profilePics: {},
     };
   }
 }
