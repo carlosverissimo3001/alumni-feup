@@ -27,7 +27,12 @@ export class Alumni {
   @ApiPropertyOptional({ description: 'The linkedin url of the alumni' })
   @IsOptional()
   @IsUrl()
-  linkedin_url?: string;
+  linkedin_url?: string
+
+  @ApiPropertyOptional({ description: 'The profile picture of the alumni' })
+  @IsOptional()
+  @IsUrl()
+  profile_picture_url?: string | null;
 
   @ApiPropertyOptional({
     description: 'The roles of the alumni',
