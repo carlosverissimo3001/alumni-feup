@@ -1,13 +1,14 @@
-import { Feature, Point } from "geojson";
+import { Feature, Geometry } from "geojson";
 import { GeoJSONProperties } from "../mapFilters";
+import { AlumniData } from "@/types/alumni";
 
-export function getYearList() : string[] {
+export function getYearList(): string[] {
   const currentYear = new Date().getFullYear();
   const years = Array.from(
     { length: currentYear - 1994 + 1 },
     (_, i) => currentYear - i
   );
-  return years.map(year => year.toString());
+  return years.map((year) => year.toString());
 }
 
 /**
@@ -21,20 +22,20 @@ export async function convertBlobToGeoJSON(blob: Blob) {
       const reader = new FileReader();
       reader.onload = () => {
         try {
-        const json = JSON.parse(reader.result);
-        resolve(json);
+          const json = JSON.parse(reader.result);
+          resolve(json);
         } catch (error) {
-        reject('Failed to parse JSON');
+          reject("Failed to parse JSON");
         }
       };
       reader.onerror = () => reject("Error reading blob");
       reader.readAsText(blob);
     });
-    return  geoJson;
+    return geoJson;
   } else {
     return {
-      "type": "FeatureCollection",
-      "features": []
+      type: "FeatureCollection",
+      features: [],
     };
   }
 }
@@ -47,13 +48,13 @@ export async function convertBlobToGeoJSON(blob: Blob) {
 export async function extractJSONObjects(str: string) {
   const jsonObjects = [];
   let depth = 0; // to keep track of nested levels
-  let currentObject = '';
+  let currentObject = "";
 
   // Iterate over the string to separate JSON objects
   for (let i = 0; i < str.length; i++) {
-    if (str[i] === '{') {
+    if (str[i] === "{") {
       if (depth === 0) {
-        currentObject = ''; // start a new object
+        currentObject = ""; // start a new object
       }
       depth++; // increment depth for nested objects
     }
@@ -62,7 +63,7 @@ export async function extractJSONObjects(str: string) {
       currentObject += str[i];
     }
 
-    if (str[i] === '}') {
+    if (str[i] === "}") {
       depth--; // decrement depth when closing a JSON object
       if (depth === 0) {
         jsonObjects.push(currentObject); // complete object
@@ -71,7 +72,7 @@ export async function extractJSONObjects(str: string) {
   }
 
   return jsonObjects.map((jsonStr) => JSON.parse(jsonStr));
-};
+}
 
 /**
  * Flattens an array
@@ -81,23 +82,24 @@ export async function extractJSONObjects(str: string) {
 export function flattenArray(arr: any[]) {
   if (!Array.isArray(arr)) return [arr];
   let flattened = [];
-  arr.forEach(item => {
+  arr.forEach((item) => {
     flattened = flattened.concat(Helper.flattenArray(item));
   });
   return flattened;
-};
+}
 
 /**
  * Parses the place names
- * @param placeName - The place name to parse
+ * @param placeNames - The place name to parse
  * @returns The parsed place name
  */
-export async function parsePlaceNames(placeName: string) {
-  if (typeof placeName === 'string') {
+export function parsePlaceNames(placeNames: string | string[]): string[] {
+  if (typeof placeNames === "string") {
     const regex = /"([^"]+)"|'([^']+)'/g;
-    placeName = placeName.match(regex).map(match => match.replace(/['"]/g, ''));
+    const matches = placeNames.match(regex);
+    return matches ? matches.map((match) => match.replace(/['"]/g, "")) : [];
   }
-  return flattenArray(placeName);
+  return placeNames;
 }
 
 /**
@@ -105,18 +107,41 @@ export async function parsePlaceNames(placeName: string) {
  * @param feature - The feature to extract the fields from
  * @returns The extracted fields
  */
-export async function extractFeatureFields(feature: Feature<Point, GeoJSONProperties>) {
+export async function extractFeatureFields(
+  feature: Feature<Geometry, GeoJSONProperties>
+) {
   const listPlaceName = feature.properties.name;
   const linkUsersString = feature.properties.listLinkedinLinksByUser;
-  const coursesYearConclusionByUser = feature.properties.coursesYearConclusionByUser;
+  const coursesYearConclusionByUser =
+    feature.properties.coursesYearConclusionByUser;
 
-  // Separates fields of linkUsersString
-  const jsonObjects = await extractJSONObjects(linkUsersString);
-  const mapUserLinks = jsonObjects.reduce((acc, obj) => ({ ...acc, ...obj }), {});
+    const profilePics = typeof feature.properties.profilePics === 'string'
+    ? (await extractJSONObjects(feature.properties.profilePics))[0]
+    : feature.properties.profilePics;
+
+  // Handle linkUsersString directly as it's already an object
+  const mapUserLinks =
+    typeof linkUsersString === "string"
+      ? (await extractJSONObjects(linkUsersString))[0]
+      : linkUsersString;
   const listLinkedinLinks = Object.keys(mapUserLinks);
-  const listAlumniNames = Object.values(mapUserLinks);
+  const listAlumniNames = Object.values(mapUserLinks) as string[];
 
-  return { listPlaceName, listLinkedinLinks, listAlumniNames, coursesYearConclusionByUser }
+  return {
+    listPlaceName,
+    listLinkedinLinks,
+    listAlumniNames,
+    coursesYearConclusionByUser,
+    profilePics,
+  };
+}
+
+interface CourseYear {
+  [course: string]: string;
+}
+
+interface CourseYearByUser {
+  [linkedinUrl: string]: CourseYear;
 }
 
 /**
@@ -124,23 +149,24 @@ export async function extractFeatureFields(feature: Feature<Point, GeoJSONProper
  * @param coursesYearConclusionByUser - The courses year conclusion by user
  * @returns The courses years
  */
-export async function extractCoursesYears(coursesYearConclusionByUser) {
-  const mapUserCoursesYears = new Map();
+export async function extractCoursesYears(coursesYearConclusionByUser: string) {
+  const mapUserCoursesYears = new Map<string, Map<string, string>>();
   const jsonObjectsPeopleCoursesConclusion = await extractJSONObjects(coursesYearConclusionByUser);
-  const mapUserPeopleCoursesConclusion = jsonObjectsPeopleCoursesConclusion.reduce((acc, obj) => ({ ...acc, ...obj }), {});
+  const mapUserPeopleCoursesConclusion = jsonObjectsPeopleCoursesConclusion.reduce<CourseYearByUser>(
+    (acc, obj) => ({ ...acc, ...obj }),
+    {}
+  );
 
-  Object.entries(mapUserPeopleCoursesConclusion).forEach(([linkdinLink, courseYear]) => {
-    const mapCoursesYears = new Map();
-    Object.entries(courseYear).forEach((courseConclusionYears)=>{
-      const courseConclusionYearsSplited = courseConclusionYears[1].split("/");
-      mapCoursesYears.set(courseConclusionYears[0], courseConclusionYearsSplited[1]);
+  Object.entries(mapUserPeopleCoursesConclusion).forEach(([linkedinLink, courseYear]) => {
+    const mapCoursesYears = new Map<string, string>();
+    Object.entries(courseYear).forEach(([course, year]) => {
+      mapCoursesYears.set(course, year);
     });
-    mapUserCoursesYears.set(linkdinLink, mapCoursesYears);
+    mapUserCoursesYears.set(linkedinLink, mapCoursesYears);
   });
 
   return mapUserCoursesYears;
 }
-
 
 /**
  * Builds the alumni data
@@ -149,34 +175,40 @@ export async function extractCoursesYears(coursesYearConclusionByUser) {
  * @param profilePics - The profile pics
  * @param mapUserCoursesYears - The map of user courses years
  */
-export async function buildAlumniData(listLinkedinLinks, listAlumniNames, profilePics, mapUserCoursesYears){
-  return listLinkedinLinks.map((linkdinLink, index) => {
+export function buildAlumniData(
+  listLinkedinLinks: string[],
+  listAlumniNames: string[],
+  profilePics: { [key: string]: string },
+  mapUserCoursesYears: Map<string, Map<string, string>>
+): AlumniData[] {
+  return listLinkedinLinks.map((linkedinLink, index) => {
     let coursesCurrentAlumni = "";
-    let yearConclusionCurrentAlumni="";
-    const userCoursesYearsConclusion = mapUserCoursesYears.get(linkdinLink);
+    let yearConclusionCurrentAlumni = "";
+    const userCoursesYearsConclusion = mapUserCoursesYears.get(linkedinLink);
 
-    userCoursesYearsConclusion.forEach((yearConclusion, course) => {
-      coursesCurrentAlumni+=course+" ";
-      yearConclusionCurrentAlumni+=yearConclusion+" ";
+    userCoursesYearsConclusion?.forEach((yearConclusion, course) => {
+      coursesCurrentAlumni += course + " ";
+      yearConclusionCurrentAlumni += yearConclusion + " ";
     });
 
-    if (coursesCurrentAlumni==="" || yearConclusionCurrentAlumni==="") {
+    if (coursesCurrentAlumni === "" || yearConclusionCurrentAlumni === "") {
       coursesCurrentAlumni = "-";
       yearConclusionCurrentAlumni = "-";
-    } 
+    }
+
+    const imageUrl = profilePics[linkedinLink];
 
     return {
       name: listAlumniNames[index],
-      linkedinLink: listLinkedinLinks[index],
-      profilePics: profilePics[index],
+      linkedin_url: listLinkedinLinks[index],
+      profile_pic_url: imageUrl,
       courses: coursesCurrentAlumni,
       yearConclusions: yearConclusionCurrentAlumni,
     };
   });
 }
 
-
-// Note(Carlos V.): I don't think this will needed, we'll probably use Cloudinary to 
+// Note(Carlos V.): I don't think this will needed, we'll probably use Cloudinary to
 // store the profile pics and then hotlink them
 /* export async function extractPathToProfilePics(linkedinLinks) {
   const pathsToProfileImage = [];
@@ -190,7 +222,7 @@ export async function buildAlumniData(listLinkedinLinks, listAlumniNames, profil
 }
 */
 
-// Note(Carlos V.): I don't think this will needed   
+// Note(Carlos V.): I don't think this will needed
 /*  // Prepares response to the endpoint of populating the DB
 static async prepareResponsePopDataBase(response){
   if (response.ok){
