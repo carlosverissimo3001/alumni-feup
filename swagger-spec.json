@@ -424,6 +424,10 @@
             "type": "string",
             "description": "The linkedin url of the alumni"
           },
+          "profile_picture_url": {
+            "type": "object",
+            "description": "The profile picture of the alumni"
+          },
           "roles": {
             "description": "The roles of the alumni",
             "type": "array",

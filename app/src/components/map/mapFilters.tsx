@@ -15,6 +15,7 @@ export interface GeoJSONProperties {
   students: number;
   listLinkedinLinksByUser: { [key: string]: string };
   coursesYearConclusionByUser: { [key: string]: { [key: string]: string } };
+  profilePics: { [key: string]: string };
 }
 
 enum GROUP_BY {
