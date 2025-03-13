@@ -1,6 +1,8 @@
 import { IsString, IsDate, IsOptional } from '@nestjs/class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
+import { IsArray, ValidateNested } from 'class-validator';
+import { JobClassification } from './job-classification.entity';
 
 export class Role {
   @ApiProperty({ description: 'The id of the role' })
@@ -42,6 +44,12 @@ export class Role {
   @IsString()
   esco_l2: string;
 
+  @ApiProperty({ description: 'The job classifications' })
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => JobClassification)
+  jobClassifications: JobClassification[];
+
   constructor(data: Role) {
     this.id = data.id;
     this.alumni_id = data.alumni_id;
@@ -51,5 +59,6 @@ export class Role {
     this.seniority_level = data.seniority_level;
     this.esco_l1 = data.esco_l1;
     this.esco_l2 = data.esco_l2;
+    this.jobClassifications = data.jobClassifications;
   }
 }
