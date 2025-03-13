@@ -43,6 +43,8 @@ export class AlumniRepository {
   async findAllGeoJSON(query: GetGeoJSONDto): Promise<Alumni[]> {
     const { courseIds, conclusionYears } = query;
 
+    const role_date: Date = new Date('2024-01-01');
+
     // Ensure arrays for Prisma
     const courseIdsArray = Array.isArray(courseIds)
       ? courseIds
@@ -56,7 +58,7 @@ export class AlumniRepository {
         ? [Number(conclusionYears)]
         : [];
 
-    const graduationsWhere = {
+    const alumniWhere = {
       Graduations: {
         some: {
           AND: [
@@ -76,10 +78,18 @@ export class AlumniRepository {
           longitude: { not: null },
         },
       },
+      Roles: {
+        some: {
+          AND: [
+            { start_date: { lte: role_date } },
+            { OR: [{ end_date: { gte: role_date } }, { end_date: null }] },
+          ],
+        },
+      },
     };
 
     return this.prisma.alumni.findMany({
-      where: graduationsWhere,
+      where: alumniWhere,
       select: alumniSelect,
     });
   }
