@@ -11,7 +11,7 @@ model Alumni {
   id                  String       @id @default(uuid())
   first_name          String
   last_name           String
-  linkedin_url        String
+  linkedin_url        String       @unique
   personal_email      String?
   current_location_id String?
   created_at          DateTime     @default(now()) @db.Timestamp(6)
@@ -41,8 +41,9 @@ model AlumniRaw {
 model Company {
   id           String   @id @default(uuid())
   name         String
-  linkedin_url String?
+  linkedin_url String?  @unique
   industry_id  String
+  created_at   DateTime @default(now()) @db.Timestamp(6)
   Industry     Industry @relation(fields: [industry_id], references: [id])
   Role         Role[]
 
@@ -129,27 +130,26 @@ model JobClassification {
 }
 
 model Location {
-  id           String   @id
+  id           String                @id
   city         String
   country      String
   latitude     Float?
   longitude    Float?
   country_code String
   Alumni       Alumni[]
+  Problematic  ProblematicLocation[]
   Role         Role[]
-  Problematic ProblematicLocation[]
+
   @@index([city, country])
   @@index([country_code])
   @@index([latitude, longitude])
   @@map("location")
 }
 
-// These are locations for which we cannot find coordinates
-// Manual work is thus needed :(
 model ProblematicLocation {
   id          String   @id @default(uuid())
   location_id String
-  Location Location @relation(fields: [location_id], references: [id])
+  Location    Location @relation(fields: [location_id], references: [id])
 
   @@map("problematic_location")
 }
