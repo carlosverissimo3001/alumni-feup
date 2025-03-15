@@ -9,6 +9,7 @@ import { MultiSelect } from "../ui/multi-select";
 import { useFetchGeoJson } from "@/hooks/alumni/useFetchGeoJson";
 import { GeoJSONFeatureCollection } from "@/sdk";
 import { Feature, Point } from 'geojson';
+import { AlumniControllerFindAllGeoJSONGroupByEnum as GROUP_BY } from "@/sdk";
 
 export interface GeoJSONProperties {
   name: string[];
@@ -18,10 +19,6 @@ export interface GeoJSONProperties {
   profilePics: { [key: string]: string };
 }
 
-enum GROUP_BY {
-  COUNTRIES = "countries",
-  CITIES = "cities",
-}
 
 type props = {
   handleLoading: (loading: boolean) => void;
@@ -60,7 +57,7 @@ const MapFilters = ({
     setSearchInput(e.target.value);
   };
   // Group by
-  const [selectGroupBy, setSelectGroupBy] = useState<GROUP_BY>(GROUP_BY.COUNTRIES);
+  const [groupBy, setGroupBy] = useState<GROUP_BY>(GROUP_BY.Countries);
   // Conclusion years
   const [conclusionYears, setConclusionYears] = useState<number[]>([]);
   // Course
@@ -69,6 +66,7 @@ const MapFilters = ({
   const { data: geoJson, refetch: refetchGeoJson, isLoading: isLoadingGeoJson } = useFetchGeoJson({
     courseIds,
     conclusionYears,
+    groupBy,
   });
 
   // State variables
@@ -199,7 +197,7 @@ const MapFilters = ({
  
   const onClickClean = () => {
     // Reset the filters
-    setSelectGroupBy(GROUP_BY.COUNTRIES);
+    setGroupBy(GROUP_BY.Countries);
     setSearchInput("");
     setConclusionYears([]);
     setCourseIds([]);
@@ -238,7 +236,7 @@ const MapFilters = ({
       searchInput.trim() !== '';
 
     setCleanButtonEnabled(hasFilters);
-  }, [courseIds, conclusionYears, selectGroupBy, searchInput]);
+  }, [courseIds, conclusionYears, groupBy, searchInput]);
 
 
   return (
@@ -284,10 +282,10 @@ const MapFilters = ({
         {/* Group By Toggle */}
         <div className="flex">
           <div
-            onClick={() => setSelectGroupBy(GROUP_BY.COUNTRIES)}
+            onClick={() => setGroupBy(GROUP_BY.Countries)}
             className={cn(
               "flex-1 text-center py-2 cursor-pointer",
-              selectGroupBy === GROUP_BY.COUNTRIES
+              groupBy === GROUP_BY.Countries
                 ? "bg-red-800 text-white"
                 : "bg-gray-100 text-gray-900"
             )}
@@ -295,10 +293,10 @@ const MapFilters = ({
             Countries
           </div>
           <div
-            onClick={() => setSelectGroupBy(GROUP_BY.CITIES)}
+            onClick={() => setGroupBy(GROUP_BY.Cities)}
             className={cn(
               "flex-1 text-center py-2 cursor-pointer",
-              selectGroupBy === GROUP_BY.CITIES
+              groupBy === GROUP_BY.Cities
                 ? "bg-red-800 text-white"
                 : "bg-gray-100 text-gray-900"
             )}

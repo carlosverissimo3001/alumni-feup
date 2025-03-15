@@ -9,10 +9,25 @@ export const clusterLayer: LayerProps = {
     source: SOURCE_ID,
     filter: ['>', ['get', 'students'], 0],
     paint: {
-        'circle-color': ['step', ['get', 'students'], '#7DCEA0', 50, '#e5c100', 100, '#E74C3C'],
-        'circle-radius': 20 // FOR TESTING
+      'circle-color': [
+        'interpolate',
+        ['linear'],
+        ['get', 'students'],
+        0, '#7DCEA0',
+        50, '#e5c100',
+        100, '#E74C3C'
+      ],
+      'circle-radius': [
+        'interpolate',
+        ['linear'],
+        ['get', 'students'],
+        0, 15,
+        50, 30,
+        100, 45,
+        500, 60
+      ]
     }
-};
+  };
 
 export const clusterCountLayer: LayerProps = {
     id: 'cluster-count',
