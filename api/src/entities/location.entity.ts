@@ -10,11 +10,11 @@ import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 export class LocationGeo {
   @ApiProperty({ description: 'The city of the location' })
   @IsString()
-  city: string;
+  city?: string | null;
 
   @ApiProperty({ description: 'The country of the location' })
   @IsString()
-  country: string;
+  country?: string | null;
 
   @ApiPropertyOptional({ description: 'The latitude of the location' })
   @IsOptional()

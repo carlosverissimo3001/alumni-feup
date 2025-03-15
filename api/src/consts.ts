@@ -6,6 +6,11 @@ export enum QueueName {
   GEOLOCATION = 'geolocation',
 }
 
+export enum GROUP_BY {
+  COUNTRIES = 'countries',
+  CITIES = 'cities',
+}
+
 export enum Job {
   BATCH_SCRAPE = 'batch-scrape',
   SCRAPE = 'scrape',
