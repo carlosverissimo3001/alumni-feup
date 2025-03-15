@@ -43,8 +43,6 @@ export class AlumniRepository {
   async findAllGeoJSON(query: GetGeoJSONDto): Promise<Alumni[]> {
     const { courseIds, conclusionYears } = query;
 
-    const role_date: Date = new Date('2024-01-01');
-
     // Ensure arrays for Prisma
     const courseIdsArray = Array.isArray(courseIds)
       ? courseIds
@@ -58,32 +56,31 @@ export class AlumniRepository {
         ? [Number(conclusionYears)]
         : [];
 
+    const graduationsFilter =
+      courseIdsArray.length || conclusionYearsArray.length
+        ? {
+            Graduations: {
+              some: {
+                AND: [
+                  { status: GRADUATION_STATUS.GRADUATED },
+                  ...(courseIdsArray.length
+                    ? [{ course_id: { in: courseIdsArray } }]
+                    : []),
+                  ...(conclusionYearsArray.length
+                    ? [{ conclusion_year: { in: conclusionYearsArray } }]
+                    : []),
+                ],
+              },
+            },
+          }
+        : {};
+
     const alumniWhere = {
-      Graduations: {
-        some: {
-          AND: [
-            { status: GRADUATION_STATUS.GRADUATED },
-            ...(courseIdsArray.length
-              ? [{ course_id: { in: courseIdsArray } }]
-              : []),
-            ...(conclusionYearsArray.length
-              ? [{ conclusion_year: { in: conclusionYearsArray } }]
-              : []),
-          ],
-        },
-      },
+      ...graduationsFilter,
       Location: {
         is: {
           latitude: { not: null },
           longitude: { not: null },
-        },
-      },
-      Roles: {
-        some: {
-          AND: [
-            { start_date: { lte: role_date } },
-            { OR: [{ end_date: { gte: role_date } }, { end_date: null }] },
-          ],
         },
       },
     };

@@ -10,7 +10,8 @@ import { CreateAlumniDto } from '../../dto/create-alumni.dto';
 import { AlumniRepository } from '../repositories/alumni.repository';
 import { GetGeoJSONDto } from 'src/dto/getgeojson.dto';
 import { Feature, Point } from 'geojson';
-
+import { GROUP_BY } from '@/consts';
+import { GeolocationService } from 'src/geolocation/geolocation.service';
 type GraduationWithCourse = Graduation & {
   Course: {
     name: string;
@@ -43,6 +44,7 @@ type AlumniByCity = {
 export class AlumniService {
   constructor(
     private readonly prisma: PrismaService,
+    private readonly geolocationService: GeolocationService,
     private readonly alumniRepository: AlumniRepository,
   ) {}
 
@@ -55,49 +57,26 @@ export class AlumniService {
   ): Promise<GeoJSONFeatureCollection> {
     const alumni = await this.alumniRepository.findAllGeoJSON(query);
 
-    // Group alumni by country
-    const alumniByCountry = alumni.reduce<AlumniByCountry>((acc, alumnus) => {
-      if (
-        !alumnus.Location?.country ||
-        !alumnus.Location?.latitude ||
-        !alumnus.Location?.longitude
-      ) {
-        return acc;
-      }
+    const groupBy = query.groupBy || GROUP_BY.COUNTRIES;
+    let alumniByGroup: AlumniByCountry | AlumniByCity;
 
-      const country = alumnus.Location.country;
-
-      if (!acc[country]) {
-        acc[country] = {
-          coordinates: [alumnus.Location.longitude, alumnus.Location.latitude],
-          alumni: [],
-        };
-      }
-
-      acc[country].alumni.push({
-        name: `${alumnus.first_name} ${alumnus.last_name}`,
-        linkedin_url: alumnus.linkedin_url || '',
-        profile_pic: alumnus.profile_picture_url || '',
-        graduations:
-          alumnus.Graduations?.map((grad: GraduationWithCourse) => ({
-            course_acronym: grad.Course.acronym,
-            conclusion_year: grad.conclusion_year || null,
-          })) || [],
-      });
-      return acc;
-    }, {});
+    if (groupBy === GROUP_BY.COUNTRIES) {
+      alumniByGroup = await this.groupAlumniByCountry(alumni);
+    } else {
+      alumniByGroup = this.groupAlumniByCity(alumni);
+    }
 
     // Convert grouped data to GeoJSON features
     const features: Array<Feature<Point, GeoJSONProperties>> = Object.entries(
-      alumniByCountry,
-    ).map(([country, data]) => ({
+      alumniByGroup,
+    ).map(([group, data]) => ({
       type: 'Feature',
       geometry: {
         type: 'Point',
         coordinates: data.coordinates,
       },
       properties: {
-        name: [country],
+        name: [group],
         students: data.alumni.length,
         listLinkedinLinksByUser: data.alumni.reduce(
           (acc, curr) => {
@@ -152,21 +131,35 @@ export class AlumniService {
     return this.alumniRepository.create(body);
   }
 
-  groupAlumniByCountry(alumni: Alumni[]): AlumniByCountry {
-    return alumni.reduce<AlumniByCountry>((acc, alumnus) => {
+  async groupAlumniByCountry(alumni: Alumni[]): Promise<AlumniByCountry> {
+    const acc: AlumniByCountry = {};
+    // Cache of country coordinates
+    const countryCoords: { [key: string]: { lon: number; lat: number } } = {};
+
+    for (const alumnus of alumni) {
       if (
         !alumnus.Location?.country ||
         !alumnus.Location?.latitude ||
         !alumnus.Location?.longitude
       ) {
-        return acc;
+        continue;
       }
 
+      console.log(alumnus.Location);
+
       const country = alumnus.Location.country;
+      if (!countryCoords[country]) {
+        countryCoords[country] =
+          await this.geolocationService.getCountryCoordinatesFromDatabase(
+            country,
+          );
+      }
+
+      const coords = countryCoords[country];
 
       if (!acc[country]) {
         acc[country] = {
-          coordinates: [alumnus.Location.longitude, alumnus.Location.latitude],
+          coordinates: [coords.lon, coords.lat],
           alumni: [],
         };
       }
@@ -181,8 +174,9 @@ export class AlumniService {
             conclusion_year: grad.conclusion_year || null,
           })) || [],
       });
-      return acc;
-    }, {});
+    }
+
+    return acc;
   }
 
   groupAlumniByCity(alumni: Alumni[]): AlumniByCity {
