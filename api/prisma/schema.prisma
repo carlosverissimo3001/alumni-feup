@@ -8,7 +8,7 @@ datasource db {
 }
 
 model Alumni {
-  id                  String       @id @default(uuid())
+  id                  String       @id @default(dbgenerated("gen_random_uuid()"))
   first_name          String
   last_name           String
   linkedin_url        String       @unique
@@ -41,7 +41,7 @@ model AlumniRaw {
 model Company {
   id           String   @id @default(uuid())
   name         String
-  linkedin_url String?  @unique
+  linkedin_url String?  @unique(map: "company_unique_url")
   industry_id  String
   created_at   DateTime @default(now()) @db.Timestamp(6)
   Industry     Industry @relation(fields: [industry_id], references: [id])
@@ -130,15 +130,16 @@ model JobClassification {
 }
 
 model Location {
-  id           String                @id
-  city         String
-  country      String
-  latitude     Float?
-  longitude    Float?
-  country_code String
-  Alumni       Alumni[]
-  Problematic  ProblematicLocation[]
-  Role         Role[]
+  id              String                @id @default(dbgenerated("gen_random_uuid()"))
+  city            String?
+  country         String?
+  latitude        Float?
+  longitude       Float?
+  country_code    String?
+  is_country_only Boolean               @default(false)
+  Alumni          Alumni[]
+  Problematic     ProblematicLocation[]
+  Role            Role[]
 
   @@index([city, country])
   @@index([country_code])
@@ -149,6 +150,7 @@ model Location {
 model ProblematicLocation {
   id          String   @id @default(uuid())
   location_id String
+  isExpected  Boolean  @default(false)
   Location    Location @relation(fields: [location_id], references: [id])
 
   @@map("problematic_location")
