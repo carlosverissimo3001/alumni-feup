@@ -132,7 +132,7 @@ const ClusterInfo = ({
                             <div className="relative h-8 w-8 rounded-full overflow-hidden">
                               <ImageWithFallback
                                 className="object-cover"
-                                src={alumni.profile_pic_url || ""}
+                                src={alumni.profile_pic_url || null}
                                 alt={alumni.name}
                               />
                             </div>
