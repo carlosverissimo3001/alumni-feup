@@ -63,6 +63,20 @@
         "operationId": "AlumniController_findAllGeoJSON",
         "parameters": [
           {
+            "name": "groupBy",
+            "required": true,
+            "in": "query",
+            "description": "How to group the data",
+            "schema": {
+              "example": "countries",
+              "type": "string",
+              "enum": [
+                "countries",
+                "cities"
+              ]
+            }
+          },
+          {
             "name": "courseIds",
             "required": false,
             "in": "query",
@@ -350,6 +364,13 @@
           "esco_l2": {
             "type": "string",
             "description": "The level 2 of the role"
+          },
+          "jobClassifications": {
+            "description": "The job classifications",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
           }
         },
         "required": [
@@ -359,7 +380,8 @@
           "start_date",
           "seniority_level",
           "esco_l1",
-          "esco_l2"
+          "esco_l2",
+          "jobClassifications"
         ]
       },
       "Course": {
@@ -383,7 +405,7 @@
         "type": "object",
         "properties": {
           "status": {
-            "type": "string",
+            "type": "object",
             "description": "The status of the graduation"
           },
           "conclusion_year": {
@@ -607,7 +629,7 @@
             "description": "The end year of the course, if it is not active"
           },
           "status": {
-            "type": "string",
+            "type": "object",
             "description": "The status of the course"
           },
           "faculty_id": {
@@ -619,7 +641,7 @@
             "description": "The name of the course in the international language"
           },
           "course_type": {
-            "type": "string",
+            "type": "object",
             "description": "The type of the course"
           }
         },
