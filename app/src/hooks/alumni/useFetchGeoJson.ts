@@ -1,12 +1,13 @@
 import { useQuery } from "@tanstack/react-query";
 import { AxiosResponse } from "axios";
 import { useJsonFromResponse } from "@/commom";
-import { GeoJSONFeatureCollection } from "@/sdk";
+import { AlumniControllerFindAllGeoJSONGroupByEnum, GeoJSONFeatureCollection } from "@/sdk";
 import NestAPI from "@/api";
 
 type Props = {
+  groupBy: AlumniControllerFindAllGeoJSONGroupByEnum;
   courseIds?: string[];
-  conclusionYears?: number[];  // Updated type to match the backend
+  conclusionYears?: number[];
 };
 
 /**
@@ -15,13 +16,14 @@ type Props = {
  * @param conclusionYears - The conclusion year(s)
  * @returns The GeoJSON data
  */
-export const useFetchGeoJson = ({ courseIds, conclusionYears }: Props) => {
+export const useFetchGeoJson = ({ courseIds, conclusionYears, groupBy }: Props) => {
   const query = useQuery({
-    queryKey: ["geoJson", { courseIds, conclusionYears }],
+    queryKey: ["geoJson", { courseIds, conclusionYears, groupBy }],
     queryFn: () =>
       NestAPI.alumniControllerFindAllGeoJSON(
+        groupBy,
         courseIds || [], 
-        (conclusionYears || []).map(year => year.toString())
+        (conclusionYears || []).map(year => year.toString()),
       )
         .then((response: AxiosResponse<GeoJSONFeatureCollection>) => response.data),
     staleTime: 1000 * 60 * 60 * 24, // Fresh for 24 hours
