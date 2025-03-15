@@ -14,7 +14,7 @@ export class GeolocationConsumer /* implements OnModuleInit */ {
     private readonly logger: Logger,
   ) {}
 
-  /* async onModuleInit() {
+  async onModuleInit() {
     await this.queue.add(
       Jobs.geolocation.EXTRACT_COORDINATES,
       { data: null },
@@ -25,11 +25,11 @@ export class GeolocationConsumer /* implements OnModuleInit */ {
         },
       },
     );
-  } */
+  }
 
   @Process(Jobs.geolocation.EXTRACT_COORDINATES)
   async extractCoordinates() {
-    this.logger.log('Started job to extract coordinates');
-    return this.service.extractCoordinates();
+    this.logger.log('Started job to extract coordinates for missing locations');
+    return this.service.findMissingCoordinates();
   }
 }
