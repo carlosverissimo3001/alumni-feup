@@ -9,7 +9,7 @@ import { Role } from './role.entity';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import { Graduation } from './graduation.entity';
-import { Location, LocationGeo } from './location.entity';
+import { LocationGeo } from './location.entity';
 
 export class Alumni {
   @ApiProperty({ description: 'The id of the alumni' })
@@ -43,7 +43,7 @@ export class Alumni {
   @IsOptional()
   @ValidateNested({ each: true })
   @Type(() => Role)
-  roles?: Role[];
+  Roles?: Role[];
 
   @ApiPropertyOptional({ description: 'The current location of the alumni' })
   @IsOptional()
@@ -66,7 +66,7 @@ export class Alumni {
     this.first_name = data.first_name;
     this.last_name = data.last_name;
     this.linkedin_url = data.linkedin_url;
-    this.roles = data.roles;
+    this.Roles = data.Roles;
     this.Location = data.Location;
     this.Graduations = data.Graduations;
   }
