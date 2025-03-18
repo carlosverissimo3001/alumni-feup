@@ -57,7 +57,7 @@ export class AlumniService {
   ): Promise<GeoJSONFeatureCollection> {
     const alumni = await this.alumniRepository.findAllGeoJSON(query);
 
-    const groupBy = query.groupBy || GROUP_BY.COUNTRIES;
+    const groupBy = query.groupBy;
     let alumniByGroup: AlumniByCountry | AlumniByCity;
 
     if (groupBy === GROUP_BY.COUNTRIES) {
@@ -144,8 +144,6 @@ export class AlumniService {
       ) {
         continue;
       }
-
-      console.log(alumnus.Location);
 
       const country = alumnus.Location.country;
       if (!countryCoords[country]) {
