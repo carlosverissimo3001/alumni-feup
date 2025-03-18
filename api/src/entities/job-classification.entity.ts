@@ -15,6 +15,14 @@ export class JobClassification {
   @IsNumber()
   level: number;
 
+  constructor(data: JobClassification) {
+    this.id = data.id;
+    this.title = data.title;
+    this.level = data.level;
+  }
+}
+
+export class JobClassificationExtended extends JobClassification {
   @ApiProperty({ description: 'The esco code of the job classification' })
   @IsString()
   esco_code: string;
@@ -30,4 +38,12 @@ export class JobClassification {
   @ApiProperty({ description: 'The creation date of the job classification' })
   @IsDate()
   created_at: Date;
+
+  constructor(data: JobClassificationExtended) {
+    super(data);
+    this.esco_code = data.esco_code;
+    this.confidence = data.confidence;
+    this.role_id = data.role_id;
+    this.created_at = data.created_at;
+  }
 }
