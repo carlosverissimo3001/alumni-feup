@@ -335,14 +335,6 @@
             "type": "string",
             "description": "The id of the role"
           },
-          "alumni_id": {
-            "type": "string",
-            "description": "The id of the alumni"
-          },
-          "company_id": {
-            "type": "string",
-            "description": "The id of the company"
-          },
           "start_date": {
             "format": "date-time",
             "type": "string",
@@ -350,38 +342,29 @@
           },
           "end_date": {
             "type": "object",
-            "description": "The end date of the role",
-            "nullable": true
+            "description": "The end date of the role"
           },
           "seniority_level": {
             "type": "string",
             "description": "The seniority level of the role"
           },
-          "esco_l1": {
-            "type": "string",
-            "description": "The level 1 of the role"
-          },
-          "esco_l2": {
-            "type": "string",
-            "description": "The level 2 of the role"
-          },
-          "jobClassifications": {
+          "JobClassification": {
             "description": "The job classifications",
             "type": "array",
             "items": {
               "type": "string"
             }
+          },
+          "Location": {
+            "type": "object",
+            "description": "The location of the role"
           }
         },
         "required": [
           "id",
-          "alumni_id",
-          "company_id",
           "start_date",
           "seniority_level",
-          "esco_l1",
-          "esco_l2",
-          "jobClassifications"
+          "JobClassification"
         ]
       },
       "Course": {
@@ -450,7 +433,7 @@
             "type": "object",
             "description": "The profile picture of the alumni"
           },
-          "roles": {
+          "Roles": {
             "description": "The roles of the alumni",
             "type": "array",
             "items": {

@@ -19,6 +19,10 @@ export const graduationSelect = {
 } satisfies Prisma.GraduationSelect;
 
 export const roleSelect = {
+  id: true,
+  start_date: true,
+  end_date: true,
+  seniority_level: true,
   Company: {
     select: {
       name: true,
@@ -29,6 +33,7 @@ export const roleSelect = {
   },
   JobClassification: {
     select: {
+      id: true,
       title: true,
       level: true,
     },
