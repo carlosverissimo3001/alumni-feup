@@ -17,6 +17,8 @@ export interface GeoJSONProperties {
   listLinkedinLinksByUser: { [key: string]: string };
   coursesYearConclusionByUser: { [key: string]: { [key: string]: string } };
   profilePics: { [key: string]: string };
+  jobTitles: { [key: string]: string };
+  companyNames: { [key: string]: string };
 }
 
 
@@ -32,6 +34,7 @@ export type AlumniInfo = {
   coordinates: number[];
   link: string;
   coursesYears: { [key: string]: string };
+
 }
 
 
@@ -138,7 +141,6 @@ const MapFilters = ({
               })
             )
           )
-
 
           const alumniNamesWithCoords = namesLinkedinLinks.map((alumniInfo) => {
             // Find the corresponding courses data based on name

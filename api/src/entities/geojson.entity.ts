@@ -7,6 +7,8 @@ export interface CustomProperties {
   listLinkedinLinksByUser: { [key: string]: string };
   coursesYearConclusionByUser: { [key: string]: { [key: string]: string } };
   profilePics: { [key: string]: string };
+  jobTitles : { [key: string]: string };
+  companyNames : { [key: string]: string };
 }
 
 export class GeoJSONFeature implements Feature<Point, CustomProperties> {
@@ -31,6 +33,8 @@ export class GeoJSONFeature implements Feature<Point, CustomProperties> {
       listLinkedinLinksByUser: {},
       coursesYearConclusionByUser: {},
       profilePics: {},
+      jobTitles: {},
+      companyNames: {},
     };
   }
 }
