@@ -29,6 +29,8 @@ type AlumniGrouped = {
       course_acronym: string;
       conclusion_year: number | null;
     }>;
+    jobTitle: string | null;
+    companyName: string | null;
   }>;
 };
 
@@ -91,6 +93,24 @@ export class AlumniService {
           (acc, curr) => {
             if (curr.profile_pic) {
               acc[curr.linkedin_url] = curr.profile_pic;
+            }
+            return acc;
+          },
+          {} as { [key: string]: string },
+        ),
+        jobTitles: data.alumni.reduce(
+          (acc, curr) => {
+            if (curr.jobTitle) {
+              acc[curr.linkedin_url] = curr.jobTitle;
+            }
+            return acc;
+          },
+          {} as { [key: string]: string },
+        ),
+        companyNames: data.alumni.reduce(
+          (acc, curr) => {
+            if (curr.companyName) {
+              acc[curr.linkedin_url] = curr.companyName;
             }
             return acc;
           },
@@ -171,8 +191,10 @@ export class AlumniService {
             course_acronym: grad.Course.acronym,
             conclusion_year: grad.conclusion_year || null,
           })) || [],
+        jobTitle : alumnus.Roles?.[0]?.JobClassification?.[0]?.title || null,
+        companyName: alumnus.Roles?.[0]?.Company?.name || null
       });
-    }
+          }
 
     return acc;
   }
@@ -205,6 +227,8 @@ export class AlumniService {
             course_acronym: grad.Course.acronym,
             conclusion_year: grad.conclusion_year || null,
           })) || [],
+        jobTitle : alumnus.Roles?.[0]?.JobClassification?.[0]?.title || null,
+        companyName: alumnus.Roles?.[0]?.Company?.name || null
       });
       return acc;
     }, {});

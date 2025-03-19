@@ -4,5 +4,7 @@ export type AlumniData = {
   profile_pic_url?: string;
   courses?: string;
   yearConclusions?: string;
+  jobTitle?: string;
+  companyName?: string;
 }
   

@@ -120,17 +120,22 @@ const MapView = ({
           listLinkedinLinks,
           listAlumniNames,
           coursesYearConclusionByUser,
-          profilePics
+          profilePics,
+          jobTitles,
+          companyNames,
         } = await extractFeatureFields(feature as unknown as Feature<Geometry, GeoJSONProperties>);
 
         const mapUserCoursesYears = await extractCoursesYears(
           coursesYearConclusionByUser
         );
+        
         const alumniData = buildAlumniData(
           listLinkedinLinks,
           listAlumniNames,
           profilePics,
-          mapUserCoursesYears
+          mapUserCoursesYears,
+          jobTitles,
+          companyNames,
         );
         const parsedFlattenedPlaceNames = parsePlaceNames(listPlaceName);
 

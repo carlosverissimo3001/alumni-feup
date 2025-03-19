@@ -4,6 +4,7 @@ import { Type } from 'class-transformer';
 import { IsArray, ValidateNested } from 'class-validator';
 import { JobClassification } from './job-classification.entity';
 import { LocationGeo } from './location.entity';
+import { Company } from './company.entity';
 
 export class Role {
   @ApiProperty({ description: 'The id of the role' })
@@ -24,6 +25,12 @@ export class Role {
   @ApiProperty({ description: 'The seniority level of the role' })
   @IsString()
   seniority_level: string;
+
+  @ApiProperty({ description: 'The Company' })
+  @IsOptional()
+  @ValidateNested()
+  @Type(() => Company)
+  Company: Company;
 
   @ApiProperty({ description: 'The job classifications' })
   @IsArray()

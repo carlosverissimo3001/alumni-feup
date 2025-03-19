@@ -114,11 +114,9 @@ export async function extractFeatureFields(
   const linkUsersString = feature.properties.listLinkedinLinksByUser;
   const coursesYearConclusionByUser =
     feature.properties.coursesYearConclusionByUser;
-
-    const profilePics = typeof feature.properties.profilePics === 'string'
+  const profilePics = typeof feature.properties.profilePics === 'string'
     ? (await extractJSONObjects(feature.properties.profilePics))[0]
     : feature.properties.profilePics;
-
   // Handle linkUsersString directly as it's already an object
   const mapUserLinks =
     typeof linkUsersString === "string"
@@ -126,6 +124,12 @@ export async function extractFeatureFields(
       : linkUsersString;
   const listLinkedinLinks = Object.keys(mapUserLinks);
   const listAlumniNames = Object.values(mapUserLinks) as string[];
+  const jobTitles = typeof feature.properties.jobTitles === 'string'
+    ? (await extractJSONObjects(feature.properties.jobTitles))[0]
+    : feature.properties.jobTitles;
+  const companyNames = typeof feature.properties.companyNames === 'string'
+    ? (await extractJSONObjects(feature.properties.companyNames))[0]
+    : feature.properties.companyNames;
 
   return {
     listPlaceName,
@@ -133,6 +137,8 @@ export async function extractFeatureFields(
     listAlumniNames,
     coursesYearConclusionByUser,
     profilePics,
+    jobTitles,
+    companyNames
   };
 }
 
@@ -179,7 +185,9 @@ export function buildAlumniData(
   listLinkedinLinks: string[],
   listAlumniNames: string[],
   profilePics: { [key: string]: string },
-  mapUserCoursesYears: Map<string, Map<string, string>>
+  mapUserCoursesYears: Map<string, Map<string, string>>,
+  jobTitles: { [key: string]: string },
+  companyNames: { [key: string]: string },
 ): AlumniData[] {
   return listLinkedinLinks.map((linkedinLink, index) => {
     let coursesCurrentAlumni = "";
@@ -197,6 +205,14 @@ export function buildAlumniData(
     }
 
     const imageUrl = profilePics[linkedinLink];
+    let jobTitle = jobTitles[linkedinLink];
+    if(jobTitle == undefined || jobTitle === "") {
+      jobTitle = "-";
+    }
+    let companyName = companyNames[linkedinLink];
+    if(companyName == undefined || companyName === "") {
+      companyName = "-";
+    }
 
     return {
       name: listAlumniNames[index],
@@ -204,6 +220,8 @@ export function buildAlumniData(
       profile_pic_url: imageUrl,
       courses: coursesCurrentAlumni,
       yearConclusions: yearConclusionCurrentAlumni,
+      jobTitle: jobTitle,
+      companyName: companyName
     };
   });
 }
