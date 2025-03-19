@@ -25,6 +25,7 @@ export const roleSelect = {
   seniority_level: true,
   Company: {
     select: {
+      id: true,
       name: true,
     },
   },

@@ -117,6 +117,8 @@ const ClusterInfo = ({
                 <TableHeader className="bg-white/95 backdrop-blur-sm sticky top-0">
                   <TableRow>
                     <TableHead className="w-[250px] text-red-700 font-semibold">Alumni</TableHead>
+                    <TableHead className="text-red-700 font-semibold">Role</TableHead>
+                    <TableHead className="text-red-700 font-semibold">Company</TableHead>
                     <TableHead className="text-red-700 font-semibold">Degree</TableHead>
                     <TableHead className="text-red-700 font-semibold">Conclusion</TableHead>
                   </TableRow>
@@ -145,6 +147,12 @@ const ClusterInfo = ({
                               {alumni.name}
                             </a>
                           </div>
+                        </TableCell>
+                        <TableCell className="text-sm text-gray-600 font-bold">
+                          {alumni.jobTitle}
+                        </TableCell>
+                        <TableCell className="text-sm text-gray-600 font-bold">
+                          {alumni.companyName}
                         </TableCell>
                         {/* Note, this is a hotfix since we cannot store dots in the database, please solve this in the future */}
                         <TableCell className="text-sm text-gray-600 font-bold">{alumni.courses?.replace(/_/g, ".")}</TableCell>
