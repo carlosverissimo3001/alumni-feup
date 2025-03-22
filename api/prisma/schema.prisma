@@ -39,13 +39,14 @@ model AlumniRaw {
 }
 
 model Company {
-  id           String   @id @default(uuid())
-  name         String
-  linkedin_url String?  @unique(map: "company_unique_url")
-  industry_id  String
-  created_at   DateTime @default(now()) @db.Timestamp(6)
-  Industry     Industry @relation(fields: [industry_id], references: [id])
-  Role         Role[]
+  id                  String   @id @default(uuid())
+  name                String
+  linkedin_url        String?  @unique(map: "company_unique_url")
+  industry_id         String
+  created_at          DateTime @default(now()) @db.Timestamp(6)
+  profile_picture_url String?
+  Industry            Industry @relation(fields: [industry_id], references: [id])
+  Role                Role[]
 
   @@index([industry_id])
   @@map("company")
