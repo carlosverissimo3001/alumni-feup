@@ -1,6 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { GRADUATION_STATUS } from '@prisma/client';
-import { IsEnum, IsNumber, IsString } from 'class-validator';
+import { IsNumber, IsString } from 'class-validator';
 
 export class FacultyExtraction {
   @ApiProperty({ description: 'The id of the faculty extraction' })
@@ -19,20 +18,20 @@ export class FacultyExtraction {
   @IsString()
   student_id: string;
 
-  @ApiProperty({ description: 'The status of the student' })
-  @IsEnum(GRADUATION_STATUS)
-  status: GRADUATION_STATUS;
-
   @ApiProperty({ description: 'The year of the relevant student status' })
   @IsNumber()
-  year: number;
+  conclusion_year: number;
+
+  @ApiProperty({ description: 'The full name of the student' })
+  @IsString()
+  full_name: string;
 
   constructor(data: FacultyExtraction) {
     this.id = data.id;
     this.faculty_id = data.faculty_id;
     this.course_id = data.course_id;
     this.student_id = data.student_id;
-    this.status = data.status;
-    this.year = data.year;
+    this.conclusion_year = data.conclusion_year;
+    this.full_name = data.full_name;
   }
 }
