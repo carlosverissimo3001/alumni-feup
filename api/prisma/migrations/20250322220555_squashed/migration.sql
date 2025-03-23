@@ -1,85 +1,24 @@
-/*
-  Warnings:
+-- CreateEnum
+CREATE TYPE "COURSE_TYPE" AS ENUM ('INTEGRATED', 'BACHELORS', 'MASTERS', 'DOCTORATE');
 
-  - You are about to drop the `Alumni` table. If the table is not empty, all the data it contains will be lost.
-  - You are about to drop the `AlumniRaw` table. If the table is not empty, all the data it contains will be lost.
-  - You are about to drop the `Company` table. If the table is not empty, all the data it contains will be lost.
-  - You are about to drop the `Course` table. If the table is not empty, all the data it contains will be lost.
-  - You are about to drop the `Faculty` table. If the table is not empty, all the data it contains will be lost.
-  - You are about to drop the `Faculty_Extraction` table. If the table is not empty, all the data it contains will be lost.
-  - You are about to drop the `Graduation` table. If the table is not empty, all the data it contains will be lost.
-  - You are about to drop the `Industry` table. If the table is not empty, all the data it contains will be lost.
-  - You are about to drop the `JobClassification` table. If the table is not empty, all the data it contains will be lost.
-  - You are about to drop the `Location` table. If the table is not empty, all the data it contains will be lost.
-  - You are about to drop the `Role` table. If the table is not empty, all the data it contains will be lost.
+-- CreateEnum
+CREATE TYPE "GRADUATION_STATUS" AS ENUM ('ACTIVE', 'GRADUATED', 'DROPOUT', 'EXTERNAL', 'NOT_ENROLLED');
 
-*/
--- DropForeignKey
-ALTER TABLE "Alumni" DROP CONSTRAINT "Alumni_current_location_id_fkey";
+-- CreateEnum
+CREATE TYPE "COURSE_STATUS" AS ENUM ('ACTIVE', 'INACTIVE');
 
--- DropForeignKey
-ALTER TABLE "Company" DROP CONSTRAINT "Company_industry_id_fkey";
+-- CreateEnum
+CREATE TYPE "SENIORITY_LEVEL" AS ENUM ('INTERN', 'ENTRY_LEVEL', 'ASSOCIATE', 'MID_SENIOR_LEVEL', 'DIRECTOR', 'EXECUTIVE', 'C_LEVEL');
 
--- DropForeignKey
-ALTER TABLE "Faculty_Extraction" DROP CONSTRAINT "Faculty_Extraction_course_id_fkey";
+-- CreateEnum
+CREATE TYPE "COMPANY_STATUS" AS ENUM ('ACTIVE', 'ACQUIRED', 'CLOSED');
 
--- DropForeignKey
-ALTER TABLE "Faculty_Extraction" DROP CONSTRAINT "Faculty_Extraction_faculty_id_fkey";
-
--- DropForeignKey
-ALTER TABLE "Graduation" DROP CONSTRAINT "Graduation_alumni_id_fkey";
-
--- DropForeignKey
-ALTER TABLE "Graduation" DROP CONSTRAINT "Graduation_course_id_fkey";
-
--- DropForeignKey
-ALTER TABLE "JobClassification" DROP CONSTRAINT "JobClassification_role_id_fkey";
-
--- DropForeignKey
-ALTER TABLE "Role" DROP CONSTRAINT "Role_alumni_id_fkey";
-
--- DropForeignKey
-ALTER TABLE "Role" DROP CONSTRAINT "Role_company_id_fkey";
-
--- DropForeignKey
-ALTER TABLE "Role" DROP CONSTRAINT "Role_location_id_fkey";
-
--- DropTable
-DROP TABLE "Alumni";
-
--- DropTable
-DROP TABLE "AlumniRaw";
-
--- DropTable
-DROP TABLE "Company";
-
--- DropTable
-DROP TABLE "Course";
-
--- DropTable
-DROP TABLE "Faculty";
-
--- DropTable
-DROP TABLE "Faculty_Extraction";
-
--- DropTable
-DROP TABLE "Graduation";
-
--- DropTable
-DROP TABLE "Industry";
-
--- DropTable
-DROP TABLE "JobClassification";
-
--- DropTable
-DROP TABLE "Location";
-
--- DropTable
-DROP TABLE "Role";
+-- CreateEnum
+CREATE TYPE "COMPANY_SIZE" AS ENUM ('A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I');
 
 -- CreateTable
 CREATE TABLE "alumni" (
-    "id" TEXT NOT NULL,
+    "id" TEXT NOT NULL DEFAULT gen_random_uuid(),
     "first_name" TEXT NOT NULL,
     "last_name" TEXT NOT NULL,
     "linkedin_url" TEXT NOT NULL,
@@ -106,10 +45,18 @@ CREATE TABLE "alumni_raw" (
 
 -- CreateTable
 CREATE TABLE "company" (
-    "id" TEXT NOT NULL,
+    "id" TEXT NOT NULL DEFAULT gen_random_uuid(),
     "name" TEXT NOT NULL,
     "linkedin_url" TEXT,
     "industry_id" TEXT NOT NULL,
+    "logo" TEXT,
+    "previous_names" TEXT[] DEFAULT ARRAY[]::TEXT[],
+    "status" "COMPANY_STATUS" NOT NULL DEFAULT 'ACTIVE',
+    "merged_into_id" TEXT,
+    "founded" INTEGER,
+    "company_size" "COMPANY_SIZE",
+    "created_at" TIMESTAMP(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMP(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "company_pkey" PRIMARY KEY ("id")
 );
@@ -124,6 +71,8 @@ CREATE TABLE "course" (
     "status" "COURSE_STATUS" NOT NULL DEFAULT 'ACTIVE',
     "faculty_id" TEXT NOT NULL,
     "name_int" TEXT,
+    "course_type" "COURSE_TYPE" NOT NULL,
+    "start_year" INTEGER NOT NULL,
 
     CONSTRAINT "course_pkey" PRIMARY KEY ("id")
 );
@@ -163,7 +112,7 @@ CREATE TABLE "graduation" (
 
 -- CreateTable
 CREATE TABLE "industry" (
-    "id" TEXT NOT NULL,
+    "id" TEXT NOT NULL DEFAULT gen_random_uuid(),
     "name" TEXT NOT NULL,
 
     CONSTRAINT "industry_pkey" PRIMARY KEY ("id")
@@ -171,12 +120,12 @@ CREATE TABLE "industry" (
 
 -- CreateTable
 CREATE TABLE "job_classification" (
-    "id" TEXT NOT NULL,
+    "id" TEXT NOT NULL DEFAULT gen_random_uuid(),
     "title" TEXT NOT NULL,
     "level" SMALLINT NOT NULL,
     "esco_code" TEXT,
     "role_id" TEXT NOT NULL,
-    "confidence" DOUBLE PRECISION NOT NULL,
+    "confidence" DOUBLE PRECISION,
     "created_at" TIMESTAMP(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "job_classification_pkey" PRIMARY KEY ("id")
@@ -184,20 +133,29 @@ CREATE TABLE "job_classification" (
 
 -- CreateTable
 CREATE TABLE "location" (
-    "id" TEXT NOT NULL,
-    "city" TEXT NOT NULL,
-    "country" TEXT NOT NULL,
-    "latitude" DOUBLE PRECISION NOT NULL,
-    "longitude" DOUBLE PRECISION NOT NULL,
-    "country_code" TEXT NOT NULL,
-    "state" TEXT NOT NULL,
+    "id" TEXT NOT NULL DEFAULT gen_random_uuid(),
+    "city" TEXT,
+    "country" TEXT,
+    "latitude" DOUBLE PRECISION,
+    "longitude" DOUBLE PRECISION,
+    "country_code" TEXT,
+    "is_country_only" BOOLEAN NOT NULL DEFAULT false,
 
     CONSTRAINT "location_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
-CREATE TABLE "role" (
+CREATE TABLE "problematic_location" (
     "id" TEXT NOT NULL,
+    "location_id" TEXT NOT NULL,
+    "isExpected" BOOLEAN NOT NULL DEFAULT false,
+
+    CONSTRAINT "problematic_location_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "role" (
+    "id" TEXT NOT NULL DEFAULT gen_random_uuid(),
     "alumni_id" TEXT NOT NULL,
     "company_id" TEXT NOT NULL,
     "start_date" TIMESTAMPTZ(6) NOT NULL,
@@ -208,6 +166,18 @@ CREATE TABLE "role" (
     CONSTRAINT "role_pkey" PRIMARY KEY ("id")
 );
 
+-- CreateTable
+CREATE TABLE "role_raw" (
+    "id" TEXT NOT NULL DEFAULT gen_random_uuid(),
+    "description" TEXT,
+    "role_id" TEXT NOT NULL,
+
+    CONSTRAINT "role_raw_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateIndex
+CREATE UNIQUE INDEX "alumni_linkedin_url_key" ON "alumni"("linkedin_url");
+
 -- CreateIndex
 CREATE INDEX "alumni_current_location_id_idx" ON "alumni"("current_location_id");
 
@@ -216,6 +186,9 @@ CREATE INDEX "alumni_first_name_last_name_idx" ON "alumni"("first_name", "last_n
 
 -- CreateIndex
 CREATE INDEX "alumni_linkedin_url_idx" ON "alumni"("linkedin_url");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "company_unique_url" ON "company"("linkedin_url");
 
 -- CreateIndex
 CREATE INDEX "company_industry_id_idx" ON "company"("industry_id");
@@ -260,6 +233,9 @@ ALTER TABLE "alumni" ADD CONSTRAINT "alumni_current_location_id_fkey" FOREIGN KE
 ALTER TABLE "company" ADD CONSTRAINT "company_industry_id_fkey" FOREIGN KEY ("industry_id") REFERENCES "industry"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
+ALTER TABLE "company" ADD CONSTRAINT "company_merged_into_id_fkey" FOREIGN KEY ("merged_into_id") REFERENCES "company"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
 ALTER TABLE "faculty_extraction" ADD CONSTRAINT "faculty_extraction_course_id_fkey" FOREIGN KEY ("course_id") REFERENCES "course"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
@@ -273,6 +249,9 @@ ALTER TABLE "graduation" ADD CONSTRAINT "graduation_course_id_fkey" FOREIGN KEY 
 
 -- AddForeignKey
 ALTER TABLE "job_classification" ADD CONSTRAINT "job_classification_role_id_fkey" FOREIGN KEY ("role_id") REFERENCES "role"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "problematic_location" ADD CONSTRAINT "problematic_location_location_id_fkey" FOREIGN KEY ("location_id") REFERENCES "location"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "role" ADD CONSTRAINT "role_alumni_id_fkey" FOREIGN KEY ("alumni_id") REFERENCES "alumni"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
