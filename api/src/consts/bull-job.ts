@@ -1,5 +1,5 @@
 import { JobOptions } from 'bull';
-import { Alumni } from './entities';
+import { Alumni } from '@/entities';
 
 export enum QueueName {
   BRIGHTDATA = 'brightdata',
@@ -47,12 +47,4 @@ export const DEFAULT_JOB_OPTIONS: JobOptions = {
 export type JobReturn = {
   status: 'success' | 'incomplete' | 'error';
   message?: string;
-};
-
-export type GeoLocationApiResponse = {
-  name: string;
-  lat: number;
-  lon: number;
-  country: string;
-  state?: string;
 };
