@@ -1,13 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsString, IsOptional, IsInt } from '@nestjs/class-validator';
-import { GRADUATION_STATUS } from '@prisma/client';
 import { Course } from './course.entity';
 
 export class Graduation {
-  @ApiProperty({ description: 'The status of the graduation' })
-  @IsString()
-  status: GRADUATION_STATUS;
-
   @ApiProperty({ description: 'The conclusion year of the graduation' })
   @IsOptional()
   @IsInt()
