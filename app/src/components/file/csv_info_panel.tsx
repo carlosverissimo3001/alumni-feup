@@ -1,7 +1,13 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { FileSpreadsheetIcon, XIcon } from "lucide-react";
+import { FileSpreadsheetIcon, XIcon, InfoIcon } from "lucide-react";
 import { useEffect, useRef } from "react";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 interface CSVInfoPanelProps {
   onClose: () => void;
@@ -46,19 +52,18 @@ export const CSVInfoPanel = ({ onClose }: CSVInfoPanelProps) => {
                 <li><span className="font-medium">student_id</span> - Unique identifier for each student</li>
                 <li><span className="font-medium">full name</span> - Student&apos;s complete name</li>
                 <li>
-                  <span className="font-medium">graduation_status</span> - One of:
+                  <span className="font-medium">status</span> - the enrollment status of the student and the year of conclusion
                   <ul className="list-disc pl-5 mt-1 text-xs text-slate-500">
-                    <li>ACTIVE</li>
-                    <li>GRADUATED</li>
-                    <li>DROPOUT</li>
-                    <li>NOT_ENROLLED</li>
+                    <li>Example: Concluído (2019/2020)</li>
                   </ul>
                 </li>
-                <li><span className="font-medium">year</span> - Academic year</li>
               </ul>
             </div>
             <p className="text-xs text-slate-500">
               Make sure your CSV is properly formatted with headers matching the required column names exactly.
+            </p>
+            <p className="text-sm text-red-500">
+              Include only students that have been enrolled and completed the course.
             </p>
           </div>
         </CardContent>
