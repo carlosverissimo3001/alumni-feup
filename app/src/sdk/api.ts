@@ -64,7 +64,7 @@ export interface Alumni {
      * @type {Array<Role>}
      * @memberof Alumni
      */
-    'roles'?: Array<Role>;
+    'Roles'?: Array<Role>;
     /**
      * The current location of the alumni
      * @type {object}
@@ -77,6 +77,37 @@ export interface Alumni {
      * @memberof Alumni
      */
     'Graduations'?: Array<Graduation>;
+}
+/**
+ * 
+ * @export
+ * @interface Company
+ */
+export interface Company {
+    /**
+     * The id of the company
+     * @type {string}
+     * @memberof Company
+     */
+    'id': string;
+    /**
+     * The name of the company
+     * @type {string}
+     * @memberof Company
+     */
+    'name': string;
+    /**
+     * The linkedin url of the company
+     * @type {object}
+     * @memberof Company
+     */
+    'linkedin_url'?: object;
+    /**
+     * The roles of the company
+     * @type {Array<Role>}
+     * @memberof Company
+     */
+    'roles'?: Array<Role>;
 }
 /**
  * 
@@ -210,6 +241,37 @@ export interface CreateAlumniDto {
 /**
  * 
  * @export
+ * @interface Faculty
+ */
+export interface Faculty {
+    /**
+     * 
+     * @type {string}
+     * @memberof Faculty
+     */
+    'id': string;
+    /**
+     * The local name of the faculty
+     * @type {string}
+     * @memberof Faculty
+     */
+    'name': string;
+    /**
+     * The international name of the faculty
+     * @type {object}
+     * @memberof Faculty
+     */
+    'name_int'?: object;
+    /**
+     * The acronym of the faculty
+     * @type {object}
+     * @memberof Faculty
+     */
+    'acronym'?: object;
+}
+/**
+ * 
+ * @export
  * @interface GeoJSONFeature
  */
 export interface GeoJSONFeature {
@@ -326,18 +388,6 @@ export interface Role {
      */
     'id': string;
     /**
-     * The id of the alumni
-     * @type {string}
-     * @memberof Role
-     */
-    'alumni_id': string;
-    /**
-     * The id of the company
-     * @type {string}
-     * @memberof Role
-     */
-    'company_id': string;
-    /**
      * The start date of the role
      * @type {string}
      * @memberof Role
@@ -348,7 +398,7 @@ export interface Role {
      * @type {object}
      * @memberof Role
      */
-    'end_date'?: object | null;
+    'end_date'?: object;
     /**
      * The seniority level of the role
      * @type {string}
@@ -356,24 +406,38 @@ export interface Role {
      */
     'seniority_level': string;
     /**
-     * The level 1 of the role
-     * @type {string}
+     * The Company
+     * @type {Company}
      * @memberof Role
      */
-    'esco_l1': string;
-    /**
-     * The level 2 of the role
-     * @type {string}
-     * @memberof Role
-     */
-    'esco_l2': string;
+    'Company': Company;
     /**
      * The job classifications
      * @type {Array<string>}
      * @memberof Role
      */
-    'jobClassifications': Array<string>;
+    'JobClassification': Array<string>;
+    /**
+     * The location of the role
+     * @type {object}
+     * @memberof Role
+     */
+    'Location'?: object;
 }
+/**
+ * The type of upload
+ * @export
+ * @enum {string}
+ */
+
+export const UPLOADTYPE = {
+    Enrollment: 'ENROLLMENT',
+    Linkedin: 'LINKEDIN'
+} as const;
+
+export type UPLOADTYPE = typeof UPLOADTYPE[keyof typeof UPLOADTYPE];
+
+
 /**
  * 
  * @export
@@ -392,7 +456,15 @@ export interface UploadExtractionDto {
      * @memberof UploadExtractionDto
      */
     'course_id': string;
+    /**
+     * The type of upload
+     * @type {UPLOADTYPE}
+     * @memberof UploadExtractionDto
+     */
+    'upload_type': UPLOADTYPE;
 }
+
+
 
 /**
  * AlumniApi - axios parameter creator
@@ -985,11 +1057,14 @@ export const CourseApiAxiosParamCreator = function (configuration?: Configuratio
     return {
         /**
          * 
-         * @summary Get all courses
+         * @summary Get courses
+         * @param {string} [facultyId] The id of the faculty
+         * @param {CourseControllerFindStatusEnum} [status] Course status
+         * @param {string} [name] Search by course name
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        courseControllerFindAll: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        courseControllerFind: async (facultyId?: string, status?: CourseControllerFindStatusEnum, name?: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             const localVarPath = `/api/course`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -1001,6 +1076,18 @@ export const CourseApiAxiosParamCreator = function (configuration?: Configuratio
             const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
+
+            if (facultyId !== undefined) {
+                localVarQueryParameter['faculty_id'] = facultyId;
+            }
+
+            if (status !== undefined) {
+                localVarQueryParameter['status'] = status;
+            }
+
+            if (name !== undefined) {
+                localVarQueryParameter['name'] = name;
+            }
 
 
     
@@ -1059,14 +1146,17 @@ export const CourseApiFp = function(configuration?: Configuration) {
     return {
         /**
          * 
-         * @summary Get all courses
+         * @summary Get courses
+         * @param {string} [facultyId] The id of the faculty
+         * @param {CourseControllerFindStatusEnum} [status] Course status
+         * @param {string} [name] Search by course name
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async courseControllerFindAll(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<CourseExtended>>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.courseControllerFindAll(options);
+        async courseControllerFind(facultyId?: string, status?: CourseControllerFindStatusEnum, name?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<CourseExtended>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.courseControllerFind(facultyId, status, name, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['CourseApi.courseControllerFindAll']?.[localVarOperationServerIndex]?.url;
+            const localVarOperationServerBasePath = operationServerMap['CourseApi.courseControllerFind']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
@@ -1094,12 +1184,15 @@ export const CourseApiFactory = function (configuration?: Configuration, basePat
     return {
         /**
          * 
-         * @summary Get all courses
+         * @summary Get courses
+         * @param {string} [facultyId] The id of the faculty
+         * @param {CourseControllerFindStatusEnum} [status] Course status
+         * @param {string} [name] Search by course name
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        courseControllerFindAll(options?: RawAxiosRequestConfig): AxiosPromise<Array<CourseExtended>> {
-            return localVarFp.courseControllerFindAll(options).then((request) => request(axios, basePath));
+        courseControllerFind(facultyId?: string, status?: CourseControllerFindStatusEnum, name?: string, options?: RawAxiosRequestConfig): AxiosPromise<Array<CourseExtended>> {
+            return localVarFp.courseControllerFind(facultyId, status, name, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -1122,12 +1215,15 @@ export const CourseApiFactory = function (configuration?: Configuration, basePat
 export interface CourseApiInterface {
     /**
      * 
-     * @summary Get all courses
+     * @summary Get courses
+     * @param {string} [facultyId] The id of the faculty
+     * @param {CourseControllerFindStatusEnum} [status] Course status
+     * @param {string} [name] Search by course name
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof CourseApiInterface
      */
-    courseControllerFindAll(options?: RawAxiosRequestConfig): AxiosPromise<Array<CourseExtended>>;
+    courseControllerFind(facultyId?: string, status?: CourseControllerFindStatusEnum, name?: string, options?: RawAxiosRequestConfig): AxiosPromise<Array<CourseExtended>>;
 
     /**
      * 
@@ -1150,13 +1246,16 @@ export interface CourseApiInterface {
 export class CourseApi extends BaseAPI implements CourseApiInterface {
     /**
      * 
-     * @summary Get all courses
+     * @summary Get courses
+     * @param {string} [facultyId] The id of the faculty
+     * @param {CourseControllerFindStatusEnum} [status] Course status
+     * @param {string} [name] Search by course name
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof CourseApi
      */
-    public courseControllerFindAll(options?: RawAxiosRequestConfig) {
-        return CourseApiFp(this.configuration).courseControllerFindAll(options).then((request) => request(this.axios, this.basePath));
+    public courseControllerFind(facultyId?: string, status?: CourseControllerFindStatusEnum, name?: string, options?: RawAxiosRequestConfig) {
+        return CourseApiFp(this.configuration).courseControllerFind(facultyId, status, name, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -1172,25 +1271,151 @@ export class CourseApi extends BaseAPI implements CourseApiInterface {
     }
 }
 
+/**
+ * @export
+ */
+export const CourseControllerFindStatusEnum = {
+    Active: 'ACTIVE',
+    Inactive: 'INACTIVE'
+} as const;
+export type CourseControllerFindStatusEnum = typeof CourseControllerFindStatusEnum[keyof typeof CourseControllerFindStatusEnum];
 
 
 /**
- * ExtractionsApi - axios parameter creator
+ * FacultyApi - axios parameter creator
  * @export
  */
-export const ExtractionsApiAxiosParamCreator = function (configuration?: Configuration) {
+export const FacultyApiAxiosParamCreator = function (configuration?: Configuration) {
     return {
         /**
          * 
-         * @summary Upload a CSV file for faculty extractions
-         * @param {UploadExtractionDto} uploadExtractionDto 
+         * @summary Get all faculties
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        extractionsControllerUploadFile: async (uploadExtractionDto: UploadExtractionDto, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        facultyControllerFindAll: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/api/faculty`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * FacultyApi - functional programming interface
+ * @export
+ */
+export const FacultyApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = FacultyApiAxiosParamCreator(configuration)
+    return {
+        /**
+         * 
+         * @summary Get all faculties
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async facultyControllerFindAll(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<Faculty>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.facultyControllerFindAll(options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['FacultyApi.facultyControllerFindAll']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+    }
+};
+
+/**
+ * FacultyApi - factory interface
+ * @export
+ */
+export const FacultyApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = FacultyApiFp(configuration)
+    return {
+        /**
+         * 
+         * @summary Get all faculties
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        facultyControllerFindAll(options?: RawAxiosRequestConfig): AxiosPromise<Array<Faculty>> {
+            return localVarFp.facultyControllerFindAll(options).then((request) => request(axios, basePath));
+        },
+    };
+};
+
+/**
+ * FacultyApi - interface
+ * @export
+ * @interface FacultyApi
+ */
+export interface FacultyApiInterface {
+    /**
+     * 
+     * @summary Get all faculties
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof FacultyApiInterface
+     */
+    facultyControllerFindAll(options?: RawAxiosRequestConfig): AxiosPromise<Array<Faculty>>;
+
+}
+
+/**
+ * FacultyApi - object-oriented interface
+ * @export
+ * @class FacultyApi
+ * @extends {BaseAPI}
+ */
+export class FacultyApi extends BaseAPI implements FacultyApiInterface {
+    /**
+     * 
+     * @summary Get all faculties
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof FacultyApi
+     */
+    public facultyControllerFindAll(options?: RawAxiosRequestConfig) {
+        return FacultyApiFp(this.configuration).facultyControllerFindAll(options).then((request) => request(this.axios, this.basePath));
+    }
+}
+
+
+
+/**
+ * FilesApi - axios parameter creator
+ * @export
+ */
+export const FilesApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * 
+         * @summary Upload a file
+         * @param {UploadExtractionDto} uploadExtractionDto Data to upload
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        filesControllerCreate: async (uploadExtractionDto: UploadExtractionDto, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'uploadExtractionDto' is not null or undefined
-            assertParamExists('extractionsControllerUploadFile', 'uploadExtractionDto', uploadExtractionDto)
-            const localVarPath = `/api/extractions/upload`;
+            assertParamExists('filesControllerCreate', 'uploadExtractionDto', uploadExtractionDto)
+            const localVarPath = `/api/files`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -1220,83 +1445,83 @@ export const ExtractionsApiAxiosParamCreator = function (configuration?: Configu
 };
 
 /**
- * ExtractionsApi - functional programming interface
+ * FilesApi - functional programming interface
  * @export
  */
-export const ExtractionsApiFp = function(configuration?: Configuration) {
-    const localVarAxiosParamCreator = ExtractionsApiAxiosParamCreator(configuration)
+export const FilesApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = FilesApiAxiosParamCreator(configuration)
     return {
         /**
          * 
-         * @summary Upload a CSV file for faculty extractions
-         * @param {UploadExtractionDto} uploadExtractionDto 
+         * @summary Upload a file
+         * @param {UploadExtractionDto} uploadExtractionDto Data to upload
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async extractionsControllerUploadFile(uploadExtractionDto: UploadExtractionDto, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.extractionsControllerUploadFile(uploadExtractionDto, options);
+        async filesControllerCreate(uploadExtractionDto: UploadExtractionDto, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<string>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.filesControllerCreate(uploadExtractionDto, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['ExtractionsApi.extractionsControllerUploadFile']?.[localVarOperationServerIndex]?.url;
+            const localVarOperationServerBasePath = operationServerMap['FilesApi.filesControllerCreate']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
     }
 };
 
 /**
- * ExtractionsApi - factory interface
+ * FilesApi - factory interface
  * @export
  */
-export const ExtractionsApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
-    const localVarFp = ExtractionsApiFp(configuration)
+export const FilesApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = FilesApiFp(configuration)
     return {
         /**
          * 
-         * @summary Upload a CSV file for faculty extractions
-         * @param {UploadExtractionDto} uploadExtractionDto 
+         * @summary Upload a file
+         * @param {UploadExtractionDto} uploadExtractionDto Data to upload
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        extractionsControllerUploadFile(uploadExtractionDto: UploadExtractionDto, options?: RawAxiosRequestConfig): AxiosPromise<void> {
-            return localVarFp.extractionsControllerUploadFile(uploadExtractionDto, options).then((request) => request(axios, basePath));
+        filesControllerCreate(uploadExtractionDto: UploadExtractionDto, options?: RawAxiosRequestConfig): AxiosPromise<string> {
+            return localVarFp.filesControllerCreate(uploadExtractionDto, options).then((request) => request(axios, basePath));
         },
     };
 };
 
 /**
- * ExtractionsApi - interface
+ * FilesApi - interface
  * @export
- * @interface ExtractionsApi
+ * @interface FilesApi
  */
-export interface ExtractionsApiInterface {
+export interface FilesApiInterface {
     /**
      * 
-     * @summary Upload a CSV file for faculty extractions
-     * @param {UploadExtractionDto} uploadExtractionDto 
+     * @summary Upload a file
+     * @param {UploadExtractionDto} uploadExtractionDto Data to upload
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
-     * @memberof ExtractionsApiInterface
+     * @memberof FilesApiInterface
      */
-    extractionsControllerUploadFile(uploadExtractionDto: UploadExtractionDto, options?: RawAxiosRequestConfig): AxiosPromise<void>;
+    filesControllerCreate(uploadExtractionDto: UploadExtractionDto, options?: RawAxiosRequestConfig): AxiosPromise<string>;
 
 }
 
 /**
- * ExtractionsApi - object-oriented interface
+ * FilesApi - object-oriented interface
  * @export
- * @class ExtractionsApi
+ * @class FilesApi
  * @extends {BaseAPI}
  */
-export class ExtractionsApi extends BaseAPI implements ExtractionsApiInterface {
+export class FilesApi extends BaseAPI implements FilesApiInterface {
     /**
      * 
-     * @summary Upload a CSV file for faculty extractions
-     * @param {UploadExtractionDto} uploadExtractionDto 
+     * @summary Upload a file
+     * @param {UploadExtractionDto} uploadExtractionDto Data to upload
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
-     * @memberof ExtractionsApi
+     * @memberof FilesApi
      */
-    public extractionsControllerUploadFile(uploadExtractionDto: UploadExtractionDto, options?: RawAxiosRequestConfig) {
-        return ExtractionsApiFp(this.configuration).extractionsControllerUploadFile(uploadExtractionDto, options).then((request) => request(this.axios, this.basePath));
+    public filesControllerCreate(uploadExtractionDto: UploadExtractionDto, options?: RawAxiosRequestConfig) {
+        return FilesApiFp(this.configuration).filesControllerCreate(uploadExtractionDto, options).then((request) => request(this.axios, this.basePath));
     }
 }
 
@@ -1649,11 +1874,14 @@ export const V1ApiAxiosParamCreator = function (configuration?: Configuration) {
         },
         /**
          * 
-         * @summary Get all courses
+         * @summary Get courses
+         * @param {string} [facultyId] The id of the faculty
+         * @param {CourseControllerFindStatusEnum} [status] Course status
+         * @param {string} [name] Search by course name
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        courseControllerFindAll: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        courseControllerFind: async (facultyId?: string, status?: CourseControllerFindStatusEnum, name?: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             const localVarPath = `/api/course`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -1665,6 +1893,18 @@ export const V1ApiAxiosParamCreator = function (configuration?: Configuration) {
             const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
+
+            if (facultyId !== undefined) {
+                localVarQueryParameter['faculty_id'] = facultyId;
+            }
+
+            if (status !== undefined) {
+                localVarQueryParameter['status'] = status;
+            }
+
+            if (name !== undefined) {
+                localVarQueryParameter['name'] = name;
+            }
 
 
     
@@ -1713,15 +1953,45 @@ export const V1ApiAxiosParamCreator = function (configuration?: Configuration) {
         },
         /**
          * 
-         * @summary Upload a CSV file for faculty extractions
-         * @param {UploadExtractionDto} uploadExtractionDto 
+         * @summary Get all faculties
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        extractionsControllerUploadFile: async (uploadExtractionDto: UploadExtractionDto, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        facultyControllerFindAll: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/api/faculty`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Upload a file
+         * @param {UploadExtractionDto} uploadExtractionDto Data to upload
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        filesControllerCreate: async (uploadExtractionDto: UploadExtractionDto, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'uploadExtractionDto' is not null or undefined
-            assertParamExists('extractionsControllerUploadFile', 'uploadExtractionDto', uploadExtractionDto)
-            const localVarPath = `/api/extractions/upload`;
+            assertParamExists('filesControllerCreate', 'uploadExtractionDto', uploadExtractionDto)
+            const localVarPath = `/api/files`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -1873,14 +2143,17 @@ export const V1ApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
-         * @summary Get all courses
+         * @summary Get courses
+         * @param {string} [facultyId] The id of the faculty
+         * @param {CourseControllerFindStatusEnum} [status] Course status
+         * @param {string} [name] Search by course name
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async courseControllerFindAll(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<CourseExtended>>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.courseControllerFindAll(options);
+        async courseControllerFind(facultyId?: string, status?: CourseControllerFindStatusEnum, name?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<CourseExtended>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.courseControllerFind(facultyId, status, name, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['V1Api.courseControllerFindAll']?.[localVarOperationServerIndex]?.url;
+            const localVarOperationServerBasePath = operationServerMap['V1Api.courseControllerFind']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
@@ -1898,15 +2171,27 @@ export const V1ApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
-         * @summary Upload a CSV file for faculty extractions
-         * @param {UploadExtractionDto} uploadExtractionDto 
+         * @summary Get all faculties
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async extractionsControllerUploadFile(uploadExtractionDto: UploadExtractionDto, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.extractionsControllerUploadFile(uploadExtractionDto, options);
+        async facultyControllerFindAll(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<Faculty>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.facultyControllerFindAll(options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['V1Api.extractionsControllerUploadFile']?.[localVarOperationServerIndex]?.url;
+            const localVarOperationServerBasePath = operationServerMap['V1Api.facultyControllerFindAll']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @summary Upload a file
+         * @param {UploadExtractionDto} uploadExtractionDto Data to upload
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async filesControllerCreate(uploadExtractionDto: UploadExtractionDto, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<string>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.filesControllerCreate(uploadExtractionDto, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['V1Api.filesControllerCreate']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
@@ -1994,12 +2279,15 @@ export const V1ApiFactory = function (configuration?: Configuration, basePath?: 
         },
         /**
          * 
-         * @summary Get all courses
+         * @summary Get courses
+         * @param {string} [facultyId] The id of the faculty
+         * @param {CourseControllerFindStatusEnum} [status] Course status
+         * @param {string} [name] Search by course name
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        courseControllerFindAll(options?: RawAxiosRequestConfig): AxiosPromise<Array<CourseExtended>> {
-            return localVarFp.courseControllerFindAll(options).then((request) => request(axios, basePath));
+        courseControllerFind(facultyId?: string, status?: CourseControllerFindStatusEnum, name?: string, options?: RawAxiosRequestConfig): AxiosPromise<Array<CourseExtended>> {
+            return localVarFp.courseControllerFind(facultyId, status, name, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -2013,13 +2301,22 @@ export const V1ApiFactory = function (configuration?: Configuration, basePath?: 
         },
         /**
          * 
-         * @summary Upload a CSV file for faculty extractions
-         * @param {UploadExtractionDto} uploadExtractionDto 
+         * @summary Get all faculties
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        extractionsControllerUploadFile(uploadExtractionDto: UploadExtractionDto, options?: RawAxiosRequestConfig): AxiosPromise<void> {
-            return localVarFp.extractionsControllerUploadFile(uploadExtractionDto, options).then((request) => request(axios, basePath));
+        facultyControllerFindAll(options?: RawAxiosRequestConfig): AxiosPromise<Array<Faculty>> {
+            return localVarFp.facultyControllerFindAll(options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Upload a file
+         * @param {UploadExtractionDto} uploadExtractionDto Data to upload
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        filesControllerCreate(uploadExtractionDto: UploadExtractionDto, options?: RawAxiosRequestConfig): AxiosPromise<string> {
+            return localVarFp.filesControllerCreate(uploadExtractionDto, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -2102,12 +2399,15 @@ export interface V1ApiInterface {
 
     /**
      * 
-     * @summary Get all courses
+     * @summary Get courses
+     * @param {string} [facultyId] The id of the faculty
+     * @param {CourseControllerFindStatusEnum} [status] Course status
+     * @param {string} [name] Search by course name
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof V1ApiInterface
      */
-    courseControllerFindAll(options?: RawAxiosRequestConfig): AxiosPromise<Array<CourseExtended>>;
+    courseControllerFind(facultyId?: string, status?: CourseControllerFindStatusEnum, name?: string, options?: RawAxiosRequestConfig): AxiosPromise<Array<CourseExtended>>;
 
     /**
      * 
@@ -2121,13 +2421,22 @@ export interface V1ApiInterface {
 
     /**
      * 
-     * @summary Upload a CSV file for faculty extractions
-     * @param {UploadExtractionDto} uploadExtractionDto 
+     * @summary Get all faculties
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof V1ApiInterface
      */
-    extractionsControllerUploadFile(uploadExtractionDto: UploadExtractionDto, options?: RawAxiosRequestConfig): AxiosPromise<void>;
+    facultyControllerFindAll(options?: RawAxiosRequestConfig): AxiosPromise<Array<Faculty>>;
+
+    /**
+     * 
+     * @summary Upload a file
+     * @param {UploadExtractionDto} uploadExtractionDto Data to upload
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof V1ApiInterface
+     */
+    filesControllerCreate(uploadExtractionDto: UploadExtractionDto, options?: RawAxiosRequestConfig): AxiosPromise<string>;
 
     /**
      * 
@@ -2222,13 +2531,16 @@ export class V1Api extends BaseAPI implements V1ApiInterface {
 
     /**
      * 
-     * @summary Get all courses
+     * @summary Get courses
+     * @param {string} [facultyId] The id of the faculty
+     * @param {CourseControllerFindStatusEnum} [status] Course status
+     * @param {string} [name] Search by course name
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof V1Api
      */
-    public courseControllerFindAll(options?: RawAxiosRequestConfig) {
-        return V1ApiFp(this.configuration).courseControllerFindAll(options).then((request) => request(this.axios, this.basePath));
+    public courseControllerFind(facultyId?: string, status?: CourseControllerFindStatusEnum, name?: string, options?: RawAxiosRequestConfig) {
+        return V1ApiFp(this.configuration).courseControllerFind(facultyId, status, name, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -2245,14 +2557,25 @@ export class V1Api extends BaseAPI implements V1ApiInterface {
 
     /**
      * 
-     * @summary Upload a CSV file for faculty extractions
-     * @param {UploadExtractionDto} uploadExtractionDto 
+     * @summary Get all faculties
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof V1Api
      */
-    public extractionsControllerUploadFile(uploadExtractionDto: UploadExtractionDto, options?: RawAxiosRequestConfig) {
-        return V1ApiFp(this.configuration).extractionsControllerUploadFile(uploadExtractionDto, options).then((request) => request(this.axios, this.basePath));
+    public facultyControllerFindAll(options?: RawAxiosRequestConfig) {
+        return V1ApiFp(this.configuration).facultyControllerFindAll(options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Upload a file
+     * @param {UploadExtractionDto} uploadExtractionDto Data to upload
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof V1Api
+     */
+    public filesControllerCreate(uploadExtractionDto: UploadExtractionDto, options?: RawAxiosRequestConfig) {
+        return V1ApiFp(this.configuration).filesControllerCreate(uploadExtractionDto, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
