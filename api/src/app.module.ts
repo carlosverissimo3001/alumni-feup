@@ -4,10 +4,11 @@ import { CompanyModule } from './company/company.module';
 import { UserModule } from './user/user.module';
 import { BrightdataModule } from './brightdata/brighdata.module';
 import { BullModule } from '@nestjs/bull';
-import { ExtractionsModule } from './extractions/extractions.module';
+import { FileUploadModule } from './file-upload/file-upload.module';
 import { GeolocationModule } from './geolocation/geolocation.module';
 import { ConfigModule } from '@nestjs/config';
 import { CourseModule } from './course/course.module';
+import { FacultyModule } from './faculty/faculty.module';
 @Module({
   imports: [
     BullModule.forRoot({
@@ -25,9 +26,10 @@ import { CourseModule } from './course/course.module';
     CompanyModule,
     UserModule,
     BrightdataModule,
-    ExtractionsModule,
+    FileUploadModule,
     GeolocationModule,
     CourseModule,
+    FacultyModule,
   ],
 })
 export class AppModule {}
