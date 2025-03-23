@@ -50,7 +50,9 @@ const MapFilters = ({
   const [isVisible, setIsVisible] = useState(true);
 
   // Options
-  const { data: courses, isLoading: isLoadingCourses } = useListCourses();
+  const { data: courses, isLoading: isLoadingCourses } = useListCourses({
+    enabled:true
+  });
   const yearList = getYearList();
   
   /** Selectors & Filters **/
