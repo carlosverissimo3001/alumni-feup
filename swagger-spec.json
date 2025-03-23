@@ -226,12 +226,13 @@
         ]
       }
     },
-    "/api/extractions/upload": {
+    "/api/files": {
       "post": {
-        "operationId": "ExtractionsController_uploadFile",
+        "operationId": "FileUploadController_create",
         "parameters": [],
         "requestBody": {
           "required": true,
+          "description": "Data to upload",
           "content": {
             "application/json": {
               "schema": {
@@ -241,24 +242,63 @@
           }
         },
         "responses": {
-          "201": {
-            "description": ""
+          "default": {
+            "description": "Returns the status of the upload",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
           }
         },
-        "summary": "Upload a CSV file for faculty extractions",
+        "summary": "Upload a file",
         "tags": [
           "V1",
-          "Extractions"
+          "Files"
         ]
       }
     },
     "/api/course": {
       "get": {
-        "operationId": "CourseController_findAll",
-        "parameters": [],
+        "operationId": "CourseController_find",
+        "parameters": [
+          {
+            "name": "faculty_id",
+            "required": false,
+            "in": "query",
+            "description": "The id of the faculty",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "required": false,
+            "in": "query",
+            "description": "Course status",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "ACTIVE",
+                "INACTIVE"
+              ]
+            }
+          },
+          {
+            "name": "name",
+            "required": false,
+            "in": "query",
+            "description": "Search by course name",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "responses": {
           "default": {
-            "description": "Returns all courses",
+            "description": "Returns courses",
             "content": {
               "application/json": {
                 "schema": {
@@ -271,7 +311,7 @@
             }
           }
         },
-        "summary": "Get all courses",
+        "summary": "Get courses",
         "tags": [
           "V1",
           "Course"
@@ -309,6 +349,32 @@
           "Course"
         ]
       }
+    },
+    "/api/faculty": {
+      "get": {
+        "operationId": "FacultyController_findAll",
+        "parameters": [],
+        "responses": {
+          "default": {
+            "description": "Returns all faculties",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Faculty"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "Get all faculties",
+        "tags": [
+          "V1",
+          "Faculty"
+        ]
+      }
     }
   },
   "info": {
@@ -328,6 +394,34 @@
       }
     },
     "schemas": {
+      "Company": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The id of the company"
+          },
+          "name": {
+            "type": "string",
+            "description": "The name of the company"
+          },
+          "linkedin_url": {
+            "type": "object",
+            "description": "The linkedin url of the company"
+          },
+          "roles": {
+            "description": "The roles of the company",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Role"
+            }
+          }
+        },
+        "required": [
+          "id",
+          "name"
+        ]
+      },
       "Role": {
         "type": "object",
         "properties": {
@@ -348,6 +442,14 @@
             "type": "string",
             "description": "The seniority level of the role"
           },
+          "Company": {
+            "description": "The Company",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Company"
+              }
+            ]
+          },
           "JobClassification": {
             "description": "The job classifications",
             "type": "array",
@@ -364,6 +466,7 @@
           "id",
           "start_date",
           "seniority_level",
+          "Company",
           "JobClassification"
         ]
       },
@@ -387,10 +490,6 @@
       "Graduation": {
         "type": "object",
         "properties": {
-          "status": {
-            "type": "object",
-            "description": "The status of the graduation"
-          },
           "conclusion_year": {
             "type": "object",
             "description": "The conclusion year of the graduation"
@@ -405,7 +504,6 @@
           }
         },
         "required": [
-          "status",
           "conclusion_year",
           "Course"
         ]
@@ -573,6 +671,14 @@
           "last_name"
         ]
       },
+      "UPLOAD_TYPE": {
+        "type": "string",
+        "enum": [
+          "ENROLLMENT",
+          "LINKEDIN"
+        ],
+        "description": "The type of upload"
+      },
       "UploadExtractionDto": {
         "type": "object",
         "properties": {
@@ -581,11 +687,20 @@
           },
           "course_id": {
             "type": "string"
+          },
+          "upload_type": {
+            "description": "The type of upload",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/UPLOAD_TYPE"
+              }
+            ]
           }
         },
         "required": [
           "faculty_id",
-          "course_id"
+          "course_id",
+          "upload_type"
         ]
       },
       "CourseExtended": {
@@ -636,6 +751,33 @@
           "status",
           "faculty_id",
           "course_type"
+        ]
+      },
+      "Faculty": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string",
+            "description": "The local name of the faculty",
+            "example": "Faculdade de Engenharia da Universidade do Porto"
+          },
+          "name_int": {
+            "type": "object",
+            "description": "The international name of the faculty",
+            "example": "Faculty of Engineering of the University of Porto"
+          },
+          "acronym": {
+            "type": "object",
+            "description": "The acronym of the faculty",
+            "example": "FEUP"
+          }
+        },
+        "required": [
+          "id",
+          "name"
         ]
       }
     }
