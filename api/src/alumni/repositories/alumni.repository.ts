@@ -4,7 +4,6 @@ import { Alumni } from 'src/entities/alumni.entity';
 import { alumniSelect } from 'src/prisma/includes/alumni.include';
 import { CreateAlumniDto } from 'src/dto/create-alumni.dto';
 import { GetGeoJSONDto } from 'src/dto/getgeojson.dto';
-import { GRADUATION_STATUS } from '@prisma/client';
 
 @Injectable()
 export class AlumniRepository {
@@ -65,7 +64,6 @@ export class AlumniRepository {
             Graduations: {
               some: {
                 AND: [
-                  { status: GRADUATION_STATUS.GRADUATED },
                   ...(courseIdsArray.length
                     ? [{ course_id: { in: courseIdsArray } }]
                     : []),
