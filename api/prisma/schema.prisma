@@ -39,67 +39,82 @@ model AlumniRaw {
 }
 
 model Company {
-  id                  String   @id @default(uuid())
-  name                String
-  linkedin_url        String?  @unique(map: "company_unique_url")
-  industry_id         String
-  created_at          DateTime @default(now()) @db.Timestamp(6)
-  profile_picture_url String?
-  Industry            Industry @relation(fields: [industry_id], references: [id])
-  Role                Role[]
+  id             String        @id @default(dbgenerated("gen_random_uuid()"))
+  name           String
+  linkedin_url   String?       @unique(map: "company_unique_url")
+  industry_id    String
+  logo           String?
+  // has the company changed name?  
+  previous_names String[]      @default([])
+  // if the company is acquired, this is the id of the company it was acquired by
+  merged_into_id String?
+  founded        Int?
+  company_size   COMPANY_SIZE?
+  created_at     DateTime      @default(now()) @db.Timestamp(6)
+  updated_at     DateTime      @default(now()) @db.Timestamp(6)
+  Industry       Industry      @relation(fields: [industry_id], references: [id])
+  Role           Role[]
+
+  merged_into      Company?  @relation("MergedCompanies", fields: [merged_into_id], references: [id])
+  merged_companies Company[] @relation("MergedCompanies")
 
   @@index([industry_id])
   @@map("company")
 }
 
 model Course {
-  id                 String               @id @default(uuid())
-  name               String
-  created_at         DateTime             @default(now()) @db.Timestamp(6)
-  acronym            String
-  end_year           Int?
-  status             COURSE_STATUS        @default(ACTIVE)
-  faculty_id         String
-  name_int           String?
-  course_type        COURSE_TYPE
-  start_year         Int
-  Faculty_Extraction Faculty_Extraction[]
-  Graduation         Graduation[]
+  id          String        @id @default(uuid())
+  name        String
+  created_at  DateTime      @default(now()) @db.Timestamp(6)
+  acronym     String
+  end_year    Int?
+  status      COURSE_STATUS @default(ACTIVE)
+  faculty_id  String
+  name_int    String?
+  course_type COURSE_TYPE
+  start_year  Int
+
+  CourseExtraction CourseExtraction[]
+  Graduation       Graduation[]
 
   @@map("course")
 }
 
 model Faculty {
-  id                 String               @id
-  name               String
-  name_int           String?
-  acronym            String?
-  Faculty_Extraction Faculty_Extraction[]
+  id       String  @id
+  name     String
+  name_int String?
+  acronym  String?
+
+  CourseExtraction CourseExtraction[]
 
   @@map("faculty")
 }
 
-model Faculty_Extraction {
-  id         String            @id
-  faculty_id String
-  course_id  String
-  student_id String
-  status     GRADUATION_STATUS
-  year       Int
-  Course     Course            @relation(fields: [course_id], references: [id])
-  Faculty    Faculty           @relation(fields: [faculty_id], references: [id])
+model CourseExtraction {
+  id              String    @id @default(dbgenerated("gen_random_uuid()"))
+  student_id      String
+  full_name       String
+  faculty_id      String
+  course_id       String
+  conclusion_year Int
+  created_at      DateTime  @default(now()) @db.Timestamp(6)
+  parsed          Boolean   @default(false)
+  parsed_at       DateTime? @db.Timestamp(6)
 
-  @@map("faculty_extraction")
+  Course  Course  @relation(fields: [course_id], references: [id])
+  Faculty Faculty @relation(fields: [faculty_id], references: [id])
+
+  @@map("course_extraction")
 }
 
 model Graduation {
-  id              String            @id
+  id              String @id
   alumni_id       String
   course_id       String
-  status          GRADUATION_STATUS
-  conclusion_year Int?
-  Alumni          Alumni            @relation(fields: [alumni_id], references: [id])
-  Course          Course            @relation(fields: [course_id], references: [id])
+  conclusion_year Int
+  Alumni          Alumni @relation(fields: [alumni_id], references: [id])
+  Course          Course @relation(fields: [course_id], references: [id])
 
   @@index([alumni_id])
   @@index([course_id])
@@ -116,12 +131,12 @@ model Industry {
 }
 
 model JobClassification {
-  id         String   @id
+  id         String   @id @default(dbgenerated("gen_random_uuid()"))
   title      String
   level      Int      @db.SmallInt
   esco_code  String?
   role_id    String
-  confidence Float
+  confidence Float?
   created_at DateTime @default(now()) @db.Timestamp(6)
   Role       Role     @relation(fields: [role_id], references: [id])
 
@@ -158,11 +173,13 @@ model ProblematicLocation {
 }
 
 model Role {
-  id                String              @id
+  id                String              @id @default(dbgenerated("gen_random_uuid()"))
   alumni_id         String
   company_id        String
   start_date        DateTime            @db.Timestamptz(6)
   end_date          DateTime?           @db.Timestamptz(6)
+  created_at        DateTime            @default(now()) @db.Timestamp(6)
+  updated_at        DateTime            @default(now()) @db.Timestamp(6)
   seniority_level   SENIORITY_LEVEL
   location_id       String?
   JobClassification JobClassification[]
@@ -176,19 +193,19 @@ model Role {
   @@map("role")
 }
 
+model RoleRaw {
+  id          String  @id @default(dbgenerated("gen_random_uuid()"))
+  description String?
+  role_id     String
+
+  @@map("role_raw")
+}
+
 enum COURSE_TYPE {
   INTEGRATED
   BACHELORS
   MASTERS
   DOCTORATE
-}
-
-enum GRADUATION_STATUS {
-  ACTIVE
-  GRADUATED
-  DROPOUT
-  EXTERNAL
-  NOT_ENROLLED
 }
 
 enum COURSE_STATUS {
@@ -204,4 +221,17 @@ enum SENIORITY_LEVEL {
   DIRECTOR
   EXECUTIVE
   C_LEVEL
+}
+
+// https://learn.microsoft.com/en-us/linkedin/shared/references/reference-tables/company-size-codes
+enum COMPANY_SIZE {
+  A
+  B
+  C
+  D
+  E
+  F
+  G
+  H
+  I
 }
