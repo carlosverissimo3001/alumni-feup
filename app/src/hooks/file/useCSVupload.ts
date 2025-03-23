@@ -1,10 +1,12 @@
 import { useState } from "react";
 import { MAX_FILE_SIZE } from "@/consts";
-import AlumniApi from "@/api";
+import  NestApi from "@/api";
+import { UploadExtractionDto, UPLOADTYPE } from "@/sdk/api";
 
-interface UploadParams {
+type UploadParams = {
   faculty: string;
   course: string;
+  upload_type: UPLOADTYPE;
 }
 
 export const useCSVUpload = () => {
@@ -49,42 +51,44 @@ export const useCSVUpload = () => {
     setUploadSuccess(false);
   };
 
-  const uploadFile = async ({ faculty, course }: UploadParams) => {
+  const uploadFile = async ({ faculty, course, upload_type }: UploadParams) => {
     if (!file) {
-      setError("Please select a file.");
+      setError("No file selected.");
       return false;
     }
-
-    if (!faculty) {
-      setError("Please select a faculty.");
-      return false;
-    }
-
-    if (!course) {
-      setError("Please select a course.");
-      return false;
-    }
-
+  
     setIsUploading(true);
     setError(null);
     setUploadSuccess(false);
-    
+  
     try {
       const formData = new FormData();
-      formData.append("file", file);
+      formData.append("file", file); // File data
+      formData.append("faculty_id", faculty);
+      formData.append("course_id", course);
+      formData.append("upload_type", upload_type as unknown as string);
 
-      console.log(formData);
-
-      const response = await AlumniApi.extractionsControllerUploadFile(faculty, course, {
-        data: formData,
-      });
-      
+      await NestApi.filesControllerCreate(
+        formData as unknown as UploadExtractionDto,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        },
+      );
+  
       setUploadSuccess(true);
       return true;
-    } catch (error) {
-      console.error("Upload failed", error);
-      setError(error instanceof Error ? error.message : 'Upload failed');
-      return false;
+    } catch (error: any) {
+      if (error.response?.data) {
+        const errorData = error.response.data;
+        setError(
+          errorData.message || 
+          `Upload failed: ${errorData.code || 'Unknown error'}`
+        );
+      } else {
+        setError(error instanceof Error ? error.message : "Upload failed");
+      }
     } finally {
       setIsUploading(false);
     }
