@@ -1,7 +1,15 @@
-import { Controller, Get, HttpCode, HttpStatus, Param } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Param,
+  Query,
+} from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CourseService } from './course.service';
-import { CourseExtended } from '@entities'
+import { CourseExtended } from '@entities';
+import { FindCoursesDto } from '@/dto/find-courses.dto';
 
 @ApiTags('V1', 'Course')
 @Controller('course')
@@ -10,10 +18,10 @@ export class CourseController {
 
   @Get()
   @HttpCode(HttpStatus.OK)
-  @ApiOperation({ summary: 'Get all courses' })
-  @ApiResponse({ description: 'Returns all courses', type: [CourseExtended] })
-  async findAll(): Promise<CourseExtended[]> {
-    return this.courseService.findAll();
+  @ApiOperation({ summary: 'Get courses' })
+  @ApiResponse({ description: 'Returns courses', type: [CourseExtended] })
+  async find(@Query() params: FindCoursesDto): Promise<CourseExtended[]> {
+    return this.courseService.find(params);
   }
 
   @Get(':id')

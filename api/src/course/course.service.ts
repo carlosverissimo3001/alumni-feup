@@ -1,13 +1,16 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { CourseExtended } from '@entities';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { FindCoursesDto } from '@/dto/find-courses.dto';
 
 @Injectable()
 export class CourseService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async findAll(): Promise<CourseExtended[]> {
-    return this.prisma.course.findMany();
+  async find(params: FindCoursesDto): Promise<CourseExtended[]> {
+    return this.prisma.course.findMany({
+      where: params,
+    });
   }
 
   async findOne(id: string): Promise<CourseExtended> {
