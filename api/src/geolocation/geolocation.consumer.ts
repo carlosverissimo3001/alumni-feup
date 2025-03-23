@@ -2,7 +2,7 @@ import { Process, Processor } from '@nestjs/bull';
 import { InjectQueue } from '@nestjs/bull';
 import { Logger /* , OnModuleInit */ } from '@nestjs/common';
 import { Queue } from 'bull';
-import { Jobs, QueueName } from 'src/consts';
+import { Jobs, QueueName } from '@/consts';
 import { GeolocationService } from './geolocation.service';
 
 @Processor(QueueName.GEOLOCATION)
@@ -15,7 +15,7 @@ export class GeolocationConsumer /* implements OnModuleInit */ {
   ) {}
 
   async onModuleInit() {
-    await this.queue.add(
+    /* await this.queue.add(
       Jobs.geolocation.EXTRACT_COORDINATES,
       { data: null },
       {
@@ -24,10 +24,10 @@ export class GeolocationConsumer /* implements OnModuleInit */ {
           cron: '0 * * * *', // Every hour
         },
       },
-    );
+    ); */
   }
 
-  @Process(Jobs.geolocation.EXTRACT_COORDINATES)
+  @Process(Jobs.geolocation.EXTRACT_COORDINATES as string)
   async extractCoordinates() {
     this.logger.log('Started job to extract coordinates for missing locations');
     return this.service.findMissingCoordinates();

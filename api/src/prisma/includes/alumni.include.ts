@@ -8,7 +8,6 @@ export const locationSelect = {
 } satisfies Prisma.LocationSelect;
 
 export const graduationSelect = {
-  status: true,
   conclusion_year: true,
   Course: {
     select: {
