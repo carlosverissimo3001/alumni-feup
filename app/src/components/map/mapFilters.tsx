@@ -10,6 +10,8 @@ import { useFetchGeoJson } from "@/hooks/alumni/useFetchGeoJson";
 import { GeoJSONFeatureCollection } from "@/sdk";
 import { Feature, Point } from 'geojson';
 import { AlumniControllerFindAllGeoJSONGroupByEnum as GROUP_BY } from "@/sdk";
+import { Checkbox } from "../ui/checkbox";
+import { Label } from "../ui/label";
 
 export interface GeoJSONProperties {
   name: string[];
@@ -27,6 +29,10 @@ type props = {
   onSelectGeoJSON: (geoJson: GeoJSONFeatureCollection) => void;
   onSelectAlumni: (name: string, coordinates: number[]) => void;
   yearUrl?: string;
+  showTimeLine: boolean;
+  setShowTimeLine: (show: boolean) => void;
+  selectedYear?: number
+  setSelectedYear: (year?: number) => void;
 };
 
 export type AlumniInfo = {
@@ -42,6 +48,10 @@ const MapFilters = ({
   handleLoading,
   onSelectGeoJSON,
   onSelectAlumni,
+  showTimeLine,
+  setShowTimeLine,
+  selectedYear,
+  setSelectedYear,
 }: props) => {
   // Global navbar state
   const { isCollapsed } = useNavbar();
@@ -72,6 +82,7 @@ const MapFilters = ({
     courseIds,
     conclusionYears,
     groupBy,
+    selectedYear
   });
 
   // State variables
@@ -205,6 +216,7 @@ const MapFilters = ({
     setSearchInput("");
     setConclusionYears([]);
     setCourseIds([]);
+    setSelectedYear(undefined);
     
     // Reset alumni selection
     onSelectAlumni("", [-9.142685, 38.736946]);
@@ -238,10 +250,18 @@ const MapFilters = ({
       courseIds.length > 0 || 
       conclusionYears.length > 0 || 
       searchInput.trim() !== '';
+      selectedYear !== undefined;
 
     setCleanButtonEnabled(hasFilters);
-  }, [courseIds, conclusionYears, groupBy, searchInput]);
+  }, [courseIds, conclusionYears, groupBy, searchInput, selectedYear]);
 
+  const handleTimeLineCheckboxChange = () => {
+    if(showTimeLine){
+      setShowTimeLine(false);
+    }else{
+      setShowTimeLine(true);
+    }
+  };
 
   return (
     <div
@@ -355,6 +375,17 @@ const MapFilters = ({
               variant="inverted"
               maxCount={4}
             />
+          </div>
+
+          {/* Time Line Checkbox */}
+          <div className="mb-4">
+            <Checkbox
+            checked={showTimeLine}
+            onCheckedChange={handleTimeLineCheckboxChange}
+            />
+            <Label className="text-lg font-semibold text-gray-800 ml-2">
+              Time Line
+            </Label>
           </div>
 
           {/* Action Buttons */}

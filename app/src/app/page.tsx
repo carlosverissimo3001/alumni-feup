@@ -8,6 +8,7 @@ import { cn } from "@/lib/utils";
 import { GeoJSONFeatureCollection } from "@/sdk";
 
 import './app.css';
+import TimeLineBar from '@/components/map/timeLineBar';
 
 // Type definitions
 interface Coordinates {
@@ -51,6 +52,9 @@ const MapComponent = () => {
     }
   };
 
+  const [selectedYear, setSelectedYear] = useState<number | undefined>(undefined);
+  const [showTimeLine, setShowTimeLine] = useState<boolean>(false);
+
   return (
     <>
       <div className={cn(
@@ -61,11 +65,14 @@ const MapComponent = () => {
           <MapFilters 
             handleLoading={handleLoading}
             onSelectAlumni={handleSelectAlumni} 
-            onSelectGeoJSON={handleSelectGeoJSON} 
+            onSelectGeoJSON={handleSelectGeoJSON}
+            showTimeLine={showTimeLine}
+            setShowTimeLine={setShowTimeLine}
+            selectedYear={selectedYear}
+            setSelectedYear={setSelectedYear}
           />
         </div>
       </div>
-      
       <MapView
         loading={loading}
         alumniGeoJSON={alumniGeoJSON}
@@ -73,6 +80,11 @@ const MapComponent = () => {
         handleSelectAlumni={handleSelectAlumni}
         handleSelectGeoJSON={handleSelectGeoJSON}
       />
+      <TimeLineBar
+        selectedYear={selectedYear}
+        setSelectedYear={setSelectedYear}
+        showTimeLine={showTimeLine}
+      ></TimeLineBar>
     </>
   );
 };
