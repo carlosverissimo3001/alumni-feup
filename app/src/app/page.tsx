@@ -84,6 +84,7 @@ const MapComponent = () => {
         selectedYear={selectedYear}
         setSelectedYear={setSelectedYear}
         showTimeLine={showTimeLine}
+        isCollapsed={isCollapsed}
       ></TimeLineBar>
     </>
   );

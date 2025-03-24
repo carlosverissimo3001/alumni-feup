@@ -5,9 +5,10 @@ type TimeLineBarProps = {
     selectedYear?: number;
     setSelectedYear: (year?: number) => void;
     showTimeLine: boolean;
+    isCollapsed: boolean;
 }
 
-const TimeLineBar = ( {selectedYear, setSelectedYear, showTimeLine} : TimeLineBarProps)  => {
+const TimeLineBar = ( {selectedYear, setSelectedYear, showTimeLine, isCollapsed} : TimeLineBarProps)  => {
   const currentYear = new Date().getFullYear();
   const years = Array.from({ length: currentYear - 1994 + 1 }, (_, i) => 1994 + i);
   const scrollContainerRef = useRef<HTMLDivElement | null>(null); 
@@ -48,10 +49,10 @@ const TimeLineBar = ( {selectedYear, setSelectedYear, showTimeLine} : TimeLineBa
   };
 
   return (
-    <div className={`fixed bottom-0 left-0 w-full bg-zinc-900 text-white py-2 ${showTimeLine ? '' : 'hidden'}`}>
+    <div className={`fixed bottom-0 bg-zinc-900 text-white py-2 ${isCollapsed ? 'left-20' : 'left-60'} ${showTimeLine ? '' : 'hidden'}`}>
       <div
         ref={scrollContainerRef}
-        className="flex overflow-x-auto space-x-4 px-4 py-2 cursor-grab overscroll-contain no-scrollbar"
+        className={`flex overflow-x-auto space-x-4 px-4 py-2 cursor-grab overscroll-contain no-scrollbar ${isCollapsed ? 'timeline-width-collap' : 'timeline-width-nocollap'}`}
         onMouseDown={handleMouseDown}
         onMouseMove={handleMouseMove}
         onMouseUp={handleMouseUp}

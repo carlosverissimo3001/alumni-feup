@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { getYearList } from "./utils/helper";
-import { MenuIcon } from "lucide-react";
+import { ChevronLeft, ChevronDown } from "lucide-react";
 import { useNavbar } from "@/contexts/NavbarContext";
 import { cn } from "@/lib/utils";
 import { Button } from "../ui/button";
@@ -280,14 +280,19 @@ const MapFilters = ({
           !isVisible && "pointer-events-auto"
         )}
       >
-        {!isVisible && (
+        { (
           <span className="text-[#A02D20] text-md font-medium px-2">
             Map Filters
           </span>
         )}
-        {!isVisible && (
-          <MenuIcon className="text-[#A02D20] w-6 h-6 cursor-pointer hover:opacity-80" />
-        )}
+        { !isVisible ? 
+        (
+          <ChevronLeft className="text-[#A02D20] w-6 h-6 cursor-pointer hover:opacity-80" />
+        ) :
+        (
+          <ChevronDown className="text-[#A02D20] w-6 h-6 cursor-pointer hover:opacity-80" />
+        )
+      }
       </div>
 
       {/* Main Content */}
