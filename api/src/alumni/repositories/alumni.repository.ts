@@ -40,10 +40,7 @@ export class AlumniRepository {
   }
 
   async findAllGeoJSON(query: GetGeoJSONDto): Promise<Alumni[]> {
-    const { courseIds, conclusionYears } = query;
-
-    /* const fe_string = '2026';
-    const active_date = new Date(fe_string); */
+    const { courseIds, conclusionYears, selectedYear } = query;
 
     // Ensure arrays for Prisma
     const courseIdsArray = Array.isArray(courseIds)
@@ -76,8 +73,31 @@ export class AlumniRepository {
           }
         : {};
 
+        const rolesWhere = 
+        selectedYear != undefined ? {
+          Roles: {
+            some: {
+              start_date: {
+                lte: new Date(selectedYear, 0, 1), 
+              },
+              AND: [
+                {
+                  OR: [
+                    {
+                      end_date: {
+                        gte: new Date(selectedYear, 0, 1), 
+                      },
+                    },
+                    { end_date: null },
+                  ],
+                },
+              ],
+            },
+      }} : {};
+        
     const alumniWhere = {
       ...graduationsFilter,
+      ...rolesWhere,
       Location: {
         is: {
           latitude: { not: null },
@@ -86,35 +106,6 @@ export class AlumniRepository {
       },
     };
 
-    /* return this.prisma.alumni.findMany({
-      where: {
-        ...alumniWhere,
-        Roles: {
-          some: {
-            AND: [
-              {
-                start_date: {
-                  lte: active_date,
-                },
-              },
-              {
-                OR: [
-                  {
-                    end_date: {
-                      gte: active_date,
-                    },
-                  },
-                  {
-                    end_date: null,
-                  },
-                ],
-              },
-            ],
-          },
-        },
-      },
-      select: alumniSelect,
-    }); */
     return this.prisma.alumni.findMany({
       where: alumniWhere,
       select: alumniSelect,
