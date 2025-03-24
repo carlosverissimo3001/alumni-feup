@@ -38,4 +38,13 @@ export class GetGeoJSONDto {
     !value ? [] : Array.isArray(value) ? value.map(Number) : [Number(value)],
   )
   conclusionYears?: number[];
+
+  @ApiPropertyOptional({
+    description: 'The selected year',
+    example: 2023,
+  })
+  @IsOptional()
+  @IsNumber()
+  @Transform(({ value }) => (value ? Number(value) : undefined))
+  selectedYear?: number;
 }
