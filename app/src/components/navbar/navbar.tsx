@@ -20,7 +20,17 @@ const Navbar = () => {
   const pathname = usePathname();
   const navbarRef = useRef<HTMLDivElement>(null);
 
-  // Add click outside handler
+  const handleMouseEnter = () => {
+    if (isCollapsed) {
+      toggleCollapse();
+    }
+  };
+
+  const handleMouseLeave = () => {
+    if (!isCollapsed) {
+      toggleCollapse();
+    }
+  };
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
@@ -59,6 +69,8 @@ const Navbar = () => {
   return (
     <div
       ref={navbarRef}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
       className={cn(
         "relative space-y-4 py-8 flex flex-col h-full bg-zinc-900 text-white transition-all duration-300 z-50",
         isCollapsed ? "w-20" : "w-60"
