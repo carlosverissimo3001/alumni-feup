@@ -813,3 +813,15 @@ p {
     padding-top: 5px;
     padding-bottom: 14px;
 }
+
+.no-scrollbar::-webkit-scrollbar {
+    display: none;
+}
+
+.timeline-width-collap {
+    width: calc(100vw - 5rem);
+}
+
+.timeline-width-nocollap {
+    width: calc(100vw - 15rem);
+}
