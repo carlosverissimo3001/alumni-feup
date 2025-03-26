@@ -109,10 +109,11 @@ model CourseExtraction {
 }
 
 model Graduation {
-  id              String @id
+  id              String @id @default(dbgenerated("gen_random_uuid()"))
   alumni_id       String
   course_id       String
   conclusion_year Int
+  created_at      DateTime @default(now()) @db.Timestamp(6)
   Alumni          Alumni @relation(fields: [alumni_id], references: [id])
   Course          Course @relation(fields: [course_id], references: [id])
 
@@ -199,6 +200,20 @@ model RoleRaw {
   role_id     String
 
   @@map("role_raw")
+}
+
+model EscoClassification {
+  id String @id @default(dbgenerated("gen_random_uuid()"))
+  level Int @db.SmallInt
+  code String
+  title_en String
+  definition String
+  tasks_include String
+  included_occupations String
+  excluded_occupations String
+  notes String?
+
+  @@map("esco_classification")
 }
 
 enum COURSE_TYPE {

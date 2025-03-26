@@ -34,7 +34,10 @@ export class FileUploadService {
     await this.parseFile(file.path, data);
     fs.unlinkSync(file.path);
 
-    // TODO: We will call our Python API (using an SDK) to map faculty data to LinkedIn data
+    // Let the data-infra app know that we have a new extraction
+    await fetch(`${process.env.DATA_INFRA_APP_URL}/map-extractions`, {
+      method: 'POST',
+    });
   }
 
   async parseFile(filePath: string, extractionData: UploadExtractionDto) {
@@ -91,7 +94,7 @@ export class FileUploadService {
         .split('(');
 
       try {
-        const conclusion_year = parseInt(status_raw[1].split('/')[0]);
+        const conclusion_year = parseInt(status_raw[1].split('/')[1]);
 
         return {
           id: uuidv4(),
