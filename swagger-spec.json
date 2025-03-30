@@ -99,6 +99,16 @@
                 "type": "string"
               }
             }
+          },
+          {
+            "name": "selectedYear",
+            "required": false,
+            "in": "query",
+            "description": "The selected year",
+            "schema": {
+              "example": 2023,
+              "type": "number"
+            }
           }
         ],
         "responses": {
