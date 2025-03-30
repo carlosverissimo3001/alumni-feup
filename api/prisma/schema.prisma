@@ -79,7 +79,6 @@ model Course {
   course_type COURSE_TYPE
   start_year  Int
 
-  CourseExtraction CourseExtraction[]
   Graduation       Graduation[]
 
   @@map("course")
@@ -91,26 +90,7 @@ model Faculty {
   name_int String?
   acronym  String?
 
-  CourseExtraction CourseExtraction[]
-
   @@map("faculty")
-}
-
-model CourseExtraction {
-  id              String    @id @default(dbgenerated("gen_random_uuid()"))
-  student_id      String
-  full_name       String
-  faculty_id      String
-  course_id       String
-  conclusion_year Int
-  created_at      DateTime  @default(now()) @db.Timestamp(6)
-  parsed          Boolean   @default(false)
-  parsed_at       DateTime? @db.Timestamp(6)
-
-  Course  Course  @relation(fields: [course_id], references: [id])
-  Faculty Faculty @relation(fields: [faculty_id], references: [id])
-
-  @@map("course_extraction")
 }
 
 model Graduation {
