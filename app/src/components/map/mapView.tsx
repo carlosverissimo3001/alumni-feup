@@ -30,17 +30,23 @@ type MapViewProps = {
   } | null;
   handleSelectAlumni: (name: string, coordinates: number[]) => void;
   handleSelectGeoJSON: (geoData: GeoJSONFeatureCollection) => void;
+  selectedYear?: number | undefined;
+  compareYear?: number |  undefined;
 };
 
 const MapView = ({
   loading,
   alumniGeoJSON,
   selectedAlumni,
+  selectedYear,
+  compareYear
 }: MapViewProps) => {
   const [hoveredMouseCoords, setHoveredMouseCoords] = useState<
     [number, number] | null
   >(null);
   const [listPlaceName, setListPlaceName] = useState<string[]>([]);
+  const [students, setStudents] = useState<number>(0);
+  const [compareYearStudents, setCompareYearStudents] = useState<number | undefined>(undefined);
   const [listAlumniNames, setListAlumniNames] = useState<string[]>([]);
   const [listLinkedinLinks, setListLinkedinLinks] = useState<string[]>([]);
   const [alumniData, setAlumniData] = useState<AlumniData[]>([]);
@@ -53,6 +59,18 @@ const MapView = ({
   const { isCollapsed } = useNavbar();
 
   const onMapLoad = useCallback(() => {
+    console.log('Map loaded1');
+    mapRef.current.loadImage(
+      'https://i.imgur.com/NrBAtcA.png',
+      (error: Error | null, image: HTMLImageElement | undefined) => {
+        if (error) throw error;
+        if (image) {
+          mapRef.current.addImage('arrowicon', image, { 'sdf': true });
+        }else{
+          console.log('Image not found');
+        }
+      });
+      console.log('Map loaded2');
     setMapLoaded(true);
   }, []);
 
@@ -78,33 +96,37 @@ const MapView = ({
     listPlaceName: string[],
     listAlumniNames: string[],
     listLinkedinLinks: string[],
-    alumniData: AlumniData[]
+    alumniData: AlumniData[],
+    compareYearStudents: number | undefined,
+    students: number
   ) => {
-    if (
-      listAlumniNames.length > 0 &&
-      listLinkedinLinks.length > 0 &&
-      listPlaceName.length > 0
-    ) {
+    //if (
+      //listAlumniNames.length > 0 //&&
+      // listLinkedinLinks.length > 0 &&
+      // listPlaceName.length > 0
+    //) {
       setListPlaceName(listPlaceName);
       setListAlumniNames(listAlumniNames);
       setListLinkedinLinks(listLinkedinLinks);
       setAlumniData(alumniData);
       setHoveredCluster(true);
-    } else {
-      setListPlaceName([]);
-      setListAlumniNames([]);
-      setListLinkedinLinks([]);
-      setAlumniData([]);
-      setHoveredCluster(false);
-      setHoveredMouseCoords(null);
-    }
+      setCompareYearStudents(compareYearStudents);
+      setStudents(students);
+    // } else {
+    //   setListPlaceName([]);
+    //   setListAlumniNames([]);
+    //   setListLinkedinLinks([]);
+    //   setAlumniData([]);
+    //   setHoveredCluster(false);
+    //   setHoveredMouseCoords(null);
+    // }
   };
 
   // Clusters content
   const showClusterContent = async (event: MapMouseEvent) => {
     try {
       if (!event || !event.features) {
-        updateState([], [], [], []);
+        updateState([], [], [], [], undefined, 0);
         return;
       }
 
@@ -117,6 +139,8 @@ const MapView = ({
         const feature = event.features[0];
         const {
           listPlaceName,
+          students,
+          compareYearStudents,
           listLinkedinLinks,
           listAlumniNames,
           coursesYearConclusionByUser,
@@ -139,20 +163,20 @@ const MapView = ({
         );
         const parsedFlattenedPlaceNames = parsePlaceNames(listPlaceName);
 
-        console.log(alumniData);
-
         updateState(
           parsedFlattenedPlaceNames,
           listAlumniNames,
           listLinkedinLinks,
-          alumniData
+          alumniData,
+          compareYearStudents,
+          students
         );
       } else {
-        updateState([], [], [], []);
+        updateState([], [], [], [], undefined, 0);
       }
     } catch (error) {
       console.error("Error in showClusterContent:", error);
-      updateState([], [], [], []);
+      updateState([], [], [], [], undefined, 0);
     }
   };
 
@@ -194,8 +218,12 @@ const MapView = ({
           listAlumniNames={listAlumniNames}
           listLinkedinLinks={listLinkedinLinks}
           listPlaceName={listPlaceName}
+          students={students}
+          compareYearStudents={compareYearStudents}
           hoveredMouseCoords={hoveredMouseCoords || [0, 0]}
           alumniData={alumniData}
+          selectedYear={selectedYear}
+          compareYear={compareYear}
         />
       </MapGL>
       {loading && (

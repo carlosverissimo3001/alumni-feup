@@ -5,10 +5,13 @@ type TimeLineBarProps = {
     selectedYear?: number;
     setSelectedYear: (year?: number) => void;
     showTimeLine: boolean;
+    compareYear?: number;
+    setCompareYear: (year?: number) => void;
+    showCompareYear: boolean;
     isCollapsed: boolean;
 }
 
-const TimeLineBar = ( {selectedYear, setSelectedYear, showTimeLine, isCollapsed} : TimeLineBarProps)  => {
+const TimeLineBar = ( {selectedYear, setSelectedYear, showTimeLine, compareYear, setCompareYear, showCompareYear, isCollapsed} : TimeLineBarProps)  => {
   const currentYear = new Date().getFullYear();
   const years = Array.from({ length: currentYear - 1994 + 1 }, (_, i) => 1994 + i);
   const scrollContainerRef = useRef<HTMLDivElement | null>(null); 
@@ -41,10 +44,19 @@ const TimeLineBar = ( {selectedYear, setSelectedYear, showTimeLine, isCollapsed}
   };
 
   const handleYearClick = (year: number) => {
-    if (selectedYear === year) {
-        setSelectedYear(undefined);
+
+    if(showCompareYear && selectedYear !== undefined){
+      if (compareYear === year) {
+        setCompareYear(undefined);
+      } else {
+        setCompareYear(year);
+      }
     } else {
-        setSelectedYear(year);
+      if (selectedYear === year) {
+          setSelectedYear(undefined);
+      } else {
+          setSelectedYear(year);
+      }
     }
   };
 
@@ -63,8 +75,8 @@ const TimeLineBar = ( {selectedYear, setSelectedYear, showTimeLine, isCollapsed}
           <div
             key={year}
             className={`inline-block px-4 py-2 rounded-md cursor-pointer ${
-              selectedYear == year ? "bg-red-800" : "bg-gray-700"
-            }`}
+              selectedYear == year ? "bg-red-800" : "bg-gray-700"} ${
+              compareYear == year ? "bg-yellow-500" : "bg-gray-700"}`}
             onClick={() => handleYearClick(year)}
           >
             {currentYear == year ? "Now" : year}
