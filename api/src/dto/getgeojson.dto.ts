@@ -47,4 +47,9 @@ export class GetGeoJSONDto {
   @IsNumber()
   @Transform(({ value }) => (value ? Number(value) : undefined))
   selectedYear?: number;
+
+  @IsOptional()
+  @IsNumber()
+  @Transform(({ value }) => (value ? Number(value) : undefined))
+  compareYear?: number;
 }

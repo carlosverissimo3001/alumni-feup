@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { Source, MapRef } from 'react-map-gl/mapbox-legacy';
 import { GeoJSONFeatureCollection } from '@/sdk';
-import { clusterCountLayer, clusterLayer, unclusterPointLayer } from './mapLayers';
+import { clusterCountLayer, clusterLayer, statsLayer, unclusterPointLayer } from './mapLayers';
 
-const LAYER_IDS = ['cluster-count', 'unclustered-point', 'clusters'];
+const LAYER_IDS = ['cluster-count', 'unclustered-point', 'clusters', 'stats'];
 
 interface MapGLSourceProps {
   alumniGeoJSON: GeoJSONFeatureCollection;
@@ -11,6 +11,7 @@ interface MapGLSourceProps {
 }
 
 export function MapGLSource({ alumniGeoJSON, mapRef }: MapGLSourceProps) {
+
   const [isMapLoaded, setIsMapLoaded] = useState(false);
   useEffect(() => {
     if (mapRef.current) {
@@ -46,7 +47,8 @@ export function MapGLSource({ alumniGeoJSON, mapRef }: MapGLSourceProps) {
     // Add layers
     map.addLayer(clusterLayer as mapboxgl.Layer);
     map.addLayer(clusterCountLayer as mapboxgl.Layer);
-    map.addLayer(unclusterPointLayer as mapboxgl.Layer);
+    //map.addLayer(unclusterPointLayer as mapboxgl.Layer);
+    map.addLayer(statsLayer as mapboxgl.Layer);
 
     // Cleanup on unmount
     return () => {
