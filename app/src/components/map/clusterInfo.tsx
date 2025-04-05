@@ -1,7 +1,7 @@
 /**
  * This class is responsible for listing the alumnis in a certain cluster. It also handles with Pagination
  */
-import React, { useEffect, useState } from "react";
+import React, { use, useEffect, useState } from "react";
 import { AlumniData } from "@/types/alumni";
 import ImageWithFallback from "../ui/image-with-fallback";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -9,28 +9,38 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { motion, AnimatePresence } from "framer-motion";
+import { ArrowRight } from "lucide-react";
 
 type props = {
   hoveredCluster: boolean;
   listAlumniNames: string[];
   listLinkedinLinks: string[];
   listPlaceName: string[];
+  compareYearStudents: number | undefined;
+  students: number;
   hoveredMouseCoords: number[];
   alumniData: AlumniData[];
+  selectedYear: number | undefined;
+  compareYear: number | undefined;
 };
 const ClusterInfo = ({
   hoveredCluster,
   listAlumniNames,
   listLinkedinLinks,
   listPlaceName,
+  compareYearStudents,
+  students,
   hoveredMouseCoords,
   alumniData,
+  selectedYear,
+  compareYear
 }: props) => {
   const nAlumniToShow = 10; // Defines the nº of alumnis to show when a hoover is preformed
   const [startPosition, setStartPosition] = useState(0); // Position in the array to start to read from
   const [endPosition, setEndPosition] = useState(nAlumniToShow - 1); // Position in the array to stop reading from. 0 is also a number therefore the -1
   const [showPrev, setShowPrev] = useState(false); // Defines if it is to show the "...Prev"
   const [showMore, setShowMore] = useState(false); // Defines if it is to show the "More..."
+  const [showCompare, setShowCompare] = useState(false);
 
   useEffect(() => {
     if (!hoveredCluster) {
@@ -80,13 +90,16 @@ const ClusterInfo = ({
     setShowMore(true);
   };
 
-  /* console.log(alumniData); */
+  useEffect(() => {
+    showCompare
+  });
+
 
   return (
     <AnimatePresence>
       {hoveredCluster &&
-        listAlumniNames.length > 0 &&
-        listLinkedinLinks.length > 0 &&
+        // listAlumniNames.length > 0 &&
+        // listLinkedinLinks.length > 0 &&
         listPlaceName.length > 0 ? (
         <motion.div
           initial={{ opacity: 0, y: 10 }}
@@ -98,6 +111,7 @@ const ClusterInfo = ({
             left: `${hoveredMouseCoords[0]}px`,
           }}
         >
+          {compareYearStudents == undefined ? (
           <div className="space-y-4">
             <div>
               <h3 className="text-sm font-semibold tracking-wider text-red-700 uppercase mb-2">
@@ -111,7 +125,6 @@ const ClusterInfo = ({
                 ))}
               </div>
             </div>
-
             <ScrollArea className="h-[350px] w-full rounded-md">
               <Table>
                 <TableHeader className="bg-white/95 backdrop-blur-sm sticky top-0">
@@ -188,6 +201,45 @@ const ClusterInfo = ({
               )}
             </div>
           </div>
+          ) : (
+            <div className="w-full max-w-md mx-auto">
+            <div>
+                {listPlaceName.map((place, index) => (
+                  <Badge key={index} variant="secondary" className="text-xl">
+                    {place}
+                  </Badge>
+                ))}
+            </div>
+            <div className="space-y-2">
+              <div className="flex items-center justify-center gap-4 py-6">
+                <div className="text-center">
+                  
+                  <p className="text-xl font-medium text-muted-foreground mb-1">{selectedYear! < compareYear! ? selectedYear : compareYear}</p>
+                  <p className="text-5xl font-bold">{students - compareYearStudents}</p>
+                </div>
+
+                <ArrowRight className="text-muted-foreground h-8 w-10 mt-10" />
+      
+                <div className="text-center">
+                  <p className="text-xl font-medium text-muted-foreground mb-1">{selectedYear! > compareYear! ? selectedYear : compareYear}</p>
+                  <p className="text-5xl font-bold">{students}</p>
+                </div>
+      
+                <div
+                  className={`text-center px-3 py-1 rounded-full ${(students - compareYearStudents) < students ? "bg-green-100 text-green-800" : (compareYearStudents != 0 ? "bg-red-100 text-red-800" : "bg-yellow-100 text-yellow-800")}`}
+                >
+                  <p className="text-lg font-medium">
+                    {(students - compareYearStudents) < students ? "+" : (compareYearStudents != 0 ? "-" : "")}
+                    {(students - compareYearStudents) !== 0 ? Math.abs(compareYearStudents / (students - compareYearStudents) * 100).toFixed(2) : "N/A"}%
+                  </p>
+                </div>
+              </div>
+      
+
+            </div>
+          </div>
+        )}
+
         </motion.div>
       ) : null}
     </AnimatePresence>
