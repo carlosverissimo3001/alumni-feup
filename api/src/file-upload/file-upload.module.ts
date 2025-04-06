@@ -4,6 +4,7 @@ import { FileUploadController } from './file-upload.controller';
 import { MulterModule } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { PrismaService } from '@/prisma/prisma.service';
+
 @Module({
   imports: [
     MulterModule.register({
