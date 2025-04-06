@@ -111,7 +111,9 @@ export async function extractFeatureFields(
   feature: Feature<Geometry, GeoJSONProperties>
 ) {
   const listPlaceName = feature.properties.name;
+  const students = feature.properties.students;
   const linkUsersString = feature.properties.listLinkedinLinksByUser;
+  const compareYearStudents = feature.properties.compareYearStudents;
   const coursesYearConclusionByUser =
     feature.properties.coursesYearConclusionByUser;
   const profilePics = typeof feature.properties.profilePics === 'string'
@@ -133,6 +135,8 @@ export async function extractFeatureFields(
 
   return {
     listPlaceName,
+    students,
+    compareYearStudents,
     listLinkedinLinks,
     listAlumniNames,
     coursesYearConclusionByUser,

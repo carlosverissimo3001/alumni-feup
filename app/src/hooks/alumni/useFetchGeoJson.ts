@@ -9,6 +9,7 @@ type Props = {
   courseIds?: string[];
   conclusionYears?: number[];
   selectedYear?: number;
+  compareYear?: number;
 };
 
 /**
@@ -17,15 +18,16 @@ type Props = {
  * @param conclusionYears - The conclusion year(s)
  * @returns The GeoJSON data
  */
-export const useFetchGeoJson = ({ courseIds, conclusionYears, groupBy, selectedYear }: Props) => {
+export const useFetchGeoJson = ({ courseIds, conclusionYears, groupBy, selectedYear, compareYear }: Props) => {
   const query = useQuery({
-    queryKey: ["geoJson", { courseIds, conclusionYears, groupBy, selectedYear }],
+    queryKey: ["geoJson", { courseIds, conclusionYears, groupBy, selectedYear, compareYear }],
     queryFn: () =>
       NestAPI.alumniControllerFindAllGeoJSON(
         groupBy,
         courseIds || [], 
         (conclusionYears || []).map(year => year.toString()),
-        selectedYear || undefined
+        selectedYear || undefined,
+        compareYear || undefined
       )
         .then((response: AxiosResponse<GeoJSONFeatureCollection>) => response.data),
     staleTime: 1000 * 60 * 60 * 24, // Fresh for 24 hours

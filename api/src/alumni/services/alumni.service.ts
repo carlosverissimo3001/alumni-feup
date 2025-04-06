@@ -12,6 +12,7 @@ import { GetGeoJSONDto } from 'src/dto/getgeojson.dto';
 import { Feature, Point } from 'geojson';
 import { GROUP_BY } from '@/consts';
 import { GeolocationService } from 'src/geolocation/geolocation.service';
+import { Role } from '@prisma/client';
 type GraduationWithCourse = Graduation & {
   Course: {
     name: string;
@@ -21,6 +22,7 @@ type GraduationWithCourse = Graduation & {
 
 type AlumniGrouped = {
   coordinates: [number, number];
+  compareYearStudents?: number;
   alumni: Array<{
     name: string;
     linkedin_url: string;
@@ -57,13 +59,34 @@ export class AlumniService {
   async findAllGeoJSON(
     query: GetGeoJSONDto,
   ): Promise<GeoJSONFeatureCollection> {
-    const alumni = await this.alumniRepository.findAllGeoJSON(query);
+    let alumni = await this.alumniRepository.findAllGeoJSON(query);
+  
+    //Swap selectedYear and compareYear if selectedYear is greater than compareYear
+    if((query.compareYear && query.selectedYear) && (query.compareYear > query.selectedYear)){
+      const tempYear = query.selectedYear;
+      query.selectedYear = query.compareYear;
+      query.compareYear = tempYear;
+    }
+
+    let alumniCompareYear: Alumni[] = [];
+    if(query.compareYear){
+      alumniCompareYear = this.filterAlumniByStartDate(alumni, query.compareYear);
+    }
+
+    alumni = this.filterAlumniByStartDate(alumni, query.selectedYear);
 
     const groupBy = query.groupBy;
     let alumniByGroup: AlumniByCountry | AlumniByCity;
 
     if (groupBy === GROUP_BY.COUNTRIES) {
-      alumniByGroup = await this.groupAlumniByCountry(alumni);
+      if(query.compareYear && query.selectedYear){
+        alumniByGroup = await this.groupAlumniByCountryWithRoleAndCompareYear(alumni, alumniCompareYear);
+      } else if(query.selectedYear){
+        alumniByGroup = await this.groupAlumniByCountryWithRole(alumni);
+      }
+      else{
+        alumniByGroup = await this.groupAlumniByCountry(alumni)
+      }
     } else {
       alumniByGroup = this.groupAlumniByCity(alumni);
     }
@@ -79,7 +102,8 @@ export class AlumniService {
       },
       properties: {
         name: [group],
-        students: data.alumni.length,
+        students: data.alumni.length || 0,
+        compareYearStudents: data.compareYearStudents,
         listLinkedinLinksByUser: data.alumni.reduce(
           (acc, curr) => {
             if (curr.linkedin_url) {
@@ -136,11 +160,38 @@ export class AlumniService {
         ),
       },
     }));
-
+    
     return {
       type: 'FeatureCollection',
       features,
     };
+  }
+
+  private filterAlumniByStartDate(alumni: Alumni[], selectedYear?: number): Alumni[] {
+    let filteredAlumni: Alumni[] = [];
+    if(selectedYear){
+      alumni.forEach((alumnus) => {
+        if (alumnus.Roles) {
+          alumnus.Roles.sort((a, b) => new Date(b.start_date).getTime() - new Date(a.start_date).getTime()); //Order By Start Date
+          const roleFound = alumnus.Roles.find(role => role.start_date < new Date(selectedYear, 0, 1) 
+          && (role.end_date == null || role.end_date > new Date(selectedYear, 0, 1)));
+          if(roleFound && roleFound.Location){
+            const alumniToAdd = JSON.parse(JSON.stringify(alumnus));
+            alumniToAdd.Roles = [];
+            alumniToAdd.Roles.push(roleFound);
+            filteredAlumni.push(alumniToAdd);
+          }
+        }
+      });
+    }else{
+      alumni.forEach((alumnus) => {
+        if (alumnus.Roles) {
+          alumnus.Roles.sort((a, b) => new Date(b.start_date).getTime() - new Date(a.start_date).getTime()); //Order By Start Date
+        }
+      });
+      filteredAlumni = alumni;
+    }
+    return filteredAlumni;
   }
 
   async findOne(id: string): Promise<Alumni> {
@@ -157,6 +208,7 @@ export class AlumniService {
     const countryCoords: { [key: string]: { lon: number; lat: number } } = {};
 
     for (const alumnus of alumni) {
+      
       if (
         !alumnus.Location?.country ||
         !alumnus.Location?.latitude ||
@@ -178,6 +230,7 @@ export class AlumniService {
       if (!acc[country]) {
         acc[country] = {
           coordinates: [coords.lon, coords.lat],
+          compareYearStudents: undefined,
           alumni: [],
         };
       }
@@ -194,8 +247,145 @@ export class AlumniService {
         jobTitle : alumnus.Roles?.[0]?.JobClassification?.[0]?.title || null,
         companyName: alumnus.Roles?.[0]?.Company?.name || null
       });
-          }
+    }
 
+    return acc;
+  }
+
+  async groupAlumniByCountryWithRole(alumni: Alumni[]): Promise<AlumniByCountry> {
+    const acc: AlumniByCountry = {};
+    // Cache of country coordinates
+    const countryCoords: { [key: string]: { lon: number; lat: number } } = {};
+    
+    for (const alumnus of alumni) {
+    
+      if (
+        !alumnus.Roles![0].Location?.country ||
+        !alumnus.Roles![0].Location?.latitude ||
+        !alumnus.Roles![0].Location?.longitude
+      ) {
+        continue;
+      }
+
+      const country = alumnus.Roles![0].Location.country;
+      if (!countryCoords[country]) {
+        countryCoords[country] =
+          await this.geolocationService.getCountryCoordinatesFromDatabase(
+            country,
+          );
+      }
+
+      const coords = countryCoords[country];
+
+      if (!acc[country]) {
+        acc[country] = {
+          coordinates: [coords.lon, coords.lat],
+          compareYearStudents: undefined,
+          alumni: [],
+        };
+      }
+
+      acc[country].alumni.push({
+        name: `${alumnus.first_name} ${alumnus.last_name}`,
+        linkedin_url: alumnus.linkedin_url || '',
+        profile_pic: alumnus.profile_picture_url || '',
+        graduations:
+          alumnus.Graduations?.map((grad: GraduationWithCourse) => ({
+            course_acronym: grad.Course.acronym,
+            conclusion_year: grad.conclusion_year || null,
+          })) || [],
+        jobTitle : alumnus.Roles?.[0]?.JobClassification?.[0]?.title || null,
+        companyName: alumnus.Roles?.[0]?.Company?.name || null
+      });
+    }
+
+    return acc;
+  }
+
+  async groupAlumniByCountryWithRoleAndCompareYear(
+    alumni: Alumni[], 
+    alumniCompareYear: Alumni[]): Promise<AlumniByCountry> {
+
+    const acc: AlumniByCountry = {};
+    // Cache of country coordinates
+    const countryCoords: { [key: string]: { lon: number; lat: number } } = {};
+
+    for (const alumnus of alumni) {
+      if (
+        !alumnus.Roles![0].Location?.country ||
+        !alumnus.Roles![0].Location?.latitude ||
+        !alumnus.Roles![0].Location?.longitude
+      ) {
+        continue;
+      }
+
+      const country = alumnus.Roles![0].Location.country;
+      if (!countryCoords[country]) {
+        countryCoords[country] =
+          await this.geolocationService.getCountryCoordinatesFromDatabase(
+            country,
+          );
+      }
+
+      const coords = countryCoords[country];
+      if (!acc[country]) {
+        acc[country] = {
+          coordinates: [coords.lon, coords.lat],
+          compareYearStudents: 0,
+          alumni: [],
+        };
+      }
+
+      const alumnusCY = alumniCompareYear.find(alumnusCY => alumnusCY.id == alumnus.id);
+      
+      if(alumnusCY){
+        if(!alumnusCY.Roles![0].Location || alumnus.Roles![0].Location.country != alumnusCY.Roles![0].Location.country){
+          acc[country].compareYearStudents! += 1;
+        }else if(alumnus.Roles![0].Location.country == alumnusCY.Roles![0].Location.country){
+          acc[country].compareYearStudents! += 1;
+        }
+      }else{
+        acc[country].compareYearStudents! += 1;
+      }
+
+      acc[country].alumni.push({
+        name: `${alumnus.first_name} ${alumnus.last_name}`,
+        linkedin_url: alumnus.linkedin_url || '',
+        profile_pic: alumnus.profile_picture_url || '',
+        graduations:
+          alumnus.Graduations?.map((grad: GraduationWithCourse) => ({
+            course_acronym: grad.Course.acronym,
+            conclusion_year: grad.conclusion_year || null,
+          })) || [],
+        jobTitle : alumnus.Roles?.[0]?.JobClassification?.[0]?.title || null,
+        companyName: alumnus.Roles?.[0]?.Company?.name || null
+      });
+    }
+
+    for (const alumnusCompareYear of alumniCompareYear) {
+
+      if(alumnusCompareYear.Roles![0].Location && alumnusCompareYear.Roles![0].Location.country){
+        const country = alumnusCompareYear.Roles![0].Location.country;
+        if (!countryCoords[country]) {
+          countryCoords[country] =
+            await this.geolocationService.getCountryCoordinatesFromDatabase(
+              country,
+            );
+        }
+  
+        const coords = countryCoords[country];
+        if (!acc[country]) {
+          acc[country] = {
+            coordinates: [coords.lon, coords.lat],
+            compareYearStudents: 0,
+            alumni: [],
+          };
+        }
+        
+        acc[country].compareYearStudents! -= 1;
+      }
+    }
+    
     return acc;
   }
 

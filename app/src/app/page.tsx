@@ -54,6 +54,8 @@ const MapComponent = () => {
 
   const [selectedYear, setSelectedYear] = useState<number | undefined>(undefined);
   const [showTimeLine, setShowTimeLine] = useState<boolean>(false);
+  const [compareYear, setCompareYear] = useState<number | undefined>(undefined);
+  const [showCompareYear, setShowCompareYear] = useState<boolean>(false);
 
   return (
     <>
@@ -70,6 +72,10 @@ const MapComponent = () => {
             setShowTimeLine={setShowTimeLine}
             selectedYear={selectedYear}
             setSelectedYear={setSelectedYear}
+            showCompareYear={showCompareYear}
+            setShowCompareYear={setShowCompareYear}
+            compareYear={compareYear}
+            setCompareYear={setCompareYear}
           />
         </div>
       </div>
@@ -79,12 +85,17 @@ const MapComponent = () => {
         selectedAlumni={selectedAlumni}
         handleSelectAlumni={handleSelectAlumni}
         handleSelectGeoJSON={handleSelectGeoJSON}
+        selectedYear={selectedYear}
+        compareYear={compareYear}
       />
       <TimeLineBar
         selectedYear={selectedYear}
         setSelectedYear={setSelectedYear}
         showTimeLine={showTimeLine}
         isCollapsed={isCollapsed}
+        showCompareYear={showCompareYear}
+        compareYear={compareYear}
+        setCompareYear={setCompareYear}
       ></TimeLineBar>
     </>
   );

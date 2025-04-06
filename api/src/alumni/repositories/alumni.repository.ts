@@ -97,7 +97,7 @@ export class AlumniRepository {
         
     const alumniWhere = {
       ...graduationsFilter,
-      ...rolesWhere,
+      //...rolesWhere,
       Location: {
         is: {
           latitude: { not: null },
