@@ -1,10 +1,8 @@
 import { UploadExtractionDto } from '@/dto/upload-extraction.dto';
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { PrismaService } from '@/prisma/prisma.service';
-import { UPLOAD_TYPE, ENROLLMENT_HEADERS } from '@/consts/types';
+import { ENROLLMENT_HEADERS } from '@/consts/types';
 import { readCSV } from './utils';
-import { v4 as uuidv4 } from 'uuid';
-import { Prisma } from '@prisma/client';
 import * as fs from 'fs';
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024;
@@ -41,20 +39,12 @@ export class FileUploadService {
   }
 
   async parseFile(filePath: string, extractionData: UploadExtractionDto) {
-    const { upload_type } = extractionData;
     const { headers, data } = await readCSV(filePath);
 
-    if (upload_type === UPLOAD_TYPE.ENROLLMENT) {
-      return await this.parse_enrollment_upload(headers, data, extractionData);
-    } else if (upload_type === UPLOAD_TYPE.LINKEDIN) {
-      return await this.parse_linkedin_upload(headers, data, extractionData);
-    } else {
-      const errorMessage = `Unknown upload type: ${String(upload_type)}`;
-      throw new BadRequestException(errorMessage);
-    }
+    return this.parse_enrollment_upload(headers, data, extractionData);
   }
 
-  async parse_enrollment_upload(
+  private parse_enrollment_upload(
     headers: string[],
     data: string[][],
     extractionData: UploadExtractionDto,
@@ -96,14 +86,15 @@ export class FileUploadService {
       try {
         const conclusion_year = parseInt(status_raw[1].split('/')[1]);
 
-        return {
+        /* return {
           id: uuidv4(),
           course_id: extractionData.course_id,
           faculty_id: extractionData.faculty_id,
           student_id,
           full_name,
           conclusion_year,
-        } as Prisma.CourseExtractionCreateManyInput;
+        } as Prisma.CourseExtractionCreateManyInput; */
+        // NOTE: Here, we will probably upload this to an intermedia table, before creating the Alumni entity
       } catch (_) {
         throw new BadRequestException(
           `Error processing row ${index + 1}: Graduation status format is invalid. Expected: STATUS(YEAR/YEAR)`,
@@ -111,20 +102,10 @@ export class FileUploadService {
       }
     });
 
-    await this.prisma.courseExtraction.createMany({
+    /* await this.prisma.courseExtraction.createMany({
       data: enrollmentData,
-    });
+    }); */
 
     return { headers, data: enrollmentData };
-  }
-
-  async parse_linkedin_upload(
-    headers: string[],
-    data: string[][],
-    extractionData: UploadExtractionDto,
-  ) {
-    // TODO: implement LinkedIn parsing similar to enrollment
-    await Promise.resolve(); //  To satisfy linter
-    return { headers, data: [] };
   }
 }

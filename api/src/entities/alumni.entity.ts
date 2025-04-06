@@ -4,12 +4,15 @@ import {
   IsUrl,
   IsArray,
   ValidateNested,
+  IsBoolean,
+  IsEnum,
 } from '@nestjs/class-validator';
 import { Role } from './role.entity';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import { Graduation } from './graduation.entity';
 import { LocationGeo } from './location.entity';
+import { Source } from '@prisma/client';
 
 export class Alumni {
   @ApiProperty({ description: 'The id of the alumni' })
@@ -24,15 +27,37 @@ export class Alumni {
   @IsString()
   last_name: string;
 
+  @ApiPropertyOptional({ description: 'The full name of the alumni' })
+  @IsOptional()
+  @IsString()
+  full_name?: string | null;
+
   @ApiPropertyOptional({ description: 'The linkedin url of the alumni' })
   @IsOptional()
   @IsUrl()
-  linkedin_url?: string;
+  linkedin_url?: string | null;
 
   @ApiPropertyOptional({ description: 'The profile picture of the alumni' })
   @IsOptional()
   @IsUrl()
   profile_picture_url?: string | null;
+
+  @ApiPropertyOptional({ description: 'The source of the alumni' })
+  @IsOptional()
+  @IsEnum(Source)
+  source?: Source;
+
+  @ApiPropertyOptional({ description: 'Whether the alumni is in a group' })
+  @IsOptional()
+  @IsBoolean()
+  is_in_group?: boolean;
+
+  @ApiPropertyOptional({
+    description: 'Whether the alumni has a sigarra match',
+  })
+  @IsOptional()
+  @IsBoolean()
+  has_sigarra_match?: boolean;
 
   @ApiPropertyOptional({
     description: 'The roles of the alumni',
