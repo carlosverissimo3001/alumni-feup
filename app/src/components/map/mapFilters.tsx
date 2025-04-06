@@ -16,6 +16,7 @@ import { Label } from "../ui/label";
 export interface GeoJSONProperties {
   name: string[];
   students: number;
+  compareYearStudents: number | undefined;
   listLinkedinLinksByUser: { [key: string]: string };
   coursesYearConclusionByUser: { [key: string]: { [key: string]: string } };
   profilePics: { [key: string]: string };
@@ -33,6 +34,10 @@ type props = {
   setShowTimeLine: (show: boolean) => void;
   selectedYear?: number
   setSelectedYear: (year?: number) => void;
+  showCompareYear: boolean;
+  setShowCompareYear: (show: boolean) => void;
+  compareYear?: number;
+  setCompareYear: (year?: number) => void;
 };
 
 export type AlumniInfo = {
@@ -43,7 +48,6 @@ export type AlumniInfo = {
 
 }
 
-
 const MapFilters = ({
   handleLoading,
   onSelectGeoJSON,
@@ -52,6 +56,10 @@ const MapFilters = ({
   setShowTimeLine,
   selectedYear,
   setSelectedYear,
+  showCompareYear,
+  setShowCompareYear,
+  compareYear,
+  setCompareYear
 }: props) => {
   // Global navbar state
   const { isCollapsed } = useNavbar();
@@ -82,7 +90,8 @@ const MapFilters = ({
     courseIds,
     conclusionYears,
     groupBy,
-    selectedYear
+    selectedYear,
+    compareYear
   });
 
   // State variables
@@ -168,7 +177,6 @@ const MapFilters = ({
             };
           });
 
-          
           // Sort the alumni names alphabetically
           alumniNamesWithCoords.sort((a, b) => a.name.localeCompare(b.name));
           
@@ -217,6 +225,9 @@ const MapFilters = ({
     setConclusionYears([]);
     setCourseIds([]);
     setSelectedYear(undefined);
+    setShowCompareYear(false);
+    setShowTimeLine(false);
+    setCompareYear(undefined);
     
     // Reset alumni selection
     onSelectAlumni("", [-9.142685, 38.736946]);
@@ -249,17 +260,27 @@ const MapFilters = ({
     const hasFilters = 
       courseIds.length > 0 || 
       conclusionYears.length > 0 || 
-      searchInput.trim() !== '';
-      selectedYear !== undefined;
+      searchInput.trim() !== '' ||
+      selectedYear !== undefined ||
+      compareYear !== undefined;
 
     setCleanButtonEnabled(hasFilters);
-  }, [courseIds, conclusionYears, groupBy, searchInput, selectedYear]);
+  }, [courseIds, conclusionYears, groupBy, searchInput, selectedYear, compareYear]);
 
   const handleTimeLineCheckboxChange = () => {
     if(showTimeLine){
       setShowTimeLine(false);
     }else{
       setShowTimeLine(true);
+    }
+  };
+
+  const handleCompareYearCheckboxChange = () => {
+    if(showCompareYear){
+      setShowCompareYear(false);
+      setCompareYear(undefined);
+    }else{
+      setShowCompareYear(true);
     }
   };
 
@@ -392,6 +413,18 @@ const MapFilters = ({
               Time Line
             </Label>
           </div>
+
+          { selectedYear !== undefined && showTimeLine ?
+          (
+          <div className="mb-4 ml-4">
+            <Checkbox
+            checked={showCompareYear}
+            onCheckedChange={handleCompareYearCheckboxChange}
+            />
+            <Label className="text-lg text-sm text-gray-800 ml-2">
+              Compare Year
+            </Label>
+          </div> ) : null }
 
           {/* Action Buttons */}
           <div className="flex gap-2">
