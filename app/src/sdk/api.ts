@@ -547,7 +547,7 @@ export const AlumniApiAxiosParamCreator = function (configuration?: Configuratio
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        alumniControllerFindAllGeoJSON: async (groupBy: AlumniControllerFindAllGeoJSONGroupByEnum, courseIds?: Array<string>, conclusionYears?: Array<string>, selectedYear?: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        alumniControllerFindAllGeoJSON: async (groupBy: AlumniControllerFindAllGeoJSONGroupByEnum, courseIds?: Array<string>, conclusionYears?: Array<string>, selectedYear?: number, compareYear?: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'groupBy' is not null or undefined
             assertParamExists('alumniControllerFindAllGeoJSON', 'groupBy', groupBy)
             const localVarPath = `/api/alumni/geoJSON`;
@@ -576,6 +576,10 @@ export const AlumniApiAxiosParamCreator = function (configuration?: Configuratio
 
             if (selectedYear) {
                 localVarQueryParameter['selectedYear'] = selectedYear;
+            }
+
+            if (compareYear) {
+                localVarQueryParameter['compareYear'] = compareYear;
             }
     
             setSearchParams(localVarUrlObj, localVarQueryParameter);
@@ -665,8 +669,8 @@ export const AlumniApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async alumniControllerFindAllGeoJSON(groupBy: AlumniControllerFindAllGeoJSONGroupByEnum, courseIds?: Array<string>, conclusionYears?: Array<string>, selectedYear?: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GeoJSONFeatureCollection>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.alumniControllerFindAllGeoJSON(groupBy, courseIds, conclusionYears, selectedYear, options);
+        async alumniControllerFindAllGeoJSON(groupBy: AlumniControllerFindAllGeoJSONGroupByEnum, courseIds?: Array<string>, conclusionYears?: Array<string>, selectedYear?: number, compareYear?: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GeoJSONFeatureCollection>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.alumniControllerFindAllGeoJSON(groupBy, courseIds, conclusionYears, selectedYear, compareYear, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['AlumniApi.alumniControllerFindAllGeoJSON']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -722,8 +726,8 @@ export const AlumniApiFactory = function (configuration?: Configuration, basePat
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        alumniControllerFindAllGeoJSON(groupBy: AlumniControllerFindAllGeoJSONGroupByEnum, courseIds?: Array<string>, conclusionYears?: Array<string>, selectedYear?: number, options?: RawAxiosRequestConfig): AxiosPromise<GeoJSONFeatureCollection> {
-            return localVarFp.alumniControllerFindAllGeoJSON(groupBy, courseIds, conclusionYears, selectedYear, options).then((request) => request(axios, basePath));
+        alumniControllerFindAllGeoJSON(groupBy: AlumniControllerFindAllGeoJSONGroupByEnum, courseIds?: Array<string>, conclusionYears?: Array<string>, selectedYear?: number, compareYear?: number, options?: RawAxiosRequestConfig): AxiosPromise<GeoJSONFeatureCollection> {
+            return localVarFp.alumniControllerFindAllGeoJSON(groupBy, courseIds, conclusionYears, selectedYear, compareYear, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -773,7 +777,7 @@ export interface AlumniApiInterface {
      * @throws {RequiredError}
      * @memberof AlumniApiInterface
      */
-    alumniControllerFindAllGeoJSON(groupBy: AlumniControllerFindAllGeoJSONGroupByEnum, courseIds?: Array<string>, conclusionYears?: Array<string>, selectedYear?: number, options?: RawAxiosRequestConfig): AxiosPromise<GeoJSONFeatureCollection>;
+    alumniControllerFindAllGeoJSON(groupBy: AlumniControllerFindAllGeoJSONGroupByEnum, courseIds?: Array<string>, conclusionYears?: Array<string>, selectedYear?: number, compareYear?: number, options?: RawAxiosRequestConfig): AxiosPromise<GeoJSONFeatureCollection>;
 
     /**
      * 
@@ -827,8 +831,8 @@ export class AlumniApi extends BaseAPI implements AlumniApiInterface {
      * @throws {RequiredError}
      * @memberof AlumniApi
      */
-    public alumniControllerFindAllGeoJSON(groupBy: AlumniControllerFindAllGeoJSONGroupByEnum, courseIds?: Array<string>, conclusionYears?: Array<string>, selectedYear?: number, options?: RawAxiosRequestConfig) {
-        return AlumniApiFp(this.configuration).alumniControllerFindAllGeoJSON(groupBy, courseIds, conclusionYears, selectedYear, options).then((request) => request(this.axios, this.basePath));
+    public alumniControllerFindAllGeoJSON(groupBy: AlumniControllerFindAllGeoJSONGroupByEnum, courseIds?: Array<string>, conclusionYears?: Array<string>, selectedYear?: number, compareYear?: number, options?: RawAxiosRequestConfig) {
+        return AlumniApiFp(this.configuration).alumniControllerFindAllGeoJSON(groupBy, courseIds, conclusionYears, selectedYear, compareYear, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -1738,7 +1742,7 @@ export const V1ApiAxiosParamCreator = function (configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        alumniControllerFindAllGeoJSON: async (groupBy: AlumniControllerFindAllGeoJSONGroupByEnum, courseIds?: Array<string>, conclusionYears?: Array<string>, selectedYear?: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        alumniControllerFindAllGeoJSON: async (groupBy: AlumniControllerFindAllGeoJSONGroupByEnum, courseIds?: Array<string>, conclusionYears?: Array<string>, selectedYear?: number, compareYear?: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'groupBy' is not null or undefined
             assertParamExists('alumniControllerFindAllGeoJSON', 'groupBy', groupBy)
             const localVarPath = `/api/alumni/geoJSON`;
@@ -1767,6 +1771,10 @@ export const V1ApiAxiosParamCreator = function (configuration?: Configuration) {
 
             if (selectedYear) {
                 localVarQueryParameter['selectedYear'] = selectedYear;
+            }
+
+            if (compareYear) {
+                localVarQueryParameter['compareYear'] = compareYear;
             }
     
             setSearchParams(localVarUrlObj, localVarQueryParameter);
@@ -2101,8 +2109,8 @@ export const V1ApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async alumniControllerFindAllGeoJSON(groupBy: AlumniControllerFindAllGeoJSONGroupByEnum, courseIds?: Array<string>, conclusionYears?: Array<string>, selectedYear?: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GeoJSONFeatureCollection>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.alumniControllerFindAllGeoJSON(groupBy, courseIds, conclusionYears, selectedYear, options);
+        async alumniControllerFindAllGeoJSON(groupBy: AlumniControllerFindAllGeoJSONGroupByEnum, courseIds?: Array<string>, conclusionYears?: Array<string>, selectedYear?: number, compareYear?: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GeoJSONFeatureCollection>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.alumniControllerFindAllGeoJSON(groupBy, courseIds, conclusionYears, selectedYear, compareYear, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['V1Api.alumniControllerFindAllGeoJSON']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -2249,8 +2257,8 @@ export const V1ApiFactory = function (configuration?: Configuration, basePath?: 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        alumniControllerFindAllGeoJSON(groupBy: AlumniControllerFindAllGeoJSONGroupByEnum, courseIds?: Array<string>, conclusionYears?: Array<string>, selectedYear?: number, options?: RawAxiosRequestConfig): AxiosPromise<GeoJSONFeatureCollection> {
-            return localVarFp.alumniControllerFindAllGeoJSON(groupBy, courseIds, conclusionYears, selectedYear, options).then((request) => request(axios, basePath));
+        alumniControllerFindAllGeoJSON(groupBy: AlumniControllerFindAllGeoJSONGroupByEnum, courseIds?: Array<string>, conclusionYears?: Array<string>, selectedYear?: number, compareYear?: number, options?: RawAxiosRequestConfig): AxiosPromise<GeoJSONFeatureCollection> {
+            return localVarFp.alumniControllerFindAllGeoJSON(groupBy, courseIds, conclusionYears, selectedYear, compareYear, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -2370,7 +2378,7 @@ export interface V1ApiInterface {
      * @throws {RequiredError}
      * @memberof V1ApiInterface
      */
-    alumniControllerFindAllGeoJSON(groupBy: AlumniControllerFindAllGeoJSONGroupByEnum, courseIds?: Array<string>, conclusionYears?: Array<string>, selectedYear?: number, options?: RawAxiosRequestConfig): AxiosPromise<GeoJSONFeatureCollection>;
+    alumniControllerFindAllGeoJSON(groupBy: AlumniControllerFindAllGeoJSONGroupByEnum, courseIds?: Array<string>, conclusionYears?: Array<string>, selectedYear?: number, compareYear?: number, options?: RawAxiosRequestConfig): AxiosPromise<GeoJSONFeatureCollection>;
 
     /**
      * 
@@ -2494,8 +2502,8 @@ export class V1Api extends BaseAPI implements V1ApiInterface {
      * @throws {RequiredError}
      * @memberof V1Api
      */
-    public alumniControllerFindAllGeoJSON(groupBy: AlumniControllerFindAllGeoJSONGroupByEnum, courseIds?: Array<string>, conclusionYears?: Array<string>, selectedYear?: number, options?: RawAxiosRequestConfig) {
-        return V1ApiFp(this.configuration).alumniControllerFindAllGeoJSON(groupBy, courseIds, conclusionYears, selectedYear, options).then((request) => request(this.axios, this.basePath));
+    public alumniControllerFindAllGeoJSON(groupBy: AlumniControllerFindAllGeoJSONGroupByEnum, courseIds?: Array<string>, conclusionYears?: Array<string>, selectedYear?: number, compareYear?: number, options?: RawAxiosRequestConfig) {
+        return V1ApiFp(this.configuration).alumniControllerFindAllGeoJSON(groupBy, courseIds, conclusionYears, selectedYear, compareYear, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
