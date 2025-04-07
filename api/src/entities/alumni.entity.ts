@@ -21,26 +21,26 @@ export class Alumni {
 
   @ApiProperty({ description: 'The first name of the alumni' })
   @IsString()
-  first_name: string;
+  firstName: string;
 
   @ApiProperty({ description: 'The last name of the alumni' })
   @IsString()
-  last_name: string;
+  lastName: string;
 
   @ApiPropertyOptional({ description: 'The full name of the alumni' })
   @IsOptional()
   @IsString()
-  full_name?: string | null;
+  fullName?: string | null;
 
   @ApiPropertyOptional({ description: 'The linkedin url of the alumni' })
   @IsOptional()
   @IsUrl()
-  linkedin_url?: string | null;
+  linkedinUrl?: string | null;
 
   @ApiPropertyOptional({ description: 'The profile picture of the alumni' })
   @IsOptional()
   @IsUrl()
-  profile_picture_url?: string | null;
+  profilePictureUrl?: string | null;
 
   @ApiPropertyOptional({ description: 'The source of the alumni' })
   @IsOptional()
@@ -50,14 +50,14 @@ export class Alumni {
   @ApiPropertyOptional({ description: 'Whether the alumni is in a group' })
   @IsOptional()
   @IsBoolean()
-  is_in_group?: boolean;
+  isInGroup?: boolean;
 
   @ApiPropertyOptional({
     description: 'Whether the alumni has a sigarra match',
   })
   @IsOptional()
   @IsBoolean()
-  has_sigarra_match?: boolean;
+  hasSigarraMatch?: boolean;
 
   @ApiPropertyOptional({
     description: 'The roles of the alumni',
@@ -88,9 +88,9 @@ export class Alumni {
 
   constructor(data: Alumni) {
     this.id = data.id;
-    this.first_name = data.first_name;
-    this.last_name = data.last_name;
-    this.linkedin_url = data.linkedin_url;
+    this.firstName = data.firstName;
+    this.lastName = data.lastName;
+    this.linkedinUrl = data.linkedinUrl;
     this.Roles = data.Roles;
     this.Location = data.Location;
     this.Graduations = data.Graduations;
