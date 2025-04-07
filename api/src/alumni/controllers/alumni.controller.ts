@@ -63,11 +63,13 @@ export class AlumniController {
   @Post()
   @HttpCode(HttpStatus.CREATED)
   @ApiOperation({ summary: 'Create a new alumni' })
-  @ApiResponse({
+  /* @ApiResponse({
     description: 'Returns the created alumni',
-    type: Alumni,
-  })
-  async create(@Body() createAlumniDto: CreateAlumniDto): Promise<Alumni> {
+    type: Alumni | null,
+  }) */
+  async create(
+    @Body() createAlumniDto: CreateAlumniDto,
+  ): Promise<Alumni | null> {
     return this.alumniService.create(createAlumniDto);
   }
 }
