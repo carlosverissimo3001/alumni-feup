@@ -7,7 +7,7 @@ export const useManualSubmission = () => {
   return useMutation({
     mutationFn: async (data: ManualSubmissionDto) => {
       try {
-        const response = await NestAPI.userControllerSubmission(data);
+        const response = await NestAPI.alumniControllerCreate(data);
         return response.data;
       } catch (error) {
         if (error instanceof Error) {
