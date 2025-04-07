@@ -1,23 +1,36 @@
 import { useMutation } from "@tanstack/react-query";
-import { ManualSubmissionDto } from "@/sdk/api";
+import { CreateAlumniDto } from "@/sdk/api";
 import NestAPI from "@/api";
+import { AxiosError } from "axios";
 
 
-export const useManualSubmission = () => {
-  return useMutation({
-    mutationFn: async (data: ManualSubmissionDto) => {
-      try {
-        const response = await NestAPI.userControllerSubmission(data);
-        return response.data;
-      } catch (error) {
-        if (error instanceof Error) {
-          throw error;
-        }
-        throw new Error('Failed to submit application');
-      }
-    },
-    onError: (error: Error) => {
-      console.error('Manual submission error:', error.message);
+type Input = {
+  data: CreateAlumniDto;
+  onSuccess?: () => void | Promise<void>;
+};
+
+export const useManualSubmission = ({ data, onSuccess }: Input) => {
+  const mutation = useMutation(
+    {
+      mutationFn: () => NestAPI.alumniControllerCreate(data),
+      onSuccess
     }
-  });
+  );
+
+  // Extract error message from Axios error response
+  const getErrorMessage = () => {
+    if (!mutation.error) return undefined;
+    
+    const axiosError = mutation.error as AxiosError<{message?: string}>;
+    if (axiosError.response?.data?.message) {
+      return axiosError.response.data.message;
+    }
+    
+    return (mutation.error as Error)?.message || 'Unknown error';
+  };
+
+  return {
+      ...mutation,
+      error: getErrorMessage(),
+  }
 };

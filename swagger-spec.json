@@ -40,15 +40,8 @@
           }
         },
         "responses": {
-          "default": {
-            "description": "Returns the created alumni",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Alumni"
-                }
-              }
-            }
+          "201": {
+            "description": ""
           }
         },
         "summary": "Create a new alumni",
@@ -229,32 +222,6 @@
         ]
       }
     },
-    "/api/user/submission": {
-      "post": {
-        "operationId": "UserController_submission",
-        "parameters": [],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ManualSubmissionDto"
-              }
-            }
-          }
-        },
-        "responses": {
-          "201": {
-            "description": ""
-          }
-        },
-        "summary": "Manual submission of a user",
-        "tags": [
-          "V1",
-          "User"
-        ]
-      }
-    },
     "/api/files": {
       "post": {
         "operationId": "FileUploadController_create",
@@ -294,7 +261,7 @@
         "operationId": "CourseController_find",
         "parameters": [
           {
-            "name": "faculty_id",
+            "name": "facultyId",
             "required": false,
             "in": "query",
             "description": "The id of the faculty",
@@ -423,120 +390,6 @@
       }
     },
     "schemas": {
-      "Company": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string",
-            "description": "The id of the company"
-          },
-          "name": {
-            "type": "string",
-            "description": "The name of the company"
-          },
-          "linkedin_url": {
-            "type": "object",
-            "description": "The linkedin url of the company"
-          },
-          "roles": {
-            "description": "The roles of the company",
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/Role"
-            }
-          }
-        },
-        "required": [
-          "id",
-          "name"
-        ]
-      },
-      "Role": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string",
-            "description": "The id of the role"
-          },
-          "start_date": {
-            "format": "date-time",
-            "type": "string",
-            "description": "The start date of the role"
-          },
-          "end_date": {
-            "type": "object",
-            "description": "The end date of the role"
-          },
-          "seniority_level": {
-            "type": "string",
-            "description": "The seniority level of the role"
-          },
-          "Company": {
-            "description": "The Company",
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/Company"
-              }
-            ]
-          },
-          "JobClassification": {
-            "description": "The job classifications",
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "Location": {
-            "type": "object",
-            "description": "The location of the role"
-          }
-        },
-        "required": [
-          "id",
-          "start_date",
-          "seniority_level",
-          "Company",
-          "JobClassification"
-        ]
-      },
-      "Course": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string",
-            "description": "The name of the course"
-          },
-          "acronym": {
-            "type": "string",
-            "description": "The acronym of the course"
-          }
-        },
-        "required": [
-          "name",
-          "acronym"
-        ]
-      },
-      "Graduation": {
-        "type": "object",
-        "properties": {
-          "conclusion_year": {
-            "type": "object",
-            "description": "The conclusion year of the graduation"
-          },
-          "Course": {
-            "description": "The course of the graduation",
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/Course"
-              }
-            ]
-          }
-        },
-        "required": [
-          "conclusion_year",
-          "Course"
-        ]
-      },
       "Alumni": {
         "type": "object",
         "properties": {
@@ -544,23 +397,23 @@
             "type": "string",
             "description": "The id of the alumni"
           },
-          "first_name": {
+          "firstName": {
             "type": "string",
             "description": "The first name of the alumni"
           },
-          "last_name": {
+          "lastName": {
             "type": "string",
             "description": "The last name of the alumni"
           },
-          "full_name": {
+          "fullName": {
             "type": "object",
             "description": "The full name of the alumni"
           },
-          "linkedin_url": {
+          "linkedinUrl": {
             "type": "object",
             "description": "The linkedin url of the alumni"
           },
-          "profile_picture_url": {
+          "profilePictureUrl": {
             "type": "object",
             "description": "The profile picture of the alumni"
           },
@@ -568,11 +421,11 @@
             "type": "object",
             "description": "The source of the alumni"
           },
-          "is_in_group": {
+          "isInGroup": {
             "type": "boolean",
             "description": "Whether the alumni is in a group"
           },
-          "has_sigarra_match": {
+          "hasSigarraMatch": {
             "type": "boolean",
             "description": "Whether the alumni has a sigarra match"
           },
@@ -580,7 +433,7 @@
             "description": "The roles of the alumni",
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/Role"
+              "type": "string"
             }
           },
           "Location": {
@@ -591,14 +444,16 @@
             "description": "The graduation status(es) of the alumni",
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/Graduation"
+              "type": "string"
             }
           }
         },
         "required": [
           "id",
-          "first_name",
-          "last_name"
+          "firstName",
+          "lastName",
+          "isInGroup",
+          "hasSigarraMatch"
         ]
       },
       "GeoJSONFeature": {
@@ -640,82 +495,6 @@
           "features"
         ]
       },
-      "CreateAlumniDto": {
-        "type": "object",
-        "properties": {
-          "first_name": {
-            "type": "string",
-            "description": "The first name of the alumni",
-            "example": "John"
-          },
-          "last_name": {
-            "type": "string",
-            "description": "The last name of the alumni",
-            "example": "Doe"
-          },
-          "linkedin_url": {
-            "type": "string",
-            "description": "The LinkedIn URL of the alumni",
-            "example": "https://www.linkedin.com/in/john-doe/"
-          },
-          "institutional_email": {
-            "type": "string",
-            "description": "The institutional email of the alumni",
-            "example": "john.doe@stanford.edu"
-          },
-          "personal_email": {
-            "type": "string",
-            "description": "The personal email of the alumni",
-            "example": "john.doe@gmail.com"
-          },
-          "person_id": {
-            "type": "string",
-            "description": "Application specific person ID",
-            "example": "v_n1dAL1gO"
-          },
-          "created_by": {
-            "type": "string",
-            "description": "The creator of the alumni",
-            "example": "alumni-api"
-          }
-        },
-        "required": [
-          "first_name",
-          "last_name",
-          "linkedin_url",
-          "created_by"
-        ]
-      },
-      "LinkedinAuthDto": {
-        "type": "object",
-        "properties": {
-          "person_id": {
-            "type": "string",
-            "description": "A unique identifying value for the member. Referenced as personId in other API documentation pages."
-          },
-          "first_name": {
-            "type": "string",
-            "description": "The first name of the member."
-          },
-          "last_name": {
-            "type": "string",
-            "description": "The first name of the member."
-          },
-          "institutional_email": {
-            "type": "string",
-            "description": "The personal email of the member."
-          },
-          "profile_picture_url": {
-            "type": "string",
-            "description": "The URL of the member's profile picture."
-          }
-        },
-        "required": [
-          "person_id",
-          "first_name",
-          "last_name"
-        ]
-      },
       "CourseCompletion": {
         "type": "object",
         "properties": {
@@ -733,7 +512,7 @@
           "conclusionYear"
         ]
       },
-      "ManualSubmissionDto": {
+      "CreateAlumniDto": {
         "type": "object",
         "properties": {
           "fullName": {
@@ -767,6 +546,36 @@
           "facultyId"
         ]
       },
+      "LinkedinAuthDto": {
+        "type": "object",
+        "properties": {
+          "person_id": {
+            "type": "string",
+            "description": "A unique identifying value for the member. Referenced as personId in other API documentation pages."
+          },
+          "first_name": {
+            "type": "string",
+            "description": "The first name of the member."
+          },
+          "last_name": {
+            "type": "string",
+            "description": "The first name of the member."
+          },
+          "institutional_email": {
+            "type": "string",
+            "description": "The personal email of the member."
+          },
+          "profile_picture_url": {
+            "type": "string",
+            "description": "The URL of the member's profile picture."
+          }
+        },
+        "required": [
+          "person_id",
+          "first_name",
+          "last_name"
+        ]
+      },
       "UploadExtractionDto": {
         "type": "object",
         "properties": {
@@ -797,11 +606,11 @@
             "type": "string",
             "description": "The id of the course"
           },
-          "start_year": {
+          "startYear": {
             "type": "number",
             "description": "The start year of the course"
           },
-          "end_year": {
+          "endYear": {
             "type": "object",
             "description": "The end year of the course, if it is not active"
           },
@@ -809,15 +618,15 @@
             "type": "object",
             "description": "The status of the course"
           },
-          "faculty_id": {
+          "facultyId": {
             "type": "string",
             "description": "The faculty id of the course"
           },
-          "name_int": {
+          "nameInt": {
             "type": "object",
             "description": "The name of the course in the international language"
           },
-          "course_type": {
+          "courseType": {
             "type": "object",
             "description": "The type of the course"
           }
@@ -826,10 +635,10 @@
           "name",
           "acronym",
           "id",
-          "start_year",
+          "startYear",
           "status",
-          "faculty_id",
-          "course_type"
+          "facultyId",
+          "courseType"
         ]
       },
       "Faculty": {
@@ -843,20 +652,22 @@
             "description": "The local name of the faculty",
             "example": "Faculdade de Engenharia da Universidade do Porto"
           },
-          "name_int": {
+          "nameInt": {
             "type": "object",
             "description": "The international name of the faculty",
             "example": "Faculty of Engineering of the University of Porto"
           },
           "acronym": {
-            "type": "object",
+            "type": "string",
             "description": "The acronym of the faculty",
             "example": "FEUP"
           }
         },
         "required": [
           "id",
-          "name"
+          "name",
+          "nameInt",
+          "acronym"
         ]
       }
     }

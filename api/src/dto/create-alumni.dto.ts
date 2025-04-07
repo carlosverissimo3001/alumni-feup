@@ -1,49 +1,53 @@
-import { IsOptional } from '@nestjs/class-validator';
+import {
+  IsInt,
+  IsNotEmpty,
+  IsArray,
+  IsString,
+  IsEmail,
+  IsOptional,
+  IsUrl,
+  ValidateNested,
+} from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { Type } from 'class-transformer';
+
+class CourseCompletion {
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty({ description: 'The ID of the course' })
+  courseId: string;
+
+  @IsInt()
+  @IsNotEmpty()
+  @ApiProperty({ description: 'The year of conclusion of the course' })
+  conclusionYear: number;
+}
 
 export class CreateAlumniDto {
-  @ApiProperty({
-    description: 'The first name of the alumni',
-    example: 'John',
-  })
-  first_name: string;
+  @ApiProperty({ description: 'The full name of the user' })
+  @IsString()
+  fullName: string;
 
-  @ApiProperty({
-    description: 'The last name of the alumni',
-    example: 'Doe',
-  })
-  last_name: string;
-
-  @ApiProperty({
-    description: 'The LinkedIn URL of the alumni',
-    example: 'https://www.linkedin.com/in/john-doe/',
-  })
-  linkedin_url: string;
-
-  @ApiPropertyOptional({
-    description: 'The institutional email of the alumni',
-    example: 'john.doe@stanford.edu',
-  })
+  @ApiPropertyOptional({ description: 'The personal email of the user' })
   @IsOptional()
-  institutional_email: string;
+  @IsEmail()
+  personalEmail?: string;
 
-  @ApiPropertyOptional({
-    description: 'The personal email of the alumni',
-    example: 'john.doe@gmail.com',
-  })
-  @IsOptional()
-  personal_email: string;
+  @ApiProperty({ description: 'The LinkedIn URL of the user' })
+  @IsUrl()
+  linkedinUrl: string;
 
-  @ApiPropertyOptional({
-    description: 'Application specific person ID',
-    example: 'v_n1dAL1gO',
-  })
-  @IsOptional()
-  person_id?: string;
-
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => CourseCompletion)
   @ApiProperty({
-    description: 'The creator of the alumni',
-    example: 'alumni-api',
+    description: 'The courses the user has completed',
+    type: () => CourseCompletion,
+    isArray: true,
   })
-  created_by: string;
+  courses: CourseCompletion[];
+
+  @ApiProperty({ description: 'The faculty ID of the user' })
+  @IsString()
+  facultyId: string;
 }

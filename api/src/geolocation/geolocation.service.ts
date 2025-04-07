@@ -38,7 +38,7 @@ export class GeolocationService {
       const locationsWithoutCoordinates = await this.prisma.location.findMany({
         where: {
           OR: [{ latitude: null }, { longitude: null }],
-          AND: [{ is_country_only: false }],
+          AND: [{ isCountryOnly: false }],
         },
       });
 
@@ -139,7 +139,7 @@ export class GeolocationService {
       where: {
         country: country,
         // This is a flag to indicate that the location is a country only (coords point to the center of the country)
-        is_country_only: true,
+        isCountryOnly: true,
       },
     });
 
