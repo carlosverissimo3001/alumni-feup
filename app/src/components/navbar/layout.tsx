@@ -2,7 +2,7 @@
 
 import { cn } from '@/lib/utils';
 import Navbar from "./navbar";
-import { ProfileButton } from "../profile/profileButton";
+import ProfileButton from "../profile/profileButton";
 import { useNavbar } from '@/contexts/NavbarContext';
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
