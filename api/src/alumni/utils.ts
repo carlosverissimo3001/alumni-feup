@@ -6,7 +6,8 @@ import { PORTUGUESE_NAME_CONNECTORS, Name } from '@/consts';
  * @returns The sanitized LinkedIn URL
  */
 export const sanitizeLinkedinUrl = (url: string) => {
-  return url.replace('www.', '');
+  const sanitizedUrl = url.replace('www.', '');
+  return sanitizedUrl.endsWith('/') ? sanitizedUrl : `${sanitizedUrl}/`;
 };
 
 /**
