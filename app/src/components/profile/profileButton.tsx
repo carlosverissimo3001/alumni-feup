@@ -11,11 +11,13 @@ import {
 import { LogOut, User } from "lucide-react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
+import { usePathname } from 'next/navigation';
 
-export function ProfileButton() {
+export default function ProfileButton() {
+  const pathname = usePathname();
   // TODO: Replace with actual auth state/hook
   // const { isLoggedIn, logout } = useAuth();
-  const isLoggedIn = true;
+  const isLoggedIn = false;
 
   const onLogout = () => {
     // TODO: Implement logout
@@ -30,7 +32,9 @@ export function ProfileButton() {
           "text-zinc-400 hover:text-white"
         )}
       >
-        <Link href="/join-us">Join us</Link>
+        {pathname !== '/join-us' && (
+          <Link href="/join-us">Join us</Link>
+        )}
       </Button>
     );
   }
