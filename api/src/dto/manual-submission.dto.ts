@@ -24,20 +24,17 @@ class CourseCompletion {
 }
 
 export class ManualSubmissionDto {
-  @IsString()
-  @IsNotEmpty()
   @ApiProperty({ description: 'The full name of the user' })
+  @IsString()
   fullName: string;
 
   @ApiPropertyOptional({ description: 'The personal email of the user' })
   @IsOptional()
-  @IsNotEmpty()
   @IsEmail()
   personalEmail?: string;
 
-  @IsUrl()
-  @IsNotEmpty()
   @ApiProperty({ description: 'The LinkedIn URL of the user' })
+  @IsUrl()
   linkedinUrl: string;
 
   @IsArray()
@@ -50,8 +47,7 @@ export class ManualSubmissionDto {
   })
   courses: CourseCompletion[];
 
-  @IsString()
-  @IsNotEmpty()
   @ApiProperty({ description: 'The faculty ID of the user' })
+  @IsString()
   facultyId: string;
 }
