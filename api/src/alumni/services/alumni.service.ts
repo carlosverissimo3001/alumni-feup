@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException, Logger } from '@nestjs/common';
+import { Injectable, NotFoundException, Logger, HttpException, HttpStatus } from '@nestjs/common';
 import {
   Alumni,
   GeoJSONFeatureCollection,
@@ -236,7 +236,10 @@ export class AlumniService {
     const alumni = await this.alumniRepository.find({ linkedinUrl });
 
     if (alumni) {
-      throw new Error('Oops! This LinkedIn account is already in our system.');
+      throw new HttpException(
+        'Oops! This LinkedIn account is already in our system.',
+        HttpStatus.CONFLICT,
+      );
     }
 
     return null;
