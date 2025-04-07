@@ -6,7 +6,7 @@ export class BrightdataService {
   constructor(private prisma: PrismaService) {}
 
   async scrape(alumni: Alumni) {
-    const { linkedin_url } = alumni;
+    const { linkedinUrl } = alumni;
     // Will call the BrighData trigger collection API
   }
 }
