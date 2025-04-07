@@ -390,121 +390,6 @@
       }
     },
     "schemas": {
-      "Company": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string",
-            "description": "The id of the company"
-          },
-          "name": {
-            "type": "string",
-            "description": "The name of the company"
-          },
-          "linkedinUrl": {
-            "type": "object",
-            "description": "The linkedin url of the company"
-          },
-          "roles": {
-            "description": "The roles of the company",
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          }
-        },
-        "required": [
-          "id",
-          "name",
-          "roles"
-        ]
-      },
-      "Role": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string",
-            "description": "The id of the role"
-          },
-          "startDate": {
-            "format": "date-time",
-            "type": "string",
-            "description": "The start date of the role"
-          },
-          "endDate": {
-            "type": "object",
-            "description": "The end date of the role"
-          },
-          "seniorityLevel": {
-            "type": "string",
-            "description": "The seniority level of the role"
-          },
-          "Company": {
-            "description": "The Company",
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/Company"
-              }
-            ]
-          },
-          "JobClassification": {
-            "description": "The job classifications",
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "Location": {
-            "type": "object",
-            "description": "The location of the role"
-          }
-        },
-        "required": [
-          "id",
-          "startDate",
-          "seniorityLevel",
-          "Company",
-          "JobClassification"
-        ]
-      },
-      "Course": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string",
-            "description": "The name of the course"
-          },
-          "acronym": {
-            "type": "string",
-            "description": "The acronym of the course"
-          }
-        },
-        "required": [
-          "name",
-          "acronym"
-        ]
-      },
-      "Graduation": {
-        "type": "object",
-        "properties": {
-          "conclusionYear": {
-            "type": "object",
-            "description": "The conclusion year of the graduation"
-          },
-          "Course": {
-            "description": "The course of the graduation",
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/Course"
-              }
-            ]
-          }
-        },
-        "required": [
-          "conclusionYear",
-          "Course"
-        ]
-      },
       "Alumni": {
         "type": "object",
         "properties": {
@@ -548,7 +433,7 @@
             "description": "The roles of the alumni",
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/Role"
+              "type": "string"
             }
           },
           "Location": {
@@ -559,14 +444,16 @@
             "description": "The graduation status(es) of the alumni",
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/Graduation"
+              "type": "string"
             }
           }
         },
         "required": [
           "id",
           "firstName",
-          "lastName"
+          "lastName",
+          "isInGroup",
+          "hasSigarraMatch"
         ]
       },
       "GeoJSONFeature": {
