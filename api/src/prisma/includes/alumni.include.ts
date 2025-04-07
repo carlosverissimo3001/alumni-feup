@@ -42,10 +42,10 @@ export const roleSelect = {
 
 export const alumniBasic = {
   id: true,
-  first_name: true,
-  last_name: true,
-  linkedin_url: true,
-  profile_picture_url: true,
+  firstName: true,
+  lastName: true,
+  linkedinUrl: true,
+  profilePictureUrl: true,
 } satisfies Prisma.AlumniSelect;
 
 export const alumniSelect = {
