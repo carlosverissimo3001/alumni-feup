@@ -40,15 +40,8 @@
           }
         },
         "responses": {
-          "default": {
-            "description": "Returns the created alumni",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Alumni"
-                }
-              }
-            }
+          "201": {
+            "description": ""
           }
         },
         "summary": "Create a new alumni",
@@ -223,32 +216,6 @@
           }
         },
         "summary": "Authenticate a user with LinkedIn",
-        "tags": [
-          "V1",
-          "User"
-        ]
-      }
-    },
-    "/api/user/submission": {
-      "post": {
-        "operationId": "UserController_submission",
-        "parameters": [],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ManualSubmissionDto"
-              }
-            }
-          }
-        },
-        "responses": {
-          "201": {
-            "description": ""
-          }
-        },
-        "summary": "Manual submission of a user",
         "tags": [
           "V1",
           "User"
@@ -544,23 +511,23 @@
             "type": "string",
             "description": "The id of the alumni"
           },
-          "first_name": {
+          "firstName": {
             "type": "string",
             "description": "The first name of the alumni"
           },
-          "last_name": {
+          "lastName": {
             "type": "string",
             "description": "The last name of the alumni"
           },
-          "full_name": {
+          "fullName": {
             "type": "object",
             "description": "The full name of the alumni"
           },
-          "linkedin_url": {
+          "linkedinUrl": {
             "type": "object",
             "description": "The linkedin url of the alumni"
           },
-          "profile_picture_url": {
+          "profilePictureUrl": {
             "type": "object",
             "description": "The profile picture of the alumni"
           },
@@ -568,11 +535,11 @@
             "type": "object",
             "description": "The source of the alumni"
           },
-          "is_in_group": {
+          "isInGroup": {
             "type": "boolean",
             "description": "Whether the alumni is in a group"
           },
-          "has_sigarra_match": {
+          "hasSigarraMatch": {
             "type": "boolean",
             "description": "Whether the alumni has a sigarra match"
           },
@@ -597,8 +564,8 @@
         },
         "required": [
           "id",
-          "first_name",
-          "last_name"
+          "firstName",
+          "lastName"
         ]
       },
       "GeoJSONFeature": {
@@ -640,82 +607,6 @@
           "features"
         ]
       },
-      "CreateAlumniDto": {
-        "type": "object",
-        "properties": {
-          "first_name": {
-            "type": "string",
-            "description": "The first name of the alumni",
-            "example": "John"
-          },
-          "last_name": {
-            "type": "string",
-            "description": "The last name of the alumni",
-            "example": "Doe"
-          },
-          "linkedin_url": {
-            "type": "string",
-            "description": "The LinkedIn URL of the alumni",
-            "example": "https://www.linkedin.com/in/john-doe/"
-          },
-          "institutional_email": {
-            "type": "string",
-            "description": "The institutional email of the alumni",
-            "example": "john.doe@stanford.edu"
-          },
-          "personal_email": {
-            "type": "string",
-            "description": "The personal email of the alumni",
-            "example": "john.doe@gmail.com"
-          },
-          "person_id": {
-            "type": "string",
-            "description": "Application specific person ID",
-            "example": "v_n1dAL1gO"
-          },
-          "created_by": {
-            "type": "string",
-            "description": "The creator of the alumni",
-            "example": "alumni-api"
-          }
-        },
-        "required": [
-          "first_name",
-          "last_name",
-          "linkedin_url",
-          "created_by"
-        ]
-      },
-      "LinkedinAuthDto": {
-        "type": "object",
-        "properties": {
-          "person_id": {
-            "type": "string",
-            "description": "A unique identifying value for the member. Referenced as personId in other API documentation pages."
-          },
-          "first_name": {
-            "type": "string",
-            "description": "The first name of the member."
-          },
-          "last_name": {
-            "type": "string",
-            "description": "The first name of the member."
-          },
-          "institutional_email": {
-            "type": "string",
-            "description": "The personal email of the member."
-          },
-          "profile_picture_url": {
-            "type": "string",
-            "description": "The URL of the member's profile picture."
-          }
-        },
-        "required": [
-          "person_id",
-          "first_name",
-          "last_name"
-        ]
-      },
       "CourseCompletion": {
         "type": "object",
         "properties": {
@@ -733,7 +624,7 @@
           "conclusionYear"
         ]
       },
-      "ManualSubmissionDto": {
+      "CreateAlumniDto": {
         "type": "object",
         "properties": {
           "fullName": {
@@ -765,6 +656,36 @@
           "linkedinUrl",
           "courses",
           "facultyId"
+        ]
+      },
+      "LinkedinAuthDto": {
+        "type": "object",
+        "properties": {
+          "person_id": {
+            "type": "string",
+            "description": "A unique identifying value for the member. Referenced as personId in other API documentation pages."
+          },
+          "first_name": {
+            "type": "string",
+            "description": "The first name of the member."
+          },
+          "last_name": {
+            "type": "string",
+            "description": "The first name of the member."
+          },
+          "institutional_email": {
+            "type": "string",
+            "description": "The personal email of the member."
+          },
+          "profile_picture_url": {
+            "type": "string",
+            "description": "The URL of the member's profile picture."
+          }
+        },
+        "required": [
+          "person_id",
+          "first_name",
+          "last_name"
         ]
       },
       "UploadExtractionDto": {
