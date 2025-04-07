@@ -48,17 +48,41 @@ export interface Alumni {
      */
     'last_name': string;
     /**
-     * The linkedin url of the alumni
-     * @type {string}
+     * The full name of the alumni
+     * @type {object}
      * @memberof Alumni
      */
-    'linkedin_url'?: string;
+    'full_name'?: object;
+    /**
+     * The linkedin url of the alumni
+     * @type {object}
+     * @memberof Alumni
+     */
+    'linkedin_url'?: object;
     /**
      * The profile picture of the alumni
      * @type {object}
      * @memberof Alumni
      */
     'profile_picture_url'?: object;
+    /**
+     * The source of the alumni
+     * @type {object}
+     * @memberof Alumni
+     */
+    'source'?: object;
+    /**
+     * Whether the alumni is in a group
+     * @type {boolean}
+     * @memberof Alumni
+     */
+    'is_in_group'?: boolean;
+    /**
+     * Whether the alumni has a sigarra match
+     * @type {boolean}
+     * @memberof Alumni
+     */
+    'has_sigarra_match'?: boolean;
     /**
      * The roles of the alumni
      * @type {Array<Role>}
@@ -127,6 +151,25 @@ export interface Course {
      * @memberof Course
      */
     'acronym': string;
+}
+/**
+ * 
+ * @export
+ * @interface CourseCompletion
+ */
+export interface CourseCompletion {
+    /**
+     * The ID of the course
+     * @type {string}
+     * @memberof CourseCompletion
+     */
+    'courseId': string;
+    /**
+     * The year of conclusion of the course
+     * @type {number}
+     * @memberof CourseCompletion
+     */
+    'conclusionYear': number;
 }
 /**
  * 
@@ -320,12 +363,6 @@ export interface GeoJSONFeatureCollection {
  */
 export interface Graduation {
     /**
-     * The status of the graduation
-     * @type {object}
-     * @memberof Graduation
-     */
-    'status': object;
-    /**
      * The conclusion year of the graduation
      * @type {object}
      * @memberof Graduation
@@ -378,6 +415,43 @@ export interface LinkedinAuthDto {
 /**
  * 
  * @export
+ * @interface ManualSubmissionDto
+ */
+export interface ManualSubmissionDto {
+    /**
+     * The full name of the user
+     * @type {string}
+     * @memberof ManualSubmissionDto
+     */
+    'fullName': string;
+    /**
+     * The personal email of the user
+     * @type {string}
+     * @memberof ManualSubmissionDto
+     */
+    'personalEmail'?: string;
+    /**
+     * The LinkedIn URL of the user
+     * @type {string}
+     * @memberof ManualSubmissionDto
+     */
+    'linkedinUrl': string;
+    /**
+     * The courses the user has completed
+     * @type {Array<CourseCompletion>}
+     * @memberof ManualSubmissionDto
+     */
+    'courses': Array<CourseCompletion>;
+    /**
+     * The faculty ID of the user
+     * @type {string}
+     * @memberof ManualSubmissionDto
+     */
+    'facultyId': string;
+}
+/**
+ * 
+ * @export
  * @interface Role
  */
 export interface Role {
@@ -425,20 +499,6 @@ export interface Role {
     'Location'?: object;
 }
 /**
- * The type of upload
- * @export
- * @enum {string}
- */
-
-export const UPLOADTYPE = {
-    Enrollment: 'ENROLLMENT',
-    Linkedin: 'LINKEDIN'
-} as const;
-
-export type UPLOADTYPE = typeof UPLOADTYPE[keyof typeof UPLOADTYPE];
-
-
-/**
  * 
  * @export
  * @interface UploadExtractionDto
@@ -456,15 +516,7 @@ export interface UploadExtractionDto {
      * @memberof UploadExtractionDto
      */
     'course_id': string;
-    /**
-     * The type of upload
-     * @type {UPLOADTYPE}
-     * @memberof UploadExtractionDto
-     */
-    'upload_type': UPLOADTYPE;
 }
-
-
 
 /**
  * AlumniApi - axios parameter creator
@@ -544,10 +596,11 @@ export const AlumniApiAxiosParamCreator = function (configuration?: Configuratio
          * @param {AlumniControllerFindAllGeoJSONGroupByEnum} groupBy How to group the data
          * @param {Array<string>} [courseIds] The ID(s) of the course(s)
          * @param {Array<string>} [conclusionYears] The year(s) of conclusion(s)
+         * @param {number} [selectedYear] The selected year
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        alumniControllerFindAllGeoJSON: async (groupBy: AlumniControllerFindAllGeoJSONGroupByEnum, courseIds?: Array<string>, conclusionYears?: Array<string>, selectedYear?: number, compareYear?: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        alumniControllerFindAllGeoJSON: async (groupBy: AlumniControllerFindAllGeoJSONGroupByEnum, courseIds?: Array<string>, conclusionYears?: Array<string>, selectedYear?: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'groupBy' is not null or undefined
             assertParamExists('alumniControllerFindAllGeoJSON', 'groupBy', groupBy)
             const localVarPath = `/api/alumni/geoJSON`;
@@ -574,13 +627,11 @@ export const AlumniApiAxiosParamCreator = function (configuration?: Configuratio
                 localVarQueryParameter['conclusionYears'] = conclusionYears;
             }
 
-            if (selectedYear) {
+            if (selectedYear !== undefined) {
                 localVarQueryParameter['selectedYear'] = selectedYear;
             }
 
-            if (compareYear) {
-                localVarQueryParameter['compareYear'] = compareYear;
-            }
+
     
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -666,11 +717,12 @@ export const AlumniApiFp = function(configuration?: Configuration) {
          * @param {AlumniControllerFindAllGeoJSONGroupByEnum} groupBy How to group the data
          * @param {Array<string>} [courseIds] The ID(s) of the course(s)
          * @param {Array<string>} [conclusionYears] The year(s) of conclusion(s)
+         * @param {number} [selectedYear] The selected year
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async alumniControllerFindAllGeoJSON(groupBy: AlumniControllerFindAllGeoJSONGroupByEnum, courseIds?: Array<string>, conclusionYears?: Array<string>, selectedYear?: number, compareYear?: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GeoJSONFeatureCollection>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.alumniControllerFindAllGeoJSON(groupBy, courseIds, conclusionYears, selectedYear, compareYear, options);
+        async alumniControllerFindAllGeoJSON(groupBy: AlumniControllerFindAllGeoJSONGroupByEnum, courseIds?: Array<string>, conclusionYears?: Array<string>, selectedYear?: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GeoJSONFeatureCollection>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.alumniControllerFindAllGeoJSON(groupBy, courseIds, conclusionYears, selectedYear, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['AlumniApi.alumniControllerFindAllGeoJSON']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -723,11 +775,12 @@ export const AlumniApiFactory = function (configuration?: Configuration, basePat
          * @param {AlumniControllerFindAllGeoJSONGroupByEnum} groupBy How to group the data
          * @param {Array<string>} [courseIds] The ID(s) of the course(s)
          * @param {Array<string>} [conclusionYears] The year(s) of conclusion(s)
+         * @param {number} [selectedYear] The selected year
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        alumniControllerFindAllGeoJSON(groupBy: AlumniControllerFindAllGeoJSONGroupByEnum, courseIds?: Array<string>, conclusionYears?: Array<string>, selectedYear?: number, compareYear?: number, options?: RawAxiosRequestConfig): AxiosPromise<GeoJSONFeatureCollection> {
-            return localVarFp.alumniControllerFindAllGeoJSON(groupBy, courseIds, conclusionYears, selectedYear, compareYear, options).then((request) => request(axios, basePath));
+        alumniControllerFindAllGeoJSON(groupBy: AlumniControllerFindAllGeoJSONGroupByEnum, courseIds?: Array<string>, conclusionYears?: Array<string>, selectedYear?: number, options?: RawAxiosRequestConfig): AxiosPromise<GeoJSONFeatureCollection> {
+            return localVarFp.alumniControllerFindAllGeoJSON(groupBy, courseIds, conclusionYears, selectedYear, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -773,11 +826,12 @@ export interface AlumniApiInterface {
      * @param {AlumniControllerFindAllGeoJSONGroupByEnum} groupBy How to group the data
      * @param {Array<string>} [courseIds] The ID(s) of the course(s)
      * @param {Array<string>} [conclusionYears] The year(s) of conclusion(s)
+     * @param {number} [selectedYear] The selected year
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof AlumniApiInterface
      */
-    alumniControllerFindAllGeoJSON(groupBy: AlumniControllerFindAllGeoJSONGroupByEnum, courseIds?: Array<string>, conclusionYears?: Array<string>, selectedYear?: number, compareYear?: number, options?: RawAxiosRequestConfig): AxiosPromise<GeoJSONFeatureCollection>;
+    alumniControllerFindAllGeoJSON(groupBy: AlumniControllerFindAllGeoJSONGroupByEnum, courseIds?: Array<string>, conclusionYears?: Array<string>, selectedYear?: number, options?: RawAxiosRequestConfig): AxiosPromise<GeoJSONFeatureCollection>;
 
     /**
      * 
@@ -827,12 +881,13 @@ export class AlumniApi extends BaseAPI implements AlumniApiInterface {
      * @param {AlumniControllerFindAllGeoJSONGroupByEnum} groupBy How to group the data
      * @param {Array<string>} [courseIds] The ID(s) of the course(s)
      * @param {Array<string>} [conclusionYears] The year(s) of conclusion(s)
+     * @param {number} [selectedYear] The selected year
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof AlumniApi
      */
-    public alumniControllerFindAllGeoJSON(groupBy: AlumniControllerFindAllGeoJSONGroupByEnum, courseIds?: Array<string>, conclusionYears?: Array<string>, selectedYear?: number, compareYear?: number, options?: RawAxiosRequestConfig) {
-        return AlumniApiFp(this.configuration).alumniControllerFindAllGeoJSON(groupBy, courseIds, conclusionYears, selectedYear, compareYear, options).then((request) => request(this.axios, this.basePath));
+    public alumniControllerFindAllGeoJSON(groupBy: AlumniControllerFindAllGeoJSONGroupByEnum, courseIds?: Array<string>, conclusionYears?: Array<string>, selectedYear?: number, options?: RawAxiosRequestConfig) {
+        return AlumniApiFp(this.configuration).alumniControllerFindAllGeoJSON(groupBy, courseIds, conclusionYears, selectedYear, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -1418,9 +1473,9 @@ export const FilesApiAxiosParamCreator = function (configuration?: Configuration
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        filesControllerCreate: async (uploadExtractionDto: UploadExtractionDto, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        fileUploadControllerCreate: async (uploadExtractionDto: UploadExtractionDto, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'uploadExtractionDto' is not null or undefined
-            assertParamExists('filesControllerCreate', 'uploadExtractionDto', uploadExtractionDto)
+            assertParamExists('fileUploadControllerCreate', 'uploadExtractionDto', uploadExtractionDto)
             const localVarPath = `/api/files`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -1464,10 +1519,10 @@ export const FilesApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async filesControllerCreate(uploadExtractionDto: UploadExtractionDto, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<string>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.filesControllerCreate(uploadExtractionDto, options);
+        async fileUploadControllerCreate(uploadExtractionDto: UploadExtractionDto, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<string>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.fileUploadControllerCreate(uploadExtractionDto, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['FilesApi.filesControllerCreate']?.[localVarOperationServerIndex]?.url;
+            const localVarOperationServerBasePath = operationServerMap['FilesApi.fileUploadControllerCreate']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
     }
@@ -1487,8 +1542,8 @@ export const FilesApiFactory = function (configuration?: Configuration, basePath
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        filesControllerCreate(uploadExtractionDto: UploadExtractionDto, options?: RawAxiosRequestConfig): AxiosPromise<string> {
-            return localVarFp.filesControllerCreate(uploadExtractionDto, options).then((request) => request(axios, basePath));
+        fileUploadControllerCreate(uploadExtractionDto: UploadExtractionDto, options?: RawAxiosRequestConfig): AxiosPromise<string> {
+            return localVarFp.fileUploadControllerCreate(uploadExtractionDto, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -1507,7 +1562,7 @@ export interface FilesApiInterface {
      * @throws {RequiredError}
      * @memberof FilesApiInterface
      */
-    filesControllerCreate(uploadExtractionDto: UploadExtractionDto, options?: RawAxiosRequestConfig): AxiosPromise<string>;
+    fileUploadControllerCreate(uploadExtractionDto: UploadExtractionDto, options?: RawAxiosRequestConfig): AxiosPromise<string>;
 
 }
 
@@ -1526,8 +1581,8 @@ export class FilesApi extends BaseAPI implements FilesApiInterface {
      * @throws {RequiredError}
      * @memberof FilesApi
      */
-    public filesControllerCreate(uploadExtractionDto: UploadExtractionDto, options?: RawAxiosRequestConfig) {
-        return FilesApiFp(this.configuration).filesControllerCreate(uploadExtractionDto, options).then((request) => request(this.axios, this.basePath));
+    public fileUploadControllerCreate(uploadExtractionDto: UploadExtractionDto, options?: RawAxiosRequestConfig) {
+        return FilesApiFp(this.configuration).fileUploadControllerCreate(uploadExtractionDto, options).then((request) => request(this.axios, this.basePath));
     }
 }
 
@@ -1575,6 +1630,42 @@ export const UserApiAxiosParamCreator = function (configuration?: Configuration)
                 options: localVarRequestOptions,
             };
         },
+        /**
+         * 
+         * @summary Manual submission of a user
+         * @param {ManualSubmissionDto} manualSubmissionDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        userControllerSubmission: async (manualSubmissionDto: ManualSubmissionDto, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'manualSubmissionDto' is not null or undefined
+            assertParamExists('userControllerSubmission', 'manualSubmissionDto', manualSubmissionDto)
+            const localVarPath = `/api/user/submission`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(manualSubmissionDto, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
     }
 };
 
@@ -1592,10 +1683,23 @@ export const UserApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async userControllerLinkedinAuth(linkedinAuthDto: LinkedinAuthDto, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Alumni>> {
+        async userControllerLinkedinAuth(linkedinAuthDto: LinkedinAuthDto, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.userControllerLinkedinAuth(linkedinAuthDto, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['UserApi.userControllerLinkedinAuth']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @summary Manual submission of a user
+         * @param {ManualSubmissionDto} manualSubmissionDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async userControllerSubmission(manualSubmissionDto: ManualSubmissionDto, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.userControllerSubmission(manualSubmissionDto, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['UserApi.userControllerSubmission']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
     }
@@ -1615,8 +1719,18 @@ export const UserApiFactory = function (configuration?: Configuration, basePath?
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        userControllerLinkedinAuth(linkedinAuthDto: LinkedinAuthDto, options?: RawAxiosRequestConfig): AxiosPromise<Alumni> {
+        userControllerLinkedinAuth(linkedinAuthDto: LinkedinAuthDto, options?: RawAxiosRequestConfig): AxiosPromise<void> {
             return localVarFp.userControllerLinkedinAuth(linkedinAuthDto, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Manual submission of a user
+         * @param {ManualSubmissionDto} manualSubmissionDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        userControllerSubmission(manualSubmissionDto: ManualSubmissionDto, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.userControllerSubmission(manualSubmissionDto, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -1635,7 +1749,17 @@ export interface UserApiInterface {
      * @throws {RequiredError}
      * @memberof UserApiInterface
      */
-    userControllerLinkedinAuth(linkedinAuthDto: LinkedinAuthDto, options?: RawAxiosRequestConfig): AxiosPromise<Alumni>;
+    userControllerLinkedinAuth(linkedinAuthDto: LinkedinAuthDto, options?: RawAxiosRequestConfig): AxiosPromise<void>;
+
+    /**
+     * 
+     * @summary Manual submission of a user
+     * @param {ManualSubmissionDto} manualSubmissionDto 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof UserApiInterface
+     */
+    userControllerSubmission(manualSubmissionDto: ManualSubmissionDto, options?: RawAxiosRequestConfig): AxiosPromise<void>;
 
 }
 
@@ -1656,6 +1780,18 @@ export class UserApi extends BaseAPI implements UserApiInterface {
      */
     public userControllerLinkedinAuth(linkedinAuthDto: LinkedinAuthDto, options?: RawAxiosRequestConfig) {
         return UserApiFp(this.configuration).userControllerLinkedinAuth(linkedinAuthDto, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Manual submission of a user
+     * @param {ManualSubmissionDto} manualSubmissionDto 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof UserApi
+     */
+    public userControllerSubmission(manualSubmissionDto: ManualSubmissionDto, options?: RawAxiosRequestConfig) {
+        return UserApiFp(this.configuration).userControllerSubmission(manualSubmissionDto, options).then((request) => request(this.axios, this.basePath));
     }
 }
 
@@ -1739,10 +1875,11 @@ export const V1ApiAxiosParamCreator = function (configuration?: Configuration) {
          * @param {AlumniControllerFindAllGeoJSONGroupByEnum} groupBy How to group the data
          * @param {Array<string>} [courseIds] The ID(s) of the course(s)
          * @param {Array<string>} [conclusionYears] The year(s) of conclusion(s)
+         * @param {number} [selectedYear] The selected year
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        alumniControllerFindAllGeoJSON: async (groupBy: AlumniControllerFindAllGeoJSONGroupByEnum, courseIds?: Array<string>, conclusionYears?: Array<string>, selectedYear?: number, compareYear?: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        alumniControllerFindAllGeoJSON: async (groupBy: AlumniControllerFindAllGeoJSONGroupByEnum, courseIds?: Array<string>, conclusionYears?: Array<string>, selectedYear?: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'groupBy' is not null or undefined
             assertParamExists('alumniControllerFindAllGeoJSON', 'groupBy', groupBy)
             const localVarPath = `/api/alumni/geoJSON`;
@@ -1769,13 +1906,11 @@ export const V1ApiAxiosParamCreator = function (configuration?: Configuration) {
                 localVarQueryParameter['conclusionYears'] = conclusionYears;
             }
 
-            if (selectedYear) {
+            if (selectedYear !== undefined) {
                 localVarQueryParameter['selectedYear'] = selectedYear;
             }
 
-            if (compareYear) {
-                localVarQueryParameter['compareYear'] = compareYear;
-            }
+
     
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -2000,9 +2135,9 @@ export const V1ApiAxiosParamCreator = function (configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        filesControllerCreate: async (uploadExtractionDto: UploadExtractionDto, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        fileUploadControllerCreate: async (uploadExtractionDto: UploadExtractionDto, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'uploadExtractionDto' is not null or undefined
-            assertParamExists('filesControllerCreate', 'uploadExtractionDto', uploadExtractionDto)
+            assertParamExists('fileUploadControllerCreate', 'uploadExtractionDto', uploadExtractionDto)
             const localVarPath = `/api/files`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -2065,6 +2200,42 @@ export const V1ApiAxiosParamCreator = function (configuration?: Configuration) {
                 options: localVarRequestOptions,
             };
         },
+        /**
+         * 
+         * @summary Manual submission of a user
+         * @param {ManualSubmissionDto} manualSubmissionDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        userControllerSubmission: async (manualSubmissionDto: ManualSubmissionDto, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'manualSubmissionDto' is not null or undefined
+            assertParamExists('userControllerSubmission', 'manualSubmissionDto', manualSubmissionDto)
+            const localVarPath = `/api/user/submission`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(manualSubmissionDto, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
     }
 };
 
@@ -2106,11 +2277,12 @@ export const V1ApiFp = function(configuration?: Configuration) {
          * @param {AlumniControllerFindAllGeoJSONGroupByEnum} groupBy How to group the data
          * @param {Array<string>} [courseIds] The ID(s) of the course(s)
          * @param {Array<string>} [conclusionYears] The year(s) of conclusion(s)
+         * @param {number} [selectedYear] The selected year
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async alumniControllerFindAllGeoJSON(groupBy: AlumniControllerFindAllGeoJSONGroupByEnum, courseIds?: Array<string>, conclusionYears?: Array<string>, selectedYear?: number, compareYear?: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GeoJSONFeatureCollection>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.alumniControllerFindAllGeoJSON(groupBy, courseIds, conclusionYears, selectedYear, compareYear, options);
+        async alumniControllerFindAllGeoJSON(groupBy: AlumniControllerFindAllGeoJSONGroupByEnum, courseIds?: Array<string>, conclusionYears?: Array<string>, selectedYear?: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GeoJSONFeatureCollection>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.alumniControllerFindAllGeoJSON(groupBy, courseIds, conclusionYears, selectedYear, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['V1Api.alumniControllerFindAllGeoJSON']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -2200,10 +2372,10 @@ export const V1ApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async filesControllerCreate(uploadExtractionDto: UploadExtractionDto, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<string>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.filesControllerCreate(uploadExtractionDto, options);
+        async fileUploadControllerCreate(uploadExtractionDto: UploadExtractionDto, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<string>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.fileUploadControllerCreate(uploadExtractionDto, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['V1Api.filesControllerCreate']?.[localVarOperationServerIndex]?.url;
+            const localVarOperationServerBasePath = operationServerMap['V1Api.fileUploadControllerCreate']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
@@ -2213,10 +2385,23 @@ export const V1ApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async userControllerLinkedinAuth(linkedinAuthDto: LinkedinAuthDto, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Alumni>> {
+        async userControllerLinkedinAuth(linkedinAuthDto: LinkedinAuthDto, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.userControllerLinkedinAuth(linkedinAuthDto, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['V1Api.userControllerLinkedinAuth']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @summary Manual submission of a user
+         * @param {ManualSubmissionDto} manualSubmissionDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async userControllerSubmission(manualSubmissionDto: ManualSubmissionDto, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.userControllerSubmission(manualSubmissionDto, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['V1Api.userControllerSubmission']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
     }
@@ -2254,11 +2439,12 @@ export const V1ApiFactory = function (configuration?: Configuration, basePath?: 
          * @param {AlumniControllerFindAllGeoJSONGroupByEnum} groupBy How to group the data
          * @param {Array<string>} [courseIds] The ID(s) of the course(s)
          * @param {Array<string>} [conclusionYears] The year(s) of conclusion(s)
+         * @param {number} [selectedYear] The selected year
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        alumniControllerFindAllGeoJSON(groupBy: AlumniControllerFindAllGeoJSONGroupByEnum, courseIds?: Array<string>, conclusionYears?: Array<string>, selectedYear?: number, compareYear?: number, options?: RawAxiosRequestConfig): AxiosPromise<GeoJSONFeatureCollection> {
-            return localVarFp.alumniControllerFindAllGeoJSON(groupBy, courseIds, conclusionYears, selectedYear, compareYear, options).then((request) => request(axios, basePath));
+        alumniControllerFindAllGeoJSON(groupBy: AlumniControllerFindAllGeoJSONGroupByEnum, courseIds?: Array<string>, conclusionYears?: Array<string>, selectedYear?: number, options?: RawAxiosRequestConfig): AxiosPromise<GeoJSONFeatureCollection> {
+            return localVarFp.alumniControllerFindAllGeoJSON(groupBy, courseIds, conclusionYears, selectedYear, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -2327,8 +2513,8 @@ export const V1ApiFactory = function (configuration?: Configuration, basePath?: 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        filesControllerCreate(uploadExtractionDto: UploadExtractionDto, options?: RawAxiosRequestConfig): AxiosPromise<string> {
-            return localVarFp.filesControllerCreate(uploadExtractionDto, options).then((request) => request(axios, basePath));
+        fileUploadControllerCreate(uploadExtractionDto: UploadExtractionDto, options?: RawAxiosRequestConfig): AxiosPromise<string> {
+            return localVarFp.fileUploadControllerCreate(uploadExtractionDto, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -2337,8 +2523,18 @@ export const V1ApiFactory = function (configuration?: Configuration, basePath?: 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        userControllerLinkedinAuth(linkedinAuthDto: LinkedinAuthDto, options?: RawAxiosRequestConfig): AxiosPromise<Alumni> {
+        userControllerLinkedinAuth(linkedinAuthDto: LinkedinAuthDto, options?: RawAxiosRequestConfig): AxiosPromise<void> {
             return localVarFp.userControllerLinkedinAuth(linkedinAuthDto, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Manual submission of a user
+         * @param {ManualSubmissionDto} manualSubmissionDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        userControllerSubmission(manualSubmissionDto: ManualSubmissionDto, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.userControllerSubmission(manualSubmissionDto, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -2374,11 +2570,12 @@ export interface V1ApiInterface {
      * @param {AlumniControllerFindAllGeoJSONGroupByEnum} groupBy How to group the data
      * @param {Array<string>} [courseIds] The ID(s) of the course(s)
      * @param {Array<string>} [conclusionYears] The year(s) of conclusion(s)
+     * @param {number} [selectedYear] The selected year
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof V1ApiInterface
      */
-    alumniControllerFindAllGeoJSON(groupBy: AlumniControllerFindAllGeoJSONGroupByEnum, courseIds?: Array<string>, conclusionYears?: Array<string>, selectedYear?: number, compareYear?: number, options?: RawAxiosRequestConfig): AxiosPromise<GeoJSONFeatureCollection>;
+    alumniControllerFindAllGeoJSON(groupBy: AlumniControllerFindAllGeoJSONGroupByEnum, courseIds?: Array<string>, conclusionYears?: Array<string>, selectedYear?: number, options?: RawAxiosRequestConfig): AxiosPromise<GeoJSONFeatureCollection>;
 
     /**
      * 
@@ -2448,7 +2645,7 @@ export interface V1ApiInterface {
      * @throws {RequiredError}
      * @memberof V1ApiInterface
      */
-    filesControllerCreate(uploadExtractionDto: UploadExtractionDto, options?: RawAxiosRequestConfig): AxiosPromise<string>;
+    fileUploadControllerCreate(uploadExtractionDto: UploadExtractionDto, options?: RawAxiosRequestConfig): AxiosPromise<string>;
 
     /**
      * 
@@ -2458,7 +2655,17 @@ export interface V1ApiInterface {
      * @throws {RequiredError}
      * @memberof V1ApiInterface
      */
-    userControllerLinkedinAuth(linkedinAuthDto: LinkedinAuthDto, options?: RawAxiosRequestConfig): AxiosPromise<Alumni>;
+    userControllerLinkedinAuth(linkedinAuthDto: LinkedinAuthDto, options?: RawAxiosRequestConfig): AxiosPromise<void>;
+
+    /**
+     * 
+     * @summary Manual submission of a user
+     * @param {ManualSubmissionDto} manualSubmissionDto 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof V1ApiInterface
+     */
+    userControllerSubmission(manualSubmissionDto: ManualSubmissionDto, options?: RawAxiosRequestConfig): AxiosPromise<void>;
 
 }
 
@@ -2498,12 +2705,13 @@ export class V1Api extends BaseAPI implements V1ApiInterface {
      * @param {AlumniControllerFindAllGeoJSONGroupByEnum} groupBy How to group the data
      * @param {Array<string>} [courseIds] The ID(s) of the course(s)
      * @param {Array<string>} [conclusionYears] The year(s) of conclusion(s)
+     * @param {number} [selectedYear] The selected year
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof V1Api
      */
-    public alumniControllerFindAllGeoJSON(groupBy: AlumniControllerFindAllGeoJSONGroupByEnum, courseIds?: Array<string>, conclusionYears?: Array<string>, selectedYear?: number, compareYear?: number, options?: RawAxiosRequestConfig) {
-        return V1ApiFp(this.configuration).alumniControllerFindAllGeoJSON(groupBy, courseIds, conclusionYears, selectedYear, compareYear, options).then((request) => request(this.axios, this.basePath));
+    public alumniControllerFindAllGeoJSON(groupBy: AlumniControllerFindAllGeoJSONGroupByEnum, courseIds?: Array<string>, conclusionYears?: Array<string>, selectedYear?: number, options?: RawAxiosRequestConfig) {
+        return V1ApiFp(this.configuration).alumniControllerFindAllGeoJSON(groupBy, courseIds, conclusionYears, selectedYear, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -2586,8 +2794,8 @@ export class V1Api extends BaseAPI implements V1ApiInterface {
      * @throws {RequiredError}
      * @memberof V1Api
      */
-    public filesControllerCreate(uploadExtractionDto: UploadExtractionDto, options?: RawAxiosRequestConfig) {
-        return V1ApiFp(this.configuration).filesControllerCreate(uploadExtractionDto, options).then((request) => request(this.axios, this.basePath));
+    public fileUploadControllerCreate(uploadExtractionDto: UploadExtractionDto, options?: RawAxiosRequestConfig) {
+        return V1ApiFp(this.configuration).fileUploadControllerCreate(uploadExtractionDto, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -2600,5 +2808,17 @@ export class V1Api extends BaseAPI implements V1ApiInterface {
      */
     public userControllerLinkedinAuth(linkedinAuthDto: LinkedinAuthDto, options?: RawAxiosRequestConfig) {
         return V1ApiFp(this.configuration).userControllerLinkedinAuth(linkedinAuthDto, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Manual submission of a user
+     * @param {ManualSubmissionDto} manualSubmissionDto 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof V1Api
+     */
+    public userControllerSubmission(manualSubmissionDto: ManualSubmissionDto, options?: RawAxiosRequestConfig) {
+        return V1ApiFp(this.configuration).userControllerSubmission(manualSubmissionDto, options).then((request) => request(this.axios, this.basePath));
     }
 }
