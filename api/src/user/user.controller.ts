@@ -1,9 +1,8 @@
 import { Controller, Post } from '@nestjs/common';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { UserService } from './user.service';
-import { LinkedinAuthDto } from './dtos/linkedin-auth.dto';
+import { LinkedinAuthDto, ManualSubmissionDto } from '@/dto';
 import { Body } from '@nestjs/common';
-
 @ApiTags('V1', 'User')
 @Controller('user')
 export class UserController {
@@ -17,5 +16,11 @@ export class UserController {
   }) */
   async linkedinAuth(@Body() body: LinkedinAuthDto) {
     return this.userService.linkedinAuth(body);
+  }
+
+  @Post('submission')
+  @ApiOperation({ summary: 'Manual submission of a user' })
+  async submission(@Body() body: ManualSubmissionDto) {
+    return this.userService.manualSubmission(body);
   }
 }
