@@ -229,6 +229,32 @@
         ]
       }
     },
+    "/api/user/submission": {
+      "post": {
+        "operationId": "UserController_submission",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ManualSubmissionDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "summary": "Manual submission of a user",
+        "tags": [
+          "V1",
+          "User"
+        ]
+      }
+    },
     "/api/files": {
       "post": {
         "operationId": "FileUploadController_create",
@@ -688,6 +714,57 @@
           "person_id",
           "first_name",
           "last_name"
+        ]
+      },
+      "CourseCompletion": {
+        "type": "object",
+        "properties": {
+          "courseId": {
+            "type": "string",
+            "description": "The ID of the course"
+          },
+          "conclusionYear": {
+            "type": "number",
+            "description": "The year of conclusion of the course"
+          }
+        },
+        "required": [
+          "courseId",
+          "conclusionYear"
+        ]
+      },
+      "ManualSubmissionDto": {
+        "type": "object",
+        "properties": {
+          "fullName": {
+            "type": "string",
+            "description": "The full name of the user"
+          },
+          "personalEmail": {
+            "type": "string",
+            "description": "The personal email of the user"
+          },
+          "linkedinUrl": {
+            "type": "string",
+            "description": "The LinkedIn URL of the user"
+          },
+          "courses": {
+            "description": "The courses the user has completed",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CourseCompletion"
+            }
+          },
+          "facultyId": {
+            "type": "string",
+            "description": "The faculty ID of the user"
+          }
+        },
+        "required": [
+          "fullName",
+          "linkedinUrl",
+          "courses",
+          "facultyId"
         ]
       },
       "UploadExtractionDto": {
