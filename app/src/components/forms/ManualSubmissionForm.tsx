@@ -2,9 +2,9 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { LoadingButton } from "@/components/ui/loading-button";
 import {
   Select,
   SelectContent,
@@ -18,13 +18,11 @@ import { useListCourses } from "@/hooks/courses/useListCourses";
 import { Card, CardContent } from "@/components/ui/card";
 import { useManualSubmission } from "@/hooks/alumni/useManualSubmission";
 import { useToast } from "@/hooks/misc/useToast";
+import { CreateAlumniDto } from "@/sdk/api";
+import { Alert, AlertDescription, AlertTitle } from "../ui/alert";
+import { CourseExtended as Course } from "@/sdk";
 
-// Define a type for course with completion year
-interface CourseWithYear {
-  id: string;
-  name: string;
-  startYear: number;
-  endYear: number | null;
+interface CourseWithYear extends Course {
   conclusionYear: string;
 }
 
@@ -49,7 +47,36 @@ const ManualSubmissionForm = () => {
     facultyId: selectedFaculty,
     enabled: !!selectedFaculty,
   });
-  const { mutate, isPending } = useManualSubmission();
+
+  const onSuccess = () => {
+    toast({
+      title: "Success!",
+      description: `Your submission has been received. Welcome ${fullName.split(" ")[0]}!!`,
+      duration: 3000,
+      variant: "success",
+    });
+    setTimeout(() => {
+      router.push('/');
+    }, 1000);
+  }
+
+  const dto: CreateAlumniDto = {
+    fullName,
+    linkedinUrl: linkedInUrl,
+    personalEmail: personalEmail || undefined,
+    // Note: This will be defined before submission
+    facultyId: selectedFaculty!,
+    courses: coursesWithYears.map((course) => ({
+      courseId: course.id,
+      conclusionYear: parseInt(course.conclusionYear),
+    })),
+  };
+
+  const { mutate: sendManualSubmission, isPending, error } = useManualSubmission({
+    data: dto,
+    onSuccess,
+  });
+
 
   useEffect(() => {
     if (!courses) {
@@ -127,36 +154,7 @@ const ManualSubmissionForm = () => {
     e.preventDefault();
     if (!selectedFaculty) return;
 
-    const dto = {
-      fullName,
-      linkedinUrl: linkedInUrl,
-      personalEmail: personalEmail || null,
-      facultyId: selectedFaculty,
-      courses: coursesWithYears.map((course) => ({
-        courseId: course.id,
-        conclusionYear: parseInt(course.conclusionYear),
-      })),
-    };
-
-    mutate(dto, {
-      onSuccess: () => {
-        toast({
-          title: "Success!",
-          description: "Your submission has been received. Welcome to the alumni network!",
-          duration: 3000,
-        });
-        setTimeout(() => {
-          router.push('/');
-        }, 2000);
-      },
-      onError: (error: Error) => {
-        toast({
-          title: "Error",
-          description: error.message || "Something went wrong. Please try again.",
-          variant: "destructive",
-        });
-      }
-    });
+    sendManualSubmission();
   };
 
   // TODO: Use zod to validate the form
@@ -234,7 +232,7 @@ const ManualSubmissionForm = () => {
                   <SelectContent>
                     {faculties?.map((faculty) => (
                       <SelectItem key={faculty.id} value={faculty.id}>
-                        {faculty.name}
+                        {faculty.acronym} - {faculty.name}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -248,7 +246,7 @@ const ManualSubmissionForm = () => {
                 <div className="mt-1.5">
                   <MultiSelect
                     value={selectedCourseIds}
-                    onChange={setSelectedCourseIds}
+                    onValueChange={setSelectedCourseIds}
                     options={
                       courses?.map((course) => ({
                         value: course.id,
@@ -292,39 +290,20 @@ const ManualSubmissionForm = () => {
               )}
             </div>
 
-            <Button
+            <LoadingButton
               type="submit"
               className="w-full"
-              disabled={!isFormValid() || isPending}
+              isLoading={isPending}
+              disabled={!isFormValid()}
             >
-              {isPending ? (
-                <>
-                  <svg
-                    className="animate-spin -ml-1 mr-2 h-4 w-4"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                  >
-                    <circle
-                      className="opacity-25"
-                      cx="12"
-                      cy="12"
-                      r="10"
-                      stroke="currentColor"
-                      strokeWidth="4"
-                    />
-                    <path
-                      className="opacity-75"
-                      fill="currentColor"
-                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                    />
-                  </svg>
-                  Submitting...
-                </>
-              ) : (
-                "Submit Application"
-              )}
-            </Button>
+              {isPending ? "Submitting..." : "Submit Application"}
+            </LoadingButton>
+            {!!error && (
+              <Alert variant="destructive">
+                <AlertTitle>Error</AlertTitle>
+                <AlertDescription>{error}</AlertDescription>
+              </Alert>
+            ) }
           </form>
         </div>
       </CardContent>
