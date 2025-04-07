@@ -9,7 +9,7 @@ export class FindCoursesDto {
   })
   @IsUUID()
   @IsOptional()
-  faculty_id?: string;
+  facultyId?: string;
 
   @ApiPropertyOptional({
     description: 'Course status',
