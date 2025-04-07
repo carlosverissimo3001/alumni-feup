@@ -234,7 +234,7 @@ const ManualSubmissionForm = () => {
                   <SelectContent>
                     {faculties?.map((faculty) => (
                       <SelectItem key={faculty.id} value={faculty.id}>
-                        {faculty.name}
+                        {faculty.acronym ? `${faculty.acronym} - ${faculty.name}` : faculty.name}
                       </SelectItem>
                     ))}
                   </SelectContent>
