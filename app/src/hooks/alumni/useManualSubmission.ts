@@ -1,11 +1,11 @@
 import { useMutation } from "@tanstack/react-query";
-import { ManualSubmissionDto } from "@/sdk/api";
+import { CreateAlumniDto } from "@/sdk/api";
 import NestAPI from "@/api";
 
 
 export const useManualSubmission = () => {
   return useMutation({
-    mutationFn: async (data: ManualSubmissionDto) => {
+    mutationFn: async (data: CreateAlumniDto) => {
       try {
         const response = await NestAPI.alumniControllerCreate(data);
         return response.data;
