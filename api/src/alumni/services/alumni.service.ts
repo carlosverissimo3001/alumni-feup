@@ -194,14 +194,13 @@ export class AlumniService {
         if (alumnus.Roles) {
           alumnus.Roles.sort(
             (a, b) =>
-              new Date(b.start_date).getTime() -
-              new Date(a.start_date).getTime(),
+              new Date(b.startDate).getTime() - new Date(a.startDate).getTime(),
           ); //Order By Start Date
           const roleFound = alumnus.Roles.find(
             (role) =>
-              role.start_date < new Date(selectedYear, 0, 1) &&
-              (role.end_date == null ||
-                role.end_date > new Date(selectedYear, 0, 1)),
+              role.startDate < new Date(selectedYear, 0, 1) &&
+              (role.endDate == null ||
+                role.endDate > new Date(selectedYear, 0, 1)),
           );
           if (roleFound && roleFound.Location) {
             const alumniToAdd = JSON.parse(JSON.stringify(alumnus));
@@ -216,8 +215,8 @@ export class AlumniService {
         if (alumnus.Roles) {
           alumnus.Roles.sort(
             (a, b) =>
-              new Date(b.start_date).getTime() -
-              new Date(a.start_date).getTime(),
+              new Date(b.startDate).getTime() -
+              new Date(a.startDate).getTime(),
           ); //Order By Start Date
         }
       });
