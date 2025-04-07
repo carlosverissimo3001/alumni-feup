@@ -51,7 +51,7 @@ export const useCSVUpload = () => {
     setUploadSuccess(false);
   };
 
-  const uploadFile = async ({ faculty, course, upload_type }: UploadParams) => {
+  const uploadFile = async ({ faculty, course }: UploadParams) => {
     if (!file) {
       setError("No file selected.");
       return false;
@@ -66,9 +66,8 @@ export const useCSVUpload = () => {
       formData.append("file", file); // File data
       formData.append("faculty_id", faculty);
       formData.append("course_id", course);
-      formData.append("upload_type", upload_type as unknown as string);
 
-      await NestApi.filesControllerCreate(
+      await NestApi.fileUploadControllerCreate(
         formData as unknown as UploadExtractionDto,
         {
           headers: {

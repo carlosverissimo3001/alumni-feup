@@ -49,47 +49,40 @@ model Alumni {
 }
 
 model AlumniRaw {
-  id         String   @id
-  created_at DateTime @default(now()) @db.Timestamp(6)
+  id        String   @id
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamp(6)
 
   @@map("alumni_raw")
 }
 
 model Company {
-  id             String        @id @default(dbgenerated("gen_random_uuid()"))
-  name           String
-  linkedin_url   String?       @unique(map: "company_unique_url")
-  industry_id    String
-  logo           String?
-  // has the company changed name?  
-  previous_names String[]      @default([])
-  // if the company is acquired, this is the id of the company it was acquired by
-  merged_into_id String?
-  founded        Int?
-  company_size   COMPANY_SIZE?
-  created_at     DateTime      @default(now()) @db.Timestamp(6)
-  updated_at     DateTime      @default(now()) @db.Timestamp(6)
-  Industry       Industry      @relation(fields: [industry_id], references: [id])
-  Role           Role[]
+  id          String        @id @default(dbgenerated("gen_random_uuid()"))
+  name        String
+  linkedinUrl String?       @unique @map("linkedin_url")
+  industryId  String        @map("industry_id")
+  logo        String?
+  founded     Int?
+  companySize COMPANY_SIZE? @map("company_size")
+  createdAt   DateTime      @default(now()) @map("created_at") @db.Timestamp(6)
+  updatedAt   DateTime      @default(now()) @map("updated_at") @db.Timestamp(6)
+  Industry    Industry      @relation(fields: [industryId], references: [id])
+  Role        Role[]
 
-  merged_into      Company?  @relation("MergedCompanies", fields: [merged_into_id], references: [id])
-  merged_companies Company[] @relation("MergedCompanies")
-
-  @@index([industry_id])
+  @@index([industryId])
   @@map("company")
 }
 
 model Course {
-  id          String        @id @default(uuid())
-  name        String
-  created_at  DateTime      @default(now()) @db.Timestamp(6)
-  acronym     String
-  end_year    Int?
-  status      COURSE_STATUS @default(ACTIVE)
-  faculty_id  String
-  nameInt     String?       @map("name_int")
-  course_type COURSE_TYPE
-  start_year  Int
+  id         String        @id @default(uuid())
+  name       String
+  createdAt  DateTime      @default(now()) @map("created_at") @db.Timestamp(6)
+  acronym    String
+  endYear    Int?          @map("end_year")
+  status     COURSE_STATUS @default(ACTIVE)
+  facultyId  String        @map("faculty_id")
+  nameInt    String?       @map("name_int")
+  courseType COURSE_TYPE   @map("course_type")
+  startYear  Int           @map("start_year")
 
   Graduation Graduation[]
 
@@ -97,25 +90,25 @@ model Course {
 }
 
 model Faculty {
-  id       String  @id
-  name     String
-  nameInt  String? @map("name_int")
-  acronym  String
+  id      String @id
+  name    String
+  nameInt String @map("name_int")
+  acronym String
 
   @@map("faculty")
 }
 
 model Graduation {
-  id              String   @id @default(dbgenerated("gen_random_uuid()"))
-  alumni_id       String
-  course_id       String
-  conclusion_year Int
-  created_at      DateTime @default(now()) @db.Timestamp(6)
-  Alumni          Alumni   @relation(fields: [alumni_id], references: [id])
-  Course          Course   @relation(fields: [course_id], references: [id])
+  id             String   @id @default(dbgenerated("gen_random_uuid()"))
+  alumniId       String   @map("alumni_id")
+  courseId       String   @map("course_id")
+  conclusionYear Int      @map("conclusion_year")
+  createdAt      DateTime @default(now()) @map("created_at") @db.Timestamp(6)
+  Alumni         Alumni   @relation(fields: [alumniId], references: [id])
+  Course         Course   @relation(fields: [courseId], references: [id])
 
-  @@index([alumni_id])
-  @@index([course_id])
+  @@index([alumniId])
+  @@index([courseId])
   @@map("graduation")
 }
 
@@ -132,31 +125,31 @@ model JobClassification {
   id         String   @id @default(dbgenerated("gen_random_uuid()"))
   title      String
   level      Int      @db.SmallInt
-  esco_code  String?
-  role_id    String
+  escoCode   String?  @map("esco_code")
+  roleId     String   @map("role_id")
   confidence Float?
-  created_at DateTime @default(now()) @db.Timestamp(6)
-  Role       Role     @relation(fields: [role_id], references: [id])
+  createdAt  DateTime @default(now()) @map("created_at") @db.Timestamp(6)
+  Role       Role     @relation(fields: [roleId], references: [id])
 
-  @@index([role_id])
+  @@index([roleId])
   @@index([title])
   @@map("job_classification")
 }
 
 model Location {
-  id              String                @id @default(dbgenerated("gen_random_uuid()"))
-  city            String?
-  country         String?
-  latitude        Float?
-  longitude       Float?
-  country_code    String?
-  is_country_only Boolean               @default(false)
-  Alumni          Alumni[]
-  Problematic     ProblematicLocation[]
-  Role            Role[]
+  id            String                @id @default(dbgenerated("gen_random_uuid()"))
+  city          String?
+  country       String?
+  latitude      Float?
+  longitude     Float?
+  countryCode   String?               @map("country_code")
+  isCountryOnly Boolean               @default(false) @map("is_country_only")
+  Alumni        Alumni[]
+  Problematic   ProblematicLocation[]
+  Role          Role[]
 
   @@index([city, country])
-  @@index([country_code])
+  @@index([countryCode])
   @@index([latitude, longitude])
   @@map("location")
 }
@@ -172,22 +165,22 @@ model ProblematicLocation {
 
 model Role {
   id                String              @id @default(dbgenerated("gen_random_uuid()"))
-  alumni_id         String
-  company_id        String
-  start_date        DateTime            @db.Timestamptz(6)
-  end_date          DateTime?           @db.Timestamptz(6)
-  created_at        DateTime            @default(now()) @db.Timestamp(6)
-  updated_at        DateTime            @default(now()) @db.Timestamp(6)
-  seniority_level   SENIORITY_LEVEL
-  location_id       String?
+  alumniId          String              @map("alumni_id")
+  companyId         String              @map("company_id")
+  startDate         DateTime            @map("start_date") @db.Timestamptz(6)
+  endDate           DateTime?           @map("end_date") @db.Timestamptz(6)
+  createdAt         DateTime            @default(now()) @map("created_at") @db.Timestamp(6)
+  updatedAt         DateTime            @default(now()) @map("updated_at") @db.Timestamp(6)
+  seniorityLevel    SENIORITY_LEVEL     @map("seniority_level")
+  locationId        String?             @map("location_id")
   JobClassification JobClassification[]
-  Alumni            Alumni              @relation(fields: [alumni_id], references: [id])
-  Company           Company             @relation(fields: [company_id], references: [id])
-  Location          Location?           @relation(fields: [location_id], references: [id])
+  Alumni            Alumni              @relation(fields: [alumniId], references: [id])
+  Company           Company             @relation(fields: [companyId], references: [id])
+  Location          Location?           @relation(fields: [locationId], references: [id])
 
-  @@index([alumni_id])
-  @@index([company_id])
-  @@index([location_id])
+  @@index([alumniId])
+  @@index([companyId])
+  @@index([locationId])
   @@map("role")
 }
 

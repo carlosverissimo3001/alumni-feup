@@ -139,7 +139,7 @@ export class GeolocationService {
       where: {
         country: country,
         // This is a flag to indicate that the location is a country only (coords point to the center of the country)
-        is_country_only: true,
+        isCountryOnly: true,
       },
     });
 

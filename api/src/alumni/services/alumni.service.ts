@@ -1,4 +1,10 @@
-import { Injectable, NotFoundException, Logger, HttpException, HttpStatus } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  Logger,
+  HttpException,
+  HttpStatus,
+} from '@nestjs/common';
 import {
   Alumni,
   GeoJSONFeatureCollection,
@@ -304,7 +310,7 @@ export class AlumniService {
         graduations:
           alumnus.Graduations?.map((grad: GraduationWithCourse) => ({
             course_acronym: grad.Course.acronym,
-            conclusion_year: grad.conclusion_year || null,
+            conclusion_year: grad.conclusionYear || null,
           })) || [],
         jobTitle: alumnus.Roles?.[0]?.JobClassification?.[0]?.title || null,
         companyName: alumnus.Roles?.[0]?.Company?.name || null,
@@ -355,7 +361,7 @@ export class AlumniService {
         graduations:
           alumnus.Graduations?.map((grad: GraduationWithCourse) => ({
             course_acronym: grad.Course.acronym,
-            conclusion_year: grad.conclusion_year || null,
+            conclusion_year: grad.conclusionYear || null,
           })) || [],
         jobTitle: alumnus.Roles?.[0]?.JobClassification?.[0]?.title || null,
         companyName: alumnus.Roles?.[0]?.Company?.name || null,
@@ -427,7 +433,7 @@ export class AlumniService {
         graduations:
           alumnus.Graduations?.map((grad: GraduationWithCourse) => ({
             course_acronym: grad.Course.acronym,
-            conclusion_year: grad.conclusion_year || null,
+            conclusion_year: grad.conclusionYear || null,
           })) || [],
         jobTitle: alumnus.Roles?.[0]?.JobClassification?.[0]?.title || null,
         companyName: alumnus.Roles?.[0]?.Company?.name || null,

@@ -48,10 +48,10 @@ export class AlumniRepository {
               some: {
                 AND: [
                   ...(courseIdsArray.length
-                    ? [{ course_id: { in: courseIdsArray } }]
+                    ? [{ courseId: { in: courseIdsArray } }]
                     : []),
                   ...(conclusionYearsArray.length
-                    ? [{ conclusion_year: { in: conclusionYearsArray } }]
+                    ? [{ conclusionYear: { in: conclusionYearsArray } }]
                     : []),
                 ],
               },
@@ -59,28 +59,31 @@ export class AlumniRepository {
           }
         : {};
 
-        const rolesWhere = 
-        selectedYear != undefined ? {
-          Roles: {
-            some: {
-              start_date: {
-                lte: new Date(selectedYear, 0, 1), 
-              },
-              AND: [
-                {
-                  OR: [
-                    {
-                      end_date: {
-                        gte: new Date(selectedYear, 0, 1), 
-                      },
-                    },
-                    { end_date: null },
-                  ],
+    const rolesWhere =
+      selectedYear != undefined
+        ? {
+            Roles: {
+              some: {
+                startDate: {
+                  lte: new Date(selectedYear, 0, 1),
                 },
-              ],
+                AND: [
+                  {
+                    OR: [
+                      {
+                        endDate: {
+                          gte: new Date(selectedYear, 0, 1),
+                        },
+                      },
+                      { endDate: null },
+                    ],
+                  },
+                ],
+              },
             },
-      }} : {};
-        
+          }
+        : {};
+
     const alumniWhere = {
       ...graduationsFilter,
       //...rolesWhere,
