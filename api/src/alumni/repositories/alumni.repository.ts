@@ -1,9 +1,9 @@
-import { Injectable, NotFoundException, Logger } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { Alumni } from 'src/entities/alumni.entity';
 import { alumniSelect } from 'src/prisma/includes/alumni.include';
-import { CreateAlumniDto } from 'src/dto/create-alumni.dto';
 import { GetGeoJSONDto } from 'src/dto/getgeojson.dto';
+import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class AlumniRepository {
@@ -12,16 +12,11 @@ export class AlumniRepository {
     private readonly logger: Logger,
   ) {}
 
-  async findOne(id: string): Promise<Alumni> {
-    const alumni = await this.prisma.alumni.findUnique({
-      where: { id },
+  async find(params: Prisma.AlumniWhereInput): Promise<Alumni | null> {
+    const alumni = await this.prisma.alumni.findFirst({
+      where: params,
       select: alumniSelect,
     });
-
-    if (!alumni) {
-      throw new NotFoundException(`Alumni with ID ${id} not found`);
-    }
-
     return alumni;
   }
 
@@ -30,15 +25,6 @@ export class AlumniRepository {
       select: alumniSelect,
     });
   }
-
-  async create(body: CreateAlumniDto): Promise<Alumni> {
-    const alumni = await this.prisma.alumni.create({
-      data: body,
-      select: alumniSelect,
-    });
-    return alumni;
-  }
-
   async findAllGeoJSON(query: GetGeoJSONDto): Promise<Alumni[]> {
     const { courseIds, conclusionYears, selectedYear } = query;
 
