@@ -8,7 +8,7 @@ export const locationSelect = {
 } satisfies Prisma.LocationSelect;
 
 export const graduationSelect = {
-  conclusion_year: true,
+  conclusionYear: true,
   Course: {
     select: {
       name: true,
@@ -19,9 +19,9 @@ export const graduationSelect = {
 
 export const roleSelect = {
   id: true,
-  start_date: true,
-  end_date: true,
-  seniority_level: true,
+  startDate: true,
+  endDate: true,
+  seniorityLevel: true,
   Company: {
     select: {
       id: true,

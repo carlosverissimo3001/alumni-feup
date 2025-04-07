@@ -261,7 +261,7 @@
         "operationId": "CourseController_find",
         "parameters": [
           {
-            "name": "faculty_id",
+            "name": "facultyId",
             "required": false,
             "in": "query",
             "description": "The id of the faculty",
@@ -401,7 +401,7 @@
             "type": "string",
             "description": "The name of the company"
           },
-          "linkedin_url": {
+          "linkedinUrl": {
             "type": "object",
             "description": "The linkedin url of the company"
           },
@@ -409,13 +409,14 @@
             "description": "The roles of the company",
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/Role"
+              "type": "string"
             }
           }
         },
         "required": [
           "id",
-          "name"
+          "name",
+          "roles"
         ]
       },
       "Role": {
@@ -425,16 +426,16 @@
             "type": "string",
             "description": "The id of the role"
           },
-          "start_date": {
+          "startDate": {
             "format": "date-time",
             "type": "string",
             "description": "The start date of the role"
           },
-          "end_date": {
+          "endDate": {
             "type": "object",
             "description": "The end date of the role"
           },
-          "seniority_level": {
+          "seniorityLevel": {
             "type": "string",
             "description": "The seniority level of the role"
           },
@@ -460,8 +461,8 @@
         },
         "required": [
           "id",
-          "start_date",
-          "seniority_level",
+          "startDate",
+          "seniorityLevel",
           "Company",
           "JobClassification"
         ]
@@ -486,7 +487,7 @@
       "Graduation": {
         "type": "object",
         "properties": {
-          "conclusion_year": {
+          "conclusionYear": {
             "type": "object",
             "description": "The conclusion year of the graduation"
           },
@@ -500,7 +501,7 @@
           }
         },
         "required": [
-          "conclusion_year",
+          "conclusionYear",
           "Course"
         ]
       },
@@ -718,11 +719,11 @@
             "type": "string",
             "description": "The id of the course"
           },
-          "start_year": {
+          "startYear": {
             "type": "number",
             "description": "The start year of the course"
           },
-          "end_year": {
+          "endYear": {
             "type": "object",
             "description": "The end year of the course, if it is not active"
           },
@@ -730,15 +731,15 @@
             "type": "object",
             "description": "The status of the course"
           },
-          "faculty_id": {
+          "facultyId": {
             "type": "string",
             "description": "The faculty id of the course"
           },
-          "name_int": {
+          "nameInt": {
             "type": "object",
             "description": "The name of the course in the international language"
           },
-          "course_type": {
+          "courseType": {
             "type": "object",
             "description": "The type of the course"
           }
@@ -747,10 +748,10 @@
           "name",
           "acronym",
           "id",
-          "start_year",
+          "startYear",
           "status",
-          "faculty_id",
-          "course_type"
+          "facultyId",
+          "courseType"
         ]
       },
       "Faculty": {
