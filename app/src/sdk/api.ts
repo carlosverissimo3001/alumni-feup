@@ -292,13 +292,13 @@ export interface Faculty {
      * @type {object}
      * @memberof Faculty
      */
-    'name_int'?: object;
+    'nameInt': object;
     /**
      * The acronym of the faculty
-     * @type {object}
+     * @type {string}
      * @memberof Faculty
      */
-    'acronym'?: object;
+    'acronym': string;
 }
 /**
  * 
