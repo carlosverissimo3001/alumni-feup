@@ -40,31 +40,31 @@ export interface Alumni {
      * @type {string}
      * @memberof Alumni
      */
-    'first_name': string;
+    'firstName': string;
     /**
      * The last name of the alumni
      * @type {string}
      * @memberof Alumni
      */
-    'last_name': string;
+    'lastName': string;
     /**
      * The full name of the alumni
      * @type {object}
      * @memberof Alumni
      */
-    'full_name'?: object;
+    'fullName'?: object;
     /**
      * The linkedin url of the alumni
      * @type {object}
      * @memberof Alumni
      */
-    'linkedin_url'?: object;
+    'linkedinUrl'?: object;
     /**
      * The profile picture of the alumni
      * @type {object}
      * @memberof Alumni
      */
-    'profile_picture_url'?: object;
+    'profilePictureUrl'?: object;
     /**
      * The source of the alumni
      * @type {object}
@@ -76,13 +76,13 @@ export interface Alumni {
      * @type {boolean}
      * @memberof Alumni
      */
-    'is_in_group'?: boolean;
+    'isInGroup'?: boolean;
     /**
      * Whether the alumni has a sigarra match
      * @type {boolean}
      * @memberof Alumni
      */
-    'has_sigarra_match'?: boolean;
+    'hasSigarraMatch'?: boolean;
     /**
      * The roles of the alumni
      * @type {Array<Role>}
@@ -239,47 +239,35 @@ export interface CourseExtended {
  */
 export interface CreateAlumniDto {
     /**
-     * The first name of the alumni
+     * The full name of the user
      * @type {string}
      * @memberof CreateAlumniDto
      */
-    'first_name': string;
+    'fullName': string;
     /**
-     * The last name of the alumni
+     * The personal email of the user
      * @type {string}
      * @memberof CreateAlumniDto
      */
-    'last_name': string;
+    'personalEmail'?: string;
     /**
-     * The LinkedIn URL of the alumni
+     * The LinkedIn URL of the user
      * @type {string}
      * @memberof CreateAlumniDto
      */
-    'linkedin_url': string;
+    'linkedinUrl': string;
     /**
-     * The institutional email of the alumni
-     * @type {string}
+     * The courses the user has completed
+     * @type {Array<CourseCompletion>}
      * @memberof CreateAlumniDto
      */
-    'institutional_email'?: string;
+    'courses': Array<CourseCompletion>;
     /**
-     * The personal email of the alumni
+     * The faculty ID of the user
      * @type {string}
      * @memberof CreateAlumniDto
      */
-    'personal_email'?: string;
-    /**
-     * Application specific person ID
-     * @type {string}
-     * @memberof CreateAlumniDto
-     */
-    'person_id'?: string;
-    /**
-     * The creator of the alumni
-     * @type {string}
-     * @memberof CreateAlumniDto
-     */
-    'created_by': string;
+    'facultyId': string;
 }
 /**
  * 
@@ -411,43 +399,6 @@ export interface LinkedinAuthDto {
      * @memberof LinkedinAuthDto
      */
     'profile_picture_url'?: string;
-}
-/**
- * 
- * @export
- * @interface ManualSubmissionDto
- */
-export interface ManualSubmissionDto {
-    /**
-     * The full name of the user
-     * @type {string}
-     * @memberof ManualSubmissionDto
-     */
-    'fullName': string;
-    /**
-     * The personal email of the user
-     * @type {string}
-     * @memberof ManualSubmissionDto
-     */
-    'personalEmail'?: string;
-    /**
-     * The LinkedIn URL of the user
-     * @type {string}
-     * @memberof ManualSubmissionDto
-     */
-    'linkedinUrl': string;
-    /**
-     * The courses the user has completed
-     * @type {Array<CourseCompletion>}
-     * @memberof ManualSubmissionDto
-     */
-    'courses': Array<CourseCompletion>;
-    /**
-     * The faculty ID of the user
-     * @type {string}
-     * @memberof ManualSubmissionDto
-     */
-    'facultyId': string;
 }
 /**
  * 
@@ -693,7 +644,7 @@ export const AlumniApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async alumniControllerCreate(createAlumniDto: CreateAlumniDto, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Alumni>> {
+        async alumniControllerCreate(createAlumniDto: CreateAlumniDto, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.alumniControllerCreate(createAlumniDto, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['AlumniApi.alumniControllerCreate']?.[localVarOperationServerIndex]?.url;
@@ -757,7 +708,7 @@ export const AlumniApiFactory = function (configuration?: Configuration, basePat
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        alumniControllerCreate(createAlumniDto: CreateAlumniDto, options?: RawAxiosRequestConfig): AxiosPromise<Alumni> {
+        alumniControllerCreate(createAlumniDto: CreateAlumniDto, options?: RawAxiosRequestConfig): AxiosPromise<void> {
             return localVarFp.alumniControllerCreate(createAlumniDto, options).then((request) => request(axios, basePath));
         },
         /**
@@ -809,7 +760,7 @@ export interface AlumniApiInterface {
      * @throws {RequiredError}
      * @memberof AlumniApiInterface
      */
-    alumniControllerCreate(createAlumniDto: CreateAlumniDto, options?: RawAxiosRequestConfig): AxiosPromise<Alumni>;
+    alumniControllerCreate(createAlumniDto: CreateAlumniDto, options?: RawAxiosRequestConfig): AxiosPromise<void>;
 
     /**
      * 
@@ -1630,42 +1581,6 @@ export const UserApiAxiosParamCreator = function (configuration?: Configuration)
                 options: localVarRequestOptions,
             };
         },
-        /**
-         * 
-         * @summary Manual submission of a user
-         * @param {ManualSubmissionDto} manualSubmissionDto 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        userControllerSubmission: async (manualSubmissionDto: ManualSubmissionDto, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'manualSubmissionDto' is not null or undefined
-            assertParamExists('userControllerSubmission', 'manualSubmissionDto', manualSubmissionDto)
-            const localVarPath = `/api/user/submission`;
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-
-    
-            localVarHeaderParameter['Content-Type'] = 'application/json';
-
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(manualSubmissionDto, localVarRequestOptions, configuration)
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
     }
 };
 
@@ -1689,19 +1604,6 @@ export const UserApiFp = function(configuration?: Configuration) {
             const localVarOperationServerBasePath = operationServerMap['UserApi.userControllerLinkedinAuth']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
-        /**
-         * 
-         * @summary Manual submission of a user
-         * @param {ManualSubmissionDto} manualSubmissionDto 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async userControllerSubmission(manualSubmissionDto: ManualSubmissionDto, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.userControllerSubmission(manualSubmissionDto, options);
-            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['UserApi.userControllerSubmission']?.[localVarOperationServerIndex]?.url;
-            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
-        },
     }
 };
 
@@ -1722,16 +1624,6 @@ export const UserApiFactory = function (configuration?: Configuration, basePath?
         userControllerLinkedinAuth(linkedinAuthDto: LinkedinAuthDto, options?: RawAxiosRequestConfig): AxiosPromise<void> {
             return localVarFp.userControllerLinkedinAuth(linkedinAuthDto, options).then((request) => request(axios, basePath));
         },
-        /**
-         * 
-         * @summary Manual submission of a user
-         * @param {ManualSubmissionDto} manualSubmissionDto 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        userControllerSubmission(manualSubmissionDto: ManualSubmissionDto, options?: RawAxiosRequestConfig): AxiosPromise<void> {
-            return localVarFp.userControllerSubmission(manualSubmissionDto, options).then((request) => request(axios, basePath));
-        },
     };
 };
 
@@ -1750,16 +1642,6 @@ export interface UserApiInterface {
      * @memberof UserApiInterface
      */
     userControllerLinkedinAuth(linkedinAuthDto: LinkedinAuthDto, options?: RawAxiosRequestConfig): AxiosPromise<void>;
-
-    /**
-     * 
-     * @summary Manual submission of a user
-     * @param {ManualSubmissionDto} manualSubmissionDto 
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof UserApiInterface
-     */
-    userControllerSubmission(manualSubmissionDto: ManualSubmissionDto, options?: RawAxiosRequestConfig): AxiosPromise<void>;
 
 }
 
@@ -1780,18 +1662,6 @@ export class UserApi extends BaseAPI implements UserApiInterface {
      */
     public userControllerLinkedinAuth(linkedinAuthDto: LinkedinAuthDto, options?: RawAxiosRequestConfig) {
         return UserApiFp(this.configuration).userControllerLinkedinAuth(linkedinAuthDto, options).then((request) => request(this.axios, this.basePath));
-    }
-
-    /**
-     * 
-     * @summary Manual submission of a user
-     * @param {ManualSubmissionDto} manualSubmissionDto 
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof UserApi
-     */
-    public userControllerSubmission(manualSubmissionDto: ManualSubmissionDto, options?: RawAxiosRequestConfig) {
-        return UserApiFp(this.configuration).userControllerSubmission(manualSubmissionDto, options).then((request) => request(this.axios, this.basePath));
     }
 }
 
@@ -2200,42 +2070,6 @@ export const V1ApiAxiosParamCreator = function (configuration?: Configuration) {
                 options: localVarRequestOptions,
             };
         },
-        /**
-         * 
-         * @summary Manual submission of a user
-         * @param {ManualSubmissionDto} manualSubmissionDto 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        userControllerSubmission: async (manualSubmissionDto: ManualSubmissionDto, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'manualSubmissionDto' is not null or undefined
-            assertParamExists('userControllerSubmission', 'manualSubmissionDto', manualSubmissionDto)
-            const localVarPath = `/api/user/submission`;
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-
-    
-            localVarHeaderParameter['Content-Type'] = 'application/json';
-
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(manualSubmissionDto, localVarRequestOptions, configuration)
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
     }
 };
 
@@ -2253,7 +2087,7 @@ export const V1ApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async alumniControllerCreate(createAlumniDto: CreateAlumniDto, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Alumni>> {
+        async alumniControllerCreate(createAlumniDto: CreateAlumniDto, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.alumniControllerCreate(createAlumniDto, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['V1Api.alumniControllerCreate']?.[localVarOperationServerIndex]?.url;
@@ -2391,19 +2225,6 @@ export const V1ApiFp = function(configuration?: Configuration) {
             const localVarOperationServerBasePath = operationServerMap['V1Api.userControllerLinkedinAuth']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
-        /**
-         * 
-         * @summary Manual submission of a user
-         * @param {ManualSubmissionDto} manualSubmissionDto 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async userControllerSubmission(manualSubmissionDto: ManualSubmissionDto, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.userControllerSubmission(manualSubmissionDto, options);
-            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['V1Api.userControllerSubmission']?.[localVarOperationServerIndex]?.url;
-            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
-        },
     }
 };
 
@@ -2421,7 +2242,7 @@ export const V1ApiFactory = function (configuration?: Configuration, basePath?: 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        alumniControllerCreate(createAlumniDto: CreateAlumniDto, options?: RawAxiosRequestConfig): AxiosPromise<Alumni> {
+        alumniControllerCreate(createAlumniDto: CreateAlumniDto, options?: RawAxiosRequestConfig): AxiosPromise<void> {
             return localVarFp.alumniControllerCreate(createAlumniDto, options).then((request) => request(axios, basePath));
         },
         /**
@@ -2526,16 +2347,6 @@ export const V1ApiFactory = function (configuration?: Configuration, basePath?: 
         userControllerLinkedinAuth(linkedinAuthDto: LinkedinAuthDto, options?: RawAxiosRequestConfig): AxiosPromise<void> {
             return localVarFp.userControllerLinkedinAuth(linkedinAuthDto, options).then((request) => request(axios, basePath));
         },
-        /**
-         * 
-         * @summary Manual submission of a user
-         * @param {ManualSubmissionDto} manualSubmissionDto 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        userControllerSubmission(manualSubmissionDto: ManualSubmissionDto, options?: RawAxiosRequestConfig): AxiosPromise<void> {
-            return localVarFp.userControllerSubmission(manualSubmissionDto, options).then((request) => request(axios, basePath));
-        },
     };
 };
 
@@ -2553,7 +2364,7 @@ export interface V1ApiInterface {
      * @throws {RequiredError}
      * @memberof V1ApiInterface
      */
-    alumniControllerCreate(createAlumniDto: CreateAlumniDto, options?: RawAxiosRequestConfig): AxiosPromise<Alumni>;
+    alumniControllerCreate(createAlumniDto: CreateAlumniDto, options?: RawAxiosRequestConfig): AxiosPromise<void>;
 
     /**
      * 
@@ -2656,16 +2467,6 @@ export interface V1ApiInterface {
      * @memberof V1ApiInterface
      */
     userControllerLinkedinAuth(linkedinAuthDto: LinkedinAuthDto, options?: RawAxiosRequestConfig): AxiosPromise<void>;
-
-    /**
-     * 
-     * @summary Manual submission of a user
-     * @param {ManualSubmissionDto} manualSubmissionDto 
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof V1ApiInterface
-     */
-    userControllerSubmission(manualSubmissionDto: ManualSubmissionDto, options?: RawAxiosRequestConfig): AxiosPromise<void>;
 
 }
 
@@ -2808,17 +2609,5 @@ export class V1Api extends BaseAPI implements V1ApiInterface {
      */
     public userControllerLinkedinAuth(linkedinAuthDto: LinkedinAuthDto, options?: RawAxiosRequestConfig) {
         return V1ApiFp(this.configuration).userControllerLinkedinAuth(linkedinAuthDto, options).then((request) => request(this.axios, this.basePath));
-    }
-
-    /**
-     * 
-     * @summary Manual submission of a user
-     * @param {ManualSubmissionDto} manualSubmissionDto 
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof V1Api
-     */
-    public userControllerSubmission(manualSubmissionDto: ManualSubmissionDto, options?: RawAxiosRequestConfig) {
-        return V1ApiFp(this.configuration).userControllerSubmission(manualSubmissionDto, options).then((request) => request(this.axios, this.basePath));
     }
 }
