@@ -1,4 +1,4 @@
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { ApiProperty } from '@nestjs/swagger';
 
 export class Faculty {
   @ApiProperty()
@@ -10,22 +10,22 @@ export class Faculty {
   })
   name: string;
 
-  @ApiPropertyOptional({
+  @ApiProperty({
     description: 'The international name of the faculty',
     example: 'Faculty of Engineering of the University of Porto',
   })
-  name_int?: string | null;
+  nameInt?: string | null;
 
-  @ApiPropertyOptional({
+  @ApiProperty({
     description: 'The acronym of the faculty',
     example: 'FEUP',
   })
-  acronym?: string | null;
+  acronym: string;
 
   constructor(data: Faculty) {
     this.id = data.id;
     this.name = data.name;
-    this.name_int = data.name_int;
+    this.nameInt = data.nameInt;
     this.acronym = data.acronym;
   }
 }

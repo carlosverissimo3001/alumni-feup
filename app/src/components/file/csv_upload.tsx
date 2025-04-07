@@ -18,27 +18,7 @@ import { CSVInfoPanel } from "@/components/file/csv_info_panel"; // Import the n
 import { useDropzone } from "react-dropzone";
 import { useListFaculties } from "@/hooks/faculty/useListFaculties";
 import { useListCourses } from "@/hooks/courses/useListCourses";
-import { UPLOADTYPE } from "@/sdk/api";
-const courses = {
-  FEUP: [
-    {
-      id: "LEIC",
-      name: "LEIC - Licenciatura em Engenharia Informática e Computação",
-    },
-    {
-      id: "MEIC",
-      name: "MEIC - Mestrado em Engenharia Informática e Computação",
-    },
-  ],
-  FAUP: [
-    { id: "LA", name: "LA - Licenciatura em Arquitectura" },
-    { id: "MLA", name: "MLA - Mestrado em Arquitectura" },
-  ],
-  FCUP: [
-    { id: "LC", name: "LC - Licenciatura em Ciências" },
-    { id: "MC", name: "MC - Mestrado em Ciências" },
-  ],
-};
+
 
 const CSVUpload = () => {
   const {
@@ -76,7 +56,6 @@ const CSVUpload = () => {
     const success = await uploadFile({
       faculty: faculty,
       course: course,
-      upload_type: UPLOADTYPE.Enrollment,
     });
 
     if (success) {

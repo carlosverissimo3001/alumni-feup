@@ -8,7 +8,7 @@ export const locationSelect = {
 } satisfies Prisma.LocationSelect;
 
 export const graduationSelect = {
-  conclusion_year: true,
+  conclusionYear: true,
   Course: {
     select: {
       name: true,
@@ -19,9 +19,9 @@ export const graduationSelect = {
 
 export const roleSelect = {
   id: true,
-  start_date: true,
-  end_date: true,
-  seniority_level: true,
+  startDate: true,
+  endDate: true,
+  seniorityLevel: true,
   Company: {
     select: {
       id: true,
@@ -42,10 +42,10 @@ export const roleSelect = {
 
 export const alumniBasic = {
   id: true,
-  first_name: true,
-  last_name: true,
-  linkedin_url: true,
-  profile_picture_url: true,
+  firstName: true,
+  lastName: true,
+  linkedinUrl: true,
+  profilePictureUrl: true,
 } satisfies Prisma.AlumniSelect;
 
 export const alumniSelect = {
