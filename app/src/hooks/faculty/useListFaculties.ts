@@ -4,7 +4,14 @@ import NestAPI from "@/api";
 import { AxiosResponse } from "axios";
 import { Faculty } from "@/sdk";
 
-export const useListFaculties = () => {
+interface UseListFacultiesReturn {
+  data: Faculty[] | undefined;
+  isLoading: boolean;
+  error: string | undefined;
+  refetch: () => Promise<void>;
+}
+
+export const useListFaculties = (): UseListFacultiesReturn => {
   const query = useQuery({
     queryKey: ["faculties"],
     queryFn: () =>
