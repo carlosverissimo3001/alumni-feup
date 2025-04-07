@@ -764,20 +764,22 @@
             "description": "The local name of the faculty",
             "example": "Faculdade de Engenharia da Universidade do Porto"
           },
-          "name_int": {
+          "nameInt": {
             "type": "object",
             "description": "The international name of the faculty",
             "example": "Faculty of Engineering of the University of Porto"
           },
           "acronym": {
-            "type": "object",
+            "type": "string",
             "description": "The acronym of the faculty",
             "example": "FEUP"
           }
         },
         "required": [
           "id",
-          "name"
+          "name",
+          "nameInt",
+          "acronym"
         ]
       }
     }
