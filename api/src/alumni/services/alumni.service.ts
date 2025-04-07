@@ -234,21 +234,16 @@ export class AlumniService {
     return alumni;
   }
 
-  async create(body: CreateAlumniDto): Promise<Alumni | null> {
+  async create(body: CreateAlumniDto): Promise<Alumni> {
     const linkedinUrl = sanitizeLinkedinUrl(body.linkedinUrl);
 
-    this.logger.log(linkedinUrl);
-
     const alumni = await this.alumniRepository.find({ linkedinUrl });
-
     if (alumni) {
       throw new HttpException(
-        'Oops! This LinkedIn account is already in our system.',
+        'Oops! Seems like you are already in our system. If this is not the case, double-check your LinkedIn URL',
         HttpStatus.CONFLICT,
       );
     }
-
-    return null;
 
     const { firstName, lastName } = parseNameParts(body.fullName);
 
@@ -256,19 +251,26 @@ export class AlumniService {
       data: {
         firstName,
         lastName,
+        fullName: body.fullName,
         linkedinUrl,
+        // If the alumni had to manually add their data, they don't have a sigarra match
+        hasSigarraMatch: false,
+        // keep false for now, as we'll probably remove the "group" feature
+        isInGroup: false,
       },
     });
 
     for (const graduation of body.courses) {
       await this.prisma.graduation.create({
         data: {
-          alumni_id: newAlumni.id,
-          course_id: graduation.courseId,
-          conclusion_year: graduation.conclusionYear,
+          alumniId: newAlumni.id,
+          courseId: graduation.courseId,
+          conclusionYear: graduation.conclusionYear,
         },
       });
     }
+
+    return newAlumni;
   }
 
   async groupAlumniByCountry(alumni: Alumni[]): Promise<AlumniByCountry> {
@@ -495,7 +497,7 @@ export class AlumniService {
         graduations:
           alumnus.Graduations?.map((grad: GraduationWithCourse) => ({
             course_acronym: grad.Course.acronym,
-            conclusion_year: grad.conclusion_year || null,
+            conclusion_year: grad.conclusionYear || null,
           })) || [],
         jobTitle: alumnus.Roles?.[0]?.JobClassification?.[0]?.title || null,
         companyName: alumnus.Roles?.[0]?.Company?.name || null,

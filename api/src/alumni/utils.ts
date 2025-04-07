@@ -1,11 +1,11 @@
-import { PORTUGUESE_NAME_CONNECTORS, Name } from '@/consts';
+import { Name, PORTUGUESE_NAME_CONNECTORS } from '@/consts';
 
 /**
  * In the DB, we don't use the 'www' subdomain, so in order to match the user, we need to remove it.
  * @param url - The LinkedIn URL to sanitize
  * @returns The sanitized LinkedIn URL
  */
-export const sanitizeLinkedinUrl = (url: string) => {
+export const sanitizeLinkedinUrl = (url: string): string => {
   const sanitizedUrl = url.replace('www.', '');
   return sanitizedUrl.endsWith('/') ? sanitizedUrl : `${sanitizedUrl}/`;
 };
@@ -22,16 +22,26 @@ export const parseNameParts = (fullName: string): Name => {
   if (nameParts.length >= 2) {
     const firstName = nameParts[0]; // First name is always first word
     let lastName: string;
-    // If second-to-last word is a connector, take it with the last word
-    if (
-      nameParts.length > 2 &&
-      PORTUGUESE_NAME_CONNECTORS.includes(nameParts[-2].toLowerCase())
-    ) {
-      lastName = `${nameParts[-2]} ${nameParts[-1]}`;
+
+    // If we have more than 2 parts, check if the second-to-last word is a connector
+    if (nameParts.length > 2) {
+      const secondToLastIndex = nameParts.length - 2;
+      const lastIndex = nameParts.length - 1;
+
+      if (
+        PORTUGUESE_NAME_CONNECTORS.includes(
+          nameParts[secondToLastIndex].toLowerCase(),
+        )
+      ) {
+        lastName = `${nameParts[secondToLastIndex]} ${nameParts[lastIndex]}`;
+      } else {
+        lastName = nameParts[lastIndex];
+      }
     } else {
-      // Otherwise just take the last word
-      lastName = nameParts[-1];
+      // If we only have 2 parts, the last name is the second part
+      lastName = nameParts[1];
     }
+
     return {
       firstName,
       lastName,

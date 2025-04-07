@@ -76,19 +76,19 @@ export interface Alumni {
      * @type {boolean}
      * @memberof Alumni
      */
-    'isInGroup'?: boolean;
+    'isInGroup': boolean;
     /**
      * Whether the alumni has a sigarra match
      * @type {boolean}
      * @memberof Alumni
      */
-    'hasSigarraMatch'?: boolean;
+    'hasSigarraMatch': boolean;
     /**
      * The roles of the alumni
-     * @type {Array<Role>}
+     * @type {Array<string>}
      * @memberof Alumni
      */
-    'Roles'?: Array<Role>;
+    'Roles'?: Array<string>;
     /**
      * The current location of the alumni
      * @type {object}
@@ -97,60 +97,10 @@ export interface Alumni {
     'Location'?: object;
     /**
      * The graduation status(es) of the alumni
-     * @type {Array<Graduation>}
+     * @type {Array<string>}
      * @memberof Alumni
      */
-    'Graduations'?: Array<Graduation>;
-}
-/**
- * 
- * @export
- * @interface Company
- */
-export interface Company {
-    /**
-     * The id of the company
-     * @type {string}
-     * @memberof Company
-     */
-    'id': string;
-    /**
-     * The name of the company
-     * @type {string}
-     * @memberof Company
-     */
-    'name': string;
-    /**
-     * The linkedin url of the company
-     * @type {object}
-     * @memberof Company
-     */
-    'linkedin_url'?: object;
-    /**
-     * The roles of the company
-     * @type {Array<Role>}
-     * @memberof Company
-     */
-    'roles'?: Array<Role>;
-}
-/**
- * 
- * @export
- * @interface Course
- */
-export interface Course {
-    /**
-     * The name of the course
-     * @type {string}
-     * @memberof Course
-     */
-    'name': string;
-    /**
-     * The acronym of the course
-     * @type {string}
-     * @memberof Course
-     */
-    'acronym': string;
+    'Graduations'?: Array<string>;
 }
 /**
  * 
@@ -200,13 +150,13 @@ export interface CourseExtended {
      * @type {number}
      * @memberof CourseExtended
      */
-    'start_year': number;
+    'startYear': number;
     /**
      * The end year of the course, if it is not active
      * @type {object}
      * @memberof CourseExtended
      */
-    'end_year'?: object;
+    'endYear'?: object;
     /**
      * The status of the course
      * @type {object}
@@ -218,19 +168,19 @@ export interface CourseExtended {
      * @type {string}
      * @memberof CourseExtended
      */
-    'faculty_id': string;
+    'facultyId': string;
     /**
      * The name of the course in the international language
      * @type {object}
      * @memberof CourseExtended
      */
-    'name_int'?: object;
+    'nameInt'?: object;
     /**
      * The type of the course
      * @type {object}
      * @memberof CourseExtended
      */
-    'course_type': object;
+    'courseType': object;
 }
 /**
  * 
@@ -347,25 +297,6 @@ export interface GeoJSONFeatureCollection {
 /**
  * 
  * @export
- * @interface Graduation
- */
-export interface Graduation {
-    /**
-     * The conclusion year of the graduation
-     * @type {object}
-     * @memberof Graduation
-     */
-    'conclusion_year': object;
-    /**
-     * The course of the graduation
-     * @type {Course}
-     * @memberof Graduation
-     */
-    'Course': Course;
-}
-/**
- * 
- * @export
  * @interface LinkedinAuthDto
  */
 export interface LinkedinAuthDto {
@@ -399,55 +330,6 @@ export interface LinkedinAuthDto {
      * @memberof LinkedinAuthDto
      */
     'profile_picture_url'?: string;
-}
-/**
- * 
- * @export
- * @interface Role
- */
-export interface Role {
-    /**
-     * The id of the role
-     * @type {string}
-     * @memberof Role
-     */
-    'id': string;
-    /**
-     * The start date of the role
-     * @type {string}
-     * @memberof Role
-     */
-    'start_date': string;
-    /**
-     * The end date of the role
-     * @type {object}
-     * @memberof Role
-     */
-    'end_date'?: object;
-    /**
-     * The seniority level of the role
-     * @type {string}
-     * @memberof Role
-     */
-    'seniority_level': string;
-    /**
-     * The Company
-     * @type {Company}
-     * @memberof Role
-     */
-    'Company': Company;
-    /**
-     * The job classifications
-     * @type {Array<string>}
-     * @memberof Role
-     */
-    'JobClassification': Array<string>;
-    /**
-     * The location of the role
-     * @type {object}
-     * @memberof Role
-     */
-    'Location'?: object;
 }
 /**
  * 
@@ -1090,7 +972,7 @@ export const CourseApiAxiosParamCreator = function (configuration?: Configuratio
             const localVarQueryParameter = {} as any;
 
             if (facultyId !== undefined) {
-                localVarQueryParameter['faculty_id'] = facultyId;
+                localVarQueryParameter['facultyId'] = facultyId;
             }
 
             if (status !== undefined) {
@@ -1912,7 +1794,7 @@ export const V1ApiAxiosParamCreator = function (configuration?: Configuration) {
             const localVarQueryParameter = {} as any;
 
             if (facultyId !== undefined) {
-                localVarQueryParameter['faculty_id'] = facultyId;
+                localVarQueryParameter['facultyId'] = facultyId;
             }
 
             if (status !== undefined) {
