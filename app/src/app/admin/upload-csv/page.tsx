@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
-import CSVUpload from "@/components/file/csv_upload";
+import CSVUpload from "@/components/file/csvUpload";
 
 const UploadCSVPage = () => {
   const router = useRouter();
