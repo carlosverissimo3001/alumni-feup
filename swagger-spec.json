@@ -40,8 +40,15 @@
           }
         },
         "responses": {
-          "201": {
-            "description": ""
+          "default": {
+            "description": "Returns the created alumni",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Alumni"
+                }
+              }
+            }
           }
         },
         "summary": "Create a new alumni",
@@ -117,6 +124,63 @@
           }
         },
         "summary": "Get all alumni to be displayed in the map",
+        "tags": [
+          "V1",
+          "Alumni"
+        ]
+      }
+    },
+    "/api/alumni/review": {
+      "get": {
+        "operationId": "AlumniController_getAlumniToReview",
+        "parameters": [],
+        "responses": {
+          "default": {
+            "description": "Returns all alumni submissions that need to be reviewed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Alumni"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "Get all alumni submissions that need to be reviewed",
+        "tags": [
+          "V1",
+          "Alumni"
+        ]
+      },
+      "post": {
+        "operationId": "AlumniController_markAsReviewed",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MarkAsReviewedDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "default": {
+            "description": "Returns the alumni marked as reviewed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Alumni"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Mark an alumni as reviewed",
         "tags": [
           "V1",
           "Alumni"
@@ -390,6 +454,146 @@
       }
     },
     "schemas": {
+      "Company": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The id of the company"
+          },
+          "name": {
+            "type": "string",
+            "description": "The name of the company"
+          },
+          "linkedinUrl": {
+            "type": "object",
+            "description": "The linkedin url of the company"
+          },
+          "roles": {
+            "description": "The roles of the company",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "roles"
+        ]
+      },
+      "Role": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The id of the role"
+          },
+          "startDate": {
+            "format": "date-time",
+            "type": "string",
+            "description": "The start date of the role"
+          },
+          "endDate": {
+            "type": "object",
+            "description": "The end date of the role"
+          },
+          "seniorityLevel": {
+            "type": "string",
+            "description": "The seniority level of the role"
+          },
+          "Company": {
+            "description": "The Company",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Company"
+              }
+            ]
+          },
+          "JobClassification": {
+            "description": "The job classifications",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "Location": {
+            "type": "object",
+            "description": "The location of the role"
+          }
+        },
+        "required": [
+          "id",
+          "startDate",
+          "seniorityLevel",
+          "Company",
+          "JobClassification"
+        ]
+      },
+      "LocationGeo": {
+        "type": "object",
+        "properties": {
+          "city": {
+            "type": "object",
+            "description": "The city of the location"
+          },
+          "country": {
+            "type": "object",
+            "description": "The country of the location"
+          },
+          "latitude": {
+            "type": "object",
+            "description": "The latitude of the location"
+          },
+          "longitude": {
+            "type": "object",
+            "description": "The longitude of the location"
+          }
+        },
+        "required": [
+          "city",
+          "country"
+        ]
+      },
+      "Course": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "The name of the course"
+          },
+          "acronym": {
+            "type": "string",
+            "description": "The acronym of the course"
+          }
+        },
+        "required": [
+          "name",
+          "acronym"
+        ]
+      },
+      "Graduation": {
+        "type": "object",
+        "properties": {
+          "conclusionYear": {
+            "type": "object",
+            "description": "The conclusion year of the graduation"
+          },
+          "Course": {
+            "description": "The course of the graduation",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Course"
+              }
+            ]
+          }
+        },
+        "required": [
+          "conclusionYear",
+          "Course"
+        ]
+      },
       "Alumni": {
         "type": "object",
         "properties": {
@@ -406,54 +610,53 @@
             "description": "The last name of the alumni"
           },
           "fullName": {
-            "type": "object",
+            "type": "string",
             "description": "The full name of the alumni"
           },
           "linkedinUrl": {
-            "type": "object",
+            "type": "string",
             "description": "The linkedin url of the alumni"
           },
           "profilePictureUrl": {
-            "type": "object",
+            "type": "string",
             "description": "The profile picture of the alumni"
           },
           "source": {
-            "type": "object",
-            "description": "The source of the alumni"
-          },
-          "isInGroup": {
-            "type": "boolean",
-            "description": "Whether the alumni is in a group"
-          },
-          "hasSigarraMatch": {
-            "type": "boolean",
-            "description": "Whether the alumni has a sigarra match"
+            "type": "string",
+            "description": "The source of the alumni",
+            "enum": [
+              "FORM_SUBMISSION",
+              "ADMIN_IMPORT",
+              "HONORARY_MEMBER"
+            ]
           },
           "Roles": {
             "description": "The roles of the alumni",
             "type": "array",
             "items": {
-              "type": "string"
+              "$ref": "#/components/schemas/Role"
             }
           },
           "Location": {
-            "type": "object",
-            "description": "The current location of the alumni"
+            "description": "The current location of the alumni",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/LocationGeo"
+              }
+            ]
           },
           "Graduations": {
             "description": "The graduation status(es) of the alumni",
             "type": "array",
             "items": {
-              "type": "string"
+              "$ref": "#/components/schemas/Graduation"
             }
           }
         },
         "required": [
           "id",
           "firstName",
-          "lastName",
-          "isInGroup",
-          "hasSigarraMatch"
+          "lastName"
         ]
       },
       "GeoJSONFeature": {
@@ -493,6 +696,18 @@
         "required": [
           "type",
           "features"
+        ]
+      },
+      "MarkAsReviewedDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The id of the alumni to mark as reviewed"
+          }
+        },
+        "required": [
+          "id"
         ]
       },
       "CourseCompletion": {
