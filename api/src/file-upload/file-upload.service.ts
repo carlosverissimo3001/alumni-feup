@@ -22,6 +22,7 @@ export class FileUploadService {
       );
     }
 
+    // We've already checked this in the FE, but doesn't hurt to check again
     if (file.size > MAX_FILE_SIZE) {
       throw new BadRequestException(
         `File is too large, max size is ${MAX_FILE_SIZE}mb`,
