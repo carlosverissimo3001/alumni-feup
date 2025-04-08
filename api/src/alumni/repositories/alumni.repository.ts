@@ -20,8 +20,17 @@ export class AlumniRepository {
     return alumni;
   }
 
-  async findAll(): Promise<Alumni[]> {
+  async update(id: string, params: Prisma.AlumniUpdateInput): Promise<Alumni> {
+    return this.prisma.alumni.update({
+      where: { id },
+      data: params,
+      select: alumniSelect,
+    });
+  }
+
+  async findAll(params?: Prisma.AlumniWhereInput): Promise<Alumni[]> {
     return this.prisma.alumni.findMany({
+      where: params,
       select: alumniSelect,
     });
   }
@@ -93,6 +102,7 @@ export class AlumniRepository {
           longitude: { not: null },
         },
       },
+      wasReviewed: true,
     };
 
     return this.prisma.alumni.findMany({
