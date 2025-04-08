@@ -208,7 +208,7 @@ model EscoClassification {
 }
 
 enum COURSE_TYPE {
-  INTEGRATED
+  INTEGRATED_MASTERS
   BACHELORS
   MASTERS
   DOCTORATE
