@@ -187,6 +187,7 @@ model Role {
 
 model RoleRaw {
   id          String  @id @default(dbgenerated("gen_random_uuid()"))
+  title       String
   description String?
   role_id     String
 
