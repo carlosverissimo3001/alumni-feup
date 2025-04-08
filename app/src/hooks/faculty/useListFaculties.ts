@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, QueryObserverResult } from "@tanstack/react-query";
 import { useJsonFromResponse } from "@/commom";
 import NestAPI from "@/api";
 import { AxiosResponse } from "axios";
@@ -8,7 +8,7 @@ interface UseListFacultiesReturn {
   data: Faculty[] | undefined;
   isLoading: boolean;
   error: string | undefined;
-  refetch: () => Promise<void>;
+  refetch: () => Promise<QueryObserverResult<Faculty[], Error>>;
 }
 
 export const useListFaculties = (): UseListFacultiesReturn => {
