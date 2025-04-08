@@ -1,12 +1,11 @@
 import { useState } from "react";
 import { MAX_FILE_SIZE } from "@/consts";
 import  NestApi from "@/api";
-import { UploadExtractionDto, UPLOADTYPE } from "@/sdk/api";
+import { UploadExtractionDto } from "@/sdk/api";
 
 type UploadParams = {
   faculty: string;
   course: string;
-  upload_type: UPLOADTYPE;
 }
 
 export const useCSVUpload = () => {
