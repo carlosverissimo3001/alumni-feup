@@ -21,12 +21,18 @@ import { useToast } from "@/hooks/misc/useToast";
 import { CreateAlumniDto } from "@/sdk/api";
 import { Alert, AlertDescription, AlertTitle } from "../ui/alert";
 import { CourseExtended as Course } from "@/sdk";
+import { Button } from "@/components/ui/button";
+import { Divide } from "lucide-react";
 
 interface CourseWithYear extends Course {
   conclusionYear: string;
 }
 
-const ManualSubmissionForm = () => {
+interface ManualSubmissionFormProps {
+  onBack: () => void;
+}
+
+const ManualSubmissionForm = ({ onBack }: ManualSubmissionFormProps) => {
   const { toast } = useToast();
   const router = useRouter();
 
@@ -97,10 +103,8 @@ const ManualSubmissionForm = () => {
         const course = courses.find((c) => c.id === id);
         if (course) {
           updatedCoursesWithYears.push({
-            id,
+            ...course,
             name: `${course.acronym} - ${course.name}`,
-            startYear: course.start_year || 0,
-            endYear: course.end_year ? Number(course.end_year) : null,
             conclusionYear: "",
           });
         }
@@ -170,144 +174,169 @@ const ManualSubmissionForm = () => {
   };
 
   return (
-    <Card className="w-full max-w-full mx-auto shadow-md">
-      <CardContent className="p-8">
-        <div className="space-y-6">
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <div className="space-y-4">
-              <div>
-                <Label htmlFor="fullName" className="text-sm font-medium">
-                  Full Name <span className="text-destructive">*</span>
-                </Label>
-                <Input
-                  id="fullName"
-                  value={fullName}
-                  onChange={(e) => setFullName(e.target.value)}
-                  placeholder="Enter your full name"
-                  className="mt-1.5"
-                  required
-                />
-              </div>
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-6">
+      <Card className="max-w-3xl mx-auto">
+        <CardContent className="p-6">
+          <div className="space-y-2">
+            <div className="flex items-center">
+              <Button
+                variant="ghost"
+                onClick={onBack}
+                className="hover:bg-gray-100 -ml-2"
+              >
+                ← Back
+              </Button>
+            </div>
 
-              <div>
-                <Label htmlFor="linkedInUrl" className="text-sm font-medium">
-                  LinkedIn URL <span className="text-destructive">*</span>
-                </Label>
-                <Input
-                  id="linkedInUrl"
-                  value={linkedInUrl}
-                  onChange={(e) => setLinkedInUrl(e.target.value)}
-                  placeholder="https://www.linkedin.com/in/your-profile"
-                  className="mt-1.5"
-                  required
-                />
-              </div>
+            <div>
+              <h1 className="text-2xl font-bold text-gray-900">Join as Alumni</h1>
+            </div>
 
-              <div>
-                <Label htmlFor="personalEmail" className="text-sm font-medium">
-                  Personal Email <span className="text-xs text-muted-foreground">(Optional)</span>
-                </Label>
-                <Input
-                  id="personalEmail"
-                  value={personalEmail}
-                  onChange={(e) => setPersonalEmail(e.target.value)}
-                  placeholder="your@email.com"
-                  type="email"
-                  className="mt-1.5"
-                />
-              </div>
+            <form onSubmit={handleSubmit} className="space-y-6">
+              <div className="grid gap-3 md:grid-cols-2">
+                <div className="space-y-3 md:col-span-2">
+                  <div>
+                    <Label htmlFor="fullName" className="text-sm font-medium">
+                      Full Name <span className="text-destructive">*</span>
+                    </Label>
+                    <Input
+                      id="fullName"
+                      value={fullName}
+                      onChange={(e) => setFullName(e.target.value)}
+                      placeholder="Enter your full name"
+                      className="mt-1.5"
+                      required
+                    />
+                  </div>
 
-              <div>
-                <Label htmlFor="faculty" className="text-sm font-medium">
-                  Faculty <span className="text-destructive">*</span>
-                </Label>
-                <Select
-                  value={selectedFaculty}
-                  onValueChange={setSelectedFaculty}
-                  disabled={isLoadingFaculties}
-                >
-                  <SelectTrigger className="mt-1.5">
-                    <SelectValue placeholder="Select your faculty" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {faculties?.map((faculty) => (
-                      <SelectItem key={faculty.id} value={faculty.id}>
-                        {faculty.acronym} - {faculty.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
+                  <div>
+                    <Label htmlFor="linkedInUrl" className="text-sm font-medium">
+                      LinkedIn URL <span className="text-destructive">*</span>
+                    </Label>
+                    <Input
+                      id="linkedInUrl"
+                      value={linkedInUrl}
+                      onChange={(e) => setLinkedInUrl(e.target.value)}
+                      placeholder="https://www.linkedin.com/in/your-profile"
+                      className="mt-1.5"
+                      required
+                    />
+                  </div>
 
-              <div>
-                <Label className="text-sm font-medium">
-                  Completed Courses <span className="text-destructive">*</span>
-                </Label>
-                <div className="mt-1.5">
-                  <MultiSelect
-                    value={selectedCourseIds}
-                    onValueChange={setSelectedCourseIds}
-                    options={
-                      courses?.map((course) => ({
-                        value: course.id,
-                        label: `${course.acronym} - ${course.name}`,
-                      })) || []
-                    }
-                    placeholder="Select your courses"
-                    disabled={!selectedFaculty || isLoadingCourses}
-                  />
+                  <div>
+                    <Label htmlFor="personalEmail" className="text-sm font-medium flex items-center gap-2">
+                      Personal Email 
+                      <span className="text-xs px-2 py-0.5 rounded-full bg-gray-100 text-gray-600">Optional</span>
+                    </Label>
+                    <Input
+                      id="personalEmail"
+                      value={personalEmail}
+                      onChange={(e) => setPersonalEmail(e.target.value)}
+                      placeholder="your@email.com"
+                      type="email"
+                      className="mt-1.5"
+                    />
+                  </div>
+                </div>
+                <div className="space-y-3 md:col-span-2">
+                  <div>
+                    <Label htmlFor="faculty" className="text-sm font-medium">
+                      Faculty <span className="text-destructive">*</span>
+                    </Label>
+                    <Select
+                      value={selectedFaculty}
+                      onValueChange={setSelectedFaculty}
+                      disabled={isLoadingFaculties}
+                    >
+                      <SelectTrigger className="mt-1.5">
+                        <SelectValue placeholder="Select your faculty" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {faculties?.map((faculty) => (
+                          <SelectItem key={faculty.id} value={faculty.id}>
+                            {faculty.acronym} - {faculty.name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div>
+                    <Label className="text-sm font-medium">
+                      Completed Courses <span className="text-destructive">*</span>
+                    </Label>
+                    <div className="mt-1.5">
+                      <MultiSelect
+                        value={selectedCourseIds}
+                        onValueChange={setSelectedCourseIds}
+                        options={
+                          courses?.map((course) => ({
+                            value: course.id,
+                            label: `${course.acronym} - ${course.name}`,
+                          })) || []
+                        }
+                        placeholder="Select your courses"
+                        disabled={!selectedFaculty || isLoadingCourses}
+                      />
+                    </div>
+                  </div>
                 </div>
               </div>
 
               {coursesWithYears.length > 0 && (
-                <div className="space-y-3 pt-2">
-                  <Label className="text-sm font-medium">
-                    Completion Years <span className="text-destructive">*</span>
-                  </Label>
-                  {coursesWithYears.map((course) => (
-                    <div key={course.id} className="flex items-center gap-3 p-3 rounded-lg bg-muted/50">
-                      <div className="flex-1">
-                        <p className="text-sm font-medium">{course.name}</p>
+                <div className="space-y-2 bg-gray-50 p-3 rounded-xl border border-gray-100">
+                  <div>
+                    <h3 className="font-medium text-gray-900">Course(s) Completion</h3>
+                    <p className="text-sm text-gray-500">Select the year you completed each course</p>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    {coursesWithYears.map((course) => (
+                      <div key={course.id} className="flex items-center gap-4 p-2 rounded-lg bg-white border border-gray-200">
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm font-medium text-gray-900 truncate">{course.name}</p>
+                        </div>
+                        <Select
+                          value={course.conclusionYear}
+                          onValueChange={(year) => handleYearChange(course.id, year)}
+                        >
+                          <SelectTrigger className="w-[100px]">
+                            <SelectValue placeholder="Year" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {getAvailableYears(course).map((year) => (
+                              <SelectItem key={year} value={year}>
+                                {year}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
                       </div>
-                      <Select
-                        value={course.conclusionYear}
-                        onValueChange={(year) => handleYearChange(course.id, year)}
-                      >
-                        <SelectTrigger className="w-[120px]">
-                          <SelectValue placeholder="Year" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {getAvailableYears(course).map((year) => (
-                            <SelectItem key={year} value={year}>
-                              {year}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </div>
-                  ))}
+                    ))}
+                  </div>
                 </div>
               )}
-            </div>
 
-            <LoadingButton
-              type="submit"
-              className="w-full"
-              isLoading={isPending}
-              disabled={!isFormValid()}
-            >
-              {isPending ? "Submitting..." : "Submit Application"}
-            </LoadingButton>
-            {!!error && (
-              <Alert variant="destructive">
-                <AlertTitle>Error</AlertTitle>
-                <AlertDescription>{error}</AlertDescription>
-              </Alert>
-            ) }
-          </form>
-        </div>
-      </CardContent>
-    </Card>
+              {!!error && (
+                <Alert variant="destructive" className="mt-4">
+                  <AlertTitle>Error</AlertTitle>
+                  <AlertDescription>{error}</AlertDescription>
+                </Alert>
+              )}
+
+              <LoadingButton
+                type="submit"
+                className="w-full py-6 text-lg font-medium mt-6"
+                isLoading={isPending}
+                disabled={!isFormValid()}
+              >
+                {isPending ? "Submitting..." : "Submit Application"}
+              </LoadingButton>
+            </form>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
   );
 };
 

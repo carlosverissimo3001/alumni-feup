@@ -2,21 +2,21 @@ import { useQuery, QueryObserverResult } from "@tanstack/react-query";
 import { useJsonFromResponse } from "@/commom";
 import NestAPI from "@/api";
 import { AxiosResponse } from "axios";
-import { Faculty } from "@/sdk";
+import { Alumni } from "@/sdk";
 
-interface UseListFacultiesReturn {
-  data: Faculty[] | undefined;
+interface UseListAlumniToReviewReturn {
+  data: Alumni[] | undefined;
   isLoading: boolean;
   error: string | undefined;
-  refetch: () => Promise<QueryObserverResult<Faculty[], Error>>;
+  refetch: () => Promise<QueryObserverResult<Alumni[], Error>>;
 }
 
-export const useListFaculties = (): UseListFacultiesReturn => {
+export const useListAlumniToReview = (): UseListAlumniToReviewReturn => {
   const query = useQuery({
-    queryKey: ["faculties"],
+    queryKey: ["alumni-to-review"],
     queryFn: () =>
-      NestAPI.facultyControllerFindAll().then(
-        (response: AxiosResponse<Faculty[]>) => response.data
+      NestAPI.alumniControllerGetAlumniToReview().then(
+        (response: AxiosResponse<Alumni[]>) => response.data
       ),
     staleTime: Infinity, // Data will never become stale automatically
     gcTime: Infinity, // Cache will never be cleared automatically (formerly cacheTime)

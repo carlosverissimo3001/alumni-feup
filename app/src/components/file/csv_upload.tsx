@@ -86,7 +86,7 @@ const CSVUpload = () => {
 
   return (
     <>
-      <Card className="max-w-2xl mx-auto mt-10 shadow-md border-0">
+      <Card className="max-w-2xl mx-auto shadow-md border-0">
         <CardHeader className="bg-slate-50 rounded-t-lg border-b pb-4">
           <CardTitle className="text-xl flex items-center gap-2">
             <FileSpreadsheetIcon size={20} className="text-primary" />

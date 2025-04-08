@@ -1,7 +1,6 @@
 import {
   Injectable,
   NotFoundException,
-  Logger,
   HttpException,
   HttpStatus,
 } from '@nestjs/common';
@@ -57,11 +56,22 @@ export class AlumniService {
     private readonly prisma: PrismaService,
     private readonly geolocationService: GeolocationService,
     private readonly alumniRepository: AlumniRepository,
-    private readonly logger: Logger,
   ) {}
 
   async findAll(): Promise<Alumni[]> {
     return this.alumniRepository.findAll();
+  }
+
+  async getAlumniToReview(): Promise<Alumni[]> {
+    return this.alumniRepository.findAll({
+      wasReviewed: false,
+    });
+  }
+
+  async markAsReviewed(id: string): Promise<Alumni> {
+    return this.alumniRepository.update(id, {
+      wasReviewed: true,
+    });
   }
 
   async findAllGeoJSON(
@@ -256,6 +266,7 @@ export class AlumniService {
         hasSigarraMatch: false,
         // keep false for now, as we'll probably remove the "group" feature
         isInGroup: false,
+        wasReviewed: false,
       },
     });
 

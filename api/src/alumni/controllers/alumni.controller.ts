@@ -11,7 +11,7 @@ import {
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { AlumniService } from '../services/alumni.service';
 import { Alumni, GeoJSONFeatureCollection } from '@/entities';
-import { CreateAlumniDto, GetGeoJSONDto } from '@/dto';
+import { CreateAlumniDto, GetGeoJSONDto, MarkAsReviewedDto } from '@/dto';
 
 @ApiTags('V1', 'Alumni')
 @Controller('alumni')
@@ -46,6 +46,19 @@ export class AlumniController {
     return this.alumniService.findAllGeoJSON(getGeoJSONDto);
   }
 
+  @Get('review')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({
+    summary: 'Get all alumni submissions that need to be reviewed',
+  })
+  @ApiResponse({
+    description: 'Returns all alumni submissions that need to be reviewed',
+    type: [Alumni],
+  })
+  async getAlumniToReview(): Promise<Alumni[]> {
+    return this.alumniService.getAlumniToReview();
+  }
+
   @Get(':id')
   @HttpCode(HttpStatus.OK)
   @ApiOperation({
@@ -60,13 +73,26 @@ export class AlumniController {
     return this.alumniService.findOne(id);
   }
 
+  @Post('review')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({
+    summary: 'Mark an alumni as reviewed',
+  })
+  @ApiResponse({
+    description: 'Returns the alumni marked as reviewed',
+    type: Alumni,
+  })
+  async markAsReviewed(@Body() body: MarkAsReviewedDto): Promise<Alumni> {
+    return this.alumniService.markAsReviewed(body.id);
+  }
+
   @Post()
   @HttpCode(HttpStatus.CREATED)
   @ApiOperation({ summary: 'Create a new alumni' })
-  /* @ApiResponse({
+  @ApiResponse({
     description: 'Returns the created alumni',
-    type: Alumni | null,
-  }) */
+    type: Alumni,
+  })
   async create(
     @Body() createAlumniDto: CreateAlumniDto,
   ): Promise<Alumni | null> {
