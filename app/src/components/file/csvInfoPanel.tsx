@@ -1,13 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { FileSpreadsheetIcon, XIcon, InfoIcon } from "lucide-react";
+import { FileSpreadsheetIcon, XIcon } from "lucide-react";
 import { useEffect, useRef } from "react";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
 
 interface CSVInfoPanelProps {
   onClose: () => void;
@@ -57,13 +51,16 @@ export const CSVInfoPanel = ({ onClose }: CSVInfoPanelProps) => {
                     <li>Example: Concluído (2019/2020)</li>
                   </ul>
                 </li>
+                <li>
+                  <span className="font-medium">linkedin_url</span> - The LinkedIn URL of the student
+                </li>
               </ul>
             </div>
             <p className="text-xs text-slate-500">
               Make sure your CSV is properly formatted with headers matching the required column names exactly.
             </p>
-            <p className="text-sm text-red-500">
-              Include only students that have been enrolled and completed the course.
+            <p className="text-xs text-red-500">
+              ONLY include students who have completed the course.
             </p>
           </div>
         </CardContent>
