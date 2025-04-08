@@ -49,58 +49,105 @@ export interface Alumni {
     'lastName': string;
     /**
      * The full name of the alumni
-     * @type {object}
+     * @type {string}
      * @memberof Alumni
      */
-    'fullName'?: object;
+    'fullName'?: string;
     /**
      * The linkedin url of the alumni
-     * @type {object}
+     * @type {string}
      * @memberof Alumni
+     */
+    'linkedinUrl'?: string;
+    /**
+     * The profile picture of the alumni
+     * @type {string}
+     * @memberof Alumni
+     */
+    'profilePictureUrl'?: string;
+    /**
+     * The source of the alumni
+     * @type {string}
+     * @memberof Alumni
+     */
+    'source'?: AlumniSourceEnum;
+    /**
+     * The roles of the alumni
+     * @type {Array<Role>}
+     * @memberof Alumni
+     */
+    'Roles'?: Array<Role>;
+    /**
+     * The current location of the alumni
+     * @type {LocationGeo}
+     * @memberof Alumni
+     */
+    'Location'?: LocationGeo;
+    /**
+     * The graduation status(es) of the alumni
+     * @type {Array<Graduation>}
+     * @memberof Alumni
+     */
+    'Graduations'?: Array<Graduation>;
+}
+
+export const AlumniSourceEnum = {
+    FormSubmission: 'FORM_SUBMISSION',
+    AdminImport: 'ADMIN_IMPORT',
+    HonoraryMember: 'HONORARY_MEMBER'
+} as const;
+
+export type AlumniSourceEnum = typeof AlumniSourceEnum[keyof typeof AlumniSourceEnum];
+
+/**
+ * 
+ * @export
+ * @interface Company
+ */
+export interface Company {
+    /**
+     * The id of the company
+     * @type {string}
+     * @memberof Company
+     */
+    'id': string;
+    /**
+     * The name of the company
+     * @type {string}
+     * @memberof Company
+     */
+    'name': string;
+    /**
+     * The linkedin url of the company
+     * @type {object}
+     * @memberof Company
      */
     'linkedinUrl'?: object;
     /**
-     * The profile picture of the alumni
-     * @type {object}
-     * @memberof Alumni
-     */
-    'profilePictureUrl'?: object;
-    /**
-     * The source of the alumni
-     * @type {object}
-     * @memberof Alumni
-     */
-    'source'?: object;
-    /**
-     * Whether the alumni is in a group
-     * @type {boolean}
-     * @memberof Alumni
-     */
-    'isInGroup': boolean;
-    /**
-     * Whether the alumni has a sigarra match
-     * @type {boolean}
-     * @memberof Alumni
-     */
-    'hasSigarraMatch': boolean;
-    /**
-     * The roles of the alumni
+     * The roles of the company
      * @type {Array<string>}
-     * @memberof Alumni
+     * @memberof Company
      */
-    'Roles'?: Array<string>;
+    'roles': Array<string>;
+}
+/**
+ * 
+ * @export
+ * @interface Course
+ */
+export interface Course {
     /**
-     * The current location of the alumni
-     * @type {object}
-     * @memberof Alumni
+     * The name of the course
+     * @type {string}
+     * @memberof Course
      */
-    'Location'?: object;
+    'name': string;
     /**
-     * The graduation status(es) of the alumni
-     * @type {Array<string>}
-     * @memberof Alumni
+     * The acronym of the course
+     * @type {string}
+     * @memberof Course
      */
-    'Graduations'?: Array<string>;
+    'acronym': string;
 }
 /**
  * 
@@ -297,6 +344,25 @@ export interface GeoJSONFeatureCollection {
 /**
  * 
  * @export
+ * @interface Graduation
+ */
+export interface Graduation {
+    /**
+     * The conclusion year of the graduation
+     * @type {object}
+     * @memberof Graduation
+     */
+    'conclusionYear': object;
+    /**
+     * The course of the graduation
+     * @type {Course}
+     * @memberof Graduation
+     */
+    'Course': Course;
+}
+/**
+ * 
+ * @export
  * @interface LinkedinAuthDto
  */
 export interface LinkedinAuthDto {
@@ -330,6 +396,99 @@ export interface LinkedinAuthDto {
      * @memberof LinkedinAuthDto
      */
     'profile_picture_url'?: string;
+}
+/**
+ * 
+ * @export
+ * @interface LocationGeo
+ */
+export interface LocationGeo {
+    /**
+     * The city of the location
+     * @type {object}
+     * @memberof LocationGeo
+     */
+    'city': object;
+    /**
+     * The country of the location
+     * @type {object}
+     * @memberof LocationGeo
+     */
+    'country': object;
+    /**
+     * The latitude of the location
+     * @type {object}
+     * @memberof LocationGeo
+     */
+    'latitude'?: object;
+    /**
+     * The longitude of the location
+     * @type {object}
+     * @memberof LocationGeo
+     */
+    'longitude'?: object;
+}
+/**
+ * 
+ * @export
+ * @interface MarkAsReviewedDto
+ */
+export interface MarkAsReviewedDto {
+    /**
+     * The id of the alumni to mark as reviewed
+     * @type {string}
+     * @memberof MarkAsReviewedDto
+     */
+    'id': string;
+}
+/**
+ * 
+ * @export
+ * @interface Role
+ */
+export interface Role {
+    /**
+     * The id of the role
+     * @type {string}
+     * @memberof Role
+     */
+    'id': string;
+    /**
+     * The start date of the role
+     * @type {string}
+     * @memberof Role
+     */
+    'startDate': string;
+    /**
+     * The end date of the role
+     * @type {object}
+     * @memberof Role
+     */
+    'endDate'?: object;
+    /**
+     * The seniority level of the role
+     * @type {string}
+     * @memberof Role
+     */
+    'seniorityLevel': string;
+    /**
+     * The Company
+     * @type {Company}
+     * @memberof Role
+     */
+    'Company': Company;
+    /**
+     * The job classifications
+     * @type {Array<string>}
+     * @memberof Role
+     */
+    'JobClassification': Array<string>;
+    /**
+     * The location of the role
+     * @type {object}
+     * @memberof Role
+     */
+    'Location'?: object;
 }
 /**
  * 
@@ -509,6 +668,72 @@ export const AlumniApiAxiosParamCreator = function (configuration?: Configuratio
                 options: localVarRequestOptions,
             };
         },
+        /**
+         * 
+         * @summary Get all alumni submissions that need to be reviewed
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        alumniControllerGetAlumniToReview: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/api/alumni/review`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Mark an alumni as reviewed
+         * @param {MarkAsReviewedDto} markAsReviewedDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        alumniControllerMarkAsReviewed: async (markAsReviewedDto: MarkAsReviewedDto, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'markAsReviewedDto' is not null or undefined
+            assertParamExists('alumniControllerMarkAsReviewed', 'markAsReviewedDto', markAsReviewedDto)
+            const localVarPath = `/api/alumni/review`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(markAsReviewedDto, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
     }
 };
 
@@ -526,7 +751,7 @@ export const AlumniApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async alumniControllerCreate(createAlumniDto: CreateAlumniDto, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+        async alumniControllerCreate(createAlumniDto: CreateAlumniDto, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Alumni>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.alumniControllerCreate(createAlumniDto, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['AlumniApi.alumniControllerCreate']?.[localVarOperationServerIndex]?.url;
@@ -573,6 +798,31 @@ export const AlumniApiFp = function(configuration?: Configuration) {
             const localVarOperationServerBasePath = operationServerMap['AlumniApi.alumniControllerFindOne']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
+        /**
+         * 
+         * @summary Get all alumni submissions that need to be reviewed
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async alumniControllerGetAlumniToReview(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<Alumni>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.alumniControllerGetAlumniToReview(options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['AlumniApi.alumniControllerGetAlumniToReview']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @summary Mark an alumni as reviewed
+         * @param {MarkAsReviewedDto} markAsReviewedDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async alumniControllerMarkAsReviewed(markAsReviewedDto: MarkAsReviewedDto, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Alumni>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.alumniControllerMarkAsReviewed(markAsReviewedDto, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['AlumniApi.alumniControllerMarkAsReviewed']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
     }
 };
 
@@ -590,7 +840,7 @@ export const AlumniApiFactory = function (configuration?: Configuration, basePat
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        alumniControllerCreate(createAlumniDto: CreateAlumniDto, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+        alumniControllerCreate(createAlumniDto: CreateAlumniDto, options?: RawAxiosRequestConfig): AxiosPromise<Alumni> {
             return localVarFp.alumniControllerCreate(createAlumniDto, options).then((request) => request(axios, basePath));
         },
         /**
@@ -625,6 +875,25 @@ export const AlumniApiFactory = function (configuration?: Configuration, basePat
         alumniControllerFindOne(id: string, options?: RawAxiosRequestConfig): AxiosPromise<Alumni> {
             return localVarFp.alumniControllerFindOne(id, options).then((request) => request(axios, basePath));
         },
+        /**
+         * 
+         * @summary Get all alumni submissions that need to be reviewed
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        alumniControllerGetAlumniToReview(options?: RawAxiosRequestConfig): AxiosPromise<Array<Alumni>> {
+            return localVarFp.alumniControllerGetAlumniToReview(options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Mark an alumni as reviewed
+         * @param {MarkAsReviewedDto} markAsReviewedDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        alumniControllerMarkAsReviewed(markAsReviewedDto: MarkAsReviewedDto, options?: RawAxiosRequestConfig): AxiosPromise<Alumni> {
+            return localVarFp.alumniControllerMarkAsReviewed(markAsReviewedDto, options).then((request) => request(axios, basePath));
+        },
     };
 };
 
@@ -642,7 +911,7 @@ export interface AlumniApiInterface {
      * @throws {RequiredError}
      * @memberof AlumniApiInterface
      */
-    alumniControllerCreate(createAlumniDto: CreateAlumniDto, options?: RawAxiosRequestConfig): AxiosPromise<void>;
+    alumniControllerCreate(createAlumniDto: CreateAlumniDto, options?: RawAxiosRequestConfig): AxiosPromise<Alumni>;
 
     /**
      * 
@@ -675,6 +944,25 @@ export interface AlumniApiInterface {
      * @memberof AlumniApiInterface
      */
     alumniControllerFindOne(id: string, options?: RawAxiosRequestConfig): AxiosPromise<Alumni>;
+
+    /**
+     * 
+     * @summary Get all alumni submissions that need to be reviewed
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof AlumniApiInterface
+     */
+    alumniControllerGetAlumniToReview(options?: RawAxiosRequestConfig): AxiosPromise<Array<Alumni>>;
+
+    /**
+     * 
+     * @summary Mark an alumni as reviewed
+     * @param {MarkAsReviewedDto} markAsReviewedDto 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof AlumniApiInterface
+     */
+    alumniControllerMarkAsReviewed(markAsReviewedDto: MarkAsReviewedDto, options?: RawAxiosRequestConfig): AxiosPromise<Alumni>;
 
 }
 
@@ -733,6 +1021,29 @@ export class AlumniApi extends BaseAPI implements AlumniApiInterface {
      */
     public alumniControllerFindOne(id: string, options?: RawAxiosRequestConfig) {
         return AlumniApiFp(this.configuration).alumniControllerFindOne(id, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Get all alumni submissions that need to be reviewed
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof AlumniApi
+     */
+    public alumniControllerGetAlumniToReview(options?: RawAxiosRequestConfig) {
+        return AlumniApiFp(this.configuration).alumniControllerGetAlumniToReview(options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Mark an alumni as reviewed
+     * @param {MarkAsReviewedDto} markAsReviewedDto 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof AlumniApi
+     */
+    public alumniControllerMarkAsReviewed(markAsReviewedDto: MarkAsReviewedDto, options?: RawAxiosRequestConfig) {
+        return AlumniApiFp(this.configuration).alumniControllerMarkAsReviewed(markAsReviewedDto, options).then((request) => request(this.axios, this.basePath));
     }
 }
 
@@ -1709,6 +2020,72 @@ export const V1ApiAxiosParamCreator = function (configuration?: Configuration) {
         },
         /**
          * 
+         * @summary Get all alumni submissions that need to be reviewed
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        alumniControllerGetAlumniToReview: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/api/alumni/review`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Mark an alumni as reviewed
+         * @param {MarkAsReviewedDto} markAsReviewedDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        alumniControllerMarkAsReviewed: async (markAsReviewedDto: MarkAsReviewedDto, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'markAsReviewedDto' is not null or undefined
+            assertParamExists('alumniControllerMarkAsReviewed', 'markAsReviewedDto', markAsReviewedDto)
+            const localVarPath = `/api/alumni/review`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(markAsReviewedDto, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
          * @summary Get all companies
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -1969,7 +2346,7 @@ export const V1ApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async alumniControllerCreate(createAlumniDto: CreateAlumniDto, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+        async alumniControllerCreate(createAlumniDto: CreateAlumniDto, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Alumni>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.alumniControllerCreate(createAlumniDto, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['V1Api.alumniControllerCreate']?.[localVarOperationServerIndex]?.url;
@@ -2014,6 +2391,31 @@ export const V1ApiFp = function(configuration?: Configuration) {
             const localVarAxiosArgs = await localVarAxiosParamCreator.alumniControllerFindOne(id, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['V1Api.alumniControllerFindOne']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @summary Get all alumni submissions that need to be reviewed
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async alumniControllerGetAlumniToReview(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<Alumni>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.alumniControllerGetAlumniToReview(options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['V1Api.alumniControllerGetAlumniToReview']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @summary Mark an alumni as reviewed
+         * @param {MarkAsReviewedDto} markAsReviewedDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async alumniControllerMarkAsReviewed(markAsReviewedDto: MarkAsReviewedDto, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Alumni>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.alumniControllerMarkAsReviewed(markAsReviewedDto, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['V1Api.alumniControllerMarkAsReviewed']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
@@ -2124,7 +2526,7 @@ export const V1ApiFactory = function (configuration?: Configuration, basePath?: 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        alumniControllerCreate(createAlumniDto: CreateAlumniDto, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+        alumniControllerCreate(createAlumniDto: CreateAlumniDto, options?: RawAxiosRequestConfig): AxiosPromise<Alumni> {
             return localVarFp.alumniControllerCreate(createAlumniDto, options).then((request) => request(axios, basePath));
         },
         /**
@@ -2158,6 +2560,25 @@ export const V1ApiFactory = function (configuration?: Configuration, basePath?: 
          */
         alumniControllerFindOne(id: string, options?: RawAxiosRequestConfig): AxiosPromise<Alumni> {
             return localVarFp.alumniControllerFindOne(id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Get all alumni submissions that need to be reviewed
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        alumniControllerGetAlumniToReview(options?: RawAxiosRequestConfig): AxiosPromise<Array<Alumni>> {
+            return localVarFp.alumniControllerGetAlumniToReview(options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Mark an alumni as reviewed
+         * @param {MarkAsReviewedDto} markAsReviewedDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        alumniControllerMarkAsReviewed(markAsReviewedDto: MarkAsReviewedDto, options?: RawAxiosRequestConfig): AxiosPromise<Alumni> {
+            return localVarFp.alumniControllerMarkAsReviewed(markAsReviewedDto, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -2246,7 +2667,7 @@ export interface V1ApiInterface {
      * @throws {RequiredError}
      * @memberof V1ApiInterface
      */
-    alumniControllerCreate(createAlumniDto: CreateAlumniDto, options?: RawAxiosRequestConfig): AxiosPromise<void>;
+    alumniControllerCreate(createAlumniDto: CreateAlumniDto, options?: RawAxiosRequestConfig): AxiosPromise<Alumni>;
 
     /**
      * 
@@ -2279,6 +2700,25 @@ export interface V1ApiInterface {
      * @memberof V1ApiInterface
      */
     alumniControllerFindOne(id: string, options?: RawAxiosRequestConfig): AxiosPromise<Alumni>;
+
+    /**
+     * 
+     * @summary Get all alumni submissions that need to be reviewed
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof V1ApiInterface
+     */
+    alumniControllerGetAlumniToReview(options?: RawAxiosRequestConfig): AxiosPromise<Array<Alumni>>;
+
+    /**
+     * 
+     * @summary Mark an alumni as reviewed
+     * @param {MarkAsReviewedDto} markAsReviewedDto 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof V1ApiInterface
+     */
+    alumniControllerMarkAsReviewed(markAsReviewedDto: MarkAsReviewedDto, options?: RawAxiosRequestConfig): AxiosPromise<Alumni>;
 
     /**
      * 
@@ -2407,6 +2847,29 @@ export class V1Api extends BaseAPI implements V1ApiInterface {
      */
     public alumniControllerFindOne(id: string, options?: RawAxiosRequestConfig) {
         return V1ApiFp(this.configuration).alumniControllerFindOne(id, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Get all alumni submissions that need to be reviewed
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof V1Api
+     */
+    public alumniControllerGetAlumniToReview(options?: RawAxiosRequestConfig) {
+        return V1ApiFp(this.configuration).alumniControllerGetAlumniToReview(options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Mark an alumni as reviewed
+     * @param {MarkAsReviewedDto} markAsReviewedDto 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof V1Api
+     */
+    public alumniControllerMarkAsReviewed(markAsReviewedDto: MarkAsReviewedDto, options?: RawAxiosRequestConfig) {
+        return V1ApiFp(this.configuration).alumniControllerMarkAsReviewed(markAsReviewedDto, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
