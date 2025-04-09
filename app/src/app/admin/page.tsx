@@ -2,29 +2,35 @@
 
 import Link from "next/link";
 import { Card, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { FileSpreadsheetIcon, UsersIcon } from "lucide-react";
+import { FileSpreadsheetIcon, MergeIcon, UsersIcon } from "lucide-react";
 
 const AdminDashboard = () => {
   const operations = [
     {
       title: "Upload Extraction CSV",
-      description: "Upload and process LinkedIn data extraction CSV files",
+      description: "Upload and process academic data extraction CSV files",
       icon: <FileSpreadsheetIcon className="h-6 w-6" />,
       href: "/admin/upload-csv",
     },
     {
       title: "Review Alumni",
-      description: "Review and manage alumni submissions",
+      description: "Review and approve Alumni submissions",
       icon: <UsersIcon className="h-6 w-6" />,
       href: "/admin/review-alumni",
     },
+    {
+      title: "Merge Companies (In Development)",
+      description: "Merge companies based on their names",
+      icon: <MergeIcon className="h-6 w-6" />,
+      href: "/admin/merge-companies",
+    }
   ];
 
   return (
     <div className="container mx-auto py-8">
       <h1 className="text-3xl font-bold mb-8">Admin Panel</h1>
       
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-12">
         {operations.map((op) => (
           <Link key={op.href} href={op.href} className="block">
             <Card className="h-full transition-all duration-200 hover:shadow-lg hover:border-primary/50">
