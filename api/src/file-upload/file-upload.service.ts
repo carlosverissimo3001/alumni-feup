@@ -63,11 +63,11 @@ export class FileUploadService {
     for (let i = 0; i < data.length; i++) {
       const row = data[i];
       const rowNumber = i + 1;
-      const student_id = row[headers.indexOf('student_id')];
       const full_name = row[headers.indexOf('full_name')];
       const status = row[headers.indexOf('status')];
+      const linkedin_url = row[headers.indexOf('linkedin_url')];
 
-      if (!student_id || !full_name || !status) {
+      if (!full_name || !status || !linkedin_url) {
         throw new BadRequestException(
           `Invalid enrollment data at row ${rowNumber}: All fields are required`,
         );
@@ -75,18 +75,17 @@ export class FileUploadService {
     }
 
     const enrollmentData = data.map((row, index) => {
-      const student_id = row[headers.indexOf('student_id')];
       const full_name = row[headers.indexOf('full_name')];
-
+      const linkedin_url = row[headers.indexOf('linkedin_url')];
       // Example: GRADUATED (2019/2020), CONCLUIDO (2019/2020)
       // We jjust care about the conclusion year
       const status_raw = row[headers.indexOf('status')]
         .replace(' ', '')
         .split('(');
 
-      try {
-        const conclusion_year = parseInt(status_raw[1].split('/')[1]);
+      const conclusion_year = parseInt(status_raw[1].split('/')[1]);
 
+      try {
         /* return {
           id: uuidv4(),
           course_id: extractionData.course_id,
