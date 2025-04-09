@@ -6,6 +6,8 @@ import { readCSV } from './utils';
 import * as fs from 'fs';
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024;
+const MIN_CONCLUSION_YEAR = 1950;
+const MAX_CONCLUSION_YEAR = 2099;
 
 @Injectable()
 export class FileUploadService {
@@ -63,11 +65,11 @@ export class FileUploadService {
     for (let i = 0; i < data.length; i++) {
       const row = data[i];
       const rowNumber = i + 1;
-      const full_name = row[headers.indexOf('full_name')];
-      const status = row[headers.indexOf('status')];
-      const linkedin_url = row[headers.indexOf('linkedin_url')];
+      const fullName = row[headers.indexOf('full_name')];
+      const conclusionYear = row[headers.indexOf('conclusion_year')];
+      const linkedinUrl = row[headers.indexOf('linkedin_url')];
 
-      if (!full_name || !status || !linkedin_url) {
+      if (!fullName || !conclusionYear || !linkedinUrl) {
         throw new BadRequestException(
           `Invalid enrollment data at row ${rowNumber}: All fields are required`,
         );
@@ -75,15 +77,13 @@ export class FileUploadService {
     }
 
     const enrollmentData = data.map((row, index) => {
-      const full_name = row[headers.indexOf('full_name')];
-      const linkedin_url = row[headers.indexOf('linkedin_url')];
-      // Example: GRADUATED (2019/2020), CONCLUIDO (2019/2020)
-      // We jjust care about the conclusion year
-      const status_raw = row[headers.indexOf('status')]
-        .replace(' ', '')
-        .split('(');
+      const fullName = row[headers.indexOf('full_name')];
+      const conclusionYearRaw = row[headers.indexOf('conclusion_year')];
+      const linkedinUrl = row[headers.indexOf('linkedin_url')];
 
-      const conclusion_year = parseInt(status_raw[1].split('/')[1]);
+      // Note: Conclusion year can be either just the year, or also something like 2018/2019 for the academic year
+      const conclusionYear = parseInt(conclusionYearRaw.split('/')[0]);
+      this.validate_conclusion_year(conclusionYear);
 
       try {
         /* return {
@@ -107,5 +107,17 @@ export class FileUploadService {
     }); */
 
     return { headers, data: enrollmentData };
+  }
+
+  private validate_conclusion_year(conclusionYear: number) {
+    if (
+      isNaN(conclusionYear) ||
+      conclusionYear < MIN_CONCLUSION_YEAR ||
+      conclusionYear > MAX_CONCLUSION_YEAR
+    ) {
+      throw new BadRequestException(
+        `Invalid conclusion year: ${conclusionYear}`,
+      );
+    }
   }
 }
