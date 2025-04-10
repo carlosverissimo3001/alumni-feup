@@ -40,23 +40,6 @@ app.add_middleware(APIKeyMiddleware)
 # Include all routers
 app.include_router(api_router, prefix="/api")
 
-
-@app.get("/")
-async def root():
-    """Root endpoint that returns basic API information."""
-    return {
-        "name": "Agents API",
-        "version": "0.1.0",
-        "status": "running",
-    }
-
-
-@app.get("/health")
-async def health_check():
-    """Health check endpoint for monitoring."""
-    return {"status": "ok"}
-
-
 if __name__ == "__main__":
     import uvicorn
 
