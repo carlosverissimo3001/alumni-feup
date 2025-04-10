@@ -1,6 +1,6 @@
 import os
 from typing import List, Optional
-from pydantic import PostgresDsn, validator
+from pydantic import PostgresDsn, field_validator
 from pydantic_settings import BaseSettings
 
 
@@ -17,7 +17,7 @@ class Settings(BaseSettings):
     ENVIRONMENT: str = "development"
     CORS_ORIGINS: List[str] = ["http://localhost:3000", "http://localhost:8080"]
 
-    @validator("CORS_ORIGINS", pre=True)
+    @field_validator("CORS_ORIGINS", mode='before')
     def parse_cors_origins(cls, v):
         """Parse the CORS origins from a comma-separated string."""
         if isinstance(v, str):
@@ -31,9 +31,8 @@ class Settings(BaseSettings):
     OLLAMA_BASE_URL: str = "http://localhost:11434"
     DEFAULT_MODEL: str = "llama3"
 
-    # LinkedIn API Settings
-    LINKEDIN_API_KEY: Optional[str] = None
-    LINKEDIN_API_SECRET: Optional[str] = None
+    # Proxycurl API Settings
+    PROXYCURL_API_KEY: Optional[str] = None
 
     class Config:
         env_file = ".env"
