@@ -50,7 +50,11 @@ const ReviewAlumniPage = () => {
               <UserCheck className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{alumniToReview?.length || 0}</div>
+              {isLoading ? (
+                <Skeleton className="h-10 w-full pb-2" />
+              ) : (
+                <div className="text-2xl font-bold pb-2">{alumniToReview?.length || 0}</div>
+              )}
               <p className="text-xs text-muted-foreground">
                 Alumni waiting for approval
               </p>
