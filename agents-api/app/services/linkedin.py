@@ -219,13 +219,18 @@ class LinkedInService:
         country = profile_data.country_full_name
         country_code = profile_data.country
 
-        # All are null? Let's put this person in the middle of the oceandels
+        # All are fields null? Let's put this person in the middle of the oceandels
         location_id = NULL_ISLAND_ID
         if city or country or country_code:
             location = get_location(city, country, country_code, db)
             
             logger.info(f"Location: {location}")
 
+            # TODO: We might need to leverage an agent, instead of just assuming the location was not found
+            # I.e, in the DB, we might have Seattle, United States
+            # But this user location is Seattle, United States of America
+            # This is obviously a trivial case, but it might be a problem for more complex ones
+            
             if not location:
                 location = create_location(
                     Location(city=city, country=country, country_code=country_code), db
