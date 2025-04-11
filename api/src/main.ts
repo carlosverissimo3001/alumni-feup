@@ -9,9 +9,6 @@ import { createBullBoard } from '@bull-board/api';
 import { BullAdapter } from '@bull-board/api/bullAdapter';
 import * as fs from 'fs';
 import * as path from 'path';
-import { QueueName } from './consts';
-import { getQueueToken } from '@nestjs/bull';
-import { Queue } from 'bull';
 
 declare const module: any;
 
@@ -40,23 +37,6 @@ async function bootstrap() {
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true,
   });
-
-  // for local development
-  if (process.env.APP_ENV === 'development') {
-    const serverAdapter = new ExpressAdapter();
-    serverAdapter.setBasePath('/admin/queues');
-
-    const queues = Object.values(QueueName).map((name) =>
-      app.get<Queue>(getQueueToken(name)),
-    );
-
-    createBullBoard({
-      queues: queues.map((queue) => new BullAdapter(queue)),
-      serverAdapter,
-    });
-
-    app.use('/admin/queues', serverAdapter.getRouter());
-  }
 
   SwaggerModule.setup('docs', app, document);
   app.useGlobalPipes(new ValidationPipe());
