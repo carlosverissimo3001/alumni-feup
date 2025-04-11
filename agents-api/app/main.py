@@ -1,15 +1,13 @@
 import logging
-from fastapi import FastAPI, Depends
-from fastapi.middleware.cors import CORSMiddleware
-from starlette.middleware.base import BaseHTTPMiddleware
-import os
+
 from dotenv import load_dotenv
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 
-from app.core.config import settings
 from app.api.routes import api_router
-from app.core.middlewares import LoggingMiddleware, APIKeyMiddleware
+from app.core.config import settings
+from app.core.middlewares import APIKeyMiddleware, LoggingMiddleware
 
-# Load environment variables from .env file
 load_dotenv()
 
 app = FastAPI(
@@ -18,13 +16,12 @@ app = FastAPI(
     version="0.1.0",
 )
 
-# Configure logging
 logging.basicConfig(
-    level=logging.getLevelName(settings.LOG_LEVEL.upper()),
+    level=getattr(logging, settings.LOG_LEVEL.upper(), logging.INFO),
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
 )
 
-# Set up CORS middleware
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=settings.CORS_ORIGINS,
@@ -33,8 +30,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Add custom middlewares
-app.add_middleware(LoggingMiddleware)
+# app.add_middleware(LoggingMiddleware)
 app.add_middleware(APIKeyMiddleware)
 
 # Include all routers
