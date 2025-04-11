@@ -1,10 +1,9 @@
 import logging
-from fastapi import APIRouter, Depends, HTTPException, status
-from sqlalchemy.orm import Session
 
-from app.db import get_db
-from app.schemas.linkedin import LinkedInProfileRequest, LinkedInProfileResponse
-from app.services.linkedin import extract_profile_data
+from fastapi import APIRouter, BackgroundTasks, HTTPException, status
+
+from app.schemas.linkedin import LinkedInProfileRequest
+from app.services.linkedin import linkedin_service
 
 router = APIRouter()
 logger = logging.getLogger(__name__)
@@ -12,33 +11,31 @@ logger = logging.getLogger(__name__)
 
 @router.post(
     "/extract-profile",
-    response_model=LinkedInProfileResponse,
     status_code=status.HTTP_200_OK,
 )
 async def extract_linkedin_profile(
     profile_data: LinkedInProfileRequest,
-    db: Session = Depends(get_db),
+    background_tasks: BackgroundTasks,
 ):
     """
-    Extract data from a LinkedIn profile and return structured information.
-    Optionally store the data in the database if persist=True.
+    Extract data from a LinkedIn profile and process it.
+    Returns a success status without the profile data.
     """
     try:
         logger.info(f"Extracting LinkedIn profile data from: {profile_data.profile_url}")
-
-        # Call service to extract profile data
-        profile_response = await extract_profile_data(
+        
+        background_tasks.add_task(
+            linkedin_service.extract_profile_data,
             profile_url=str(profile_data.profile_url),
-            include_experiences=profile_data.include_experiences,
-            include_education=profile_data.include_education,
-            include_skills=profile_data.include_skills,
+            alumni_id=profile_data.alumni_id,
         )
-
-        return profile_response
+        
+        # Return immediately, let the background task handle the rest
+        return {"status": "processing"}
 
     except Exception as e:
         logger.error(f"Error extracting LinkedIn profile data: {str(e)}")
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="Error extracting LinkedIn profile data",
+            detail=f"Error extracting LinkedIn profile data: {str(e)}",
         )
