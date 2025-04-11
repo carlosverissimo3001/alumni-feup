@@ -4,7 +4,7 @@ import { Alumni } from "@/sdk";
 import useMarkAlumniReviewed from "@/hooks/alumni/useMarkAlumniReviewed";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { CheckCircle, ExternalLink } from "lucide-react";
+import { CheckCircle, ExternalLink, PinIcon } from "lucide-react";
 import Link from "next/link";
 import { useToast } from "@/hooks/misc/useToast";
 
@@ -39,6 +39,14 @@ const ReviewAlumni = ({ alumniToReview }: { alumniToReview: Alumni[] }) => {
                   <h3 className="font-medium text-lg">
                     {alumni.fullName}
                   </h3>
+                  {alumni.Location && alumni.Location.city && alumni.Location.country && (
+                    <div className="flex items-center gap-2 text-sm">
+                      <PinIcon className="h-4 w-4 text-red-500" strokeWidth={2} />
+                      <span className="text-muted-foreground">
+                        {String(alumni.Location.city)}, {String(alumni.Location.country)}
+                      </span>
+                    </div>
+                  )}
                 </div>
 
                 {alumni.linkedinUrl && (
