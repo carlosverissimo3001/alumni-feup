@@ -1,5 +1,5 @@
-import os
 from typing import List, Optional
+
 from pydantic import PostgresDsn, field_validator
 from pydantic_settings import BaseSettings
 
@@ -10,7 +10,7 @@ class Settings(BaseSettings):
     """
 
     # API Settings
-    API_KEY_SECRET: str = ""  # Secure API key for authentication
+    API_KEY_SECRET: str = ""
     PORT: int = 8000
     HOST: str = "0.0.0.0"
     LOG_LEVEL: str = "info"
@@ -32,11 +32,18 @@ class Settings(BaseSettings):
     DEFAULT_MODEL: str = "llama3"
 
     # Proxycurl API Settings
-    PROXYCURL_API_KEY: Optional[str] = None
+    PROXYCURL_API_KEY: str = ""
+    PROXYCURL_BASE_URL: str = "https://nubela.co/proxycurl/api"
+    
+    # Bright Data Settings
+    BRIGHTDATA_API_KEY: str = ""
+    BRIGHTDATA_BASE_URL: str = "https://api.brightdata.com/datasets/v3"
+    BRIGHTDATA_COMPANY_DATASET_ID: str = ""
 
     class Config:
         env_file = ".env"
         case_sensitive = True
+        extra = "ignore"
 
 
 # Create settings instance

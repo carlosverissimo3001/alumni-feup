@@ -1,6 +1,7 @@
 import logging
 import time
-from fastapi import Request, HTTPException, status
+
+from fastapi import HTTPException, Request, status
 from starlette.middleware.base import BaseHTTPMiddleware, RequestResponseEndpoint
 from starlette.responses import Response
 
@@ -52,10 +53,6 @@ class APIKeyMiddleware(BaseHTTPMiddleware):
     """
 
     async def dispatch(self, request: Request, call_next: RequestResponseEndpoint) -> Response:
-        # Skip API key check for specific paths
-        if request.url.path in ["/", "/health", "/docs", "/redoc", "/openapi.json"]:
-            return await call_next(request)
-
         # Get API key from header
         api_key = request.headers.get("X-API-Key")
 
@@ -63,7 +60,7 @@ class APIKeyMiddleware(BaseHTTPMiddleware):
         if settings.API_KEY_SECRET and settings.API_KEY_SECRET != "":
             if not api_key:
                 logger.warning(
-                    f"Unauthorized access attempt: Missing API key - {request.method} {request.url.path}"
+                    f"Unauthorized access attempt: Missing API key - {request.method} {request.url.path}"  # noqa: E501
                 )
                 raise HTTPException(
                     status_code=status.HTTP_401_UNAUTHORIZED,
@@ -72,7 +69,7 @@ class APIKeyMiddleware(BaseHTTPMiddleware):
 
             if api_key != settings.API_KEY_SECRET:
                 logger.warning(
-                    f"Unauthorized access attempt: Invalid API key - {request.method} {request.url.path}"
+                    f"Unauthorized access attempt: Invalid API key - {request.method} {request.url.path}"  # noqa: E501
                 )
                 raise HTTPException(
                     status_code=status.HTTP_401_UNAUTHORIZED,
