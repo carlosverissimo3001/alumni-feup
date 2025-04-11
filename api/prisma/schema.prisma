@@ -146,6 +146,8 @@ model Location {
   longitude     Float?
   countryCode   String?               @map("country_code")
   isCountryOnly Boolean               @default(false) @map("is_country_only")
+  createdAt     DateTime              @default(now()) @map("created_at") @db.Timestamp(6)
+  updatedAt     DateTime              @default(now()) @map("updated_at") @db.Timestamp(6)
   Alumni        Alumni[]
   Problematic   ProblematicLocation[]
   Role          Role[]
@@ -179,7 +181,7 @@ model Role {
   Alumni            Alumni              @relation(fields: [alumniId], references: [id])
   Company           Company             @relation(fields: [companyId], references: [id])
   Location          Location?           @relation(fields: [locationId], references: [id])
-
+  
   @@index([alumniId])
   @@index([companyId])
   @@index([locationId])
@@ -190,8 +192,10 @@ model RoleRaw {
   id          String  @id @default(dbgenerated("gen_random_uuid()"))
   title       String
   description String?
-  role_id     String
+  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamp(6)
+  roleId      String   @map("role_id")
 
+  @@index([roleId])
   @@map("role_raw")
 }
 
