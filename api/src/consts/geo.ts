@@ -1,7 +1,4 @@
-export type GeoLocationApiResponse = {
-  name: string;
-  lat: number;
-  lon: number;
-  country: string;
-  state?: string;
-};
+export enum GROUP_BY {
+  COUNTRIES = 'countries',
+  CITIES = 'cities',
+}

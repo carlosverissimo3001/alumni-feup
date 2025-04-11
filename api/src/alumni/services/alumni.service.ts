@@ -17,6 +17,7 @@ import { GetGeoJSONDto } from 'src/dto/getgeojson.dto';
 import { Feature, Point } from 'geojson';
 import { GROUP_BY } from '@/consts';
 import { GeolocationService } from 'src/geolocation/geolocation.service';
+import { AgentsApiService } from 'src/agents-api/agents-api.service';
 import { parseNameParts, sanitizeLinkedinUrl } from '../utils';
 
 type GraduationWithCourse = Graduation & {
@@ -56,6 +57,7 @@ export class AlumniService {
     private readonly prisma: PrismaService,
     private readonly geolocationService: GeolocationService,
     private readonly alumniRepository: AlumniRepository,
+    private readonly agentsApiService: AgentsApiService,
   ) {}
 
   async findAll(): Promise<Alumni[]> {
@@ -262,7 +264,7 @@ export class AlumniService {
         lastName,
         fullName: body.fullName,
         linkedinUrl,
-        // If the alumni had to manually add their data, they don't have a sigarra match
+        // If the alumni had to manually add their data, they 99.99% don't have a sigarra match
         hasSigarraMatch: false,
         // keep false for now, as we'll probably remove the "group" feature
         isInGroup: false,
@@ -279,6 +281,9 @@ export class AlumniService {
         },
       });
     }
+
+    // Call the agents-api to extract the profile data
+    await this.agentsApiService.triggerLinkedinScrape(newAlumni.id);
 
     return newAlumni;
   }
