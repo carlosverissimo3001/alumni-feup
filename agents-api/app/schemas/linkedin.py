@@ -1,62 +1,105 @@
+import json
+import logging
+from typing import List, Optional
+
 from pydantic import BaseModel, Field, HttpUrl
-from typing import Optional, List
-from datetime import datetime
+
+logger = logging.getLogger(__name__)
 
 
 class LinkedInProfileRequest(BaseModel):
     """Schema for requesting LinkedIn profile data extraction."""
 
     profile_url: HttpUrl = Field(..., description="URL of the LinkedIn profile to extract")
-    include_experiences: bool = Field(
-        True, description="Include work experiences in the extraction"
-    )
-    include_education: bool = Field(
-        True, description="Include education information in the extraction"
-    )
-    include_skills: bool = Field(True, description="Include skills in the extraction")
+    alumni_id: str = Field(..., description="ID of the alumni to link data with")
 
+    class Config:
+        json_schema_extra = {
+            "example": {
+                "profile_url": "https://www.linkedin.com/in/johndoe/",
+                "alumni_id": "12345"
+            }
+        }
+
+class ExperienceDate(BaseModel):
+    """Schema for experience date."""
+
+    year: int
+    month: int
+    day: int
 
 class ExperienceBase(BaseModel):
     """Base schema for work experience."""
 
-    title: str
     company: str
-    location: Optional[str] = None
+    company_linkedin_profile_url: str
     description: Optional[str] = None
-    start_date: Optional[str] = None
-    end_date: Optional[str] = None
-    is_current: bool = False
-
-
-class EducationBase(BaseModel):
-    """Base schema for education."""
-
-    institution: str
-    degree: Optional[str] = None
-    field_of_study: Optional[str] = None
-    start_date: Optional[str] = None
-    end_date: Optional[str] = None
-
-
-class SkillBase(BaseModel):
-    """Base schema for skill."""
-
-    name: str
-    endorsements: Optional[int] = 0
-
+    ends_at: Optional[ExperienceDate] = None
+    location: Optional[str] = None
+    starts_at: ExperienceDate
+    title: str
 
 class LinkedInProfileResponse(BaseModel):
     """Schema for LinkedIn profile data extraction response."""
 
-    profile_url: str
-    full_name: Optional[str] = None
-    headline: Optional[str] = None
-    location: Optional[str] = None
-    summary: Optional[str] = None
-    experiences: Optional[List[ExperienceBase]] = None
-    education: Optional[List[EducationBase]] = None
-    skills: Optional[List[SkillBase]] = None
-    extraction_timestamp: datetime = Field(default_factory=datetime.utcnow)
+    profile_pic_url: str
+    # The user's country of residence depicted by a 2-letter country code (ISO 3166-1 alpha-2).
+    country: str
+    # The user's country of residence, in English words.
+    country_full_name: str
+    city: str
+    experiences: List[ExperienceBase]
 
     class Config:
         from_attributes = True
+
+
+class LinkedInCompanyResponse(BaseModel):
+    """Schema for LinkedIn company data extraction response."""
+
+    name: str
+    # This is a string, not a list, they really need better naming
+    industries: str
+    logo: str
+    website: Optional[str] = None
+    founded: Optional[int] = None
+    company_size: Optional[str] = None
+
+
+def convert_to_linkedin_profile_response(json_data: dict) -> LinkedInProfileResponse:
+    experiences = []
+    for exp in json_data.get('experiences', []):
+        starts_at = ExperienceDate(**exp['starts_at'])
+        ends_at = ExperienceDate(**exp['ends_at']) if exp.get('ends_at') else None
+                
+        experiences.append(ExperienceBase(
+            title=exp['title'],
+            company=exp['company'],
+            company_linkedin_profile_url=exp['company_linkedin_profile_url'],
+            location=exp.get('location'),
+            description=exp.get('description'),
+            starts_at=starts_at,
+            ends_at=ends_at,
+        ))
+
+    # Prepare the full response model
+    profile = LinkedInProfileResponse(
+        profile_pic_url=json_data['profile_pic_url'],
+        country=json_data['country'],
+        country_full_name=json_data['country_full_name'],
+        city=json_data['city'],
+        experiences=experiences
+    )
+
+    return profile
+
+def convert_to_linkedin_company_response(json_data: dict) -> LinkedInCompanyResponse:    
+    return LinkedInCompanyResponse(
+        name=json_data.get('name'),
+        industries=json_data.get('industries'),
+        logo=json_data.get('logo'),
+        website=json_data.get('website'),
+        founded=json_data.get('founded'),
+        company_size=json_data.get('company_size'),
+    )
+
