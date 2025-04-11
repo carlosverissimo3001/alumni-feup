@@ -1,6 +1,7 @@
 import logging
-from sqlalchemy.orm import Session
+
 from sqlalchemy import text
+from sqlalchemy.orm import Session
 
 logger = logging.getLogger(__name__)
 
@@ -9,8 +10,8 @@ async def init_db():
     """
     Initialize the database by creating tables if they don't exist.
     """
-    from app.db.session import engine
     from app.db.models import Base
+    from app.db.session import engine
 
     logger.info("Creating database tables if they don't exist")
     Base.metadata.create_all(bind=engine)
