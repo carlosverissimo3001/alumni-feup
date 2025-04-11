@@ -1,21 +1,21 @@
-from datetime import datetime
-from typing import Optional, List
+import enum
+from datetime import datetime, timezone
+
 from sqlalchemy import (
-    Column,
-    Integer,
-    String,
-    Text,
-    DateTime,
-    ForeignKey,
-    Float,
     Boolean,
+    Column,
+    DateTime,
     Enum,
+    Float,
+    ForeignKey,
+    Integer,
     SmallInteger,
+    String,
 )
 from sqlalchemy.orm import relationship
-import enum
 
 from app.db.session import Base
+from app.utils.consts import DEFAULT_INDUSTRY_ID
 
 
 class Source(str, enum.Enum):
@@ -73,7 +73,9 @@ class Alumni(Base):
 
     created_at = Column(DateTime, nullable=False, server_default="now()")
     created_by = Column(String, nullable=True)
-    updated_at = Column(DateTime, nullable=False, server_default="now()", onupdate=datetime.utcnow)
+    updated_at = Column(
+        DateTime, nullable=False, server_default="now()", onupdate=datetime.now(timezone.utc)
+    )
     updated_by = Column(String, nullable=True)
 
     source = Column(Enum(Source), nullable=True)
@@ -102,13 +104,17 @@ class Company(Base):
     id = Column(String, primary_key=True, server_default="gen_random_uuid()")
     name = Column(String, nullable=False)
     linkedin_url = Column(String, nullable=True, unique=True)
-    industry_id = Column(String, ForeignKey("industry.id"), nullable=False)
+    industry_id = Column(
+        String, ForeignKey("industry.id"), nullable=False, default=DEFAULT_INDUSTRY_ID
+    )  # noqa: E501
     logo = Column(String, nullable=True)
     founded = Column(Integer, nullable=True)
     website = Column(String, nullable=True)
     company_size = Column(Enum(CompanySize), nullable=True)
     created_at = Column(DateTime, nullable=False, server_default="now()")
-    updated_at = Column(DateTime, nullable=False, server_default="now()", onupdate=datetime.utcnow)
+    updated_at = Column(
+        DateTime, nullable=False, server_default="now()", onupdate=datetime.now(timezone.utc)
+    )
 
     industry = relationship("Industry", back_populates="companies")
     roles = relationship("Role", back_populates="company")
@@ -186,10 +192,16 @@ class Location(Base):
     longitude = Column(Float, nullable=True)
     country_code = Column(String, nullable=True)
     is_country_only = Column(Boolean, nullable=False, server_default="false")
-
+    created_at = Column(DateTime, nullable=False, server_default="now()")
+    updated_at = Column(
+        DateTime, nullable=False, server_default="now()", onupdate=datetime.now(timezone.utc)
+    )
     alumni = relationship("Alumni", back_populates="location")
     problematic_locations = relationship("ProblematicLocation", back_populates="location")
     roles = relationship("Role", back_populates="location")
+
+    def __repr__(self):
+        return f"<Location(id={self.id}, city={self.city}, country={self.country}, country_code={self.country_code})>"
 
 
 class ProblematicLocation(Base):
@@ -211,8 +223,10 @@ class Role(Base):
     start_date = Column(DateTime(timezone=True), nullable=False)
     end_date = Column(DateTime(timezone=True), nullable=True)
     created_at = Column(DateTime, nullable=False, server_default="now()")
-    updated_at = Column(DateTime, nullable=False, server_default="now()", onupdate=datetime.utcnow)
-    seniority_level = Column(Enum(SeniorityLevel), nullable=False)
+    updated_at = Column(
+        DateTime, nullable=False, server_default="now()", onupdate=datetime.now(timezone.utc)
+    )
+    seniority_level = Column(Enum(SeniorityLevel), nullable=False, default=SeniorityLevel.ASSOCIATE)
     location_id = Column(String, ForeignKey("location.id"), nullable=True)
 
     job_classifications = relationship("JobClassification", back_populates="role")
@@ -227,6 +241,7 @@ class RoleRaw(Base):
     id = Column(String, primary_key=True, server_default="gen_random_uuid()")
     title = Column(String, nullable=False)
     description = Column(String, nullable=True)
+    created_at = Column(DateTime, nullable=False, server_default="now()")
     role_id = Column(String, nullable=False)
 
 
