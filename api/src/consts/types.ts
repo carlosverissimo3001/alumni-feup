@@ -1,9 +1,4 @@
-export const ENROLLMENT_HEADERS = [
-  'student_id',
-  'full_name',
-  'status',
-  'linkedin_url',
-];
+export const ENROLLMENT_HEADERS = ['full_name', 'status', 'linkedin_url'];
 
 export enum GRADUATION_STATUS {
   ACTIVE = 'ACTIVE',
