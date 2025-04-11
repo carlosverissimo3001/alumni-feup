@@ -43,16 +43,15 @@ export const CSVInfoPanel = ({ onClose }: CSVInfoPanelProps) => {
             </p>
             <div className="bg-slate-50 p-4 rounded-md">
               <ul className="list-disc pl-5 space-y-2 text-sm">
-                <li><span className="font-medium">student_id</span> - Unique identifier for each student</li>
-                <li><span className="font-medium">full name</span> - Student&apos;s complete name</li>
+                <li><span className="font-medium"><em>full_name</em></span> - Student&apos;s complete name</li>
                 <li>
-                  <span className="font-medium">status</span> - the enrollment status of the student and the year of conclusion
+                  <span className="font-medium"><em>conclusion_year</em></span> - the year of conclusion of the student
                   <ul className="list-disc pl-5 mt-1 text-xs text-slate-500">
-                    <li>Example: Concluído (2019/2020)</li>
+                    <li>Example: 2019 (2018/2019 also accepted)</li>
                   </ul>
                 </li>
                 <li>
-                  <span className="font-medium">linkedin_url</span> - The LinkedIn URL of the student
+                  <span className="font-medium"><em>linkedin_url</em></span> - The LinkedIn URL of the student
                 </li>
               </ul>
             </div>

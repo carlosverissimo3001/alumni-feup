@@ -20,4 +20,10 @@ export class Location extends LocationGeo {
 
   @ApiProperty({ description: 'The country code of the location' })
   countryCode: string;
+
+  @ApiProperty({ description: 'The created at date of the location' })
+  createdAt: Date;
+
+  @ApiProperty({ description: 'The updated at date of the location' })
+  updatedAt: Date;
 }
