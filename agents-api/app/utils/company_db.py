@@ -45,3 +45,8 @@ def update_company(company: Company, db: Session) -> Company:
         db.commit()
         db.refresh(existing_company)
     return existing_company
+
+def get_all_companies_with_logo_url(db: Session) -> list[Company]:
+    return db.query(Company).filter(Company.logo is not None).all()
+
+

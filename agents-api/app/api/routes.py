@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 
-from app.api.endpoints import job_classification, linkedin
+from app.api.endpoints import job_classification, linkedin, role, storage
 
 # Create the main API router
 api_router = APIRouter()
@@ -16,4 +16,16 @@ api_router.include_router(
     linkedin.router,
     prefix="/linkedin",
     tags=["LinkedIn"],
+)
+
+api_router.include_router(
+    role.router,
+    prefix="/role",
+    tags=["Role"],
+)
+
+api_router.include_router(
+    storage.router,
+    prefix="/storage",
+    tags=["Storage"],
 )

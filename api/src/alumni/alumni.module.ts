@@ -6,6 +6,7 @@ import { AlumniRepository } from './repositories/alumni.repository';
 import { Logger } from '@nestjs/common';
 import { GeolocationService } from '../geolocation/geolocation.service';
 import { AgentsApiService } from '../agents-api/agents-api.service';
+import { OtpService } from '../otp/otp.service';
 @Module({
   controllers: [AlumniController],
   providers: [
@@ -15,6 +16,7 @@ import { AgentsApiService } from '../agents-api/agents-api.service';
     Logger,
     GeolocationService,
     AgentsApiService,
+    OtpService,
   ],
 })
 export class AlumniModule {}

@@ -37,3 +37,7 @@ def get_location(
         )
         .first()
     )
+
+def get_all_locations(db: Session) -> list[Location]:
+    return db.query(Location).all()
+

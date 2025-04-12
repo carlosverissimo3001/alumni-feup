@@ -49,13 +49,6 @@ model Alumni {
   @@map("alumni")
 }
 
-model AlumniRaw {
-  id        String   @id
-  createdAt DateTime @default(now()) @map("created_at") @db.Timestamp(6)
-
-  @@map("alumni_raw")
-}
-
 model Company {
   id          String        @id @default(dbgenerated("gen_random_uuid()"))
   name        String
