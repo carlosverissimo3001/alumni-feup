@@ -509,6 +509,38 @@ export interface UploadExtractionDto {
      */
     'course_id': string;
 }
+/**
+ * 
+ * @export
+ * @interface VerifyEmailDto
+ */
+export interface VerifyEmailDto {
+    /**
+     * The email of the alumni
+     * @type {string}
+     * @memberof VerifyEmailDto
+     */
+    'email': string;
+}
+/**
+ * 
+ * @export
+ * @interface VerifyEmailTokenDto
+ */
+export interface VerifyEmailTokenDto {
+    /**
+     * The email of the alumni
+     * @type {string}
+     * @memberof VerifyEmailTokenDto
+     */
+    'email': string;
+    /**
+     * The OTP token of the alumni
+     * @type {string}
+     * @memberof VerifyEmailTokenDto
+     */
+    'token': string;
+}
 
 /**
  * AlumniApi - axios parameter creator
@@ -734,6 +766,78 @@ export const AlumniApiAxiosParamCreator = function (configuration?: Configuratio
                 options: localVarRequestOptions,
             };
         },
+        /**
+         * 
+         * @summary Verify the email of the alumni by generating a token and sending it to the email
+         * @param {VerifyEmailDto} verifyEmailDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        alumniControllerVerifyEmail: async (verifyEmailDto: VerifyEmailDto, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'verifyEmailDto' is not null or undefined
+            assertParamExists('alumniControllerVerifyEmail', 'verifyEmailDto', verifyEmailDto)
+            const localVarPath = `/api/alumni/verify-email`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(verifyEmailDto, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Validate the token against the email
+         * @param {VerifyEmailTokenDto} verifyEmailTokenDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        alumniControllerVerifyEmailToken: async (verifyEmailTokenDto: VerifyEmailTokenDto, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'verifyEmailTokenDto' is not null or undefined
+            assertParamExists('alumniControllerVerifyEmailToken', 'verifyEmailTokenDto', verifyEmailTokenDto)
+            const localVarPath = `/api/alumni/verify-email/token`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(verifyEmailTokenDto, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
     }
 };
 
@@ -823,6 +927,32 @@ export const AlumniApiFp = function(configuration?: Configuration) {
             const localVarOperationServerBasePath = operationServerMap['AlumniApi.alumniControllerMarkAsReviewed']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
+        /**
+         * 
+         * @summary Verify the email of the alumni by generating a token and sending it to the email
+         * @param {VerifyEmailDto} verifyEmailDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async alumniControllerVerifyEmail(verifyEmailDto: VerifyEmailDto, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.alumniControllerVerifyEmail(verifyEmailDto, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['AlumniApi.alumniControllerVerifyEmail']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @summary Validate the token against the email
+         * @param {VerifyEmailTokenDto} verifyEmailTokenDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async alumniControllerVerifyEmailToken(verifyEmailTokenDto: VerifyEmailTokenDto, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.alumniControllerVerifyEmailToken(verifyEmailTokenDto, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['AlumniApi.alumniControllerVerifyEmailToken']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
     }
 };
 
@@ -894,6 +1024,26 @@ export const AlumniApiFactory = function (configuration?: Configuration, basePat
         alumniControllerMarkAsReviewed(markAsReviewedDto: MarkAsReviewedDto, options?: RawAxiosRequestConfig): AxiosPromise<Alumni> {
             return localVarFp.alumniControllerMarkAsReviewed(markAsReviewedDto, options).then((request) => request(axios, basePath));
         },
+        /**
+         * 
+         * @summary Verify the email of the alumni by generating a token and sending it to the email
+         * @param {VerifyEmailDto} verifyEmailDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        alumniControllerVerifyEmail(verifyEmailDto: VerifyEmailDto, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.alumniControllerVerifyEmail(verifyEmailDto, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Validate the token against the email
+         * @param {VerifyEmailTokenDto} verifyEmailTokenDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        alumniControllerVerifyEmailToken(verifyEmailTokenDto: VerifyEmailTokenDto, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.alumniControllerVerifyEmailToken(verifyEmailTokenDto, options).then((request) => request(axios, basePath));
+        },
     };
 };
 
@@ -963,6 +1113,26 @@ export interface AlumniApiInterface {
      * @memberof AlumniApiInterface
      */
     alumniControllerMarkAsReviewed(markAsReviewedDto: MarkAsReviewedDto, options?: RawAxiosRequestConfig): AxiosPromise<Alumni>;
+
+    /**
+     * 
+     * @summary Verify the email of the alumni by generating a token and sending it to the email
+     * @param {VerifyEmailDto} verifyEmailDto 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof AlumniApiInterface
+     */
+    alumniControllerVerifyEmail(verifyEmailDto: VerifyEmailDto, options?: RawAxiosRequestConfig): AxiosPromise<void>;
+
+    /**
+     * 
+     * @summary Validate the token against the email
+     * @param {VerifyEmailTokenDto} verifyEmailTokenDto 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof AlumniApiInterface
+     */
+    alumniControllerVerifyEmailToken(verifyEmailTokenDto: VerifyEmailTokenDto, options?: RawAxiosRequestConfig): AxiosPromise<void>;
 
 }
 
@@ -1044,6 +1214,30 @@ export class AlumniApi extends BaseAPI implements AlumniApiInterface {
      */
     public alumniControllerMarkAsReviewed(markAsReviewedDto: MarkAsReviewedDto, options?: RawAxiosRequestConfig) {
         return AlumniApiFp(this.configuration).alumniControllerMarkAsReviewed(markAsReviewedDto, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Verify the email of the alumni by generating a token and sending it to the email
+     * @param {VerifyEmailDto} verifyEmailDto 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof AlumniApi
+     */
+    public alumniControllerVerifyEmail(verifyEmailDto: VerifyEmailDto, options?: RawAxiosRequestConfig) {
+        return AlumniApiFp(this.configuration).alumniControllerVerifyEmail(verifyEmailDto, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Validate the token against the email
+     * @param {VerifyEmailTokenDto} verifyEmailTokenDto 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof AlumniApi
+     */
+    public alumniControllerVerifyEmailToken(verifyEmailTokenDto: VerifyEmailTokenDto, options?: RawAxiosRequestConfig) {
+        return AlumniApiFp(this.configuration).alumniControllerVerifyEmailToken(verifyEmailTokenDto, options).then((request) => request(this.axios, this.basePath));
     }
 }
 
@@ -2086,6 +2280,78 @@ export const V1ApiAxiosParamCreator = function (configuration?: Configuration) {
         },
         /**
          * 
+         * @summary Verify the email of the alumni by generating a token and sending it to the email
+         * @param {VerifyEmailDto} verifyEmailDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        alumniControllerVerifyEmail: async (verifyEmailDto: VerifyEmailDto, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'verifyEmailDto' is not null or undefined
+            assertParamExists('alumniControllerVerifyEmail', 'verifyEmailDto', verifyEmailDto)
+            const localVarPath = `/api/alumni/verify-email`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(verifyEmailDto, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Validate the token against the email
+         * @param {VerifyEmailTokenDto} verifyEmailTokenDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        alumniControllerVerifyEmailToken: async (verifyEmailTokenDto: VerifyEmailTokenDto, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'verifyEmailTokenDto' is not null or undefined
+            assertParamExists('alumniControllerVerifyEmailToken', 'verifyEmailTokenDto', verifyEmailTokenDto)
+            const localVarPath = `/api/alumni/verify-email/token`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(verifyEmailTokenDto, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
          * @summary Get all companies
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -2420,6 +2686,32 @@ export const V1ApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
+         * @summary Verify the email of the alumni by generating a token and sending it to the email
+         * @param {VerifyEmailDto} verifyEmailDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async alumniControllerVerifyEmail(verifyEmailDto: VerifyEmailDto, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.alumniControllerVerifyEmail(verifyEmailDto, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['V1Api.alumniControllerVerifyEmail']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @summary Validate the token against the email
+         * @param {VerifyEmailTokenDto} verifyEmailTokenDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async alumniControllerVerifyEmailToken(verifyEmailTokenDto: VerifyEmailTokenDto, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.alumniControllerVerifyEmailToken(verifyEmailTokenDto, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['V1Api.alumniControllerVerifyEmailToken']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
          * @summary Get all companies
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -2582,6 +2874,26 @@ export const V1ApiFactory = function (configuration?: Configuration, basePath?: 
         },
         /**
          * 
+         * @summary Verify the email of the alumni by generating a token and sending it to the email
+         * @param {VerifyEmailDto} verifyEmailDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        alumniControllerVerifyEmail(verifyEmailDto: VerifyEmailDto, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.alumniControllerVerifyEmail(verifyEmailDto, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Validate the token against the email
+         * @param {VerifyEmailTokenDto} verifyEmailTokenDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        alumniControllerVerifyEmailToken(verifyEmailTokenDto: VerifyEmailTokenDto, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.alumniControllerVerifyEmailToken(verifyEmailTokenDto, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
          * @summary Get all companies
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -2719,6 +3031,26 @@ export interface V1ApiInterface {
      * @memberof V1ApiInterface
      */
     alumniControllerMarkAsReviewed(markAsReviewedDto: MarkAsReviewedDto, options?: RawAxiosRequestConfig): AxiosPromise<Alumni>;
+
+    /**
+     * 
+     * @summary Verify the email of the alumni by generating a token and sending it to the email
+     * @param {VerifyEmailDto} verifyEmailDto 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof V1ApiInterface
+     */
+    alumniControllerVerifyEmail(verifyEmailDto: VerifyEmailDto, options?: RawAxiosRequestConfig): AxiosPromise<void>;
+
+    /**
+     * 
+     * @summary Validate the token against the email
+     * @param {VerifyEmailTokenDto} verifyEmailTokenDto 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof V1ApiInterface
+     */
+    alumniControllerVerifyEmailToken(verifyEmailTokenDto: VerifyEmailTokenDto, options?: RawAxiosRequestConfig): AxiosPromise<void>;
 
     /**
      * 
@@ -2874,6 +3206,30 @@ export class V1Api extends BaseAPI implements V1ApiInterface {
 
     /**
      * 
+     * @summary Verify the email of the alumni by generating a token and sending it to the email
+     * @param {VerifyEmailDto} verifyEmailDto 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof V1Api
+     */
+    public alumniControllerVerifyEmail(verifyEmailDto: VerifyEmailDto, options?: RawAxiosRequestConfig) {
+        return V1ApiFp(this.configuration).alumniControllerVerifyEmail(verifyEmailDto, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Validate the token against the email
+     * @param {VerifyEmailTokenDto} verifyEmailTokenDto 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof V1Api
+     */
+    public alumniControllerVerifyEmailToken(verifyEmailTokenDto: VerifyEmailTokenDto, options?: RawAxiosRequestConfig) {
+        return V1ApiFp(this.configuration).alumniControllerVerifyEmailToken(verifyEmailTokenDto, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
      * @summary Get all companies
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -2956,3 +3312,5 @@ export class V1Api extends BaseAPI implements V1ApiInterface {
         return V1ApiFp(this.configuration).userControllerLinkedinAuth(linkedinAuthDto, options).then((request) => request(this.axios, this.basePath));
     }
 }
+
+

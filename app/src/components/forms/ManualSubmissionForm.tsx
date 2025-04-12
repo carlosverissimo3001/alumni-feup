@@ -22,7 +22,14 @@ import { CreateAlumniDto } from "@/sdk/api";
 import { Alert, AlertDescription, AlertTitle } from "../ui/alert";
 import { CourseExtended as Course } from "@/sdk";
 import { Button } from "@/components/ui/button";
-import { Divide } from "lucide-react";
+import { useVerifyEmail, useVerifyEmailToken } from "@/hooks/auth/useAuth";
+import { Info } from "lucide-react";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 interface CourseWithYear extends Course {
   conclusionYear: string;
@@ -40,6 +47,8 @@ const ManualSubmissionForm = ({ onBack }: ManualSubmissionFormProps) => {
   const [fullName, setFullName] = useState("");
   const [linkedInUrl, setLinkedInUrl] = useState("");
   const [personalEmail, setPersonalEmail] = useState("");
+  const [otpCode, setOtpCode] = useState("");
+  const [isEmailVerified, setIsEmailVerified] = useState(false);
   const [selectedFaculty, setSelectedFaculty] = useState<string | undefined>(
     undefined
   );
@@ -52,6 +61,44 @@ const ManualSubmissionForm = ({ onBack }: ManualSubmissionFormProps) => {
   const { data: courses, isLoading: isLoadingCourses } = useListCourses({
     facultyId: selectedFaculty,
     enabled: !!selectedFaculty,
+  });
+
+  // Email verification hooks
+  const { mutate: sendVerificationEmail, isPending: isSendingEmail,} = useVerifyEmail({
+    data: { email: personalEmail },
+    onSuccess: () => {
+      toast({
+        title: "Verification code sent!",
+        description: "Please check your email for the verification code.",
+        variant: "success",
+      });
+    },
+    onError: () => {
+      toast({
+        title: "Failed to send verification code",
+        description: "Please try again later",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const { mutate: verifyEmailToken, isPending: isVerifyingToken } = useVerifyEmailToken({
+    data: { email: personalEmail, token: otpCode },
+    onSuccess: () => {
+      setIsEmailVerified(true);
+      toast({
+        title: "Success!",
+        description: "Email verified successfully!",
+        variant: "success",
+      });
+    },
+    onError: () => {
+      toast({
+        title: "Error",
+        description: "Invalid verification code. Please try again.",
+        variant: "destructive",
+      });
+    },
   });
 
   const onSuccess = () => {
@@ -134,11 +181,10 @@ const ManualSubmissionForm = ({ onBack }: ManualSubmissionFormProps) => {
 
   const getAvailableYears = (course: CourseWithYear) => {
     const currentYear = new Date().getFullYear();
-    const startYear =
-      course.startYear && course.startYear > 1900
-        ? course.startYear
-        : currentYear - 10;
-    const endYear = course.endYear || currentYear;
+    const startYear = typeof course.startYear === 'number' && course.startYear > 1900
+      ? course.startYear
+      : currentYear - 10;
+    const endYear = typeof course.endYear === 'number' ? course.endYear : currentYear;
     const years = [];
 
     const finalEndYear = Math.max(startYear, endYear);
@@ -161,9 +207,9 @@ const ManualSubmissionForm = ({ onBack }: ManualSubmissionFormProps) => {
     sendManualSubmission();
   };
 
-  // TODO: Use zod to validate the form
   const isFormValid = () => {
     return (
+      isEmailVerified &&
       fullName.trim() !== "" &&
       linkedInUrl.trim() !== "" &&
       selectedFaculty !== undefined &&
@@ -193,145 +239,253 @@ const ManualSubmissionForm = ({ onBack }: ManualSubmissionFormProps) => {
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-6">
-              <div className="grid gap-3 md:grid-cols-2">
-                <div className="space-y-3 md:col-span-2">
+              {/* Email Verification Section */}
+              <div className="space-y-4 bg-gradient-to-b from-gray-50 to-white p-6 rounded-xl border border-gray-200 shadow-sm">
+                <div className="flex items-start justify-between">
                   <div>
-                    <Label htmlFor="fullName" className="text-sm font-medium">
-                      Full Name <span className="text-destructive">*</span>
-                    </Label>
-                    <Input
-                      id="fullName"
-                      value={fullName}
-                      onChange={(e) => setFullName(e.target.value)}
-                      placeholder="Enter your full name"
-                      className="mt-1.5"
-                      required
-                    />
-                  </div>
-
-                  <div>
-                    <Label htmlFor="linkedInUrl" className="text-sm font-medium">
-                      LinkedIn URL <span className="text-destructive">*</span>
-                    </Label>
-                    <Input
-                      id="linkedInUrl"
-                      value={linkedInUrl}
-                      onChange={(e) => setLinkedInUrl(e.target.value)}
-                      placeholder="https://www.linkedin.com/in/your-profile"
-                      className="mt-1.5"
-                      required
-                    />
-                  </div>
-
-                  <div>
-                    <Label htmlFor="personalEmail" className="text-sm font-medium flex items-center gap-2">
-                      Personal Email 
-                      <span className="text-xs px-2 py-0.5 rounded-full bg-gray-100 text-gray-600">Optional</span>
-                    </Label>
-                    <Input
-                      id="personalEmail"
-                      value={personalEmail}
-                      onChange={(e) => setPersonalEmail(e.target.value)}
-                      placeholder="your@email.com"
-                      type="email"
-                      className="mt-1.5"
-                    />
-                  </div>
-                </div>
-                <div className="space-y-3 md:col-span-2">
-                  <div>
-                    <Label htmlFor="faculty" className="text-sm font-medium">
-                      Faculty <span className="text-destructive">*</span>
-                    </Label>
-                    <Select
-                      value={selectedFaculty}
-                      onValueChange={setSelectedFaculty}
-                      disabled={isLoadingFaculties}
-                    >
-                      <SelectTrigger className="mt-1.5">
-                        <SelectValue placeholder="Select your faculty" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {faculties?.map((faculty) => (
-                          <SelectItem key={faculty.id} value={faculty.id}>
-                            {faculty.acronym} - {faculty.name}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  <div>
-                    <Label className="text-sm font-medium">
-                      Completed Courses <span className="text-destructive">*</span>
-                    </Label>
-                    <div className="mt-1.5">
-                      <MultiSelect
-                        value={selectedCourseIds}
-                        onValueChange={setSelectedCourseIds}
-                        options={
-                          courses?.map((course) => ({
-                            value: course.id,
-                            label: `${course.acronym} - ${course.name}`,
-                          })) || []
-                        }
-                        placeholder="Select your courses"
-                        disabled={!selectedFaculty || isLoadingCourses}
-                      />
+                    <h3 className="text-lg font-semibold text-gray-900">Email Verification</h3>
+                    <div className="flex items-center gap-2 mt-1">
+                      <p className="text-sm text-gray-600">Please verify your email to continue</p>
+                      <TooltipProvider delayDuration={0}>
+                        <Tooltip>
+                          <TooltipTrigger asChild onClick={(e) => e.preventDefault()}>
+                            <Button variant="ghost" size="icon" className="h-4 w-4 p-0">
+                              <Info className="h-4 w-4 text-gray-400 hover:text-gray-600 transition-colors" />
+                            </Button>
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            <p>We verify emails to ensure legitimate submissions and maintain the quality of our alumni network.</p>
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
                     </div>
                   </div>
+                  {isEmailVerified && (
+                    <div className="flex items-center gap-1.5 px-2.5 py-1 bg-green-50 text-green-700 rounded-full text-sm font-medium">
+                      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                      </svg>
+                      Verified
+                    </div>
+                  )}
+                </div>
+
+                <div className="space-y-4">
+                  <div>
+                    <Label htmlFor="personalEmail" className="text-sm font-medium flex items-center gap-2">
+                      Email Address <span className="text-destructive">*</span>
+                    </Label>
+                    <div className="flex gap-2 mt-2">
+                      <Input
+                        id="personalEmail"
+                        value={personalEmail}
+                        onChange={(e) => setPersonalEmail(e.target.value)}
+                        placeholder="your@email.com"
+                        type="email"
+                        disabled={isEmailVerified}
+                        className={`transition-all duration-200 ${isEmailVerified ? 'bg-gray-50 text-gray-500' : ''}`}
+                        required
+                      />
+                      <Button
+                        type="button"
+                        variant="secondary"
+                        onClick={() => sendVerificationEmail()}
+                        disabled={ isEmailVerified || isSendingEmail}
+                        className={`min-w-[100px] transition-all duration-200 ${
+                          isEmailVerified 
+                            ? 'opacity-50 cursor-not-allowed' 
+                            : ''
+                        }`}
+                      >
+                        {isSendingEmail ? (
+                          <div className="flex items-center gap-2">
+                            <div className="h-4 w-4 animate-spin rounded-full border-2 border-gray-500 border-t-transparent"></div>
+                            <span>Sending...</span>
+                          </div>
+                        ) : (
+                          'Send Code'
+                        )}
+                      </Button>
+                    </div>
+                  </div>
+
+                  {personalEmail && !isEmailVerified && (
+                    <div className="animate-in fade-in slide-in-from-top duration-300">
+                      <Label htmlFor="otpCode" className="text-sm font-medium">
+                        Verification Code <span className="text-destructive">*</span>
+                      </Label>
+                      <div className="flex gap-2 mt-2">
+                        <Input
+                          id="otpCode"
+                          value={otpCode}
+                          onChange={(e) => setOtpCode(e.target.value.replace(/\D/g, ''))}
+                          placeholder="Enter 6-digit code"
+                          maxLength={6}
+                          className="font-mono tracking-wider text-center"
+                        />
+                        <Button
+                          type="button"
+                          variant="secondary"
+                          onClick={() => verifyEmailToken()}
+                          disabled={otpCode.length < 6 || isVerifyingToken}
+                          className="min-w-[100px]"
+                        >
+                          {isVerifyingToken ? (
+                            <div className="flex items-center gap-2">
+                              <div className="h-4 w-4 animate-spin rounded-full border-2 border-gray-500 border-t-transparent"></div>
+                              <span>Verifying...</span>
+                            </div>
+                          ) : (
+                            'Verify'
+                          )}
+                        </Button>
+                      </div>
+                      <p className="mt-2 text-sm text-gray-500">
+                        Didn&apos;t receive the code?{" "}
+                        <button
+                          type="button"
+                          onClick={() => sendVerificationEmail()}
+                          disabled={isSendingEmail}
+                          className="text-primary hover:underline disabled:opacity-50"
+                        >
+                          Send again
+                        </button>
+                      </p>
+                    </div>
+                  )}
                 </div>
               </div>
 
-              {coursesWithYears.length > 0 && (
-                <div className="space-y-2 bg-gray-50 p-3 rounded-xl border border-gray-100">
-                  <div>
-                    <h3 className="font-medium text-gray-900">Course(s) Completion</h3>
-                    <p className="text-sm text-gray-500">Select the year you completed each course</p>
-                  </div>
-                  
-                  <div className="space-y-2">
-                    {coursesWithYears.map((course) => (
-                      <div key={course.id} className="flex items-center gap-4 p-2 rounded-lg bg-white border border-gray-200">
-                        <div className="flex-1 min-w-0">
-                          <p className="text-sm font-medium text-gray-900 truncate">{course.name}</p>
-                        </div>
+              {/* Rest of the form - only show if email is verified */}
+              {isEmailVerified && (
+                <>
+                  <div className="grid gap-3 md:grid-cols-2">
+                    <div className="space-y-3 md:col-span-2">
+                      <div>
+                        <Label htmlFor="fullName" className="text-sm font-medium">
+                          Full Name <span className="text-destructive">*</span>
+                        </Label>
+                        <Input
+                          id="fullName"
+                          value={fullName}
+                          onChange={(e) => setFullName(e.target.value)}
+                          placeholder="Enter your full name"
+                          className="mt-1.5"
+                          required
+                        />
+                      </div>
+
+                      <div>
+                        <Label htmlFor="linkedInUrl" className="text-sm font-medium">
+                          LinkedIn URL <span className="text-destructive">*</span>
+                        </Label>
+                        <Input
+                          id="linkedInUrl"
+                          value={linkedInUrl}
+                          onChange={(e) => setLinkedInUrl(e.target.value)}
+                          placeholder="https://www.linkedin.com/in/your-profile"
+                          className="mt-1.5"
+                          required
+                        />
+                      </div>
+                    </div>
+
+                    <div className="space-y-3 md:col-span-2">
+                      <div>
+                        <Label htmlFor="faculty" className="text-sm font-medium">
+                          Faculty <span className="text-destructive">*</span>
+                        </Label>
                         <Select
-                          value={course.conclusionYear}
-                          onValueChange={(year) => handleYearChange(course.id, year)}
+                          value={selectedFaculty}
+                          onValueChange={setSelectedFaculty}
+                          disabled={isLoadingFaculties}
                         >
-                          <SelectTrigger className="w-[100px]">
-                            <SelectValue placeholder="Year" />
+                          <SelectTrigger className="mt-1.5">
+                            <SelectValue placeholder="Select your faculty" />
                           </SelectTrigger>
                           <SelectContent>
-                            {getAvailableYears(course).map((year) => (
-                              <SelectItem key={year} value={year}>
-                                {year}
+                            {faculties?.map((faculty) => (
+                              <SelectItem key={faculty.id} value={faculty.id}>
+                                {faculty.acronym} - {faculty.name}
                               </SelectItem>
                             ))}
                           </SelectContent>
                         </Select>
                       </div>
-                    ))}
+
+                      <div>
+                        <Label className="text-sm font-medium">
+                          Completed Courses <span className="text-destructive">*</span>
+                        </Label>
+                        <div className="mt-1.5">
+                          <MultiSelect
+                            value={selectedCourseIds}
+                            onValueChange={setSelectedCourseIds}
+                            options={
+                              courses?.map((course) => ({
+                                value: course.id,
+                                label: `${course.acronym} - ${course.name}`,
+                              })) || []
+                            }
+                            placeholder="Select your courses"
+                            disabled={!selectedFaculty || isLoadingCourses}
+                          />
+                        </div>
+                      </div>
+                    </div>
                   </div>
-                </div>
-              )}
 
-              {!!error && (
-                <Alert variant="destructive" className="mt-4">
-                  <AlertTitle>Error</AlertTitle>
-                  <AlertDescription>{error}</AlertDescription>
-                </Alert>
-              )}
+                  {coursesWithYears.length > 0 && (
+                    <div className="space-y-2 bg-gray-50 p-3 rounded-xl border border-gray-100">
+                      <div>
+                        <h3 className="font-medium text-gray-900">Course(s) Completion</h3>
+                        <p className="text-sm text-gray-500">Select the year you completed each course</p>
+                      </div>
+                      
+                      <div className="space-y-2">
+                        {coursesWithYears.map((course) => (
+                          <div key={course.id} className="flex items-center gap-4 p-2 rounded-lg bg-white border border-gray-200">
+                            <div className="flex-1 min-w-0">
+                              <p className="text-sm font-medium text-gray-900 truncate">{course.name}</p>
+                            </div>
+                            <Select
+                              value={course.conclusionYear}
+                              onValueChange={(year) => handleYearChange(course.id, year)}
+                            >
+                              <SelectTrigger className="w-[100px]">
+                                <SelectValue placeholder="Year" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                {getAvailableYears(course).map((year) => (
+                                  <SelectItem key={year} value={year}>
+                                    {year}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
 
-              <LoadingButton
-                type="submit"
-                className="w-full py-6 text-lg font-medium mt-6"
-                isLoading={isPending}
-                disabled={!isFormValid()}
-              >
-                {isPending ? "Submitting..." : "Submit Application"}
-              </LoadingButton>
+                  {!!error && (
+                    <Alert variant="destructive" className="mt-4">
+                      <AlertTitle>Error</AlertTitle>
+                      <AlertDescription>{error}</AlertDescription>
+                    </Alert>
+                  )}
+
+                  <LoadingButton
+                    type="submit"
+                    className="w-full py-6 text-lg font-medium mt-6"
+                    isLoading={isPending}
+                    disabled={!isFormValid()}
+                  >
+                    {isPending ? "Submitting..." : "Submit Application"}
+                  </LoadingButton>
+                </>
+              )}
             </form>
           </div>
         </CardContent>

@@ -27,3 +27,9 @@ def update_alumni(alumni: Alumni, db: Session) -> None:
         
         db.commit()
         db.refresh(existing_alumni)
+
+def get_all_alumni_with_profile_picture_url(db: Session) -> list[Alumni]:
+    return db.query(Alumni).filter(Alumni.profile_picture_url is not None).all()
+
+
+
