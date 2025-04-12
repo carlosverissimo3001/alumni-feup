@@ -219,6 +219,58 @@
         ]
       }
     },
+    "/api/alumni/verify-email": {
+      "post": {
+        "operationId": "AlumniController_verifyEmail",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/VerifyEmailDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "default": {
+            "description": "Returns the verified email"
+          }
+        },
+        "summary": "Verify the email of the alumni by generating a token and sending it to the email",
+        "tags": [
+          "V1",
+          "Alumni"
+        ]
+      }
+    },
+    "/api/alumni/verify-email/token": {
+      "post": {
+        "operationId": "AlumniController_verifyEmailToken",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/VerifyEmailTokenDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "default": {
+            "description": "Returns the status of the validation"
+          }
+        },
+        "summary": "Validate the token against the email",
+        "tags": [
+          "V1",
+          "Alumni"
+        ]
+      }
+    },
     "/api/company": {
       "get": {
         "operationId": "CompanyController_findAll",
@@ -759,6 +811,35 @@
           "linkedinUrl",
           "courses",
           "facultyId"
+        ]
+      },
+      "VerifyEmailDto": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "The email of the alumni"
+          }
+        },
+        "required": [
+          "email"
+        ]
+      },
+      "VerifyEmailTokenDto": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "The email of the alumni"
+          },
+          "token": {
+            "type": "string",
+            "description": "The OTP token of the alumni"
+          }
+        },
+        "required": [
+          "email",
+          "token"
         ]
       },
       "LinkedinAuthDto": {
