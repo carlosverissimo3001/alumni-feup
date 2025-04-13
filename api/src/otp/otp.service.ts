@@ -13,7 +13,6 @@ export class OtpService {
     return crypto.createHash('sha256').update(code).digest('hex');
   }
 
-
   async generateOTP(email: string): Promise<string> {
     const otp = crypto.randomInt(100000, 999999).toString();
     const hashed = this.hash(otp);
