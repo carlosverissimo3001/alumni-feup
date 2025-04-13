@@ -2,7 +2,7 @@ import { useQuery, QueryObserverResult } from "@tanstack/react-query";
 import { useJsonFromResponse } from "@/commom";
 import NestAPI from "@/api";
 import { AxiosResponse } from "axios";
-import { Alumni } from "@/sdk";
+import { Alumni, AlumniExtended } from "@/sdk";
 
 interface UseListAlumniToReviewReturn {
   data: Alumni[] | undefined;
@@ -16,7 +16,7 @@ export const useListAlumniToReview = (): UseListAlumniToReviewReturn => {
     queryKey: ["alumni-to-review"],
     queryFn: () =>
       NestAPI.alumniControllerGetAlumniToReview().then(
-        (response: AxiosResponse<Alumni[]>) => response.data
+        (response: AxiosResponse<AlumniExtended[]>) => response.data
       ),
     staleTime: Infinity, // Data will never become stale automatically
     gcTime: Infinity, // Cache will never be cleared automatically (formerly cacheTime)

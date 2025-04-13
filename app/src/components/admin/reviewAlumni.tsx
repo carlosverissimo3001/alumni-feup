@@ -1,14 +1,16 @@
 "use client";
 
-import { Alumni } from "@/sdk";
+import { AlumniExtended } from "@/sdk";
 import useMarkAlumniReviewed from "@/hooks/alumni/useMarkAlumniReviewed";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { CheckCircle, ExternalLink, PinIcon } from "lucide-react";
+import { CheckCircle, PinIcon, ClockIcon } from "lucide-react";
 import Link from "next/link";
 import { useToast } from "@/hooks/misc/useToast";
+import Image from "next/image";
+import { formatDistanceToNow } from "date-fns";
 
-const ReviewAlumni = ({ alumniToReview }: { alumniToReview: Alumni[] }) => {
+const ReviewAlumni = ({ alumniToReview }: { alumniToReview: AlumniExtended[] }) => {
   const { toast } = useToast();
   const { mutate: markAsReviewed, isPending: isMarkingAsReviewed } = useMarkAlumniReviewed({
     onSuccess: () => {
@@ -28,16 +30,36 @@ const ReviewAlumni = ({ alumniToReview }: { alumniToReview: Alumni[] }) => {
     );
   }
 
+  // Function to check if a date is less than 24 hours ago
+  const isRecent = (date: string | Date) => {
+    return new Date().getTime() - new Date(date).getTime() < 86400000; // 24 hours in milliseconds
+  };
+
   return (
     <div className="space-y-4">
       {alumniToReview.map((alumni) => (
-        <Card key={alumni.id}>
+        <Card key={alumni.id} className="transition-shadow hover:shadow-md">
           <CardContent className="p-6">
             <div className="flex items-start justify-between">
               <div className="space-y-3">
                 <div>
-                  <h3 className="font-medium text-lg">
+                  <h3 className="font-medium text-lg flex items-center">
                     {alumni.fullName}
+                    {alumni.linkedinUrl && (
+                      <Link 
+                        href={alumni.linkedinUrl}
+                        target="_blank" 
+                        className="ml-2 flex items-center text-primary hover:scale-110 transition-transform"
+                        title="View LinkedIn Profile"
+                      >
+                        <Image 
+                          src="/logos/linkedin-icon.svg" 
+                          alt="LinkedIn" 
+                          width={16} 
+                          height={16} 
+                        />
+                      </Link>
+                    )}
                   </h3>
                   {alumni.Location && alumni.Location.city && alumni.Location.country && (
                     <div className="flex items-center gap-2 text-sm">
@@ -47,28 +69,25 @@ const ReviewAlumni = ({ alumniToReview }: { alumniToReview: Alumni[] }) => {
                       </span>
                     </div>
                   )}
+                  
+                  {alumni.createdAt && (
+                    <div className="flex items-center gap-2 text-xs text-muted-foreground mt-1">
+                      <ClockIcon className="h-3 w-3" />
+                      <span>Submitted {formatDistanceToNow(new Date(alumni.createdAt))} ago</span>
+                      {isRecent(alumni.createdAt) && (
+                        <span className="bg-blue-100 text-blue-800 text-xs font-medium px-2 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300">New</span>
+                      )}
+                    </div>
+                  )}
                 </div>
-
-                {alumni.linkedinUrl && (
-                  <div className="flex items-center gap-2 text-sm">
-                    <Link 
-                      href={alumni.linkedinUrl}
-                      target="_blank" 
-                      className="flex items-center text-primary hover:text-primary/80"
-                    >
-                      LinkedIn Profile
-                      <ExternalLink className="h-3 w-3 ml-1" />
-                    </Link>
-                  </div>
-                )}
 
                 {alumni.Graduations && alumni.Graduations.length > 0 && (
                   <div className="space-y-1">
-                    <div>
+                    <div className="space-y-2">
                       {alumni.Graduations.map((graduation, index) => (
                         <div 
                           key={index}
-                          className="text-sm"
+                          className="text-sm border-l-2 border-muted pl-2"
                         >
                           <span className="font-medium">{graduation.Course.name.toString()}</span>
                           <span className="text-muted-foreground"> ({graduation.conclusionYear.toString()})</span>
@@ -86,8 +105,14 @@ const ReviewAlumni = ({ alumniToReview }: { alumniToReview: Alumni[] }) => {
                 onClick={() => markAsReviewed({ id: alumni.id })}
                 disabled={isMarkingAsReviewed}
               >
-                <CheckCircle className="h-4 w-4 mr-2" />
-                Approve
+                {isMarkingAsReviewed ? (
+                  <span className="animate-pulse">Processing...</span>
+                ) : (
+                  <>
+                    <CheckCircle className="h-4 w-4 mr-2" />
+                    Approve
+                  </>
+                )}
               </Button>
             </div>
           </CardContent>

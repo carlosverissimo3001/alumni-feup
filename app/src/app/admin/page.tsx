@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { Card, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { FileSpreadsheetIcon, MergeIcon, UsersIcon } from "lucide-react";
+import { CreditCardIcon, FileSpreadsheetIcon, MergeIcon, UsersIcon } from "lucide-react";
 
 const AdminDashboard = () => {
   const operations = [
@@ -23,6 +23,13 @@ const AdminDashboard = () => {
       description: "Merge companies based on their names",
       icon: <MergeIcon className="h-6 w-6" />,
       href: "/admin/merge-companies",
+      disabled: true,
+    },
+    {
+      title: "API Usage",
+      description: "View API usage and balance",
+      icon: <CreditCardIcon className="h-6 w-6" />,
+      href: "/admin/api-usage",
     }
   ];
 

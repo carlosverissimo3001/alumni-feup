@@ -80,23 +80,42 @@ export class Alumni {
 }
 
 export class AlumniExtended extends Alumni {
-  @ApiProperty({ description: 'Whether the alumni is in a group' })
-  isInGroup: boolean;
+  @ApiPropertyOptional({
+    description: 'Whether the alumni is in a group',
+    type: Boolean,
+  })
+  isInGroup?: boolean | null;
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     description: 'Whether the alumni has a sigarra match',
+    type: Boolean,
   })
-  hasSigarraMatch: boolean;
+  hasSigarraMatch?: boolean | null;
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     description: 'Whether the alumni submission has been reviewed by the admin',
+    type: Boolean,
   })
-  wasReviewed: boolean;
+  wasReviewed?: boolean | null;
+
+  @ApiPropertyOptional({
+    description: 'The date and time the alumni submission was created',
+    type: Date,
+  })
+  createdAt?: Date | null;
+
+  @ApiPropertyOptional({
+    description: 'The date and time the alumni submission was updated',
+    type: Date,
+  })
+  updatedAt?: Date | null;
 
   constructor(data: AlumniExtended) {
     super(data);
     this.isInGroup = data.isInGroup;
     this.hasSigarraMatch = data.hasSigarraMatch;
     this.wasReviewed = data.wasReviewed;
+    this.createdAt = data.createdAt;
+    this.updatedAt = data.updatedAt;
   }
 }
