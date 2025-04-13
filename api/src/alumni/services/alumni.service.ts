@@ -95,8 +95,9 @@ export class AlumniService {
 
     let alumniCompareYear: Alumni[] = [];
     if (query.compareYear) {
-      alumniCompareYear = this.filterAlumniByStartDate(
+      alumniCompareYear = this.filterAlumniByCompareDate(
         alumni,
+        query.selectedYear,
         query.compareYear,
       );
     }
@@ -233,6 +234,37 @@ export class AlumniService {
         }
       });
       filteredAlumni = alumni;
+    }
+    return filteredAlumni;
+  }
+
+  private filterAlumniByCompareDate(
+    alumni: Alumni[],
+    selectedYear?: number,
+    compareYear?: number,
+  ): Alumni[] {
+    let filteredAlumni: Alumni[] = [];
+    if (selectedYear && compareYear) {
+      alumni.forEach((alumnus) => {
+        if (alumnus.Roles) {
+          alumnus.Roles.sort(
+            (a, b) =>
+              new Date(a.startDate).getTime() - new Date(b.startDate).getTime(),
+          ); //Order By Start Date
+          const roleFound = alumnus.Roles.find(
+            (role) =>
+              role.startDate > new Date(compareYear, 0, 1) &&
+              role.startDate < new Date(selectedYear, 11, 31) &&
+              role.Location
+          );
+          if (roleFound) {
+            const alumniToAdd = JSON.parse(JSON.stringify(alumnus));
+            alumniToAdd.Roles = [];
+            alumniToAdd.Roles.push(roleFound);
+            filteredAlumni.push(alumniToAdd);
+          }
+        }
+      });
     }
     return filteredAlumni;
   }
