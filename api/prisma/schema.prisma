@@ -117,14 +117,19 @@ model Industry {
 }
 
 model JobClassification {
-  id         String   @id @default(dbgenerated("gen_random_uuid()"))
-  title      String
-  level      Int      @db.SmallInt
-  escoCode   String?  @map("esco_code")
-  roleId     String   @map("role_id")
-  confidence Float?
-  createdAt  DateTime @default(now()) @map("created_at") @db.Timestamp(6)
-  Role       Role     @relation(fields: [roleId], references: [id])
+  id             String  @id @default(dbgenerated("gen_random_uuid()"))
+  title          String
+  level          Int     @db.SmallInt
+  escoCode       String? @map("esco_code")
+  roleId         String  @map("role_id")
+  confidence     Float?
+  processingTime Float?  @map("processing_time")
+  modelUsed      String? @map("model_used")
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamp(6)
+  updatedAt DateTime @default(now()) @map("updated_at") @db.Timestamp(6)
+
+  Role Role @relation(fields: [roleId], references: [id])
 
   @@index([roleId])
   @@index([title])
@@ -174,7 +179,7 @@ model Role {
   Alumni            Alumni              @relation(fields: [alumniId], references: [id])
   Company           Company             @relation(fields: [companyId], references: [id])
   Location          Location?           @relation(fields: [locationId], references: [id])
-  
+
   @@index([alumniId])
   @@index([companyId])
   @@index([locationId])
@@ -182,7 +187,7 @@ model Role {
 }
 
 model RoleRaw {
-  id          String  @id @default(dbgenerated("gen_random_uuid()"))
+  id          String   @id @default(dbgenerated("gen_random_uuid()"))
   title       String
   description String?
   createdAt   DateTime @default(now()) @map("created_at") @db.Timestamp(6)
