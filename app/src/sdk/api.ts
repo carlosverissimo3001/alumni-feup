@@ -649,6 +649,195 @@ export interface VerifyEmailTokenDto {
 }
 
 /**
+ * AdminApi - axios parameter creator
+ * @export
+ */
+export const AdminApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * 
+         * @summary Get BrightData balance
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        adminControllerGetBrightDataBalance: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/api/admin/brightdata-balance`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Get ProxyCurl balance
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        adminControllerGetProxyCurlBalance: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/api/admin/proxycurl-balance`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * AdminApi - functional programming interface
+ * @export
+ */
+export const AdminApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = AdminApiAxiosParamCreator(configuration)
+    return {
+        /**
+         * 
+         * @summary Get BrightData balance
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async adminControllerGetBrightDataBalance(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<number>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.adminControllerGetBrightDataBalance(options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['AdminApi.adminControllerGetBrightDataBalance']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @summary Get ProxyCurl balance
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async adminControllerGetProxyCurlBalance(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<number>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.adminControllerGetProxyCurlBalance(options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['AdminApi.adminControllerGetProxyCurlBalance']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+    }
+};
+
+/**
+ * AdminApi - factory interface
+ * @export
+ */
+export const AdminApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = AdminApiFp(configuration)
+    return {
+        /**
+         * 
+         * @summary Get BrightData balance
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        adminControllerGetBrightDataBalance(options?: RawAxiosRequestConfig): AxiosPromise<number> {
+            return localVarFp.adminControllerGetBrightDataBalance(options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Get ProxyCurl balance
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        adminControllerGetProxyCurlBalance(options?: RawAxiosRequestConfig): AxiosPromise<number> {
+            return localVarFp.adminControllerGetProxyCurlBalance(options).then((request) => request(axios, basePath));
+        },
+    };
+};
+
+/**
+ * AdminApi - interface
+ * @export
+ * @interface AdminApi
+ */
+export interface AdminApiInterface {
+    /**
+     * 
+     * @summary Get BrightData balance
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof AdminApiInterface
+     */
+    adminControllerGetBrightDataBalance(options?: RawAxiosRequestConfig): AxiosPromise<number>;
+
+    /**
+     * 
+     * @summary Get ProxyCurl balance
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof AdminApiInterface
+     */
+    adminControllerGetProxyCurlBalance(options?: RawAxiosRequestConfig): AxiosPromise<number>;
+
+}
+
+/**
+ * AdminApi - object-oriented interface
+ * @export
+ * @class AdminApi
+ * @extends {BaseAPI}
+ */
+export class AdminApi extends BaseAPI implements AdminApiInterface {
+    /**
+     * 
+     * @summary Get BrightData balance
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof AdminApi
+     */
+    public adminControllerGetBrightDataBalance(options?: RawAxiosRequestConfig) {
+        return AdminApiFp(this.configuration).adminControllerGetBrightDataBalance(options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Get ProxyCurl balance
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof AdminApi
+     */
+    public adminControllerGetProxyCurlBalance(options?: RawAxiosRequestConfig) {
+        return AdminApiFp(this.configuration).adminControllerGetProxyCurlBalance(options).then((request) => request(this.axios, this.basePath));
+    }
+}
+
+
+
+/**
  * AlumniApi - axios parameter creator
  * @export
  */
@@ -2168,6 +2357,66 @@ export const V1ApiAxiosParamCreator = function (configuration?: Configuration) {
     return {
         /**
          * 
+         * @summary Get BrightData balance
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        adminControllerGetBrightDataBalance: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/api/admin/brightdata-balance`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Get ProxyCurl balance
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        adminControllerGetProxyCurlBalance: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/api/admin/proxycurl-balance`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
          * @summary Create a new alumni
          * @param {CreateAlumniDto} createAlumniDto 
          * @param {*} [options] Override http request option.
@@ -2713,6 +2962,30 @@ export const V1ApiFp = function(configuration?: Configuration) {
     return {
         /**
          * 
+         * @summary Get BrightData balance
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async adminControllerGetBrightDataBalance(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<number>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.adminControllerGetBrightDataBalance(options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['V1Api.adminControllerGetBrightDataBalance']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @summary Get ProxyCurl balance
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async adminControllerGetProxyCurlBalance(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<number>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.adminControllerGetProxyCurlBalance(options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['V1Api.adminControllerGetProxyCurlBalance']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
          * @summary Create a new alumni
          * @param {CreateAlumniDto} createAlumniDto 
          * @param {*} [options] Override http request option.
@@ -2919,6 +3192,24 @@ export const V1ApiFactory = function (configuration?: Configuration, basePath?: 
     return {
         /**
          * 
+         * @summary Get BrightData balance
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        adminControllerGetBrightDataBalance(options?: RawAxiosRequestConfig): AxiosPromise<number> {
+            return localVarFp.adminControllerGetBrightDataBalance(options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Get ProxyCurl balance
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        adminControllerGetProxyCurlBalance(options?: RawAxiosRequestConfig): AxiosPromise<number> {
+            return localVarFp.adminControllerGetProxyCurlBalance(options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
          * @summary Create a new alumni
          * @param {CreateAlumniDto} createAlumniDto 
          * @param {*} [options] Override http request option.
@@ -3079,6 +3370,24 @@ export const V1ApiFactory = function (configuration?: Configuration, basePath?: 
 export interface V1ApiInterface {
     /**
      * 
+     * @summary Get BrightData balance
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof V1ApiInterface
+     */
+    adminControllerGetBrightDataBalance(options?: RawAxiosRequestConfig): AxiosPromise<number>;
+
+    /**
+     * 
+     * @summary Get ProxyCurl balance
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof V1ApiInterface
+     */
+    adminControllerGetProxyCurlBalance(options?: RawAxiosRequestConfig): AxiosPromise<number>;
+
+    /**
+     * 
      * @summary Create a new alumni
      * @param {CreateAlumniDto} createAlumniDto 
      * @param {*} [options] Override http request option.
@@ -3237,6 +3546,28 @@ export interface V1ApiInterface {
  * @extends {BaseAPI}
  */
 export class V1Api extends BaseAPI implements V1ApiInterface {
+    /**
+     * 
+     * @summary Get BrightData balance
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof V1Api
+     */
+    public adminControllerGetBrightDataBalance(options?: RawAxiosRequestConfig) {
+        return V1ApiFp(this.configuration).adminControllerGetBrightDataBalance(options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Get ProxyCurl balance
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof V1Api
+     */
+    public adminControllerGetProxyCurlBalance(options?: RawAxiosRequestConfig) {
+        return V1ApiFp(this.configuration).adminControllerGetProxyCurlBalance(options).then((request) => request(this.axios, this.basePath));
+    }
+
     /**
      * 
      * @summary Create a new alumni
