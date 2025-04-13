@@ -487,6 +487,52 @@
           "Faculty"
         ]
       }
+    },
+    "/api/admin/proxycurl-balance": {
+      "get": {
+        "operationId": "AdminController_getProxyCurlBalance",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "ProxyCurl balance",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "number"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Get ProxyCurl balance",
+        "tags": [
+          "V1",
+          "Admin"
+        ]
+      }
+    },
+    "/api/admin/brightdata-balance": {
+      "get": {
+        "operationId": "AdminController_getBrightDataBalance",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "BrightData balance",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "number"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Get BrightData balance",
+        "tags": [
+          "V1",
+          "Admin"
+        ]
+      }
     }
   },
   "info": {
