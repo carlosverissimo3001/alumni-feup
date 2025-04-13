@@ -4,9 +4,10 @@ import { Alumni } from "@/sdk";
 import useMarkAlumniReviewed from "@/hooks/alumni/useMarkAlumniReviewed";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { CheckCircle, ExternalLink, PinIcon } from "lucide-react";
+import { CheckCircle, PinIcon } from "lucide-react";
 import Link from "next/link";
 import { useToast } from "@/hooks/misc/useToast";
+import Image from "next/image";
 
 const ReviewAlumni = ({ alumniToReview }: { alumniToReview: Alumni[] }) => {
   const { toast } = useToast();
@@ -36,8 +37,22 @@ const ReviewAlumni = ({ alumniToReview }: { alumniToReview: Alumni[] }) => {
             <div className="flex items-start justify-between">
               <div className="space-y-3">
                 <div>
-                  <h3 className="font-medium text-lg">
+                  <h3 className="font-medium text-lg flex items-center">
                     {alumni.fullName}
+                    {alumni.linkedinUrl && (
+                      <Link 
+                        href={alumni.linkedinUrl}
+                        target="_blank" 
+                        className="ml-2 flex items-center text-primary hover:text-primary/80"
+                      >
+                        <Image 
+                          src="/logos/linkedin-icon.svg" 
+                          alt="LinkedIn" 
+                          width={16} 
+                          height={16} 
+                        />
+                      </Link>
+                    )}
                   </h3>
                   {alumni.Location && alumni.Location.city && alumni.Location.country && (
                     <div className="flex items-center gap-2 text-sm">
@@ -48,19 +63,6 @@ const ReviewAlumni = ({ alumniToReview }: { alumniToReview: Alumni[] }) => {
                     </div>
                   )}
                 </div>
-
-                {alumni.linkedinUrl && (
-                  <div className="flex items-center gap-2 text-sm">
-                    <Link 
-                      href={alumni.linkedinUrl}
-                      target="_blank" 
-                      className="flex items-center text-primary hover:text-primary/80"
-                    >
-                      LinkedIn Profile
-                      <ExternalLink className="h-3 w-3 ml-1" />
-                    </Link>
-                  </div>
-                )}
 
                 {alumni.Graduations && alumni.Graduations.length > 0 && (
                   <div className="space-y-1">

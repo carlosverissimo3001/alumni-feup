@@ -1,6 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { Alumni } from 'src/entities/alumni.entity';
+import { Alumni, AlumniExtended } from 'src/entities/alumni.entity';
 import { alumniSelect } from 'src/prisma/includes/alumni.include';
 import { GetGeoJSONDto } from 'src/dto/getgeojson.dto';
 import { Prisma } from '@prisma/client';
@@ -34,6 +34,17 @@ export class AlumniRepository {
       select: alumniSelect,
     });
   }
+
+  async findAllToReview(): Promise<AlumniExtended[]> {
+    return this.prisma.alumni.findMany({
+      where: { wasReviewed: false },
+      select: {
+        ...alumniSelect,
+        createdAt: true,
+      },
+    });
+  }
+
   async findAllGeoJSON(query: GetGeoJSONDto): Promise<Alumni[]> {
     const { courseIds, conclusionYears, selectedYear } = query;
 

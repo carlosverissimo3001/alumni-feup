@@ -142,7 +142,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/Alumni"
+                    "$ref": "#/components/schemas/AlumniExtended"
                   }
                 }
               }
@@ -748,6 +748,93 @@
         "required": [
           "type",
           "features"
+        ]
+      },
+      "AlumniExtended": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The id of the alumni"
+          },
+          "firstName": {
+            "type": "string",
+            "description": "The first name of the alumni"
+          },
+          "lastName": {
+            "type": "string",
+            "description": "The last name of the alumni"
+          },
+          "fullName": {
+            "type": "string",
+            "description": "The full name of the alumni"
+          },
+          "linkedinUrl": {
+            "type": "string",
+            "description": "The linkedin url of the alumni"
+          },
+          "profilePictureUrl": {
+            "type": "string",
+            "description": "The profile picture of the alumni"
+          },
+          "source": {
+            "type": "string",
+            "description": "The source of the alumni",
+            "enum": [
+              "FORM_SUBMISSION",
+              "ADMIN_IMPORT",
+              "HONORARY_MEMBER"
+            ]
+          },
+          "Roles": {
+            "description": "The roles of the alumni",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Role"
+            }
+          },
+          "Location": {
+            "description": "The current location of the alumni",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/LocationGeo"
+              }
+            ]
+          },
+          "Graduations": {
+            "description": "The graduation status(es) of the alumni",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Graduation"
+            }
+          },
+          "isInGroup": {
+            "type": "boolean",
+            "description": "Whether the alumni is in a group"
+          },
+          "hasSigarraMatch": {
+            "type": "boolean",
+            "description": "Whether the alumni has a sigarra match"
+          },
+          "wasReviewed": {
+            "type": "boolean",
+            "description": "Whether the alumni submission has been reviewed by the admin"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string",
+            "description": "The date and time the alumni submission was created"
+          },
+          "updatedAt": {
+            "format": "date-time",
+            "type": "string",
+            "description": "The date and time the alumni submission was updated"
+          }
+        },
+        "required": [
+          "id",
+          "firstName",
+          "lastName"
         ]
       },
       "MarkAsReviewedDto": {

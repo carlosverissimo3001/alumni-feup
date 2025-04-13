@@ -18,6 +18,7 @@ import {
   VerifyEmailDto,
   VerifyEmailTokenDto,
 } from '@/dto';
+import { AlumniExtended } from '@/entities/alumni.entity';
 
 @ApiTags('V1', 'Alumni')
 @Controller('alumni')
@@ -59,9 +60,9 @@ export class AlumniController {
   })
   @ApiResponse({
     description: 'Returns all alumni submissions that need to be reviewed',
-    type: [Alumni],
+    type: [AlumniExtended],
   })
-  async getAlumniToReview(): Promise<Alumni[]> {
+  async getAlumniToReview(): Promise<AlumniExtended[]> {
     return this.alumniService.getAlumniToReview();
   }
 

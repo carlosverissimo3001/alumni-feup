@@ -102,6 +102,112 @@ export type AlumniSourceEnum = typeof AlumniSourceEnum[keyof typeof AlumniSource
 /**
  * 
  * @export
+ * @interface AlumniExtended
+ */
+export interface AlumniExtended {
+    /**
+     * The id of the alumni
+     * @type {string}
+     * @memberof AlumniExtended
+     */
+    'id': string;
+    /**
+     * The first name of the alumni
+     * @type {string}
+     * @memberof AlumniExtended
+     */
+    'firstName': string;
+    /**
+     * The last name of the alumni
+     * @type {string}
+     * @memberof AlumniExtended
+     */
+    'lastName': string;
+    /**
+     * The full name of the alumni
+     * @type {string}
+     * @memberof AlumniExtended
+     */
+    'fullName'?: string;
+    /**
+     * The linkedin url of the alumni
+     * @type {string}
+     * @memberof AlumniExtended
+     */
+    'linkedinUrl'?: string;
+    /**
+     * The profile picture of the alumni
+     * @type {string}
+     * @memberof AlumniExtended
+     */
+    'profilePictureUrl'?: string;
+    /**
+     * The source of the alumni
+     * @type {string}
+     * @memberof AlumniExtended
+     */
+    'source'?: AlumniExtendedSourceEnum;
+    /**
+     * The roles of the alumni
+     * @type {Array<Role>}
+     * @memberof AlumniExtended
+     */
+    'Roles'?: Array<Role>;
+    /**
+     * The current location of the alumni
+     * @type {LocationGeo}
+     * @memberof AlumniExtended
+     */
+    'Location'?: LocationGeo;
+    /**
+     * The graduation status(es) of the alumni
+     * @type {Array<Graduation>}
+     * @memberof AlumniExtended
+     */
+    'Graduations'?: Array<Graduation>;
+    /**
+     * Whether the alumni is in a group
+     * @type {boolean}
+     * @memberof AlumniExtended
+     */
+    'isInGroup'?: boolean;
+    /**
+     * Whether the alumni has a sigarra match
+     * @type {boolean}
+     * @memberof AlumniExtended
+     */
+    'hasSigarraMatch'?: boolean;
+    /**
+     * Whether the alumni submission has been reviewed by the admin
+     * @type {boolean}
+     * @memberof AlumniExtended
+     */
+    'wasReviewed'?: boolean;
+    /**
+     * The date and time the alumni submission was created
+     * @type {string}
+     * @memberof AlumniExtended
+     */
+    'createdAt'?: string;
+    /**
+     * The date and time the alumni submission was updated
+     * @type {string}
+     * @memberof AlumniExtended
+     */
+    'updatedAt'?: string;
+}
+
+export const AlumniExtendedSourceEnum = {
+    FormSubmission: 'FORM_SUBMISSION',
+    AdminImport: 'ADMIN_IMPORT',
+    HonoraryMember: 'HONORARY_MEMBER'
+} as const;
+
+export type AlumniExtendedSourceEnum = typeof AlumniExtendedSourceEnum[keyof typeof AlumniExtendedSourceEnum];
+
+/**
+ * 
+ * @export
  * @interface Company
  */
 export interface Company {
@@ -908,7 +1014,7 @@ export const AlumniApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async alumniControllerGetAlumniToReview(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<Alumni>>> {
+        async alumniControllerGetAlumniToReview(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<AlumniExtended>>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.alumniControllerGetAlumniToReview(options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['AlumniApi.alumniControllerGetAlumniToReview']?.[localVarOperationServerIndex]?.url;
@@ -1011,7 +1117,7 @@ export const AlumniApiFactory = function (configuration?: Configuration, basePat
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        alumniControllerGetAlumniToReview(options?: RawAxiosRequestConfig): AxiosPromise<Array<Alumni>> {
+        alumniControllerGetAlumniToReview(options?: RawAxiosRequestConfig): AxiosPromise<Array<AlumniExtended>> {
             return localVarFp.alumniControllerGetAlumniToReview(options).then((request) => request(axios, basePath));
         },
         /**
@@ -1102,7 +1208,7 @@ export interface AlumniApiInterface {
      * @throws {RequiredError}
      * @memberof AlumniApiInterface
      */
-    alumniControllerGetAlumniToReview(options?: RawAxiosRequestConfig): AxiosPromise<Array<Alumni>>;
+    alumniControllerGetAlumniToReview(options?: RawAxiosRequestConfig): AxiosPromise<Array<AlumniExtended>>;
 
     /**
      * 
@@ -2665,7 +2771,7 @@ export const V1ApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async alumniControllerGetAlumniToReview(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<Alumni>>> {
+        async alumniControllerGetAlumniToReview(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<AlumniExtended>>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.alumniControllerGetAlumniToReview(options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['V1Api.alumniControllerGetAlumniToReview']?.[localVarOperationServerIndex]?.url;
@@ -2859,7 +2965,7 @@ export const V1ApiFactory = function (configuration?: Configuration, basePath?: 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        alumniControllerGetAlumniToReview(options?: RawAxiosRequestConfig): AxiosPromise<Array<Alumni>> {
+        alumniControllerGetAlumniToReview(options?: RawAxiosRequestConfig): AxiosPromise<Array<AlumniExtended>> {
             return localVarFp.alumniControllerGetAlumniToReview(options).then((request) => request(axios, basePath));
         },
         /**
@@ -3020,7 +3126,7 @@ export interface V1ApiInterface {
      * @throws {RequiredError}
      * @memberof V1ApiInterface
      */
-    alumniControllerGetAlumniToReview(options?: RawAxiosRequestConfig): AxiosPromise<Array<Alumni>>;
+    alumniControllerGetAlumniToReview(options?: RawAxiosRequestConfig): AxiosPromise<Array<AlumniExtended>>;
 
     /**
      * 
@@ -3312,5 +3418,3 @@ export class V1Api extends BaseAPI implements V1ApiInterface {
         return V1ApiFp(this.configuration).userControllerLinkedinAuth(linkedinAuthDto, options).then((request) => request(this.axios, this.basePath));
     }
 }
-
-

@@ -20,6 +20,7 @@ import { GeolocationService } from 'src/geolocation/geolocation.service';
 import { AgentsApiService } from 'src/agents-api/agents-api.service';
 import { parseNameParts, sanitizeLinkedinUrl } from '../utils';
 import { OtpService } from '@/otp/otp.service';
+import { AlumniExtended } from '@/entities/alumni.entity';
 
 type GraduationWithCourse = Graduation & {
   Course: {
@@ -66,10 +67,8 @@ export class AlumniService {
     return this.alumniRepository.findAll();
   }
 
-  async getAlumniToReview(): Promise<Alumni[]> {
-    return this.alumniRepository.findAll({
-      wasReviewed: false,
-    });
+  async getAlumniToReview(): Promise<AlumniExtended[]> {
+    return this.alumniRepository.findAllToReview();
   }
 
   async markAsReviewed(id: string): Promise<Alumni> {
