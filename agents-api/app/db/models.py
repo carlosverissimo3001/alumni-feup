@@ -1,6 +1,7 @@
 import enum
 from datetime import datetime, timezone
 
+from pgvector.sqlalchemy import Vector
 from sqlalchemy import (
     Boolean,
     Column,
@@ -228,11 +229,15 @@ class Role(Base):
     )
     seniority_level = Column(Enum(SeniorityLevel), nullable=False, default=SeniorityLevel.ASSOCIATE)
     location_id = Column(String, ForeignKey("location.id"), nullable=True)
+    is_promotion = Column(Boolean, nullable=False, server_default="false")
+    is_current = Column(Boolean, nullable=False, server_default="false")
 
     job_classifications = relationship("JobClassification", back_populates="role")
     alumni = relationship("Alumni", back_populates="roles")
     company = relationship("Company", back_populates="roles")
     location = relationship("Location", back_populates="roles")
+    role_raw = relationship("RoleRaw", back_populates="role")
+
 
 
 class RoleRaw(Base):
@@ -242,7 +247,9 @@ class RoleRaw(Base):
     title = Column(String, nullable=False)
     description = Column(String, nullable=True)
     created_at = Column(DateTime, nullable=False, server_default="now()")
-    role_id = Column(String, nullable=False)
+    role_id = Column(String, ForeignKey("role.id"), nullable=False)
+
+    role = relationship("Role", back_populates="role_raw")
 
 
 class EscoClassification(Base):
@@ -257,3 +264,5 @@ class EscoClassification(Base):
     included_occupations = Column(String, nullable=False)
     excluded_occupations = Column(String, nullable=False)
     notes = Column(String, nullable=True)
+    # Using 3072 dimensions for OpenAI's text-embedding-3-large model
+    embedding = Column(Vector(3072), nullable=True)  

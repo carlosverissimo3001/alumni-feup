@@ -167,19 +167,28 @@ model ProblematicLocation {
 
 model Role {
   id                String              @id @default(dbgenerated("gen_random_uuid()"))
+  
   alumniId          String              @map("alumni_id")
   companyId         String              @map("company_id")
+  locationId        String?             @map("location_id")
+  
+  seniorityLevel    SENIORITY_LEVEL     @map("seniority_level")
+  
   startDate         DateTime            @map("start_date") @db.Timestamptz(6)
   endDate           DateTime?           @map("end_date") @db.Timestamptz(6)
+  
   createdAt         DateTime            @default(now()) @map("created_at") @db.Timestamp(6)
   updatedAt         DateTime            @default(now()) @map("updated_at") @db.Timestamp(6)
-  seniorityLevel    SENIORITY_LEVEL     @map("seniority_level")
-  locationId        String?             @map("location_id")
+  
+  isCurrent         Boolean             @default(false) @map("is_current")
+  isPromotion       Boolean             @default(false) @map("is_promotion")
+  
   JobClassification JobClassification[]
   Alumni            Alumni              @relation(fields: [alumniId], references: [id])
   Company           Company             @relation(fields: [companyId], references: [id])
   Location          Location?           @relation(fields: [locationId], references: [id])
-
+  RoleRaw           RoleRaw?
+  
   @@index([alumniId])
   @@index([companyId])
   @@index([locationId])
@@ -191,11 +200,15 @@ model RoleRaw {
   title       String
   description String?
   createdAt   DateTime @default(now()) @map("created_at") @db.Timestamp(6)
-  roleId      String   @map("role_id")
-
+  roleId      String   @unique @map("role_id")
+  
+  Role        Role     @relation(fields: [roleId], references: [id])
+  
   @@index([roleId])
   @@map("role_raw")
 }
+
+
 
 model EscoClassification {
   id                   String  @id @default(dbgenerated("gen_random_uuid()"))
@@ -207,6 +220,7 @@ model EscoClassification {
   included_occupations String
   excluded_occupations String
   notes                String?
+  embedding            Unsupported("vector")?
 
   @@map("esco_classification")
 }

@@ -3,6 +3,7 @@ import logging
 from sqlalchemy.orm import Session
 
 from app.db.models import Role, RoleRaw
+from app.schemas.job_classification import JobClassificationInput, JobClassificationRoleInput
 
 logger = logging.getLogger(__name__)
 
@@ -24,9 +25,25 @@ def create_role_raw(role_raw: RoleRaw, db: Session) -> RoleRaw:
     db.refresh(role_raw)
     return role_raw
 
-def get_all_roles_with_no_location(db: Session) -> list[Role]:
-    return db.query(Role).filter(Role.location_id.is_(None)).all()
+def get_extended_roles_by_alumni_id(alumni_id: str, db: Session) -> JobClassificationInput:
+    roles = db.query(Role).filter(Role.alumni_id == alumni_id).all()
 
+    return JobClassificationInput(
+        alumni_id=alumni_id,
+        roles=[
+            JobClassificationRoleInput(
+                role_id=role.id,
+                title=role.role_raw[0].title if role.role_raw else None,
+                description=role.role_raw[0].description if role.role_raw else None,
+                start_date=role.start_date,
+                end_date=role.end_date,
+                is_promotion=role.is_promotion,
+                company_name=role.company.name,
+                industry_name=role.company.industry.name,
+            )
+            for role in roles
+        ],
+    )
 
 def update_role(role: Role, db: Session) -> Role:
     existing_role = db.query(Role).filter(Role.id == role.id).first()
