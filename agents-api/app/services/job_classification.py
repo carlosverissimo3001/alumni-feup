@@ -1,126 +1,118 @@
 import logging
-from typing import List, Optional
-import time
+import asyncio
 
-from langchain.chains import LLMChain
-from langchain_core.prompts import PromptTemplate
+from langchain_core.messages import HumanMessage, SystemMessage
 from langchain_ollama import ChatOllama
+from langgraph.graph import START, END, StateGraph
+from langgraph.prebuilt import ToolNode, tools_condition
+from typing_extensions import TypedDict
 
 from app.core.config import settings
-from app.schemas.job_classification import EscoResult
+from app.db import get_db
+from app.utils.role_db import get_extended_roles_by_alumni_id
+from app.utils.agents.esco_reference import search_esco_classifications
+from app.schemas.job_classification import JobClassificationRoleInput, JobClassificationAgentState
 
 logger = logging.getLogger(__name__)
 
-# Create Ollama LLM client
-ollama_client = ChatOllama(
+# Get a database session for the service
+db = next(get_db())
+
+
+tools = [] # [search_esco_classifications]
+
+cold_llm = ChatOllama(
     base_url=settings.OLLAMA_BASE_URL,
     model=settings.DEFAULT_MODEL,
+    temperature=0.0,
+)
+llm_with_tools = cold_llm.bind_tools(tools)
+
+hot_llm = ChatOllama(
+    base_url=settings.OLLAMA_BASE_URL,
+    model=settings.DEFAULT_MODEL,
+    temperature=0.3,
 )
 
+tool_node = ToolNode(
+    tools=tools,
+)
+
+
 # Create the prompt template for job classification
-CLASSIFICATION_PROMPT = """
-You are an expert job classifier using the European Skills, Competences, Qualifications and Occupations (ESCO) taxonomy.
+class JobClassificationService:
+    def create_graph(self) -> StateGraph:
+        graph = StateGraph(JobClassificationAgentState)
 
-Your task is to classify the following job title into the appropriate ESCO occupation:
-
-Job Title: {job_title}
-{job_description_text}
-
-Return the top 3 most likely ESCO classifications in JSON format with the following structure:
-```json
-[
-  {{
-    "code": "ESCO code",
-    "label": "ESCO occupation label",
-    "level": "ESCO hierarchy level (integer)",
-    "confidence": "confidence score between 0 and 1"
-  }},
-  ...
-]
-```
-
-Only return the JSON, no other text.
-"""
-
-# Conditionally add job description to the prompt
-job_description_template = """
-Job Description:
-{job_description}
-"""
-
-
-async def classify_job_title(
-    job_title: str,
-    job_description: Optional[str] = None,
-) -> List[EscoResult]:
-    """
-    Classify a job title using the LLM and ESCO taxonomy.
-
-    Args:
-        job_title: The job title to classify
-        job_description: Optional job description for better classification
-
-    Returns:
-        List of EscoResult objects with classification details
-    """
-    try:
-        logger.info(f"Classifying job title: {job_title}")
-        start_time = time.time()
-
-        # Build the prompt with or without job description
-        job_description_text = ""
-        if job_description:
-            job_description_text = job_description_template.format(job_description=job_description)
-
-        # Create the full prompt template
-        prompt = PromptTemplate(
-            template=CLASSIFICATION_PROMPT,
-            input_variables=["job_title", "job_description_text"],
+        # TODO: Define nodes, edges, tool_nodes, etc.
+        graph.add_node(
+            "get_best_esco_matches_using_embeddings", self.get_best_esco_matches_using_embeddings
         )
+        graph.add_edge(START, "get_best_esco_matches_using_embeddings")
 
-        # Create the classification chain
-        classification_chain = LLMChain(
-            llm=ollama_client,
-            prompt=prompt,
-        )
+        ## TODO: We'll ask the agent if it agrees with the results
+        ## If you agree with the results, all good
+        ## If you don't, or if the confidence is low
+        ## Here's a tool that you can use to fetch the full definition of the many ESCO classifications 
+        ## by code, you can compare it with the query to see if you agree with any of the matches
+        ## If at this point, you still don't agree, we'll just use the top 3 matches, and then the user
+        ## will be able to override the results
 
-        # Run the chain
-        result = await classification_chain.arun(
-            job_title=job_title,
-            job_description_text=job_description_text,
-        )
+        graph.add_edge("get_best_esco_matches_using_embeddings", END)
+        compiled_graph = graph.compile()
+        return compiled_graph
 
-        # Process the result (simplified version - would need more robust parsing in production)
-        # For this example, we'll return dummy data
-        # In a real scenario, you would parse the JSON result from the LLM
+    # Note: Maybe this should not be inside the service class
+    def get_best_esco_matches_using_embeddings(
+        self,
+        state: JobClassificationAgentState,
+    ) -> JobClassificationAgentState:
+        """
+        Get the best (top 10) embeddings for this role, using the embeddings of the job title and
+        description.
+        """
+        # For the deterministic embeddings, we'll just use the title and description
+        # The remaining fields of role are used as context for the agent in the next node(s)
+        query = state["role"].title
+        if state["role"].description:
+            query += f" {state["role"].description}"
 
-        # Dummy data for illustration
-        esco_results = [
-            EscoResult(
-                code="2511.1",
-                label="Systems Analyst",
-                level=4,
-                confidence=0.92,
-            ),
-            EscoResult(
-                code="2512.1",
-                label="Software Developer",
-                level=4,
-                confidence=0.85,
-            ),
-            EscoResult(
-                code="2519.1",
-                label="Software and Applications Developers and Analysts Not Elsewhere Classified",
-                level=4,
-                confidence=0.78,
-            ),
-        ]
+        esco_results = search_esco_classifications(query, 3)
+        if len(esco_results) > 0:
+            state["esco_results"] = esco_results
 
-        processing_time = time.time() - start_time
-        logger.info(f"Classification completed in {processing_time:.2f} seconds")
+        return state
 
-        return esco_results
+    async def _process_role(self, role: JobClassificationRoleInput):
+        """
+        Async function that processes a single role and finds its ESCO classification
+        """
+        state = JobClassificationAgentState(role=role)
+        graph = self.create_graph()
+        events = graph.stream(state, stream_mode="values")
+        for event in events:
+            print(event)
 
-    except Exception as e:
-        logger.error(f"Error in classify_job_title: {str(e)}")
-        raise
+
+    async def classify_roles_for_alumni(self, alumni_id: str):
+        """
+        Classify all the roles of an alumni into the ESCO taxonomy.
+        This is a background task that processes roles asynchronously.
+
+        Args:
+            alumni_id: the ID of the alumni
+        """
+        try:
+            # Get the roles of the alumni
+            input_data = get_extended_roles_by_alumni_id(alumni_id, db)
+            
+            # Process all roles concurrently
+            await asyncio.gather(*[self._process_role(role) for role in input_data.roles])
+            logger.info(f"Started classification process for alumni {alumni_id}")
+            
+        except Exception as e:
+            logger.error(f"Error classifying roles for alumni {alumni_id}: {str(e)}")
+            # We don't raise the exception since this is a background task
+
+
+job_classification_service = JobClassificationService()
