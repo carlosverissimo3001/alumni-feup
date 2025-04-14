@@ -109,6 +109,16 @@
               "example": 2023,
               "type": "number"
             }
+          },
+          {
+            "name": "compareYear",
+            "required": false,
+            "in": "query",
+            "description": "The year to compare to",
+            "schema": {
+              "example": 2022,
+              "type": "number"
+            }
           }
         ],
         "responses": {

@@ -48,6 +48,10 @@ export class GetGeoJSONDto {
   @Transform(({ value }) => (value ? Number(value) : undefined))
   selectedYear?: number;
 
+  @ApiPropertyOptional({
+    description: 'The year to compare to',
+    example: 2022,
+  })
   @IsOptional()
   @IsNumber()
   @Transform(({ value }) => (value ? Number(value) : undefined))
