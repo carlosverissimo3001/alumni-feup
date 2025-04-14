@@ -29,8 +29,8 @@ class Settings(BaseSettings):
 
     # LLM Settings
     OLLAMA_BASE_URL: str = "http://localhost:11434"
-    DEFAULT_MODEL: str = "llama3"
-
+    DEFAULT_MODEL: str = "mistral:7b"
+    OPENAI_API_KEY: str = ""
     # Proxycurl API Settings
     PROXYCURL_API_KEY: str = ""
     PROXYCURL_BASE_URL: str = "https://nubela.co/proxycurl/api"
@@ -39,6 +39,11 @@ class Settings(BaseSettings):
     BRIGHTDATA_API_KEY: str = ""
     BRIGHTDATA_BASE_URL: str = "https://api.brightdata.com/datasets/v3"
     BRIGHTDATA_COMPANY_DATASET_ID: str = ""
+    
+    # Cloudinary Settings
+    CLOUDINARY_CLOUD_NAME: str = ""
+    CLOUDINARY_API_KEY: str = ""
+    CLOUDINARY_API_SECRET: str = ""
 
     class Config:
         env_file = ".env"

@@ -57,10 +57,10 @@ class LinkedInProfileResponse(BaseModel):
 class LinkedInCompanyResponse(BaseModel):
     """Schema for LinkedIn company data extraction response."""
 
-    name: str
+    name: Optional[str] = None
     # This is a string, not a list, they really need better naming
-    industries: str
-    logo: str
+    industries: Optional[str] = None
+    logo: Optional[str] = None
     website: Optional[str] = None
     founded: Optional[int] = None
     company_size: Optional[str] = None
