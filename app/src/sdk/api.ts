@@ -916,6 +916,7 @@ export const AlumniApiAxiosParamCreator = function (configuration?: Configuratio
          * @param {Array<string>} [courseIds] The ID(s) of the course(s)
          * @param {Array<string>} [conclusionYears] The year(s) of conclusion(s)
          * @param {number} [selectedYear] The selected year
+         * @param {number} [compareYear] The year to compare to
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -1179,6 +1180,7 @@ export const AlumniApiFp = function(configuration?: Configuration) {
          * @param {Array<string>} [courseIds] The ID(s) of the course(s)
          * @param {Array<string>} [conclusionYears] The year(s) of conclusion(s)
          * @param {number} [selectedYear] The selected year
+         * @param {number} [compareYear] The year to compare to
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -1288,6 +1290,7 @@ export const AlumniApiFactory = function (configuration?: Configuration, basePat
          * @param {Array<string>} [courseIds] The ID(s) of the course(s)
          * @param {Array<string>} [conclusionYears] The year(s) of conclusion(s)
          * @param {number} [selectedYear] The selected year
+         * @param {number} [compareYear] The year to compare to
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -1378,6 +1381,7 @@ export interface AlumniApiInterface {
      * @param {Array<string>} [courseIds] The ID(s) of the course(s)
      * @param {Array<string>} [conclusionYears] The year(s) of conclusion(s)
      * @param {number} [selectedYear] The selected year
+     * @param {number} [compareYear] The year to compare to
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof AlumniApiInterface
@@ -1472,6 +1476,7 @@ export class AlumniApi extends BaseAPI implements AlumniApiInterface {
      * @param {Array<string>} [courseIds] The ID(s) of the course(s)
      * @param {Array<string>} [conclusionYears] The year(s) of conclusion(s)
      * @param {number} [selectedYear] The selected year
+     * @param {number} [compareYear] The year to compare to
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof AlumniApi
@@ -1549,6 +1554,14 @@ export const AlumniControllerFindAllGeoJSONGroupByEnum = {
 } as const;
 export type AlumniControllerFindAllGeoJSONGroupByEnum = typeof AlumniControllerFindAllGeoJSONGroupByEnum[keyof typeof AlumniControllerFindAllGeoJSONGroupByEnum];
 
+/**
+ * @export
+ */
+export const CourseControllerFindStatusEnum = {
+    Active: 'ACTIVE',
+    Inactive: 'INACTIVE'
+} as const;
+export type CourseControllerFindStatusEnum = typeof CourseControllerFindStatusEnum[keyof typeof CourseControllerFindStatusEnum];
 
 /**
  * CompanyApi - axios parameter creator
@@ -1969,14 +1982,6 @@ export class CourseApi extends BaseAPI implements CourseApiInterface {
     }
 }
 
-/**
- * @export
- */
-export const CourseControllerFindStatusEnum = {
-    Active: 'ACTIVE',
-    Inactive: 'INACTIVE'
-} as const;
-export type CourseControllerFindStatusEnum = typeof CourseControllerFindStatusEnum[keyof typeof CourseControllerFindStatusEnum];
 
 
 /**
@@ -2492,6 +2497,7 @@ export const V1ApiAxiosParamCreator = function (configuration?: Configuration) {
          * @param {Array<string>} [courseIds] The ID(s) of the course(s)
          * @param {Array<string>} [conclusionYears] The year(s) of conclusion(s)
          * @param {number} [selectedYear] The selected year
+         * @param {number} [compareYear] The year to compare to
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -2529,6 +2535,7 @@ export const V1ApiAxiosParamCreator = function (configuration?: Configuration) {
             if (compareYear !== undefined) {
                 localVarQueryParameter['compareYear'] = compareYear;
             }
+
 
     
             setSearchParams(localVarUrlObj, localVarQueryParameter);
@@ -3023,6 +3030,7 @@ export const V1ApiFp = function(configuration?: Configuration) {
          * @param {Array<string>} [courseIds] The ID(s) of the course(s)
          * @param {Array<string>} [conclusionYears] The year(s) of conclusion(s)
          * @param {number} [selectedYear] The selected year
+         * @param {number} [compareYear] The year to compare to
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -3241,6 +3249,7 @@ export const V1ApiFactory = function (configuration?: Configuration, basePath?: 
          * @param {Array<string>} [courseIds] The ID(s) of the course(s)
          * @param {Array<string>} [conclusionYears] The year(s) of conclusion(s)
          * @param {number} [selectedYear] The selected year
+         * @param {number} [compareYear] The year to compare to
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -3419,6 +3428,7 @@ export interface V1ApiInterface {
      * @param {Array<string>} [courseIds] The ID(s) of the course(s)
      * @param {Array<string>} [conclusionYears] The year(s) of conclusion(s)
      * @param {number} [selectedYear] The selected year
+     * @param {number} [compareYear] The year to compare to
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof V1ApiInterface
@@ -3605,6 +3615,7 @@ export class V1Api extends BaseAPI implements V1ApiInterface {
      * @param {Array<string>} [courseIds] The ID(s) of the course(s)
      * @param {Array<string>} [conclusionYears] The year(s) of conclusion(s)
      * @param {number} [selectedYear] The selected year
+     * @param {number} [compareYear] The year to compare to
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof V1Api
@@ -3756,3 +3767,4 @@ export class V1Api extends BaseAPI implements V1ApiInterface {
         return V1ApiFp(this.configuration).userControllerLinkedinAuth(linkedinAuthDto, options).then((request) => request(this.axios, this.basePath));
     }
 }
+

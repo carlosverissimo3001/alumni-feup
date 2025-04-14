@@ -39,9 +39,11 @@ model Alumni {
   // Obtained when the user has logged in with their LinkedIn account
   personalEmail String? @map("personal_email")
 
-  Location    Location?    @relation(fields: [currentLocationId], references: [id])
-  Graduations Graduation[]
-  Roles       Role[]
+  Location        Location?        @relation(fields: [currentLocationId], references: [id])
+  Graduations     Graduation[]
+  Roles           Role[]
+  ReviewsCompany  ReviewCompany[]
+  ReviewsLocation ReviewLocation[]
 
   @@index([currentLocationId])
   @@index([firstName, lastName])
@@ -50,18 +52,19 @@ model Alumni {
 }
 
 model Company {
-  id          String        @id @default(dbgenerated("gen_random_uuid()"))
-  name        String
-  linkedinUrl String?       @unique @map("linkedin_url")
-  industryId  String        @map("industry_id")
-  logo        String?
-  founded     Int?
-  website     String?
-  companySize COMPANY_SIZE? @map("company_size")
-  createdAt   DateTime      @default(now()) @map("created_at") @db.Timestamp(6)
-  updatedAt   DateTime      @default(now()) @map("updated_at") @db.Timestamp(6)
-  Industry    Industry      @relation(fields: [industryId], references: [id])
-  Role        Role[]
+  id            String          @id @default(dbgenerated("gen_random_uuid()"))
+  name          String
+  linkedinUrl   String?         @unique @map("linkedin_url")
+  industryId    String          @map("industry_id")
+  logo          String?
+  founded       Int?
+  website       String?
+  companySize   COMPANY_SIZE?   @map("company_size")
+  createdAt     DateTime        @default(now()) @map("created_at") @db.Timestamp(6)
+  updatedAt     DateTime        @default(now()) @map("updated_at") @db.Timestamp(6)
+  Industry      Industry        @relation(fields: [industryId], references: [id])
+  Role          Role[]
+  ReviewCompany ReviewCompany[]
 
   @@index([industryId])
   @@map("company")
@@ -137,18 +140,19 @@ model JobClassification {
 }
 
 model Location {
-  id            String                @id @default(dbgenerated("gen_random_uuid()"))
-  city          String?
-  country       String?
-  latitude      Float?
-  longitude     Float?
-  countryCode   String?               @map("country_code")
-  isCountryOnly Boolean               @default(false) @map("is_country_only")
-  createdAt     DateTime              @default(now()) @map("created_at") @db.Timestamp(6)
-  updatedAt     DateTime              @default(now()) @map("updated_at") @db.Timestamp(6)
-  Alumni        Alumni[]
-  Problematic   ProblematicLocation[]
-  Role          Role[]
+  id             String                @id @default(dbgenerated("gen_random_uuid()"))
+  city           String?
+  country        String?
+  latitude       Float?
+  longitude      Float?
+  countryCode    String?               @map("country_code")
+  isCountryOnly  Boolean               @default(false) @map("is_country_only")
+  createdAt      DateTime              @default(now()) @map("created_at") @db.Timestamp(6)
+  updatedAt      DateTime              @default(now()) @map("updated_at") @db.Timestamp(6)
+  Alumni         Alumni[]
+  Problematic    ProblematicLocation[]
+  Role           Role[]
+  ReviewLocation ReviewLocation[]
 
   @@index([city, country])
   @@index([countryCode])
@@ -166,29 +170,29 @@ model ProblematicLocation {
 }
 
 model Role {
-  id                String              @id @default(dbgenerated("gen_random_uuid()"))
-  
-  alumniId          String              @map("alumni_id")
-  companyId         String              @map("company_id")
-  locationId        String?             @map("location_id")
-  
-  seniorityLevel    SENIORITY_LEVEL     @map("seniority_level")
-  
-  startDate         DateTime            @map("start_date") @db.Timestamptz(6)
-  endDate           DateTime?           @map("end_date") @db.Timestamptz(6)
-  
-  createdAt         DateTime            @default(now()) @map("created_at") @db.Timestamp(6)
-  updatedAt         DateTime            @default(now()) @map("updated_at") @db.Timestamp(6)
-  
-  isCurrent         Boolean             @default(false) @map("is_current")
-  isPromotion       Boolean             @default(false) @map("is_promotion")
-  
+  id String @id @default(dbgenerated("gen_random_uuid()"))
+
+  alumniId   String  @map("alumni_id")
+  companyId  String  @map("company_id")
+  locationId String? @map("location_id")
+
+  seniorityLevel SENIORITY_LEVEL @map("seniority_level")
+
+  startDate DateTime  @map("start_date") @db.Timestamptz(6)
+  endDate   DateTime? @map("end_date") @db.Timestamptz(6)
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamp(6)
+  updatedAt DateTime @default(now()) @map("updated_at") @db.Timestamp(6)
+
+  isCurrent   Boolean @default(false) @map("is_current")
+  isPromotion Boolean @default(false) @map("is_promotion")
+
   JobClassification JobClassification[]
   Alumni            Alumni              @relation(fields: [alumniId], references: [id])
   Company           Company             @relation(fields: [companyId], references: [id])
   Location          Location?           @relation(fields: [locationId], references: [id])
   RoleRaw           RoleRaw?
-  
+
   @@index([alumniId])
   @@index([companyId])
   @@index([locationId])
@@ -201,18 +205,16 @@ model RoleRaw {
   description String?
   createdAt   DateTime @default(now()) @map("created_at") @db.Timestamp(6)
   roleId      String   @unique @map("role_id")
-  
-  Role        Role     @relation(fields: [roleId], references: [id])
-  
+
+  Role Role @relation(fields: [roleId], references: [id])
+
   @@index([roleId])
   @@map("role_raw")
 }
 
-
-
 model EscoClassification {
-  id                   String  @id @default(dbgenerated("gen_random_uuid()"))
-  level                Int     @db.SmallInt
+  id                   String                 @id @default(dbgenerated("gen_random_uuid()"))
+  level                Int                    @db.SmallInt
   code                 String
   title_en             String
   definition           String
@@ -224,6 +226,62 @@ model EscoClassification {
 
   @@map("esco_classification")
 }
+
+model ReviewCompany {
+  id          String   @id @default(dbgenerated("gen_random_uuid()"))
+  alumniId    String   @map("alumni_id")
+  companyId   String   @map("company_id")
+  rating      Int      @db.SmallInt
+  description String?
+  upvotes     Int      @default(0) @db.SmallInt
+  downvotes   Int      @default(0) @db.SmallInt
+  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamp(6)
+  updatedAt   DateTime @default(now()) @map("updated_at") @db.Timestamp(6)
+
+  Alumni  Alumni  @relation(fields: [alumniId], references: [id])
+  Company Company @relation(fields: [companyId], references: [id])
+
+  @@map("review_company")
+}
+
+/**
+ * model ReviewCompanyProperty {
+ * id String @id @default(dbgenerated("gen_random_uuid()"))
+ * reviewCompanyId String @map("review_company_id")
+ * property ReviewCompanyProperty @map("property")
+ * rating Int @db.SmallInt
+ * ReviewCompany ReviewCompany @relation(fields: [reviewCompanyId], references: [id])
+ * @@map("review_company_property")
+ * }
+ */
+
+model ReviewLocation {
+  id          String   @id @default(dbgenerated("gen_random_uuid()"))
+  alumniId    String   @map("alumni_id")
+  locationId  String   @map("location_id")
+  rating      Int      @db.SmallInt
+  description String?
+  upvotes     Int      @default(0) @db.SmallInt
+  downvotes   Int      @default(0) @db.SmallInt
+  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamp(6)
+  updatedAt   DateTime @default(now()) @map("updated_at") @db.Timestamp(6)
+
+  Alumni   Alumni   @relation(fields: [alumniId], references: [id])
+  Location Location @relation(fields: [locationId], references: [id])
+
+  @@map("review_location")
+}
+
+/**
+ * model ReviewLocationProperty {
+ * id String @id @default(dbgenerated("gen_random_uuid()"))
+ * reviewLocationId String @map("review_location_id")
+ * property ReviewLocationProperty @map("property")
+ * rating Int @db.SmallInt
+ * ReviewLocation ReviewLocation @relation(fields: [reviewLocationId], references: [id])
+ * @@map("review_location_property")
+ * }
+ */
 
 enum COURSE_TYPE {
   INTEGRATED_MASTERS
@@ -265,3 +323,25 @@ enum Source {
   ADMIN_IMPORT
   HONORARY_MEMBER // These are members of the LinkedIn group that have not completed one of the tracked courses
 }
+
+/**
+ * enum ReviewCompanyProperty {
+ * WORK_LIFE_BALANCE
+ * SALARY_AND_BENEFITS
+ * CAREER_OPPORTUNITIES
+ * MANAGEMENT
+ * COMPANY_CULTURE
+ * }
+ */
+
+/**
+ * enum ReviewLocationProperty {
+ * COST_OF_LIVING
+ * WEATHER
+ * TRANSPORTATION
+ * SAFETY
+ * PUBLIC_SERVICES
+ * HOUSING
+ * OTHER
+ * }
+ */
