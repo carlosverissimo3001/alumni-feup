@@ -175,11 +175,15 @@ class JobClassification(Base):
     id = Column(String, primary_key=True, server_default="gen_random_uuid()")
     title = Column(String, nullable=False)
     level = Column(SmallInteger, nullable=False)
+    ranking = Column(SmallInteger, nullable=False)
     esco_code = Column(String, nullable=True)
     role_id = Column(String, ForeignKey("role.id"), nullable=False)
     confidence = Column(Float, nullable=True)
     created_at = Column(DateTime, nullable=False, server_default="now()")
-
+    updated_at = Column(
+        DateTime, nullable=False, server_default="now()", onupdate=datetime.now(timezone.utc)
+    )
+    model_used = Column(String, nullable=False)
     role = relationship("Role", back_populates="job_classifications")
 
 

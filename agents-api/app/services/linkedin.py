@@ -21,6 +21,7 @@ from app.utils.location_db import create_location, get_location
 from app.utils.misc.convert import convert_company_size_to_enum, linkedin_date_to_timestamp
 from app.utils.misc.string import clean_website_url, sanitize_linkedin_url
 from app.utils.role_db import create_role, create_role_raw
+from app.services.job_classification import job_classification_service
 
 logger = logging.getLogger(__name__)
 
@@ -247,6 +248,10 @@ class LinkedInService:
             ),
             db,
         )
+        
+        # We'll now offload the role classification to a background task, using the agent
+        # Note that we do NOT wait for this to finish, as it can take a while
+        asyncio.create_task(job_classification_service.classify_roles_for_alumni(alumni_id))
 
     async def process_company_data(
         self,

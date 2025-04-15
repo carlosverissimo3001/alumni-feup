@@ -123,6 +123,7 @@ model JobClassification {
   id             String  @id @default(dbgenerated("gen_random_uuid()"))
   title          String
   level          Int     @db.SmallInt
+  ranking        Int     @db.SmallInt @default(1)
   escoCode       String? @map("esco_code")
   roleId         String  @map("role_id")
   confidence     Float?

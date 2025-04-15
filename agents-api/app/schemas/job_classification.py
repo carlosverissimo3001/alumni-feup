@@ -47,5 +47,7 @@ class EscoResult(BaseModel):
 class JobClassificationAgentState(TypedDict):
     role: JobClassificationRoleInput
     messages: Annotated[list, add_messages]
-    esco_results: List[EscoResult]
-    source: Source
+    esco_results_from_embeddings: List[EscoResult]
+    esco_results_from_agent: List[EscoResult]
+    processing_time: float
+    model_used: str
