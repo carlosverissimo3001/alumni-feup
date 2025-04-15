@@ -337,8 +337,18 @@
           }
         },
         "responses": {
-          "201": {
-            "description": ""
+          "200": {
+            "description": "User authenticated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserAuthResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No matching alumni record found"
           }
         },
         "summary": "Authenticate a user with LinkedIn",
@@ -1007,12 +1017,63 @@
           "profile_picture_url": {
             "type": "string",
             "description": "The URL of the member's profile picture."
+          },
+          "linkedin_url": {
+            "type": "string",
+            "description": "The LinkedIn URL of the member."
           }
         },
         "required": [
           "person_id",
           "first_name",
           "last_name"
+        ]
+      },
+      "User": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The ID of the user"
+          },
+          "firstName": {
+            "type": "string",
+            "description": "The first name of the user"
+          },
+          "lastName": {
+            "type": "string",
+            "description": "The last name of the user"
+          },
+          "profilePictureUrl": {
+            "type": "string",
+            "description": "The profile picture URL of the user"
+          }
+        },
+        "required": [
+          "id",
+          "firstName",
+          "lastName"
+        ]
+      },
+      "UserAuthResponse": {
+        "type": "object",
+        "properties": {
+          "access_token": {
+            "type": "string",
+            "description": "The access token of the user"
+          },
+          "user": {
+            "description": "The user object",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/User"
+              }
+            ]
+          }
+        },
+        "required": [
+          "access_token",
+          "user"
         ]
       },
       "UploadExtractionDto": {

@@ -502,6 +502,12 @@ export interface LinkedinAuthDto {
      * @memberof LinkedinAuthDto
      */
     'profile_picture_url'?: string;
+    /**
+     * The LinkedIn URL of the member.
+     * @type {string}
+     * @memberof LinkedinAuthDto
+     */
+    'linkedin_url'?: string;
 }
 /**
  * 
@@ -614,6 +620,56 @@ export interface UploadExtractionDto {
      * @memberof UploadExtractionDto
      */
     'course_id': string;
+}
+/**
+ * 
+ * @export
+ * @interface User
+ */
+export interface User {
+    /**
+     * The ID of the user
+     * @type {string}
+     * @memberof User
+     */
+    'id': string;
+    /**
+     * The first name of the user
+     * @type {string}
+     * @memberof User
+     */
+    'firstName': string;
+    /**
+     * The last name of the user
+     * @type {string}
+     * @memberof User
+     */
+    'lastName': string;
+    /**
+     * The profile picture URL of the user
+     * @type {string}
+     * @memberof User
+     */
+    'profilePictureUrl'?: string;
+}
+/**
+ * 
+ * @export
+ * @interface UserAuthResponse
+ */
+export interface UserAuthResponse {
+    /**
+     * The access token of the user
+     * @type {string}
+     * @memberof UserAuthResponse
+     */
+    'access_token': string;
+    /**
+     * The user object
+     * @type {User}
+     * @memberof UserAuthResponse
+     */
+    'user': User;
 }
 /**
  * 
@@ -1554,14 +1610,6 @@ export const AlumniControllerFindAllGeoJSONGroupByEnum = {
 } as const;
 export type AlumniControllerFindAllGeoJSONGroupByEnum = typeof AlumniControllerFindAllGeoJSONGroupByEnum[keyof typeof AlumniControllerFindAllGeoJSONGroupByEnum];
 
-/**
- * @export
- */
-export const CourseControllerFindStatusEnum = {
-    Active: 'ACTIVE',
-    Inactive: 'INACTIVE'
-} as const;
-export type CourseControllerFindStatusEnum = typeof CourseControllerFindStatusEnum[keyof typeof CourseControllerFindStatusEnum];
 
 /**
  * CompanyApi - axios parameter creator
@@ -1982,6 +2030,14 @@ export class CourseApi extends BaseAPI implements CourseApiInterface {
     }
 }
 
+/**
+ * @export
+ */
+export const CourseControllerFindStatusEnum = {
+    Active: 'ACTIVE',
+    Inactive: 'INACTIVE'
+} as const;
+export type CourseControllerFindStatusEnum = typeof CourseControllerFindStatusEnum[keyof typeof CourseControllerFindStatusEnum];
 
 
 /**
@@ -2289,7 +2345,7 @@ export const UserApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async userControllerLinkedinAuth(linkedinAuthDto: LinkedinAuthDto, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+        async userControllerLinkedinAuth(linkedinAuthDto: LinkedinAuthDto, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UserAuthResponse>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.userControllerLinkedinAuth(linkedinAuthDto, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['UserApi.userControllerLinkedinAuth']?.[localVarOperationServerIndex]?.url;
@@ -2312,7 +2368,7 @@ export const UserApiFactory = function (configuration?: Configuration, basePath?
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        userControllerLinkedinAuth(linkedinAuthDto: LinkedinAuthDto, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+        userControllerLinkedinAuth(linkedinAuthDto: LinkedinAuthDto, options?: RawAxiosRequestConfig): AxiosPromise<UserAuthResponse> {
             return localVarFp.userControllerLinkedinAuth(linkedinAuthDto, options).then((request) => request(axios, basePath));
         },
     };
@@ -2332,7 +2388,7 @@ export interface UserApiInterface {
      * @throws {RequiredError}
      * @memberof UserApiInterface
      */
-    userControllerLinkedinAuth(linkedinAuthDto: LinkedinAuthDto, options?: RawAxiosRequestConfig): AxiosPromise<void>;
+    userControllerLinkedinAuth(linkedinAuthDto: LinkedinAuthDto, options?: RawAxiosRequestConfig): AxiosPromise<UserAuthResponse>;
 
 }
 
@@ -3189,7 +3245,7 @@ export const V1ApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async userControllerLinkedinAuth(linkedinAuthDto: LinkedinAuthDto, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+        async userControllerLinkedinAuth(linkedinAuthDto: LinkedinAuthDto, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UserAuthResponse>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.userControllerLinkedinAuth(linkedinAuthDto, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['V1Api.userControllerLinkedinAuth']?.[localVarOperationServerIndex]?.url;
@@ -3372,7 +3428,7 @@ export const V1ApiFactory = function (configuration?: Configuration, basePath?: 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        userControllerLinkedinAuth(linkedinAuthDto: LinkedinAuthDto, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+        userControllerLinkedinAuth(linkedinAuthDto: LinkedinAuthDto, options?: RawAxiosRequestConfig): AxiosPromise<UserAuthResponse> {
             return localVarFp.userControllerLinkedinAuth(linkedinAuthDto, options).then((request) => request(axios, basePath));
         },
     };
@@ -3552,7 +3608,7 @@ export interface V1ApiInterface {
      * @throws {RequiredError}
      * @memberof V1ApiInterface
      */
-    userControllerLinkedinAuth(linkedinAuthDto: LinkedinAuthDto, options?: RawAxiosRequestConfig): AxiosPromise<void>;
+    userControllerLinkedinAuth(linkedinAuthDto: LinkedinAuthDto, options?: RawAxiosRequestConfig): AxiosPromise<UserAuthResponse>;
 
 }
 
@@ -3767,4 +3823,3 @@ export class V1Api extends BaseAPI implements V1ApiInterface {
         return V1ApiFp(this.configuration).userControllerLinkedinAuth(linkedinAuthDto, options).then((request) => request(this.axios, this.basePath));
     }
 }
-
