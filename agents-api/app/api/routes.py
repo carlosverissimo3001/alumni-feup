@@ -18,11 +18,11 @@ api_router.include_router(
     tags=["LinkedIn"],
 )
 
-api_router.include_router(
+""" api_router.include_router(
     role.router,
     prefix="/role",
     tags=["Role"],
-)
+) """
 
 api_router.include_router(
     storage.router,

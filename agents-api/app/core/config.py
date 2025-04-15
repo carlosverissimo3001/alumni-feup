@@ -31,6 +31,11 @@ class Settings(BaseSettings):
     OLLAMA_BASE_URL: str = "http://localhost:11434"
     DEFAULT_MODEL: str = "mistral:7b"
     OPENAI_API_KEY: str = ""
+    LANGSMITH_TRACING: bool = False
+    LANGSMITH_ENDPOINT: str = ""
+    LANGSMITH_API_KEY: str = ""
+    LANGSMITH_PROJECT: str = ""
+    
     # Proxycurl API Settings
     PROXYCURL_API_KEY: str = ""
     PROXYCURL_BASE_URL: str = "https://nubela.co/proxycurl/api"

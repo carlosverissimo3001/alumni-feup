@@ -1,5 +1,5 @@
 import logging
-
+from datetime import datetime
 from sqlalchemy.orm import Session
 
 from app.db.models import Company
@@ -48,6 +48,8 @@ def update_company(company: Company, db: Session) -> Company:
         for key, value in vars(company).items():
             if not key.startswith('_') and key != 'id' and value is not None:
                 setattr(existing_company, key, value)
+                
+        existing_company.updated_at = datetime.now()
         
         db.commit()
         db.refresh(existing_company)
