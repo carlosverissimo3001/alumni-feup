@@ -7,6 +7,7 @@ import {
   PanelLeftOpen,
   ChartNoAxesCombined,
   BadgeHelpIcon,
+  UserIcon,
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -14,8 +15,9 @@ import { Button } from "../ui/button";
 import Image from "next/image";
 import { useNavbar } from "@/contexts/NavbarContext";
 import { useEffect, useRef } from "react";
-
+import { useAuth } from "@/contexts/AuthContext";
 const Navbar = () => {
+  const { isAuthenticated } = useAuth();
   const { isCollapsed, toggleCollapse } = useNavbar();
   const pathname = usePathname();
   const navbarRef = useRef<HTMLDivElement>(null);
@@ -60,6 +62,12 @@ const Navbar = () => {
       href: "/dashboard",
     },
     {
+      label: "Your Network",
+      icon: <UserIcon size={20} />,
+      href: "/profile",
+      disabled: !isAuthenticated,
+    },
+    {
       label: "Feedback",
       icon: <BadgeHelpIcon size={20} />,
       href: "/feedback",
@@ -69,8 +77,8 @@ const Navbar = () => {
   return (
     <div
       ref={navbarRef}
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
+/*       onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave} */
       className={cn(
         "relative space-y-4 py-8 flex flex-col h-full bg-zinc-900 text-white transition-all duration-300 z-50",
         isCollapsed ? "w-20" : "w-60"
@@ -115,12 +123,13 @@ const Navbar = () => {
           </Button>
         </div>
 
-        {/* Routes - World, Dashboard, Leave Feedback */}
+        {/* Routes - World, Dashboard, Profile, Leave Feedback */}
         <div className="space-y-1 px-1">
           {routes.map((route) => (
-            <Link
-              key={route.href}
-              href={route.href}
+            !route.disabled && (
+              <Link
+                key={route.href}
+                href={route.href}
               className={cn(
                 "text-sm group flex p-3 w-full justify-start font-medium cursor-pointer hover:text-white hover:bg-zinc-800 rounded-lg transition",
                 pathname === route.href
@@ -136,11 +145,12 @@ const Navbar = () => {
                 )}
               >
                 {route.icon}
-                <span className={cn("ml-3", isCollapsed && "hidden")}>
-                  {route.label}
+                <span className={cn("ml-3 whitespace-nowrap", isCollapsed && "hidden")}>
+                 {route.label}
                 </span>
               </div>
-            </Link>
+              </Link>
+            )
           ))}
         </div>
       </div>
