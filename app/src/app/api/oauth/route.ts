@@ -1,9 +1,18 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { TokenResponse, ProfileResponse } from './consts';
 import fetch from 'node-fetch'; 
-import { authenticateWithLinkedin } from '@/hooks/auth/useAuth';
 import { LinkedinAuthDto } from '@/sdk/api';
 
+// Define the response type from our backend
+interface AuthResponse {
+  access_token: string;
+  user: {
+    id: string;
+    firstName: string;
+    lastName: string;
+    profilePictureUrl?: string;
+  };
+}
 
 export async function GET(req: NextRequest) {
   const url = new URL(req.url);
@@ -54,15 +63,50 @@ export async function GET(req: NextRequest) {
       } 
 
       try {
-        await authenticateWithLinkedin(linkedinAuthData);
-      } catch (error) {
-        return NextResponse.json({ error: (error as Error).message }, { status: 400 });
-      }
+        // Call the backend API to authenticate the user
+        // TODO: Change this to use the SDK instead of fetch
+        const authResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/user/linkedinAuth`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(linkedinAuthData),
+        });
 
-      const redirectUrl = new URL('/', process.env.NEXT_PUBLIC_APP_URL).toString();
-      const responseRedirect = NextResponse.redirect(redirectUrl);
-      
-      return responseRedirect;
+        if (!authResponse.ok) {
+          const errorData = await authResponse.json() as { message?: string };
+          return NextResponse.json({ error: errorData.message || 'Authentication failed' }, { status: authResponse.status });
+        }
+
+        const authData = await authResponse.json() as AuthResponse;
+        
+        // Create a redirect response
+        const redirectUrl = new URL('/', process.env.NEXT_PUBLIC_APP_URL).toString();
+        const responseRedirect = NextResponse.redirect(redirectUrl);
+        
+        // Set the token in a cookie
+        responseRedirect.cookies.set('auth_token', authData.access_token, {
+          httpOnly: true,
+          secure: process.env.NODE_ENV === 'production',
+          sameSite: 'lax',
+          maxAge: 60 * 60 * 24, // 1 day
+          path: '/',
+        });
+        
+        // Set user data in a cookie (non-sensitive information)
+        responseRedirect.cookies.set('user', JSON.stringify(authData.user), {
+          httpOnly: false, // Allow JavaScript access
+          secure: process.env.NODE_ENV === 'production',
+          sameSite: 'lax',
+          maxAge: 60 * 60 * 24, // 1 day
+          path: '/',
+        });
+        
+        return responseRedirect;
+      } catch (error) {
+        console.error('Error authenticating with backend:', error);
+        return NextResponse.json({ error: (error as Error).message }, { status: 500 });
+      }
     } else {
       return NextResponse.json({ error: tokenData.error_description || 'Failed to get access token' }, { status: 400 });
     }
