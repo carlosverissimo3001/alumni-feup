@@ -4,7 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "concurrently \"next dev --turbopack -p 4200\" \"npm run watch-sdk\"",
+    "dev": "next dev --turbopack -p 4200",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",

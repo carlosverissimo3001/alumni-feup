@@ -1,25 +1,40 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 export class LocationGeo {
-  @ApiProperty({ description: 'The city of the location' })
+  @ApiPropertyOptional({
+    description: 'The city of the location',
+    type: String,
+  })
   city?: string | null;
 
-  @ApiProperty({ description: 'The country of the location' })
+  @ApiPropertyOptional({
+    description: 'The country of the location',
+    type: String,
+  })
   country?: string | null;
 
-  @ApiPropertyOptional({ description: 'The latitude of the location' })
+  @ApiPropertyOptional({
+    description: 'The country code of the location',
+    type: String,
+  })
+  countryCode?: string | null;
+
+  @ApiPropertyOptional({
+    description: 'The latitude of the location',
+    type: Number,
+  })
   latitude?: number | null;
 
-  @ApiPropertyOptional({ description: 'The longitude of the location' })
+  @ApiPropertyOptional({
+    description: 'The longitude of the location',
+    type: Number,
+  })
   longitude?: number | null;
 }
 
 export class Location extends LocationGeo {
   @ApiProperty({ description: 'The id of the location' })
   id: string;
-
-  @ApiProperty({ description: 'The country code of the location' })
-  countryCode: string;
 
   @ApiProperty({ description: 'The created at date of the location' })
   createdAt: Date;

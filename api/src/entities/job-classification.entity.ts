@@ -1,11 +1,13 @@
 import { IsDate, IsNumber, IsString } from '@nestjs/class-validator';
 
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 export class JobClassification {
-  @ApiProperty({ description: 'The id of the job classification' })
-  @IsString()
-  id: string;
+  @ApiPropertyOptional({
+    description: 'The esco code of the job classification',
+    type: String,
+  })
+  escoCode?: string | null;
 
   @ApiProperty({ description: 'The title of the job classification' })
   @IsString()
@@ -16,16 +18,16 @@ export class JobClassification {
   level: number;
 
   constructor(data: JobClassification) {
-    this.id = data.id;
+    this.escoCode = data.escoCode;
     this.title = data.title;
     this.level = data.level;
   }
 }
 
 export class JobClassificationExtended extends JobClassification {
-  @ApiProperty({ description: 'The esco code of the job classification' })
+  @ApiProperty({ description: 'The id of the job classification' })
   @IsString()
-  esco_code: string;
+  id: string;
 
   @ApiProperty({ description: 'The confidence of the job classification' })
   @IsNumber()
@@ -41,7 +43,7 @@ export class JobClassificationExtended extends JobClassification {
 
   constructor(data: JobClassificationExtended) {
     super(data);
-    this.esco_code = data.esco_code;
+    this.id = data.id;
     this.confidence = data.confidence;
     this.role_id = data.role_id;
     this.created_at = data.created_at;

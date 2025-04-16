@@ -68,7 +68,7 @@ export default function ProfileButton() {
           </div>
         </div>
         <DropdownMenuItem asChild className="cursor-pointer">
-          <Link href="/profile" className="flex items-center w-full">
+          <Link href={`/profile/${user.id}`} className="flex items-center w-full">
             <User className="mr-2 h-4 w-4" />
             <span>Profile</span>
           </Link>

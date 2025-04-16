@@ -17,7 +17,7 @@ import { useNavbar } from "@/contexts/NavbarContext";
 import { useEffect, useRef } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 const Navbar = () => {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, user } = useAuth();
   const { isCollapsed, toggleCollapse } = useNavbar();
   const pathname = usePathname();
   const navbarRef = useRef<HTMLDivElement>(null);
@@ -64,7 +64,7 @@ const Navbar = () => {
     {
       label: "Your Network",
       icon: <UserIcon size={20} />,
-      href: "/profile",
+      href: user ? `/profile/${user.id}` : "/",
       disabled: !isAuthenticated,
     },
     {
