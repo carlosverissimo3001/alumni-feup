@@ -1,22 +1,24 @@
 /* eslint-disable @typescript-eslint/no-require-imports */
-const path = require('path');
-const chokidar = require('chokidar');
-const childProcess = require('child_process');
-const { EVENTS } = require('chokidar/handler.js');
+import path from 'path';
+import chokidar from 'chokidar';
+import { execSync } from 'child_process';
+import { fileURLToPath } from 'url';
 
-const { execSync } = childProcess;
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
-const swaggerPath = path.resolve(__dirname, '../swagger-spec.json');
+// Path to the swagger spec file - it's in the root directory
+const swaggerPath = path.resolve(__dirname, '../../swagger-spec.json');
 
-console.log('Watching for Swagger spec changes...');
+console.log(`Watching for changes in ${swaggerPath}...`);
 
 chokidar.watch(swaggerPath, {
   ignoreInitial: true,
 }).on('all', (event: string) => {
-  if (event === EVENTS.ADD || event === EVENTS.CHANGE) {
+  if (event === 'add' || event === 'change') {
     console.log('Swagger spec changed, generating SDK...');
     try {
-      execSync(`node ${__dirname}/generate-sdk.js`, { stdio: 'inherit' });
+      execSync(`npx ts-node ${__dirname}/generate-sdk.ts`, { stdio: 'inherit' });
       console.log('SDK generated successfully');
     } catch (error) {
       console.log('Error generating SDK:', error);
