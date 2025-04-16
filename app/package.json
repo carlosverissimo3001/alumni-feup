@@ -2,8 +2,9 @@
   "name": "app",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "scripts": {
-    "dev": "next dev --turbopack -p 4200",
+    "dev": "concurrently \"next dev --turbopack -p 4200\" \"npm run watch-sdk\"",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
@@ -30,6 +31,7 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "cmdk": "^1.0.0",
+    "d3": "^7.9.0",
     "date-fns": "^4.1.0",
     "framer-motion": "^12.4.7",
     "js-cookie": "^3.0.5",
