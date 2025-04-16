@@ -19,11 +19,15 @@ import {
   VerifyEmailTokenDto,
 } from '@/dto';
 import { AlumniExtended } from '@/entities/alumni.entity';
-
+import { AlumniProfileService } from '../services/alumni-profile.service';
+import { BasicAlumniProfileDto } from '../dto/basic-alumni-profile.dto';
 @ApiTags('V1', 'Alumni')
 @Controller('alumni')
 export class AlumniController {
-  constructor(private readonly alumniService: AlumniService) {}
+  constructor(
+    private readonly alumniService: AlumniService,
+    private readonly alumniProfileService: AlumniProfileService,
+  ) {}
 
   @Get()
   @HttpCode(HttpStatus.OK)
@@ -127,5 +131,18 @@ export class AlumniController {
   })
   async verifyEmailToken(@Body() body: VerifyEmailTokenDto): Promise<void> {
     return this.alumniService.verifyEmailToken(body);
+  }
+
+  @Get('basic-profile/:id')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Get basic profile of an alumni' })
+  @ApiResponse({
+    description: 'Returns the basic profile of an alumni',
+    type: BasicAlumniProfileDto,
+  })
+  async getBasicProfile(
+    @Param('id') id: string,
+  ): Promise<BasicAlumniProfileDto> {
+    return this.alumniProfileService.getBasicProfile(id);
   }
 }

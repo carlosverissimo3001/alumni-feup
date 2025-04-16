@@ -21,6 +21,7 @@ export const roleSelect = {
   id: true,
   startDate: true,
   endDate: true,
+  isCurrent: true,
   seniorityLevel: true,
   Company: {
     select: {
@@ -33,8 +34,8 @@ export const roleSelect = {
   },
   JobClassification: {
     select: {
-      id: true,
       title: true,
+      escoCode: true,
       level: true,
     },
   },
