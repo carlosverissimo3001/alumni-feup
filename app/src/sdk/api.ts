@@ -208,6 +208,61 @@ export type AlumniExtendedSourceEnum = typeof AlumniExtendedSourceEnum[keyof typ
 /**
  * 
  * @export
+ * @interface BasicAlumniProfileDto
+ */
+export interface BasicAlumniProfileDto {
+    /**
+     * 
+     * @type {string}
+     * @memberof BasicAlumniProfileDto
+     */
+    'id': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof BasicAlumniProfileDto
+     */
+    'name': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof BasicAlumniProfileDto
+     */
+    'profilePictureUrl'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof BasicAlumniProfileDto
+     */
+    'linkedinUrl'?: string;
+    /**
+     * The current role of the alumni - If the alumni is not active, this will be the last role
+     * @type {CurrentRoleDto}
+     * @memberof BasicAlumniProfileDto
+     */
+    'role'?: CurrentRoleDto;
+    /**
+     * The current company of the alumni
+     * @type {CompanyDto}
+     * @memberof BasicAlumniProfileDto
+     */
+    'company'?: CompanyDto;
+    /**
+     * The current location of the alumni
+     * @type {LocationGeo}
+     * @memberof BasicAlumniProfileDto
+     */
+    'location'?: LocationGeo;
+    /**
+     * The graduations of the alumni
+     * @type {Array<GraduationDto>}
+     * @memberof BasicAlumniProfileDto
+     */
+    'graduations'?: Array<GraduationDto>;
+}
+/**
+ * 
+ * @export
  * @interface Company
  */
 export interface Company {
@@ -235,6 +290,49 @@ export interface Company {
      * @memberof Company
      */
     'roles': Array<string>;
+}
+/**
+ * 
+ * @export
+ * @interface CompanyDto
+ */
+export interface CompanyDto {
+    /**
+     * 
+     * @type {string}
+     * @memberof CompanyDto
+     */
+    'id': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof CompanyDto
+     */
+    'name': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof CompanyDto
+     */
+    'industry': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof CompanyDto
+     */
+    'website'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof CompanyDto
+     */
+    'linkedinUrl'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof CompanyDto
+     */
+    'logo'?: string;
 }
 /**
  * 
@@ -375,6 +473,62 @@ export interface CreateAlumniDto {
 /**
  * 
  * @export
+ * @interface CurrentRoleDto
+ */
+export interface CurrentRoleDto {
+    /**
+     * 
+     * @type {string}
+     * @memberof CurrentRoleDto
+     */
+    'title': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof CurrentRoleDto
+     */
+    'escoTitle'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof CurrentRoleDto
+     */
+    'escoCode'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof CurrentRoleDto
+     */
+    'seniorityLevel'?: CurrentRoleDtoSeniorityLevelEnum;
+    /**
+     * 
+     * @type {string}
+     * @memberof CurrentRoleDto
+     */
+    'startDate'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof CurrentRoleDto
+     */
+    'endDate'?: string;
+}
+
+export const CurrentRoleDtoSeniorityLevelEnum = {
+    Intern: 'INTERN',
+    EntryLevel: 'ENTRY_LEVEL',
+    Associate: 'ASSOCIATE',
+    MidSeniorLevel: 'MID_SENIOR_LEVEL',
+    Director: 'DIRECTOR',
+    Executive: 'EXECUTIVE',
+    CLevel: 'C_LEVEL'
+} as const;
+
+export type CurrentRoleDtoSeniorityLevelEnum = typeof CurrentRoleDtoSeniorityLevelEnum[keyof typeof CurrentRoleDtoSeniorityLevelEnum];
+
+/**
+ * 
+ * @export
  * @interface Faculty
  */
 export interface Faculty {
@@ -469,6 +623,31 @@ export interface Graduation {
 /**
  * 
  * @export
+ * @interface GraduationDto
+ */
+export interface GraduationDto {
+    /**
+     * 
+     * @type {number}
+     * @memberof GraduationDto
+     */
+    'conclusionYear': number;
+    /**
+     * 
+     * @type {string}
+     * @memberof GraduationDto
+     */
+    'acronym': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof GraduationDto
+     */
+    'facultyAcronym': string;
+}
+/**
+ * 
+ * @export
  * @interface LinkedinAuthDto
  */
 export interface LinkedinAuthDto {
@@ -517,28 +696,34 @@ export interface LinkedinAuthDto {
 export interface LocationGeo {
     /**
      * The city of the location
-     * @type {object}
+     * @type {string}
      * @memberof LocationGeo
      */
-    'city': object;
+    'city'?: string;
     /**
      * The country of the location
-     * @type {object}
+     * @type {string}
      * @memberof LocationGeo
      */
-    'country': object;
+    'country'?: string;
+    /**
+     * The country code of the location
+     * @type {string}
+     * @memberof LocationGeo
+     */
+    'countryCode'?: string;
     /**
      * The latitude of the location
-     * @type {object}
+     * @type {number}
      * @memberof LocationGeo
      */
-    'latitude'?: object;
+    'latitude'?: number;
     /**
      * The longitude of the location
-     * @type {object}
+     * @type {number}
      * @memberof LocationGeo
      */
-    'longitude'?: object;
+    'longitude'?: number;
 }
 /**
  * 
@@ -582,7 +767,7 @@ export interface Role {
      * @type {string}
      * @memberof Role
      */
-    'seniorityLevel': string;
+    'seniorityLevel': RoleSeniorityLevelEnum;
     /**
      * The Company
      * @type {Company}
@@ -602,6 +787,19 @@ export interface Role {
      */
     'Location'?: object;
 }
+
+export const RoleSeniorityLevelEnum = {
+    Intern: 'INTERN',
+    EntryLevel: 'ENTRY_LEVEL',
+    Associate: 'ASSOCIATE',
+    MidSeniorLevel: 'MID_SENIOR_LEVEL',
+    Director: 'DIRECTOR',
+    Executive: 'EXECUTIVE',
+    CLevel: 'C_LEVEL'
+} as const;
+
+export type RoleSeniorityLevelEnum = typeof RoleSeniorityLevelEnum[keyof typeof RoleSeniorityLevelEnum];
+
 /**
  * 
  * @export
@@ -703,195 +901,6 @@ export interface VerifyEmailTokenDto {
      */
     'token': string;
 }
-
-/**
- * AdminApi - axios parameter creator
- * @export
- */
-export const AdminApiAxiosParamCreator = function (configuration?: Configuration) {
-    return {
-        /**
-         * 
-         * @summary Get BrightData balance
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        adminControllerGetBrightDataBalance: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            const localVarPath = `/api/admin/brightdata-balance`;
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-
-    
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         * 
-         * @summary Get ProxyCurl balance
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        adminControllerGetProxyCurlBalance: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            const localVarPath = `/api/admin/proxycurl-balance`;
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-
-    
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-    }
-};
-
-/**
- * AdminApi - functional programming interface
- * @export
- */
-export const AdminApiFp = function(configuration?: Configuration) {
-    const localVarAxiosParamCreator = AdminApiAxiosParamCreator(configuration)
-    return {
-        /**
-         * 
-         * @summary Get BrightData balance
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async adminControllerGetBrightDataBalance(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<number>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.adminControllerGetBrightDataBalance(options);
-            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['AdminApi.adminControllerGetBrightDataBalance']?.[localVarOperationServerIndex]?.url;
-            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
-        },
-        /**
-         * 
-         * @summary Get ProxyCurl balance
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async adminControllerGetProxyCurlBalance(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<number>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.adminControllerGetProxyCurlBalance(options);
-            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['AdminApi.adminControllerGetProxyCurlBalance']?.[localVarOperationServerIndex]?.url;
-            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
-        },
-    }
-};
-
-/**
- * AdminApi - factory interface
- * @export
- */
-export const AdminApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
-    const localVarFp = AdminApiFp(configuration)
-    return {
-        /**
-         * 
-         * @summary Get BrightData balance
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        adminControllerGetBrightDataBalance(options?: RawAxiosRequestConfig): AxiosPromise<number> {
-            return localVarFp.adminControllerGetBrightDataBalance(options).then((request) => request(axios, basePath));
-        },
-        /**
-         * 
-         * @summary Get ProxyCurl balance
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        adminControllerGetProxyCurlBalance(options?: RawAxiosRequestConfig): AxiosPromise<number> {
-            return localVarFp.adminControllerGetProxyCurlBalance(options).then((request) => request(axios, basePath));
-        },
-    };
-};
-
-/**
- * AdminApi - interface
- * @export
- * @interface AdminApi
- */
-export interface AdminApiInterface {
-    /**
-     * 
-     * @summary Get BrightData balance
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof AdminApiInterface
-     */
-    adminControllerGetBrightDataBalance(options?: RawAxiosRequestConfig): AxiosPromise<number>;
-
-    /**
-     * 
-     * @summary Get ProxyCurl balance
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof AdminApiInterface
-     */
-    adminControllerGetProxyCurlBalance(options?: RawAxiosRequestConfig): AxiosPromise<number>;
-
-}
-
-/**
- * AdminApi - object-oriented interface
- * @export
- * @class AdminApi
- * @extends {BaseAPI}
- */
-export class AdminApi extends BaseAPI implements AdminApiInterface {
-    /**
-     * 
-     * @summary Get BrightData balance
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof AdminApi
-     */
-    public adminControllerGetBrightDataBalance(options?: RawAxiosRequestConfig) {
-        return AdminApiFp(this.configuration).adminControllerGetBrightDataBalance(options).then((request) => request(this.axios, this.basePath));
-    }
-
-    /**
-     * 
-     * @summary Get ProxyCurl balance
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof AdminApi
-     */
-    public adminControllerGetProxyCurlBalance(options?: RawAxiosRequestConfig) {
-        return AdminApiFp(this.configuration).adminControllerGetProxyCurlBalance(options).then((request) => request(this.axios, this.basePath));
-    }
-}
-
-
 
 /**
  * AlumniApi - axios parameter creator
@@ -1064,6 +1073,40 @@ export const AlumniApiAxiosParamCreator = function (configuration?: Configuratio
          */
         alumniControllerGetAlumniToReview: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             const localVarPath = `/api/alumni/review`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Get basic profile of an alumni
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        alumniControllerGetBasicProfile: async (id: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('alumniControllerGetBasicProfile', 'id', id)
+            const localVarPath = `/api/alumni/basic-profile/{id}`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -1273,6 +1316,19 @@ export const AlumniApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
+         * @summary Get basic profile of an alumni
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async alumniControllerGetBasicProfile(id: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<BasicAlumniProfileDto>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.alumniControllerGetBasicProfile(id, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['AlumniApi.alumniControllerGetBasicProfile']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
          * @summary Mark an alumni as reviewed
          * @param {MarkAsReviewedDto} markAsReviewedDto 
          * @param {*} [options] Override http request option.
@@ -1374,6 +1430,16 @@ export const AlumniApiFactory = function (configuration?: Configuration, basePat
         },
         /**
          * 
+         * @summary Get basic profile of an alumni
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        alumniControllerGetBasicProfile(id: string, options?: RawAxiosRequestConfig): AxiosPromise<BasicAlumniProfileDto> {
+            return localVarFp.alumniControllerGetBasicProfile(id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
          * @summary Mark an alumni as reviewed
          * @param {MarkAsReviewedDto} markAsReviewedDto 
          * @param {*} [options] Override http request option.
@@ -1462,6 +1528,16 @@ export interface AlumniApiInterface {
      * @memberof AlumniApiInterface
      */
     alumniControllerGetAlumniToReview(options?: RawAxiosRequestConfig): AxiosPromise<Array<AlumniExtended>>;
+
+    /**
+     * 
+     * @summary Get basic profile of an alumni
+     * @param {string} id 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof AlumniApiInterface
+     */
+    alumniControllerGetBasicProfile(id: string, options?: RawAxiosRequestConfig): AxiosPromise<BasicAlumniProfileDto>;
 
     /**
      * 
@@ -1562,6 +1638,18 @@ export class AlumniApi extends BaseAPI implements AlumniApiInterface {
      */
     public alumniControllerGetAlumniToReview(options?: RawAxiosRequestConfig) {
         return AlumniApiFp(this.configuration).alumniControllerGetAlumniToReview(options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Get basic profile of an alumni
+     * @param {string} id 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof AlumniApi
+     */
+    public alumniControllerGetBasicProfile(id: string, options?: RawAxiosRequestConfig) {
+        return AlumniApiFp(this.configuration).alumniControllerGetBasicProfile(id, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -2422,66 +2510,6 @@ export const V1ApiAxiosParamCreator = function (configuration?: Configuration) {
     return {
         /**
          * 
-         * @summary Get BrightData balance
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        adminControllerGetBrightDataBalance: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            const localVarPath = `/api/admin/brightdata-balance`;
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-
-    
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         * 
-         * @summary Get ProxyCurl balance
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        adminControllerGetProxyCurlBalance: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            const localVarPath = `/api/admin/proxycurl-balance`;
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-
-    
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         * 
          * @summary Create a new alumni
          * @param {CreateAlumniDto} createAlumniDto 
          * @param {*} [options] Override http request option.
@@ -2645,6 +2673,40 @@ export const V1ApiAxiosParamCreator = function (configuration?: Configuration) {
          */
         alumniControllerGetAlumniToReview: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             const localVarPath = `/api/alumni/review`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Get basic profile of an alumni
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        alumniControllerGetBasicProfile: async (id: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('alumniControllerGetBasicProfile', 'id', id)
+            const localVarPath = `/api/alumni/basic-profile/{id}`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -3032,30 +3094,6 @@ export const V1ApiFp = function(configuration?: Configuration) {
     return {
         /**
          * 
-         * @summary Get BrightData balance
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async adminControllerGetBrightDataBalance(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<number>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.adminControllerGetBrightDataBalance(options);
-            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['V1Api.adminControllerGetBrightDataBalance']?.[localVarOperationServerIndex]?.url;
-            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
-        },
-        /**
-         * 
-         * @summary Get ProxyCurl balance
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async adminControllerGetProxyCurlBalance(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<number>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.adminControllerGetProxyCurlBalance(options);
-            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['V1Api.adminControllerGetProxyCurlBalance']?.[localVarOperationServerIndex]?.url;
-            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
-        },
-        /**
-         * 
          * @summary Create a new alumni
          * @param {CreateAlumniDto} createAlumniDto 
          * @param {*} [options] Override http request option.
@@ -3119,6 +3157,19 @@ export const V1ApiFp = function(configuration?: Configuration) {
             const localVarAxiosArgs = await localVarAxiosParamCreator.alumniControllerGetAlumniToReview(options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['V1Api.alumniControllerGetAlumniToReview']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @summary Get basic profile of an alumni
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async alumniControllerGetBasicProfile(id: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<BasicAlumniProfileDto>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.alumniControllerGetBasicProfile(id, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['V1Api.alumniControllerGetBasicProfile']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
@@ -3263,24 +3314,6 @@ export const V1ApiFactory = function (configuration?: Configuration, basePath?: 
     return {
         /**
          * 
-         * @summary Get BrightData balance
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        adminControllerGetBrightDataBalance(options?: RawAxiosRequestConfig): AxiosPromise<number> {
-            return localVarFp.adminControllerGetBrightDataBalance(options).then((request) => request(axios, basePath));
-        },
-        /**
-         * 
-         * @summary Get ProxyCurl balance
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        adminControllerGetProxyCurlBalance(options?: RawAxiosRequestConfig): AxiosPromise<number> {
-            return localVarFp.adminControllerGetProxyCurlBalance(options).then((request) => request(axios, basePath));
-        },
-        /**
-         * 
          * @summary Create a new alumni
          * @param {CreateAlumniDto} createAlumniDto 
          * @param {*} [options] Override http request option.
@@ -3330,6 +3363,16 @@ export const V1ApiFactory = function (configuration?: Configuration, basePath?: 
          */
         alumniControllerGetAlumniToReview(options?: RawAxiosRequestConfig): AxiosPromise<Array<AlumniExtended>> {
             return localVarFp.alumniControllerGetAlumniToReview(options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Get basic profile of an alumni
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        alumniControllerGetBasicProfile(id: string, options?: RawAxiosRequestConfig): AxiosPromise<BasicAlumniProfileDto> {
+            return localVarFp.alumniControllerGetBasicProfile(id, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -3442,24 +3485,6 @@ export const V1ApiFactory = function (configuration?: Configuration, basePath?: 
 export interface V1ApiInterface {
     /**
      * 
-     * @summary Get BrightData balance
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof V1ApiInterface
-     */
-    adminControllerGetBrightDataBalance(options?: RawAxiosRequestConfig): AxiosPromise<number>;
-
-    /**
-     * 
-     * @summary Get ProxyCurl balance
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof V1ApiInterface
-     */
-    adminControllerGetProxyCurlBalance(options?: RawAxiosRequestConfig): AxiosPromise<number>;
-
-    /**
-     * 
      * @summary Create a new alumni
      * @param {CreateAlumniDto} createAlumniDto 
      * @param {*} [options] Override http request option.
@@ -3509,6 +3534,16 @@ export interface V1ApiInterface {
      * @memberof V1ApiInterface
      */
     alumniControllerGetAlumniToReview(options?: RawAxiosRequestConfig): AxiosPromise<Array<AlumniExtended>>;
+
+    /**
+     * 
+     * @summary Get basic profile of an alumni
+     * @param {string} id 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof V1ApiInterface
+     */
+    alumniControllerGetBasicProfile(id: string, options?: RawAxiosRequestConfig): AxiosPromise<BasicAlumniProfileDto>;
 
     /**
      * 
@@ -3621,28 +3656,6 @@ export interface V1ApiInterface {
 export class V1Api extends BaseAPI implements V1ApiInterface {
     /**
      * 
-     * @summary Get BrightData balance
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof V1Api
-     */
-    public adminControllerGetBrightDataBalance(options?: RawAxiosRequestConfig) {
-        return V1ApiFp(this.configuration).adminControllerGetBrightDataBalance(options).then((request) => request(this.axios, this.basePath));
-    }
-
-    /**
-     * 
-     * @summary Get ProxyCurl balance
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof V1Api
-     */
-    public adminControllerGetProxyCurlBalance(options?: RawAxiosRequestConfig) {
-        return V1ApiFp(this.configuration).adminControllerGetProxyCurlBalance(options).then((request) => request(this.axios, this.basePath));
-    }
-
-    /**
-     * 
      * @summary Create a new alumni
      * @param {CreateAlumniDto} createAlumniDto 
      * @param {*} [options] Override http request option.
@@ -3701,6 +3714,18 @@ export class V1Api extends BaseAPI implements V1ApiInterface {
      */
     public alumniControllerGetAlumniToReview(options?: RawAxiosRequestConfig) {
         return V1ApiFp(this.configuration).alumniControllerGetAlumniToReview(options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Get basic profile of an alumni
+     * @param {string} id 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof V1Api
+     */
+    public alumniControllerGetBasicProfile(id: string, options?: RawAxiosRequestConfig) {
+        return V1ApiFp(this.configuration).alumniControllerGetBasicProfile(id, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -3823,3 +3848,4 @@ export class V1Api extends BaseAPI implements V1ApiInterface {
         return V1ApiFp(this.configuration).userControllerLinkedinAuth(linkedinAuthDto, options).then((request) => request(this.axios, this.basePath));
     }
 }
+

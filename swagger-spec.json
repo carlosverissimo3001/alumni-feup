@@ -281,6 +281,38 @@
         ]
       }
     },
+    "/api/alumni/basic-profile/{id}": {
+      "get": {
+        "operationId": "AlumniController_getBasicProfile",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": "Returns the basic profile of an alumni",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BasicAlumniProfileDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Get basic profile of an alumni",
+        "tags": [
+          "V1",
+          "Alumni"
+        ]
+      }
+    },
     "/api/company": {
       "get": {
         "operationId": "CompanyController_findAll",
@@ -507,52 +539,6 @@
           "Faculty"
         ]
       }
-    },
-    "/api/admin/proxycurl-balance": {
-      "get": {
-        "operationId": "AdminController_getProxyCurlBalance",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "ProxyCurl balance",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "number"
-                }
-              }
-            }
-          }
-        },
-        "summary": "Get ProxyCurl balance",
-        "tags": [
-          "V1",
-          "Admin"
-        ]
-      }
-    },
-    "/api/admin/brightdata-balance": {
-      "get": {
-        "operationId": "AdminController_getBrightDataBalance",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "BrightData balance",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "number"
-                }
-              }
-            }
-          }
-        },
-        "summary": "Get BrightData balance",
-        "tags": [
-          "V1",
-          "Admin"
-        ]
-      }
     }
   },
   "info": {
@@ -619,7 +605,16 @@
           },
           "seniorityLevel": {
             "type": "string",
-            "description": "The seniority level of the role"
+            "description": "The seniority level of the role",
+            "enum": [
+              "INTERN",
+              "ENTRY_LEVEL",
+              "ASSOCIATE",
+              "MID_SENIOR_LEVEL",
+              "DIRECTOR",
+              "EXECUTIVE",
+              "C_LEVEL"
+            ]
           },
           "Company": {
             "description": "The Company",
@@ -653,26 +648,26 @@
         "type": "object",
         "properties": {
           "city": {
-            "type": "object",
+            "type": "string",
             "description": "The city of the location"
           },
           "country": {
-            "type": "object",
+            "type": "string",
             "description": "The country of the location"
           },
+          "countryCode": {
+            "type": "string",
+            "description": "The country code of the location"
+          },
           "latitude": {
-            "type": "object",
+            "type": "number",
             "description": "The latitude of the location"
           },
           "longitude": {
-            "type": "object",
+            "type": "number",
             "description": "The longitude of the location"
           }
-        },
-        "required": [
-          "city",
-          "country"
-        ]
+        }
       },
       "Course": {
         "type": "object",
@@ -993,6 +988,142 @@
         "required": [
           "email",
           "token"
+        ]
+      },
+      "CurrentRoleDto": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string"
+          },
+          "escoTitle": {
+            "type": "string"
+          },
+          "escoCode": {
+            "type": "string"
+          },
+          "seniorityLevel": {
+            "type": "string",
+            "enum": [
+              "INTERN",
+              "ENTRY_LEVEL",
+              "ASSOCIATE",
+              "MID_SENIOR_LEVEL",
+              "DIRECTOR",
+              "EXECUTIVE",
+              "C_LEVEL"
+            ]
+          },
+          "startDate": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "endDate": {
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "title"
+        ]
+      },
+      "CompanyDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "industry": {
+            "type": "string"
+          },
+          "website": {
+            "type": "string"
+          },
+          "linkedinUrl": {
+            "type": "string"
+          },
+          "logo": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "industry"
+        ]
+      },
+      "GraduationDto": {
+        "type": "object",
+        "properties": {
+          "conclusionYear": {
+            "type": "number"
+          },
+          "acronym": {
+            "type": "string"
+          },
+          "facultyAcronym": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "conclusionYear",
+          "acronym",
+          "facultyAcronym"
+        ]
+      },
+      "BasicAlumniProfileDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "profilePictureUrl": {
+            "type": "string"
+          },
+          "linkedinUrl": {
+            "type": "string"
+          },
+          "role": {
+            "description": "The current role of the alumni - If the alumni is not active, this will be the last role",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/CurrentRoleDto"
+              }
+            ]
+          },
+          "company": {
+            "description": "The current company of the alumni",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/CompanyDto"
+              }
+            ]
+          },
+          "location": {
+            "description": "The current location of the alumni",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/LocationGeo"
+              }
+            ]
+          },
+          "graduations": {
+            "description": "The graduations of the alumni",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/GraduationDto"
+            }
+          }
+        },
+        "required": [
+          "id",
+          "name"
         ]
       },
       "LinkedinAuthDto": {

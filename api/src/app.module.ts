@@ -10,7 +10,6 @@ import { AgentsApiModule } from './agents-api/agents-api.module';
 import { OtpModule } from './otp/otp.module';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { APP_GUARD } from '@nestjs/core';
-import { AdminModule } from './admin/admin.module';
 
 @Module({
   imports: [
@@ -18,7 +17,7 @@ import { AdminModule } from './admin/admin.module';
       throttlers: [
         {
           ttl: 60000,
-          limit: 10,
+          limit: 10000,
         },
       ],
     }),
@@ -34,7 +33,6 @@ import { AdminModule } from './admin/admin.module';
     CourseModule,
     FacultyModule,
     AgentsApiModule,
-    AdminModule,
   ],
   providers: [
     {
