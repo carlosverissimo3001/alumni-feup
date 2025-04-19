@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+//import { LocationAnalyticsEntity } from './location.entity';
 
 export class RoleAnalyticsEntity {
   @ApiProperty()
@@ -6,4 +7,7 @@ export class RoleAnalyticsEntity {
 
   @ApiProperty()
   alumniId: string;
+
+  /* @ApiProperty()
+  location: LocationAnalyticsEntity; */
 }

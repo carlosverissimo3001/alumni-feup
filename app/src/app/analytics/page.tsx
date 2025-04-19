@@ -11,7 +11,7 @@ import { Card } from "@/components/ui/card";
 import CompanyDashboard from "@/components/analytics/CompanyDashboard";
 import IndustryDashboard from "@/components/analytics/IndustryDashboard";
 import { useState } from "react";
-import CountriesDashboard from "@/components/analytics/CountriesDashboard";
+import CountriesDashboard from "@/components/analytics/CountryDashboard";
 
 export default function Analytics() {
   const [totalAlumni, setTotalAlumni] = useState<number>(0);
@@ -32,7 +32,7 @@ export default function Analytics() {
     },
     {
       name: "Countries",
-      value: 12, //totalCountries,
+      value: totalCountries,
       icon: Globe2,
     },
     {
@@ -90,9 +90,9 @@ export default function Analytics() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         <CompanyDashboard onDataUpdate={handleCompanyDataUpdate} />
-        {/* Test */}
-        {/* <CountriesDashboard onDataUpdate={handleCountriesDataUpdate} /> */}
+        <CountriesDashboard onDataUpdate={handleCountriesDataUpdate} />
         <IndustryDashboard onDataUpdate={handleIndustryDataUpdate} />
+        {/* Testing visualizations */}
       </div>
     </div>
   );

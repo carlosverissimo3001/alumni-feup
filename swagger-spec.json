@@ -907,6 +907,183 @@
         ]
       }
     },
+    "/api/analytics/countries": {
+      "get": {
+        "operationId": "CountriesAnalyticsController_getCountriesWithAlumniCount",
+        "parameters": [
+          {
+            "name": "startDate",
+            "required": false,
+            "in": "query",
+            "description": "The start date of the query",
+            "schema": {
+              "example": "2021-01-01",
+              "type": "string"
+            }
+          },
+          {
+            "name": "endDate",
+            "required": false,
+            "in": "query",
+            "description": "The end date of the query",
+            "schema": {
+              "example": "2021-01-01",
+              "type": "string"
+            }
+          },
+          {
+            "name": "courseIds",
+            "required": false,
+            "in": "query",
+            "description": "The course IDs to filter by",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "companyIds",
+            "required": false,
+            "in": "query",
+            "description": "The company IDs to filter by",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "graduationYears",
+            "required": false,
+            "in": "query",
+            "description": "The graduation years to filter by",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "industryIds",
+            "required": false,
+            "in": "query",
+            "description": "The industry IDs to filter by",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "locationIds",
+            "required": false,
+            "in": "query",
+            "description": "The location IDs to filter by",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "countries",
+            "required": false,
+            "in": "query",
+            "description": "The countries to filter by",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "currentRolesOnly",
+            "required": false,
+            "in": "query",
+            "description": "Filter for current roles only",
+            "schema": {
+              "example": true,
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "limit",
+            "required": true,
+            "in": "query",
+            "description": "The number of results to return",
+            "schema": {
+              "example": 10,
+              "type": "number"
+            }
+          },
+          {
+            "name": "offset",
+            "required": true,
+            "in": "query",
+            "description": "The offset of the query",
+            "schema": {
+              "default": 0,
+              "example": 0,
+              "type": "number"
+            }
+          },
+          {
+            "name": "search",
+            "required": false,
+            "in": "query",
+            "description": "Search query",
+            "schema": {
+              "example": "search query",
+              "type": "string"
+            }
+          },
+          {
+            "name": "sortBy",
+            "required": true,
+            "in": "query",
+            "description": "How to sort the results",
+            "schema": {
+              "$ref": "#/components/schemas/SortBy"
+            }
+          },
+          {
+            "name": "sortOrder",
+            "required": true,
+            "in": "query",
+            "description": "The order of the results",
+            "schema": {
+              "default": "desc",
+              "example": "asc",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The countries with the number of alumni working in them.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CountryListResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Get the countries, and the number of alumni working in them.",
+        "tags": [
+          "V1",
+          "Analytics"
+        ]
+      }
+    },
     "/api/company": {
       "get": {
         "operationId": "CompanyController_findAll",
@@ -1815,6 +1992,57 @@
         },
         "required": [
           "industries",
+          "total"
+        ]
+      },
+      "CountryListItemDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The country ID"
+          },
+          "name": {
+            "type": "string",
+            "description": "The country name"
+          },
+          "code": {
+            "type": "string",
+            "description": "The country code (ISO 3166-1 alpha-2)"
+          },
+          "alumniCount": {
+            "type": "number",
+            "description": "The number of alumni in the country"
+          },
+          "companyCount": {
+            "type": "number",
+            "description": "The number of companies in the country"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "code",
+          "alumniCount",
+          "companyCount"
+        ]
+      },
+      "CountryListResponseDto": {
+        "type": "object",
+        "properties": {
+          "countries": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CountryListItemDto"
+            }
+          },
+          "total": {
+            "type": "number",
+            "description": "The total number of countries in the database after applying the filters"
+          }
+        },
+        "required": [
+          "countries",
           "total"
         ]
       },
