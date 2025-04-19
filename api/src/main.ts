@@ -39,7 +39,12 @@ async function bootstrap() {
   });
 
   SwaggerModule.setup('docs', app, document);
-  app.useGlobalPipes(new ValidationPipe());
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true,
+      transform: true,
+    }),
+  );
   await app.listen(process.env.PORT ?? 3000);
 
   if (module.hot) {

@@ -1,15 +1,17 @@
 import { Module } from '@nestjs/common';
-import { AlumniModule } from './alumni/alumni.module';
-import { CompanyModule } from './company/company.module';
-import { UserModule } from './user/user.module';
-import { FileUploadModule } from './file-upload/file-upload.module';
 import { ConfigModule } from '@nestjs/config';
+import { APP_GUARD } from '@nestjs/core';
+import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
+import { AdminModule } from './admin/admin.module';
+import { AgentsApiModule } from './agents-api/agents-api.module';
+import { AlumniModule } from './alumni/alumni.module';
+import { AnalyticsModule } from './analytics/analytics.module';
+import { CompanyModule } from './company/company.module';
 import { CourseModule } from './course/course.module';
 import { FacultyModule } from './faculty/faculty.module';
-import { AgentsApiModule } from './agents-api/agents-api.module';
+import { FileUploadModule } from './file-upload/file-upload.module';
 import { OtpModule } from './otp/otp.module';
-import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
-import { APP_GUARD } from '@nestjs/core';
+import { UserModule } from './user/user.module';
 
 @Module({
   imports: [
@@ -26,7 +28,9 @@ import { APP_GUARD } from '@nestjs/core';
       envFilePath: '.env',
     }),
     OtpModule,
+    AdminModule,
     AlumniModule,
+    AnalyticsModule,
     CompanyModule,
     UserModule,
     FileUploadModule,

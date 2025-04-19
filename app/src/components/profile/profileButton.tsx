@@ -28,7 +28,7 @@ export default function ProfileButton() {
       <Button
         variant="ghost"
         asChild
-        className={cn("text-zinc-400 hover:text-white")}
+        className={cn("bg-gradient-to-r from-gray-900 to-gray-600 bg-clip-text text-transparent")}
       >
         {pathname !== "/join-us" && <Link href="/join-us">Join us</Link>}
       </Button>
@@ -38,8 +38,8 @@ export default function ProfileButton() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" className={cn("relative h-8 w-8 rounded-full")}>
-          <Avatar className="h-8 w-8">
+        <Button variant="ghost" className={cn("relative h-10 w-10 rounded-full")}>
+          <Avatar className="h-10 w-10">
             <AvatarImage
               src={user?.profilePictureUrl || "/placeholder-avatar.png"}
               alt="Profile"

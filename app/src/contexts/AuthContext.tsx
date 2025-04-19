@@ -63,11 +63,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     Cookies.set('auth_token', newToken, { expires: 7 });
     Cookies.set('user', encodeURIComponent(JSON.stringify(newUser)), { expires: 7 });
 
-    toast({
+/*     toast({
       title: 'Logged in',
       description: `Welcome ${newUser.firstName} ${newUser.lastName}`,
       variant: 'default',
-    });
+    }); */
   };
 
   const logout = () => {
@@ -80,11 +80,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     // TODO: Maybe invalidate the token in the backend
 
 
-    toast({
+/*     toast({
       title: 'Logged out',
       description: 'You have been logged out',
       variant: 'default',
-    });
+    }); */
   };
 
   return (

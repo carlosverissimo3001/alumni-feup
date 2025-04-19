@@ -13,9 +13,7 @@ interface UseFetchBasicProfileReturn {
 export const useFetchBasicProfile = (id: string): UseFetchBasicProfileReturn => {
   const query = useQuery({
     queryKey: ['basic-profile', id],
-    queryFn: () => NestAPI.alumniControllerGetBasicProfile(id).then(
-      (response: AxiosResponse<BasicAlumniProfileDto>) => response.data
-    )
+    queryFn: () => NestAPI.alumniControllerGetBasicProfile({id})
   });
 
   const parsedError = useJsonFromResponse<{ error?: string }>(
