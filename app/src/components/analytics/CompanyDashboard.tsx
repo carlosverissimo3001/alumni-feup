@@ -28,7 +28,7 @@ export default function CompanyDashboard({
   onDataUpdate,
 }: CompanyDashboardProps) {
   const [page, setPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(ITEMS_PER_PAGE[2]);
+  const [itemsPerPage, setItemsPerPage] = useState(ITEMS_PER_PAGE[1]);
   const [totalItems, setTotalItems] = useState(0);
 
   //
