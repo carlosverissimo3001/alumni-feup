@@ -16,6 +16,8 @@ models/Company.ts
 models/CompanyDto.ts
 models/CompanyListItemDto.ts
 models/CompanyListResponseDto.ts
+models/CountryListItemDto.ts
+models/CountryListResponseDto.ts
 models/Course.ts
 models/CourseCompletion.ts
 models/CourseExtended.ts

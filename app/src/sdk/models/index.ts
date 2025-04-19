@@ -7,6 +7,8 @@ export * from './Company';
 export * from './CompanyDto';
 export * from './CompanyListItemDto';
 export * from './CompanyListResponseDto';
+export * from './CountryListItemDto';
+export * from './CountryListResponseDto';
 export * from './Course';
 export * from './CourseCompletion';
 export * from './CourseExtended';

@@ -1,15 +1,20 @@
-import { Module } from '@nestjs/common';
-import { CompaniesAnalyticsController } from './controllers/companies-analytics.controller';
-import { CompanyAnalyticsService } from './services/company-analytics.service';
+import { Logger, Module } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { CompanyAnalyticsRepository } from './repositories/company.repository';
-import { Logger } from '@nestjs/common';
-import { AlumniAnalyticsRepository } from './repositories/alumni.repository';
+import {
+  CompaniesAnalyticsController,
+  CountriesAnalyticsController,
+} from './controllers';
+import {
+  AlumniAnalyticsRepository,
+  CompanyAnalyticsRepository,
+} from './repositories';
+import { CompanyAnalyticsService, CountryAnalyticsService } from './services';
 
 @Module({
-  controllers: [CompaniesAnalyticsController],
+  controllers: [CompaniesAnalyticsController, CountriesAnalyticsController],
   providers: [
     CompanyAnalyticsService,
+    CountryAnalyticsService,
     PrismaService,
     CompanyAnalyticsRepository,
     AlumniAnalyticsRepository,

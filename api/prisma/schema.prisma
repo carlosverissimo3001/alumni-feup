@@ -56,6 +56,7 @@ model Company {
   name          String
   linkedinUrl   String?         @unique @map("linkedin_url")
   industryId    String          @map("industry_id")
+  hqLocationId  String?         @unique @map("hq_location_id")
   logo          String?
   founded       Int?
   website       String?
@@ -65,6 +66,7 @@ model Company {
   Industry      Industry        @relation(fields: [industryId], references: [id])
   Role          Role[]
   ReviewCompany ReviewCompany[]
+  Location      Location?       @relation(fields: [hqLocationId], references: [id])
 
   @@index([industryId])
   @@map("company")
@@ -150,11 +152,13 @@ model Location {
   isCountryOnly  Boolean               @default(false) @map("is_country_only")
   createdAt      DateTime              @default(now()) @map("created_at") @db.Timestamp(6)
   updatedAt      DateTime              @default(now()) @map("updated_at") @db.Timestamp(6)
+  
   Alumni         Alumni[]
   Problematic    ProblematicLocation[]
   Role           Role[]
   ReviewLocation ReviewLocation[]
-
+  Company        Company?
+  
   @@index([city, country])
   @@index([countryCode])
   @@index([latitude, longitude])
