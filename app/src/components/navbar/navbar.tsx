@@ -13,23 +13,31 @@ import Image from "next/image";
 import { useNavbar } from "@/contexts/NavbarContext";
 import { useEffect, useRef } from "react";
 import { useAuth } from "@/contexts/AuthContext";
+
 const Navbar = () => {
   const { isAuthenticated, user } = useAuth();
   const { isCollapsed, toggleCollapse } = useNavbar();
   const pathname = usePathname();
   const navbarRef = useRef<HTMLDivElement>(null);
+  const timeoutRef = useRef<NodeJS.Timeout>();
 
   const handleMouseEnter = () => {
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+    }
     if (isCollapsed) {
       toggleCollapse();
     }
   };
 
   const handleMouseLeave = () => {
-    if (!isCollapsed) {
-      toggleCollapse();
-    }
+    timeoutRef.current = setTimeout(() => {
+      if (!isCollapsed) {
+        toggleCollapse();
+      }
+    }, 300);
   };
+
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
@@ -44,6 +52,9 @@ const Navbar = () => {
     document.addEventListener("mousedown", handleClickOutside);
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
     };
   }, [isCollapsed, toggleCollapse]);
 
@@ -82,11 +93,10 @@ const Navbar = () => {
       )}
     >
       <div className="px-3 py-2 flex-1">
-        {/* Logo & Collapse Button */}
         <div
           className={cn(
             "flex items-center mb-14",
-            isCollapsed ? "justify-center" : "justify-between px-1"
+            isCollapsed ? "justify-center" : "justify-center px-1"
           )}
         >
           <Link href="/">
@@ -114,25 +124,25 @@ const Navbar = () => {
               <Link
                 key={route.href}
                 href={route.href}
-              className={cn(
-                "text-sm group flex p-3 w-full justify-start font-medium cursor-pointer hover:text-white hover:bg-zinc-800 rounded-lg transition",
-                pathname === route.href
-                  ? "text-white bg-zinc-800"
-                  : "text-zinc-400",
-                isCollapsed && "justify-center"
-              )}
-            >
-              <div
                 className={cn(
-                  "flex items-center flex-1",
+                  "text-sm group flex p-3 w-full justify-start font-medium cursor-pointer hover:text-white hover:bg-zinc-800 rounded-lg transition",
+                  pathname === route.href
+                    ? "text-white bg-zinc-800"
+                    : "text-zinc-400",
                   isCollapsed && "justify-center"
                 )}
               >
-                {route.icon}
-                <span className={cn("ml-3 whitespace-nowrap", isCollapsed && "hidden")}>
-                 {route.label}
-                </span>
-              </div>
+                <div
+                  className={cn(
+                    "flex items-center flex-1",
+                    isCollapsed && "justify-center"
+                  )}
+                >
+                  {route.icon}
+                  <span className={cn("ml-3 whitespace-nowrap", isCollapsed && "hidden")}>
+                    {route.label}
+                  </span>
+                </div>
               </Link>
             )
           ))}
