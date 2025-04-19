@@ -1,16 +1,6 @@
 import { QueryParamsDto } from '../dto';
 import { Prisma } from '@prisma/client';
 
-/* export const buildIndustryWhereClause = (
-  params: QueryParamsDto,
-): Prisma.IndustryWhereInput => {
-  return {
-    Company: {
-      id: { in: params.companyIds },
-    },
-  };
-}; */
-
 export const buildWhereClause = (
   params: QueryParamsDto,
 ): {

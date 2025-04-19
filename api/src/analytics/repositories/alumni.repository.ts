@@ -2,23 +2,27 @@ import { PrismaService } from '@/prisma/prisma.service';
 import { QueryParamsDto } from '../dto/query-params.dto';
 import { buildWhereClause } from '../utils/query-builder';
 import { Injectable } from '@nestjs/common';
+import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class AlumniAnalyticsRepository {
   constructor(private prisma: PrismaService) {}
 
   async countAlumni(params: QueryParamsDto) {
-    const { companyWhere } = buildWhereClause(params);
+    const { companyWhere, roleWhere } = buildWhereClause(params);
 
-    const alumniWhere = Object.keys(companyWhere).length
-      ? {
-          Roles: {
-            some: {
-              Company: companyWhere,
-            },
-          },
-        }
-      : undefined;
+    const alumniWhere: Prisma.AlumniWhereInput = {};
+
+    if (Object.keys(companyWhere).length > 0 || roleWhere) {
+      alumniWhere.Roles = {
+        some: {
+          ...(Object.keys(companyWhere).length > 0 && {
+            Company: companyWhere,
+          }),
+          ...(roleWhere && roleWhere),
+        },
+      };
+    }
 
     return this.prisma.alumni.count({
       where: alumniWhere,
@@ -26,20 +30,23 @@ export class AlumniAnalyticsRepository {
   }
 
   async getAlumniByCountry(params: QueryParamsDto) {
-    const { companyWhere } = buildWhereClause(params);
+    const { companyWhere, roleWhere } = buildWhereClause(params);
 
-    const alumniWhere = Object.keys(companyWhere).length
-      ? {
-          Roles: {
-            some: {
-              Company: companyWhere,
-            },
-          },
-        }
-      : undefined;
+    const alumniWhere: Prisma.AlumniWhereInput = { Location: { isNot: null } };
+
+    if (Object.keys(companyWhere).length > 0 || roleWhere) {
+      alumniWhere.Roles = {
+        some: {
+          ...(Object.keys(companyWhere).length > 0 && {
+            Company: companyWhere,
+          }),
+          ...(roleWhere && roleWhere),
+        },
+      };
+    }
 
     return this.prisma.alumni.findMany({
-      where: { ...alumniWhere, Location: { isNot: null } },
+      where: alumniWhere,
       include: {
         Location: true,
       },
