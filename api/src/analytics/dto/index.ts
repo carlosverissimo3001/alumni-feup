@@ -4,3 +4,4 @@ export {
   IndustryListItemDto,
 } from './industry-list.dto';
 export { QueryParamsDto } from './query-params.dto';
+export { CountryListResponseDto, CountryListItemDto } from './country-list.dto';

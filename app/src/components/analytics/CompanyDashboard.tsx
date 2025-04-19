@@ -5,9 +5,7 @@ import {
   Table,
   TableBody,
   TableCell,
-  TableHead,
   TableRow,
-  TableHeader,
   TableContainer,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
@@ -18,7 +16,7 @@ import ImageWithFallback from "../ui/image-with-fallback";
 import PaginationControls from "./common/PaginationControls";
 import { CompanyDataSkeleton } from "./skeletons/CompanyDataSkeleton";
 import TableTitle from "./common/TableTitle";
-
+import CustomTableHeader from "./common/CustomeTableHeader";
 const ITEMS_PER_PAGE = [5, 10, 25, 50, 100];
 const DASHBOARD_HEIGHT = "h-[375px]";
 
@@ -33,7 +31,7 @@ export default function CompanyDashboard({
   const [itemsPerPage, setItemsPerPage] = useState(ITEMS_PER_PAGE[2]);
   const [totalItems, setTotalItems] = useState(0);
 
-  // 
+  //
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [pageInput, setPageInput] = useState<string>(String(page));
 
@@ -69,19 +67,7 @@ export default function CompanyDashboard({
       <div className="flex-1 overflow-y-auto mb-2 relative border-t border-b border-gray-200 custom-scrollbar">
         <TableContainer className="w-full h-full">
           <Table className="min-w-full bg-white table-fixed">
-            <TableHeader className="bg-gray-100 sticky top-0 z-20 shadow-sm">
-              <TableRow>
-                <TableHead className="w-1/12 pl-3 py-1 text-left text-xs font-semibold text-[#8C2D19] uppercase tracking-wider">
-                  #
-                </TableHead>
-                <TableHead className="w-8/12 pl-3 py-1 text-left text-xs font-semibold text-[#8C2D19] uppercase tracking-wider">
-                  Name
-                </TableHead>
-                <TableHead className="w-3/12 pl-3 py-1 text-left text-xs font-semibold text-[#8C2D19] uppercase tracking-wider">
-                  Alumni
-                </TableHead>
-              </TableRow>
-            </TableHeader>
+            <CustomTableHeader includeCompanies={false} />
 
             {isLoading || isFetching ? (
               <CompanyDataSkeleton />
@@ -98,11 +84,11 @@ export default function CompanyDashboard({
                             index % 2 === 0 ? "bg-gray-50" : "bg-white"
                           } hover:bg-[#A13A23] hover:bg-opacity-10 transition-colors duration-200`}
                         >
-                          <TableCell className="w-1/12 py-1 pl-3 text-sm text-gray-500 font-medium align-middle">
+                          <TableCell className="w-1/12 py-1.5 pl-3 text-sm text-gray-500 font-medium align-middle">
                             {rowNumber}
                           </TableCell>
-                          <TableCell className="w-8/12 py-1 pl-3 text-sm font-medium text-[#000000] flex items-center gap-1 align-middle">
-                            <div className="min-w-[24px] w-6 h-6 rounded-full overflow-hidden flex items-center justify-center bg-gray-50">
+                          <TableCell className="w-8/12 py-1.5 pl-3 text-sm font-medium text-[#000000] flex items-center gap-1 align-middle">
+                            <div className="min-w-[24px] w-6 h-6 mr-1.5 rounded-full overflow-hidden flex items-center justify-center bg-gray-50">
                               <ImageWithFallback
                                 src={company.logo || ""}
                                 alt={company.name}
@@ -113,12 +99,15 @@ export default function CompanyDashboard({
                             </div>
                             <Button
                               variant="link"
-                              className="text-sm font-medium text-[#000000] w-full text-left h-auto p-0 hover:text-[#8C2D19] transition-colors"
+                              className="text-sm font-medium text-[#000000] w-full text-left h-auto p-1 hover:text-[#8C2D19] transition-colors"
                               onClick={() => {
                                 window.open(`/company/${company.id}`, "_blank");
                               }}
                             >
-                              <div className="text-ellipsis overflow-hidden w-full text-left">
+                              <div
+                                title={company.name}
+                                className="text-ellipsis overflow-hidden w-full text-left"
+                              >
                                 {company.name}
                               </div>
                             </Button>

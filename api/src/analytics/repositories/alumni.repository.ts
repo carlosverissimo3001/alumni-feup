@@ -24,4 +24,25 @@ export class AlumniAnalyticsRepository {
       where: alumniWhere,
     });
   }
+
+  async getAlumniByCountry(params: QueryParamsDto) {
+    const { companyWhere } = buildWhereClause(params);
+
+    const alumniWhere = Object.keys(companyWhere).length
+      ? {
+          Roles: {
+            some: {
+              Company: companyWhere,
+            },
+          },
+        }
+      : undefined;
+
+    return this.prisma.alumni.findMany({
+      where: { ...alumniWhere, Location: { isNot: null } },
+      include: {
+        Location: true,
+      },
+    });
+  }
 }
