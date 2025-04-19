@@ -30,12 +30,12 @@ const AdminDashboard = () => {
       description: "View API usage and balance",
       icon: <CreditCardIcon className="h-6 w-6" />,
       href: "/admin/api-usage",
-    }
+    },
   ];
 
   return (
-    <div className="container mx-auto py-8">
-      <h1 className="text-3xl font-bold mb-8">Admin Panel</h1>
+    <div className="container mx-auto py-8 min-h-screen bg-white">
+      <h1 className="text-3xl font-bold mb-8 text-black">Admin Panel</h1>
       
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-12">
         {operations.map((op) => (
@@ -47,8 +47,8 @@ const AdminDashboard = () => {
                     {op.icon}
                   </div>
                   <div>
-                    <CardTitle className="text-xl mb-1">{op.title}</CardTitle>
-                    <CardDescription>{op.description}</CardDescription>
+                    <CardTitle className="text-xl mb-1 text-black">{op.title}</CardTitle>
+                    <CardDescription className="text-gray-600">{op.description}</CardDescription>
                   </div>
                 </div>
               </CardHeader>

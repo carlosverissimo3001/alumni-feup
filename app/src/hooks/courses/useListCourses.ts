@@ -1,7 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { useJsonFromResponse } from "@/commom";
 import NestAPI from "@/api";
-import { AxiosResponse } from "axios";
 import { CourseExtended as Course, CourseControllerFindStatusEnum } from "@/sdk";
 
 const arrangeCourses = (courses: Course[]) => {
@@ -24,8 +23,7 @@ type UseListCoursesParams = {
 export const useListCourses = ({facultyId, name, status, enabled}: UseListCoursesParams) => {
     const query = useQuery({
         queryKey: ['courses', facultyId],
-        queryFn: () => NestAPI.courseControllerFind(facultyId, status, name)
-            .then((response: AxiosResponse<Course[]>) => response.data)
+        queryFn: () => NestAPI.courseControllerFind({facultyId, status, name})
             .then(arrangeCourses),
         staleTime: Infinity, // Data will never become stale automatically
         gcTime: Infinity, // Cache will never be cleared automatically (formerly cacheTime)

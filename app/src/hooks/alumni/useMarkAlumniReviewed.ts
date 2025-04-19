@@ -11,7 +11,7 @@ const useMarkAlumniReviewed = ({ onSuccess }: Input) => {
 
   const mutation = useMutation({
     mutationFn: (dto: MarkAsReviewedDto) => {
-      return NestAPI.alumniControllerMarkAsReviewed(dto)
+      return NestAPI.alumniControllerMarkAsReviewed({markAsReviewedDto: dto})
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["alumni-to-review"] });

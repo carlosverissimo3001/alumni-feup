@@ -3,15 +3,12 @@
 import { cn } from "@/lib/utils";
 import {
   GlobeIcon,
-  PanelRightOpen,
-  PanelLeftOpen,
-  ChartNoAxesCombined,
   BadgeHelpIcon,
   UserIcon,
+  ChartSpline,
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Button } from "../ui/button";
 import Image from "next/image";
 import { useNavbar } from "@/contexts/NavbarContext";
 import { useEffect, useRef } from "react";
@@ -57,9 +54,9 @@ const Navbar = () => {
       href: "/",
     },
     {
-      label: "Dashboard",
-      icon: <ChartNoAxesCombined size={20} />,
-      href: "/dashboard",
+      label: "Analytics",
+      icon: <ChartSpline size={20} />,
+      href: "/analytics",
     },
     {
       label: "Your Network",
@@ -77,8 +74,8 @@ const Navbar = () => {
   return (
     <div
       ref={navbarRef}
-/*       onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave} */
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
       className={cn(
         "relative space-y-4 py-8 flex flex-col h-full bg-zinc-900 text-white transition-all duration-300 z-50",
         isCollapsed ? "w-20" : "w-60"
@@ -95,8 +92,7 @@ const Navbar = () => {
           <Link href="/">
             <h1
               className={cn(
-                "text-2xl font-bold flex items-center gap-2 overflow-hidden whitespace-nowrap transition-opacity duration-300",
-                isCollapsed ? "opacity-0 hidden" : "opacity-100"
+                "text-2xl font-bold flex items-center gap-2 overflow-hidden whitespace-nowrap transition-opacity duration-300"
               )}
             >
               <Image
@@ -106,21 +102,9 @@ const Navbar = () => {
                 height={32}
                 className="shrink-0"
               />
-              <span>30EIC</span>
+              {!isCollapsed && <span>30EIC</span>}
             </h1>
           </Link>
-          <Button
-            variant="ghost"
-            size="icon"
-            className="hover:bg-white/10"
-            onClick={toggleCollapse}
-          >
-            {isCollapsed ? (
-              <PanelLeftOpen size={20} />
-            ) : (
-              <PanelRightOpen size={25} />
-            )}
-          </Button>
         </div>
 
         {/* Routes - World, Dashboard, Profile, Leave Feedback */}
@@ -154,6 +138,8 @@ const Navbar = () => {
           ))}
         </div>
       </div>
+
+      {/* TODO: Add theme toggle later */}
 
       {/* Copyright notice */}
       <div

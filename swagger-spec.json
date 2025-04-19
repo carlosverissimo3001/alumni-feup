@@ -1,6 +1,52 @@
 {
   "openapi": "3.0.0",
   "paths": {
+    "/api/admin/proxycurl-balance": {
+      "get": {
+        "operationId": "AdminController_getProxyCurlBalance",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "ProxyCurl balance",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "number"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Get ProxyCurl balance",
+        "tags": [
+          "V1",
+          "Admin"
+        ]
+      }
+    },
+    "/api/admin/brightdata-balance": {
+      "get": {
+        "operationId": "AdminController_getBrightDataBalance",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "BrightData balance",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "number"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Get BrightData balance",
+        "tags": [
+          "V1",
+          "Admin"
+        ]
+      }
+    },
     "/api/alumni": {
       "get": {
         "operationId": "AlumniController_findAll",
@@ -310,6 +356,554 @@
         "tags": [
           "V1",
           "Alumni"
+        ]
+      }
+    },
+    "/api/analytics/companies": {
+      "get": {
+        "operationId": "CompaniesAnalyticsController_getCompaniesWithAlumniCount",
+        "parameters": [
+          {
+            "name": "startDate",
+            "required": false,
+            "in": "query",
+            "description": "The start date of the query",
+            "schema": {
+              "example": "2021-01-01",
+              "type": "string"
+            }
+          },
+          {
+            "name": "endDate",
+            "required": false,
+            "in": "query",
+            "description": "The end date of the query",
+            "schema": {
+              "example": "2021-01-01",
+              "type": "string"
+            }
+          },
+          {
+            "name": "courseIds",
+            "required": false,
+            "in": "query",
+            "description": "The course IDs to filter by",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "companyIds",
+            "required": false,
+            "in": "query",
+            "description": "The company IDs to filter by",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "graduationYears",
+            "required": false,
+            "in": "query",
+            "description": "The graduation years to filter by",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "industryIds",
+            "required": false,
+            "in": "query",
+            "description": "The industry IDs to filter by",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "locationIds",
+            "required": false,
+            "in": "query",
+            "description": "The location IDs to filter by",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "countries",
+            "required": false,
+            "in": "query",
+            "description": "The countries to filter by",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "currentRolesOnly",
+            "required": false,
+            "in": "query",
+            "description": "Filter for current roles only",
+            "schema": {
+              "example": true,
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "limit",
+            "required": true,
+            "in": "query",
+            "description": "The number of results to return",
+            "schema": {
+              "example": 10,
+              "type": "number"
+            }
+          },
+          {
+            "name": "offset",
+            "required": true,
+            "in": "query",
+            "description": "The offset of the query",
+            "schema": {
+              "default": 0,
+              "example": 0,
+              "type": "number"
+            }
+          },
+          {
+            "name": "search",
+            "required": false,
+            "in": "query",
+            "description": "Search query",
+            "schema": {
+              "example": "search query",
+              "type": "string"
+            }
+          },
+          {
+            "name": "sortBy",
+            "required": true,
+            "in": "query",
+            "description": "How to sort the results",
+            "schema": {
+              "$ref": "#/components/schemas/SortBy"
+            }
+          },
+          {
+            "name": "sortOrder",
+            "required": true,
+            "in": "query",
+            "description": "The order of the results",
+            "schema": {
+              "default": "desc",
+              "example": "asc",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The companies with the number of alumni working in them.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CompanyListResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Get the companies, and the number of alumni working in them.",
+        "tags": [
+          "V1",
+          "Analytics"
+        ]
+      }
+    },
+    "/api/analytics/companies/by-industry": {
+      "get": {
+        "operationId": "CompaniesAnalyticsController_getIndustryWithCounts",
+        "parameters": [
+          {
+            "name": "startDate",
+            "required": false,
+            "in": "query",
+            "description": "The start date of the query",
+            "schema": {
+              "example": "2021-01-01",
+              "type": "string"
+            }
+          },
+          {
+            "name": "endDate",
+            "required": false,
+            "in": "query",
+            "description": "The end date of the query",
+            "schema": {
+              "example": "2021-01-01",
+              "type": "string"
+            }
+          },
+          {
+            "name": "courseIds",
+            "required": false,
+            "in": "query",
+            "description": "The course IDs to filter by",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "companyIds",
+            "required": false,
+            "in": "query",
+            "description": "The company IDs to filter by",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "graduationYears",
+            "required": false,
+            "in": "query",
+            "description": "The graduation years to filter by",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "industryIds",
+            "required": false,
+            "in": "query",
+            "description": "The industry IDs to filter by",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "locationIds",
+            "required": false,
+            "in": "query",
+            "description": "The location IDs to filter by",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "countries",
+            "required": false,
+            "in": "query",
+            "description": "The countries to filter by",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "currentRolesOnly",
+            "required": false,
+            "in": "query",
+            "description": "Filter for current roles only",
+            "schema": {
+              "example": true,
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "limit",
+            "required": true,
+            "in": "query",
+            "description": "The number of results to return",
+            "schema": {
+              "example": 10,
+              "type": "number"
+            }
+          },
+          {
+            "name": "offset",
+            "required": true,
+            "in": "query",
+            "description": "The offset of the query",
+            "schema": {
+              "default": 0,
+              "example": 0,
+              "type": "number"
+            }
+          },
+          {
+            "name": "search",
+            "required": false,
+            "in": "query",
+            "description": "Search query",
+            "schema": {
+              "example": "search query",
+              "type": "string"
+            }
+          },
+          {
+            "name": "sortBy",
+            "required": true,
+            "in": "query",
+            "description": "How to sort the results",
+            "schema": {
+              "$ref": "#/components/schemas/SortBy"
+            }
+          },
+          {
+            "name": "sortOrder",
+            "required": true,
+            "in": "query",
+            "description": "The order of the results",
+            "schema": {
+              "default": "desc",
+              "example": "asc",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The industries with the number of alumni working in them, and the number of companies in each industry.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IndustryListResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Returns the number of alumni working in companies grouped by industry.",
+        "tags": [
+          "V1",
+          "Analytics"
+        ]
+      }
+    },
+    "/api/analytics/companies/growth": {
+      "get": {
+        "operationId": "CompaniesAnalyticsController_getCompanyGrowth",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "Returns company employment growth over time.",
+        "tags": [
+          "V1",
+          "Analytics"
+        ]
+      }
+    },
+    "/api/analytics/companies/{id}": {
+      "get": {
+        "operationId": "CompaniesAnalyticsController_getCompanyDetails",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "startDate",
+            "required": false,
+            "in": "query",
+            "description": "The start date of the query",
+            "schema": {
+              "example": "2021-01-01",
+              "type": "string"
+            }
+          },
+          {
+            "name": "endDate",
+            "required": false,
+            "in": "query",
+            "description": "The end date of the query",
+            "schema": {
+              "example": "2021-01-01",
+              "type": "string"
+            }
+          },
+          {
+            "name": "courseIds",
+            "required": false,
+            "in": "query",
+            "description": "The course IDs to filter by",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "companyIds",
+            "required": false,
+            "in": "query",
+            "description": "The company IDs to filter by",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "graduationYears",
+            "required": false,
+            "in": "query",
+            "description": "The graduation years to filter by",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "industryIds",
+            "required": false,
+            "in": "query",
+            "description": "The industry IDs to filter by",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "locationIds",
+            "required": false,
+            "in": "query",
+            "description": "The location IDs to filter by",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "countries",
+            "required": false,
+            "in": "query",
+            "description": "The countries to filter by",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "currentRolesOnly",
+            "required": false,
+            "in": "query",
+            "description": "Filter for current roles only",
+            "schema": {
+              "example": true,
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "limit",
+            "required": true,
+            "in": "query",
+            "description": "The number of results to return",
+            "schema": {
+              "example": 10,
+              "type": "number"
+            }
+          },
+          {
+            "name": "offset",
+            "required": true,
+            "in": "query",
+            "description": "The offset of the query",
+            "schema": {
+              "default": 0,
+              "example": 0,
+              "type": "number"
+            }
+          },
+          {
+            "name": "search",
+            "required": false,
+            "in": "query",
+            "description": "Search query",
+            "schema": {
+              "example": "search query",
+              "type": "string"
+            }
+          },
+          {
+            "name": "sortBy",
+            "required": true,
+            "in": "query",
+            "description": "How to sort the results",
+            "schema": {
+              "$ref": "#/components/schemas/SortBy"
+            }
+          },
+          {
+            "name": "sortOrder",
+            "required": true,
+            "in": "query",
+            "description": "The order of the results",
+            "schema": {
+              "default": "desc",
+              "example": "asc",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "Returns detailed information about a specific company.",
+        "tags": [
+          "V1",
+          "Analytics"
         ]
       }
     },
@@ -1124,6 +1718,104 @@
         "required": [
           "id",
           "name"
+        ]
+      },
+      "SortBy": {
+        "type": "string"
+      },
+      "CompanyListItemDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "alumniCount": {
+            "type": "number"
+          },
+          "logo": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "alumniCount"
+        ]
+      },
+      "CompanyListResponseDto": {
+        "type": "object",
+        "properties": {
+          "companies": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CompanyListItemDto"
+            }
+          },
+          "companyTotalCount": {
+            "type": "number",
+            "description": "The total number of companies in the database, after applying the filters"
+          },
+          "alumniTotalCount": {
+            "type": "number",
+            "description": "The total number of alumni in the database, after applying the filters"
+          }
+        },
+        "required": [
+          "companies",
+          "companyTotalCount",
+          "alumniTotalCount"
+        ]
+      },
+      "IndustryListItemDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The ID of the industry"
+          },
+          "name": {
+            "type": "string",
+            "description": "The name of the industry",
+            "example": "Financial Services"
+          },
+          "companyCount": {
+            "type": "number",
+            "description": "The number of companies in the industry",
+            "example": 100
+          },
+          "alumniCount": {
+            "type": "number",
+            "description": "The number of alumni working in the industry",
+            "example": 100
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "companyCount",
+          "alumniCount"
+        ]
+      },
+      "IndustryListResponseDto": {
+        "type": "object",
+        "properties": {
+          "industries": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/IndustryListItemDto"
+            }
+          },
+          "total": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "industries",
+          "total"
         ]
       },
       "LinkedinAuthDto": {
