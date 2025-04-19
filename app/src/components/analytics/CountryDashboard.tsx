@@ -31,6 +31,8 @@ export default function CountryDashboard({
 }: CountryDashboardProps) {
   const [page, setPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(ITEMS_PER_PAGE[2]);
+  
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [pageInput, setPageInput] = useState<string>(String(page));
 
   const { data, isLoading, isFetching } = useCountryList({
