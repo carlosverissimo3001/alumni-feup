@@ -12,7 +12,7 @@ type Input = {
 export const useManualSubmission = ({ data, onSuccess }: Input) => {
   const mutation = useMutation(
     {
-      mutationFn: () => NestAPI.alumniControllerCreate(data),
+      mutationFn: () => NestAPI.alumniControllerCreate({createAlumniDto: data}),
       onSuccess
     }
   );

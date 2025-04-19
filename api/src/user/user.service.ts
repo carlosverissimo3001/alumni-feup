@@ -3,6 +3,7 @@ import { LinkedinAuthDto, UserAuthResponse } from '@/dto';
 import { PrismaService } from '../prisma/prisma.service';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
+import { sanitizeLinkedinUrl } from '@/utils/string';
 
 @Injectable()
 export class UserService {
@@ -23,9 +24,10 @@ export class UserService {
 
     // If we have a LinkedIn URL, try to find a match
     if (body.linkedin_url) {
+      const sanitizedLinkedinUrl = sanitizeLinkedinUrl(body.linkedin_url);
       alumni = await this.prisma.alumni.findUnique({
         where: {
-          linkedinUrl: body.linkedin_url,
+          linkedinUrl: sanitizedLinkedinUrl,
         },
       });
 

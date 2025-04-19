@@ -83,15 +83,15 @@ const ApiUsagePage = () => {
               ) : (
                 <div
                   className={`text-3xl font-bold ${
-                    isLowBrightDataBalance(brightDataBalance?.data)
+                    isLowBrightDataBalance(brightDataBalance)
                       ? "text-red-300"
                       : "text-green-600"
                   }`}
                 >
-                  {formatCurrency(brightDataBalance?.data)}
+                  {formatCurrency(brightDataBalance)}
                 </div>
               )}
-              {isLowBrightDataBalance(brightDataBalance?.data) && (
+              {isLowBrightDataBalance(brightDataBalance) && (
                 <Alert variant="destructive" className="mt-4 py-2">
                   <AlertTitle className="text-sm font-medium">Low balance</AlertTitle>
                   <AlertDescription className="text-xs">
@@ -123,15 +123,15 @@ const ApiUsagePage = () => {
               ) : (
                 <div
                   className={`text-3xl font-bold ${
-                    isLowProxyCurlBalance(proxyCurlBalance?.data)
+                    isLowProxyCurlBalance(proxyCurlBalance)
                       ? "text-red-300"
                       : "text-green-600"
                   }`}
                 >
-                  {formatCredits(proxyCurlBalance?.data)}
+                  {formatCredits(proxyCurlBalance)}
                 </div>
               )}
-              {isLowProxyCurlBalance(proxyCurlBalance?.data) && (
+              {isLowProxyCurlBalance(proxyCurlBalance) && (
                 <Alert variant="destructive" className="mt-4 py-2">
                   <AlertTitle className="text-sm font-medium">Low balance</AlertTitle>
                   <AlertDescription className="text-xs">

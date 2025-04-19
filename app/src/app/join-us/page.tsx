@@ -3,13 +3,25 @@
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { LINKEDIN_URL } from "@/helpers/auth";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ArrowRight } from "lucide-react";
 import ManualSubmissionForm from "@/components/forms/ManualSubmissionForm";
 
 const JoinPage = () => {
   const [acceptedPolicy, setAcceptedPolicy] = useState(false);
   const [showManualForm, setShowManualForm] = useState(false);
+
+  useEffect(() => {
+    const policyAccepted = localStorage.getItem("acceptedPolicy");
+    if (policyAccepted === "true") {
+      setAcceptedPolicy(true);
+    }
+  }, []);
+
+  const handlePolicyChange = (checked: boolean) => {
+    setAcceptedPolicy(checked);
+    localStorage.setItem("acceptedPolicy", checked.toString());
+  };
 
   const onVerify = () => {
     if (acceptedPolicy) {
@@ -75,7 +87,7 @@ const JoinPage = () => {
             <Checkbox
               id="privacy"
               checked={acceptedPolicy}
-              onCheckedChange={(checked: boolean) => setAcceptedPolicy(checked)}
+              onCheckedChange={handlePolicyChange}
             />
             <label
               htmlFor="privacy"

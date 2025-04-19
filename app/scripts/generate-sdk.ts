@@ -17,8 +17,9 @@ if (!fs.existsSync(OUTPUT_DIR)) {
 try {
   execSync(`npx @openapitools/openapi-generator-cli generate \
     -i ${SPEC_FILE} \
-    -g typescript-axios \
+    -g typescript-fetch \
     -o ${OUTPUT_DIR} \
+    --minimal-update \
     --additional-properties=supportES6=true,withInterfaces=true`, 
     { stdio: 'inherit' }
   );

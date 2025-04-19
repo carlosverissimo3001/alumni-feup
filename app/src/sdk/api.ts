@@ -337,6 +337,56 @@ export interface CompanyDto {
 /**
  * 
  * @export
+ * @interface CompanyListItemDto
+ */
+export interface CompanyListItemDto {
+    /**
+     * 
+     * @type {string}
+     * @memberof CompanyListItemDto
+     */
+    'id': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof CompanyListItemDto
+     */
+    'name': string;
+    /**
+     * 
+     * @type {number}
+     * @memberof CompanyListItemDto
+     */
+    'alumniCount': number;
+    /**
+     * 
+     * @type {object}
+     * @memberof CompanyListItemDto
+     */
+    'logo'?: object;
+}
+/**
+ * 
+ * @export
+ * @interface CompanyListResponseDto
+ */
+export interface CompanyListResponseDto {
+    /**
+     * 
+     * @type {Array<CompanyListItemDto>}
+     * @memberof CompanyListResponseDto
+     */
+    'companies': Array<CompanyListItemDto>;
+    /**
+     * 
+     * @type {number}
+     * @memberof CompanyListResponseDto
+     */
+    'total': number;
+}
+/**
+ * 
+ * @export
  * @interface Course
  */
 export interface Course {
@@ -1700,6 +1750,601 @@ export type AlumniControllerFindAllGeoJSONGroupByEnum = typeof AlumniControllerF
 
 
 /**
+ * AnalyticsApi - axios parameter creator
+ * @export
+ */
+export const AnalyticsApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * 
+         * @summary Returns the number of alumni working in companies grouped by industry.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        companiesAnalyticsControllerGetCompaniesByIndustry: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/api/analytics/companies/by-industry`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Get the companies, and the number of alumni working in them.
+         * @param {string} [startDate] The start date of the query
+         * @param {string} [endDate] The end date of the query
+         * @param {Array<string>} [courseIds] The course IDs to filter by
+         * @param {Array<string>} [companyIds] The company IDs to filter by
+         * @param {Array<string>} [graduationYears] The graduation years to filter by
+         * @param {Array<string>} [industryIds] The industry IDs to filter by
+         * @param {Array<string>} [locationIds] The location IDs to filter by
+         * @param {Array<string>} [countries] The countries to filter by
+         * @param {boolean} [currentRolesOnly] Filter for current roles only
+         * @param {number} [limit] The number of results to return
+         * @param {number} [offset] The offset of the query
+         * @param {string} [search] Search query
+         * @param {object} [sortBy] How to sort the results
+         * @param {string} [sortOrder] The order of the results
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        companiesAnalyticsControllerGetCompaniesWithAlumniCount: async (startDate?: string, endDate?: string, courseIds?: Array<string>, companyIds?: Array<string>, graduationYears?: Array<string>, industryIds?: Array<string>, locationIds?: Array<string>, countries?: Array<string>, currentRolesOnly?: boolean, limit?: number, offset?: number, search?: string, sortBy?: object, sortOrder?: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/api/analytics/companies/top`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            if (startDate !== undefined) {
+                localVarQueryParameter['startDate'] = startDate;
+            }
+
+            if (endDate !== undefined) {
+                localVarQueryParameter['endDate'] = endDate;
+            }
+
+            if (courseIds) {
+                localVarQueryParameter['courseIds'] = courseIds;
+            }
+
+            if (companyIds) {
+                localVarQueryParameter['companyIds'] = companyIds;
+            }
+
+            if (graduationYears) {
+                localVarQueryParameter['graduationYears'] = graduationYears;
+            }
+
+            if (industryIds) {
+                localVarQueryParameter['industryIds'] = industryIds;
+            }
+
+            if (locationIds) {
+                localVarQueryParameter['locationIds'] = locationIds;
+            }
+
+            if (countries) {
+                localVarQueryParameter['countries'] = countries;
+            }
+
+            if (currentRolesOnly !== undefined) {
+                localVarQueryParameter['currentRolesOnly'] = currentRolesOnly;
+            }
+
+            if (limit !== undefined) {
+                localVarQueryParameter['limit'] = limit;
+            }
+
+            if (offset !== undefined) {
+                localVarQueryParameter['offset'] = offset;
+            }
+
+            if (search !== undefined) {
+                localVarQueryParameter['search'] = search;
+            }
+
+            if (sortBy !== undefined) {
+                for (const [key, value] of Object.entries(sortBy)) {
+                    localVarQueryParameter[key] = value;
+                }
+            }
+
+            if (sortOrder !== undefined) {
+                localVarQueryParameter['sortOrder'] = sortOrder;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Returns detailed information about a specific company.
+         * @param {string} id 
+         * @param {string} [startDate] The start date of the query
+         * @param {string} [endDate] The end date of the query
+         * @param {Array<string>} [courseIds] The course IDs to filter by
+         * @param {Array<string>} [companyIds] The company IDs to filter by
+         * @param {Array<string>} [graduationYears] The graduation years to filter by
+         * @param {Array<string>} [industryIds] The industry IDs to filter by
+         * @param {Array<string>} [locationIds] The location IDs to filter by
+         * @param {Array<string>} [countries] The countries to filter by
+         * @param {boolean} [currentRolesOnly] Filter for current roles only
+         * @param {number} [limit] The number of results to return
+         * @param {number} [offset] The offset of the query
+         * @param {string} [search] Search query
+         * @param {object} [sortBy] How to sort the results
+         * @param {string} [sortOrder] The order of the results
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        companiesAnalyticsControllerGetCompanyDetails: async (id: string, startDate?: string, endDate?: string, courseIds?: Array<string>, companyIds?: Array<string>, graduationYears?: Array<string>, industryIds?: Array<string>, locationIds?: Array<string>, countries?: Array<string>, currentRolesOnly?: boolean, limit?: number, offset?: number, search?: string, sortBy?: object, sortOrder?: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('companiesAnalyticsControllerGetCompanyDetails', 'id', id)
+            const localVarPath = `/api/analytics/companies/details/{id}`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            if (startDate !== undefined) {
+                localVarQueryParameter['startDate'] = startDate;
+            }
+
+            if (endDate !== undefined) {
+                localVarQueryParameter['endDate'] = endDate;
+            }
+
+            if (courseIds) {
+                localVarQueryParameter['courseIds'] = courseIds;
+            }
+
+            if (companyIds) {
+                localVarQueryParameter['companyIds'] = companyIds;
+            }
+
+            if (graduationYears) {
+                localVarQueryParameter['graduationYears'] = graduationYears;
+            }
+
+            if (industryIds) {
+                localVarQueryParameter['industryIds'] = industryIds;
+            }
+
+            if (locationIds) {
+                localVarQueryParameter['locationIds'] = locationIds;
+            }
+
+            if (countries) {
+                localVarQueryParameter['countries'] = countries;
+            }
+
+            if (currentRolesOnly !== undefined) {
+                localVarQueryParameter['currentRolesOnly'] = currentRolesOnly;
+            }
+
+            if (limit !== undefined) {
+                localVarQueryParameter['limit'] = limit;
+            }
+
+            if (offset !== undefined) {
+                localVarQueryParameter['offset'] = offset;
+            }
+
+            if (search !== undefined) {
+                localVarQueryParameter['search'] = search;
+            }
+
+            if (sortBy !== undefined) {
+                for (const [key, value] of Object.entries(sortBy)) {
+                    localVarQueryParameter[key] = value;
+                }
+            }
+
+            if (sortOrder !== undefined) {
+                localVarQueryParameter['sortOrder'] = sortOrder;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Returns company employment growth over time.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        companiesAnalyticsControllerGetCompanyGrowth: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/api/analytics/companies/growth`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * AnalyticsApi - functional programming interface
+ * @export
+ */
+export const AnalyticsApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = AnalyticsApiAxiosParamCreator(configuration)
+    return {
+        /**
+         * 
+         * @summary Returns the number of alumni working in companies grouped by industry.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async companiesAnalyticsControllerGetCompaniesByIndustry(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.companiesAnalyticsControllerGetCompaniesByIndustry(options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['AnalyticsApi.companiesAnalyticsControllerGetCompaniesByIndustry']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @summary Get the companies, and the number of alumni working in them.
+         * @param {string} [startDate] The start date of the query
+         * @param {string} [endDate] The end date of the query
+         * @param {Array<string>} [courseIds] The course IDs to filter by
+         * @param {Array<string>} [companyIds] The company IDs to filter by
+         * @param {Array<string>} [graduationYears] The graduation years to filter by
+         * @param {Array<string>} [industryIds] The industry IDs to filter by
+         * @param {Array<string>} [locationIds] The location IDs to filter by
+         * @param {Array<string>} [countries] The countries to filter by
+         * @param {boolean} [currentRolesOnly] Filter for current roles only
+         * @param {number} [limit] The number of results to return
+         * @param {number} [offset] The offset of the query
+         * @param {string} [search] Search query
+         * @param {object} [sortBy] How to sort the results
+         * @param {string} [sortOrder] The order of the results
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async companiesAnalyticsControllerGetCompaniesWithAlumniCount(startDate?: string, endDate?: string, courseIds?: Array<string>, companyIds?: Array<string>, graduationYears?: Array<string>, industryIds?: Array<string>, locationIds?: Array<string>, countries?: Array<string>, currentRolesOnly?: boolean, limit?: number, offset?: number, search?: string, sortBy?: object, sortOrder?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<CompanyListResponseDto>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.companiesAnalyticsControllerGetCompaniesWithAlumniCount(startDate, endDate, courseIds, companyIds, graduationYears, industryIds, locationIds, countries, currentRolesOnly, limit, offset, search, sortBy, sortOrder, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['AnalyticsApi.companiesAnalyticsControllerGetCompaniesWithAlumniCount']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @summary Returns detailed information about a specific company.
+         * @param {string} id 
+         * @param {string} [startDate] The start date of the query
+         * @param {string} [endDate] The end date of the query
+         * @param {Array<string>} [courseIds] The course IDs to filter by
+         * @param {Array<string>} [companyIds] The company IDs to filter by
+         * @param {Array<string>} [graduationYears] The graduation years to filter by
+         * @param {Array<string>} [industryIds] The industry IDs to filter by
+         * @param {Array<string>} [locationIds] The location IDs to filter by
+         * @param {Array<string>} [countries] The countries to filter by
+         * @param {boolean} [currentRolesOnly] Filter for current roles only
+         * @param {number} [limit] The number of results to return
+         * @param {number} [offset] The offset of the query
+         * @param {string} [search] Search query
+         * @param {object} [sortBy] How to sort the results
+         * @param {string} [sortOrder] The order of the results
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async companiesAnalyticsControllerGetCompanyDetails(id: string, startDate?: string, endDate?: string, courseIds?: Array<string>, companyIds?: Array<string>, graduationYears?: Array<string>, industryIds?: Array<string>, locationIds?: Array<string>, countries?: Array<string>, currentRolesOnly?: boolean, limit?: number, offset?: number, search?: string, sortBy?: object, sortOrder?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.companiesAnalyticsControllerGetCompanyDetails(id, startDate, endDate, courseIds, companyIds, graduationYears, industryIds, locationIds, countries, currentRolesOnly, limit, offset, search, sortBy, sortOrder, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['AnalyticsApi.companiesAnalyticsControllerGetCompanyDetails']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @summary Returns company employment growth over time.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async companiesAnalyticsControllerGetCompanyGrowth(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.companiesAnalyticsControllerGetCompanyGrowth(options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['AnalyticsApi.companiesAnalyticsControllerGetCompanyGrowth']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+    }
+};
+
+/**
+ * AnalyticsApi - factory interface
+ * @export
+ */
+export const AnalyticsApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = AnalyticsApiFp(configuration)
+    return {
+        /**
+         * 
+         * @summary Returns the number of alumni working in companies grouped by industry.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        companiesAnalyticsControllerGetCompaniesByIndustry(options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.companiesAnalyticsControllerGetCompaniesByIndustry(options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Get the companies, and the number of alumni working in them.
+         * @param {string} [startDate] The start date of the query
+         * @param {string} [endDate] The end date of the query
+         * @param {Array<string>} [courseIds] The course IDs to filter by
+         * @param {Array<string>} [companyIds] The company IDs to filter by
+         * @param {Array<string>} [graduationYears] The graduation years to filter by
+         * @param {Array<string>} [industryIds] The industry IDs to filter by
+         * @param {Array<string>} [locationIds] The location IDs to filter by
+         * @param {Array<string>} [countries] The countries to filter by
+         * @param {boolean} [currentRolesOnly] Filter for current roles only
+         * @param {number} [limit] The number of results to return
+         * @param {number} [offset] The offset of the query
+         * @param {string} [search] Search query
+         * @param {object} [sortBy] How to sort the results
+         * @param {string} [sortOrder] The order of the results
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        companiesAnalyticsControllerGetCompaniesWithAlumniCount(startDate?: string, endDate?: string, courseIds?: Array<string>, companyIds?: Array<string>, graduationYears?: Array<string>, industryIds?: Array<string>, locationIds?: Array<string>, countries?: Array<string>, currentRolesOnly?: boolean, limit?: number, offset?: number, search?: string, sortBy?: object, sortOrder?: string, options?: RawAxiosRequestConfig): AxiosPromise<CompanyListResponseDto> {
+            return localVarFp.companiesAnalyticsControllerGetCompaniesWithAlumniCount(startDate, endDate, courseIds, companyIds, graduationYears, industryIds, locationIds, countries, currentRolesOnly, limit, offset, search, sortBy, sortOrder, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Returns detailed information about a specific company.
+         * @param {string} id 
+         * @param {string} [startDate] The start date of the query
+         * @param {string} [endDate] The end date of the query
+         * @param {Array<string>} [courseIds] The course IDs to filter by
+         * @param {Array<string>} [companyIds] The company IDs to filter by
+         * @param {Array<string>} [graduationYears] The graduation years to filter by
+         * @param {Array<string>} [industryIds] The industry IDs to filter by
+         * @param {Array<string>} [locationIds] The location IDs to filter by
+         * @param {Array<string>} [countries] The countries to filter by
+         * @param {boolean} [currentRolesOnly] Filter for current roles only
+         * @param {number} [limit] The number of results to return
+         * @param {number} [offset] The offset of the query
+         * @param {string} [search] Search query
+         * @param {object} [sortBy] How to sort the results
+         * @param {string} [sortOrder] The order of the results
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        companiesAnalyticsControllerGetCompanyDetails(id: string, startDate?: string, endDate?: string, courseIds?: Array<string>, companyIds?: Array<string>, graduationYears?: Array<string>, industryIds?: Array<string>, locationIds?: Array<string>, countries?: Array<string>, currentRolesOnly?: boolean, limit?: number, offset?: number, search?: string, sortBy?: object, sortOrder?: string, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.companiesAnalyticsControllerGetCompanyDetails(id, startDate, endDate, courseIds, companyIds, graduationYears, industryIds, locationIds, countries, currentRolesOnly, limit, offset, search, sortBy, sortOrder, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Returns company employment growth over time.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        companiesAnalyticsControllerGetCompanyGrowth(options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.companiesAnalyticsControllerGetCompanyGrowth(options).then((request) => request(axios, basePath));
+        },
+    };
+};
+
+/**
+ * AnalyticsApi - interface
+ * @export
+ * @interface AnalyticsApi
+ */
+export interface AnalyticsApiInterface {
+    /**
+     * 
+     * @summary Returns the number of alumni working in companies grouped by industry.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof AnalyticsApiInterface
+     */
+    companiesAnalyticsControllerGetCompaniesByIndustry(options?: RawAxiosRequestConfig): AxiosPromise<void>;
+
+    /**
+     * 
+     * @summary Get the companies, and the number of alumni working in them.
+     * @param {string} [startDate] The start date of the query
+     * @param {string} [endDate] The end date of the query
+     * @param {Array<string>} [courseIds] The course IDs to filter by
+     * @param {Array<string>} [companyIds] The company IDs to filter by
+     * @param {Array<string>} [graduationYears] The graduation years to filter by
+     * @param {Array<string>} [industryIds] The industry IDs to filter by
+     * @param {Array<string>} [locationIds] The location IDs to filter by
+     * @param {Array<string>} [countries] The countries to filter by
+     * @param {boolean} [currentRolesOnly] Filter for current roles only
+     * @param {number} [limit] The number of results to return
+     * @param {number} [offset] The offset of the query
+     * @param {string} [search] Search query
+     * @param {object} [sortBy] How to sort the results
+     * @param {string} [sortOrder] The order of the results
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof AnalyticsApiInterface
+     */
+    companiesAnalyticsControllerGetCompaniesWithAlumniCount(startDate?: string, endDate?: string, courseIds?: Array<string>, companyIds?: Array<string>, graduationYears?: Array<string>, industryIds?: Array<string>, locationIds?: Array<string>, countries?: Array<string>, currentRolesOnly?: boolean, limit?: number, offset?: number, search?: string, sortBy?: object, sortOrder?: string, options?: RawAxiosRequestConfig): AxiosPromise<CompanyListResponseDto>;
+
+    /**
+     * 
+     * @summary Returns detailed information about a specific company.
+     * @param {string} id 
+     * @param {string} [startDate] The start date of the query
+     * @param {string} [endDate] The end date of the query
+     * @param {Array<string>} [courseIds] The course IDs to filter by
+     * @param {Array<string>} [companyIds] The company IDs to filter by
+     * @param {Array<string>} [graduationYears] The graduation years to filter by
+     * @param {Array<string>} [industryIds] The industry IDs to filter by
+     * @param {Array<string>} [locationIds] The location IDs to filter by
+     * @param {Array<string>} [countries] The countries to filter by
+     * @param {boolean} [currentRolesOnly] Filter for current roles only
+     * @param {number} [limit] The number of results to return
+     * @param {number} [offset] The offset of the query
+     * @param {string} [search] Search query
+     * @param {object} [sortBy] How to sort the results
+     * @param {string} [sortOrder] The order of the results
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof AnalyticsApiInterface
+     */
+    companiesAnalyticsControllerGetCompanyDetails(id: string, startDate?: string, endDate?: string, courseIds?: Array<string>, companyIds?: Array<string>, graduationYears?: Array<string>, industryIds?: Array<string>, locationIds?: Array<string>, countries?: Array<string>, currentRolesOnly?: boolean, limit?: number, offset?: number, search?: string, sortBy?: object, sortOrder?: string, options?: RawAxiosRequestConfig): AxiosPromise<void>;
+
+    /**
+     * 
+     * @summary Returns company employment growth over time.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof AnalyticsApiInterface
+     */
+    companiesAnalyticsControllerGetCompanyGrowth(options?: RawAxiosRequestConfig): AxiosPromise<void>;
+
+}
+
+/**
+ * AnalyticsApi - object-oriented interface
+ * @export
+ * @class AnalyticsApi
+ * @extends {BaseAPI}
+ */
+export class AnalyticsApi extends BaseAPI implements AnalyticsApiInterface {
+    /**
+     * 
+     * @summary Returns the number of alumni working in companies grouped by industry.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof AnalyticsApi
+     */
+    public companiesAnalyticsControllerGetCompaniesByIndustry(options?: RawAxiosRequestConfig) {
+        return AnalyticsApiFp(this.configuration).companiesAnalyticsControllerGetCompaniesByIndustry(options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Get the companies, and the number of alumni working in them.
+     * @param {string} [startDate] The start date of the query
+     * @param {string} [endDate] The end date of the query
+     * @param {Array<string>} [courseIds] The course IDs to filter by
+     * @param {Array<string>} [companyIds] The company IDs to filter by
+     * @param {Array<string>} [graduationYears] The graduation years to filter by
+     * @param {Array<string>} [industryIds] The industry IDs to filter by
+     * @param {Array<string>} [locationIds] The location IDs to filter by
+     * @param {Array<string>} [countries] The countries to filter by
+     * @param {boolean} [currentRolesOnly] Filter for current roles only
+     * @param {number} [limit] The number of results to return
+     * @param {number} [offset] The offset of the query
+     * @param {string} [search] Search query
+     * @param {object} [sortBy] How to sort the results
+     * @param {string} [sortOrder] The order of the results
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof AnalyticsApi
+     */
+    public companiesAnalyticsControllerGetCompaniesWithAlumniCount(startDate?: string, endDate?: string, courseIds?: Array<string>, companyIds?: Array<string>, graduationYears?: Array<string>, industryIds?: Array<string>, locationIds?: Array<string>, countries?: Array<string>, currentRolesOnly?: boolean, limit?: number, offset?: number, search?: string, sortBy?: object, sortOrder?: string, options?: RawAxiosRequestConfig) {
+        return AnalyticsApiFp(this.configuration).companiesAnalyticsControllerGetCompaniesWithAlumniCount(startDate, endDate, courseIds, companyIds, graduationYears, industryIds, locationIds, countries, currentRolesOnly, limit, offset, search, sortBy, sortOrder, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Returns detailed information about a specific company.
+     * @param {string} id 
+     * @param {string} [startDate] The start date of the query
+     * @param {string} [endDate] The end date of the query
+     * @param {Array<string>} [courseIds] The course IDs to filter by
+     * @param {Array<string>} [companyIds] The company IDs to filter by
+     * @param {Array<string>} [graduationYears] The graduation years to filter by
+     * @param {Array<string>} [industryIds] The industry IDs to filter by
+     * @param {Array<string>} [locationIds] The location IDs to filter by
+     * @param {Array<string>} [countries] The countries to filter by
+     * @param {boolean} [currentRolesOnly] Filter for current roles only
+     * @param {number} [limit] The number of results to return
+     * @param {number} [offset] The offset of the query
+     * @param {string} [search] Search query
+     * @param {object} [sortBy] How to sort the results
+     * @param {string} [sortOrder] The order of the results
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof AnalyticsApi
+     */
+    public companiesAnalyticsControllerGetCompanyDetails(id: string, startDate?: string, endDate?: string, courseIds?: Array<string>, companyIds?: Array<string>, graduationYears?: Array<string>, industryIds?: Array<string>, locationIds?: Array<string>, countries?: Array<string>, currentRolesOnly?: boolean, limit?: number, offset?: number, search?: string, sortBy?: object, sortOrder?: string, options?: RawAxiosRequestConfig) {
+        return AnalyticsApiFp(this.configuration).companiesAnalyticsControllerGetCompanyDetails(id, startDate, endDate, courseIds, companyIds, graduationYears, industryIds, locationIds, countries, currentRolesOnly, limit, offset, search, sortBy, sortOrder, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Returns company employment growth over time.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof AnalyticsApi
+     */
+    public companiesAnalyticsControllerGetCompanyGrowth(options?: RawAxiosRequestConfig) {
+        return AnalyticsApiFp(this.configuration).companiesAnalyticsControllerGetCompanyGrowth(options).then((request) => request(this.axios, this.basePath));
+    }
+}
+
+
+
+/**
  * CompanyApi - axios parameter creator
  * @export
  */
@@ -2839,6 +3484,274 @@ export const V1ApiAxiosParamCreator = function (configuration?: Configuration) {
         },
         /**
          * 
+         * @summary Returns the number of alumni working in companies grouped by industry.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        companiesAnalyticsControllerGetCompaniesByIndustry: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/api/analytics/companies/by-industry`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Get the companies, and the number of alumni working in them.
+         * @param {string} [startDate] The start date of the query
+         * @param {string} [endDate] The end date of the query
+         * @param {Array<string>} [courseIds] The course IDs to filter by
+         * @param {Array<string>} [companyIds] The company IDs to filter by
+         * @param {Array<string>} [graduationYears] The graduation years to filter by
+         * @param {Array<string>} [industryIds] The industry IDs to filter by
+         * @param {Array<string>} [locationIds] The location IDs to filter by
+         * @param {Array<string>} [countries] The countries to filter by
+         * @param {boolean} [currentRolesOnly] Filter for current roles only
+         * @param {number} [limit] The number of results to return
+         * @param {number} [offset] The offset of the query
+         * @param {string} [search] Search query
+         * @param {object} [sortBy] How to sort the results
+         * @param {string} [sortOrder] The order of the results
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        companiesAnalyticsControllerGetCompaniesWithAlumniCount: async (startDate?: string, endDate?: string, courseIds?: Array<string>, companyIds?: Array<string>, graduationYears?: Array<string>, industryIds?: Array<string>, locationIds?: Array<string>, countries?: Array<string>, currentRolesOnly?: boolean, limit?: number, offset?: number, search?: string, sortBy?: object, sortOrder?: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/api/analytics/companies/top`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            if (startDate !== undefined) {
+                localVarQueryParameter['startDate'] = startDate;
+            }
+
+            if (endDate !== undefined) {
+                localVarQueryParameter['endDate'] = endDate;
+            }
+
+            if (courseIds) {
+                localVarQueryParameter['courseIds'] = courseIds;
+            }
+
+            if (companyIds) {
+                localVarQueryParameter['companyIds'] = companyIds;
+            }
+
+            if (graduationYears) {
+                localVarQueryParameter['graduationYears'] = graduationYears;
+            }
+
+            if (industryIds) {
+                localVarQueryParameter['industryIds'] = industryIds;
+            }
+
+            if (locationIds) {
+                localVarQueryParameter['locationIds'] = locationIds;
+            }
+
+            if (countries) {
+                localVarQueryParameter['countries'] = countries;
+            }
+
+            if (currentRolesOnly !== undefined) {
+                localVarQueryParameter['currentRolesOnly'] = currentRolesOnly;
+            }
+
+            if (limit !== undefined) {
+                localVarQueryParameter['limit'] = limit;
+            }
+
+            if (offset !== undefined) {
+                localVarQueryParameter['offset'] = offset;
+            }
+
+            if (search !== undefined) {
+                localVarQueryParameter['search'] = search;
+            }
+
+            if (sortBy !== undefined) {
+                for (const [key, value] of Object.entries(sortBy)) {
+                    localVarQueryParameter[key] = value;
+                }
+            }
+
+            if (sortOrder !== undefined) {
+                localVarQueryParameter['sortOrder'] = sortOrder;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Returns detailed information about a specific company.
+         * @param {string} id 
+         * @param {string} [startDate] The start date of the query
+         * @param {string} [endDate] The end date of the query
+         * @param {Array<string>} [courseIds] The course IDs to filter by
+         * @param {Array<string>} [companyIds] The company IDs to filter by
+         * @param {Array<string>} [graduationYears] The graduation years to filter by
+         * @param {Array<string>} [industryIds] The industry IDs to filter by
+         * @param {Array<string>} [locationIds] The location IDs to filter by
+         * @param {Array<string>} [countries] The countries to filter by
+         * @param {boolean} [currentRolesOnly] Filter for current roles only
+         * @param {number} [limit] The number of results to return
+         * @param {number} [offset] The offset of the query
+         * @param {string} [search] Search query
+         * @param {object} [sortBy] How to sort the results
+         * @param {string} [sortOrder] The order of the results
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        companiesAnalyticsControllerGetCompanyDetails: async (id: string, startDate?: string, endDate?: string, courseIds?: Array<string>, companyIds?: Array<string>, graduationYears?: Array<string>, industryIds?: Array<string>, locationIds?: Array<string>, countries?: Array<string>, currentRolesOnly?: boolean, limit?: number, offset?: number, search?: string, sortBy?: object, sortOrder?: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('companiesAnalyticsControllerGetCompanyDetails', 'id', id)
+            const localVarPath = `/api/analytics/companies/details/{id}`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            if (startDate !== undefined) {
+                localVarQueryParameter['startDate'] = startDate;
+            }
+
+            if (endDate !== undefined) {
+                localVarQueryParameter['endDate'] = endDate;
+            }
+
+            if (courseIds) {
+                localVarQueryParameter['courseIds'] = courseIds;
+            }
+
+            if (companyIds) {
+                localVarQueryParameter['companyIds'] = companyIds;
+            }
+
+            if (graduationYears) {
+                localVarQueryParameter['graduationYears'] = graduationYears;
+            }
+
+            if (industryIds) {
+                localVarQueryParameter['industryIds'] = industryIds;
+            }
+
+            if (locationIds) {
+                localVarQueryParameter['locationIds'] = locationIds;
+            }
+
+            if (countries) {
+                localVarQueryParameter['countries'] = countries;
+            }
+
+            if (currentRolesOnly !== undefined) {
+                localVarQueryParameter['currentRolesOnly'] = currentRolesOnly;
+            }
+
+            if (limit !== undefined) {
+                localVarQueryParameter['limit'] = limit;
+            }
+
+            if (offset !== undefined) {
+                localVarQueryParameter['offset'] = offset;
+            }
+
+            if (search !== undefined) {
+                localVarQueryParameter['search'] = search;
+            }
+
+            if (sortBy !== undefined) {
+                for (const [key, value] of Object.entries(sortBy)) {
+                    localVarQueryParameter[key] = value;
+                }
+            }
+
+            if (sortOrder !== undefined) {
+                localVarQueryParameter['sortOrder'] = sortOrder;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Returns company employment growth over time.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        companiesAnalyticsControllerGetCompanyGrowth: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/api/analytics/companies/growth`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
          * @summary Get all companies
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -3213,6 +4126,83 @@ export const V1ApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
+         * @summary Returns the number of alumni working in companies grouped by industry.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async companiesAnalyticsControllerGetCompaniesByIndustry(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.companiesAnalyticsControllerGetCompaniesByIndustry(options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['V1Api.companiesAnalyticsControllerGetCompaniesByIndustry']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @summary Get the companies, and the number of alumni working in them.
+         * @param {string} [startDate] The start date of the query
+         * @param {string} [endDate] The end date of the query
+         * @param {Array<string>} [courseIds] The course IDs to filter by
+         * @param {Array<string>} [companyIds] The company IDs to filter by
+         * @param {Array<string>} [graduationYears] The graduation years to filter by
+         * @param {Array<string>} [industryIds] The industry IDs to filter by
+         * @param {Array<string>} [locationIds] The location IDs to filter by
+         * @param {Array<string>} [countries] The countries to filter by
+         * @param {boolean} [currentRolesOnly] Filter for current roles only
+         * @param {number} [limit] The number of results to return
+         * @param {number} [offset] The offset of the query
+         * @param {string} [search] Search query
+         * @param {object} [sortBy] How to sort the results
+         * @param {string} [sortOrder] The order of the results
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async companiesAnalyticsControllerGetCompaniesWithAlumniCount(startDate?: string, endDate?: string, courseIds?: Array<string>, companyIds?: Array<string>, graduationYears?: Array<string>, industryIds?: Array<string>, locationIds?: Array<string>, countries?: Array<string>, currentRolesOnly?: boolean, limit?: number, offset?: number, search?: string, sortBy?: object, sortOrder?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<CompanyListResponseDto>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.companiesAnalyticsControllerGetCompaniesWithAlumniCount(startDate, endDate, courseIds, companyIds, graduationYears, industryIds, locationIds, countries, currentRolesOnly, limit, offset, search, sortBy, sortOrder, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['V1Api.companiesAnalyticsControllerGetCompaniesWithAlumniCount']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @summary Returns detailed information about a specific company.
+         * @param {string} id 
+         * @param {string} [startDate] The start date of the query
+         * @param {string} [endDate] The end date of the query
+         * @param {Array<string>} [courseIds] The course IDs to filter by
+         * @param {Array<string>} [companyIds] The company IDs to filter by
+         * @param {Array<string>} [graduationYears] The graduation years to filter by
+         * @param {Array<string>} [industryIds] The industry IDs to filter by
+         * @param {Array<string>} [locationIds] The location IDs to filter by
+         * @param {Array<string>} [countries] The countries to filter by
+         * @param {boolean} [currentRolesOnly] Filter for current roles only
+         * @param {number} [limit] The number of results to return
+         * @param {number} [offset] The offset of the query
+         * @param {string} [search] Search query
+         * @param {object} [sortBy] How to sort the results
+         * @param {string} [sortOrder] The order of the results
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async companiesAnalyticsControllerGetCompanyDetails(id: string, startDate?: string, endDate?: string, courseIds?: Array<string>, companyIds?: Array<string>, graduationYears?: Array<string>, industryIds?: Array<string>, locationIds?: Array<string>, countries?: Array<string>, currentRolesOnly?: boolean, limit?: number, offset?: number, search?: string, sortBy?: object, sortOrder?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.companiesAnalyticsControllerGetCompanyDetails(id, startDate, endDate, courseIds, companyIds, graduationYears, industryIds, locationIds, countries, currentRolesOnly, limit, offset, search, sortBy, sortOrder, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['V1Api.companiesAnalyticsControllerGetCompanyDetails']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @summary Returns company employment growth over time.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async companiesAnalyticsControllerGetCompanyGrowth(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.companiesAnalyticsControllerGetCompanyGrowth(options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['V1Api.companiesAnalyticsControllerGetCompanyGrowth']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
          * @summary Get all companies
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -3406,6 +4396,71 @@ export const V1ApiFactory = function (configuration?: Configuration, basePath?: 
         },
         /**
          * 
+         * @summary Returns the number of alumni working in companies grouped by industry.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        companiesAnalyticsControllerGetCompaniesByIndustry(options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.companiesAnalyticsControllerGetCompaniesByIndustry(options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Get the companies, and the number of alumni working in them.
+         * @param {string} [startDate] The start date of the query
+         * @param {string} [endDate] The end date of the query
+         * @param {Array<string>} [courseIds] The course IDs to filter by
+         * @param {Array<string>} [companyIds] The company IDs to filter by
+         * @param {Array<string>} [graduationYears] The graduation years to filter by
+         * @param {Array<string>} [industryIds] The industry IDs to filter by
+         * @param {Array<string>} [locationIds] The location IDs to filter by
+         * @param {Array<string>} [countries] The countries to filter by
+         * @param {boolean} [currentRolesOnly] Filter for current roles only
+         * @param {number} [limit] The number of results to return
+         * @param {number} [offset] The offset of the query
+         * @param {string} [search] Search query
+         * @param {object} [sortBy] How to sort the results
+         * @param {string} [sortOrder] The order of the results
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        companiesAnalyticsControllerGetCompaniesWithAlumniCount(startDate?: string, endDate?: string, courseIds?: Array<string>, companyIds?: Array<string>, graduationYears?: Array<string>, industryIds?: Array<string>, locationIds?: Array<string>, countries?: Array<string>, currentRolesOnly?: boolean, limit?: number, offset?: number, search?: string, sortBy?: object, sortOrder?: string, options?: RawAxiosRequestConfig): AxiosPromise<CompanyListResponseDto> {
+            return localVarFp.companiesAnalyticsControllerGetCompaniesWithAlumniCount(startDate, endDate, courseIds, companyIds, graduationYears, industryIds, locationIds, countries, currentRolesOnly, limit, offset, search, sortBy, sortOrder, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Returns detailed information about a specific company.
+         * @param {string} id 
+         * @param {string} [startDate] The start date of the query
+         * @param {string} [endDate] The end date of the query
+         * @param {Array<string>} [courseIds] The course IDs to filter by
+         * @param {Array<string>} [companyIds] The company IDs to filter by
+         * @param {Array<string>} [graduationYears] The graduation years to filter by
+         * @param {Array<string>} [industryIds] The industry IDs to filter by
+         * @param {Array<string>} [locationIds] The location IDs to filter by
+         * @param {Array<string>} [countries] The countries to filter by
+         * @param {boolean} [currentRolesOnly] Filter for current roles only
+         * @param {number} [limit] The number of results to return
+         * @param {number} [offset] The offset of the query
+         * @param {string} [search] Search query
+         * @param {object} [sortBy] How to sort the results
+         * @param {string} [sortOrder] The order of the results
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        companiesAnalyticsControllerGetCompanyDetails(id: string, startDate?: string, endDate?: string, courseIds?: Array<string>, companyIds?: Array<string>, graduationYears?: Array<string>, industryIds?: Array<string>, locationIds?: Array<string>, countries?: Array<string>, currentRolesOnly?: boolean, limit?: number, offset?: number, search?: string, sortBy?: object, sortOrder?: string, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.companiesAnalyticsControllerGetCompanyDetails(id, startDate, endDate, courseIds, companyIds, graduationYears, industryIds, locationIds, countries, currentRolesOnly, limit, offset, search, sortBy, sortOrder, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Returns company employment growth over time.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        companiesAnalyticsControllerGetCompanyGrowth(options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.companiesAnalyticsControllerGetCompanyGrowth(options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
          * @summary Get all companies
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -3574,6 +4629,71 @@ export interface V1ApiInterface {
      * @memberof V1ApiInterface
      */
     alumniControllerVerifyEmailToken(verifyEmailTokenDto: VerifyEmailTokenDto, options?: RawAxiosRequestConfig): AxiosPromise<void>;
+
+    /**
+     * 
+     * @summary Returns the number of alumni working in companies grouped by industry.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof V1ApiInterface
+     */
+    companiesAnalyticsControllerGetCompaniesByIndustry(options?: RawAxiosRequestConfig): AxiosPromise<void>;
+
+    /**
+     * 
+     * @summary Get the companies, and the number of alumni working in them.
+     * @param {string} [startDate] The start date of the query
+     * @param {string} [endDate] The end date of the query
+     * @param {Array<string>} [courseIds] The course IDs to filter by
+     * @param {Array<string>} [companyIds] The company IDs to filter by
+     * @param {Array<string>} [graduationYears] The graduation years to filter by
+     * @param {Array<string>} [industryIds] The industry IDs to filter by
+     * @param {Array<string>} [locationIds] The location IDs to filter by
+     * @param {Array<string>} [countries] The countries to filter by
+     * @param {boolean} [currentRolesOnly] Filter for current roles only
+     * @param {number} [limit] The number of results to return
+     * @param {number} [offset] The offset of the query
+     * @param {string} [search] Search query
+     * @param {object} [sortBy] How to sort the results
+     * @param {string} [sortOrder] The order of the results
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof V1ApiInterface
+     */
+    companiesAnalyticsControllerGetCompaniesWithAlumniCount(startDate?: string, endDate?: string, courseIds?: Array<string>, companyIds?: Array<string>, graduationYears?: Array<string>, industryIds?: Array<string>, locationIds?: Array<string>, countries?: Array<string>, currentRolesOnly?: boolean, limit?: number, offset?: number, search?: string, sortBy?: object, sortOrder?: string, options?: RawAxiosRequestConfig): AxiosPromise<CompanyListResponseDto>;
+
+    /**
+     * 
+     * @summary Returns detailed information about a specific company.
+     * @param {string} id 
+     * @param {string} [startDate] The start date of the query
+     * @param {string} [endDate] The end date of the query
+     * @param {Array<string>} [courseIds] The course IDs to filter by
+     * @param {Array<string>} [companyIds] The company IDs to filter by
+     * @param {Array<string>} [graduationYears] The graduation years to filter by
+     * @param {Array<string>} [industryIds] The industry IDs to filter by
+     * @param {Array<string>} [locationIds] The location IDs to filter by
+     * @param {Array<string>} [countries] The countries to filter by
+     * @param {boolean} [currentRolesOnly] Filter for current roles only
+     * @param {number} [limit] The number of results to return
+     * @param {number} [offset] The offset of the query
+     * @param {string} [search] Search query
+     * @param {object} [sortBy] How to sort the results
+     * @param {string} [sortOrder] The order of the results
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof V1ApiInterface
+     */
+    companiesAnalyticsControllerGetCompanyDetails(id: string, startDate?: string, endDate?: string, courseIds?: Array<string>, companyIds?: Array<string>, graduationYears?: Array<string>, industryIds?: Array<string>, locationIds?: Array<string>, countries?: Array<string>, currentRolesOnly?: boolean, limit?: number, offset?: number, search?: string, sortBy?: object, sortOrder?: string, options?: RawAxiosRequestConfig): AxiosPromise<void>;
+
+    /**
+     * 
+     * @summary Returns company employment growth over time.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof V1ApiInterface
+     */
+    companiesAnalyticsControllerGetCompanyGrowth(options?: RawAxiosRequestConfig): AxiosPromise<void>;
 
     /**
      * 
@@ -3766,6 +4886,79 @@ export class V1Api extends BaseAPI implements V1ApiInterface {
 
     /**
      * 
+     * @summary Returns the number of alumni working in companies grouped by industry.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof V1Api
+     */
+    public companiesAnalyticsControllerGetCompaniesByIndustry(options?: RawAxiosRequestConfig) {
+        return V1ApiFp(this.configuration).companiesAnalyticsControllerGetCompaniesByIndustry(options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Get the companies, and the number of alumni working in them.
+     * @param {string} [startDate] The start date of the query
+     * @param {string} [endDate] The end date of the query
+     * @param {Array<string>} [courseIds] The course IDs to filter by
+     * @param {Array<string>} [companyIds] The company IDs to filter by
+     * @param {Array<string>} [graduationYears] The graduation years to filter by
+     * @param {Array<string>} [industryIds] The industry IDs to filter by
+     * @param {Array<string>} [locationIds] The location IDs to filter by
+     * @param {Array<string>} [countries] The countries to filter by
+     * @param {boolean} [currentRolesOnly] Filter for current roles only
+     * @param {number} [limit] The number of results to return
+     * @param {number} [offset] The offset of the query
+     * @param {string} [search] Search query
+     * @param {object} [sortBy] How to sort the results
+     * @param {string} [sortOrder] The order of the results
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof V1Api
+     */
+    public companiesAnalyticsControllerGetCompaniesWithAlumniCount(startDate?: string, endDate?: string, courseIds?: Array<string>, companyIds?: Array<string>, graduationYears?: Array<string>, industryIds?: Array<string>, locationIds?: Array<string>, countries?: Array<string>, currentRolesOnly?: boolean, limit?: number, offset?: number, search?: string, sortBy?: object, sortOrder?: string, options?: RawAxiosRequestConfig) {
+        return V1ApiFp(this.configuration).companiesAnalyticsControllerGetCompaniesWithAlumniCount(startDate, endDate, courseIds, companyIds, graduationYears, industryIds, locationIds, countries, currentRolesOnly, limit, offset, search, sortBy, sortOrder, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Returns detailed information about a specific company.
+     * @param {string} id 
+     * @param {string} [startDate] The start date of the query
+     * @param {string} [endDate] The end date of the query
+     * @param {Array<string>} [courseIds] The course IDs to filter by
+     * @param {Array<string>} [companyIds] The company IDs to filter by
+     * @param {Array<string>} [graduationYears] The graduation years to filter by
+     * @param {Array<string>} [industryIds] The industry IDs to filter by
+     * @param {Array<string>} [locationIds] The location IDs to filter by
+     * @param {Array<string>} [countries] The countries to filter by
+     * @param {boolean} [currentRolesOnly] Filter for current roles only
+     * @param {number} [limit] The number of results to return
+     * @param {number} [offset] The offset of the query
+     * @param {string} [search] Search query
+     * @param {object} [sortBy] How to sort the results
+     * @param {string} [sortOrder] The order of the results
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof V1Api
+     */
+    public companiesAnalyticsControllerGetCompanyDetails(id: string, startDate?: string, endDate?: string, courseIds?: Array<string>, companyIds?: Array<string>, graduationYears?: Array<string>, industryIds?: Array<string>, locationIds?: Array<string>, countries?: Array<string>, currentRolesOnly?: boolean, limit?: number, offset?: number, search?: string, sortBy?: object, sortOrder?: string, options?: RawAxiosRequestConfig) {
+        return V1ApiFp(this.configuration).companiesAnalyticsControllerGetCompanyDetails(id, startDate, endDate, courseIds, companyIds, graduationYears, industryIds, locationIds, countries, currentRolesOnly, limit, offset, search, sortBy, sortOrder, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Returns company employment growth over time.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof V1Api
+     */
+    public companiesAnalyticsControllerGetCompanyGrowth(options?: RawAxiosRequestConfig) {
+        return V1ApiFp(this.configuration).companiesAnalyticsControllerGetCompanyGrowth(options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
      * @summary Get all companies
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -3848,4 +5041,3 @@ export class V1Api extends BaseAPI implements V1ApiInterface {
         return V1ApiFp(this.configuration).userControllerLinkedinAuth(linkedinAuthDto, options).then((request) => request(this.axios, this.basePath));
     }
 }
-
