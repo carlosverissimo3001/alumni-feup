@@ -1,7 +1,7 @@
 "use client";
 
 import { AlumniExtended } from "@/sdk";
-import useMarkAlumniReviewed from "@/hooks/alumni/useMarkAlumniReviewed";
+import { useMarkAlumniReviewed } from "@/hooks";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { CheckCircle, PinIcon, ClockIcon } from "lucide-react";

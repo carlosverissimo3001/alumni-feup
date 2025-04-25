@@ -130,6 +130,14 @@ interface MultiSelectProps
    * Optional, defaults to false.
    */
   allowSelectAll?: boolean;
+  onSearchChange?: (search: string) => void;
+  isLoading?: boolean;
+
+  /**
+   * If true, will only fetch options after the user has typed 3 characters.
+   * Optional, defaults to false.
+   */
+  lazyLoading?: boolean;
 }
 
 export const MultiSelect = React.forwardRef<
@@ -150,6 +158,9 @@ export const MultiSelect = React.forwardRef<
       allowSelectAll = false,
       className,
       disabled = false,
+      isLoading = false,
+      onSearchChange,
+      lazyLoading = false,
       ...props
     },
     ref
@@ -158,6 +169,7 @@ export const MultiSelect = React.forwardRef<
     const [internalSelectedValues, setInternalSelectedValues] = 
       React.useState<string[]>(defaultValue);
       
+    const [searchValue, setSearchValue] = React.useState("");
     // Use the value prop if provided (controlled), otherwise use internal state
     const selectedValues = value !== undefined ? value : internalSelectedValues;
     
@@ -218,6 +230,13 @@ export const MultiSelect = React.forwardRef<
         onValueChange(allValues);
       }
     };
+
+/*     console.log('MultiSelect state:', { 
+      isLoading, 
+      options: options.length, 
+      selectedValues,
+      searchValue 
+    }); */
 
     return (
       <Popover
@@ -312,20 +331,28 @@ export const MultiSelect = React.forwardRef<
           </Button>
         </PopoverTrigger>
         <PopoverContent
-          className="w-auto p-0"
+          className="w-[var(--radix-popover-trigger-width)] min-w-[200px] p-0"
           align="start"
           onEscapeKeyDown={() => setIsPopoverOpen(false)}
         >
           <Command>
             <CommandInput
-              placeholder="Search..."
+              placeholder={!lazyLoading ? "Search..." : "Type at least 3 characters..."}
               onKeyDown={handleInputKeyDown}
               disabled={disabled}
+              onValueChange={(value) => {
+                setSearchValue(value);
+                onSearchChange?.(value);
+              }}
+              value={searchValue}
+              className="h-9"
             />
             <CommandList>
-              <CommandEmpty>No results found.</CommandEmpty>
+              <CommandEmpty className="p-2">
+                {isLoading ? "Loading..." : options.length === 0 ? "No results found." : null}
+              </CommandEmpty>
               <CommandGroup>
-                {allowSelectAll && (
+                {allowSelectAll && !isLoading && options.length > 0 && (
                    <CommandItem
                    key="all"
                    onSelect={toggleAll}
@@ -389,12 +416,6 @@ export const MultiSelect = React.forwardRef<
                       />
                     </>
                   )}
-                  <CommandItem
-                    onSelect={() => setIsPopoverOpen(false)}
-                    className="flex-1 justify-center cursor-pointer max-w-full"
-                  >
-                    Close
-                  </CommandItem>
                 </div>
               </CommandGroup>
             </CommandList>

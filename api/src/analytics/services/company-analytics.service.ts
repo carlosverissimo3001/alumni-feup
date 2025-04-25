@@ -1,75 +1,68 @@
-import { PrismaService } from '@/prisma/prisma.service';
 import { QueryParamsDto } from '../dto/query-params.dto';
-import {
-  CompanyAnalyticsRepository,
-  AlumniAnalyticsRepository,
-} from '../repositories';
+import { AlumniAnalyticsRepository } from '../repositories';
 import { Injectable } from '@nestjs/common';
 import {
   CompanyListResponseDto,
   IndustryListItemDto,
   IndustryListResponseDto,
+  CompanyOptionDto,
 } from '../dto';
-import { SortBy } from '../utils/types';
-import { CompanyListItemDto } from '../dto/company-list.dto';
+import {
+  CompanyListItemDto,
+  CompanyListItemExtendedDto,
+} from '../dto/company-list.dto';
+import {
+  DEFAULT_QUERY_LIMIT,
+  DEFAULT_QUERY_SORT_BY,
+  DEFAULT_QUERY_SORT_ORDER,
+  DEFAULT_QUERY_OFFSET,
+} from '../utils/consts';
+import { AlumniAnalyticsEntity } from '../entities/alumni.entity';
+import { sortData } from '../utils';
 
 /* Mental note: Try not to use prisma directly in services.
 Shouldd use be used in the DAL, ie. repositories.
 */
 @Injectable()
 export class CompanyAnalyticsService {
-  constructor(
-    private readonly prisma: PrismaService,
-    private readonly companyRepository: CompanyAnalyticsRepository,
-    private readonly alumniRepository: AlumniAnalyticsRepository,
-  ) {}
+  constructor(private readonly alumniRepository: AlumniAnalyticsRepository) {}
 
   async getCompaniesWithAlumniCount(
     query: QueryParamsDto,
   ): Promise<CompanyListResponseDto> {
-    /* Note: Assuming the repo will return the company entity, we will do the DTO mapping here 
-      Do this if time allows, but it is imporatnt for maintainability.
-    */
+    const alumnus = await this.alumniRepository.find(query);
+    const alumniCount = alumnus.length;
 
-    const companies = await this.companyRepository.find(query);
-    const alumniCount = await this.alumniRepository.countAlumni(query);
+    const companiesWithAlumniCount = this.getCompanyMap(alumnus);
+    const companyCount = companiesWithAlumniCount.length;
 
-    const companiesWithAlumniCount = companies.map((company) => {
-      const alumniSet = new Set();
-
-      company.roles.forEach((role) => {
-        alumniSet.add(role.alumniId);
-      });
-
-      return {
-        id: company.id,
-        name: company.name,
-        alumniCount: alumniSet.size,
-        logo: company.logo || null,
-      };
+    const companiesWithAlumniCountOrdered = sortData(companiesWithAlumniCount, {
+      sortBy: query.sortBy || DEFAULT_QUERY_SORT_BY,
+      direction: query.sortOrder || DEFAULT_QUERY_SORT_ORDER,
     });
-
-    const totalCompanies = await this.companyRepository.count(query);
-
-    const companiesWithAlumniCountOrdered = this.orderCompanies(
-      companiesWithAlumniCount,
-      {
-        sortBy: query.sortBy,
-        direction: query.sortOrder,
-      },
-    );
 
     const companiesWithAlumniCountPaginated =
       companiesWithAlumniCountOrdered.slice(
-        query.offset,
-        query.offset + query.limit,
+        query.offset || DEFAULT_QUERY_OFFSET,
+        (query.offset || DEFAULT_QUERY_OFFSET) +
+          (query.limit || DEFAULT_QUERY_LIMIT),
       );
 
     return {
       companies: companiesWithAlumniCountPaginated,
-      companyTotalCount: totalCompanies,
+      companyTotalCount: companyCount,
       alumniTotalCount: alumniCount,
     };
+  }
+
+  async getCompanyOptions(query: QueryParamsDto): Promise<CompanyOptionDto[]> {
+    const alumnus = await this.alumniRepository.find(query);
+    const companiesWithAlumniCount = this.getCompanyMap(alumnus);
+
+    return companiesWithAlumniCount.map((company) => ({
+      id: company.id,
+      name: company.name,
+    }));
   }
 
   async getIndustryWithCounts(
@@ -80,19 +73,15 @@ export class CompanyAnalyticsService {
       { name: string; companyCount: number; alumniCount: number }
     >();
 
-    const companies = await this.companyRepository.find({
-      ...query,
-      // I'm sorry, I'm doing this so we can apply the ordering first, and then apply the pagination.
-      offset: 0,
-      limit: Number.MAX_SAFE_INTEGER,
-    });
+    const alumni = await this.alumniRepository.find(query);
+    const companiesWithAlumniCount = this.getCompanyMap(alumni);
 
-    companies.forEach((company) => {
-      const industryId = company.industry.id;
+    companiesWithAlumniCount.forEach((company) => {
+      const industryId = company.industryId;
 
-      if (!industriesMap.has(industryId)) {
+      if (industryId && !industriesMap.has(industryId)) {
         industriesMap.set(industryId, {
-          name: company.industry.name,
+          name: company.industry,
           companyCount: 0,
           alumniCount: 0,
         });
@@ -100,30 +89,28 @@ export class CompanyAnalyticsService {
 
       const industryData = industriesMap.get(industryId)!; // We just made sure it exists above, so we're gucci
 
-      const alumniSet = new Set();
-      company.roles.forEach((role) => alumniSet.add(role.alumniId));
-      industryData.alumniCount += alumniSet.size;
-
+      industryData.alumniCount += company.alumniCount;
       industryData.companyCount += 1;
     });
 
-    const industries = Array.from(industriesMap.entries()).map(
-      ([industryId, data]) => ({
-        id: industryId,
-        name: data.name,
-        companyCount: data.companyCount,
-        alumniCount: data.alumniCount,
-      }),
-    );
+    const industries: IndustryListItemDto[] = Array.from(
+      industriesMap.entries(),
+    ).map(([industryId, data]) => ({
+      id: industryId,
+      name: data.name,
+      companyCount: data.companyCount,
+      alumniCount: data.alumniCount,
+    }));
 
-    const industriesOrdered = this.orderIndustries(industries, {
-      sortBy: query.sortBy,
-      direction: query.sortOrder,
-    });
+    const industriesOrdered = sortData(industries, {
+      sortBy: query.sortBy || DEFAULT_QUERY_SORT_BY,
+      direction: query.sortOrder || DEFAULT_QUERY_SORT_ORDER,
+    }) as IndustryListItemDto[];
 
     const industriesPaginated = industriesOrdered.slice(
-      query.offset,
-      query.offset + query.limit,
+      query.offset || DEFAULT_QUERY_OFFSET,
+      (query.offset || DEFAULT_QUERY_OFFSET) +
+        (query.limit || DEFAULT_QUERY_LIMIT),
     );
 
     return {
@@ -133,64 +120,54 @@ export class CompanyAnalyticsService {
   }
 
   async getCompanyGrowth() {
-    return [];
+    // TODO: Implement company growth calculation
+    return Promise.resolve([]);
   }
 
-  orderIndustries(
-    industries: IndustryListItemDto[],
-    order: {
-      sortBy: SortBy;
-      direction: 'asc' | 'desc';
-    },
-  ) {
-    return industries.sort((a, b) => {
-      let comparison = 0;
+  getCompanyMap(
+    alumnus: AlumniAnalyticsEntity[],
+  ): CompanyListItemExtendedDto[] {
+    // Maps an alumni to a set of companies they've worked at
+    const alumniCompanyMap = new Map<string, Set<string>>();
+    const companiesWithAlumniCount: CompanyListItemExtendedDto[] = [];
 
-      switch (order.sortBy) {
-        case SortBy.ALUMNI_COUNT:
-          comparison = a.alumniCount - b.alumniCount;
-          break;
-        case SortBy.INDUSTRY_NAME:
-          comparison = a.name.localeCompare(b.name);
-          break;
-        default:
-          comparison = a.alumniCount - b.alumniCount;
+    alumnus.forEach((alumnus) => {
+      if (!alumniCompanyMap.has(alumnus.id)) {
+        alumniCompanyMap.set(alumnus.id, new Set());
       }
 
-      if (order.direction === 'desc') {
-        comparison = -comparison;
-      }
-
-      return comparison;
+      alumnus.roles.forEach((role) => {
+        alumniCompanyMap.get(alumnus.id)!.add(role.company.id);
+      });
     });
-  }
 
-  orderCompanies(
-    companies: CompanyListItemDto[],
-    order: {
-      sortBy: SortBy;
-      direction: 'asc' | 'desc';
-    },
-  ) {
-    return companies.sort((a, b) => {
-      let comparison = 0;
-
-      switch (order.sortBy) {
-        case SortBy.ALUMNI_COUNT:
-          comparison = a.alumniCount - b.alumniCount;
-          break;
-        case SortBy.COMPANY_NAME:
-          comparison = a.name.localeCompare(b.name);
-          break;
-        default:
-          comparison = a.alumniCount - b.alumniCount;
-      }
-
-      if (order.direction === 'desc') {
-        comparison = -comparison;
-      }
-
-      return comparison;
+    const companyCountMap = new Map<string, number>();
+    alumniCompanyMap.forEach((companySet) => {
+      companySet.forEach((companyId) => {
+        companyCountMap.set(
+          companyId,
+          (companyCountMap.get(companyId) || 0) + 1,
+        );
+      });
     });
+
+    companyCountMap.forEach((count, companyId) => {
+      const role = alumnus
+        .flatMap((a) => a.roles)
+        .find((r) => r.company.id === companyId);
+
+      if (role) {
+        companiesWithAlumniCount.push({
+          id: companyId,
+          name: role.company.name,
+          alumniCount: count,
+          logo: role.company.logo,
+          industry: role.company.industry.name,
+          industryId: role.company.industry.id,
+        });
+      }
+    });
+
+    return companiesWithAlumniCount;
   }
 }

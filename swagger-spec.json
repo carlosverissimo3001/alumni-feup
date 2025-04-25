@@ -369,7 +369,7 @@
             "in": "query",
             "description": "The start date of the query",
             "schema": {
-              "example": "2021-01-01",
+              "example": "2023-11-16",
               "type": "string"
             }
           },
@@ -379,7 +379,7 @@
             "in": "query",
             "description": "The end date of the query",
             "schema": {
-              "example": "2021-01-01",
+              "example": "2025-04-20",
               "type": "string"
             }
           },
@@ -432,10 +432,10 @@
             }
           },
           {
-            "name": "locationIds",
+            "name": "countries",
             "required": false,
             "in": "query",
-            "description": "The location IDs to filter by",
+            "description": "The countries to filter by",
             "schema": {
               "type": "array",
               "items": {
@@ -444,10 +444,10 @@
             }
           },
           {
-            "name": "countries",
+            "name": "cities",
             "required": false,
             "in": "query",
-            "description": "The countries to filter by",
+            "description": "The cities to filter by",
             "schema": {
               "type": "array",
               "items": {
@@ -466,8 +466,48 @@
             }
           },
           {
+            "name": "onlyInternational",
+            "required": false,
+            "in": "query",
+            "description": "Whether to exclude roles in Portugal",
+            "schema": {
+              "example": true,
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "excludeResearchAndHighEducation",
+            "required": false,
+            "in": "query",
+            "description": "Exclude research and high education roles",
+            "schema": {
+              "example": true,
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "companySearch",
+            "required": false,
+            "in": "query",
+            "description": "Search query for companies",
+            "schema": {
+              "example": "search query",
+              "type": "string"
+            }
+          },
+          {
+            "name": "industrySearch",
+            "required": false,
+            "in": "query",
+            "description": "Search query for industries",
+            "schema": {
+              "example": "search query",
+              "type": "string"
+            }
+          },
+          {
             "name": "limit",
-            "required": true,
+            "required": false,
             "in": "query",
             "description": "The number of results to return",
             "schema": {
@@ -477,7 +517,7 @@
           },
           {
             "name": "offset",
-            "required": true,
+            "required": false,
             "in": "query",
             "description": "The offset of the query",
             "schema": {
@@ -490,7 +530,7 @@
             "name": "search",
             "required": false,
             "in": "query",
-            "description": "Search query",
+            "description": "Broad search query",
             "schema": {
               "example": "search query",
               "type": "string"
@@ -498,7 +538,7 @@
           },
           {
             "name": "sortBy",
-            "required": true,
+            "required": false,
             "in": "query",
             "description": "How to sort the results",
             "schema": {
@@ -507,7 +547,7 @@
           },
           {
             "name": "sortOrder",
-            "required": true,
+            "required": false,
             "in": "query",
             "description": "The order of the results",
             "schema": {
@@ -519,7 +559,7 @@
         ],
         "responses": {
           "200": {
-            "description": "The companies with the number of alumni working in them.",
+            "description": "Companies with the number of alumni working in them.",
             "content": {
               "application/json": {
                 "schema": {
@@ -536,9 +576,9 @@
         ]
       }
     },
-    "/api/analytics/companies/by-industry": {
+    "/api/analytics/companies/options": {
       "get": {
-        "operationId": "CompaniesAnalyticsController_getIndustryWithCounts",
+        "operationId": "CompaniesAnalyticsController_getCompanyOptions",
         "parameters": [
           {
             "name": "startDate",
@@ -546,7 +586,7 @@
             "in": "query",
             "description": "The start date of the query",
             "schema": {
-              "example": "2021-01-01",
+              "example": "2023-11-16",
               "type": "string"
             }
           },
@@ -556,7 +596,7 @@
             "in": "query",
             "description": "The end date of the query",
             "schema": {
-              "example": "2021-01-01",
+              "example": "2025-04-20",
               "type": "string"
             }
           },
@@ -609,10 +649,218 @@
             }
           },
           {
-            "name": "locationIds",
+            "name": "countries",
             "required": false,
             "in": "query",
-            "description": "The location IDs to filter by",
+            "description": "The countries to filter by",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "cities",
+            "required": false,
+            "in": "query",
+            "description": "The cities to filter by",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "currentRolesOnly",
+            "required": false,
+            "in": "query",
+            "description": "Filter for current roles only",
+            "schema": {
+              "example": true,
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "onlyInternational",
+            "required": false,
+            "in": "query",
+            "description": "Whether to exclude roles in Portugal",
+            "schema": {
+              "example": true,
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "excludeResearchAndHighEducation",
+            "required": false,
+            "in": "query",
+            "description": "Exclude research and high education roles",
+            "schema": {
+              "example": true,
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "companySearch",
+            "required": false,
+            "in": "query",
+            "description": "Search query for companies",
+            "schema": {
+              "example": "search query",
+              "type": "string"
+            }
+          },
+          {
+            "name": "industrySearch",
+            "required": false,
+            "in": "query",
+            "description": "Search query for industries",
+            "schema": {
+              "example": "search query",
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "The number of results to return",
+            "schema": {
+              "example": 10,
+              "type": "number"
+            }
+          },
+          {
+            "name": "offset",
+            "required": false,
+            "in": "query",
+            "description": "The offset of the query",
+            "schema": {
+              "default": 0,
+              "example": 0,
+              "type": "number"
+            }
+          },
+          {
+            "name": "search",
+            "required": false,
+            "in": "query",
+            "description": "Broad search query",
+            "schema": {
+              "example": "search query",
+              "type": "string"
+            }
+          },
+          {
+            "name": "sortBy",
+            "required": false,
+            "in": "query",
+            "description": "How to sort the results",
+            "schema": {
+              "$ref": "#/components/schemas/SortBy"
+            }
+          },
+          {
+            "name": "sortOrder",
+            "required": false,
+            "in": "query",
+            "description": "The order of the results",
+            "schema": {
+              "default": "desc",
+              "example": "asc",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Companies id and name after applying the filters.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CompanyOptionDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "Get the companies id and name after applying the filters.",
+        "tags": [
+          "V1",
+          "Analytics"
+        ]
+      }
+    },
+    "/api/analytics/companies/by-industry": {
+      "get": {
+        "operationId": "CompaniesAnalyticsController_getIndustryWithCounts",
+        "parameters": [
+          {
+            "name": "startDate",
+            "required": false,
+            "in": "query",
+            "description": "The start date of the query",
+            "schema": {
+              "example": "2023-11-16",
+              "type": "string"
+            }
+          },
+          {
+            "name": "endDate",
+            "required": false,
+            "in": "query",
+            "description": "The end date of the query",
+            "schema": {
+              "example": "2025-04-20",
+              "type": "string"
+            }
+          },
+          {
+            "name": "courseIds",
+            "required": false,
+            "in": "query",
+            "description": "The course IDs to filter by",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "companyIds",
+            "required": false,
+            "in": "query",
+            "description": "The company IDs to filter by",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "graduationYears",
+            "required": false,
+            "in": "query",
+            "description": "The graduation years to filter by",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "industryIds",
+            "required": false,
+            "in": "query",
+            "description": "The industry IDs to filter by",
             "schema": {
               "type": "array",
               "items": {
@@ -633,6 +881,18 @@
             }
           },
           {
+            "name": "cities",
+            "required": false,
+            "in": "query",
+            "description": "The cities to filter by",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
             "name": "currentRolesOnly",
             "required": false,
             "in": "query",
@@ -643,8 +903,48 @@
             }
           },
           {
+            "name": "onlyInternational",
+            "required": false,
+            "in": "query",
+            "description": "Whether to exclude roles in Portugal",
+            "schema": {
+              "example": true,
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "excludeResearchAndHighEducation",
+            "required": false,
+            "in": "query",
+            "description": "Exclude research and high education roles",
+            "schema": {
+              "example": true,
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "companySearch",
+            "required": false,
+            "in": "query",
+            "description": "Search query for companies",
+            "schema": {
+              "example": "search query",
+              "type": "string"
+            }
+          },
+          {
+            "name": "industrySearch",
+            "required": false,
+            "in": "query",
+            "description": "Search query for industries",
+            "schema": {
+              "example": "search query",
+              "type": "string"
+            }
+          },
+          {
             "name": "limit",
-            "required": true,
+            "required": false,
             "in": "query",
             "description": "The number of results to return",
             "schema": {
@@ -654,7 +954,7 @@
           },
           {
             "name": "offset",
-            "required": true,
+            "required": false,
             "in": "query",
             "description": "The offset of the query",
             "schema": {
@@ -667,7 +967,7 @@
             "name": "search",
             "required": false,
             "in": "query",
-            "description": "Search query",
+            "description": "Broad search query",
             "schema": {
               "example": "search query",
               "type": "string"
@@ -675,7 +975,7 @@
           },
           {
             "name": "sortBy",
-            "required": true,
+            "required": false,
             "in": "query",
             "description": "How to sort the results",
             "schema": {
@@ -684,7 +984,7 @@
           },
           {
             "name": "sortOrder",
-            "required": true,
+            "required": false,
             "in": "query",
             "description": "The order of the results",
             "schema": {
@@ -747,7 +1047,7 @@
             "in": "query",
             "description": "The start date of the query",
             "schema": {
-              "example": "2021-01-01",
+              "example": "2023-11-16",
               "type": "string"
             }
           },
@@ -757,7 +1057,7 @@
             "in": "query",
             "description": "The end date of the query",
             "schema": {
-              "example": "2021-01-01",
+              "example": "2025-04-20",
               "type": "string"
             }
           },
@@ -810,10 +1110,10 @@
             }
           },
           {
-            "name": "locationIds",
+            "name": "countries",
             "required": false,
             "in": "query",
-            "description": "The location IDs to filter by",
+            "description": "The countries to filter by",
             "schema": {
               "type": "array",
               "items": {
@@ -822,10 +1122,10 @@
             }
           },
           {
-            "name": "countries",
+            "name": "cities",
             "required": false,
             "in": "query",
-            "description": "The countries to filter by",
+            "description": "The cities to filter by",
             "schema": {
               "type": "array",
               "items": {
@@ -844,8 +1144,48 @@
             }
           },
           {
+            "name": "onlyInternational",
+            "required": false,
+            "in": "query",
+            "description": "Whether to exclude roles in Portugal",
+            "schema": {
+              "example": true,
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "excludeResearchAndHighEducation",
+            "required": false,
+            "in": "query",
+            "description": "Exclude research and high education roles",
+            "schema": {
+              "example": true,
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "companySearch",
+            "required": false,
+            "in": "query",
+            "description": "Search query for companies",
+            "schema": {
+              "example": "search query",
+              "type": "string"
+            }
+          },
+          {
+            "name": "industrySearch",
+            "required": false,
+            "in": "query",
+            "description": "Search query for industries",
+            "schema": {
+              "example": "search query",
+              "type": "string"
+            }
+          },
+          {
             "name": "limit",
-            "required": true,
+            "required": false,
             "in": "query",
             "description": "The number of results to return",
             "schema": {
@@ -855,7 +1195,7 @@
           },
           {
             "name": "offset",
-            "required": true,
+            "required": false,
             "in": "query",
             "description": "The offset of the query",
             "schema": {
@@ -868,7 +1208,7 @@
             "name": "search",
             "required": false,
             "in": "query",
-            "description": "Search query",
+            "description": "Broad search query",
             "schema": {
               "example": "search query",
               "type": "string"
@@ -876,7 +1216,7 @@
           },
           {
             "name": "sortBy",
-            "required": true,
+            "required": false,
             "in": "query",
             "description": "How to sort the results",
             "schema": {
@@ -885,7 +1225,7 @@
           },
           {
             "name": "sortOrder",
-            "required": true,
+            "required": false,
             "in": "query",
             "description": "The order of the results",
             "schema": {
@@ -907,9 +1247,9 @@
         ]
       }
     },
-    "/api/analytics/countries": {
+    "/api/analytics/companies/hot-companies": {
       "get": {
-        "operationId": "CountriesAnalyticsController_getCountriesWithAlumniCount",
+        "operationId": "CompaniesAnalyticsController_getHotCompanies",
         "parameters": [
           {
             "name": "startDate",
@@ -917,7 +1257,7 @@
             "in": "query",
             "description": "The start date of the query",
             "schema": {
-              "example": "2021-01-01",
+              "example": "2023-11-16",
               "type": "string"
             }
           },
@@ -927,7 +1267,7 @@
             "in": "query",
             "description": "The end date of the query",
             "schema": {
-              "example": "2021-01-01",
+              "example": "2025-04-20",
               "type": "string"
             }
           },
@@ -980,10 +1320,208 @@
             }
           },
           {
-            "name": "locationIds",
+            "name": "countries",
             "required": false,
             "in": "query",
-            "description": "The location IDs to filter by",
+            "description": "The countries to filter by",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "cities",
+            "required": false,
+            "in": "query",
+            "description": "The cities to filter by",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "currentRolesOnly",
+            "required": false,
+            "in": "query",
+            "description": "Filter for current roles only",
+            "schema": {
+              "example": true,
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "onlyInternational",
+            "required": false,
+            "in": "query",
+            "description": "Whether to exclude roles in Portugal",
+            "schema": {
+              "example": true,
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "excludeResearchAndHighEducation",
+            "required": false,
+            "in": "query",
+            "description": "Exclude research and high education roles",
+            "schema": {
+              "example": true,
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "companySearch",
+            "required": false,
+            "in": "query",
+            "description": "Search query for companies",
+            "schema": {
+              "example": "search query",
+              "type": "string"
+            }
+          },
+          {
+            "name": "industrySearch",
+            "required": false,
+            "in": "query",
+            "description": "Search query for industries",
+            "schema": {
+              "example": "search query",
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "The number of results to return",
+            "schema": {
+              "example": 10,
+              "type": "number"
+            }
+          },
+          {
+            "name": "offset",
+            "required": false,
+            "in": "query",
+            "description": "The offset of the query",
+            "schema": {
+              "default": 0,
+              "example": 0,
+              "type": "number"
+            }
+          },
+          {
+            "name": "search",
+            "required": false,
+            "in": "query",
+            "description": "Broad search query",
+            "schema": {
+              "example": "search query",
+              "type": "string"
+            }
+          },
+          {
+            "name": "sortBy",
+            "required": false,
+            "in": "query",
+            "description": "How to sort the results",
+            "schema": {
+              "$ref": "#/components/schemas/SortBy"
+            }
+          },
+          {
+            "name": "sortOrder",
+            "required": false,
+            "in": "query",
+            "description": "The order of the results",
+            "schema": {
+              "default": "desc",
+              "example": "asc",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "Returns companies that have seen a spike in alumni employment.",
+        "tags": [
+          "V1",
+          "Analytics"
+        ]
+      }
+    },
+    "/api/analytics/countries": {
+      "get": {
+        "operationId": "CountriesAnalyticsController_getCountriesWithAlumniCount",
+        "parameters": [
+          {
+            "name": "startDate",
+            "required": false,
+            "in": "query",
+            "description": "The start date of the query",
+            "schema": {
+              "example": "2023-11-16",
+              "type": "string"
+            }
+          },
+          {
+            "name": "endDate",
+            "required": false,
+            "in": "query",
+            "description": "The end date of the query",
+            "schema": {
+              "example": "2025-04-20",
+              "type": "string"
+            }
+          },
+          {
+            "name": "courseIds",
+            "required": false,
+            "in": "query",
+            "description": "The course IDs to filter by",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "companyIds",
+            "required": false,
+            "in": "query",
+            "description": "The company IDs to filter by",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "graduationYears",
+            "required": false,
+            "in": "query",
+            "description": "The graduation years to filter by",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "industryIds",
+            "required": false,
+            "in": "query",
+            "description": "The industry IDs to filter by",
             "schema": {
               "type": "array",
               "items": {
@@ -1004,6 +1542,18 @@
             }
           },
           {
+            "name": "cities",
+            "required": false,
+            "in": "query",
+            "description": "The cities to filter by",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
             "name": "currentRolesOnly",
             "required": false,
             "in": "query",
@@ -1014,8 +1564,48 @@
             }
           },
           {
+            "name": "onlyInternational",
+            "required": false,
+            "in": "query",
+            "description": "Whether to exclude roles in Portugal",
+            "schema": {
+              "example": true,
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "excludeResearchAndHighEducation",
+            "required": false,
+            "in": "query",
+            "description": "Exclude research and high education roles",
+            "schema": {
+              "example": true,
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "companySearch",
+            "required": false,
+            "in": "query",
+            "description": "Search query for companies",
+            "schema": {
+              "example": "search query",
+              "type": "string"
+            }
+          },
+          {
+            "name": "industrySearch",
+            "required": false,
+            "in": "query",
+            "description": "Search query for industries",
+            "schema": {
+              "example": "search query",
+              "type": "string"
+            }
+          },
+          {
             "name": "limit",
-            "required": true,
+            "required": false,
             "in": "query",
             "description": "The number of results to return",
             "schema": {
@@ -1025,7 +1615,7 @@
           },
           {
             "name": "offset",
-            "required": true,
+            "required": false,
             "in": "query",
             "description": "The offset of the query",
             "schema": {
@@ -1038,7 +1628,7 @@
             "name": "search",
             "required": false,
             "in": "query",
-            "description": "Search query",
+            "description": "Broad search query",
             "schema": {
               "example": "search query",
               "type": "string"
@@ -1046,7 +1636,7 @@
           },
           {
             "name": "sortBy",
-            "required": true,
+            "required": false,
             "in": "query",
             "description": "How to sort the results",
             "schema": {
@@ -1055,7 +1645,7 @@
           },
           {
             "name": "sortOrder",
-            "required": true,
+            "required": false,
             "in": "query",
             "description": "The order of the results",
             "schema": {
@@ -1078,6 +1668,71 @@
           }
         },
         "summary": "Get the countries, and the number of alumni working in them.",
+        "tags": [
+          "V1",
+          "Analytics"
+        ]
+      }
+    },
+    "/api/analytics/countries/options": {
+      "get": {
+        "operationId": "CountriesAnalyticsController_getCountriesOptions",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "The countries options.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CountryOptionDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "Get the countries options.",
+        "tags": [
+          "V1",
+          "Analytics"
+        ]
+      }
+    },
+    "/api/analytics/countries/cities/options": {
+      "get": {
+        "operationId": "CountriesAnalyticsController_getCitiesOptions",
+        "parameters": [
+          {
+            "name": "countryCodes",
+            "required": false,
+            "in": "query",
+            "description": "The country codes  to filter by",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The cities options.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CityOptionDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "Get the cities options.",
         "tags": [
           "V1",
           "Analytics"
@@ -1200,34 +1855,27 @@
         "operationId": "CourseController_find",
         "parameters": [
           {
-            "name": "facultyId",
+            "name": "courseIds",
             "required": false,
             "in": "query",
-            "description": "The id of the faculty",
+            "description": "The courses to filter by",
             "schema": {
-              "type": "string"
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
             }
           },
           {
-            "name": "status",
+            "name": "facultyIds",
             "required": false,
             "in": "query",
-            "description": "Course status",
+            "description": "The faculties to filter by",
             "schema": {
-              "type": "string",
-              "enum": [
-                "ACTIVE",
-                "INACTIVE"
-              ]
-            }
-          },
-          {
-            "name": "name",
-            "required": false,
-            "in": "query",
-            "description": "Search by course name",
-            "schema": {
-              "type": "string"
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
             }
           }
         ],
@@ -1239,7 +1887,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/CourseExtended"
+                    "$ref": "#/components/schemas/Course"
                   }
                 }
               }
@@ -1272,7 +1920,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/CourseExtended"
+                  "$ref": "#/components/schemas/Course"
                 }
               }
             }
@@ -1586,6 +2234,10 @@
       "Course": {
         "type": "object",
         "properties": {
+          "id": {
+            "type": "string",
+            "description": "The id of the course"
+          },
           "name": {
             "type": "string",
             "description": "The name of the course"
@@ -1596,6 +2248,7 @@
           }
         },
         "required": [
+          "id",
           "name",
           "acronym"
         ]
@@ -2118,6 +2771,21 @@
           "alumniTotalCount"
         ]
       },
+      "CompanyOptionDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "name"
+        ]
+      },
       "IndustryListItemDto": {
         "type": "object",
         "properties": {
@@ -2217,6 +2885,49 @@
           "total"
         ]
       },
+      "CountryOptionDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The unique country ISO code",
+            "example": "US"
+          },
+          "name": {
+            "type": "string",
+            "description": "The name of the country",
+            "example": "United States"
+          }
+        },
+        "required": [
+          "id",
+          "name"
+        ]
+      },
+      "CityOptionDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The unique ID of the city"
+          },
+          "name": {
+            "type": "string",
+            "description": "The name of the city",
+            "example": "San Francisco"
+          },
+          "country": {
+            "type": "string",
+            "description": "The country of the city",
+            "example": "United States"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "country"
+        ]
+      },
       "LinkedinAuthDto": {
         "type": "object",
         "properties": {
@@ -2311,56 +3022,6 @@
         "required": [
           "faculty_id",
           "course_id"
-        ]
-      },
-      "CourseExtended": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string",
-            "description": "The name of the course"
-          },
-          "acronym": {
-            "type": "string",
-            "description": "The acronym of the course"
-          },
-          "id": {
-            "type": "string",
-            "description": "The id of the course"
-          },
-          "startYear": {
-            "type": "number",
-            "description": "The start year of the course"
-          },
-          "endYear": {
-            "type": "object",
-            "description": "The end year of the course, if it is not active"
-          },
-          "status": {
-            "type": "string",
-            "description": "The status of the course"
-          },
-          "facultyId": {
-            "type": "string",
-            "description": "The faculty id of the course"
-          },
-          "nameInt": {
-            "type": "object",
-            "description": "The name of the course in the international language"
-          },
-          "courseType": {
-            "type": "string",
-            "description": "The type of the course"
-          }
-        },
-        "required": [
-          "name",
-          "acronym",
-          "id",
-          "startYear",
-          "status",
-          "facultyId",
-          "courseType"
         ]
       },
       "Faculty": {

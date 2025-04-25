@@ -1,23 +1,12 @@
-import { useQuery, QueryObserverResult } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { useJsonFromResponse } from "@/commom";
 import NestAPI from "@/api";
-import { AxiosResponse } from "axios";
-import { Faculty } from "@/sdk";
 
-interface UseListFacultiesReturn {
-  data: Faculty[] | undefined;
-  isLoading: boolean;
-  error: string | undefined;
-  refetch: () => Promise<QueryObserverResult<Faculty[], Error>>;
-}
-
-export const useListFaculties = (): UseListFacultiesReturn => {
+export const useListFaculties = () => {
   const query = useQuery({
     queryKey: ["faculties"],
     queryFn: () =>
-      NestAPI.facultyControllerFindAll().then(
-        (response: AxiosResponse<Faculty[]>) => response.data
-      ),
+      NestAPI.facultyControllerFindAll(),
     staleTime: Infinity, // Data will never become stale automatically
     gcTime: Infinity, // Cache will never be cleared automatically (formerly cacheTime)
     refetchOnMount: false, // Don't refetch when component mounts
@@ -35,7 +24,7 @@ export const useListFaculties = (): UseListFacultiesReturn => {
 
   return {
     data: query.data,
-    isLoading: query.isLoading,
+    isLoading: query.isLoading || query.isFetching,
     error,
     refetch: query.refetch,
   };

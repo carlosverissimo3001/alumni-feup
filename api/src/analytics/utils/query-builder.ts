@@ -1,27 +1,42 @@
 import { QueryParamsDto } from '../dto';
 import { Prisma } from '@prisma/client';
+import { EXCLUDED_INDUSTRIES, PORTUGAL_COUNTRY_CODE } from './consts';
 
 export const buildWhereClause = (
   params: QueryParamsDto,
 ): {
-  companyWhere: Prisma.CompanyWhereInput;
+  alumniWhere: Prisma.AlumniWhereInput;
   roleWhere?: Prisma.RoleWhereInput;
 } => {
-  const companyAndClauses: Prisma.CompanyWhereInput[] = [];
+  const alumniAndClauses: Prisma.AlumniWhereInput[] = [];
   const roleAndClauses: Prisma.RoleWhereInput[] = [];
 
-  if (params.industryIds?.length) {
-    companyAndClauses.push({
-      industryId: { in: params.industryIds },
+  if (params.courseIds?.length || params.graduationYears?.length) {
+    alumniAndClauses.push({
+      Graduations: {
+        some: {
+          AND: [
+            ...(params.courseIds?.length
+              ? [{ courseId: { in: params.courseIds } }]
+              : []),
+            ...(params.graduationYears?.length
+              ? [
+                  {
+                    conclusionYear: {
+                      in: params.graduationYears.map(Number),
+                    },
+                  },
+                ]
+              : []),
+          ],
+        },
+      },
     });
   }
 
-  if (params.companyIds?.length) {
-    companyAndClauses.push({
-      id: { in: params.companyIds },
-    });
-  }
-
+  /**
+   * Role-specific filters
+   */
   if (params.currentRolesOnly) {
     roleAndClauses.push({ isCurrent: true });
   } else if (params.startDate || params.endDate) {
@@ -33,48 +48,69 @@ export const buildWhereClause = (
     });
   }
 
-  if (params.locationIds?.length) {
+  if (params.onlyInternational) {
     roleAndClauses.push({
-      locationId: { in: params.locationIds },
+      Location: {
+        countryCode: { notIn: [PORTUGAL_COUNTRY_CODE] },
+      },
     });
   }
 
   if (params.countries?.length) {
     roleAndClauses.push({
       Location: {
-        country: { in: params.countries },
+        countryCode: { in: params.countries },
       },
     });
   }
 
-  if (params.courseIds?.length || params.graduationYears?.length) {
+  // Company-specific filters
+  if (params.industryIds?.length) {
     roleAndClauses.push({
-      Alumni: {
-        Graduations: {
-          some: {
-            AND: [
-              ...(params.courseIds?.length
-                ? [{ courseId: { in: params.courseIds } }]
-                : []),
-              ...(params.graduationYears?.length
-                ? [
-                    {
-                      conclusionYear: {
-                        in: params.graduationYears.map(Number),
-                      },
-                    },
-                  ]
-                : []),
-            ],
-          },
+      Company: {
+        industryId: { in: params.industryIds },
+      },
+    });
+  }
+
+  if (params.excludeResearchAndHighEducation) {
+    roleAndClauses.push({
+      Company: {
+        Industry: {
+          id: { notIn: EXCLUDED_INDUSTRIES },
         },
       },
     });
   }
 
+  if (params.companyIds?.length) {
+    roleAndClauses.push({
+      companyId: { in: params.companyIds },
+    });
+  }
+
+  if (params.companySearch?.trim()) {
+    roleAndClauses.push({
+      Company: {
+        name: { contains: params.companySearch, mode: 'insensitive' },
+      },
+    });
+  }
+
+  if (params.industrySearch?.trim()) {
+    roleAndClauses.push({
+      Company: {
+        Industry: {
+          name: { contains: params.industrySearch, mode: 'insensitive' },
+        },
+      },
+    });
+  }
+
+  // If we have any role filters, apply them to alumni through Roles
   if (roleAndClauses.length > 0) {
-    companyAndClauses.push({
-      Role: {
+    alumniAndClauses.push({
+      Roles: {
         some: {
           AND: roleAndClauses,
         },
@@ -82,25 +118,8 @@ export const buildWhereClause = (
     });
   }
 
-  // Note(Carlos V.): Is there a better way to do this?
-  if (params.search?.trim()) {
-    /* For now, let's assume the search is a company name */
-    /* Later, we'll make this generice enough to apply to
-        - coutry/city
-        - industry
-        - company name
-        - course name
-        - alumni name
-        ...
-      */
-    companyAndClauses.push({
-      AND: [{ name: { contains: params.search, mode: 'insensitive' } }],
-    });
-  }
-
   return {
-    companyWhere:
-      companyAndClauses.length > 0 ? { AND: companyAndClauses } : {},
+    alumniWhere: alumniAndClauses.length > 0 ? { AND: alumniAndClauses } : {},
     roleWhere: roleAndClauses.length > 0 ? { AND: roleAndClauses } : undefined,
   };
 };
