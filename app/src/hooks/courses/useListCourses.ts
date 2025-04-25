@@ -1,35 +1,17 @@
 import { useQuery } from "@tanstack/react-query";
 import { useJsonFromResponse } from "@/commom";
 import NestAPI from "@/api";
-import { CourseExtended as Course, CourseControllerFindStatusEnum } from "@/sdk";
+import { CourseControllerFindRequest } from "@/sdk";
 
-const arrangeCourses = (courses: Course[]) => {
-    // Note: We need to do this in the FE because we can't store dots(.) in the database
-    const coursesReplaced = courses.map(course => ({
-        ...course,
-        acronym: course.acronym.replace('_', '.')
-    }));
 
-    return coursesReplaced.sort((a, b) => a.name.localeCompare(b.name));
-}
-
-type UseListCoursesParams = {
-    facultyId?: string;
-    name?: string;
-    status?: CourseControllerFindStatusEnum;
-    enabled: boolean;
-}
-
-export const useListCourses = ({facultyId, name, status, enabled}: UseListCoursesParams) => {
+export const useListCourses = (params: CourseControllerFindRequest) => {    
     const query = useQuery({
-        queryKey: ['courses', facultyId],
-        queryFn: () => NestAPI.courseControllerFind({facultyId, status, name})
-            .then(arrangeCourses),
+        queryKey: ['courses', params],
+        queryFn: () => NestAPI.courseControllerFind(params),
         staleTime: Infinity, // Data will never become stale automatically
         gcTime: Infinity, // Cache will never be cleared automatically (formerly cacheTime)
         refetchOnMount: false, // Don't refetch when component mounts
         refetchOnWindowFocus: false, // Don't refetch when window regains focus
-        enabled: enabled,
     });
 
     const parsedError = useJsonFromResponse<{error?: string}>((query.error as unknown) as Response | undefined);
@@ -39,7 +21,7 @@ export const useListCourses = ({facultyId, name, status, enabled}: UseListCourse
 
     return {
         data: query.data,
-        isLoading: query.isLoading,
+        isLoading: query.isLoading || query.isFetching,
         error,
         refetch: query.refetch
     };

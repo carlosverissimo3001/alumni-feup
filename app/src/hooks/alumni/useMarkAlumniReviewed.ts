@@ -6,7 +6,7 @@ type Input = {
   onSuccess?: () => void | Promise<void>
 }
 
-const useMarkAlumniReviewed = ({ onSuccess }: Input) => {
+export const useMarkAlumniReviewed = ({ onSuccess }: Input) => {
   const queryClient = useQueryClient();
 
   const mutation = useMutation({
@@ -22,6 +22,4 @@ const useMarkAlumniReviewed = ({ onSuccess }: Input) => {
   return mutation;
 };
 
-
-export default useMarkAlumniReviewed;
 

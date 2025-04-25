@@ -49,7 +49,8 @@ export class Alumni {
 
   @ApiPropertyOptional({
     description: 'The roles of the alumni',
-    type: [Role],
+    type: Role,
+    isArray: true,
   })
   @IsOptional()
   @IsArray()
@@ -80,7 +81,8 @@ export class Alumni {
 
   @ApiPropertyOptional({
     description: 'The graduation status(es) of the alumni',
-    type: [Graduation],
+    type: Graduation,
+    isArray: true,
   })
   @IsOptional()
   @IsArray()

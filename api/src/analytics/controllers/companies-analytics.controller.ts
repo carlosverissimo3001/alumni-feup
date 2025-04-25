@@ -1,9 +1,12 @@
 import { Controller, Get, Param, Query } from '@nestjs/common';
-import { CompanyAnalyticsService } from '../services/company-analytics.service';
+import { CompanyAnalyticsService } from '../services';
 import { ApiOperation, ApiTags, ApiResponse } from '@nestjs/swagger';
-import { QueryParamsDto } from '../dto/query-params.dto';
-import { CompanyListResponseDto } from '../dto/company-list.dto';
-import { IndustryListResponseDto } from '../dto/industry-list.dto';
+import {
+  QueryParamsDto,
+  CompanyOptionDto,
+  CompanyListResponseDto,
+  IndustryListResponseDto,
+} from '../dto';
 
 @ApiTags('V1', 'Analytics')
 @Controller('analytics/companies')
@@ -18,11 +21,25 @@ export class CompaniesAnalyticsController {
   })
   @ApiResponse({
     status: 200,
-    description: 'The companies with the number of alumni working in them.',
+    description: 'Companies with the number of alumni working in them.',
     type: CompanyListResponseDto,
   })
   async getCompaniesWithAlumniCount(@Query() query: QueryParamsDto) {
     return this.companyAnalyticsService.getCompaniesWithAlumniCount(query);
+  }
+
+  @Get('/options')
+  @ApiOperation({
+    summary: 'Get the companies id and name after applying the filters.',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Companies id and name after applying the filters.',
+    type: CompanyOptionDto,
+    isArray: true,
+  })
+  async getCompanyOptions(@Query() query: QueryParamsDto) {
+    return this.companyAnalyticsService.getCompanyOptions(query);
   }
 
   @Get('/by-industry')
@@ -56,6 +73,14 @@ export class CompaniesAnalyticsController {
     @Param('id') id: string,
     @Query() query: QueryParamsDto,
   ) {
+    // TODO: Implement this
+  }
+
+  @Get('/hot-companies')
+  @ApiOperation({
+    summary: 'Returns companies that have seen a spike in alumni employment.',
+  })
+  async getHotCompanies(@Query() query: QueryParamsDto) {
     // TODO: Implement this
   }
 }

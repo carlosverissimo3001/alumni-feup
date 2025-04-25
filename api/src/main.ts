@@ -2,14 +2,10 @@
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import { ExpressAdapter } from '@bull-board/express';
-import { createBullBoard } from '@bull-board/api';
-import { BullAdapter } from '@bull-board/api/bullAdapter';
 import * as fs from 'fs';
 import * as path from 'path';
-
+import { VALIDATION_CONFIG } from './utils/validation';
 declare const module: any;
 
 async function bootstrap() {
@@ -39,12 +35,7 @@ async function bootstrap() {
   });
 
   SwaggerModule.setup('docs', app, document);
-  app.useGlobalPipes(
-    new ValidationPipe({
-      whitelist: true,
-      transform: true,
-    }),
-  );
+  app.useGlobalPipes(VALIDATION_CONFIG);
   await app.listen(process.env.PORT ?? 3000);
 
   if (module.hot) {

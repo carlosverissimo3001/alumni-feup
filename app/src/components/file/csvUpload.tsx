@@ -39,7 +39,7 @@ const CSVUpload = () => {
   const { data: faculties, isLoading: isLoadingFaculties } = useListFaculties();
 
   const { data: courses, isLoading: isLoadingCourses } = useListCourses({
-    facultyId: faculty,
+    facultyIds: faculty ? [faculty] : undefined,
     enabled: !!faculty,
   });
 

@@ -17,43 +17,67 @@ import PaginationControls from "./common/PaginationControls";
 import { CompanyDataSkeleton } from "./skeletons/CompanyDataSkeleton";
 import TableTitle from "./common/TableTitle";
 import CustomTableHeader from "./common/CustomeTableHeader";
-const ITEMS_PER_PAGE = [5, 10, 25, 50, 100];
-const DASHBOARD_HEIGHT = "h-[375px]";
+import { SortBy, SortOrder, ITEMS_PER_PAGE, DASHBOARD_HEIGHT } from "@/consts";
+import { FilterState } from "./common/GlobalFilters";
+import { NotFoundComponent } from "./common/NotFoundComponent";
 
 type CompanyDashboardProps = {
   onDataUpdate: (alumniCount: number, companyCount: number) => void;
+  filters: FilterState;
 };
 
 export default function CompanyDashboard({
   onDataUpdate,
+  filters,
 }: CompanyDashboardProps) {
   const [page, setPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(ITEMS_PER_PAGE[1]);
   const [totalItems, setTotalItems] = useState(0);
+  const [sortField, setSortField] = useState<SortBy>(SortBy.ALUMNI_COUNT);
+  const [sortOrder, setSortOrder] = useState<SortOrder>(SortOrder.DESC);
 
-  //
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [pageInput, setPageInput] = useState<string>(String(page));
 
+  // Reset page when filters change
+  useEffect(() => {
+    setPage(1);
+  }, [filters]);
+
   const { data, isLoading, isFetching } = useCompanyList({
+    ...filters,
     limit: itemsPerPage,
-    sortBy: "alumniCount",
-    sortOrder: "desc",
+    sortBy: sortField,
+    sortOrder: sortOrder,
     offset: (page - 1) * itemsPerPage,
   });
 
   const companies = data?.companies || [];
 
+  // Update parent only when counts change
   useEffect(() => {
-    if (data) {
-      setTotalItems(data?.companyTotalCount || 0);
-      onDataUpdate(data?.alumniTotalCount || 0, data?.companyTotalCount || 0);
+    if (data?.alumniTotalCount !== undefined && data?.companyTotalCount !== undefined) {
+      setTotalItems(data.companyTotalCount);
+      onDataUpdate(data.alumniTotalCount, data.companyTotalCount);
     }
-  }, [data, onDataUpdate]);
+  }, [data?.alumniTotalCount, data?.companyTotalCount, onDataUpdate]);
 
   useEffect(() => {
     setPageInput(String(page));
   }, [page]);
+
+  const handleSort = (field: SortBy) => {
+    if (sortField === field) {
+      setSortOrder(
+        sortOrder === SortOrder.ASC ? SortOrder.DESC : SortOrder.ASC
+      );
+    } else {
+      setSortField(field);
+      setSortOrder(SortOrder.DESC);
+    }
+    // Not sure if we should reset the page when sorting changes
+    // setPage(1);
+  };
 
   return (
     <div
@@ -62,12 +86,18 @@ export default function CompanyDashboard({
       <TableTitle
         title="Companies"
         icon={<Building2 className="h-5 w-5 text-[#8C2D19]" />}
+        tooltipMessage="Companies that have hired alumni from our programs."
       />
 
       <div className="flex-1 overflow-y-auto mb-2 relative border-t border-b border-gray-200 custom-scrollbar">
         <TableContainer className="w-full h-full">
           <Table className="min-w-full bg-white table-fixed">
-            <CustomTableHeader includeCompanies={false} />
+            <CustomTableHeader
+              includeCompanies={false}
+              sortField={sortField}
+              sortOrder={sortOrder}
+              onSort={handleSort}
+            />
 
             {isLoading || isFetching ? (
               <CompanyDataSkeleton />
@@ -122,14 +152,10 @@ export default function CompanyDashboard({
                     }
                   )
                 ) : (
-                  <TableRow>
-                    <TableCell
-                      colSpan={3} // Updated to account for the new column
-                      className="text-center text-[#000000] py-4"
-                    >
-                      No company data available.
-                    </TableCell>
-                  </TableRow>
+                  <NotFoundComponent
+                    message="No company data available"
+                    description="Try adjusting your filters to find companies that match your criteria."
+                  />
                 )}
               </TableBody>
             )}

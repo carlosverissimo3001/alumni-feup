@@ -1,6 +1,6 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { IndustryAnalyticsEntity } from './industry.entity';
-import { RoleAnalyticsEntity } from './role.entity';
+import { LocationAnalyticsEntity } from './location.entity';
 
 export class CompanyAnalyticsEntity {
   @ApiProperty()
@@ -15,6 +15,6 @@ export class CompanyAnalyticsEntity {
   @ApiProperty()
   industry: IndustryAnalyticsEntity;
 
-  @ApiProperty()
-  roles: RoleAnalyticsEntity[];
+  @ApiPropertyOptional({ type: LocationAnalyticsEntity, nullable: true })
+  location?: LocationAnalyticsEntity | null;
 }

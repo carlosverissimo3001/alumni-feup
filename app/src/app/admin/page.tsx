@@ -37,7 +37,7 @@ const AdminDashboard = () => {
     <div className="container mx-auto py-8 min-h-screen bg-white">
       <h1 className="text-3xl font-bold mb-8 text-black">Admin Panel</h1>
       
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-12">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
         {operations.map((op) => (
           <Link key={op.href} href={op.href} className="block">
             <Card className="h-full transition-all duration-200 hover:shadow-lg hover:border-primary/50">
