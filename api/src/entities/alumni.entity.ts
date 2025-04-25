@@ -4,6 +4,8 @@ import { LocationGeo } from './location.entity';
 import { Source } from '@prisma/client';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { IsArray, IsOptional, IsString } from 'class-validator';
+import { ReviewCompany } from './reviewCompany.entity';
+import { ReviewLocation } from './reviewLocation.entity';
 
 export class Alumni {
   @ApiProperty({ description: 'The id of the alumni' })
@@ -52,6 +54,22 @@ export class Alumni {
   @IsOptional()
   @IsArray()
   Roles?: Role[];
+
+  @ApiPropertyOptional({
+    description: 'The reviews of the alumni',
+    type: [ReviewCompany],
+  })
+  @IsOptional()
+  @IsArray()
+  ReviewsCompany?: ReviewCompany[];
+
+  @ApiPropertyOptional({
+    description: '',
+    type: [ReviewLocation],
+  })
+  @IsOptional()
+  @IsArray()
+  ReviewsLocation?: ReviewLocation[];
 
   @ApiPropertyOptional({
     description: 'The current location of the alumni',

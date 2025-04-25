@@ -14,7 +14,7 @@ export class Company {
   @ApiProperty({
     description: 'The roles of the company',
   })
-  roles?: Role[];
+  Role?: Role[];
 
   constructor(data: Company) {
     this.id = data.id;

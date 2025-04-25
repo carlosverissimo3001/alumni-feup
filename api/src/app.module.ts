@@ -12,6 +12,7 @@ import { FacultyModule } from './faculty/faculty.module';
 import { FileUploadModule } from './file-upload/file-upload.module';
 import { OtpModule } from './otp/otp.module';
 import { UserModule } from './user/user.module';
+import { ReviewModule } from './reviews/review.module';
 
 @Module({
   imports: [
@@ -37,6 +38,7 @@ import { UserModule } from './user/user.module';
     CourseModule,
     FacultyModule,
     AgentsApiModule,
+    ReviewModule
   ],
   providers: [
     {
