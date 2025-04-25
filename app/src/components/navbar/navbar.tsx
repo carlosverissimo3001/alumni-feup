@@ -6,6 +6,7 @@ import {
   BadgeHelpIcon,
   UserIcon,
   ChartSpline,
+  MessageCircleCode,
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -63,6 +64,11 @@ const Navbar = () => {
       label: "World",
       icon: <GlobeIcon size={20} />,
       href: "/",
+    },
+    {
+      label: "Reviews",
+      icon: <MessageCircleCode size={20} />,
+      href: "/reviews",
     },
     {
       label: "Analytics",
