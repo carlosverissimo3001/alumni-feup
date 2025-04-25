@@ -9,3 +9,9 @@ export {
   GeoJSONFeature,
   CustomProperties as GeoJSONProperties,
 } from './geojson.entity';
+
+export {
+  ReviewGeoJSONFeatureCollection,
+  ReviewGeoJSONFeature,
+  CustomProperties as ReviewGeoJSONProperties,
+} from './reviewgeojson.entity';

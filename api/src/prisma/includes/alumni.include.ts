@@ -1,3 +1,5 @@
+import { companySelect } from '@/analytics/consts/company-select';
+import { ReviewCompany } from '@/entities/reviewCompany.entity';
 import { Prisma } from '@prisma/client';
 
 export const locationSelect = {
@@ -41,6 +43,39 @@ export const roleSelect = {
   },
 } satisfies Prisma.RoleSelect;
 
+
+export const companySelectWithRoles = {
+  id: true,
+  name: true,
+  Role: {
+    select: roleSelect
+  },
+} satisfies Prisma.CompanySelect;
+
+export const reviewCompanySelect = {
+  id: true,
+  upvotes: true,
+  downvotes: true,
+  rating: true,
+  description: true,
+  createdAt: true,
+  Company: {
+    select: companySelectWithRoles
+  }
+}satisfies Prisma.ReviewCompanySelect;
+
+export const reviewLocationSelect = {
+  id: true,
+  upvotes: true,
+  downvotes: true,
+  rating: true,
+  description: true,
+  createdAt: true,
+  Location: {
+    select: locationSelect
+  }
+}satisfies Prisma.ReviewLocationSelect;
+
 export const alumniBasic = {
   id: true,
   firstName: true,
@@ -60,5 +95,11 @@ export const alumniSelect = {
   },
   Roles: {
     select: roleSelect,
+  },
+  ReviewsCompany: {
+    select: reviewCompanySelect
+  },
+  ReviewsLocation: {
+    select: reviewLocationSelect
   },
 } satisfies Prisma.AlumniSelect;

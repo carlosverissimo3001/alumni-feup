@@ -190,6 +190,11 @@ export interface UserControllerLinkedinAuthRequest {
     linkedinAuthDto: LinkedinAuthDto;
 }
 
+export interface ReviewsControllerFindAllGeoJSONRequest {
+    groupBy: AlumniControllerFindAllGeoJSONGroupByEnum;
+    reviewType?: string;
+}
+
 /**
  * V1Api - interface
  * 
@@ -1675,6 +1680,46 @@ export class V1Api extends runtime.BaseAPI implements V1ApiInterface {
         return await response.value();
     }
 
+    /**
+     * Get all alumni to be displayed in the map
+     */
+    async reviewsControllerFindAllGeoJSONRaw(requestParameters: ReviewsControllerFindAllGeoJSONRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<GeoJSONFeatureCollection>> {
+        if (requestParameters['groupBy'] == null) {
+            throw new runtime.RequiredError(
+                'groupBy',
+                'Required parameter "groupBy" was null or undefined when calling reviewsControllerFindAllGeoJSON().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        if (requestParameters['groupBy'] != null) {
+            queryParameters['groupBy'] = requestParameters['groupBy'];
+        }
+
+        if (requestParameters['reviewType'] != null) {
+            queryParameters['reviewType'] = requestParameters['reviewType'];
+        }
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        const response = await this.request({
+            path: `/api/reviews/geoJSON`,
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+        
+        return new runtime.JSONApiResponse(response, (jsonValue) => GeoJSONFeatureCollectionFromJSON(jsonValue));
+    }
+
+    /**
+     * Get all reviews to be displayed in the map
+     */
+    async reviewsControllerFindAllGeoJSON(requestParameters: ReviewsControllerFindAllGeoJSONRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<GeoJSONFeatureCollection> {
+        const response = await this.reviewsControllerFindAllGeoJSONRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
 }
 
 /**

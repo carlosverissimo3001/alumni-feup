@@ -121,4 +121,18 @@ export class AlumniRepository {
       select: alumniSelect,
     });
   }
+
+  async findAllWithReviews(): Promise<AlumniExtended[]> {
+    const alumni = await this.prisma.alumni.findMany({
+      where: {
+        OR: [
+          { ReviewsCompany: { some: {} } },
+          { ReviewsLocation: { some: {} } }
+        ]
+      },
+      select: alumniSelect
+    })
+    return alumni;
+  }
+
 }

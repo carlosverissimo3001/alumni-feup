@@ -1310,6 +1310,54 @@
           "Faculty"
         ]
       }
+    },
+    "/api/reviews/geoJSON": {
+      "get": {
+        "operationId": "ReviewController_findAllGeoJSON",
+        "parameters": [
+          {
+            "name": "groupBy",
+            "required": true,
+            "in": "query",
+            "description": "How to group the data",
+            "schema": {
+              "example": "countries",
+              "type": "string",
+              "enum": [
+                "countries",
+                "cities"
+              ]
+            }
+          },
+          {
+            "name": "reviewType",
+            "required": false,
+            "in": "query",
+            "description": "The review type",
+            "schema": {
+              "example": "",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": "Returns all the review to be displayed on the map",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReviewGeoJSONFeatureCollection"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Get all the review to be displayed on the map",
+        "tags": [
+          "V1",
+          "Reviews"
+        ]
+      }
     }
   },
   "info": {
@@ -1344,7 +1392,7 @@
             "type": "object",
             "description": "The linkedin url of the company"
           },
-          "roles": {
+          "Role": {
             "description": "The roles of the company",
             "type": "array",
             "items": {
@@ -1355,7 +1403,7 @@
         "required": [
           "id",
           "name",
-          "roles"
+          "Role"
         ]
       },
       "Role": {
@@ -1440,6 +1488,101 @@
           }
         }
       },
+      "ReviewCompany": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The id of the review"
+          },
+          "description": {
+            "type": "object",
+            "description": "The review"
+          },
+          "rating": {
+            "type": "number",
+            "description": "The rating of the review"
+          },
+          "upvotes": {
+            "type": "number",
+            "description": "upvotes fo the review"
+          },
+          "downvotes": {
+            "type": "number",
+            "description": "downvvotes of the review"
+          },
+          "Location": {
+            "description": "The location of the review",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/LocationGeo"
+              }
+            ]
+          },
+          "Company": {
+            "description": "The Company",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Company"
+              }
+            ]
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string",
+            "description": "The date and time when the review was created"
+          }
+        },
+        "required": [
+          "id",
+          "description",
+          "rating",
+          "upvotes",
+          "downvotes",
+          "Company"
+        ]
+      },
+      "ReviewLocation": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The id of the review"
+          },
+          "description": {
+            "type": "object",
+            "description": "The review"
+          },
+          "rating": {
+            "type": "number",
+            "description": "The rating of the review"
+          },
+          "upvotes": {
+            "type": "number",
+            "description": "upvotes fo the review"
+          },
+          "downvotes": {
+            "type": "number",
+            "description": "downvvotes of the review"
+          },
+          "Location": {
+            "type": "object",
+            "description": "The location of the review"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string",
+            "description": "The date and time when the review was created"
+          }
+        },
+        "required": [
+          "id",
+          "description",
+          "rating",
+          "upvotes",
+          "downvotes"
+        ]
+      },
       "Course": {
         "type": "object",
         "properties": {
@@ -1519,6 +1662,20 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/Role"
+            }
+          },
+          "ReviewsCompany": {
+            "description": "The reviews of the alumni",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ReviewCompany"
+            }
+          },
+          "ReviewsLocation": {
+            "description": "",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ReviewLocation"
             }
           },
           "Location": {
@@ -1623,6 +1780,20 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/Role"
+            }
+          },
+          "ReviewsCompany": {
+            "description": "The reviews of the alumni",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ReviewCompany"
+            }
+          },
+          "ReviewsLocation": {
+            "description": "",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ReviewLocation"
             }
           },
           "Location": {
@@ -2166,7 +2337,7 @@
             "description": "The end year of the course, if it is not active"
           },
           "status": {
-            "type": "object",
+            "type": "string",
             "description": "The status of the course"
           },
           "facultyId": {
@@ -2178,7 +2349,7 @@
             "description": "The name of the course in the international language"
           },
           "courseType": {
-            "type": "object",
+            "type": "string",
             "description": "The type of the course"
           }
         },
@@ -2219,6 +2390,45 @@
           "name",
           "nameInt",
           "acronym"
+        ]
+      },
+      "ReviewGeoJSONFeature": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "example": "Feature"
+          },
+          "geometry": {
+            "type": "object"
+          },
+          "properties": {
+            "type": "object"
+          }
+        },
+        "required": [
+          "type",
+          "geometry",
+          "properties"
+        ]
+      },
+      "ReviewGeoJSONFeatureCollection": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "example": "FeatureCollection"
+          },
+          "features": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ReviewGeoJSONFeature"
+            }
+          }
+        },
+        "required": [
+          "type",
+          "features"
         ]
       }
     }
