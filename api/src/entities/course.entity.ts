@@ -2,6 +2,9 @@ import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { COURSE_STATUS, COURSE_TYPE } from '@prisma/client';
 
 export class Course {
+  @ApiProperty({ description: 'The id of the course' })
+  id: string;
+
   @ApiProperty({ description: 'The name of the course' })
   name: string;
 
@@ -10,9 +13,6 @@ export class Course {
 }
 
 export class CourseExtended extends Course {
-  @ApiProperty({ description: 'The id of the course' })
-  id: string;
-
   @ApiProperty({ description: 'The start year of the course' })
   startYear: number;
 

@@ -1,55 +1,76 @@
 import { PrismaService } from '@/prisma/prisma.service';
 import { QueryParamsDto } from '../dto/query-params.dto';
 import { buildWhereClause } from '../utils/query-builder';
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
+import { toAlumniAnalyticsEntity } from '../utils/alumni.mapper';
+
+const industrySelect = {
+  id: true,
+  name: true,
+} satisfies Prisma.IndustrySelect;
+
+const locationSelect = {
+  id: true,
+  country: true,
+  countryCode: true,
+  city: true,
+};
+
+const companySelect = {
+  id: true,
+  name: true,
+  logo: true,
+  Industry: {
+    select: industrySelect,
+  },
+  Location: {
+    select: locationSelect,
+  },
+};
+
+const roleSelect = {
+  id: true,
+  alumniId: true,
+  Location: {
+    select: locationSelect,
+  },
+  Company: {
+    select: companySelect,
+  },
+} satisfies Prisma.RoleSelect;
 
 @Injectable()
 export class AlumniAnalyticsRepository {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private readonly logger: Logger,
+  ) {}
+
+  async find(params: QueryParamsDto) {
+    // Build all the filters using your existing function
+    const { alumniWhere, roleWhere } = buildWhereClause(params);
+
+    // Use the filters at the right levels
+    const alumnus = await this.prisma.alumni.findMany({
+      where: alumniWhere,
+      select: {
+        id: true,
+        Roles: {
+          where: roleWhere,
+          select: roleSelect,
+        },
+      },
+    });
+
+    return alumnus.map(toAlumniAnalyticsEntity);
+  }
 
   async countAlumni(params: QueryParamsDto) {
-    const { companyWhere, roleWhere } = buildWhereClause(params);
-
-    const alumniWhere: Prisma.AlumniWhereInput = {};
-
-    if (Object.keys(companyWhere).length > 0 || roleWhere) {
-      alumniWhere.Roles = {
-        some: {
-          ...(Object.keys(companyWhere).length > 0 && {
-            Company: companyWhere,
-          }),
-          ...(roleWhere && roleWhere),
-        },
-      };
-    }
+    const { alumniWhere } = buildWhereClause(params);
 
     return this.prisma.alumni.count({
       where: alumniWhere,
-    });
-  }
-
-  async getAlumniByCountry(params: QueryParamsDto) {
-    const { companyWhere, roleWhere } = buildWhereClause(params);
-
-    const alumniWhere: Prisma.AlumniWhereInput = { Location: { isNot: null } };
-
-    if (Object.keys(companyWhere).length > 0 || roleWhere) {
-      alumniWhere.Roles = {
-        some: {
-          ...(Object.keys(companyWhere).length > 0 && {
-            Company: companyWhere,
-          }),
-          ...(roleWhere && roleWhere),
-        },
-      };
-    }
-
-    return this.prisma.alumni.findMany({
-      where: alumniWhere,
-      include: {
-        Location: true,
-      },
     });
   }
 }

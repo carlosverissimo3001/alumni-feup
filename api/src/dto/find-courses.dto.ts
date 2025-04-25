@@ -1,30 +1,38 @@
-import { COURSE_STATUS } from '@prisma/client';
+import { TransformToArray } from '@/utils/validation';
 import { ApiPropertyOptional } from '@nestjs/swagger';
-import { IsUUID, IsOptional, IsString, IsEnum } from 'class-validator';
+import { Transform } from 'class-transformer';
+import { IsOptional, IsArray, IsString } from 'class-validator';
 
 export class FindCoursesDto {
   @ApiPropertyOptional({
-    description: 'The id of the faculty',
-    required: false,
+    description: 'The courses to filter by',
+    example: ['123', '456', '768'],
   })
-  @IsUUID()
   @IsOptional()
-  facultyId?: string;
+  @TransformToArray()
+  @Transform(({ value }: { value: string | string[] }) => {
+    if (Array.isArray(value)) {
+      return value.filter((course: string) => course?.trim());
+    }
+    return value;
+  })
+  @IsArray()
+  @IsString({ each: true })
+  courseIds?: string[];
 
   @ApiPropertyOptional({
-    description: 'Course status',
-    enum: COURSE_STATUS,
-    required: false,
+    description: 'The faculties to filter by',
+    example: ['123', '456', '768'],
   })
-  @IsEnum(COURSE_STATUS)
   @IsOptional()
-  status?: COURSE_STATUS;
-
-  @ApiPropertyOptional({
-    description: 'Search by course name',
-    required: false,
+  @TransformToArray()
+  @Transform(({ value }: { value: string | string[] }) => {
+    if (Array.isArray(value)) {
+      return value.filter((faculty: string) => faculty?.trim());
+    }
+    return value;
   })
-  @IsString()
-  @IsOptional()
-  name?: string;
+  @IsArray()
+  @IsString({ each: true })
+  facultyIds?: string[];
 }

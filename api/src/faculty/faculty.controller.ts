@@ -12,7 +12,11 @@ export class FacultyController {
   @Get()
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Get all faculties' })
-  @ApiResponse({ description: 'Returns all faculties', type: [Faculty] })
+  @ApiResponse({
+    description: 'Returns all faculties',
+    type: Faculty,
+    isArray: true,
+  })
   async findAll(): Promise<Faculty[]> {
     return this.facultyService.findAll();
   }

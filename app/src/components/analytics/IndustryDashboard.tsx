@@ -9,49 +9,72 @@ import {
   TableContainer,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { IndustryListItemDto } from "@/sdk";
+import { IndustryListItemDto, IndustryListResponseDto } from "@/sdk";
 import { Factory } from "lucide-react";
 import { IndustryDataSkeleton } from "./skeletons/IndustryDataSkeleton";
 import { useIndustryList } from "@/hooks/analytics/useIndustryList";
 import PaginationControls from "./common/PaginationControls";
 import TableTitle from "./common/TableTitle";
 import CustomTableHeader from "./common/CustomeTableHeader";
-
-const ITEMS_PER_PAGE = [5, 10, 25, 50, 100];
-const DASHBOARD_HEIGHT = "h-[375px]";
+import { SortBy, SortOrder, ITEMS_PER_PAGE, DASHBOARD_HEIGHT } from "@/consts";
+import { FilterState } from "./common/GlobalFilters";
 
 type IndustryDashboardProps = {
   onDataUpdate: (industryCount: number) => void;
+  filters: FilterState;
 };
 
 export default function IndustryDashboard({
   onDataUpdate,
+  filters,
 }: IndustryDashboardProps) {
   const [page, setPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(ITEMS_PER_PAGE[2]);
+  const [sortField, setSortField] = useState<SortBy>(SortBy.ALUMNI_COUNT);
+  const [sortOrder, setSortOrder] = useState<SortOrder>(SortOrder.DESC);
   
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [pageInput, setPageInput] = useState<string>(String(page));
 
+  // Reset page when filters change
+  useEffect(() => {
+    setPage(1);
+  }, [filters]);
+
   const { data, isLoading, isFetching } = useIndustryList({
+    ...filters,
     limit: itemsPerPage,
-    sortBy: "alumniCount",
-    sortOrder: "desc",
+    sortBy: sortField,
+    sortOrder: sortOrder,
     offset: (page - 1) * itemsPerPage,
   });
 
   const industries = data?.industries || [];
   const totalItems = data?.total || 0;
 
+  // Update parent only when total changes
   useEffect(() => {
-    if (data) {
-      onDataUpdate(data?.total || 0);
+    if (data?.total !== undefined) {
+      onDataUpdate(data.total);
     }
-  }, [data, onDataUpdate]);
+  }, [data?.total, onDataUpdate]);
 
   useEffect(() => {
     setPageInput(String(page));
   }, [page]);
+
+  const handleSort = (field: SortBy) => {
+    if (sortField === field) {
+      setSortOrder(
+        sortOrder === SortOrder.ASC ? SortOrder.DESC : SortOrder.ASC
+      );
+    } else {
+      setSortField(field);
+      setSortOrder(SortOrder.DESC);
+    }
+    // Not sure if we should reset the page when sorting changes
+    // setPage(1);
+  };
 
   return (
     <div
@@ -65,7 +88,11 @@ export default function IndustryDashboard({
       <div className="flex-1 overflow-y-auto mb-2 relative border-t border-b border-gray-200 custom-scrollbar">
         <TableContainer className="w-full h-full">
           <Table className="min-w-full bg-white table-fixed">
-            <CustomTableHeader />
+            <CustomTableHeader
+              sortField={sortField}
+              sortOrder={sortOrder}
+              onSort={handleSort}
+            />
 
             {isLoading || isFetching ? (
               <IndustryDataSkeleton />

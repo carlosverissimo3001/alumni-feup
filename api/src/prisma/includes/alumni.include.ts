@@ -13,6 +13,7 @@ export const graduationSelect = {
   conclusionYear: true,
   Course: {
     select: {
+      id: true,
       name: true,
       acronym: true,
     },

@@ -15,17 +15,16 @@
 
 import * as runtime from '../runtime';
 import type {
-  CourseExtended,
+  Course,
 } from '../models/index';
 import {
-    CourseExtendedFromJSON,
-    CourseExtendedToJSON,
+    CourseFromJSON,
+    CourseToJSON,
 } from '../models/index';
 
 export interface CourseControllerFindRequest {
-    facultyId?: string;
-    status?: CourseControllerFindStatusEnum;
-    name?: string;
+    courseIds?: Array<string>;
+    facultyIds?: Array<string>;
 }
 
 export interface CourseControllerFindOneRequest {
@@ -42,19 +41,18 @@ export interface CourseApiInterface {
     /**
      * 
      * @summary Get courses
-     * @param {string} [facultyId] The id of the faculty
-     * @param {'ACTIVE' | 'INACTIVE'} [status] Course status
-     * @param {string} [name] Search by course name
+     * @param {Array<string>} [courseIds] The courses to filter by
+     * @param {Array<string>} [facultyIds] The faculties to filter by
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof CourseApiInterface
      */
-    courseControllerFindRaw(requestParameters: CourseControllerFindRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<CourseExtended>>>;
+    courseControllerFindRaw(requestParameters: CourseControllerFindRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<Course>>>;
 
     /**
      * Get courses
      */
-    courseControllerFind(requestParameters: CourseControllerFindRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<CourseExtended>>;
+    courseControllerFind(requestParameters: CourseControllerFindRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<Course>>;
 
     /**
      * 
@@ -64,12 +62,12 @@ export interface CourseApiInterface {
      * @throws {RequiredError}
      * @memberof CourseApiInterface
      */
-    courseControllerFindOneRaw(requestParameters: CourseControllerFindOneRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<CourseExtended>>;
+    courseControllerFindOneRaw(requestParameters: CourseControllerFindOneRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Course>>;
 
     /**
      * Get a course by id
      */
-    courseControllerFindOne(requestParameters: CourseControllerFindOneRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<CourseExtended>;
+    courseControllerFindOne(requestParameters: CourseControllerFindOneRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Course>;
 
 }
 
@@ -81,19 +79,15 @@ export class CourseApi extends runtime.BaseAPI implements CourseApiInterface {
     /**
      * Get courses
      */
-    async courseControllerFindRaw(requestParameters: CourseControllerFindRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<CourseExtended>>> {
+    async courseControllerFindRaw(requestParameters: CourseControllerFindRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<Course>>> {
         const queryParameters: any = {};
 
-        if (requestParameters['facultyId'] != null) {
-            queryParameters['facultyId'] = requestParameters['facultyId'];
+        if (requestParameters['courseIds'] != null) {
+            queryParameters['courseIds'] = requestParameters['courseIds'];
         }
 
-        if (requestParameters['status'] != null) {
-            queryParameters['status'] = requestParameters['status'];
-        }
-
-        if (requestParameters['name'] != null) {
-            queryParameters['name'] = requestParameters['name'];
+        if (requestParameters['facultyIds'] != null) {
+            queryParameters['facultyIds'] = requestParameters['facultyIds'];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -105,13 +99,13 @@ export class CourseApi extends runtime.BaseAPI implements CourseApiInterface {
             query: queryParameters,
         }, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(CourseExtendedFromJSON));
+        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(CourseFromJSON));
     }
 
     /**
      * Get courses
      */
-    async courseControllerFind(requestParameters: CourseControllerFindRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<CourseExtended>> {
+    async courseControllerFind(requestParameters: CourseControllerFindRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<Course>> {
         const response = await this.courseControllerFindRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -119,7 +113,7 @@ export class CourseApi extends runtime.BaseAPI implements CourseApiInterface {
     /**
      * Get a course by id
      */
-    async courseControllerFindOneRaw(requestParameters: CourseControllerFindOneRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<CourseExtended>> {
+    async courseControllerFindOneRaw(requestParameters: CourseControllerFindOneRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Course>> {
         if (requestParameters['id'] == null) {
             throw new runtime.RequiredError(
                 'id',
@@ -138,24 +132,15 @@ export class CourseApi extends runtime.BaseAPI implements CourseApiInterface {
             query: queryParameters,
         }, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => CourseExtendedFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) => CourseFromJSON(jsonValue));
     }
 
     /**
      * Get a course by id
      */
-    async courseControllerFindOne(requestParameters: CourseControllerFindOneRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<CourseExtended> {
+    async courseControllerFindOne(requestParameters: CourseControllerFindOneRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Course> {
         const response = await this.courseControllerFindOneRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
 }
-
-/**
- * @export
- */
-export const CourseControllerFindStatusEnum = {
-    Active: 'ACTIVE',
-    Inactive: 'INACTIVE'
-} as const;
-export type CourseControllerFindStatusEnum = typeof CourseControllerFindStatusEnum[keyof typeof CourseControllerFindStatusEnum];

@@ -20,6 +20,12 @@ import { mapValues } from '../runtime';
  */
 export interface Course {
     /**
+     * The id of the course
+     * @type {string}
+     * @memberof Course
+     */
+    id: string;
+    /**
      * The name of the course
      * @type {string}
      * @memberof Course
@@ -37,6 +43,7 @@ export interface Course {
  * Check if a given object implements the Course interface.
  */
 export function instanceOfCourse(value: object): value is Course {
+    if (!('id' in value) || value['id'] === undefined) return false;
     if (!('name' in value) || value['name'] === undefined) return false;
     if (!('acronym' in value) || value['acronym'] === undefined) return false;
     return true;
@@ -52,6 +59,7 @@ export function CourseFromJSONTyped(json: any, ignoreDiscriminator: boolean): Co
     }
     return {
         
+        'id': json['id'],
         'name': json['name'],
         'acronym': json['acronym'],
     };
@@ -68,6 +76,7 @@ export function CourseToJSONTyped(value?: Course | null, ignoreDiscriminator: bo
 
     return {
         
+        'id': value['id'],
         'name': value['name'],
         'acronym': value['acronym'],
     };

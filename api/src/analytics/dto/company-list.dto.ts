@@ -14,8 +14,16 @@ export class CompanyListItemDto {
   logo?: string | null;
 }
 
+export class CompanyListItemExtendedDto extends CompanyListItemDto {
+  @ApiProperty()
+  industry: string;
+
+  @ApiProperty()
+  industryId: string;
+}
+
 export class CompanyListResponseDto {
-  @ApiProperty({ type: [CompanyListItemDto] })
+  @ApiProperty({ type: CompanyListItemDto, isArray: true })
   companies: CompanyListItemDto[];
 
   @ApiProperty({

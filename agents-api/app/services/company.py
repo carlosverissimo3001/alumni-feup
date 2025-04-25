@@ -126,6 +126,8 @@ class CompanyService:
         company_raw = self.client.get_json(
             f"/snapshot/{snapshot_id}",
         )
+        
+        logger.info(f"Company raw: {company_raw}")
 
         # If the company is not found, we return None
         # We can do this, by checking if it has a name
@@ -171,6 +173,7 @@ class CompanyService:
 
         try:
             # Update the company
+            logger.info(f"Updating company {company_id}")
             update_company(company, db)
         except Exception as e:
             logger.error(f"Error updating company {company_id}: {str(e)}")

@@ -1,2 +1,2 @@
-export { CompanyAnalyticsRepository } from './company.repository';
 export { AlumniAnalyticsRepository } from './alumni.repository';
+export { LocationRepository } from './location.repository';

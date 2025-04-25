@@ -4,10 +4,7 @@ import {
   CompaniesAnalyticsController,
   CountriesAnalyticsController,
 } from './controllers';
-import {
-  AlumniAnalyticsRepository,
-  CompanyAnalyticsRepository,
-} from './repositories';
+import { AlumniAnalyticsRepository, LocationRepository } from './repositories';
 import { CompanyAnalyticsService, CountryAnalyticsService } from './services';
 
 @Module({
@@ -16,8 +13,8 @@ import { CompanyAnalyticsService, CountryAnalyticsService } from './services';
     CompanyAnalyticsService,
     CountryAnalyticsService,
     PrismaService,
-    CompanyAnalyticsRepository,
     AlumniAnalyticsRepository,
+    LocationRepository,
     Logger,
   ],
 })
