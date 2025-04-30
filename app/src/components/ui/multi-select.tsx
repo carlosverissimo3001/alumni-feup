@@ -138,6 +138,12 @@ interface MultiSelectProps
    * Optional, defaults to false.
    */
   lazyLoading?: boolean;
+  
+  /**
+   * Maximum number of options to display in the dropdown.
+   * Optional, defaults to 50.
+   */
+  maxDisplayCount?: number;
 }
 
 export const MultiSelect = React.forwardRef<
@@ -153,7 +159,7 @@ export const MultiSelect = React.forwardRef<
       value,
       placeholder = "Select options",
       animation = 0,
-      maxCount = 3,
+      maxCount = 2,
       modalPopover = false,
       allowSelectAll = false,
       className,
@@ -161,6 +167,7 @@ export const MultiSelect = React.forwardRef<
       isLoading = false,
       onSearchChange,
       lazyLoading = false,
+      maxDisplayCount = 50,
       ...props
     },
     ref
@@ -231,12 +238,28 @@ export const MultiSelect = React.forwardRef<
       }
     };
 
-/*     console.log('MultiSelect state:', { 
-      isLoading, 
-      options: options.length, 
-      selectedValues,
-      searchValue 
-    }); */
+    const filteredOptions = React.useMemo(() => {
+      if (!searchValue.trim()) {
+        return options;
+      }
+      
+      const lowercasedSearch = searchValue.toLowerCase();
+      return options.filter((option) =>
+        option.label.toLowerCase().includes(lowercasedSearch)
+      );
+    }, [options, searchValue]);
+
+
+    const displayOptions = React.useMemo(() => {
+      return filteredOptions.slice(0, maxDisplayCount);
+    }, [filteredOptions, maxDisplayCount]);
+
+    const totalFilteredCount = filteredOptions.length;
+
+    const handleSearchChange = (value: string) => {
+      setSearchValue(value);
+      onSearchChange?.(value);
+    };
 
     return (
       <Popover
@@ -335,21 +358,22 @@ export const MultiSelect = React.forwardRef<
           align="start"
           onEscapeKeyDown={() => setIsPopoverOpen(false)}
         >
-          <Command>
+          <Command shouldFilter={false}>
             <CommandInput
               placeholder={!lazyLoading ? "Search..." : "Type at least 3 characters..."}
               onKeyDown={handleInputKeyDown}
               disabled={disabled}
-              onValueChange={(value) => {
-                setSearchValue(value);
-                onSearchChange?.(value);
-              }}
+              onValueChange={handleSearchChange}
               value={searchValue}
               className="h-9"
             />
             <CommandList>
               <CommandEmpty className="p-2">
-                {isLoading ? "Loading..." : options.length === 0 ? "No results found." : null}
+                {isLoading 
+                  ? "Loading..." 
+                  : filteredOptions.length === 0 
+                    ? "No matching options found." 
+                    : null}
               </CommandEmpty>
               <CommandGroup>
                 {allowSelectAll && !isLoading && options.length > 0 && (
@@ -371,7 +395,7 @@ export const MultiSelect = React.forwardRef<
                     <span>(Select All)</span>
                   </CommandItem>
                 )}
-                {options.map((option) => {
+                {displayOptions.map((option) => {
                   const isSelected = selectedValues.includes(option.value);
                   return (
                     <CommandItem
@@ -397,6 +421,13 @@ export const MultiSelect = React.forwardRef<
                     </CommandItem>
                   );
                 })}
+                {totalFilteredCount > maxDisplayCount && (
+                  <CommandItem className="opacity-50 cursor-default" disabled>
+                    <span className="text-sm text-muted-foreground">
+                      {`Showing ${maxDisplayCount} of ${totalFilteredCount} matching options. Refine your search to see more specific results.`}
+                    </span>
+                  </CommandItem>
+                )}
               </CommandGroup>
               <CommandSeparator />
               <CommandGroup>

@@ -27,6 +27,20 @@ import {
     GraduationToJSON,
     GraduationToJSONTyped,
 } from './Graduation';
+import type { ReviewLocation } from './ReviewLocation';
+import {
+    ReviewLocationFromJSON,
+    ReviewLocationFromJSONTyped,
+    ReviewLocationToJSON,
+    ReviewLocationToJSONTyped,
+} from './ReviewLocation';
+import type { ReviewCompany } from './ReviewCompany';
+import {
+    ReviewCompanyFromJSON,
+    ReviewCompanyFromJSONTyped,
+    ReviewCompanyToJSON,
+    ReviewCompanyToJSONTyped,
+} from './ReviewCompany';
 import type { LocationGeo } from './LocationGeo';
 import {
     LocationGeoFromJSON,
@@ -89,6 +103,18 @@ export interface AlumniExtended {
      * @memberof AlumniExtended
      */
     roles?: Array<Role>;
+    /**
+     * The reviews of the alumni
+     * @type {Array<ReviewCompany>}
+     * @memberof AlumniExtended
+     */
+    reviewsCompany?: Array<ReviewCompany>;
+    /**
+     * 
+     * @type {Array<ReviewLocation>}
+     * @memberof AlumniExtended
+     */
+    reviewsLocation?: Array<ReviewLocation>;
     /**
      * The current location of the alumni
      * @type {LocationGeo}
@@ -173,6 +199,8 @@ export function AlumniExtendedFromJSONTyped(json: any, ignoreDiscriminator: bool
         'profilePictureUrl': json['profilePictureUrl'] == null ? undefined : json['profilePictureUrl'],
         'source': json['source'] == null ? undefined : json['source'],
         'roles': json['Roles'] == null ? undefined : ((json['Roles'] as Array<any>).map(RoleFromJSON)),
+        'reviewsCompany': json['ReviewsCompany'] == null ? undefined : ((json['ReviewsCompany'] as Array<any>).map(ReviewCompanyFromJSON)),
+        'reviewsLocation': json['ReviewsLocation'] == null ? undefined : ((json['ReviewsLocation'] as Array<any>).map(ReviewLocationFromJSON)),
         'location': json['Location'] == null ? undefined : LocationGeoFromJSON(json['Location']),
         'graduations': json['Graduations'] == null ? undefined : ((json['Graduations'] as Array<any>).map(GraduationFromJSON)),
         'isInGroup': json['isInGroup'] == null ? undefined : json['isInGroup'],
@@ -202,6 +230,8 @@ export function AlumniExtendedToJSONTyped(value?: AlumniExtended | null, ignoreD
         'profilePictureUrl': value['profilePictureUrl'],
         'source': value['source'],
         'Roles': value['roles'] == null ? undefined : ((value['roles'] as Array<any>).map(RoleToJSON)),
+        'ReviewsCompany': value['reviewsCompany'] == null ? undefined : ((value['reviewsCompany'] as Array<any>).map(ReviewCompanyToJSON)),
+        'ReviewsLocation': value['reviewsLocation'] == null ? undefined : ((value['reviewsLocation'] as Array<any>).map(ReviewLocationToJSON)),
         'Location': LocationGeoToJSON(value['location']),
         'Graduations': value['graduations'] == null ? undefined : ((value['graduations'] as Array<any>).map(GraduationToJSON)),
         'isInGroup': value['isInGroup'],

@@ -56,7 +56,7 @@ export function DatePickerWithRange({
 
   const handleSetToPresent = () => {
     if (date?.from) {
-      const newDate = { from: date.from, to: undefined };
+      const newDate = { from: date.from, to: new Date() };
       setDate(newDate);
       if (onChange) {
         onChange(newDate);
@@ -78,7 +78,6 @@ export function DatePickerWithRange({
             id="date"
             variant={"outline"}
             className={cn(
-              // Updated classes to match MultiSelect height and padding
               "w-full min-h-10 h-auto justify-start text-left font-normal px-3 py-1",
               !date && "text-muted-foreground"
             )}
@@ -130,13 +129,22 @@ export function DatePickerWithRange({
                 ))}
               </SelectContent>
             </Select>
-            {date?.from && date?.to && (
+            {date?.from && !date?.to && (
               <Button
                 variant="outline"
                 className="ml-auto text-[#8C2D19] border-[#8C2D19] hover:bg-[#8C2D19] hover:text-white"
                 onClick={handleSetToPresent}
               >
                 Set to Present
+              </Button>
+            )}
+            {date?.from && date?.to && (
+              <Button
+                variant="outline"
+                className="ml-auto text-[#8C2D19] border-[#8C2D19] hover:bg-[#8C2D19] hover:text-white"
+                onClick={() => onChange?.({ from: date.from, to: undefined })}
+              >
+                Clear End Date
               </Button>
             )}
           </div>

@@ -7,6 +7,7 @@ export {
   IndustryListResponseDto,
   IndustryListItemDto,
 } from './industry-list.dto';
+export { IndustryOptionDto } from './industry.option.dto';
 
 // Country
 export { CountryListResponseDto, CountryListItemDto } from './country-list.dto';

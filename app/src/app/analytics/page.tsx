@@ -6,17 +6,16 @@ import {
   Globe2,
   ChartSpline,
   Factory,
-  Briefcase,
-  Lightbulb,
 } from "lucide-react";
 import CompanyDashboard from "@/components/analytics/CompanyDashboard";
 import IndustryDashboard from "@/components/analytics/IndustryDashboard";
-import { useState, useCallback } from "react";
+import { useState, useCallback, useMemo } from "react";
 import CountriesDashboard from "@/components/analytics/CountryDashboard";
 import OverallStats from "@/components/analytics/OverallStats";
 import GlobalFilters, {
   FilterState,
 } from "@/components/analytics/common/GlobalFilters";
+import { handleDateRange } from "@/utils/date";
 
 export const initialFilters: FilterState = {
   dateRange: undefined,
@@ -30,6 +29,7 @@ export const initialFilters: FilterState = {
   onlyInternational: false,
   excludeResearchAndHighEducation: false,
   search: undefined,
+  companySize: [],
 };
 
 export default function Analytics() {
@@ -41,6 +41,21 @@ export default function Analytics() {
   });
 
   const [filters, setFilters] = useState<FilterState>(initialFilters);
+  
+  const processedDateRange = useMemo(() => {
+    if (filters.dateRange) {
+      return handleDateRange(filters.dateRange);
+    }
+    return {};
+  }, [filters.dateRange]);
+  
+  const combinedFilters = useMemo(() => {
+    return {
+      ...filters,
+      ...processedDateRange,
+      ...(filters.companySize && filters.companySize.length > 0 && { companySize: filters.companySize }),
+    };
+  }, [filters, processedDateRange]);
 
   const handleCompanyDataUpdate = useCallback(
     (alumniCount: number, companyCount: number) => {
@@ -60,6 +75,69 @@ export default function Analytics() {
   const handleCountriesDataUpdate = useCallback((countryCount: number) => {
     setStats((prev) => ({ ...prev, totalCountries: countryCount }));
   }, []);
+
+  const handleAddCompanyToFilters = useCallback(
+    (companyId: string) => {
+      setFilters((prev) => {
+        const currentCompanyIds = prev.companyIds || [];
+        if (!currentCompanyIds.includes(companyId)) {
+          return {
+            ...prev,
+            companyIds: [...currentCompanyIds, companyId],
+          };
+        }
+        else {
+          return {
+            ...prev,
+            companyIds: currentCompanyIds.filter((id) => id !== companyId),
+          };
+        }
+      });
+    },
+    []
+  );
+
+  const handleAddCountryToFilters = useCallback(
+    (countryId: string) => {
+      setFilters((prev) => {
+        const currentCountries = prev.countries || [];
+        if (!currentCountries.includes(countryId)) {
+          return {
+            ...prev,
+            countries: [...currentCountries, countryId],
+          };
+        }
+        else {
+          return {
+            ...prev,
+            countries: currentCountries.filter((id) => id !== countryId),
+          };
+        } 
+      });
+    },
+    []
+  );
+
+  const handleAddIndustryToFilters = useCallback(
+    (industryId: string) => {
+      setFilters((prev) => {
+        const currentIndustryIds = prev.industryIds || [];
+        if (!currentIndustryIds.includes(industryId)) {
+          return {
+            ...prev,
+            industryIds: [...currentIndustryIds, industryId],
+          };
+        }
+        else {
+          return {
+            ...prev,
+            industryIds: currentIndustryIds.filter((id) => id !== industryId),
+          };
+        }
+      });
+    },
+    []
+  );
 
   const statsConfig = [
     {
@@ -104,15 +182,18 @@ export default function Analytics() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         <CompanyDashboard
           onDataUpdate={handleCompanyDataUpdate}
-          filters={filters}
+          filters={combinedFilters}
+          onAddToFilters={handleAddCompanyToFilters}
         />
         <CountriesDashboard
           onDataUpdate={handleCountriesDataUpdate}
-          filters={filters}
+          filters={combinedFilters}
+          onAddToFilters={handleAddCountryToFilters}
         />
         <IndustryDashboard
           onDataUpdate={handleIndustryDataUpdate}
-          filters={filters}
+          filters={combinedFilters}
+          onAddToFilters={handleAddIndustryToFilters}
         />
       </div>
     </div>

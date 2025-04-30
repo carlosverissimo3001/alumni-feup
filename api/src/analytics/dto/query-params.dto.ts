@@ -16,6 +16,7 @@ import {
   toBoolean,
   TransformToArray,
 } from '@/utils/validation';
+import { COMPANY_SIZE } from '@prisma/client';
 
 export class QueryParamsDto {
   @ApiPropertyOptional({
@@ -89,6 +90,13 @@ export class QueryParamsDto {
     example: ['1', '2', '3'],
   })
   @IsOptional()
+  @TransformToArray()
+  @Transform(({ value }: { value: string | string[] }) => {
+    if (Array.isArray(value)) {
+      return value.filter((year: string) => year?.trim());
+    }
+    return value;
+  })
   @IsArray()
   @IsString({ each: true })
   industryIds?: string[];
@@ -110,13 +118,20 @@ export class QueryParamsDto {
   countries?: string[];
 
   @ApiPropertyOptional({
-    description: 'The cities to filter by',
-    example: ['Porto', 'Paris', 'Bucharest'],
+    description: 'The cities ids to filter by',
+    example: ['1', '2', '3'],
   })
   @IsOptional()
+  @TransformToArray()
+  @Transform(({ value }: { value: string | string[] }) => {
+    if (Array.isArray(value)) {
+      return value.filter((city: string) => city?.trim());
+    }
+    return value;
+  })
   @IsArray()
   @IsString({ each: true })
-  cities?: string[];
+  cityIds?: string[];
 
   @ApiPropertyOptional({
     description: 'Filter for current roles only',
@@ -166,6 +181,24 @@ export class QueryParamsDto {
   @IsString()
   @IsNotEmpty()
   industrySearch?: string;
+
+  @ApiPropertyOptional({
+    description: 'The company sizes to filter by',
+    example: [COMPANY_SIZE.A, COMPANY_SIZE.B],
+    isArray: true,
+    enum: COMPANY_SIZE,
+    type: 'string',
+  })
+  @TransformToArray()
+  @Transform(({ value }: { value: string | string[] }) => {
+    if (Array.isArray(value)) {
+      return value.filter((companySize: string) => companySize?.trim());
+    }
+    return value;
+  })
+  @IsOptional()
+  @IsEnum(COMPANY_SIZE, { each: true })
+  companySize?: COMPANY_SIZE[];
 
   @ApiPropertyOptional({
     description: 'The number of results to return',

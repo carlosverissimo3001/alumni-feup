@@ -1,15 +1,15 @@
 import { useQuery } from "@tanstack/react-query";
 import NestAPI from "@/api";
-import { CompanyOptionDto } from "@/sdk";
+import { IndustryOptionDto } from "@/sdk";
 
-const sortCompanies = (companies: CompanyOptionDto[]) => {
-  return companies.sort((a, b) => a.name.localeCompare(b.name));
+const sortIndustries = (industries: IndustryOptionDto[]) => {
+  return industries.sort((a, b) => a.name.localeCompare(b.name));
 };
 
-export const useCompanyOptions = () => {
+export const useIndustryOptions = () => {
   const { data, isLoading, isError, isSuccess, isFetching, refetch } = useQuery({
-    queryKey: ['company-options'],
-    queryFn: () => NestAPI.companiesAnalyticsControllerGetCompanyOptions().then(sortCompanies),
+    queryKey: ['industry-options'],
+    queryFn: () => NestAPI.industriesAnalyticsControllerGetIndustryOptions().then(sortIndustries),
     refetchOnWindowFocus: false,
     staleTime: 5 * 60 * 1000, 
     gcTime: 10 * 60 * 1000,

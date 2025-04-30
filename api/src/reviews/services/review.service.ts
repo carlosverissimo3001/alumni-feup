@@ -1,51 +1,51 @@
 import {
-    Injectable,
-    NotFoundException,
-    HttpException,
-    HttpStatus,
-  } from '@nestjs/common';
-  import {
-    Alumni,
-    ReviewGeoJSONFeatureCollection,
-    ReviewGeoJSONProperties,
-  } from 'src/entities/';
-  import { PrismaService } from 'src/prisma/prisma.service';
-  import { CreateAlumniDto } from '../../dto/create-alumni.dto';
-  import { GetGeoJSONDto } from 'src/dto/getgeojson.dto';
-  import { Feature, Point } from 'geojson';
-  import { GROUP_BY } from '@/consts';
-  import { GeolocationService } from 'src/geolocation/geolocation.service';
-import { ReviewRepository } from '../repositories/review.repository';
-import { ReviewDTO } from '@/dto/review.dto';
+  Injectable,
+  NotFoundException,
+  HttpException,
+  HttpStatus,
+} from '@nestjs/common';
+import {
+  Alumni,
+  ReviewGeoJSONFeatureCollection,
+  ReviewGeoJSONProperties,
+} from 'src/entities/';
+import { PrismaService } from 'src/prisma/prisma.service';
+import { CreateAlumniDto } from '../../dto/create-alumni.dto';
+import { GetGeoJSONDto } from 'src/dto/getgeojson.dto';
+import { Feature, Point } from 'geojson';
+import { GROUP_BY } from '@/consts';
+import { GeolocationService } from 'src/geolocation/geolocation.service';
+/* import { ReviewRepository } from '../repositories/review.repository';
+import { ReviewDTO } from '@/dto/review.dto'; */
 import { AlumniRepository } from '@/alumni/repositories/alumni.repository';
 import { GetReviewGeoJSONDto } from '@/dto/getreviewgeojson.dto';
 import { ReviewType } from '@/entities/reviewgeojson.entity';
 
 type ReviewsGrouped = {
-    coordinates: [number, number];
-    reviews: Array<{
-        reviewId: string;
-        linkedinLink: string;
-        alumniName: string;
-        profile_pic: string;
-        description: string;
-        rating: number;
-        upvotes: number;
-        downvotes: number;
-        reviewType: string;
-        companyName: string;
-        timeSincePosted: number;
-        timeSincePostedType: string;
-    }>;
-  };
-  
-  type ReviewsByCountry = {
-    [country: string]: ReviewsGrouped;
-  };
-  
-  type ReviewsByCity = {
-    [city: string]: ReviewsGrouped;
-  };
+  coordinates: [number, number];
+  reviews: Array<{
+    reviewId: string;
+    linkedinLink: string;
+    alumniName: string;
+    profile_pic: string;
+    description: string;
+    rating: number;
+    upvotes: number;
+    downvotes: number;
+    reviewType: string;
+    companyName: string;
+    timeSincePosted: number;
+    timeSincePostedType: string;
+  }>;
+};
+
+type ReviewsByCountry = {
+  [country: string]: ReviewsGrouped;
+};
+
+type ReviewsByCity = {
+  [city: string]: ReviewsGrouped;
+};
 
 @Injectable()
 export class ReviewService {
@@ -58,8 +58,7 @@ export class ReviewService {
   async findAllGeoJSON(
     query: GetReviewGeoJSONDto,
   ): Promise<ReviewGeoJSONFeatureCollection> {
-
-    let alumni = await this.alumniRepository.findAllWithReviews();
+    const alumni = await this.alumniRepository.findAllWithReviews();
 
     const groupBy = query.groupBy;
     let reviewsByGroup: ReviewsByCountry | ReviewsByCity;
@@ -70,27 +69,26 @@ export class ReviewService {
       reviewsByGroup = await this.groupReviewsByCity(alumni);
     }
 
-    const features: Array<Feature<Point, ReviewGeoJSONProperties>> = Object.entries(
-        reviewsByGroup,
-    ).map(([group, data]) => ({
-      type: 'Feature',
-      geometry: {
-        type: 'Point',
-        coordinates: data.coordinates,
-      },
-      properties: {
-        name: [group],
-        reviews: data.reviews.length || 0,
-        alumniNames: data.reviews.reduce(
-          (acc, curr) => {
-            if (curr.alumniName) {
-              acc[curr.reviewId] = curr.alumniName;
-            }
-            return acc;
-          },
-          {} as { [key: string]: string },
-        ),
-        linkedinLinks: data.reviews.reduce(
+    const features: Array<Feature<Point, ReviewGeoJSONProperties>> =
+      Object.entries(reviewsByGroup).map(([group, data]) => ({
+        type: 'Feature',
+        geometry: {
+          type: 'Point',
+          coordinates: data.coordinates,
+        },
+        properties: {
+          name: [group],
+          reviews: data.reviews.length || 0,
+          alumniNames: data.reviews.reduce(
+            (acc, curr) => {
+              if (curr.alumniName) {
+                acc[curr.reviewId] = curr.alumniName;
+              }
+              return acc;
+            },
+            {} as { [key: string]: string },
+          ),
+          linkedinLinks: data.reviews.reduce(
             (acc, curr) => {
               if (curr.linkedinLink) {
                 acc[curr.reviewId] = curr.linkedinLink;
@@ -99,16 +97,16 @@ export class ReviewService {
             },
             {} as { [key: string]: string },
           ),
-        profilePics: data.reviews.reduce(
-          (acc, curr) => {
-            if (curr.profile_pic) {
-              acc[curr.reviewId] = curr.profile_pic;
-            }
-            return acc;
-          },
-          {} as { [key: string]: string },
-        ),
-        descriptions: data.reviews.reduce(
+          profilePics: data.reviews.reduce(
+            (acc, curr) => {
+              if (curr.profile_pic) {
+                acc[curr.reviewId] = curr.profile_pic;
+              }
+              return acc;
+            },
+            {} as { [key: string]: string },
+          ),
+          descriptions: data.reviews.reduce(
             (acc, curr) => {
               if (curr.description) {
                 acc[curr.reviewId] = curr.description;
@@ -116,8 +114,8 @@ export class ReviewService {
               return acc;
             },
             {} as { [key: string]: string },
-        ),
-        ratings: data.reviews.reduce(
+          ),
+          ratings: data.reviews.reduce(
             (acc, curr) => {
               if (curr.rating) {
                 acc[curr.reviewId] = curr.rating;
@@ -125,8 +123,8 @@ export class ReviewService {
               return acc;
             },
             {} as { [key: string]: number },
-        ),
-        upvotes: data.reviews.reduce(
+          ),
+          upvotes: data.reviews.reduce(
             (acc, curr) => {
               if (curr.upvotes) {
                 acc[curr.reviewId] = curr.upvotes;
@@ -134,8 +132,8 @@ export class ReviewService {
               return acc;
             },
             {} as { [key: string]: number },
-        ),
-        downvotes: data.reviews.reduce(
+          ),
+          downvotes: data.reviews.reduce(
             (acc, curr) => {
               if (curr.downvotes) {
                 acc[curr.reviewId] = curr.downvotes;
@@ -143,8 +141,8 @@ export class ReviewService {
               return acc;
             },
             {} as { [key: string]: number },
-        ),
-        reviewTypes: data.reviews.reduce(
+          ),
+          reviewTypes: data.reviews.reduce(
             (acc, curr) => {
               if (curr.reviewType) {
                 acc[curr.reviewId] = curr.reviewType;
@@ -152,8 +150,8 @@ export class ReviewService {
               return acc;
             },
             {} as { [key: string]: string },
-        ),
-        companyNames: data.reviews.reduce(
+          ),
+          companyNames: data.reviews.reduce(
             (acc, curr) => {
               if (curr.companyName) {
                 acc[curr.reviewId] = curr.companyName;
@@ -161,8 +159,8 @@ export class ReviewService {
               return acc;
             },
             {} as { [key: string]: string },
-        ),
-        timeSincePosted: data.reviews.reduce(
+          ),
+          timeSincePosted: data.reviews.reduce(
             (acc, curr) => {
               if (curr.timeSincePosted) {
                 acc[curr.reviewId] = curr.timeSincePosted;
@@ -170,8 +168,8 @@ export class ReviewService {
               return acc;
             },
             {} as { [key: string]: number },
-        ),
-        timeSincePostedType: data.reviews.reduce(
+          ),
+          timeSincePostedType: data.reviews.reduce(
             (acc, curr) => {
               if (curr.timeSincePostedType) {
                 acc[curr.reviewId] = curr.timeSincePostedType;
@@ -179,9 +177,9 @@ export class ReviewService {
               return acc;
             },
             {} as { [key: string]: string },
-        ),
-      },
-    }));
+          ),
+        },
+      }));
 
     return {
       type: 'FeatureCollection',
@@ -191,124 +189,125 @@ export class ReviewService {
 
   async groupReviewsByCountry(alumni: Alumni[]): Promise<ReviewsByCountry> {
     const acc: ReviewsByCountry = {};
-    
+
     const countryCoords: { [key: string]: { lon: number; lat: number } } = {};
 
     for (const alumnus of alumni) {
-        if(alumnus.ReviewsLocation){
-        for (const review of alumnus.ReviewsLocation!) {
-            if (
-                !review.Location?.country ||
-                !review.Location?.latitude ||
-                !review.Location?.longitude
-            ) {
-                continue;
-            }
+      if (alumnus.ReviewsLocation) {
+        for (const review of alumnus.ReviewsLocation) {
+          if (
+            !review.Location?.country ||
+            !review.Location?.latitude ||
+            !review.Location?.longitude
+          ) {
+            continue;
+          }
 
-            const country = review.Location.country;
-            if (!countryCoords[country]) {
-                countryCoords[country] =
-                await this.geolocationService.getCountryCoordinatesFromDatabase(
-                    country,
-                );
-            }
+          const country = review.Location.country;
+          if (!countryCoords[country]) {
+            countryCoords[country] =
+              await this.geolocationService.getCountryCoordinatesFromDatabase(
+                country,
+              );
+          }
 
-            const coords = countryCoords[country];
+          const coords = countryCoords[country];
 
-            if (!acc[country]) {
-                acc[country] = {
-                coordinates: [coords.lon, coords.lat],
-                reviews: [],
-                };
-            }
+          if (!acc[country]) {
+            acc[country] = {
+              coordinates: [coords.lon, coords.lat],
+              reviews: [],
+            };
+          }
 
-            const time = this.getTimeSincePosted(review.createdAt!);
+          const time = this.getTimeSincePosted(review.createdAt!);
 
-            acc[country].reviews.push({
-                reviewId: review.id,
-                linkedinLink: alumnus.linkedinUrl || '',
-                alumniName: `${alumnus.firstName} ${alumnus.lastName}`,    
-                profile_pic: alumnus.profilePictureUrl || '',
-                description: review.description || '',
-                rating: review.rating || 0,
-                upvotes: review.upvotes || 0,
-                downvotes: review.downvotes || 0,
-                reviewType: ReviewType.LOCATION,
-                companyName: '',
-                timeSincePosted: time.timeSincePosted,
-                timeSincePostedType: time.timeSincePostedType,
-            });
-        }}
-        if(alumnus.ReviewsCompany){
-        for (const review of alumnus.ReviewsCompany!) {
+          acc[country].reviews.push({
+            reviewId: review.id,
+            linkedinLink: alumnus.linkedinUrl || '',
+            alumniName: `${alumnus.firstName} ${alumnus.lastName}`,
+            profile_pic: alumnus.profilePictureUrl || '',
+            description: review.description || '',
+            rating: review.rating || 0,
+            upvotes: review.upvotes || 0,
+            downvotes: review.downvotes || 0,
+            reviewType: ReviewType.LOCATION,
+            companyName: '',
+            timeSincePosted: time.timeSincePosted,
+            timeSincePostedType: time.timeSincePostedType,
+          });
+        }
+      }
+      if (alumnus.ReviewsCompany) {
+        for (const review of alumnus.ReviewsCompany) {
+          const location = review.Company.Role![0].Location;
 
-            const location = review.Company.Role![0].Location;
+          if (
+            !location ||
+            !location.country ||
+            !location.latitude ||
+            !location.longitude
+          ) {
+            continue;
+          }
 
-            if (
-                !location ||
-                !location.country ||
-                !location.latitude ||
-                !location.longitude
-            ) {
-                continue;
-            }
+          const country = location.country;
+          if (!countryCoords[country]) {
+            countryCoords[country] =
+              await this.geolocationService.getCountryCoordinatesFromDatabase(
+                country,
+              );
+          }
 
-            const country = location.country;
-            if (!countryCoords[country]) {
-                countryCoords[country] =
-                await this.geolocationService.getCountryCoordinatesFromDatabase(
-                    country,
-                );
-            }
+          const coords = countryCoords[country];
 
-            const coords = countryCoords[country];
+          if (!acc[country]) {
+            acc[country] = {
+              coordinates: [coords.lon, coords.lat],
+              reviews: [],
+            };
+          }
 
-            if (!acc[country]) {
-                acc[country] = {
-                coordinates: [coords.lon, coords.lat],
-                reviews: [],
-                };
-            }
+          const time = this.getTimeSincePosted(review.createdAt!);
 
-            const time = this.getTimeSincePosted(review.createdAt!);
-
-            acc[country].reviews.push({
-                reviewId: review.id,
-                linkedinLink: alumnus.linkedinUrl || '',
-                alumniName: `${alumnus.firstName} ${alumnus.lastName}`,    
-                profile_pic: alumnus.profilePictureUrl || '',
-                description: review.description || '',
-                rating: review.rating || 0,
-                upvotes: review.upvotes || 0,
-                downvotes: review.downvotes || 0,
-                reviewType: ReviewType.COMPANY,
-                companyName: review.Company.name || '',
-                timeSincePosted: time.timeSincePosted,
-                timeSincePostedType: time.timeSincePostedType,
-            });
-        }}
+          acc[country].reviews.push({
+            reviewId: review.id,
+            linkedinLink: alumnus.linkedinUrl || '',
+            alumniName: `${alumnus.firstName} ${alumnus.lastName}`,
+            profile_pic: alumnus.profilePictureUrl || '',
+            description: review.description || '',
+            rating: review.rating || 0,
+            upvotes: review.upvotes || 0,
+            downvotes: review.downvotes || 0,
+            reviewType: ReviewType.COMPANY,
+            companyName: review.Company.name || '',
+            timeSincePosted: time.timeSincePosted,
+            timeSincePostedType: time.timeSincePostedType,
+          });
+        }
+      }
     }
 
     return acc;
   }
 
-  private getTimeSincePosted(createdAt : Date){
+  private getTimeSincePosted(createdAt: Date) {
     const currentDate = new Date();
     const dateDifference = currentDate.getTime() - createdAt.getTime();
 
     let timeSincePostedType = 'hours';
-    let timeSincePosted = Math.floor( dateDifference / (1000 * 3600));
+    let timeSincePosted = Math.floor(dateDifference / (1000 * 3600));
     if (timeSincePosted >= 24) {
-        timeSincePostedType = 'days';
-        timeSincePosted = Math.floor( dateDifference / (1000 * 3600 * 24));
-        if(timeSincePosted > 30){
-            timeSincePostedType = 'months';
-            timeSincePosted = Math.floor(timeSincePosted / 30);
-            if(timeSincePosted > 11){
-                timeSincePostedType = 'years';
-                timeSincePosted = currentDate.getFullYear() - createdAt.getFullYear();
-            }
+      timeSincePostedType = 'days';
+      timeSincePosted = Math.floor(dateDifference / (1000 * 3600 * 24));
+      if (timeSincePosted > 30) {
+        timeSincePostedType = 'months';
+        timeSincePosted = Math.floor(timeSincePosted / 30);
+        if (timeSincePosted > 11) {
+          timeSincePostedType = 'years';
+          timeSincePosted = currentDate.getFullYear() - createdAt.getFullYear();
         }
+      }
     }
 
     return { timeSincePosted, timeSincePostedType };
@@ -318,50 +317,49 @@ export class ReviewService {
     const acc: ReviewsByCity = {};
 
     for (const alumnus of alumni) {
-        for (const review of alumnus.ReviewsCompany!) {
-            const location = review.Company.Role![0].Location;
-            if (
-                !location ||
-                !location.country ||
-                !location.latitude ||
-                !location.longitude
-            ) {
-                continue;
-            }
-
-            const city = location.city;
-            
-            if (!city) {
-                continue;
-            }
-
-            if (!acc[city]) {
-                acc[city] = {
-                coordinates: [location.longitude, location.latitude],
-                reviews: [],
-                };
-            }
-
-            const time = this.getTimeSincePosted(review.createdAt!);
-
-            acc[city].reviews.push({
-                reviewId: review.id,
-                linkedinLink: alumnus.linkedinUrl || '',
-                alumniName: `${alumnus.firstName} ${alumnus.lastName}`,    
-                profile_pic: alumnus.profilePictureUrl || '',
-                description: review.description || '',
-                rating: review.rating || 0,
-                upvotes: review.upvotes || 0,
-                downvotes: review.downvotes || 0,
-                reviewType: 'Company',
-                companyName: review.Company.name || '',
-                timeSincePosted: time.timeSincePosted,
-                timeSincePostedType: time.timeSincePostedType,
-            });
+      for (const review of alumnus.ReviewsCompany!) {
+        const location = review.Company.Role![0].Location;
+        if (
+          !location ||
+          !location.country ||
+          !location.latitude ||
+          !location.longitude
+        ) {
+          continue;
         }
+
+        const city = location.city;
+
+        if (!city) {
+          continue;
+        }
+
+        if (!acc[city]) {
+          acc[city] = {
+            coordinates: [location.longitude, location.latitude],
+            reviews: [],
+          };
+        }
+
+        const time = this.getTimeSincePosted(review.createdAt!);
+
+        acc[city].reviews.push({
+          reviewId: review.id,
+          linkedinLink: alumnus.linkedinUrl || '',
+          alumniName: `${alumnus.firstName} ${alumnus.lastName}`,
+          profile_pic: alumnus.profilePictureUrl || '',
+          description: review.description || '',
+          rating: review.rating || 0,
+          upvotes: review.upvotes || 0,
+          downvotes: review.downvotes || 0,
+          reviewType: 'Company',
+          companyName: review.Company.name || '',
+          timeSincePosted: time.timeSincePosted,
+          timeSincePostedType: time.timeSincePostedType,
+        });
+      }
     }
 
     return acc;
   }
-
 }
