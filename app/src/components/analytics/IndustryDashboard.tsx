@@ -9,8 +9,8 @@ import {
   TableContainer,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { IndustryListItemDto, IndustryListResponseDto } from "@/sdk";
-import { Factory } from "lucide-react";
+import { IndustryListItemDto } from "@/sdk";
+import { Factory, Filter } from "lucide-react";
 import { IndustryDataSkeleton } from "./skeletons/IndustryDataSkeleton";
 import { useIndustryList } from "@/hooks/analytics/useIndustryList";
 import PaginationControls from "./common/PaginationControls";
@@ -18,15 +18,24 @@ import TableTitle from "./common/TableTitle";
 import CustomTableHeader from "./common/CustomeTableHeader";
 import { SortBy, SortOrder, ITEMS_PER_PAGE, DASHBOARD_HEIGHT } from "@/consts";
 import { FilterState } from "./common/GlobalFilters";
+import { NotFoundComponent } from "./common/NotFoundComponent";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 type IndustryDashboardProps = {
   onDataUpdate: (industryCount: number) => void;
   filters: FilterState;
+  onAddToFilters?: (industryId: string) => void;
 };
 
 export default function IndustryDashboard({
   onDataUpdate,
   filters,
+  onAddToFilters,
 }: IndustryDashboardProps) {
   const [page, setPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(ITEMS_PER_PAGE[2]);
@@ -85,9 +94,9 @@ export default function IndustryDashboard({
         icon={<Factory className="h-5 w-5 text-[#8C2D19]" />}
       />
 
-      <div className="flex-1 overflow-y-auto mb-2 relative border-t border-b border-gray-200 custom-scrollbar">
-        <TableContainer className="w-full h-full">
-          <Table className="min-w-full bg-white table-fixed">
+      <div className="flex-1 relative border-t border-b border-gray-200 flex flex-col overflow-hidden">
+        <TableContainer className="flex-1 overflow-auto custom-scrollbar">
+          <Table className="min-w-full bg-white table-fixed [&>div]:overflow-visible">
             <CustomTableHeader
               sortField={sortField}
               sortOrder={sortOrder}
@@ -105,14 +114,14 @@ export default function IndustryDashboard({
                       return (
                         <TableRow
                           key={industry.id}
-                          className={`${
+                          className={`group ${
                             index % 2 === 0 ? "bg-gray-50" : "bg-white"
-                          } hover:bg-[#A13A23] hover:bg-opacity-10 transition-colors duration-200`}
+                          } hover:bg-[#A13A23] hover:bg-opacity-10 transition-colors duration-200 relative`}
                         >
                           <TableCell className="w-1/12 py-1 pl-3 text-sm text-gray-500 font-medium align-middle">
                             {rowNumber}
                           </TableCell>
-                          <TableCell className="w-5/12 py-1 pl-3 text-sm font-medium text-[#000000] align-middle">
+                          <TableCell className="w-5/12 py-1.5 pl-3 text-sm font-medium text-[#000000] align-middle">
                             <Button
                               variant="link"
                               className="text-sm font-medium text-[#000000] w-full text-left h-auto p-0 hover:text-[#8C2D19] transition-colors"
@@ -141,19 +150,36 @@ export default function IndustryDashboard({
                               {industry.alumniCount}
                             </span>
                           </TableCell>
+                          <TableCell className="absolute right-2 top-1/2 transform -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity">
+                            <TooltipProvider>
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <Button
+                                    aria-label="Add to filters"
+                                    variant="ghost"
+                                    size="sm"
+                                    className="p-1 h-6 w-6 rounded-full bg-gray-100 hover:bg-gray-200"
+                                    onClick={() => onAddToFilters?.(industry.id)}
+                                  >
+                                    <Filter className="h-4 w-4 text-[#8C2D19]" />
+                                  </Button>
+                                </TooltipTrigger>
+                                <TooltipContent>
+                                  <p>Filter on {industry.name}</p>
+                                </TooltipContent>
+                              </Tooltip>
+                            </TooltipProvider>
+                          </TableCell>
                         </TableRow>
                       );
                     }
                   )
                 ) : (
-                  <TableRow>
-                    <TableCell
-                      colSpan={4}
-                      className="text-center text-[#000000] py-4"
-                    >
-                      No industry data available.
-                    </TableCell>
-                  </TableRow>
+                  <NotFoundComponent
+                    message="No industry data available"
+                    description="Try adjusting your filters to find industries that match your criteria."
+                    colSpan={4}
+                  />
                 )}
               </TableBody>
             )}

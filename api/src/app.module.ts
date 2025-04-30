@@ -38,7 +38,7 @@ import { ReviewModule } from './reviews/review.module';
     CourseModule,
     FacultyModule,
     AgentsApiModule,
-    ReviewModule
+    ReviewModule,
   ],
   providers: [
     {
