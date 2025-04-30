@@ -5,6 +5,7 @@ apis/CompanyApi.ts
 apis/CourseApi.ts
 apis/FacultyApi.ts
 apis/FilesApi.ts
+apis/ReviewsApi.ts
 apis/UserApi.ts
 apis/V1Api.ts
 apis/index.ts
@@ -32,9 +33,14 @@ models/Graduation.ts
 models/GraduationDto.ts
 models/IndustryListItemDto.ts
 models/IndustryListResponseDto.ts
+models/IndustryOptionDto.ts
 models/LinkedinAuthDto.ts
 models/LocationGeo.ts
 models/MarkAsReviewedDto.ts
+models/ReviewCompany.ts
+models/ReviewGeoJSONFeature.ts
+models/ReviewGeoJSONFeatureCollection.ts
+models/ReviewLocation.ts
 models/Role.ts
 models/UploadExtractionDto.ts
 models/User.ts

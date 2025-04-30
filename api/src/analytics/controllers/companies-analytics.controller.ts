@@ -30,31 +30,16 @@ export class CompaniesAnalyticsController {
 
   @Get('/options')
   @ApiOperation({
-    summary: 'Get the companies id and name after applying the filters.',
+    summary: 'List of possible companies to search for.',
   })
   @ApiResponse({
     status: 200,
-    description: 'Companies id and name after applying the filters.',
+    description: 'Companies id and name.',
     type: CompanyOptionDto,
     isArray: true,
   })
-  async getCompanyOptions(@Query() query: QueryParamsDto) {
-    return this.companyAnalyticsService.getCompanyOptions(query);
-  }
-
-  @Get('/by-industry')
-  @ApiOperation({
-    summary:
-      'Returns the number of alumni working in companies grouped by industry.',
-  })
-  @ApiResponse({
-    status: 200,
-    description:
-      'The industries with the number of alumni working in them, and the number of companies in each industry.',
-    type: IndustryListResponseDto,
-  })
-  async getIndustryWithCounts(@Query() query: QueryParamsDto) {
-    return this.companyAnalyticsService.getIndustryWithCounts(query);
+  async getCompanyOptions() {
+    return this.companyAnalyticsService.getCompanyOptions();
   }
 
   @Get('/growth')

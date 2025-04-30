@@ -314,7 +314,7 @@ export const GroupedMultiSelect = React.forwardRef<
                     </div>
                   : undefined}
                 >
-                  {groupOptions.map((option) => (
+                  {groupOptions.sort((a, b) => a.name.localeCompare(b.name)).map((option) => (
                     <CommandItem
                       key={option.id}
                       onSelect={() => toggleOption(option.id)}

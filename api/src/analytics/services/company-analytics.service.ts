@@ -1,5 +1,5 @@
 import { QueryParamsDto } from '../dto/query-params.dto';
-import { AlumniAnalyticsRepository } from '../repositories';
+import { AlumniAnalyticsRepository, CompanyRepository } from '../repositories';
 import { Injectable } from '@nestjs/common';
 import {
   CompanyListResponseDto,
@@ -25,7 +25,10 @@ Shouldd use be used in the DAL, ie. repositories.
 */
 @Injectable()
 export class CompanyAnalyticsService {
-  constructor(private readonly alumniRepository: AlumniAnalyticsRepository) {}
+  constructor(
+    private readonly alumniRepository: AlumniAnalyticsRepository,
+    private readonly companyRepository: CompanyRepository,
+  ) {}
 
   async getCompaniesWithAlumniCount(
     query: QueryParamsDto,
@@ -55,11 +58,10 @@ export class CompanyAnalyticsService {
     };
   }
 
-  async getCompanyOptions(query: QueryParamsDto): Promise<CompanyOptionDto[]> {
-    const alumnus = await this.alumniRepository.find(query);
-    const companiesWithAlumniCount = this.getCompanyMap(alumnus);
+  async getCompanyOptions(): Promise<CompanyOptionDto[]> {
+    const companies = await this.companyRepository.findAll();
 
-    return companiesWithAlumniCount.map((company) => ({
+    return companies.map((company) => ({
       id: company.id,
       name: company.name,
     }));

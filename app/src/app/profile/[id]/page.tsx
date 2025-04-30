@@ -136,7 +136,7 @@ export default function Profile() {
                     href={escoUrl}
                     className="text-xs hover:text-primary transition-colors group flex items-center gap-1 mt-4"
                     >
-                    In ESCO as <span className="font-bold">{profile?.role?.escoTitle}</span>
+                    In ESCO as <span className="font-bold">{profile?.role?.title}</span>
                     <ArrowUpRight className="w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity" />
                   </Link>
                 </>
@@ -217,7 +217,7 @@ export default function Profile() {
       </Card>
 
       {/* Only show tabs for authenticated users viewing their own profile */}
-      {isAuthenticated && isOwnProfile ? (
+      {/* {isAuthenticated && isOwnProfile ? (
         <>
           <Tabs defaultValue="overview" className="w-full">
             <TabsList className="mb-4">
@@ -275,7 +275,7 @@ export default function Profile() {
             Sign in with LinkedIn
           </Link>
         </div>
-      )}
+      )} */}
     </div>
   );
 }

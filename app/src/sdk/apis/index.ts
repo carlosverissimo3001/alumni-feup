@@ -7,5 +7,6 @@ export * from './CompanyApi';
 export * from './CourseApi';
 export * from './FacultyApi';
 export * from './FilesApi';
+export * from './ReviewsApi';
 export * from './UserApi';
 export * from './V1Api';

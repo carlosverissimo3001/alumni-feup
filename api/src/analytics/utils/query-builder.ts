@@ -36,16 +36,27 @@ export const buildWhereClause = (
 
   /**
    * Role-specific filters
+   * 1. Current roles only means roles whose endDate is null (here, we might be able to also use the startDate)
+   * 2. If startDate and endDate are provided, we use them to filter roles, and, obv, ignore the currentRolesOnly filter
    */
-  if (params.currentRolesOnly) {
-    roleAndClauses.push({ isCurrent: true });
-  } else if (params.startDate || params.endDate) {
+  if (params.startDate && params.endDate) {
+    // Both dates provided: find roles that started after startDate and ended before endDate
     roleAndClauses.push({
-      startDate: {
-        ...(params.startDate && { gte: new Date(params.startDate) }),
-        ...(params.endDate && { lte: new Date(params.endDate) }),
-      },
+      startDate: { gte: new Date(params.startDate) },
+      endDate: { lte: new Date(params.endDate) },
     });
+  } else if (params.startDate) {
+    // Only startDate: find roles that started after this date
+    roleAndClauses.push({
+      startDate: { gte: new Date(params.startDate) },
+    });
+  } else if (params.endDate) {
+    // Only endDate: find roles that ended before this date
+    roleAndClauses.push({
+      endDate: { lte: new Date(params.endDate) },
+    });
+  } else if (params.currentRolesOnly) {
+    roleAndClauses.push({ isCurrent: true });
   }
 
   if (params.onlyInternational) {
@@ -64,11 +75,27 @@ export const buildWhereClause = (
     });
   }
 
+  if (params.cityIds?.length) {
+    roleAndClauses.push({
+      Location: {
+        id: { in: params.cityIds },
+      },
+    });
+  }
+
   // Company-specific filters
   if (params.industryIds?.length) {
     roleAndClauses.push({
       Company: {
         industryId: { in: params.industryIds },
+      },
+    });
+  }
+
+  if (params.companySize) {
+    roleAndClauses.push({
+      Company: {
+        companySize: { in: params.companySize },
       },
     });
   }
