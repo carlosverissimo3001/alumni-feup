@@ -24,11 +24,11 @@ api_router.include_router(
     tags=["Role"],
 ) """
 
-api_router.include_router(
+""" api_router.include_router(
     storage.router,
     prefix="/storage",
     tags=["Storage"],
-)
+) """
 
 api_router.include_router(
     company.router,

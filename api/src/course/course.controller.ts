@@ -8,7 +8,7 @@ import {
 } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CourseService } from './course.service';
-import { Course } from '@entities';
+import { CourseExtended } from '@entities';
 import { FindCoursesDto } from '@/dto/find-courses.dto';
 
 @ApiTags('V1', 'Course')
@@ -21,18 +21,18 @@ export class CourseController {
   @ApiOperation({ summary: 'Get courses' })
   @ApiResponse({
     description: 'Returns courses',
-    type: Course,
+    type: CourseExtended,
     isArray: true,
   })
-  async find(@Query() params: FindCoursesDto): Promise<Course[]> {
+  async find(@Query() params: FindCoursesDto): Promise<CourseExtended[]> {
     return this.courseService.find(params);
   }
 
   @Get(':id')
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Get a course by id' })
-  @ApiResponse({ description: 'Returns a course', type: Course })
-  async findOne(@Param('id') id: string): Promise<Course> {
+  @ApiResponse({ description: 'Returns a course', type: CourseExtended })
+  async findOne(@Param('id') id: string): Promise<CourseExtended> {
     return this.courseService.findOne(id);
   }
 }
