@@ -2,7 +2,7 @@ import logging
 
 from fastapi import APIRouter, BackgroundTasks, HTTPException, status
 
-from app.schemas.linkedin import LinkedInProfileRequest
+from app.schemas.linkedin import LinkedInExtractProfileRequest, LinkedInUpdateProfileRequest
 from app.services.linkedin import linkedin_service
 
 router = APIRouter()
@@ -13,22 +13,22 @@ logger = logging.getLogger(__name__)
     "/extract-profile",
     status_code=status.HTTP_200_OK,
 )
-async def extract_linkedin_profile(
-    profile_data: LinkedInProfileRequest,
+async def extract_linkedin_profiles(
+    profile_data: LinkedInExtractProfileRequest,
     background_tasks: BackgroundTasks,
 ):
     """
-    Extract data from a LinkedIn profile and process it.
-    Returns a success status without the profile data.
+    Triggers the extraction of Linkedin Profiles.
     """
     try:
-        logger.info(f"Extracting LinkedIn profile data from: {profile_data.profile_url}")
-        
-        background_tasks.add_task(
-            linkedin_service.extract_profile_data,
-            profile_url=str(profile_data.profile_url),
-            alumni_id=profile_data.alumni_id,
-        )
+        for alumni_data in profile_data.data:
+            logger.info(f"Extracting LinkedIn profile data from: {alumni_data.profile_url}")
+            
+            background_tasks.add_task(
+                linkedin_service.extract_profile_data,
+                profile_url=str(alumni_data.profile_url),
+                alumni_id=alumni_data.alumni_id,
+            )
         
         # Return immediately, let the background task handle the rest
         return {"status": "processing"}
@@ -40,26 +40,28 @@ async def extract_linkedin_profile(
             detail=f"Error extracting LinkedIn profile data: {str(e)}",
         )
 
-@router.patch(
+@router.post(
     "/update-profile",
     status_code=status.HTTP_200_OK,
 )
-async def update_linkedin_profile(
-    profile_data: LinkedInProfileRequest,
+async def update_linkedin_profiles(
+    profile_data: LinkedInUpdateProfileRequest,
     background_tasks: BackgroundTasks,
 ):
     """
-    Update a LinkedIn profile and process it.
-    Returns a success status without the profile data.
+    Triggers the update of Linkedin Profiles.
+    If no data is provided, all LinkedIn profiles in the database will be updated.
     """
     try:
-        logger.info(f"Updating LinkedIn profile data from: {profile_data.profile_url}")
-        
-        """ background_tasks.add_task(
-            linkedin_service.extract_profile_data,
-            profile_url=str(profile_data.profile_url),
-            alumni_id=profile_data.alumni_id,
-        ) """
+        if profile_data.data:
+            logger.info(f"Received request to update LinkedIn profile data for {len(profile_data.data)} alumni")
+        else:
+            logger.info("Received request to update all LinkedIn profiles")
+            
+        background_tasks.add_task(
+            linkedin_service.update_profile_data,
+            data=profile_data.data,
+        )
         
         # Return immediately, let the background task handle the rest
         return {"status": "processing"}

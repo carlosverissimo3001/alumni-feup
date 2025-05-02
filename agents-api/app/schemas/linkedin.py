@@ -6,18 +6,43 @@ from pydantic import BaseModel, Field, HttpUrl
 
 logger = logging.getLogger(__name__)
 
+class AlumniData(BaseModel):
+    """Schema for alumni data."""
 
-class LinkedInProfileRequest(BaseModel):
+    alumni_id: str = Field(..., description="ID of the alumni to link data with")
+    profile_url: HttpUrl = Field(..., description="URL of the LinkedIn profile to extract")
+
+class LinkedInExtractProfileRequest(BaseModel):
     """Schema for requesting LinkedIn profile data extraction."""
 
-    profile_url: HttpUrl = Field(..., description="URL of the LinkedIn profile to extract")
-    alumni_id: str = Field(..., description="ID of the alumni to link data with")
+    data: List[AlumniData] = Field(..., description="List of alumni data to extract")
 
     class Config:
         json_schema_extra = {
             "example": {
-                "profile_url": "https://www.linkedin.com/in/johndoe/",
-                "alumni_id": "12345"
+                "data": [
+                    {
+                        "profile_url": "https://linkedin.com/in/johndoe/",
+                        "alumni_id": "12345"
+                    }
+                ]
+            }
+        }
+
+class LinkedInUpdateProfileRequest(BaseModel):
+    """Schema for requesting LinkedIn profile data extraction."""
+
+    data: List[AlumniData] | None = Field(None, description="List of alumni data to update")
+
+    class Config:
+        json_schema_extra = {
+            "example": {
+                "data": [
+                    {
+                        "profile_url": "https://linkedin.com/in/johndoe/",
+                        "alumni_id": "12345"
+                    }
+                ]
             }
         }
 
