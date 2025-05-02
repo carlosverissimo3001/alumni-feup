@@ -4,25 +4,27 @@ from time import sleep
 
 from app.core.config import settings
 from app.db import get_db
-from app.db.models import Alumni, Company, Location, Role, RoleRaw
+from app.db.models import Alumni, Company, Location, Role, RoleRaw, SeniorityLevel
 from app.schemas.linkedin import (
+    AlumniData,
     ExperienceBase,
     LinkedInCompanyResponse,
     LinkedInProfileResponse,
     convert_to_linkedin_company_response,
     convert_to_linkedin_profile_response,
 )
-from app.utils.alumni_db import update_alumni
+from app.utils.alumni_db import update_alumni, find_all, delete_profile_data
 from app.utils.company_db import get_company_by_linkedin_url, insert_company, update_company
 from app.utils.consts import DEFAULT_INDUSTRY_ID, NULL_ISLAND_ID
 from app.utils.http_client import HTTPClient
-from app.utils.industry_db import get_industry_by_name
+from app.utils.industry_db import get_industry_by_name, create_industry
 from app.utils.location_db import create_location, get_location
 from app.utils.misc.convert import convert_company_size_to_enum, linkedin_date_to_timestamp
 from app.utils.misc.string import clean_website_url, sanitize_linkedin_url
 from app.utils.role_db import create_role, create_role_raw
 from app.services.job_classification import job_classification_service
-
+from app.services.image_storage import image_storage_service
+from typing import List, Optional
 logger = logging.getLogger(__name__)
 
 # Get a database session for the service
@@ -79,6 +81,32 @@ class LinkedInService:
         except Exception as e:
             logger.error(f"Error extracting LinkedIn data: {str(e)}")
             raise
+
+    async def update_profile_data(
+        self,
+        data: Optional[List[AlumniData]] = None,
+    ):
+        """
+        Update the profile data for a list of alumni.
+
+        Args:
+            data: List of alumni data to update
+        """
+        alumni = data
+        
+        # If no data is provided, we update all alumni
+        if not alumni:
+            alumni_db = find_all(db)
+            alumni = [AlumniData(alumni_id=alumni.id, profile_url=alumni.linkedin_url) for alumni in alumni_db]
+
+        for alumni_data in alumni:
+            # 1. Delete existing data
+            logger.info(f"Deleting existing data for {alumni_data.profile_url}")
+            delete_profile_data(alumni_data.alumni_id, db)
+            
+            # 2. Extract new data
+            logger.info(f"Extracting LinkedIn data for {alumni_data.profile_url}")
+            await self.extract_profile_data(alumni_data.profile_url, alumni_data.alumni_id)
 
     async def extract_company_data(
         self,
@@ -238,12 +266,17 @@ class LinkedInService:
                 )
             
             location_id = location.id
+            
+        # Let's upload their picture to cloudinary
+        profile_picture_url = None
+        if profile_data.profile_pic_url:
+            profile_picture_url = image_storage_service.upload_image(profile_data.profile_pic_url, alumni_id)
 
         # Update the alumni table (Alumni was already created by our backend)
         update_alumni(
             Alumni(
                 id=alumni_id,
-                profile_picture_url=profile_data.profile_pic_url,
+                profile_picture_url=profile_picture_url,
                 current_location_id=location_id,
             ),
             db,
@@ -252,6 +285,9 @@ class LinkedInService:
         # We'll now offload the role classification to a background task, using the agent
         # Note that we do NOT wait for this to finish, as it can take a while
         asyncio.create_task(job_classification_service.classify_roles_for_alumni(alumni_id))
+        
+        # TODO: We'll offload the location handling, both for the alumni itself, as well as for the roles
+        # To the Geoguessr Agent
 
     async def process_company_data(
         self,
@@ -268,20 +304,36 @@ class LinkedInService:
         """
         logger.info(f"Processing company data for {company_linkedin_url}")
 
+        # Does this industry exist in our database?
+        industry_id = DEFAULT_INDUSTRY_ID
         industry = get_industry_by_name(company_response.industries, db)
-        industry_id = industry.id if industry else DEFAULT_INDUSTRY_ID
+        
+        # We found the industry, so we can use it
+        if industry:
+            industry_id = industry.id
+        else:
+            # Nope, let's create it if the company has an industry
+            if company_response.industries:
+                industry = create_industry(company_response.industries, db)
+                industry_id = industry.id
+        
+        # Let's upload the company logo to cloudinary
+        company_logo_url = None
+        if company_response.logo:
+            company_logo_url = image_storage_service.upload_image(company_response.logo, company_id)
 
         company = Company(
             id=company_id,
             name=company_response.name,
             linkedin_url=company_linkedin_url,
             industry_id=industry_id,
-            logo=company_response.logo,
+            logo=company_logo_url,
             founded=company_response.founded,
             website=clean_website_url(company_response.website),
             company_size=convert_company_size_to_enum(company_response.company_size),
         )
 
+        # The Company was created before we called Bright Data, so here we will update it
         try:
             # Update the company
             update_company(company, db)
@@ -328,7 +380,9 @@ class LinkedInService:
             # for the alumni
             location_id=None,
             end_date=end_date,
-            location=role.location,
+            seniority_level=SeniorityLevel.ASSOCIATE,
+            is_current=end_date is None,
+            is_promotion=False,
         )
 
     async def parse_raw_role(

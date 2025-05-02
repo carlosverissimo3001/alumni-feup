@@ -15,7 +15,7 @@ import { CreateAlumniDto, VerifyEmailDto, VerifyEmailTokenDto } from '@/dto';
 import { AlumniRepository } from '../repositories/alumni.repository';
 import { GetGeoJSONDto } from 'src/dto/getgeojson.dto';
 import { Feature, Point } from 'geojson';
-import { GROUP_BY } from '@/consts';
+import { GROUP_BY, LinkedInOperation } from '@/consts';
 import { GeolocationService } from 'src/geolocation/geolocation.service';
 import { AgentsApiService } from 'src/agents-api/agents-api.service';
 import { parseNameParts, sanitizeLinkedinUrl } from '../utils';
@@ -315,7 +315,10 @@ export class AlumniService {
     }
 
     // Call the agents-api to extract the profile data
-    await this.agentsApiService.triggerLinkedinScrape(newAlumni.id);
+    await this.agentsApiService.triggerLinkedinOperation(
+      LinkedInOperation.EXTRACT,
+      [newAlumni.id],
+    );
 
     return newAlumni;
   }

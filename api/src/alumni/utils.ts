@@ -11,6 +11,15 @@ export const sanitizeLinkedinUrl = (url: string): string => {
 };
 
 /**
+ * Removes accents (diacritics) from a string
+ * @param str The string to remove accents from
+ * @returns The string without accents
+ */
+export const removeAccents = (str: string): string => {
+  return str.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+};
+
+/**
  * Parses the name parts from a full name string
  * @param fullName - The full name to parse
  * @returns The parsed name parts, name object with firstName, lastName and fullName
@@ -43,16 +52,17 @@ export const parseNameParts = (fullName: string): Name => {
     }
 
     return {
-      firstName,
-      lastName,
-      fullName,
+      firstName: removeAccents(firstName),
+      lastName: removeAccents(lastName),
+      fullName: removeAccents(fullName),
     };
   }
 
   // Note: I don't think this will ever happen, but just in case
+  const unaccented = removeAccents(nameParts[0]);
   return {
-    firstName: nameParts[0],
-    lastName: nameParts[0],
-    fullName: nameParts[0],
+    firstName: unaccented,
+    lastName: unaccented,
+    fullName: unaccented,
   };
 };

@@ -34,3 +34,17 @@ async def generate_esco_embeddings(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Error generating ESCO embeddings: {str(e)}",
         ) 
+        
+@router.post(
+    "/fetch-esco-classifications",
+    response_model=Dict[str, str],
+    status_code=status.HTTP_202_ACCEPTED,
+)
+async def fetch_esco_classifications(
+    db: Session = Depends(get_db),
+):
+    """
+    Fetches the ESCO classifications from the ESCO API, saving them in the database.
+    To be used inside a cron job, running every 6 months, or on demand, when the European Commission
+    releases a new version of the ESCO classifications.
+    """
