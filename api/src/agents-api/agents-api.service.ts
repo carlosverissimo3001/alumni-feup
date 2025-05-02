@@ -43,10 +43,50 @@ export class AgentsApiService {
         },
       );
     } catch (error: unknown) {
-      console.error('Error calling LinkedIn extraction API:', error);
+      console.error(
+        'Error calling the API to extract LinkedIn profile:',
+        error,
+      );
       const axiosError = error as AxiosError;
       throw new HttpException(
         `Failed to extract LinkedIn profile: ${
+          axiosError.message || 'Unknown error'
+        }`,
+        axiosError.response?.status || 500,
+      );
+    }
+  }
+
+  async triggerLinkedinUpdate(alumniId: string): Promise<void> {
+    const alumni = await this.prisma.alumni.findUnique({
+      where: { id: alumniId },
+    });
+
+    if (!alumni || !alumni.linkedinUrl) {
+      throw new NotFoundException(
+        'Alumni not found or LinkedIn URL not available',
+      );
+    }
+
+    try {
+      await axios.post(
+        `${this.agentsApiUrl}/api/linkedin/update-profile`,
+        {
+          profile_url: alumni.linkedinUrl,
+          alumni_id: alumniId,
+        },
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            'X-API-Key': this.configService.get<string>('AGENTS_API_KEY'),
+          },
+        },
+      );
+    } catch (error: unknown) {
+      console.error('Error calling the API to update LinkedIn profile:', error);
+      const axiosError = error as AxiosError;
+      throw new HttpException(
+        `Failed to update LinkedIn profile: ${
           axiosError.message || 'Unknown error'
         }`,
         axiosError.response?.status || 500,

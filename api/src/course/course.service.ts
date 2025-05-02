@@ -1,5 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { Course } from '@entities';
+import { CourseExtended } from '@entities';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { FindCoursesDto } from '@/dto/find-courses.dto';
 
@@ -7,13 +7,8 @@ import { FindCoursesDto } from '@/dto/find-courses.dto';
 export class CourseService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async find(params: FindCoursesDto): Promise<Course[]> {
+  async find(params: FindCoursesDto): Promise<CourseExtended[]> {
     return this.prisma.course.findMany({
-      select: {
-        id: true,
-        name: true,
-        acronym: true,
-      },
       where: {
         facultyId: {
           in: params.facultyIds,
@@ -25,7 +20,7 @@ export class CourseService {
     });
   }
 
-  async findOne(id: string): Promise<Course> {
+  async findOne(id: string): Promise<CourseExtended> {
     const course = await this.prisma.course.findUnique({ where: { id } });
     if (!course) {
       throw new NotFoundException(`Course with ID ${id} not found`);

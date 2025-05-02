@@ -6,7 +6,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.api.routes import api_router
 from app.core.config import settings
-from app.core.middlewares import APIKeyMiddleware, LoggingMiddleware
+from app.core.middlewares import APIKeyMiddleware
 
 load_dotenv()
 
@@ -30,7 +30,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# app.add_middleware(LoggingMiddleware)
 app.add_middleware(APIKeyMiddleware)
 
 # Include all routers

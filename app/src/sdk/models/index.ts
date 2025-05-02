@@ -14,6 +14,7 @@ export * from './CountryListResponseDto';
 export * from './CountryOptionDto';
 export * from './Course';
 export * from './CourseCompletion';
+export * from './CourseExtended';
 export * from './CreateAlumniDto';
 export * from './CurrentRoleDto';
 export * from './Faculty';

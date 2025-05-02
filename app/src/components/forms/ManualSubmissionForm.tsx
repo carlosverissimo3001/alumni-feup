@@ -20,7 +20,7 @@ import { useManualSubmission } from "@/hooks/alumni/useManualSubmission";
 import { useToast } from "@/hooks/misc/useToast";
 import { CreateAlumniDto } from "@/sdk/api";
 import { Alert, AlertDescription, AlertTitle } from "../ui/alert";
-import { CourseExtended as Course } from "@/sdk";
+import { CourseExtended } from "@/sdk";
 import { Button } from "@/components/ui/button";
 import { useVerifyEmail, useVerifyEmailToken } from "@/hooks/auth/useAuth";
 import { Info } from "lucide-react";
@@ -31,7 +31,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 
-interface CourseWithYear extends Course {
+type CourseWithYear = CourseExtended & {
   conclusionYear: string;
 }
 
@@ -59,13 +59,12 @@ const ManualSubmissionForm = ({ onBack }: ManualSubmissionFormProps) => {
 
   const { data: faculties, isLoading: isLoadingFaculties } = useListFaculties();
   const { data: courses, isLoading: isLoadingCourses } = useListCourses({
-    facultyId: selectedFaculty,
-    enabled: !!selectedFaculty,
+    facultyIds: selectedFaculty ? [selectedFaculty] : undefined,
   });
 
   // Email verification hooks
   const { mutate: sendVerificationEmail, isPending: isSendingEmail,} = useVerifyEmail({
-    data: { email: personalEmail },
+    data: { verifyEmailDto: { email: personalEmail } },
     onSuccess: () => {
       toast({
         title: "Verification code sent!",
@@ -83,7 +82,7 @@ const ManualSubmissionForm = ({ onBack }: ManualSubmissionFormProps) => {
   });
 
   const { mutate: verifyEmailToken, isPending: isVerifyingToken } = useVerifyEmailToken({
-    data: { email: personalEmail, token: otpCode },
+    data: { verifyEmailTokenDto: { token: otpCode, email: personalEmail } },
     onSuccess: () => {
       setIsEmailVerified(true);
       toast({
