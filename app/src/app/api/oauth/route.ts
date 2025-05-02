@@ -46,7 +46,7 @@ export async function GET(req: NextRequest) {
       const accessToken = tokenData.access_token;
       
       // Here, we get the user's profile data from LinkedIn
-      const profileResponse = await fetch('https://api.linkedin.com/v2/userinfo', {
+      const profileResponse = await fetch(process.env.LINKEDIN_USER_INFO_URL as string, {
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },
@@ -81,7 +81,7 @@ export async function GET(req: NextRequest) {
         const authData = await authResponse.json() as AuthResponse;
         
         // Create a redirect response
-        const redirectUrl = new URL('/', process.env.NEXT_PUBLIC_APP_URL).toString();
+        const redirectUrl = new URL('/analytics', process.env.NEXT_PUBLIC_APP_URL).toString();
         const responseRedirect = NextResponse.redirect(redirectUrl);
         
         // Set the token in a cookie
