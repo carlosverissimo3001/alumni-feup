@@ -1,17 +1,15 @@
 "use client";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useAuth } from "@/contexts/AuthContext";
 import { useParams } from "next/navigation";
 import { useFetchBasicProfile } from "@/hooks/profile/useFetchBasicProfile";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { AlertCircle, Globe, ArrowUpRight, Lock } from "lucide-react";
+import { AlertCircle, Globe, ArrowUpRight } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { LINKEDIN_URL } from "@/helpers/auth";
 import { mapSeniorityLevel } from "@/utils/mappings";
 const ESCO_BASE_URL = process.env.NEXT_PUBLIC_ESCO_BASE_URL;
 
@@ -21,10 +19,7 @@ export default function Profile() {
     data: profile,
     isLoading,
     error,
-  } = useFetchBasicProfile(id as string);
-
-  const { user, isAuthenticated } = useAuth();
-  const isOwnProfile = user?.id === id;
+  } = useFetchBasicProfile({id: id as string});
 
   const escoUrl = ESCO_BASE_URL ? ESCO_BASE_URL + profile?.role?.escoCode : '#';
 
@@ -215,67 +210,6 @@ export default function Profile() {
           </div>
         </CardContent>
       </Card>
-
-      {/* Only show tabs for authenticated users viewing their own profile */}
-      {/* {isAuthenticated && isOwnProfile ? (
-        <>
-          <Tabs defaultValue="overview" className="w-full">
-            <TabsList className="mb-4">
-              <TabsTrigger value="overview">Overview</TabsTrigger>
-              <TabsTrigger value="cohort">Cohort</TabsTrigger>
-              <TabsTrigger value="colleagues">Colleagues</TabsTrigger>
-              <TabsTrigger value="insights">Industry Insights</TabsTrigger>
-            </TabsList>
-            <TabsContent value="overview">
-              <div className="text-zinc-700 dark:text-zinc-300">
-                Overview content coming soon...
-              </div>
-            </TabsContent>
-            <TabsContent value="cohort">
-              <div className="text-zinc-700 dark:text-zinc-300">
-                Where are the people that graduated with you? (Coming soon)
-              </div>
-            </TabsContent>
-            <TabsContent value="colleagues">
-              <div className="text-zinc-700 dark:text-zinc-300">
-                Where are the people that worked with you? (Coming soon)
-              </div>
-            </TabsContent>
-            <TabsContent value="insights">
-              <div className="text-zinc-700 dark:text-zinc-300">
-                People with your YOE are working at these industries,
-                companies... (Coming soon)
-              </div>
-            </TabsContent>
-          </Tabs>
-        </>
-      ) : (
-        <div className="mt-8 text-center py-8 px-4 border border-dashed border-zinc-200 rounded-lg">
-          <div className="flex justify-center items-center mb-3">
-            <Lock className="w-4 h-4 mr-2" />
-            <span className="text-zinc-600">
-              Connect with LinkedIn to unlock more insights about {profile?.name}&apos;s professional journey
-            </span>
-          </div>
-          <div className="blur-sm">
-            <Skeleton className="h-40 w-full mb-4" />
-            <Skeleton className="h-6 w-48 mb-2 mx-auto" />
-            <Skeleton className="h-4 w-32 mx-auto" />
-          </div>
-          <Link
-            href={LINKEDIN_URL}
-            className="inline-flex items-center gap-2 bg-[#0A66C2] text-white px-4 py-2 rounded-md hover:bg-[#004182] transition-colors mt-4"
-          >
-            <Image
-              src="/logos/linkedin-icon.svg"
-              alt="LinkedIn"
-              width={16}
-              height={16}
-            />
-            Sign in with LinkedIn
-          </Link>
-        </div>
-      )} */}
     </div>
   );
 }
