@@ -1,7 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import NestAPI from "@/api";
-import { AxiosResponse } from "axios";
-import { BasicAlumniProfileDto } from "@/sdk";
+import { AlumniControllerGetBasicProfileRequest, BasicAlumniProfileDto } from "@/sdk";
 import { useJsonFromResponse } from "@/commom/use-json-from-response";
 
 interface UseFetchBasicProfileReturn {
@@ -10,10 +9,10 @@ interface UseFetchBasicProfileReturn {
   error: string | undefined;
 }
 
-export const useFetchBasicProfile = (id: string): UseFetchBasicProfileReturn => {
+export const useFetchBasicProfile = (params: AlumniControllerGetBasicProfileRequest): UseFetchBasicProfileReturn => {
   const query = useQuery({
-    queryKey: ['basic-profile', id],
-    queryFn: () => NestAPI.alumniControllerGetBasicProfile({id})
+    queryKey: ['basic-profile', params.id],
+    queryFn: () => NestAPI.alumniControllerGetBasicProfile(params)
   });
 
   const parsedError = useJsonFromResponse<{ error?: string }>(
