@@ -20,6 +20,12 @@ import { mapValues } from '../runtime';
  */
 export interface CourseExtended {
     /**
+     * The id of the course
+     * @type {string}
+     * @memberof CourseExtended
+     */
+    id: string;
+    /**
      * The name of the course
      * @type {string}
      * @memberof CourseExtended
@@ -31,12 +37,6 @@ export interface CourseExtended {
      * @memberof CourseExtended
      */
     acronym: string;
-    /**
-     * The id of the course
-     * @type {string}
-     * @memberof CourseExtended
-     */
-    id: string;
     /**
      * The start year of the course
      * @type {number}
@@ -79,9 +79,9 @@ export interface CourseExtended {
  * Check if a given object implements the CourseExtended interface.
  */
 export function instanceOfCourseExtended(value: object): value is CourseExtended {
+    if (!('id' in value) || value['id'] === undefined) return false;
     if (!('name' in value) || value['name'] === undefined) return false;
     if (!('acronym' in value) || value['acronym'] === undefined) return false;
-    if (!('id' in value) || value['id'] === undefined) return false;
     if (!('startYear' in value) || value['startYear'] === undefined) return false;
     if (!('status' in value) || value['status'] === undefined) return false;
     if (!('facultyId' in value) || value['facultyId'] === undefined) return false;
@@ -99,9 +99,9 @@ export function CourseExtendedFromJSONTyped(json: any, ignoreDiscriminator: bool
     }
     return {
         
+        'id': json['id'],
         'name': json['name'],
         'acronym': json['acronym'],
-        'id': json['id'],
         'startYear': json['startYear'],
         'endYear': json['endYear'] == null ? undefined : json['endYear'],
         'status': json['status'],
@@ -122,9 +122,9 @@ export function CourseExtendedToJSONTyped(value?: CourseExtended | null, ignoreD
 
     return {
         
+        'id': value['id'],
         'name': value['name'],
         'acronym': value['acronym'],
-        'id': value['id'],
         'startYear': value['startYear'],
         'endYear': value['endYear'],
         'status': value['status'],

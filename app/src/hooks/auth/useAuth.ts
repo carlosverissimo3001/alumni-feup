@@ -1,27 +1,35 @@
-import NestApi from '@/api';
-import { LinkedinAuthDto, VerifyEmailDto, VerifyEmailTokenDto, UserAuthResponse } from '@/sdk/api';
-import { useMutation } from '@tanstack/react-query';
-import { useAuth as useAuthContext } from '@/contexts/AuthContext';
-import { AxiosResponse } from 'axios';
+import NestApi from "@/api";
+import { useMutation } from "@tanstack/react-query";
+import { useAuth as useAuthContext } from "@/contexts/AuthContext";
+import {
+  AlumniControllerVerifyEmailRequest,
+  AlumniControllerVerifyEmailTokenRequest,
+  UserControllerLinkedinAuthRequest,
+} from "@/sdk";
+
 // Define the response type from our backend
 
 // TODO: ADD ERROR HANDLING
 
 type useAuthenticateWithLinkedinProps = {
-  data: LinkedinAuthDto;
+  data: UserControllerLinkedinAuthRequest;
   onSuccess: () => void;
   onError: () => void;
 };
 
-export const useAuthenticateWithLinkedin = ({ data, onSuccess, onError }: useAuthenticateWithLinkedinProps) => {
+export const useAuthenticateWithLinkedin = ({
+  data,
+  onSuccess,
+  onError,
+}: useAuthenticateWithLinkedinProps) => {
   const { login } = useAuthContext();
-  
-  const mutation = useMutation<AxiosResponse<UserAuthResponse>, Error, void>({
+
+  const mutation = useMutation({
     mutationFn: () => NestApi.userControllerLinkedinAuth(data),
     onSuccess: (response) => {
       // Store the token in localStorage and update the auth context
-      if (response && response.data && response.data.access_token) {
-        login(response.data.access_token, response.data.user);
+      if (response && response.accessToken) {
+        login(response.accessToken, response.user);
       }
       onSuccess();
     },
@@ -31,12 +39,16 @@ export const useAuthenticateWithLinkedin = ({ data, onSuccess, onError }: useAut
 };
 
 type useVerifyEmailProps = {
-  data: VerifyEmailDto;
+  data: AlumniControllerVerifyEmailRequest;
   onSuccess: () => void;
   onError: () => void;
 };
 
-export const useVerifyEmail = ({ data, onSuccess, onError }: useVerifyEmailProps) => {
+export const useVerifyEmail = ({
+  data,
+  onSuccess,
+  onError,
+}: useVerifyEmailProps) => {
   const mutation = useMutation({
     mutationFn: () => NestApi.alumniControllerVerifyEmail(data),
     onSuccess,
@@ -47,12 +59,16 @@ export const useVerifyEmail = ({ data, onSuccess, onError }: useVerifyEmailProps
 };
 
 type useVerifyEmailTokenProps = {
-  data: VerifyEmailTokenDto;
+  data: AlumniControllerVerifyEmailTokenRequest;
   onSuccess: () => void;
   onError: () => void;
 };
 
-export const useVerifyEmailToken = ({ data, onSuccess, onError }: useVerifyEmailTokenProps) => {
+export const useVerifyEmailToken = ({
+  data,
+  onSuccess,
+  onError,
+}: useVerifyEmailTokenProps) => {
   const mutation = useMutation({
     mutationFn: () => NestApi.alumniControllerVerifyEmailToken(data),
     onSuccess,

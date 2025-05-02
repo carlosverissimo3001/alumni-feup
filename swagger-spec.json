@@ -1855,7 +1855,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/Course"
+                    "$ref": "#/components/schemas/CourseExtended"
                   }
                 }
               }
@@ -1888,7 +1888,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Course"
+                  "$ref": "#/components/schemas/CourseExtended"
                 }
               }
             }
@@ -3007,6 +3007,56 @@
         "required": [
           "faculty_id",
           "course_id"
+        ]
+      },
+      "CourseExtended": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The id of the course"
+          },
+          "name": {
+            "type": "string",
+            "description": "The name of the course"
+          },
+          "acronym": {
+            "type": "string",
+            "description": "The acronym of the course"
+          },
+          "startYear": {
+            "type": "number",
+            "description": "The start year of the course"
+          },
+          "endYear": {
+            "type": "object",
+            "description": "The end year of the course, if it is not active"
+          },
+          "status": {
+            "type": "object",
+            "description": "The status of the course"
+          },
+          "facultyId": {
+            "type": "string",
+            "description": "The faculty id of the course"
+          },
+          "nameInt": {
+            "type": "object",
+            "description": "The name of the course in the international language"
+          },
+          "courseType": {
+            "type": "object",
+            "description": "The type of the course"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "acronym",
+          "startYear",
+          "status",
+          "facultyId",
+          "courseType"
         ]
       },
       "Faculty": {

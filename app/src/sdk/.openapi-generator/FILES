@@ -24,6 +24,7 @@ models/CountryListResponseDto.ts
 models/CountryOptionDto.ts
 models/Course.ts
 models/CourseCompletion.ts
+models/CourseExtended.ts
 models/CreateAlumniDto.ts
 models/CurrentRoleDto.ts
 models/Faculty.ts
