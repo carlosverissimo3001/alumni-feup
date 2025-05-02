@@ -1,6 +1,7 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { COURSE_STATUS, COURSE_TYPE } from '@prisma/client';
 
+
 export class Course {
   @ApiProperty({ description: 'The id of the course' })
   id: string;

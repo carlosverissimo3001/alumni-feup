@@ -1,5 +1,5 @@
 import logging
-from datetime import datetime
+from datetime import datetime, timezone
 
 from sqlalchemy.orm import Session
 
@@ -13,9 +13,7 @@ def get_company_by_linkedin_url(linkedin_url: str, db: Session) -> Company | Non
 
 
 def get_all_companies(db: Session) -> list[Company]:
-    # TEMP
-    return db.query(Company).filter(Company.updated_at < "2025-04-12 23:00:00").all()
-    # return db.query(Company).all()
+    return db.query(Company).all()
 
 
 def get_companies_by_ids(company_ids: list[str], db: Session) -> list[Company]:
@@ -48,7 +46,7 @@ def update_company(company: Company, db: Session) -> Company:
     Returns:
         Updated company record
     """
-    logger.info(f"Updating company {company.name} in the database")
+    # logger.info(f"Updating company {company.name} in the database")
 
     existing_company = db.query(Company).filter(Company.id == company.id).first()
     if existing_company:
@@ -56,8 +54,7 @@ def update_company(company: Company, db: Session) -> Company:
             if not key.startswith("_") and key != "id" and value is not None:
                 setattr(existing_company, key, value)
 
-        existing_company.updated_at = datetime.now()
-
+        existing_company.updated_at = datetime.now(timezone.utc)
         db.commit()
         db.refresh(existing_company)
     return existing_company
