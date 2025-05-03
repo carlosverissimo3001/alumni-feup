@@ -1793,7 +1793,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/LinkedinConfirmDto"
+                "$ref": "#/components/schemas/LinkedinAuthDto"
               }
             }
           }
@@ -2920,31 +2920,35 @@
       "LinkedinAuthDto": {
         "type": "object",
         "properties": {
-          "person_id": {
+          "personId": {
             "type": "string",
             "description": "A unique identifying value for the member. Referenced as personId in other API documentation pages."
           },
-          "first_name": {
+          "firstName": {
             "type": "string",
             "description": "The first name of the member."
           },
-          "last_name": {
+          "lastName": {
             "type": "string",
             "description": "The first name of the member."
           },
-          "institutional_email": {
+          "personalEmail": {
             "type": "string",
             "description": "The personal email of the member."
           },
-          "profile_picture_url": {
+          "profilePictureUrl": {
             "type": "string",
             "description": "The URL of the member's profile picture."
+          },
+          "linkedinUrl": {
+            "type": "string",
+            "description": "The LinkedIn URL of the member."
           }
         },
         "required": [
-          "person_id",
-          "first_name",
-          "last_name"
+          "personId",
+          "firstName",
+          "lastName"
         ]
       },
       "User": {
@@ -3035,23 +3039,6 @@
         "required": [
           "email",
           "token"
-        ]
-      },
-      "LinkedinConfirmDto": {
-        "type": "object",
-        "properties": {
-          "linkedinUrl": {
-            "type": "string",
-            "description": "The LinkedIn URL of the user"
-          },
-          "personId": {
-            "type": "string",
-            "description": "The person ID of the user"
-          }
-        },
-        "required": [
-          "linkedinUrl",
-          "personId"
         ]
       },
       "UploadExtractionDto": {

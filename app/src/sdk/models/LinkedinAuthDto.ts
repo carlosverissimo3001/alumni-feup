@@ -42,13 +42,19 @@ export interface LinkedinAuthDto {
      * @type {string}
      * @memberof LinkedinAuthDto
      */
-    institutionalEmail?: string;
+    personalEmail?: string;
     /**
      * The URL of the member's profile picture.
      * @type {string}
      * @memberof LinkedinAuthDto
      */
     profilePictureUrl?: string;
+    /**
+     * The LinkedIn URL of the member.
+     * @type {string}
+     * @memberof LinkedinAuthDto
+     */
+    linkedinUrl?: string;
 }
 
 /**
@@ -71,11 +77,12 @@ export function LinkedinAuthDtoFromJSONTyped(json: any, ignoreDiscriminator: boo
     }
     return {
         
-        'personId': json['person_id'],
-        'firstName': json['first_name'],
-        'lastName': json['last_name'],
-        'institutionalEmail': json['institutional_email'] == null ? undefined : json['institutional_email'],
-        'profilePictureUrl': json['profile_picture_url'] == null ? undefined : json['profile_picture_url'],
+        'personId': json['personId'],
+        'firstName': json['firstName'],
+        'lastName': json['lastName'],
+        'personalEmail': json['personalEmail'] == null ? undefined : json['personalEmail'],
+        'profilePictureUrl': json['profilePictureUrl'] == null ? undefined : json['profilePictureUrl'],
+        'linkedinUrl': json['linkedinUrl'] == null ? undefined : json['linkedinUrl'],
     };
 }
 
@@ -90,11 +97,12 @@ export function LinkedinAuthDtoToJSONTyped(value?: LinkedinAuthDto | null, ignor
 
     return {
         
-        'person_id': value['personId'],
-        'first_name': value['firstName'],
-        'last_name': value['lastName'],
-        'institutional_email': value['institutionalEmail'],
-        'profile_picture_url': value['profilePictureUrl'],
+        'personId': value['personId'],
+        'firstName': value['firstName'],
+        'lastName': value['lastName'],
+        'personalEmail': value['personalEmail'],
+        'profilePictureUrl': value['profilePictureUrl'],
+        'linkedinUrl': value['linkedinUrl'],
     };
 }
 
