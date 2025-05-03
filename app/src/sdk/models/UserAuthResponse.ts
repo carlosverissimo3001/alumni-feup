@@ -32,21 +32,43 @@ export interface UserAuthResponse {
      * @type {string}
      * @memberof UserAuthResponse
      */
-    accessToken: string;
+    accessToken?: string | null;
     /**
      * The user object
      * @type {User}
      * @memberof UserAuthResponse
      */
-    user: User;
+    user?: User | null;
+    /**
+     * The status of the user
+     * @type {string}
+     * @memberof UserAuthResponse
+     */
+    status: UserAuthResponseStatusEnum;
+    /**
+     * The person ID of the user
+     * @type {string}
+     * @memberof UserAuthResponse
+     */
+    personId?: string | null;
 }
+
+
+/**
+ * @export
+ */
+export const UserAuthResponseStatusEnum = {
+    Matched: 'matched',
+    Unmatched: 'unmatched'
+} as const;
+export type UserAuthResponseStatusEnum = typeof UserAuthResponseStatusEnum[keyof typeof UserAuthResponseStatusEnum];
+
 
 /**
  * Check if a given object implements the UserAuthResponse interface.
  */
 export function instanceOfUserAuthResponse(value: object): value is UserAuthResponse {
-    if (!('accessToken' in value) || value['accessToken'] === undefined) return false;
-    if (!('user' in value) || value['user'] === undefined) return false;
+    if (!('status' in value) || value['status'] === undefined) return false;
     return true;
 }
 
@@ -60,8 +82,10 @@ export function UserAuthResponseFromJSONTyped(json: any, ignoreDiscriminator: bo
     }
     return {
         
-        'accessToken': json['access_token'],
-        'user': UserFromJSON(json['user']),
+        'accessToken': json['access_token'] == null ? undefined : json['access_token'],
+        'user': json['user'] == null ? undefined : UserFromJSON(json['user']),
+        'status': json['status'],
+        'personId': json['personId'] == null ? undefined : json['personId'],
     };
 }
 
@@ -78,6 +102,8 @@ export function UserAuthResponseToJSONTyped(value?: UserAuthResponse | null, ign
         
         'access_token': value['accessToken'],
         'user': UserToJSON(value['user']),
+        'status': value['status'],
+        'personId': value['personId'],
     };
 }
 

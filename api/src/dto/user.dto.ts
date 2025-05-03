@@ -2,6 +2,11 @@
 
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
+export enum UserStatus {
+  MATCHED = 'matched',
+  UNMATCHED = 'unmatched',
+}
+
 class User {
   @ApiProperty({
     description: 'The ID of the user',
@@ -26,13 +31,31 @@ class User {
 }
 
 export class UserAuthResponse {
-  @ApiProperty({
+  @ApiPropertyOptional({
     description: 'The access token of the user',
+    type: 'string',
+    nullable: true,
   })
-  access_token: string;
+  access_token?: string;
+
+  @ApiPropertyOptional({
+    description: 'The user object',
+    type: User,
+    nullable: true,
+  })
+  user?: User;
 
   @ApiProperty({
-    description: 'The user object',
+    description: 'The status of the user',
+    type: 'string',
+    enum: UserStatus,
   })
-  user: User;
+  status: UserStatus;
+
+  @ApiPropertyOptional({
+    description: 'The person ID of the user',
+    type: 'string',
+    nullable: true,
+  })
+  personId?: string;
 }

@@ -41,11 +41,4 @@ export class LinkedinAuthDto {
   @IsString()
   @IsOptional()
   profile_picture_url?: string;
-
-  @ApiPropertyOptional({
-    description: "The LinkedIn URL of the member.",
-  })
-  @IsString()
-  @IsOptional()
-  linkedin_url?: string;
 }

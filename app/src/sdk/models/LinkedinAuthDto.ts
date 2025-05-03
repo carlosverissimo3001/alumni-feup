@@ -49,12 +49,6 @@ export interface LinkedinAuthDto {
      * @memberof LinkedinAuthDto
      */
     profilePictureUrl?: string;
-    /**
-     * The LinkedIn URL of the member.
-     * @type {string}
-     * @memberof LinkedinAuthDto
-     */
-    linkedinUrl?: string;
 }
 
 /**
@@ -82,7 +76,6 @@ export function LinkedinAuthDtoFromJSONTyped(json: any, ignoreDiscriminator: boo
         'lastName': json['last_name'],
         'institutionalEmail': json['institutional_email'] == null ? undefined : json['institutional_email'],
         'profilePictureUrl': json['profile_picture_url'] == null ? undefined : json['profile_picture_url'],
-        'linkedinUrl': json['linkedin_url'] == null ? undefined : json['linkedin_url'],
     };
 }
 
@@ -102,7 +95,6 @@ export function LinkedinAuthDtoToJSONTyped(value?: LinkedinAuthDto | null, ignor
         'last_name': value['lastName'],
         'institutional_email': value['institutionalEmail'],
         'profile_picture_url': value['profilePictureUrl'],
-        'linkedin_url': value['linkedinUrl'],
     };
 }
 

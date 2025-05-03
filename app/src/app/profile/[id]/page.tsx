@@ -2,7 +2,6 @@
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { useAuth } from "@/contexts/AuthContext";
 import { useParams } from "next/navigation";
 import { useFetchBasicProfile } from "@/hooks/profile/useFetchBasicProfile";
 import { Skeleton } from "@/components/ui/skeleton";
