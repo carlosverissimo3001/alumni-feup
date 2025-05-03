@@ -16,7 +16,6 @@
 import * as runtime from '../runtime';
 import type {
   LinkedinAuthDto,
-  LinkedinConfirmDto,
   UserAuthResponse,
   VerifyEmailDto,
   VerifyEmailTokenDto,
@@ -24,8 +23,6 @@ import type {
 import {
     LinkedinAuthDtoFromJSON,
     LinkedinAuthDtoToJSON,
-    LinkedinConfirmDtoFromJSON,
-    LinkedinConfirmDtoToJSON,
     UserAuthResponseFromJSON,
     UserAuthResponseToJSON,
     VerifyEmailDtoFromJSON,
@@ -39,7 +36,7 @@ export interface UserControllerLinkedinAuthRequest {
 }
 
 export interface UserControllerLinkedinConfirmRequest {
-    linkedinConfirmDto: LinkedinConfirmDto;
+    linkedinAuthDto: LinkedinAuthDto;
 }
 
 export interface UserControllerVerifyEmailRequest {
@@ -75,7 +72,7 @@ export interface UserApiInterface {
     /**
      * 
      * @summary Confirm the LinkedIn profile and generate a JWT token
-     * @param {LinkedinConfirmDto} linkedinConfirmDto 
+     * @param {LinkedinAuthDto} linkedinAuthDto 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof UserApiInterface
@@ -164,10 +161,10 @@ export class UserApi extends runtime.BaseAPI implements UserApiInterface {
      * Confirm the LinkedIn profile and generate a JWT token
      */
     async userControllerLinkedinConfirmRaw(requestParameters: UserControllerLinkedinConfirmRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserAuthResponse>> {
-        if (requestParameters['linkedinConfirmDto'] == null) {
+        if (requestParameters['linkedinAuthDto'] == null) {
             throw new runtime.RequiredError(
-                'linkedinConfirmDto',
-                'Required parameter "linkedinConfirmDto" was null or undefined when calling userControllerLinkedinConfirm().'
+                'linkedinAuthDto',
+                'Required parameter "linkedinAuthDto" was null or undefined when calling userControllerLinkedinConfirm().'
             );
         }
 
@@ -182,7 +179,7 @@ export class UserApi extends runtime.BaseAPI implements UserApiInterface {
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: LinkedinConfirmDtoToJSON(requestParameters['linkedinConfirmDto']),
+            body: LinkedinAuthDtoToJSON(requestParameters['linkedinAuthDto']),
         }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => UserAuthResponseFromJSON(jsonValue));
