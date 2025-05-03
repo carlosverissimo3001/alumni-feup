@@ -50,6 +50,10 @@ class Settings(BaseSettings):
     CLOUDINARY_API_KEY: str = ""
     CLOUDINARY_API_SECRET: str = ""
 
+    # Alpha Vantage Settings
+    ALPHA_VANTAGE_API_KEY: str = ""
+    ALPHA_VANTAGE_BASE_URL: str = "https://www.alphavantage.co/query?function=OVERVIEW&symbol="
+
     class Config:
         env_file = ".env"
         case_sensitive = True
