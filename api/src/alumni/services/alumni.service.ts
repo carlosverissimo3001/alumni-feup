@@ -11,7 +11,7 @@ import {
   GeoJSONProperties,
 } from 'src/entities/';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { CreateAlumniDto, VerifyEmailDto, VerifyEmailTokenDto } from '@/dto';
+import { CreateAlumniDto } from '@/dto';
 import { AlumniRepository } from '../repositories/alumni.repository';
 import { GetGeoJSONDto } from 'src/dto/getgeojson.dto';
 import { Feature, Point } from 'geojson';
@@ -321,46 +321,6 @@ export class AlumniService {
     );
 
     return newAlumni;
-  }
-
-  /**
-   * Generates a verification code and saves it to Redis
-   * @param body - The body of the request
-   */
-  async verifyEmail(body: VerifyEmailDto): Promise<void> {
-    const { email } = body;
-
-    // ! *** NOT READY FOR PROD CODE START ***
-    const code = '123456';
-    const hashed = this.otpService['hash'](code);
-    await this.otpService['redis'].set(`otp:${email}`, hashed, 'EX', 600);
-    console.log(`Test code set for ${email}: ${code}`);
-    // ! *** NOT READY FOR PROD CODE END ***
-
-    // *** ACTUAL GOOD LOGIC START ***
-    // const code = await this.otpService.generateOTP(email);
-    // await this.mailService.sendEmail({
-    //   to: email,
-    //   subject: 'Your Verification Code',
-    //   text: `Your verification code is: ${code}`,
-    // });
-    // *** ACTUAL GOOD LOGIC END ***
-  }
-
-  /**
-   * Verifies the email token
-   * @param body - The body of the request
-   */
-  async verifyEmailToken(body: VerifyEmailTokenDto): Promise<void> {
-    const { email, token } = body;
-    const isValid = await this.otpService.verifyOTP(email, token);
-
-    if (!isValid) {
-      throw new HttpException(
-        'Invalid verification code',
-        HttpStatus.BAD_REQUEST,
-      );
-    }
   }
 
   async groupAlumniByCountry(alumni: Alumni[]): Promise<AlumniByCountry> {

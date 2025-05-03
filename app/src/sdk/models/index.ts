@@ -26,6 +26,7 @@ export * from './IndustryListItemDto';
 export * from './IndustryListResponseDto';
 export * from './IndustryOptionDto';
 export * from './LinkedinAuthDto';
+export * from './LinkedinConfirmDto';
 export * from './LocationGeo';
 export * from './MarkAsReviewedDto';
 export * from './ReviewCompany';
