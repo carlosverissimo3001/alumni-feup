@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { Card, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { CreditCardIcon, FileSpreadsheetIcon, MergeIcon, UsersIcon } from "lucide-react";
+import { CreditCardIcon, FileSpreadsheetIcon, MergeIcon, ShieldAlert, UsersIcon } from "lucide-react";
 
 const AdminDashboard = () => {
   const operations = [
@@ -30,6 +30,12 @@ const AdminDashboard = () => {
       description: "View API usage and balance",
       icon: <CreditCardIcon className="h-6 w-6" />,
       href: "/admin/api-usage",
+    },
+    {
+      title: "LinkedIn Validation",
+      description: "Validate flagged LinkedIn profiles",
+      icon: <ShieldAlert className="h-6 w-6" />,
+      href: "/admin/linkedin-validation",
     },
   ];
 

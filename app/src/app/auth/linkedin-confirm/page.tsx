@@ -1,6 +1,6 @@
 "use client";
-import { useState } from "react";
-import { useRouter, useParams } from "next/navigation";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import {
   Card,
   CardContent,
@@ -20,23 +20,39 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { useAuth } from "@/contexts/AuthContext";
-import { useToast } from "@/hooks/misc/useToast";
+import { validateLinkedInUrl } from "@/utils/validation";
+import Cookies from "js-cookie";
 
 export default function LinkedInConfirmPage() {
+  const router = useRouter();
+  const { isAuthenticated, user } = useAuth();
+
+  // We get these from the cookies
+  const [personId, setPersonId] = useState<string | undefined>(undefined);
+  const [firstName, setFirstName] = useState<string | undefined>(undefined);
+  const [lastName, setLastName] = useState<string | undefined>(undefined);
+  const [profilePictureUrl, setProfilePictureUrl] = useState<string | undefined>(undefined);
+  const [personalEmail, setPersonalEmail] = useState<string | undefined>(undefined);
+  
+  // Prevent authenticated users from accessing this page
+  useEffect(() => {
+    if (isAuthenticated && user) {
+      router.replace('/analytics');
+      return;
+    }
+
+    setPersonId(Cookies.get('linkedin_person_id') ?? undefined);
+    setFirstName(Cookies.get('linkedin_first_name') ?? undefined);
+    setLastName(Cookies.get('linkedin_last_name') ?? undefined);
+    setProfilePictureUrl(Cookies.get('linkedin_profile_picture_url') ?? undefined);
+    setPersonalEmail(Cookies.get('linkedin_personal_email') ?? undefined);
+  }, [isAuthenticated, router, user]);
+  
   const [linkedinUrl, setLinkedinUrl] = useState("");
   const [error, setError] = useState("");
   const [submitting, setSubmitting] = useState(false);
-  const router = useRouter();
-  const { id: personId } = useParams();
   
-  // Validate the LinkedIn URL format
-  const validateLinkedInUrl = (url: string) => {
-    const regex = /^https:\/\/(www\.)?linkedin\.com\/in\/[a-zA-Z0-9\-_%]+\/?$/;
-    return regex.test(url);
-  };
-
-  console.log(personId);
-
+  
   const { mutate, isPending } = useLinkedinConfirm({
     onSuccess: () => {
       router.push("/analytics");
@@ -46,9 +62,13 @@ export default function LinkedInConfirmPage() {
       setSubmitting(false);
     },
     data: {
-      linkedinConfirmDto: {
+      linkedinAuthDto: {
         personId: personId as string,
         linkedinUrl: linkedinUrl,
+        firstName: firstName as string,
+        lastName: lastName as string,
+        profilePictureUrl,
+        personalEmail,
       },
     },
   });
@@ -89,10 +109,21 @@ export default function LinkedInConfirmPage() {
           <CardTitle className="text-2xl text-center text-[#8C2D19]">
             One Last Step
           </CardTitle>
+          {firstName && (
+            <div className="text-center my-2 py-2 px-4 bg-[#f8f3f2] rounded-md border border-[#e9d6d3]">
+              <div className="font-bold text-[#8C2D19] text-lg">
+                {firstName} {lastName}
+              </div>
+            </div>
+          )}
           <CardDescription className="text-center pt-2">
-            To complete your LinkedIn login, please provide your LinkedIn
-            profile URL.
+            Please provide your LinkedIn profile URL
           </CardDescription>
+          {firstName && (
+            <p className="text-center text-sm mt-1 text-gray-600">
+              This URL will be verified with your account
+            </p>
+          )}
         </CardHeader>
         <CardContent className="pt-6 space-y-6">
           {error && (
@@ -128,28 +159,15 @@ export default function LinkedInConfirmPage() {
                         </div>
                       </TooltipTrigger>
                       <TooltipContent className="max-w-xs p-3 bg-white border-2 border-[#8C2D19] shadow-lg rounded-lg">
-                        <div className="text-xs text-gray-700 space-y-2">
+                        <div className="text-xs text-gray-700 space-y-1">
                           <p className="font-semibold text-[#8C2D19] pb-1 border-b border-gray-200">
-                            🔍 Connecting Your Profile
+                            🔍 Why we need this
                           </p>
                           <p>
-                            😔 We know that it seems convoluted to ask you to
-                            provide your LinkedIn URL, after you&apos;ve just
-                            logged in with LinkedIn.
+                            LinkedIn&apos;s login doesn&apos;t provide enough information to identify your profile in our database.
                           </p>
                           <p>
-                            🔒 However, LinkedIn&apos;s OAuth doesn&apos;t
-                            provide us with enough information to identify your
-                            profile against our AlumniEI database.
-                          </p>
-                          <p>
-                            🔗 We need your LinkedIn URL to properly link your
-                            LinkedIn account to your AlumniEI profile.
-                          </p>
-                          <p>
-                            <strong>
-                              We&apos;ll only ask for your LinkedIn URL once.
-                            </strong>
+                            <strong>We&apos;ll only ask for this once.</strong>
                           </p>
                         </div>
                       </TooltipContent>
