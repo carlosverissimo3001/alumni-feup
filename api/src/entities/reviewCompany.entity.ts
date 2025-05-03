@@ -34,16 +34,16 @@ export class ReviewCompany {
     })
     createdAt?: Date | null;
 
-  constructor(data: ReviewCompany) {
-    this.id = data.id;
-    this.description = data.description;
-    this.rating = data.rating;
-    this.upvotes = data.upvotes;
-    this.downvotes = data.downvotes;
-    this.Location = data.Location;
-    this.Company = data.Company;
-    this.createdAt = data.createdAt;
-  }
+    constructor(data: ReviewCompany) {
+      this.id = data.id;
+      this.description = data.description;
+      this.rating = data.rating;
+      this.upvotes = data.upvotes;
+      this.downvotes = data.downvotes;
+      this.Location = data.Location;
+      this.Company = data.Company;
+      this.createdAt = data.createdAt;
+    }
 }
 
 export class ReviewCompanyExtended extends ReviewCompany {

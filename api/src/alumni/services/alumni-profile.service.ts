@@ -1,7 +1,9 @@
 import { PrismaService } from 'src/prisma/prisma.service';
 import {
+  AlumniPastLocationsAndCompaniesDto,
   BasicAlumniProfileDto,
   CompanyDto,
+  ExtendedCompanyDto,
   GraduationDto,
 } from '../dto/basic-alumni-profile.dto';
 import { NotFoundException, Injectable } from '@nestjs/common';
@@ -127,5 +129,60 @@ export class AlumniProfileService {
     const currentRole = sortedRoles.find((role) => !role.endDate);
 
     return currentRole || sortedRoles[0];
+  }
+
+  async getPastLocationsAndCompanies(id: string): Promise<AlumniPastLocationsAndCompaniesDto> {
+    const alumni = await this.prisma.alumni.findUniqueOrThrow({
+      where: { id },
+      include: {
+        Roles: {
+          include: {
+            Location: true,
+            Company: true,
+            JobClassification: true,
+          },
+        },
+        Graduations: true,
+        Location: true,
+      },
+    });
+  
+    let companies: CompanyDto[] = [];
+    let locations: LocationGeo[] = [];
+ 
+    const uniqueCompanyIds = new Set<string>();
+    const uniqueLocationIds = new Set<string>();
+
+    alumni.Roles.forEach(async role => {
+
+      const company : ExtendedCompanyDto = {
+        id: role.Company.id,
+        name: role.Company.name,
+        industry: '',
+        website: role.Company.website,
+        linkedinUrl: role.Company.linkedinUrl,
+        logo: role.Company.logo,
+        location: role.Location,
+      }
+
+      const location = role.Location || alumni.Location || null;
+
+      const combinedId = role.Company.id + location?.id;
+
+      if (!uniqueCompanyIds.has(combinedId)) {
+        uniqueCompanyIds.add(combinedId);
+        companies.push(company); 
+      }
+
+      if (location && !uniqueLocationIds.has(location.id)) {
+        uniqueLocationIds.add(location.id);
+        locations.push(location);
+      }
+    });
+    
+    return {
+      Companies: companies,
+      Locations: locations,
+    };
   }
 }

@@ -30,6 +30,14 @@ export class CompanyDto {
   logo?: string | null;
 }
 
+export class ExtendedCompanyDto extends CompanyDto {
+  @ApiPropertyOptional({
+    description: 'The current location of the alumni',
+    type: LocationGeo,
+  })
+  location?: LocationGeo | null;
+}
+
 export class GraduationDto {
   @ApiProperty()
   conclusionYear: number;
@@ -69,6 +77,15 @@ export class CurrentRoleDto {
     type: Date,
   })
   endDate?: Date | null;
+}
+
+export class ReviewCompanyDto {
+
+
+}
+
+export class ReviewLocationDto {
+
 }
 
 export class BasicAlumniProfileDto {
@@ -113,4 +130,11 @@ export class BasicAlumniProfileDto {
     isArray: true,
   })
   graduations?: GraduationDto[] | null;
+}
+
+
+export class AlumniPastLocationsAndCompaniesDto {
+  Companies?: ExtendedCompanyDto[];
+
+  Locations?: LocationGeo[];
 }

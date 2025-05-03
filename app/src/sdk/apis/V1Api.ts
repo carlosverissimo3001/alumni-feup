@@ -17,6 +17,7 @@ import * as runtime from '../runtime';
 import type {
   Alumni,
   AlumniExtended,
+  AlumniPastLocationsAndCompaniesDto,
   BasicAlumniProfileDto,
   CityOptionDto,
   CompanyListResponseDto,
@@ -80,7 +81,9 @@ import {
     VerifyEmailDtoToJSON,
     VerifyEmailTokenDtoFromJSON,
     VerifyEmailTokenDtoToJSON,
+    AlumniPastLocationsAndCompaniesDtoFromJSON,
 } from '../models/index';
+import { CreateReviewDto, CreateReviewDtoToJSON } from '../models/CreateReviewDto';
 
 export interface AlumniControllerCreateRequest {
     createAlumniDto: CreateAlumniDto;
@@ -104,6 +107,10 @@ export interface AlumniControllerGetBasicProfileRequest {
 
 export interface AlumniControllerMarkAsReviewedRequest {
     markAsReviewedDto: MarkAsReviewedDto;
+}
+
+export interface AlumniControllerGetPastLocationsAndCompaniesRequest {
+    id: string;
 }
 
 export interface CompaniesAnalyticsControllerGetCompaniesWithAlumniCountRequest {
@@ -238,9 +245,13 @@ export interface IndustriesAnalyticsControllerGetIndustryWithCountsRequest {
     sortOrder?: string;
 }
 
-export interface ReviewControllerFindAllGeoJSONRequest {
-    groupBy: ReviewControllerFindAllGeoJSONGroupByEnum;
+export interface ReviewsControllerFindAllGeoJSONRequest {
+    groupBy: ReviewsControllerFindAllGeoJSONGroupByEnum;
     reviewType?: string;
+}
+
+export interface ReviewsControllerCreateRequest {
+    createReviewDto: CreateReviewDto;
 }
 
 export interface UserControllerLinkedinAuthRequest {
@@ -737,12 +748,12 @@ export interface V1ApiInterface {
      * @throws {RequiredError}
      * @memberof V1ApiInterface
      */
-    reviewControllerFindAllGeoJSONRaw(requestParameters: ReviewControllerFindAllGeoJSONRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ReviewGeoJSONFeatureCollection>>;
+    reviewsControllerFindAllGeoJSONRaw(requestParameters: ReviewsControllerFindAllGeoJSONRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ReviewGeoJSONFeatureCollection>>;
 
     /**
      * Get all the review to be displayed on the map
      */
-    reviewControllerFindAllGeoJSON(requestParameters: ReviewControllerFindAllGeoJSONRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ReviewGeoJSONFeatureCollection>;
+    reviewsControllerFindAllGeoJSON(requestParameters: ReviewsControllerFindAllGeoJSONRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ReviewGeoJSONFeatureCollection>;
 
     /**
      * 
@@ -1111,6 +1122,39 @@ export class V1Api extends runtime.BaseAPI implements V1ApiInterface {
      */
     async alumniControllerMarkAsReviewed(requestParameters: AlumniControllerMarkAsReviewedRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Alumni> {
         const response = await this.alumniControllerMarkAsReviewedRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Get the past locations and companies of an alumni
+     */
+    async alumniControllerGetPastLocationsAndCompaniesRaw(requestParameters: AlumniControllerGetPastLocationsAndCompaniesRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<AlumniPastLocationsAndCompaniesDto>> {
+        if (requestParameters['id'] == null) {
+            throw new runtime.RequiredError(
+                'id',
+                'Required parameter "id" was null or undefined when calling alumniControllerGetPastLocationsAndCompanies().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        const response = await this.request({
+            path: `/api/alumni/past-locations-companies/{id}`.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id']))),
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => AlumniPastLocationsAndCompaniesDtoFromJSON(jsonValue));
+    }
+
+    /**
+     * Get the past locations and companies an alumni
+     */
+    async alumniControllerGetPastLocationsAndCompanies(requestParameters: AlumniControllerGetPastLocationsAndCompaniesRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<AlumniPastLocationsAndCompaniesDto> {
+        const response = await this.alumniControllerGetPastLocationsAndCompaniesRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -1957,11 +2001,11 @@ export class V1Api extends runtime.BaseAPI implements V1ApiInterface {
     /**
      * Get all the review to be displayed on the map
      */
-    async reviewControllerFindAllGeoJSONRaw(requestParameters: ReviewControllerFindAllGeoJSONRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ReviewGeoJSONFeatureCollection>> {
+    async reviewsControllerFindAllGeoJSONRaw(requestParameters: ReviewsControllerFindAllGeoJSONRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ReviewGeoJSONFeatureCollection>> {
         if (requestParameters['groupBy'] == null) {
             throw new runtime.RequiredError(
                 'groupBy',
-                'Required parameter "groupBy" was null or undefined when calling reviewControllerFindAllGeoJSON().'
+                'Required parameter "groupBy" was null or undefined when calling reviewsControllerFindAllGeoJSON().'
             );
         }
 
@@ -1990,8 +2034,44 @@ export class V1Api extends runtime.BaseAPI implements V1ApiInterface {
     /**
      * Get all the review to be displayed on the map
      */
-    async reviewControllerFindAllGeoJSON(requestParameters: ReviewControllerFindAllGeoJSONRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ReviewGeoJSONFeatureCollection> {
-        const response = await this.reviewControllerFindAllGeoJSONRaw(requestParameters, initOverrides);
+    async reviewsControllerFindAllGeoJSON(requestParameters: ReviewsControllerFindAllGeoJSONRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ReviewGeoJSONFeatureCollection> {
+        const response = await this.reviewsControllerFindAllGeoJSONRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Create a new review
+     */
+    async reviewsControllerCreateRaw(requestParameters: ReviewsControllerCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+        if (requestParameters['createReviewDto'] == null) {
+            throw new runtime.RequiredError(
+                'createReviewDto',
+                'Required parameter "createReviewDto" was null or undefined when calling reviewsControllerCreate().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
+    
+        const response = await this.request({
+            path: `/api/reviews`,
+            method: 'POST',
+            headers: headerParameters,
+            query: queryParameters,
+            body: CreateReviewDtoToJSON(requestParameters['createReviewDto']),
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response);
+    }
+
+    /**
+     * Create a new review
+     */
+    async reviewsControllerCreate(requestParameters: ReviewsControllerCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+        const response = await this.reviewsControllerCreateRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -2225,8 +2305,8 @@ export type IndustriesAnalyticsControllerGetIndustryWithCountsCompanySizeEnum = 
 /**
  * @export
  */
-export const ReviewControllerFindAllGeoJSONGroupByEnum = {
+export const ReviewsControllerFindAllGeoJSONGroupByEnum = {
     Countries: 'countries',
     Cities: 'cities'
 } as const;
-export type ReviewControllerFindAllGeoJSONGroupByEnum = typeof ReviewControllerFindAllGeoJSONGroupByEnum[keyof typeof ReviewControllerFindAllGeoJSONGroupByEnum];
+export type ReviewsControllerFindAllGeoJSONGroupByEnum = typeof ReviewsControllerFindAllGeoJSONGroupByEnum[keyof typeof ReviewsControllerFindAllGeoJSONGroupByEnum];

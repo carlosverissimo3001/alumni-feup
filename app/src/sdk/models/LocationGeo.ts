@@ -20,6 +20,12 @@ import { mapValues } from '../runtime';
  */
 export interface LocationGeo {
     /**
+     * 
+     * @type {string}
+     * @memberof LocationGeo
+     */
+    id: string;
+    /**
      * The city of the location
      * @type {string}
      * @memberof LocationGeo
@@ -67,7 +73,7 @@ export function LocationGeoFromJSONTyped(json: any, ignoreDiscriminator: boolean
         return json;
     }
     return {
-        
+        'id': json['id'],
         'city': json['city'] == null ? undefined : json['city'],
         'country': json['country'] == null ? undefined : json['country'],
         'countryCode': json['countryCode'] == null ? undefined : json['countryCode'],

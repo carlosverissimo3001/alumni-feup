@@ -14,7 +14,7 @@ import { Alumni, GeoJSONFeatureCollection } from '@/entities';
 import { CreateAlumniDto, GetGeoJSONDto, MarkAsReviewedDto } from '@/dto';
 import { AlumniExtended } from '@/entities/alumni.entity';
 import { AlumniProfileService } from '../services/alumni-profile.service';
-import { BasicAlumniProfileDto } from '../dto/basic-alumni-profile.dto';
+import { AlumniPastLocationsAndCompaniesDto, BasicAlumniProfileDto } from '../dto/basic-alumni-profile.dto';
 @ApiTags('V1', 'Alumni')
 @Controller('alumni')
 export class AlumniController {
@@ -115,5 +115,18 @@ export class AlumniController {
     @Param('id') id: string,
   ): Promise<BasicAlumniProfileDto> {
     return this.alumniProfileService.getBasicProfile(id);
+  }
+
+  @Get('past-locations-companies/:id')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Get the past locations and companies of an alumni' })
+  @ApiResponse({
+    description: 'Returns the past locations and companies of an alumni',
+    type: AlumniPastLocationsAndCompaniesDto,
+  })
+  async getPastLocationsAndCompanies(
+    @Param('id') id: string,
+  ): Promise<AlumniPastLocationsAndCompaniesDto> {
+    return this.alumniProfileService.getPastLocationsAndCompanies(id);
   }
 }
