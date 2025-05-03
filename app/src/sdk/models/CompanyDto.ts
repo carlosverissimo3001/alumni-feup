@@ -11,7 +11,7 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-
+import { LocationGeoFromJSON, type LocationGeo } from './LocationGeo';
 import { mapValues } from '../runtime';
 /**
  * 
@@ -57,6 +57,14 @@ export interface CompanyDto {
     logo?: string;
 }
 
+export interface ExtendedCompanyDto extends CompanyDto {
+    /**
+     * @type {LocationGeo}
+     * @memberof ExtendedCompanyDto
+     */
+    location?: LocationGeo;
+}
+
 /**
  * Check if a given object implements the CompanyDto interface.
  */
@@ -83,6 +91,25 @@ export function CompanyDtoFromJSONTyped(json: any, ignoreDiscriminator: boolean)
         'website': json['website'] == null ? undefined : json['website'],
         'linkedinUrl': json['linkedinUrl'] == null ? undefined : json['linkedinUrl'],
         'logo': json['logo'] == null ? undefined : json['logo'],
+    };
+}
+
+export function ExtendedCompanyDtoFromJSON(json: any): ExtendedCompanyDto {
+    return ExtendedCompanyDtoFromJSONTyped(json, false);
+}
+
+export function ExtendedCompanyDtoFromJSONTyped(json: any, ignoreDiscriminator: boolean): ExtendedCompanyDto {
+    if (json == null) {
+        return json;
+    }
+    return {
+        'id': json['id'],
+        'name': json['name'],
+        'industry': json['industry'],
+        'website': json['website'] == null ? undefined : json['website'],
+        'linkedinUrl': json['linkedinUrl'] == null ? undefined : json['linkedinUrl'],
+        'logo': json['logo'] == null ? undefined : json['logo'],
+        'location': json['location'] == null ? undefined : LocationGeoFromJSON(json['location']),
     };
 }
 

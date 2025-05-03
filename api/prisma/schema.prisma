@@ -162,6 +162,7 @@ model Location {
   Alumni         Alumni[]
   Problematic    ProblematicLocation[]
   Role           Role[]
+  ReviewCompany  ReviewCompany[]
   ReviewLocation ReviewLocation[]
   Company        Company[]
 
@@ -242,6 +243,7 @@ model ReviewCompany {
   id          String   @id @default(dbgenerated("gen_random_uuid()"))
   alumniId    String   @map("alumni_id")
   companyId   String   @map("company_id")
+  locationId  String   @map("location_id")
   rating      Int      @db.SmallInt
   description String?
   upvotes     Int      @default(0) @db.SmallInt
@@ -251,6 +253,7 @@ model ReviewCompany {
 
   Alumni  Alumni  @relation(fields: [alumniId], references: [id])
   Company Company @relation(fields: [companyId], references: [id])
+  Location Location @relation(fields: [locationId], references: [id])
 
   @@map("review_company")
 }
