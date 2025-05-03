@@ -87,6 +87,7 @@ class LinkedInCompanyResponse(BaseModel):
     industries: Optional[str] = None
     logo: Optional[str] = None
     website: Optional[str] = None
+    crunchbase_url: Optional[str] = None
     founded: Optional[int] = None
     company_size: Optional[str] = None
 
