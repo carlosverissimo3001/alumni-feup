@@ -12,33 +12,40 @@ export class LinkedinAuthDto {
   })
   @IsString()
   @IsNotEmpty()
-  person_id: string;
+  personId: string;
 
   @ApiProperty({
     description: 'The first name of the member.',
   })
   @IsString()
   @IsNotEmpty()
-  first_name: string;
+  firstName: string;
 
   @ApiProperty({
     description: 'The first name of the member.',
   })
   @IsString()
   @IsNotEmpty()
-  last_name: string;
+  lastName: string;
 
   @ApiPropertyOptional({
     description: 'The personal email of the member.',
   })
   @IsString()
   @IsOptional()
-  institutional_email?: string;
+  personalEmail?: string;
 
   @ApiPropertyOptional({
     description: "The URL of the member's profile picture.",
   })
   @IsString()
   @IsOptional()
-  profile_picture_url?: string;
+  profilePictureUrl?: string;
+
+  @ApiPropertyOptional({
+    description: 'The LinkedIn URL of the member.',
+  })
+  @IsString()
+  @IsOptional()
+  linkedinUrl?: string;
 }

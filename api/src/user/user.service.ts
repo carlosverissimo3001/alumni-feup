@@ -4,7 +4,6 @@ import {
   UserAuthResponse,
   VerifyEmailDto,
   VerifyEmailTokenDto,
-  LinkedinConfirmDto,
 } from '@/dto';
 import { PrismaService } from '../prisma/prisma.service';
 import { JwtService } from '@nestjs/jwt';
@@ -24,38 +23,52 @@ export class UserService {
 
   async linkedinAuth(body: LinkedinAuthDto): Promise<UserAuthResponse> {
     this.logger.log(
-      `LinkedIn auth attempt for user: ${body.first_name} ${body.last_name} with personId: ${body.person_id}`,
+      `LinkedIn auth attempt for user: ${body.firstName} ${body.lastName} with personId: ${body.personId}`,
     );
 
-    // 1. Try to find a match using person ID
+    // Try to find a match using person ID
     const alumni = await this.prisma.alumni.findFirst({
       where: {
-        personId: body.person_id,
+        personId: body.personId,
       },
     });
 
     // If no match found, throw an unauthorized exception
     if (!alumni) {
       this.logger.warn(
-        `No alumni match found for LinkedIn user: ${body.person_id}`,
+        `No alumni match found for LinkedIn user: ${body.personId}`,
       );
 
       return {
         status: UserStatus.UNMATCHED,
-        personId: body.person_id,
+        personId: body.personId,
       };
     }
 
     this.logger.log(
-      `Found alumni match for LinkedIn user: ${body.person_id} with alumni: ${alumni.id}`,
+      `Found alumni match for LinkedIn user: ${body.personId} with alumni: ${alumni.id}`,
     );
+
+    // Update the personalEmail, if it exists in the payload
+    if (body.personalEmail) {
+      await this.prisma.alumni.update({
+        where: { id: alumni.id },
+        data: { personalEmail: body.personalEmail },
+      });
+    }
+
+    // Set the metadata
+    await this.prisma.alumni.update({
+      where: { id: alumni.id },
+      data: { metadata: JSON.stringify(body) },
+    });
 
     // 3. Generate a JWT token
     const payload = {
       sub: alumni.id,
       firstName: alumni.firstName,
       lastName: alumni.lastName,
-      personId: body.person_id,
+      personId: body.personId,
     };
 
     const token = this.jwtService.sign(payload, {
@@ -115,8 +128,16 @@ export class UserService {
     }
   }
 
-  async linkedinConfirm(body: LinkedinConfirmDto): Promise<UserAuthResponse> {
+  async linkedinConfirm(body: LinkedinAuthDto): Promise<UserAuthResponse> {
     const { personId, linkedinUrl } = body;
+
+    if (!linkedinUrl) {
+      throw new HttpException(
+        'LinkedIn URL is required',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
     const sanitizedLinkedinUrl = sanitizeLinkedinUrl(linkedinUrl);
 
     this.logger.log(
@@ -141,6 +162,12 @@ export class UserService {
       data: {
         personId,
       },
+    });
+
+    // and set the metadata
+    await this.prisma.alumni.update({
+      where: { id: alumni.id },
+      data: { metadata: JSON.stringify(body) },
     });
 
     const payload = {
