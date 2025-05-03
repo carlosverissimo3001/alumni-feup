@@ -3,7 +3,6 @@ import { ApiOperation, ApiTags, ApiResponse } from '@nestjs/swagger';
 import { UserService } from './user.service';
 import {
   LinkedinAuthDto,
-  LinkedinConfirmDto,
   UserAuthResponse,
   VerifyEmailDto,
   VerifyEmailTokenDto,
@@ -63,7 +62,9 @@ export class UserController {
     description: 'User authenticated successfully',
     type: UserAuthResponse,
   })
-  async linkedinConfirm(@Body() body: LinkedinConfirmDto): Promise<UserAuthResponse> {
+  async linkedinConfirm(
+    @Body() body: LinkedinAuthDto,
+  ): Promise<UserAuthResponse> {
     return this.userService.linkedinConfirm(body);
   }
 }
