@@ -20,6 +20,7 @@ import { ReviewDTO } from '@/dto/review.dto'; */
 import { AlumniRepository } from '@/alumni/repositories/alumni.repository';
 import { GetReviewGeoJSONDto } from '@/dto/getreviewgeojson.dto';
 import { ReviewType } from '@/entities/reviewgeojson.entity';
+import { CreateReviewDto } from '@/dto/create-review.dto'; 
 
 type ReviewsGrouped = {
   coordinates: [number, number];
@@ -362,4 +363,46 @@ export class ReviewService {
 
     return acc;
   }
+
+  async create(body: CreateReviewDto): Promise<void> {
+    if(body.reviewType === ReviewType.COMPANY.toString()) {
+      if (body.companyId === undefined || body.locationId === undefined) {
+        throw new HttpException(
+          'Missing Company or Location.',
+          HttpStatus.CONFLICT,
+        );
+      }
+      await this.prisma.reviewCompany.create({
+        data: {
+          description: body.description,
+          rating: body.rating,
+          upvotes: 0,
+          downvotes: 0,
+          alumniId: body.alumniId,
+          companyId: body.companyId!,
+          locationId: body.locationId!
+        },
+      });
+    }
+    else if(body.reviewType === ReviewType.LOCATION.toString()) { 
+      if (body.locationId === undefined) {
+        throw new HttpException(
+          'Missing Location.',
+          HttpStatus.CONFLICT,
+        );
+      }
+      await this.prisma.reviewLocation.create({
+        data: {
+          description: body.description,
+          rating: body.rating,
+          upvotes: 0,
+          downvotes: 0,
+          alumniId: body.alumniId,
+          locationId: body.locationId!,
+        },
+      });
+    }
+    return;
+  }
+
 }

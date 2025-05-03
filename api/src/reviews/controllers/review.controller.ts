@@ -13,6 +13,7 @@ import {
     import { GetGeoJSONDto } from '@/dto';
     import { ReviewService } from '../services/review.service';
     import { GetReviewGeoJSONDto } from '@/dto/getreviewgeojson.dto';
+import { CreateReviewDto } from '@/dto/create-review.dto';
   
     @ApiTags('V1', 'Reviews')
     @Controller('reviews')
@@ -33,33 +34,18 @@ import {
         ): Promise<ReviewGeoJSONFeatureCollection> {
         return this.reviewService.findAllGeoJSON(getGeoJSONDto);
         }
-
-        // @Get('geoJSON')
-        // @HttpCode(HttpStatus.OK)
-        // @ApiOperation({
-        //     summary: 'Get all alumni to be displayed in the map',
-        // })
-        // @ApiResponse({
-        //     description: 'Returns all alumni to be displayed in the map',
-        //     type: GeoJSONFeatureCollection,
-        // })
-        // async findAllGeoJSON(
-        //     @Query() getGeoJSONDto: GetGeoJSONDto,
-        // ): Promise<GeoJSONFeatureCollection> {
-        //     return this.alumniService.findAllGeoJSON(getGeoJSONDto);
-        // }
     
-        // @Post()
-        // @HttpCode(HttpStatus.CREATED)
-        // @ApiOperation({ summary: 'Create a new review' })
-        // @ApiResponse({
-        //   description: 'Returns the created review',
-        //   type: Review,
-        // })
-        // async create(
-        //   @Body() createAlumniDto: CreateAlumniDto,
-        // ): Promise<Review | null> {
-        //   return this.alumniService.create(createAlumniDto);
-        // }
+        @Post()
+        @HttpCode(HttpStatus.CREATED)
+        @ApiOperation({ summary: 'Create a new review' })
+        @ApiResponse({
+          description: 'Returns the created review',
+          
+        })
+        async create(
+          @Body() createReviewDto: CreateReviewDto,
+        ): Promise<void> {
+          return this.reviewService.create(createReviewDto);
+        }
 }
   

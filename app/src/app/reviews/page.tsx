@@ -8,6 +8,7 @@ import { GeoJSONFeatureCollection } from "@/sdk";
 
 import ReviewMapView from '@/components/map/reviews/reviewMapView';
 import ReviewMapFilters from '@/components/map/reviews/reviewMapFilters';
+import ReviewButton from './review-button';
 
 // Type definitions
 interface Coordinates {
@@ -72,6 +73,7 @@ const ReviewMapComponent = () => {
         handleSelectReviews={handleSelectReviews}
         handleSelectGeoJSON={handleSelectGeoJSON}
       />
+      <ReviewButton />
     </>
   );
 };
