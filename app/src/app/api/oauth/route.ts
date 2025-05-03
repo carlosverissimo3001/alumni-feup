@@ -4,17 +4,6 @@ import fetch from 'node-fetch';
 import { LinkedinAuthDto, UserAuthResponseStatusEnum as UserStatus} from '@/sdk';
 import NestApi from "@/api";
 
-// Define the response type from our backend
-interface AuthResponse {
-  access_token: string;
-  user: {
-    id: string;
-    firstName: string;
-    lastName: string;
-    profilePictureUrl?: string;
-  };
-}
-
 export async function GET(req: NextRequest) {
   const url = new URL(req.url);
   const code = url.searchParams.get('code');
@@ -58,12 +47,12 @@ export async function GET(req: NextRequest) {
       const profileData : ProfileResponse = await profileResponse.json() as ProfileResponse;
 
       const linkedinAuthData: LinkedinAuthDto = {
-          personId: profileData.sub,
-          firstName: profileData.given_name,
-          lastName: profileData.family_name,
-          institutionalEmail: profileData.email,
-          profilePictureUrl: profileData.picture,
-      } 
+        personId: profileData.sub,
+        firstName: profileData.given_name,
+        lastName: profileData.family_name,
+        personalEmail: profileData.email,
+        profilePictureUrl: profileData.picture,
+      };
       
       try {
         const authResponse = await NestApi.userControllerLinkedinAuth({ linkedinAuthDto: linkedinAuthData });
@@ -71,9 +60,18 @@ export async function GET(req: NextRequest) {
         // Did we find a match?
         // Nope
         if (authResponse.status === UserStatus.Unmatched) {
-          // Let's redirect to the LinkedIn confirm page
-          // With the personId in the params 
-          return NextResponse.redirect(new URL('/auth/linkedin-confirm/' + authResponse.personId, process.env.NEXT_PUBLIC_APP_URL).toString());
+          const redirectUrl = new URL('/auth/linkedin-confirm', process.env.NEXT_PUBLIC_APP_URL);
+          const response = NextResponse.redirect(redirectUrl.toString());
+        
+          response.cookies.set('linkedin_person_id', profileData.sub, { path: '/', maxAge: 300 });
+          response.cookies.set('linkedin_first_name', profileData.given_name, { path: '/', maxAge: 300 });
+          response.cookies.set('linkedin_last_name', profileData.family_name, { path: '/', maxAge: 300 });
+          response.cookies.set('linkedin_profile_picture_url', profileData.picture, { path: '/', maxAge: 300 });
+          if (profileData.email) {
+            response.cookies.set('linkedin_personal_email', profileData.email, { path: '/', maxAge: 300 });
+          }
+        
+          return response;
         }
 
         // Create a redirect response
@@ -92,10 +90,10 @@ export async function GET(req: NextRequest) {
         
         // Set user data in a cookie (non-sensitive information)
         responseRedirect.cookies.set('user', JSON.stringify(authResponse.user), {
-          httpOnly: false, // Allow JavaScript access
+          httpOnly: false,
           secure: process.env.NODE_ENV === 'production',
           sameSite: 'lax',
-          maxAge: 60 * 60 * 24, // 1 day
+          maxAge: 60 * 60 * 24,
           path: '/',
         });
         
