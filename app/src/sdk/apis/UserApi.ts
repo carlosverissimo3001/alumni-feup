@@ -16,17 +16,38 @@
 import * as runtime from '../runtime';
 import type {
   LinkedinAuthDto,
+  LinkedinConfirmDto,
   UserAuthResponse,
+  VerifyEmailDto,
+  VerifyEmailTokenDto,
 } from '../models/index';
 import {
     LinkedinAuthDtoFromJSON,
     LinkedinAuthDtoToJSON,
+    LinkedinConfirmDtoFromJSON,
+    LinkedinConfirmDtoToJSON,
     UserAuthResponseFromJSON,
     UserAuthResponseToJSON,
+    VerifyEmailDtoFromJSON,
+    VerifyEmailDtoToJSON,
+    VerifyEmailTokenDtoFromJSON,
+    VerifyEmailTokenDtoToJSON,
 } from '../models/index';
 
 export interface UserControllerLinkedinAuthRequest {
     linkedinAuthDto: LinkedinAuthDto;
+}
+
+export interface UserControllerLinkedinConfirmRequest {
+    linkedinConfirmDto: LinkedinConfirmDto;
+}
+
+export interface UserControllerVerifyEmailRequest {
+    verifyEmailDto: VerifyEmailDto;
+}
+
+export interface UserControllerVerifyEmailTokenRequest {
+    verifyEmailTokenDto: VerifyEmailTokenDto;
 }
 
 /**
@@ -50,6 +71,51 @@ export interface UserApiInterface {
      * Authenticate a user with LinkedIn
      */
     userControllerLinkedinAuth(requestParameters: UserControllerLinkedinAuthRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UserAuthResponse>;
+
+    /**
+     * 
+     * @summary Confirm the LinkedIn profile and generate a JWT token
+     * @param {LinkedinConfirmDto} linkedinConfirmDto 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof UserApiInterface
+     */
+    userControllerLinkedinConfirmRaw(requestParameters: UserControllerLinkedinConfirmRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserAuthResponse>>;
+
+    /**
+     * Confirm the LinkedIn profile and generate a JWT token
+     */
+    userControllerLinkedinConfirm(requestParameters: UserControllerLinkedinConfirmRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UserAuthResponse>;
+
+    /**
+     * 
+     * @summary Verify the email of the alumni by generating a token and sending it to the email
+     * @param {VerifyEmailDto} verifyEmailDto 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof UserApiInterface
+     */
+    userControllerVerifyEmailRaw(requestParameters: UserControllerVerifyEmailRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>>;
+
+    /**
+     * Verify the email of the alumni by generating a token and sending it to the email
+     */
+    userControllerVerifyEmail(requestParameters: UserControllerVerifyEmailRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void>;
+
+    /**
+     * 
+     * @summary Validate the token against the email
+     * @param {VerifyEmailTokenDto} verifyEmailTokenDto 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof UserApiInterface
+     */
+    userControllerVerifyEmailTokenRaw(requestParameters: UserControllerVerifyEmailTokenRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>>;
+
+    /**
+     * Validate the token against the email
+     */
+    userControllerVerifyEmailToken(requestParameters: UserControllerVerifyEmailTokenRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void>;
 
 }
 
@@ -92,6 +158,112 @@ export class UserApi extends runtime.BaseAPI implements UserApiInterface {
     async userControllerLinkedinAuth(requestParameters: UserControllerLinkedinAuthRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UserAuthResponse> {
         const response = await this.userControllerLinkedinAuthRaw(requestParameters, initOverrides);
         return await response.value();
+    }
+
+    /**
+     * Confirm the LinkedIn profile and generate a JWT token
+     */
+    async userControllerLinkedinConfirmRaw(requestParameters: UserControllerLinkedinConfirmRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserAuthResponse>> {
+        if (requestParameters['linkedinConfirmDto'] == null) {
+            throw new runtime.RequiredError(
+                'linkedinConfirmDto',
+                'Required parameter "linkedinConfirmDto" was null or undefined when calling userControllerLinkedinConfirm().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
+
+        const response = await this.request({
+            path: `/api/user/linkedin-confirm`,
+            method: 'POST',
+            headers: headerParameters,
+            query: queryParameters,
+            body: LinkedinConfirmDtoToJSON(requestParameters['linkedinConfirmDto']),
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => UserAuthResponseFromJSON(jsonValue));
+    }
+
+    /**
+     * Confirm the LinkedIn profile and generate a JWT token
+     */
+    async userControllerLinkedinConfirm(requestParameters: UserControllerLinkedinConfirmRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UserAuthResponse> {
+        const response = await this.userControllerLinkedinConfirmRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Verify the email of the alumni by generating a token and sending it to the email
+     */
+    async userControllerVerifyEmailRaw(requestParameters: UserControllerVerifyEmailRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+        if (requestParameters['verifyEmailDto'] == null) {
+            throw new runtime.RequiredError(
+                'verifyEmailDto',
+                'Required parameter "verifyEmailDto" was null or undefined when calling userControllerVerifyEmail().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
+
+        const response = await this.request({
+            path: `/api/user/verify-email`,
+            method: 'POST',
+            headers: headerParameters,
+            query: queryParameters,
+            body: VerifyEmailDtoToJSON(requestParameters['verifyEmailDto']),
+        }, initOverrides);
+
+        return new runtime.VoidApiResponse(response);
+    }
+
+    /**
+     * Verify the email of the alumni by generating a token and sending it to the email
+     */
+    async userControllerVerifyEmail(requestParameters: UserControllerVerifyEmailRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+        await this.userControllerVerifyEmailRaw(requestParameters, initOverrides);
+    }
+
+    /**
+     * Validate the token against the email
+     */
+    async userControllerVerifyEmailTokenRaw(requestParameters: UserControllerVerifyEmailTokenRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+        if (requestParameters['verifyEmailTokenDto'] == null) {
+            throw new runtime.RequiredError(
+                'verifyEmailTokenDto',
+                'Required parameter "verifyEmailTokenDto" was null or undefined when calling userControllerVerifyEmailToken().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
+
+        const response = await this.request({
+            path: `/api/user/verify-email/token`,
+            method: 'POST',
+            headers: headerParameters,
+            query: queryParameters,
+            body: VerifyEmailTokenDtoToJSON(requestParameters['verifyEmailTokenDto']),
+        }, initOverrides);
+
+        return new runtime.VoidApiResponse(response);
+    }
+
+    /**
+     * Validate the token against the email
+     */
+    async userControllerVerifyEmailToken(requestParameters: UserControllerVerifyEmailTokenRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+        await this.userControllerVerifyEmailTokenRaw(requestParameters, initOverrides);
     }
 
 }

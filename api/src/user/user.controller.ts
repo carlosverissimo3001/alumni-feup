@@ -1,7 +1,13 @@
 import { Controller, Post, Body, HttpCode, HttpStatus } from '@nestjs/common';
 import { ApiOperation, ApiTags, ApiResponse } from '@nestjs/swagger';
 import { UserService } from './user.service';
-import { LinkedinAuthDto, UserAuthResponse } from '@/dto';
+import {
+  LinkedinAuthDto,
+  LinkedinConfirmDto,
+  UserAuthResponse,
+  VerifyEmailDto,
+  VerifyEmailTokenDto,
+} from '@/dto';
 
 @ApiTags('V1', 'User')
 @Controller('user')
@@ -24,12 +30,40 @@ export class UserController {
     return this.userService.linkedinAuth(body);
   }
 
-  /* @Post('logout')
+  @Post('verify-email')
   @HttpCode(HttpStatus.OK)
-  @ApiOperation({ summary: 'Logout a user' })
-  async logout() {
-    return this.userService.logout();
+  @ApiOperation({
+    summary:
+      'Verify the email of the alumni by generating a token and sending it to the email',
+  })
+  @ApiResponse({
+    description: 'Returns the verified email',
+  })
+  async verifyEmail(@Body() body: VerifyEmailDto): Promise<void> {
+    return this.userService.verifyEmail(body);
+  }
 
-    Should we "blacklist" the token? Or just let it expire?
-  } */
+  @Post('verify-email/token')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Validate the token against the email' })
+  @ApiResponse({
+    description: 'Returns the status of the validation',
+  })
+  async verifyEmailToken(@Body() body: VerifyEmailTokenDto): Promise<void> {
+    return this.userService.verifyEmailToken(body);
+  }
+
+  @Post('linkedin-confirm')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({
+    summary: 'Confirm the LinkedIn profile and generate a JWT token',
+  })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'User authenticated successfully',
+    type: UserAuthResponse,
+  })
+  async linkedinConfirm(@Body() body: LinkedinConfirmDto): Promise<UserAuthResponse> {
+    return this.userService.linkedinConfirm(body);
+  }
 }

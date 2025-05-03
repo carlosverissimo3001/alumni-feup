@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { TokenResponse, ProfileResponse } from './consts';
 import fetch from 'node-fetch'; 
-import { LinkedinAuthDto } from '@/sdk/api';
+import { LinkedinAuthDto, UserAuthResponseStatusEnum as UserStatus} from '@/sdk';
+import NestApi from "@/api";
 
 // Define the response type from our backend
 interface AuthResponse {
@@ -57,37 +58,31 @@ export async function GET(req: NextRequest) {
       const profileData : ProfileResponse = await profileResponse.json() as ProfileResponse;
 
       const linkedinAuthData: LinkedinAuthDto = {
-          person_id: profileData.sub,
-          first_name: profileData.given_name,
-          last_name: profileData.family_name,
-          institutional_email: profileData.email,
-          profile_picture_url: profileData.picture,
+          personId: profileData.sub,
+          firstName: profileData.given_name,
+          lastName: profileData.family_name,
+          institutionalEmail: profileData.email,
+          profilePictureUrl: profileData.picture,
       } 
-
+      
       try {
-        // Call the backend API to authenticate the user
-        // TODO: Change this to use the SDK instead of fetch
-        const authResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/user/linkedinAuth`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(linkedinAuthData),
-        });
+        const authResponse = await NestApi.userControllerLinkedinAuth({ linkedinAuthDto: linkedinAuthData });
 
-        if (!authResponse.ok) {
-          const errorData = await authResponse.json() as { message?: string };
-          return NextResponse.json({ error: errorData.message || 'Authentication failed' }, { status: authResponse.status });
+        // Did we find a match?
+        // Nope
+        if (authResponse.status === UserStatus.Unmatched) {
+          // Let's redirect to the LinkedIn confirm page
+          // With the personId in the params 
+          return NextResponse.redirect(new URL('/auth/linkedin-confirm/' + authResponse.personId, process.env.NEXT_PUBLIC_APP_URL).toString());
         }
 
-        const authData = await authResponse.json() as AuthResponse;
-        
         // Create a redirect response
         const redirectUrl = new URL('/analytics', process.env.NEXT_PUBLIC_APP_URL).toString();
         const responseRedirect = NextResponse.redirect(redirectUrl);
         
         // Set the token in a cookie
-        responseRedirect.cookies.set('auth_token', authData.access_token, {
+        // Safe to assert on the accessToken as we know the user is matched
+        responseRedirect.cookies.set('auth_token', authResponse.accessToken!, {
           httpOnly: true,
           secure: process.env.NODE_ENV === 'production',
           sameSite: 'lax',
@@ -96,7 +91,7 @@ export async function GET(req: NextRequest) {
         });
         
         // Set user data in a cookie (non-sensitive information)
-        responseRedirect.cookies.set('user', JSON.stringify(authData.user), {
+        responseRedirect.cookies.set('user', JSON.stringify(authResponse.user), {
           httpOnly: false, // Allow JavaScript access
           secure: process.env.NODE_ENV === 'production',
           sameSite: 'lax',

@@ -36,6 +36,7 @@ models/IndustryListItemDto.ts
 models/IndustryListResponseDto.ts
 models/IndustryOptionDto.ts
 models/LinkedinAuthDto.ts
+models/LinkedinConfirmDto.ts
 models/LocationGeo.ts
 models/MarkAsReviewedDto.ts
 models/ReviewCompany.ts

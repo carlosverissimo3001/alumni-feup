@@ -11,13 +11,7 @@ import {
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { AlumniService } from '../services/alumni.service';
 import { Alumni, GeoJSONFeatureCollection } from '@/entities';
-import {
-  CreateAlumniDto,
-  GetGeoJSONDto,
-  MarkAsReviewedDto,
-  VerifyEmailDto,
-  VerifyEmailTokenDto,
-} from '@/dto';
+import { CreateAlumniDto, GetGeoJSONDto, MarkAsReviewedDto } from '@/dto';
 import { AlumniExtended } from '@/entities/alumni.entity';
 import { AlumniProfileService } from '../services/alumni-profile.service';
 import { BasicAlumniProfileDto } from '../dto/basic-alumni-profile.dto';
@@ -108,29 +102,6 @@ export class AlumniController {
     @Body() createAlumniDto: CreateAlumniDto,
   ): Promise<Alumni | null> {
     return this.alumniService.create(createAlumniDto);
-  }
-
-  @Post('verify-email')
-  @HttpCode(HttpStatus.OK)
-  @ApiOperation({
-    summary:
-      'Verify the email of the alumni by generating a token and sending it to the email',
-  })
-  @ApiResponse({
-    description: 'Returns the verified email',
-  })
-  async verifyEmail(@Body() body: VerifyEmailDto): Promise<void> {
-    return this.alumniService.verifyEmail(body);
-  }
-
-  @Post('verify-email/token')
-  @HttpCode(HttpStatus.OK)
-  @ApiOperation({ summary: 'Validate the token against the email' })
-  @ApiResponse({
-    description: 'Returns the status of the validation',
-  })
-  async verifyEmailToken(@Body() body: VerifyEmailTokenDto): Promise<void> {
-    return this.alumniService.verifyEmailToken(body);
   }
 
   @Get('basic-profile/:id')

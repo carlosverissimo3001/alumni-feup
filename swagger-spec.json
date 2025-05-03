@@ -275,58 +275,6 @@
         ]
       }
     },
-    "/api/alumni/verify-email": {
-      "post": {
-        "operationId": "AlumniController_verifyEmail",
-        "parameters": [],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/VerifyEmailDto"
-              }
-            }
-          }
-        },
-        "responses": {
-          "default": {
-            "description": "Returns the verified email"
-          }
-        },
-        "summary": "Verify the email of the alumni by generating a token and sending it to the email",
-        "tags": [
-          "V1",
-          "Alumni"
-        ]
-      }
-    },
-    "/api/alumni/verify-email/token": {
-      "post": {
-        "operationId": "AlumniController_verifyEmailToken",
-        "parameters": [],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/VerifyEmailTokenDto"
-              }
-            }
-          }
-        },
-        "responses": {
-          "default": {
-            "description": "Returns the status of the validation"
-          }
-        },
-        "summary": "Validate the token against the email",
-        "tags": [
-          "V1",
-          "Alumni"
-        ]
-      }
-    },
     "/api/alumni/basic-profile/{id}": {
       "get": {
         "operationId": "AlumniController_getBasicProfile",
@@ -1784,6 +1732,91 @@
         ]
       }
     },
+    "/api/user/verify-email": {
+      "post": {
+        "operationId": "UserController_verifyEmail",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/VerifyEmailDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "default": {
+            "description": "Returns the verified email"
+          }
+        },
+        "summary": "Verify the email of the alumni by generating a token and sending it to the email",
+        "tags": [
+          "V1",
+          "User"
+        ]
+      }
+    },
+    "/api/user/verify-email/token": {
+      "post": {
+        "operationId": "UserController_verifyEmailToken",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/VerifyEmailTokenDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "default": {
+            "description": "Returns the status of the validation"
+          }
+        },
+        "summary": "Validate the token against the email",
+        "tags": [
+          "V1",
+          "User"
+        ]
+      }
+    },
+    "/api/user/linkedin-confirm": {
+      "post": {
+        "operationId": "UserController_linkedinConfirm",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LinkedinConfirmDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "User authenticated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserAuthResponse"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Confirm the LinkedIn profile and generate a JWT token",
+        "tags": [
+          "V1",
+          "User"
+        ]
+      }
+    },
     "/api/files": {
       "post": {
         "operationId": "FileUploadController_create",
@@ -2524,35 +2557,6 @@
           "facultyId"
         ]
       },
-      "VerifyEmailDto": {
-        "type": "object",
-        "properties": {
-          "email": {
-            "type": "string",
-            "description": "The email of the alumni"
-          }
-        },
-        "required": [
-          "email"
-        ]
-      },
-      "VerifyEmailTokenDto": {
-        "type": "object",
-        "properties": {
-          "email": {
-            "type": "string",
-            "description": "The email of the alumni"
-          },
-          "token": {
-            "type": "string",
-            "description": "The OTP token of the alumni"
-          }
-        },
-        "required": [
-          "email",
-          "token"
-        ]
-      },
       "CurrentRoleDto": {
         "type": "object",
         "properties": {
@@ -2935,10 +2939,6 @@
           "profile_picture_url": {
             "type": "string",
             "description": "The URL of the member's profile picture."
-          },
-          "linkedin_url": {
-            "type": "string",
-            "description": "The LinkedIn URL of the member."
           }
         },
         "required": [
@@ -2978,20 +2978,80 @@
         "properties": {
           "access_token": {
             "type": "string",
-            "description": "The access token of the user"
+            "description": "The access token of the user",
+            "nullable": true
           },
           "user": {
             "description": "The user object",
+            "nullable": true,
             "allOf": [
               {
                 "$ref": "#/components/schemas/User"
               }
             ]
+          },
+          "status": {
+            "type": "string",
+            "description": "The status of the user",
+            "enum": [
+              "matched",
+              "unmatched"
+            ]
+          },
+          "personId": {
+            "type": "string",
+            "description": "The person ID of the user",
+            "nullable": true
           }
         },
         "required": [
-          "access_token",
-          "user"
+          "status"
+        ]
+      },
+      "VerifyEmailDto": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "The email of the alumni"
+          }
+        },
+        "required": [
+          "email"
+        ]
+      },
+      "VerifyEmailTokenDto": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "The email of the alumni"
+          },
+          "token": {
+            "type": "string",
+            "description": "The OTP token of the alumni"
+          }
+        },
+        "required": [
+          "email",
+          "token"
+        ]
+      },
+      "LinkedinConfirmDto": {
+        "type": "object",
+        "properties": {
+          "linkedinUrl": {
+            "type": "string",
+            "description": "The LinkedIn URL of the user"
+          },
+          "personId": {
+            "type": "string",
+            "description": "The person ID of the user"
+          }
+        },
+        "required": [
+          "linkedinUrl",
+          "personId"
         ]
       },
       "UploadExtractionDto": {
