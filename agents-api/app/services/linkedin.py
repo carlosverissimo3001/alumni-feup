@@ -330,6 +330,7 @@ class LinkedInService:
             logo=company_logo_url,
             founded=company_response.founded,
             website=clean_website_url(company_response.website),
+            crunchbase_url=clean_website_url(company_response.crunchbase_url),
             company_size=convert_company_size_to_enum(company_response.company_size),
         )
 

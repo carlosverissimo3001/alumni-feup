@@ -111,6 +111,7 @@ class Company(Base):
     logo = Column(String, nullable=True)
     founded = Column(Integer, nullable=True)
     website = Column(String, nullable=True)
+    crunchbase_url = Column(String, nullable=True)
     company_size = Column(Enum(CompanySize), nullable=True)
     created_at = Column(DateTime, nullable=False, server_default="now()")
     updated_at = Column(
