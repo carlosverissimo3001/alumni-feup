@@ -44,8 +44,8 @@ export interface CompaniesAnalyticsControllerGetCompaniesWithAlumniCountRequest 
     startDate?: string;
     endDate?: string;
     courseIds?: Array<string>;
-    companyIds?: Array<string>;
     graduationYears?: Array<string>;
+    companyIds?: Array<string>;
     industryIds?: Array<string>;
     countries?: Array<string>;
     cityIds?: Array<string>;
@@ -55,6 +55,7 @@ export interface CompaniesAnalyticsControllerGetCompaniesWithAlumniCountRequest 
     companySearch?: string;
     industrySearch?: string;
     companySize?: Array<CompaniesAnalyticsControllerGetCompaniesWithAlumniCountCompanySizeEnum>;
+    companyType?: Array<CompaniesAnalyticsControllerGetCompaniesWithAlumniCountCompanyTypeEnum>;
     limit?: number;
     offset?: number;
     search?: string;
@@ -67,8 +68,8 @@ export interface CompaniesAnalyticsControllerGetCompanyDetailsRequest {
     startDate?: string;
     endDate?: string;
     courseIds?: Array<string>;
-    companyIds?: Array<string>;
     graduationYears?: Array<string>;
+    companyIds?: Array<string>;
     industryIds?: Array<string>;
     countries?: Array<string>;
     cityIds?: Array<string>;
@@ -78,6 +79,7 @@ export interface CompaniesAnalyticsControllerGetCompanyDetailsRequest {
     companySearch?: string;
     industrySearch?: string;
     companySize?: Array<CompaniesAnalyticsControllerGetCompanyDetailsCompanySizeEnum>;
+    companyType?: Array<CompaniesAnalyticsControllerGetCompanyDetailsCompanyTypeEnum>;
     limit?: number;
     offset?: number;
     search?: string;
@@ -89,8 +91,8 @@ export interface CompaniesAnalyticsControllerGetHotCompaniesRequest {
     startDate?: string;
     endDate?: string;
     courseIds?: Array<string>;
-    companyIds?: Array<string>;
     graduationYears?: Array<string>;
+    companyIds?: Array<string>;
     industryIds?: Array<string>;
     countries?: Array<string>;
     cityIds?: Array<string>;
@@ -100,6 +102,7 @@ export interface CompaniesAnalyticsControllerGetHotCompaniesRequest {
     companySearch?: string;
     industrySearch?: string;
     companySize?: Array<CompaniesAnalyticsControllerGetHotCompaniesCompanySizeEnum>;
+    companyType?: Array<CompaniesAnalyticsControllerGetHotCompaniesCompanyTypeEnum>;
     limit?: number;
     offset?: number;
     search?: string;
@@ -115,8 +118,8 @@ export interface CountriesAnalyticsControllerGetCountriesWithAlumniCountRequest 
     startDate?: string;
     endDate?: string;
     courseIds?: Array<string>;
-    companyIds?: Array<string>;
     graduationYears?: Array<string>;
+    companyIds?: Array<string>;
     industryIds?: Array<string>;
     countries?: Array<string>;
     cityIds?: Array<string>;
@@ -126,6 +129,7 @@ export interface CountriesAnalyticsControllerGetCountriesWithAlumniCountRequest 
     companySearch?: string;
     industrySearch?: string;
     companySize?: Array<CountriesAnalyticsControllerGetCountriesWithAlumniCountCompanySizeEnum>;
+    companyType?: Array<CountriesAnalyticsControllerGetCountriesWithAlumniCountCompanyTypeEnum>;
     limit?: number;
     offset?: number;
     search?: string;
@@ -137,8 +141,8 @@ export interface IndustriesAnalyticsControllerGetIndustryWithCountsRequest {
     startDate?: string;
     endDate?: string;
     courseIds?: Array<string>;
-    companyIds?: Array<string>;
     graduationYears?: Array<string>;
+    companyIds?: Array<string>;
     industryIds?: Array<string>;
     countries?: Array<string>;
     cityIds?: Array<string>;
@@ -148,6 +152,7 @@ export interface IndustriesAnalyticsControllerGetIndustryWithCountsRequest {
     companySearch?: string;
     industrySearch?: string;
     companySize?: Array<IndustriesAnalyticsControllerGetIndustryWithCountsCompanySizeEnum>;
+    companyType?: Array<IndustriesAnalyticsControllerGetIndustryWithCountsCompanyTypeEnum>;
     limit?: number;
     offset?: number;
     search?: string;
@@ -165,11 +170,11 @@ export interface AnalyticsApiInterface {
     /**
      * 
      * @summary Get the companies, and the number of alumni working in them.
-     * @param {string} [startDate] The start date of the query
-     * @param {string} [endDate] The end date of the query
+     * @param {string} [startDate] The start date of the role
+     * @param {string} [endDate] The end date of the role
      * @param {Array<string>} [courseIds] The course IDs to filter by
-     * @param {Array<string>} [companyIds] The company IDs to filter by
      * @param {Array<string>} [graduationYears] The graduation years to filter by
+     * @param {Array<string>} [companyIds] The company IDs to filter by
      * @param {Array<string>} [industryIds] The industry IDs to filter by
      * @param {Array<string>} [countries] The countries to filter by
      * @param {Array<string>} [cityIds] The cities ids to filter by
@@ -179,6 +184,7 @@ export interface AnalyticsApiInterface {
      * @param {string} [companySearch] Search query for companies
      * @param {string} [industrySearch] Search query for industries
      * @param {Array<'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G' | 'H' | 'I'>} [companySize] The company sizes to filter by
+     * @param {Array<'EDUCATIONAL' | 'GOVERNMENT_AGENCY' | 'NON_PROFIT' | 'PARTNERSHIP' | 'PRIVATELY_HELD' | 'PUBLIC_COMPANY' | 'SELF_EMPLOYED' | 'SELF_OWNED'>} [companyType] The company types to filter by
      * @param {number} [limit] The number of results to return
      * @param {number} [offset] The offset of the query
      * @param {string} [search] Broad search query
@@ -199,11 +205,11 @@ export interface AnalyticsApiInterface {
      * 
      * @summary Returns detailed information about a specific company.
      * @param {string} id 
-     * @param {string} [startDate] The start date of the query
-     * @param {string} [endDate] The end date of the query
+     * @param {string} [startDate] The start date of the role
+     * @param {string} [endDate] The end date of the role
      * @param {Array<string>} [courseIds] The course IDs to filter by
-     * @param {Array<string>} [companyIds] The company IDs to filter by
      * @param {Array<string>} [graduationYears] The graduation years to filter by
+     * @param {Array<string>} [companyIds] The company IDs to filter by
      * @param {Array<string>} [industryIds] The industry IDs to filter by
      * @param {Array<string>} [countries] The countries to filter by
      * @param {Array<string>} [cityIds] The cities ids to filter by
@@ -213,6 +219,7 @@ export interface AnalyticsApiInterface {
      * @param {string} [companySearch] Search query for companies
      * @param {string} [industrySearch] Search query for industries
      * @param {Array<'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G' | 'H' | 'I'>} [companySize] The company sizes to filter by
+     * @param {Array<'EDUCATIONAL' | 'GOVERNMENT_AGENCY' | 'NON_PROFIT' | 'PARTNERSHIP' | 'PRIVATELY_HELD' | 'PUBLIC_COMPANY' | 'SELF_EMPLOYED' | 'SELF_OWNED'>} [companyType] The company types to filter by
      * @param {number} [limit] The number of results to return
      * @param {number} [offset] The offset of the query
      * @param {string} [search] Broad search query
@@ -260,11 +267,11 @@ export interface AnalyticsApiInterface {
     /**
      * 
      * @summary Returns companies that have seen a spike in alumni employment.
-     * @param {string} [startDate] The start date of the query
-     * @param {string} [endDate] The end date of the query
+     * @param {string} [startDate] The start date of the role
+     * @param {string} [endDate] The end date of the role
      * @param {Array<string>} [courseIds] The course IDs to filter by
-     * @param {Array<string>} [companyIds] The company IDs to filter by
      * @param {Array<string>} [graduationYears] The graduation years to filter by
+     * @param {Array<string>} [companyIds] The company IDs to filter by
      * @param {Array<string>} [industryIds] The industry IDs to filter by
      * @param {Array<string>} [countries] The countries to filter by
      * @param {Array<string>} [cityIds] The cities ids to filter by
@@ -274,6 +281,7 @@ export interface AnalyticsApiInterface {
      * @param {string} [companySearch] Search query for companies
      * @param {string} [industrySearch] Search query for industries
      * @param {Array<'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G' | 'H' | 'I'>} [companySize] The company sizes to filter by
+     * @param {Array<'EDUCATIONAL' | 'GOVERNMENT_AGENCY' | 'NON_PROFIT' | 'PARTNERSHIP' | 'PRIVATELY_HELD' | 'PUBLIC_COMPANY' | 'SELF_EMPLOYED' | 'SELF_OWNED'>} [companyType] The company types to filter by
      * @param {number} [limit] The number of results to return
      * @param {number} [offset] The offset of the query
      * @param {string} [search] Broad search query
@@ -322,11 +330,11 @@ export interface AnalyticsApiInterface {
     /**
      * 
      * @summary Get the countries, and the number of alumni working in them.
-     * @param {string} [startDate] The start date of the query
-     * @param {string} [endDate] The end date of the query
+     * @param {string} [startDate] The start date of the role
+     * @param {string} [endDate] The end date of the role
      * @param {Array<string>} [courseIds] The course IDs to filter by
-     * @param {Array<string>} [companyIds] The company IDs to filter by
      * @param {Array<string>} [graduationYears] The graduation years to filter by
+     * @param {Array<string>} [companyIds] The company IDs to filter by
      * @param {Array<string>} [industryIds] The industry IDs to filter by
      * @param {Array<string>} [countries] The countries to filter by
      * @param {Array<string>} [cityIds] The cities ids to filter by
@@ -336,6 +344,7 @@ export interface AnalyticsApiInterface {
      * @param {string} [companySearch] Search query for companies
      * @param {string} [industrySearch] Search query for industries
      * @param {Array<'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G' | 'H' | 'I'>} [companySize] The company sizes to filter by
+     * @param {Array<'EDUCATIONAL' | 'GOVERNMENT_AGENCY' | 'NON_PROFIT' | 'PARTNERSHIP' | 'PRIVATELY_HELD' | 'PUBLIC_COMPANY' | 'SELF_EMPLOYED' | 'SELF_OWNED'>} [companyType] The company types to filter by
      * @param {number} [limit] The number of results to return
      * @param {number} [offset] The offset of the query
      * @param {string} [search] Broad search query
@@ -370,11 +379,11 @@ export interface AnalyticsApiInterface {
     /**
      * 
      * @summary Returns the number of alumni working in companies grouped by industry.
-     * @param {string} [startDate] The start date of the query
-     * @param {string} [endDate] The end date of the query
+     * @param {string} [startDate] The start date of the role
+     * @param {string} [endDate] The end date of the role
      * @param {Array<string>} [courseIds] The course IDs to filter by
-     * @param {Array<string>} [companyIds] The company IDs to filter by
      * @param {Array<string>} [graduationYears] The graduation years to filter by
+     * @param {Array<string>} [companyIds] The company IDs to filter by
      * @param {Array<string>} [industryIds] The industry IDs to filter by
      * @param {Array<string>} [countries] The countries to filter by
      * @param {Array<string>} [cityIds] The cities ids to filter by
@@ -384,6 +393,7 @@ export interface AnalyticsApiInterface {
      * @param {string} [companySearch] Search query for companies
      * @param {string} [industrySearch] Search query for industries
      * @param {Array<'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G' | 'H' | 'I'>} [companySize] The company sizes to filter by
+     * @param {Array<'EDUCATIONAL' | 'GOVERNMENT_AGENCY' | 'NON_PROFIT' | 'PARTNERSHIP' | 'PRIVATELY_HELD' | 'PUBLIC_COMPANY' | 'SELF_EMPLOYED' | 'SELF_OWNED'>} [companyType] The company types to filter by
      * @param {number} [limit] The number of results to return
      * @param {number} [offset] The offset of the query
      * @param {string} [search] Broad search query
@@ -425,12 +435,12 @@ export class AnalyticsApi extends runtime.BaseAPI implements AnalyticsApiInterfa
             queryParameters['courseIds'] = requestParameters['courseIds'];
         }
 
-        if (requestParameters['companyIds'] != null) {
-            queryParameters['companyIds'] = requestParameters['companyIds'];
-        }
-
         if (requestParameters['graduationYears'] != null) {
             queryParameters['graduationYears'] = requestParameters['graduationYears'];
+        }
+
+        if (requestParameters['companyIds'] != null) {
+            queryParameters['companyIds'] = requestParameters['companyIds'];
         }
 
         if (requestParameters['industryIds'] != null) {
@@ -467,6 +477,10 @@ export class AnalyticsApi extends runtime.BaseAPI implements AnalyticsApiInterfa
 
         if (requestParameters['companySize'] != null) {
             queryParameters['companySize'] = requestParameters['companySize'];
+        }
+
+        if (requestParameters['companyType'] != null) {
+            queryParameters['companyType'] = requestParameters['companyType'];
         }
 
         if (requestParameters['limit'] != null) {
@@ -534,12 +548,12 @@ export class AnalyticsApi extends runtime.BaseAPI implements AnalyticsApiInterfa
             queryParameters['courseIds'] = requestParameters['courseIds'];
         }
 
-        if (requestParameters['companyIds'] != null) {
-            queryParameters['companyIds'] = requestParameters['companyIds'];
-        }
-
         if (requestParameters['graduationYears'] != null) {
             queryParameters['graduationYears'] = requestParameters['graduationYears'];
+        }
+
+        if (requestParameters['companyIds'] != null) {
+            queryParameters['companyIds'] = requestParameters['companyIds'];
         }
 
         if (requestParameters['industryIds'] != null) {
@@ -576,6 +590,10 @@ export class AnalyticsApi extends runtime.BaseAPI implements AnalyticsApiInterfa
 
         if (requestParameters['companySize'] != null) {
             queryParameters['companySize'] = requestParameters['companySize'];
+        }
+
+        if (requestParameters['companyType'] != null) {
+            queryParameters['companyType'] = requestParameters['companyType'];
         }
 
         if (requestParameters['limit'] != null) {
@@ -686,12 +704,12 @@ export class AnalyticsApi extends runtime.BaseAPI implements AnalyticsApiInterfa
             queryParameters['courseIds'] = requestParameters['courseIds'];
         }
 
-        if (requestParameters['companyIds'] != null) {
-            queryParameters['companyIds'] = requestParameters['companyIds'];
-        }
-
         if (requestParameters['graduationYears'] != null) {
             queryParameters['graduationYears'] = requestParameters['graduationYears'];
+        }
+
+        if (requestParameters['companyIds'] != null) {
+            queryParameters['companyIds'] = requestParameters['companyIds'];
         }
 
         if (requestParameters['industryIds'] != null) {
@@ -728,6 +746,10 @@ export class AnalyticsApi extends runtime.BaseAPI implements AnalyticsApiInterfa
 
         if (requestParameters['companySize'] != null) {
             queryParameters['companySize'] = requestParameters['companySize'];
+        }
+
+        if (requestParameters['companyType'] != null) {
+            queryParameters['companyType'] = requestParameters['companyType'];
         }
 
         if (requestParameters['limit'] != null) {
@@ -843,12 +865,12 @@ export class AnalyticsApi extends runtime.BaseAPI implements AnalyticsApiInterfa
             queryParameters['courseIds'] = requestParameters['courseIds'];
         }
 
-        if (requestParameters['companyIds'] != null) {
-            queryParameters['companyIds'] = requestParameters['companyIds'];
-        }
-
         if (requestParameters['graduationYears'] != null) {
             queryParameters['graduationYears'] = requestParameters['graduationYears'];
+        }
+
+        if (requestParameters['companyIds'] != null) {
+            queryParameters['companyIds'] = requestParameters['companyIds'];
         }
 
         if (requestParameters['industryIds'] != null) {
@@ -885,6 +907,10 @@ export class AnalyticsApi extends runtime.BaseAPI implements AnalyticsApiInterfa
 
         if (requestParameters['companySize'] != null) {
             queryParameters['companySize'] = requestParameters['companySize'];
+        }
+
+        if (requestParameters['companyType'] != null) {
+            queryParameters['companyType'] = requestParameters['companyType'];
         }
 
         if (requestParameters['limit'] != null) {
@@ -973,12 +999,12 @@ export class AnalyticsApi extends runtime.BaseAPI implements AnalyticsApiInterfa
             queryParameters['courseIds'] = requestParameters['courseIds'];
         }
 
-        if (requestParameters['companyIds'] != null) {
-            queryParameters['companyIds'] = requestParameters['companyIds'];
-        }
-
         if (requestParameters['graduationYears'] != null) {
             queryParameters['graduationYears'] = requestParameters['graduationYears'];
+        }
+
+        if (requestParameters['companyIds'] != null) {
+            queryParameters['companyIds'] = requestParameters['companyIds'];
         }
 
         if (requestParameters['industryIds'] != null) {
@@ -1015,6 +1041,10 @@ export class AnalyticsApi extends runtime.BaseAPI implements AnalyticsApiInterfa
 
         if (requestParameters['companySize'] != null) {
             queryParameters['companySize'] = requestParameters['companySize'];
+        }
+
+        if (requestParameters['companyType'] != null) {
+            queryParameters['companyType'] = requestParameters['companyType'];
         }
 
         if (requestParameters['limit'] != null) {
@@ -1077,6 +1107,20 @@ export type CompaniesAnalyticsControllerGetCompaniesWithAlumniCountCompanySizeEn
 /**
  * @export
  */
+export const CompaniesAnalyticsControllerGetCompaniesWithAlumniCountCompanyTypeEnum = {
+    Educational: 'EDUCATIONAL',
+    GovernmentAgency: 'GOVERNMENT_AGENCY',
+    NonProfit: 'NON_PROFIT',
+    Partnership: 'PARTNERSHIP',
+    PrivatelyHeld: 'PRIVATELY_HELD',
+    PublicCompany: 'PUBLIC_COMPANY',
+    SelfEmployed: 'SELF_EMPLOYED',
+    SelfOwned: 'SELF_OWNED'
+} as const;
+export type CompaniesAnalyticsControllerGetCompaniesWithAlumniCountCompanyTypeEnum = typeof CompaniesAnalyticsControllerGetCompaniesWithAlumniCountCompanyTypeEnum[keyof typeof CompaniesAnalyticsControllerGetCompaniesWithAlumniCountCompanyTypeEnum];
+/**
+ * @export
+ */
 export const CompaniesAnalyticsControllerGetCompanyDetailsCompanySizeEnum = {
     A: 'A',
     B: 'B',
@@ -1089,6 +1133,20 @@ export const CompaniesAnalyticsControllerGetCompanyDetailsCompanySizeEnum = {
     I: 'I'
 } as const;
 export type CompaniesAnalyticsControllerGetCompanyDetailsCompanySizeEnum = typeof CompaniesAnalyticsControllerGetCompanyDetailsCompanySizeEnum[keyof typeof CompaniesAnalyticsControllerGetCompanyDetailsCompanySizeEnum];
+/**
+ * @export
+ */
+export const CompaniesAnalyticsControllerGetCompanyDetailsCompanyTypeEnum = {
+    Educational: 'EDUCATIONAL',
+    GovernmentAgency: 'GOVERNMENT_AGENCY',
+    NonProfit: 'NON_PROFIT',
+    Partnership: 'PARTNERSHIP',
+    PrivatelyHeld: 'PRIVATELY_HELD',
+    PublicCompany: 'PUBLIC_COMPANY',
+    SelfEmployed: 'SELF_EMPLOYED',
+    SelfOwned: 'SELF_OWNED'
+} as const;
+export type CompaniesAnalyticsControllerGetCompanyDetailsCompanyTypeEnum = typeof CompaniesAnalyticsControllerGetCompanyDetailsCompanyTypeEnum[keyof typeof CompaniesAnalyticsControllerGetCompanyDetailsCompanyTypeEnum];
 /**
  * @export
  */
@@ -1107,6 +1165,20 @@ export type CompaniesAnalyticsControllerGetHotCompaniesCompanySizeEnum = typeof 
 /**
  * @export
  */
+export const CompaniesAnalyticsControllerGetHotCompaniesCompanyTypeEnum = {
+    Educational: 'EDUCATIONAL',
+    GovernmentAgency: 'GOVERNMENT_AGENCY',
+    NonProfit: 'NON_PROFIT',
+    Partnership: 'PARTNERSHIP',
+    PrivatelyHeld: 'PRIVATELY_HELD',
+    PublicCompany: 'PUBLIC_COMPANY',
+    SelfEmployed: 'SELF_EMPLOYED',
+    SelfOwned: 'SELF_OWNED'
+} as const;
+export type CompaniesAnalyticsControllerGetHotCompaniesCompanyTypeEnum = typeof CompaniesAnalyticsControllerGetHotCompaniesCompanyTypeEnum[keyof typeof CompaniesAnalyticsControllerGetHotCompaniesCompanyTypeEnum];
+/**
+ * @export
+ */
 export const CountriesAnalyticsControllerGetCountriesWithAlumniCountCompanySizeEnum = {
     A: 'A',
     B: 'B',
@@ -1122,6 +1194,20 @@ export type CountriesAnalyticsControllerGetCountriesWithAlumniCountCompanySizeEn
 /**
  * @export
  */
+export const CountriesAnalyticsControllerGetCountriesWithAlumniCountCompanyTypeEnum = {
+    Educational: 'EDUCATIONAL',
+    GovernmentAgency: 'GOVERNMENT_AGENCY',
+    NonProfit: 'NON_PROFIT',
+    Partnership: 'PARTNERSHIP',
+    PrivatelyHeld: 'PRIVATELY_HELD',
+    PublicCompany: 'PUBLIC_COMPANY',
+    SelfEmployed: 'SELF_EMPLOYED',
+    SelfOwned: 'SELF_OWNED'
+} as const;
+export type CountriesAnalyticsControllerGetCountriesWithAlumniCountCompanyTypeEnum = typeof CountriesAnalyticsControllerGetCountriesWithAlumniCountCompanyTypeEnum[keyof typeof CountriesAnalyticsControllerGetCountriesWithAlumniCountCompanyTypeEnum];
+/**
+ * @export
+ */
 export const IndustriesAnalyticsControllerGetIndustryWithCountsCompanySizeEnum = {
     A: 'A',
     B: 'B',
@@ -1134,3 +1220,17 @@ export const IndustriesAnalyticsControllerGetIndustryWithCountsCompanySizeEnum =
     I: 'I'
 } as const;
 export type IndustriesAnalyticsControllerGetIndustryWithCountsCompanySizeEnum = typeof IndustriesAnalyticsControllerGetIndustryWithCountsCompanySizeEnum[keyof typeof IndustriesAnalyticsControllerGetIndustryWithCountsCompanySizeEnum];
+/**
+ * @export
+ */
+export const IndustriesAnalyticsControllerGetIndustryWithCountsCompanyTypeEnum = {
+    Educational: 'EDUCATIONAL',
+    GovernmentAgency: 'GOVERNMENT_AGENCY',
+    NonProfit: 'NON_PROFIT',
+    Partnership: 'PARTNERSHIP',
+    PrivatelyHeld: 'PRIVATELY_HELD',
+    PublicCompany: 'PUBLIC_COMPANY',
+    SelfEmployed: 'SELF_EMPLOYED',
+    SelfOwned: 'SELF_OWNED'
+} as const;
+export type IndustriesAnalyticsControllerGetIndustryWithCountsCompanyTypeEnum = typeof IndustriesAnalyticsControllerGetIndustryWithCountsCompanyTypeEnum[keyof typeof IndustriesAnalyticsControllerGetIndustryWithCountsCompanyTypeEnum];

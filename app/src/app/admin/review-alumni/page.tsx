@@ -31,7 +31,7 @@ const ReviewAlumniPage = () => {
           </div>
           <Button
             variant="ghost"
-            size="sm"
+            size="default"
             onClick={() => router.back()}
             className="text-muted-foreground hover:text-foreground"
           >

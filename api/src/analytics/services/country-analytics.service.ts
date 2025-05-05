@@ -171,6 +171,9 @@ export class CountryAnalyticsService {
         case SortBy.ALUMNI_COUNT:
           comparison = a.alumniCount - b.alumniCount;
           break;
+        case SortBy.COMPANY_COUNT:
+          comparison = a.companyCount - b.companyCount;
+          break;
         case SortBy.NAME:
           comparison = a.name.localeCompare(b.name);
           break;

@@ -13,8 +13,8 @@ const UploadCSVPage = () => {
       <div className="max-w-2xl mx-auto">
         <Button 
           variant="ghost" 
-          size="sm" 
-          className="mb-6"
+          size="default" 
+          className="text-muted-foreground hover:text-foreground mb-4"
           onClick={() => router.back()}
         >
           <ArrowLeft className="h-4 w-4 mr-2" />

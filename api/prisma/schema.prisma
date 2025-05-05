@@ -69,6 +69,8 @@ model Company {
   companySize   COMPANY_SIZE?   @map("company_size")
   createdAt     DateTime        @default(now()) @map("created_at") @db.Timestamp(6)
   updatedAt     DateTime        @default(now()) @map("updated_at") @db.Timestamp(6)
+  
+  
   Industry      Industry        @relation(fields: [industryId], references: [id])
   Role          Role[]
   ReviewCompany ReviewCompany[]
@@ -81,25 +83,37 @@ model Company {
 model Course {
   id         String        @id @default(uuid())
   name       String
-  createdAt  DateTime      @default(now()) @map("created_at") @db.Timestamp(6)
+  nameInt    String?       @map("name_int")
+  facultyId  String        @map("faculty_id")
   acronym    String
+  startYear  Int           @map("start_year")
   endYear    Int?          @map("end_year")
   status     COURSE_STATUS @default(ACTIVE)
-  facultyId  String        @map("faculty_id")
-  nameInt    String?       @map("name_int")
   courseType COURSE_TYPE   @map("course_type")
-  startYear  Int           @map("start_year")
+
+  createdAt  DateTime      @default(now()) @map("created_at") @db.Timestamp(6)
+  updatedAt DateTime @default(now()) @map("updated_at") @db.Timestamp(6)
+  createdBy String? @map("created_by")
+  updatedBy String? @map("updated_by")
 
   Graduation Graduation[]
+  Faculty    Faculty       @relation(fields: [facultyId], references: [id])
 
   @@map("course")
 }
 
 model Faculty {
-  id      String @id
+  id      String @id @default(dbgenerated("gen_random_uuid()"))
   name    String
   nameInt String @map("name_int")
   acronym String
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamp(6)
+  updatedAt DateTime @default(now()) @map("updated_at") @db.Timestamp(6)
+  createdBy String? @map("created_by")
+  updatedBy String? @map("updated_by")
+
+  Course Course[]
 
   @@map("faculty")
 }

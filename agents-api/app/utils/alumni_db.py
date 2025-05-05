@@ -1,9 +1,11 @@
 import logging
 from datetime import datetime, timezone
+
 from sqlalchemy.orm import Session
 
 from app.db.models import Alumni
 from app.utils.role_db import delete_role
+
 logger = logging.getLogger(__name__)
 
 def update_alumni(alumni: Alumni, db: Session) -> None:

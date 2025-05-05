@@ -1,8 +1,9 @@
-import { Controller, Get, HttpCode, HttpStatus } from '@nestjs/common';
+import { Controller, Get, HttpCode, HttpStatus, Post, Body } from '@nestjs/common';
 import { FacultyService } from './faculty.service';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { ApiResponse } from '@nestjs/swagger';
 import { Faculty } from '@/entities/faculty.entity';
+import { AddFacultyDto } from '@/dto';
 
 @ApiTags('V1', 'Faculty')
 @Controller('faculty')
@@ -19,5 +20,16 @@ export class FacultyController {
   })
   async findAll(): Promise<Faculty[]> {
     return this.facultyService.findAll();
+  }
+
+  @Post()
+  @HttpCode(HttpStatus.CREATED)
+  @ApiOperation({ summary: 'Create a faculty' })
+  @ApiResponse({
+    description: 'Returns the created faculty',
+    type: Faculty,
+  })
+  async create(@Body() addFacultyDto: AddFacultyDto): Promise<Faculty> {
+    return this.facultyService.create(addFacultyDto);
   }
 }

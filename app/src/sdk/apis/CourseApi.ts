@@ -16,11 +16,18 @@
 import * as runtime from '../runtime';
 import type {
   CourseExtended,
+  CreateCourseDto,
 } from '../models/index';
 import {
     CourseExtendedFromJSON,
     CourseExtendedToJSON,
+    CreateCourseDtoFromJSON,
+    CreateCourseDtoToJSON,
 } from '../models/index';
+
+export interface CourseControllerCreateRequest {
+    createCourseDto: CreateCourseDto;
+}
 
 export interface CourseControllerFindRequest {
     courseIds?: Array<string>;
@@ -38,6 +45,21 @@ export interface CourseControllerFindOneRequest {
  * @interface CourseApiInterface
  */
 export interface CourseApiInterface {
+    /**
+     * 
+     * @summary Create a course
+     * @param {CreateCourseDto} createCourseDto 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof CourseApiInterface
+     */
+    courseControllerCreateRaw(requestParameters: CourseControllerCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<CourseExtended>>;
+
+    /**
+     * Create a course
+     */
+    courseControllerCreate(requestParameters: CourseControllerCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<CourseExtended>;
+
     /**
      * 
      * @summary Get courses
@@ -75,6 +97,42 @@ export interface CourseApiInterface {
  * 
  */
 export class CourseApi extends runtime.BaseAPI implements CourseApiInterface {
+
+    /**
+     * Create a course
+     */
+    async courseControllerCreateRaw(requestParameters: CourseControllerCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<CourseExtended>> {
+        if (requestParameters['createCourseDto'] == null) {
+            throw new runtime.RequiredError(
+                'createCourseDto',
+                'Required parameter "createCourseDto" was null or undefined when calling courseControllerCreate().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
+
+        const response = await this.request({
+            path: `/api/course`,
+            method: 'POST',
+            headers: headerParameters,
+            query: queryParameters,
+            body: CreateCourseDtoToJSON(requestParameters['createCourseDto']),
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => CourseExtendedFromJSON(jsonValue));
+    }
+
+    /**
+     * Create a course
+     */
+    async courseControllerCreate(requestParameters: CourseControllerCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<CourseExtended> {
+        const response = await this.courseControllerCreateRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
 
     /**
      * Get courses

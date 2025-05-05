@@ -16,11 +16,14 @@ import {
   toBoolean,
   TransformToArray,
 } from '@/utils/validation';
-import { COMPANY_SIZE } from '@prisma/client';
+import { COMPANY_SIZE, COMPANY_TYPE } from '@prisma/client';
 
 export class QueryParamsDto {
+  /**
+   * *** ROLE PARAMS ***
+   */
   @ApiPropertyOptional({
-    description: 'The start date of the query',
+    description: 'The start date of the role',
     example: '2023-11-16',
   })
   @IsOptional()
@@ -29,7 +32,7 @@ export class QueryParamsDto {
   startDate?: string;
 
   @ApiPropertyOptional({
-    description: 'The end date of the query',
+    description: 'The end date of the role',
     example: '2025-04-20',
   })
   @IsOptional()
@@ -37,6 +40,9 @@ export class QueryParamsDto {
   @IsNotEmpty()
   endDate?: string;
 
+  /**
+   * *** EDUCATION PARAMS ***
+   */
   @ApiPropertyOptional({
     description: 'The course IDs to filter by',
     example: ['1', '2', '3'],
@@ -54,22 +60,6 @@ export class QueryParamsDto {
   courseIds?: string[];
 
   @ApiPropertyOptional({
-    description: 'The company IDs to filter by',
-    example: ['1', '2', '3'],
-  })
-  @IsOptional()
-  @TransformToArray()
-  @Transform(({ value }: { value: string | string[] }) => {
-    if (Array.isArray(value)) {
-      return value.filter((company: string) => company?.trim());
-    }
-    return value;
-  })
-  @IsArray()
-  @IsString({ each: true })
-  companyIds?: string[];
-
-  @ApiPropertyOptional({
     description: 'The graduation years to filter by',
     example: ['2021', '2022', '2023'],
   })
@@ -84,6 +74,25 @@ export class QueryParamsDto {
   @IsArray()
   @IsString({ each: true })
   graduationYears?: string[];
+
+  /**
+   * *** COMPANY PARAMS ***
+   */
+  @ApiPropertyOptional({
+    description: 'The company IDs to filter by',
+    example: ['1', '2', '3'],
+  })
+  @IsOptional()
+  @TransformToArray()
+  @Transform(({ value }: { value: string | string[] }) => {
+    if (Array.isArray(value)) {
+      return value.filter((company: string) => company?.trim());
+    }
+    return value;
+  })
+  @IsArray()
+  @IsString({ each: true })
+  companyIds?: string[];
 
   @ApiPropertyOptional({
     description: 'The industry IDs to filter by',
@@ -199,6 +208,24 @@ export class QueryParamsDto {
   @IsOptional()
   @IsEnum(COMPANY_SIZE, { each: true })
   companySize?: COMPANY_SIZE[];
+
+  @ApiPropertyOptional({
+    description: 'The company types to filter by',
+    example: [COMPANY_TYPE.PUBLIC_COMPANY, COMPANY_TYPE.PRIVATELY_HELD],
+    isArray: true,
+    enum: COMPANY_TYPE,
+    type: 'string',
+  })
+  @TransformToArray()
+  @Transform(({ value }: { value: string | string[] }) => {
+    if (Array.isArray(value)) {
+      return value.filter((companyType: string) => companyType?.trim());
+    }
+    return value;
+  })
+  @IsOptional()
+  @IsEnum(COMPANY_TYPE, { each: true })
+  companyType?: COMPANY_TYPE[];
 
   @ApiPropertyOptional({
     description: 'The number of results to return',

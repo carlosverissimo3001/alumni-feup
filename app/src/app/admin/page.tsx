@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { Card, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { CreditCardIcon, FileSpreadsheetIcon, MergeIcon, ShieldAlert, UsersIcon } from "lucide-react";
+import { BookOpenIcon, CreditCardIcon, FileSpreadsheetIcon, MapPin, Building2Icon, ShieldAlert, UsersIcon } from "lucide-react";
 
 const AdminDashboard = () => {
   const operations = [
@@ -19,10 +19,10 @@ const AdminDashboard = () => {
       href: "/admin/review-alumni",
     },
     {
-      title: "Merge Companies (In Development)",
-      description: "Merge companies based on their names",
-      icon: <MergeIcon className="h-6 w-6" />,
-      href: "/admin/merge-companies",
+      title: "Company Management",
+      description: "Manage companies",
+      icon: <Building2Icon className="h-6 w-6" />,
+      href: "/admin/company-management",
       disabled: true,
     },
     {
@@ -32,10 +32,22 @@ const AdminDashboard = () => {
       href: "/admin/api-usage",
     },
     {
+      title: "Location Tooling",
+      description: "Review locations with no coordinates, merge similar locations, and more",
+      icon: <MapPin className="h-6 w-6" />,
+      href: "/admin/location-tooling",
+    },
+    {
       title: "LinkedIn Validation",
       description: "Validate flagged LinkedIn profiles",
       icon: <ShieldAlert className="h-6 w-6" />,
       href: "/admin/linkedin-validation",
+    },
+    {
+      title: "Faculty and Course Management",
+      description: "Manage faculties and courses",
+      icon: <BookOpenIcon className="h-6 w-6" />,
+      href: "/admin/faculty-management",
     },
   ];
 
@@ -47,12 +59,12 @@ const AdminDashboard = () => {
         {operations.map((op) => (
           <Link key={op.href} href={op.href} className="block">
             <Card className="h-full transition-all duration-200 hover:shadow-lg hover:border-primary/50">
-              <CardHeader>
-                <div className="flex items-center gap-4">
-                  <div className="p-2 rounded-lg bg-primary/10 text-primary">
+              <CardHeader className="h-full">
+                <div className="flex items-center gap-4 h-full">
+                  <div className="p-2 rounded-lg bg-primary/10 text-primary self-center">
                     {op.icon}
                   </div>
-                  <div>
+                  <div className="self-center">
                     <CardTitle className="text-xl mb-1 text-black">{op.title}</CardTitle>
                     <CardDescription className="text-gray-600">{op.description}</CardDescription>
                   </div>
