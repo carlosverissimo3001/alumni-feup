@@ -70,6 +70,7 @@ class LocationAgentState(TypedDict):
 
     # This is the first step of the agent, where we resolve a coutry code
     resolved_country_code: str
+    resolved_city: str
 
     # Then we fetch all the locaitons in the database for this country code
     db_locations: List[LocationResult]

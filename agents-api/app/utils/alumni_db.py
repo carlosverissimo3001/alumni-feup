@@ -41,6 +41,9 @@ def find_all(db: Session) -> list[Alumni]:
 def find_by_id(id: str, db: Session) -> Alumni:
     return db.query(Alumni).filter(Alumni.id == id).first()
 
+def find_by_ids(ids: list[str], db: Session) -> list[Alumni]:
+    return db.query(Alumni).filter(Alumni.id.in_(ids)).all()
+
 def delete_profile_data(id: str, db: Session) -> None:
     alumni = find_by_id(id, db)
     if alumni:

@@ -8,11 +8,17 @@ from langgraph.prebuilt import ToolNode, tools_condition
 
 from app.core.config import settings
 from app.db import get_db
-from app.schemas.job_classification import JobClassificationAgentState, JobClassificationRoleInput
+from app.db.models import Alumni
+from app.schemas.job_classification import (
+    AlumniJobClassificationParams,
+    JobClassificationAgentState,
+    JobClassificationRoleInput,
+)
 from app.utils.agents.esco_reference import (
     get_detailed_esco_classification,
     search_esco_classifications,
 )
+from app.utils.alumni_db import find_all, find_by_ids
 from app.utils.consts import VALIDATE_ESCO_RESULTS_PROMPT
 from app.utils.esco_db import update_role_with_classifications
 from app.utils.role_db import get_extended_roles_by_alumni_id
@@ -25,7 +31,7 @@ db = next(get_db())
 
 tools = [
     get_detailed_esco_classification,
-    #get_all_alumni_classifications,
+    # get_all_alumni_classifications,
 ]
 
 cold_llm = ChatOllama(
@@ -52,24 +58,16 @@ class JobClassificationService:
         graph = StateGraph(JobClassificationAgentState)
 
         # *** Nodes ***
-        graph.add_node(
-            "get_best_esco_matches_db", self.get_best_esco_matches_db
-        )
-        graph.add_node(
-            "validate_esco_results", self.validate_esco_results
-        )
-        graph.add_node(
-            "validate_esco_results_tool_calls", tool_node
-        )
-        graph.add_node(
-            "insert_classification_into_db", self.insert_classification_into_db
-        ) 
-        
+        graph.add_node("get_best_esco_matches_db", self.get_best_esco_matches_db)
+        graph.add_node("validate_esco_results", self.validate_esco_results)
+        graph.add_node("validate_esco_results_tool_calls", tool_node)
+        graph.add_node("insert_classification_into_db", self.insert_classification_into_db)
+
         # *** Edges ***
         graph.add_edge(START, "get_best_esco_matches_db")
         graph.add_edge("get_best_esco_matches_db", "validate_esco_results")
         graph.add_edge("validate_esco_results_tool_calls", "validate_esco_results")
-        
+
         # If tools are needed, we go to the tool node, otherwise we go directly to the next node
         graph.add_conditional_edges(
             "validate_esco_results",
@@ -77,7 +75,7 @@ class JobClassificationService:
             {
                 "tools": "validate_esco_results_tool_calls",
                 END: "insert_classification_into_db",
-            }
+            },
         )
         graph.add_edge("insert_classification_into_db", END)
 
@@ -112,28 +110,24 @@ class JobClassificationService:
         """
         response = llm_with_tools.invoke(
             [
-                SystemMessage(
-                    content=VALIDATE_ESCO_RESULTS_PROMPT
-                ),
+                SystemMessage(content=VALIDATE_ESCO_RESULTS_PROMPT),
                 SystemMessage(
                     content=f"Here are the list of results from the vector search: {state['esco_results_from_embeddings']}"
                 ),
-                SystemMessage(
-                    content=f"Here is the role to classify: {state['role']}"
-                ),
+                SystemMessage(content=f"Here is the role to classify: {state['role']}"),
                 *state["messages"],
                 HumanMessage(
                     content="""Please validate the results, and provide the classification(s) that you think best describes the role.
                     Remember: please only answer with the JSON format provided in the prompt, DO NOT include any other text or comments.
                     """
-                )
+                ),
             ]
         )
-        
+
         # Store the raw response content
         state["esco_results_from_agent"] = response.content
         state["messages"].append(response)
-        
+
         return state
 
     def insert_classification_into_db(self, state: JobClassificationAgentState):
@@ -155,9 +149,9 @@ class JobClassificationService:
             esco_results_from_embeddings=[],
             esco_results_from_agent=[],
             processing_time=0.0,
-            model_used='mistral:7b'
+            model_used="mistral:7b",
         )
-        
+
         graph = self.create_graph()
         events = graph.stream(state, stream_mode="values")
 
@@ -184,6 +178,45 @@ class JobClassificationService:
         except Exception as e:
             logger.error(f"Error classifying roles for alumni {alumni_id}: {str(e)}")
             # We don't raise the exception since this is a background task
+
+    async def request_alumni_classification(self, params: AlumniJobClassificationParams):
+        """
+        Request the classification of the roles of the alumni
+        """
+        alumni_ids = params.alumni_ids
+        logger.info(f"Requesting alumni role classification for {alumni_ids}")
+
+        alumni: list[Alumni] = []
+
+        if alumni_ids:
+            alumni_ids = alumni_ids.split(",")
+            alumni = find_by_ids(alumni_ids, db)
+        else:
+            alumni = find_all(db)
+            
+        # just making sure the user was not dumb and provided duplicate alumni IDs
+        # and newsflash, that user is me :))
+        alumni = list(set(alumni))
+        
+        logger.info(f"Going to update {len(alumni)} alumni")
+        
+        # Process in batches of 10 to avoid overwhelming the system
+        batch_size = 10
+        for i in range(0, len(alumni), batch_size):
+            batch = alumni[i:i+batch_size]
+            logger.info(f"Processing batch {i//batch_size + 1} of {(len(alumni) + batch_size - 1)//batch_size} ({len(batch)} alumni)")
+
+            tasks = []
+            for alumni_id in alumni_ids:
+                task = asyncio.create_task(self.classify_roles_for_alumni(alumni_id))
+                tasks.append(task)
+            
+            # Wait for all tasks in this batch to complete
+            await asyncio.gather(*tasks)
+            
+            # Small delay between batches to prevent rate limiting
+            if i + batch_size < len(alumni):
+                await asyncio.sleep(1)
 
 
 job_classification_service = JobClassificationService()

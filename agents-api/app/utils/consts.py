@@ -84,123 +84,177 @@ TODO: Implement this
 """
 
 
-def get_resolve_country_code_prompt(location_type: LocationType) -> str:
+def get_resolve_geo_prompt(location_type: LocationType) -> str:
     if location_type == LocationType.ROLE:
-        return RESOLVE_COUNTRY_CODE_ROLE
+        return RESOLVE_GEO_ROLE
     elif location_type == LocationType.COMPANY:
-        return RESOLVE_COUNTRY_CODE_COMPANY
+        return RESOLVE_GEO_COMPANY
     elif location_type == LocationType.ALUMNI:
-        return RESOLVE_COUNTRY_CODE_ALUMNI
+        return RESOLVE_GEO_ALUMNI
 
 
-RESOLVE_COUNTRY_CODE_ROLE = """
-You are an expert in global geography and country identification. Your task is to determine the ISO 3166-1 alpha-2 country code for a job role location.
+RESOLVE_GEO_ROLE = """
+You are a global geography and geolocation expert. Your task is to resolve a job role location into a standardized city and its ISO 3166-1 alpha-2 country code.
 
-INPUT:
-- location: A free-form text description of where the job role is located (e.g., "New York, USA", "Remote - Europe", "London, UK")
+INPUTS:
+- location: A free-text location description (e.g., "New York, USA", "Remote - Europe", "Parque das Nações, Lisbon")
 
-RULES:
-- Return ONLY the ISO 3166-1 alpha-2 country code for the location
-- For United Kingdom, use "GB" not "UK"
-- For locations with multiple countries, prefer the first mentioned country
-- For "Remote" locations:
-  - If a region is specified (e.g., "Remote - Europe"), try to determine the most likely country
-  - If a specific country is mentioned (e.g., "Remote - based in Germany"), use that country's code
-  - If no region is specified, return "NULL"
-- For regions (e.g., "EMEA", "APAC", "Latin America"), use the most central or prominent country in that region, or return "NULL" if ambiguous
-- For virtual/online/remote positions with no geographical indication, return "NULL"
-- For U.S. states, Canadian provinces, and other sub-national regions, map to their respective country codes
-- Handle special location formats:
-  - "City, Country" format (e.g., "Paris, France")
-  - "City (Country)" format (e.g., "Tokyo (Japan)")
-  - "Country - City" format (e.g., "Spain - Barcelona")
-  - Locations specified only as a country (e.g., "Germany", "Australia")
+TASK:
+- Extract a valid city name (standardized) and the corresponding two-letter ISO country code.
+- Always prioritize matching known cities/towns from the provided countries.
+- Cross-check ambiguous regions or provinces (e.g., states or cantons) to their correct countries.
+- NEVER guess or hallucinate a city. If unsure, set `"city": "null"`.
+- If you cannot determine a valid country from the inputs, set `"country_code": "null"`.
 
-EXAMPLES:
-- location: "New York, USA" → "US"
-- location: "London, United Kingdom" → "GB"
-- location: "Remote - based in Germany" → "DE"
-- location: "Porto, Portugal" → "PT"
-- location: "EMEA" → "NULL"
-- location: "Remote" → "NULL"
-- location: "Sydney, Australia" → "AU"
-- location: "Berlin and Munich, Germany" → "DE"
-- location: "Worldwide" → "NULL"
-- location: "Germany" → "DE"
-- location: "Japan - Tokyo" → "JP"
-- location: "Madrid (Spain)" → "ES"
-- location: "Greater Toronto Area, Canada" → "CA"
-- location: "United States" → "US"
+SPECIAL CASES:
+- If the location mentions a neighborhood or district of a known city, resolve to the main city:
+  - "Parque das Nações, Lisbon" → "Lisboa" 
+  - "Stadtkreis 8 Riesbach, Zurich" → "Zurich"
+  - "Manhattan, NY" → "New York"
+- If the location contains "Remote", "Worldwide", or "Global", use the hinted country if available, and `"city": "null"`.
+- Use "GB" for United Kingdom, not "UK".
+- For US/Canada sub-national regions, map to "US" or "CA".
+- For Swiss cantons, map to "CH".
+
+CITY NAME STANDARDIZATION:
+- Use English names for all cities, except:
+  - For Portugal, use local city names:
+    - Lisboa (not Lisbon)
+    - Porto (not Oporto)
+- Do not fabricate or substitute city names.
 
 RESPONSE FORMAT:
-Return ONLY the two-letter ISO 3166-1 alpha-2 country code (or "NULL" if undetermined).
-Do not include any explanations, quotes, or additional text.
-"""
-
-RESOLVE_COUNTRY_CODE_COMPANY = """
-You are an expert in global geography and country identification. Your task is to determine the ISO 3166-1 alpha-2 country code for a company's headquarters location.
-
-INPUT:
-1. headquarters: A free-form text description of the company's headquarters location (e.g., "Mountain View, CA", "Worldwide", "Worblaufen, Bern")
-2. country_codes: A comma-separated list of country codes where the company operates (e.g., "US,NL,BR,CA,IE")
-
-RULES:
-- Return ONLY the ISO 3166-1 alpha-2 country code for the headquarters location
-- For United Kingdom, use "GB" not "UK"
-- Most of the time, the first country code in the country_codes string relates to the headquarters, but use this in tandem with the headquarters to reach a conclusion
-- If the headquarters text contains "Worldwide", "Global", "Remote", or similar terms with no specific location, use the first country code from the country_codes list, if available
-- For U.S. states, Canadian provinces, and other sub-national regions, map to their respective country codes
-- Return "NULL" if you cannot determine a valid country code from either input
+Return only a JSON object with:
+- "city": the city name or "null"
+- "country_code": the ISO code or "null"
 
 EXAMPLES:
-- headquarters: "Mountain View, CA" → "US"
-- headquarters: "London, United Kingdom" → "GB"
-- headquarters: "Worldwide" (with country_codes: "US,NL,BR") → "US"
-- headquarters: "Dublin, Ireland" → "IE"
-- headquarters: "Remote" (with country_codes: "FR,ES,IT") → "FR"
-- headquarters: "Tokyo, Japan" → "JP"
-- headquarters: "Worblaufen, Bern" → "CH"
-- headquarters: "Ottawa, CN" → "CA"
+- "New York, USA" → {"city": "New York", "country_code": "US"}
+- "London, United Kingdom" → {"city": "London", "country_code": "GB"}
+- "Remote - based in Germany" → {"city": "null", "country_code": "DE"}
+- "Porto, Portugal" → {"city": "Porto", "country_code": "PT"}
+- "Oporto, Portugal" → {"city": "Porto", "country_code": "PT"}
+- "Lisbon, Portugal" → {"city": "Lisboa", "country_code": "PT"}
+- "Parque das Nações, Lisboa" → {"city": "Lisboa", "country_code": "PT"}
+- "Alcântara, Lisbon" → {"city": "Lisboa", "country_code": "PT"}
+- "Munich, Germany" → {"city": "Munich", "country_code": "DE"}
+- "München, Germany" → {"city": "Munich", "country_code": "DE"}
+- "EMEA" → {"city": "null", "country_code": "null"}
+- "Remote" → {"city": "null", "country_code": "null"}
 
-RESPONSE FORMAT:
-Return ONLY the two-letter ISO 3166-1 alpha-2 country code (or "NULL" if undetermined).
-Do not include any explanations, quotes, or additional text.
+IMPORTANT:
+- Do not include markdown syntax or explanations.
+- Do not invent city names.
+- If no location can be resolved, return: {"city": "null", "country_code": "null"}
+- Always return a valid JSON object, DO NOT include any other text or comments, neither before nor after the JSON object.
+- Do NOT include markdown code block syntax like ```json or ``` around your response - just return the raw JSON object.
 """
 
-RESOLVE_COUNTRY_CODE_ALUMNI = """
-You are an expert in global geography and country identification. Your task is to validate or correct the ISO 3166-1 alpha-2 country code for an alumni location.
+RESOLVE_GEO_COMPANY = """
+You are a global geography and geolocation expert. Your task is to resolve a company's headquarters location into a standardized city and its ISO 3166-1 alpha-2 country code.
 
-INPUT:
-- city: The city where the alumni is located (e.g., "New York", "Porto", "London")
+INPUTS:
+1. headquarters: A free-text location (e.g., "Mountain View, CA", "Remote", "Beira Litoral, Portugal")
+2. country_codes: A comma-separated list of valid ISO country codes where the company operates (e.g., "US,NL,BR,CA,IE")
+
+TASK:
+- Extract a valid city name (standardized) and the corresponding two-letter ISO country code.
+- Always prioritize matching known cities/towns from the provided countries.
+- Cross-check ambiguous regions or provinces (e.g., states or cantons) to their correct countries.
+- NEVER guess or hallucinate a city. If unsure, set `"city": "null"`.
+- If you cannot determine a valid country from the inputs, set `"country_code": "null"`.
+
+SPECIAL CASES:
+- If the headquarters contains "Remote", "Worldwide", or "Global", use the **first country in country_codes**, and `"city": "null"`.
+- Use "GB" for United Kingdom, not "UK".
+- For US/Canada sub-national regions, map to "US" or "CA".
+- For Swiss cantons, map to "CH".
+- If a location refers to a district or neighborhood of a known city (e.g., "Stadtkreis 8 Riesbach, Zurich"), resolve to the main city ("Zurich").
+
+CITY NAME STANDARDIZATION:
+- Use English names for all cities, except:
+  - For Portugal, use local city names:
+    - Lisboa (not Lisbon)
+    - Porto (not Oporto)
+- Do not fabricate or substitute city names.
+
+RESPONSE FORMAT:
+Return only a JSON object with:
+- "city": the city name or "null"
+- "country_code": the ISO code or "null"
+
+EXAMPLES:
+- "Mountain View, CA" → {"city": "Mountain View", "country_code": "US"}
+- "Lisbon, Portugal" → {"city": "Lisboa", "country_code": "PT"}
+- "Beira Litoral, Portugal" → {"city": "null", "country_code": "PT"}
+- "Remote", country_codes: "DE,ES" → {"city": "null", "country_code": "DE"}
+- "Stadtkreis 8 Riesbach, Zurich" → {"city": "Zurich", "country_code": "CH"}
+
+IMPORTANT:
+- Do not include markdown syntax or explanations.
+- Do not invent city names.
+- If no location can be resolved, return: {"city": "null", "country_code": "null"}
+- Always return a valid JSON object, DO NOT include any other text or comments, neither before nor after the JSON object.
+- Do NOT include markdown code block syntax like ```json or ``` around your response - just return the raw JSON object.
+"""
+
+RESOLVE_GEO_ALUMNI = """
+You are a global geography and geolocation expert. Your task is to validate or correct an alumni location into a standardized city and its ISO 3166-1 alpha-2 country code.
+
+INPUTS:
+- city: The city where the alumni is located (e.g., "New York", "Porto", "Parque das Nações")
 - country: The country where the alumni is located (e.g., "United States", "Portugal", "United Kingdom")
 - country_code: The provided ISO country code (e.g., "US", "PT", "GB")
 
-RULES:
-- Return the correct ISO 3166-1 alpha-2 country code based on the provided information
-- If the provided country_code matches the country, return the provided country_code
-- If there's a mismatch between country and country_code, prioritize the country name and return the correct code
-- For United Kingdom, use "GB" not "UK"
-- If country information is ambiguous or insufficient, return "NULL"
-- If the location is clearly invalid or fictional, return "NULL"
+TASK:
+- Validate and correct the provided city name and country code.
+- If the provided country_code matches the country, use it; otherwise, fix it.
+- NEVER guess or hallucinate a city. If unsure, set `"city": "null"`.
+- If country information is clearly invalid or fictional, set `"country_code": "null"`.
 
-EXAMPLES:
-- city: "New York", country: "United States", country_code: "US" → "US"
-- city: "London", country: "United Kingdom", country_code: "UK" → "GB"
-- city: "London", country: "United Kingdom", country_code: "GB" → "GB"
-- city: "Paris", country: "France", country_code: "DE" → "FR"
-- city: "Toronto", country: "Canada", country_code: "CA" → "CA"
-- city: "Fictional City", country: "Neverland", country_code: "XX" → "NULL"
+SPECIAL CASES:
+- If the city mentions a neighborhood or district of a known city, resolve to the main city:
+  - "Parque das Nações" in Portugal → "Lisboa" 
+  - "Stadtkreis 8 Riesbach" in Switzerland → "Zurich"
+  - "Manhattan" in US → "New York"
+- Use "GB" for United Kingdom, not "UK".
+
+CITY NAME STANDARDIZATION:
+- Use English names for all cities, except:
+  - For Portugal, use local city names:
+    - Lisboa (not Lisbon)
+    - Porto (not Oporto)
+- Do not fabricate or substitute city names.
 
 RESPONSE FORMAT:
-Return ONLY the two-letter ISO 3166-1 alpha-2 country code (or "NULL" if undetermined).
-Do not include any explanations, quotes, or additional text.
+Return only a JSON object with:
+- "city": the city name or "null"
+- "country_code": the ISO code or "null"
+
+EXAMPLES:
+- city: "New York", country: "United States", country_code: "US" → {"city": "New York", "country_code": "US"}
+- city: "London", country: "United Kingdom", country_code: "UK" → {"city": "London", "country_code": "GB"}
+- city: "Paris", country: "France", country_code: "DE" → {"city": "Paris", "country_code": "FR"}
+- city: "Porto", country: "Portugal", country_code: "PT" → {"city": "Porto", "country_code": "PT"}
+- city: "Oporto", country: "Portugal", country_code: "PT" → {"city": "Porto", "country_code": "PT"}
+- city: "Lisbon", country: "Portugal", country_code: "PT" → {"city": "Lisboa", "country_code": "PT"}
+- city: "Parque das Nações", country: "Portugal", country_code: "PT" → {"city": "Lisboa", "country_code": "PT"}
+- city: "Alcântara", country: "Portugal", country_code: "PT" → {"city": "Lisboa", "country_code": "PT"}
+- city: "München", country: "Germany", country_code: "DE" → {"city": "Munich", "country_code": "DE"}
+- city: "Fictional City", country: "Neverland", country_code: "XX" → {"city": "null", "country_code": "null"}
+
+IMPORTANT:
+- Do not include markdown syntax or explanations.
+- Do not invent city names.
+- If no location can be resolved, return: {"city": "null", "country_code": "null"}
+- Always return a valid JSON object, DO NOT include any other text or comments, neither before nor after the JSON object.
+- Do NOT include markdown code block syntax like ```json or ``` around your response - just return the raw JSON object.
 """
 
 RESOLVE_LOCATION_PROMPT = """
 You are an expert in geographical location matching. Your task is to parse an input location and either match it to an existing database location or create a new location object.
 
-*** PREVENTING DUPLICATES IS A TOP PRIORITY ***
-We already have many duplicate locations in our database and want to avoid creating more.
+CRITICAL RULE: ALWAYS prioritize the accuracy of the location data from the input over matching to an existing database location.
 
 INPUT:
 1. A location object from one of the following types:
@@ -226,74 +280,55 @@ PRIORITIZED PROCESS:
    - For ROLE: Parse the location field to identify city and country
    - For ALUMNI: Use the provided city and country fields
 
-2. MANDATORY EXACT MATCH CHECK:
-   - You MUST first perform a DIRECT STRING COMPARISON (case-insensitive) between the extracted city and every city in the database locations
-   - If the city name in the input EXACTLY matches a city name in the database (ignoring case):
-     * YOU MUST USE THE EXISTING LOCATION FROM THE DATABASE
-     * DO NOT create a new location if an exact match exists
-   - An exact match means the city strings are identical when compared case-insensitively:
-     * "Mountain View" matches "Mountain View", "mountain view", "MOUNTAIN VIEW", etc.
-     * "San Francisco" does NOT match "San Fran" or "SF" (these are not exact string matches)
-   - Only if there is NO exact string match should you consider other factors or create a new location
+2. ONLY AFTER fully parsing the input, check if there's an EXACT match in the database:
+   - PERFORM CASE-INSENSITIVE STRING COMPARISON when matching city names ("Mountain View" should match with "Mountain View" regardless of case)
+   - LOOK FOR EXACT STRING MATCHES FIRST - if "Mountain View" exists in the database with the same country code, USE IT
+   - Only consider clear variations if exact matches don't exist (e.g., "NYC" = "New York")
+   - NEVER match to a different city just because it's in the same country
 
-3. If no exact match exists, ONLY THEN consider:
-   - Clear city name variations: "NYC" = "New York City" = "New York"
-   - Language variations: "München" = "Munich"
-   - If still no appropriate match, CREATE a new location
+3. If no exact match exists, CREATE A NEW LOCATION rather than forcing a match to an unrelated city.
 
 CRITICAL RULES:
-1. PREVENT DUPLICATES: Our database already has duplicate locations. Your PRIMARY GOAL is to avoid adding more duplicates.
-2. EXACT STRING MATCHING IS REQUIRED FIRST - Use these steps:
-   a. Compare the extracted city name with ALL city names in the database (case-insensitive)
-   b. If the strings match exactly, YOU MUST USE THAT EXISTING RECORD
-   c. Do not create a new record for "Mountain View" if "Mountain View" already exists
-   d. Only create a new location if no exact string match exists
+1. The input location details (especially city name) must be preserved in your output
+2. EXACT MATCHING IS REQUIRED - Only match cities that are clearly the same place:
+   - PERFORM A CASE-INSENSITIVE COMPARISON for city names - "Mountain View" = "Mountain View" = "mountain view"
+   - "Mountain View, CA" should NEVER match to "Seattle" or any other unrelated city
+   - Different cities in the same state or country are DIFFERENT locations
 
-3. For country-only locations:
+3. Acceptable variations for matching ONLY if exact matches don't exist:
+   - Abbreviations: "NYC" = "New York City" = "New York"
+   - Language variations: "München" = "Munich", "Lisboa" = "Lisbon"
+   - Metro areas: "Greater London" = "London" = "London Metropolitan Area"
+   - Regions: "Seattle, WA" = "Seattle, Washington" = "Seattle"
+
+4. For country-only locations:
    - If the input specifies only a country with no city, look for a country-only entry in the database (where city is null)
-   - Use that entry if found
 
-EXAMPLES OF CORRECT PROCESSING:
-1. Input: headquarters="Mountain View, CA"
-   - Correct parsing: city="Mountain View", country="United States"
-   - If database has ANY entry with city="Mountain View" (case-insensitive) → YOU MUST use that ID
-   - Example: If the database has a location with city="mountain view" or "MOUNTAIN VIEW", you MUST use this existing entry
-   - Only if no form of "Mountain View" exists should you create a new entry
+JSON RESPONSE FORMAT:
 
-2. Input: location="Remote - United States"
-   - Correct parsing: city=null, country="United States"
-   - Look for US entry with null city in database, and is_country_only set to true
-
-3. Input: headquarters="San Francisco, CA"
-   - Extracted city: "San Francisco"
-   - If database has "San Francisco" (any case) → YOU MUST use that ID
-   - YOU SHOULD NOT create a new "San Francisco" entry if one already exists
-
-RESPONSE FORMAT:
-If a match is found in the database, return ONLY the matching location object including its ID:
-```json
+1. NEW LOCATION:
 {
-  "id": "matched-location-id",
-  "country_code": "matched-country-code",
-  "country": "matched-country",
-  "city": "matched-city",
-  "is_country_only": "Self-explanatory"
+  "country_code": "ISO-3166 alpha-2 country code, e.g. 'US', 'GB'", 
+  "country": "Full country name",
+  "city": "City name (null if country-only)",
+  "is_country_only": boolean value (true if you only could resolve the country, false if you could resolve the city and country)
 }
-```
 
-If and ONLY if NO match is found (after thorough checking), return a NEW location object WITHOUT an ID:
-```json
+2. EXISTING LOCATION:
 {
-  "country_code": "resolved-country-code",
-  "country": "resolved-country",
-  "city": "resolved-city",
-  "is_country_only": "Self-explanatory"
+  "id": "location id from the database",
+  "country_code": "ISO-3166 alpha-2 country code, e.g. 'US', 'GB'", 
+  "country": "Full country name",
+  "city": "City name (null if country-only)",
+  "is_country_only": boolean value (true if no city, false if city exists)
 }
-```
 
-CRITICAL NOTES:
-- Return ONLY valid JSON with no comments, explanations, or extra text
-- DUPLICATE PREVENTION is your top priority - DO NOT create new entries for cities that already exist
-- ALWAYS perform a case-insensitive string comparison between the input city and ALL cities in the database
-- If the city cannot be determined from the input, set it to null (not an empty string)
-"""  # noqa: E501
+CRITICAL RESPONSE REQUIREMENTS:
+1. Your response MUST be valid JSON
+2. Boolean values MUST use lowercase 'true' or 'false' (not 'True' or 'False')
+3. Return ONLY the JSON object without any additional text, comments, or explanations
+4. DO NOT include markdown code block syntax like ```json or ``` around your response - just return the raw JSON object
+5. Ensure proper JSON formatting with double quotes around keys and string values
+6. Don't include any line breaks or extra spaces in your JSON output
+7. DO NOT return an ID field if the location is new
+"""
