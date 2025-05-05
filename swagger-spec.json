@@ -315,7 +315,7 @@
             "name": "startDate",
             "required": false,
             "in": "query",
-            "description": "The start date of the query",
+            "description": "The start date of the role",
             "schema": {
               "example": "2023-11-16",
               "type": "string"
@@ -325,7 +325,7 @@
             "name": "endDate",
             "required": false,
             "in": "query",
-            "description": "The end date of the query",
+            "description": "The end date of the role",
             "schema": {
               "example": "2025-04-20",
               "type": "string"
@@ -344,10 +344,10 @@
             }
           },
           {
-            "name": "companyIds",
+            "name": "graduationYears",
             "required": false,
             "in": "query",
-            "description": "The company IDs to filter by",
+            "description": "The graduation years to filter by",
             "schema": {
               "type": "array",
               "items": {
@@ -356,10 +356,10 @@
             }
           },
           {
-            "name": "graduationYears",
+            "name": "companyIds",
             "required": false,
             "in": "query",
-            "description": "The graduation years to filter by",
+            "description": "The company IDs to filter by",
             "schema": {
               "type": "array",
               "items": {
@@ -476,6 +476,32 @@
                   "G",
                   "H",
                   "I"
+                ]
+              }
+            }
+          },
+          {
+            "name": "companyType",
+            "required": false,
+            "in": "query",
+            "description": "The company types to filter by",
+            "schema": {
+              "example": [
+                "PUBLIC_COMPANY",
+                "PRIVATELY_HELD"
+              ],
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "EDUCATIONAL",
+                  "GOVERNMENT_AGENCY",
+                  "NON_PROFIT",
+                  "PARTNERSHIP",
+                  "PRIVATELY_HELD",
+                  "PUBLIC_COMPANY",
+                  "SELF_EMPLOYED",
+                  "SELF_OWNED"
                 ]
               }
             }
@@ -609,7 +635,7 @@
             "name": "startDate",
             "required": false,
             "in": "query",
-            "description": "The start date of the query",
+            "description": "The start date of the role",
             "schema": {
               "example": "2023-11-16",
               "type": "string"
@@ -619,7 +645,7 @@
             "name": "endDate",
             "required": false,
             "in": "query",
-            "description": "The end date of the query",
+            "description": "The end date of the role",
             "schema": {
               "example": "2025-04-20",
               "type": "string"
@@ -638,10 +664,10 @@
             }
           },
           {
-            "name": "companyIds",
+            "name": "graduationYears",
             "required": false,
             "in": "query",
-            "description": "The company IDs to filter by",
+            "description": "The graduation years to filter by",
             "schema": {
               "type": "array",
               "items": {
@@ -650,10 +676,10 @@
             }
           },
           {
-            "name": "graduationYears",
+            "name": "companyIds",
             "required": false,
             "in": "query",
-            "description": "The graduation years to filter by",
+            "description": "The company IDs to filter by",
             "schema": {
               "type": "array",
               "items": {
@@ -770,6 +796,32 @@
                   "G",
                   "H",
                   "I"
+                ]
+              }
+            }
+          },
+          {
+            "name": "companyType",
+            "required": false,
+            "in": "query",
+            "description": "The company types to filter by",
+            "schema": {
+              "example": [
+                "PUBLIC_COMPANY",
+                "PRIVATELY_HELD"
+              ],
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "EDUCATIONAL",
+                  "GOVERNMENT_AGENCY",
+                  "NON_PROFIT",
+                  "PARTNERSHIP",
+                  "PRIVATELY_HELD",
+                  "PUBLIC_COMPANY",
+                  "SELF_EMPLOYED",
+                  "SELF_OWNED"
                 ]
               }
             }
@@ -846,7 +898,7 @@
             "name": "startDate",
             "required": false,
             "in": "query",
-            "description": "The start date of the query",
+            "description": "The start date of the role",
             "schema": {
               "example": "2023-11-16",
               "type": "string"
@@ -856,7 +908,7 @@
             "name": "endDate",
             "required": false,
             "in": "query",
-            "description": "The end date of the query",
+            "description": "The end date of the role",
             "schema": {
               "example": "2025-04-20",
               "type": "string"
@@ -875,10 +927,10 @@
             }
           },
           {
-            "name": "companyIds",
+            "name": "graduationYears",
             "required": false,
             "in": "query",
-            "description": "The company IDs to filter by",
+            "description": "The graduation years to filter by",
             "schema": {
               "type": "array",
               "items": {
@@ -887,10 +939,10 @@
             }
           },
           {
-            "name": "graduationYears",
+            "name": "companyIds",
             "required": false,
             "in": "query",
-            "description": "The graduation years to filter by",
+            "description": "The company IDs to filter by",
             "schema": {
               "type": "array",
               "items": {
@@ -1012,6 +1064,32 @@
             }
           },
           {
+            "name": "companyType",
+            "required": false,
+            "in": "query",
+            "description": "The company types to filter by",
+            "schema": {
+              "example": [
+                "PUBLIC_COMPANY",
+                "PRIVATELY_HELD"
+              ],
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "EDUCATIONAL",
+                  "GOVERNMENT_AGENCY",
+                  "NON_PROFIT",
+                  "PARTNERSHIP",
+                  "PRIVATELY_HELD",
+                  "PUBLIC_COMPANY",
+                  "SELF_EMPLOYED",
+                  "SELF_OWNED"
+                ]
+              }
+            }
+          },
+          {
             "name": "limit",
             "required": false,
             "in": "query",
@@ -1083,7 +1161,7 @@
             "name": "startDate",
             "required": false,
             "in": "query",
-            "description": "The start date of the query",
+            "description": "The start date of the role",
             "schema": {
               "example": "2023-11-16",
               "type": "string"
@@ -1093,7 +1171,7 @@
             "name": "endDate",
             "required": false,
             "in": "query",
-            "description": "The end date of the query",
+            "description": "The end date of the role",
             "schema": {
               "example": "2025-04-20",
               "type": "string"
@@ -1112,10 +1190,10 @@
             }
           },
           {
-            "name": "companyIds",
+            "name": "graduationYears",
             "required": false,
             "in": "query",
-            "description": "The company IDs to filter by",
+            "description": "The graduation years to filter by",
             "schema": {
               "type": "array",
               "items": {
@@ -1124,10 +1202,10 @@
             }
           },
           {
-            "name": "graduationYears",
+            "name": "companyIds",
             "required": false,
             "in": "query",
-            "description": "The graduation years to filter by",
+            "description": "The company IDs to filter by",
             "schema": {
               "type": "array",
               "items": {
@@ -1244,6 +1322,32 @@
                   "G",
                   "H",
                   "I"
+                ]
+              }
+            }
+          },
+          {
+            "name": "companyType",
+            "required": false,
+            "in": "query",
+            "description": "The company types to filter by",
+            "schema": {
+              "example": [
+                "PUBLIC_COMPANY",
+                "PRIVATELY_HELD"
+              ],
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "EDUCATIONAL",
+                  "GOVERNMENT_AGENCY",
+                  "NON_PROFIT",
+                  "PARTNERSHIP",
+                  "PRIVATELY_HELD",
+                  "PUBLIC_COMPANY",
+                  "SELF_EMPLOYED",
+                  "SELF_OWNED"
                 ]
               }
             }
@@ -1392,7 +1496,7 @@
             "name": "startDate",
             "required": false,
             "in": "query",
-            "description": "The start date of the query",
+            "description": "The start date of the role",
             "schema": {
               "example": "2023-11-16",
               "type": "string"
@@ -1402,7 +1506,7 @@
             "name": "endDate",
             "required": false,
             "in": "query",
-            "description": "The end date of the query",
+            "description": "The end date of the role",
             "schema": {
               "example": "2025-04-20",
               "type": "string"
@@ -1421,10 +1525,10 @@
             }
           },
           {
-            "name": "companyIds",
+            "name": "graduationYears",
             "required": false,
             "in": "query",
-            "description": "The company IDs to filter by",
+            "description": "The graduation years to filter by",
             "schema": {
               "type": "array",
               "items": {
@@ -1433,10 +1537,10 @@
             }
           },
           {
-            "name": "graduationYears",
+            "name": "companyIds",
             "required": false,
             "in": "query",
-            "description": "The graduation years to filter by",
+            "description": "The company IDs to filter by",
             "schema": {
               "type": "array",
               "items": {
@@ -1553,6 +1657,32 @@
                   "G",
                   "H",
                   "I"
+                ]
+              }
+            }
+          },
+          {
+            "name": "companyType",
+            "required": false,
+            "in": "query",
+            "description": "The company types to filter by",
+            "schema": {
+              "example": [
+                "PUBLIC_COMPANY",
+                "PRIVATELY_HELD"
+              ],
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "EDUCATIONAL",
+                  "GOVERNMENT_AGENCY",
+                  "NON_PROFIT",
+                  "PARTNERSHIP",
+                  "PRIVATELY_HELD",
+                  "PUBLIC_COMPANY",
+                  "SELF_EMPLOYED",
+                  "SELF_OWNED"
                 ]
               }
             }
@@ -1900,6 +2030,37 @@
           "V1",
           "Course"
         ]
+      },
+      "post": {
+        "operationId": "CourseController_create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateCourseDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "default": {
+            "description": "Returns the created course",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CourseExtended"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Create a course",
+        "tags": [
+          "V1",
+          "Course"
+        ]
       }
     },
     "/api/course/{id}": {
@@ -1954,6 +2115,37 @@
           }
         },
         "summary": "Get all faculties",
+        "tags": [
+          "V1",
+          "Faculty"
+        ]
+      },
+      "post": {
+        "operationId": "FacultyController_create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddFacultyDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "default": {
+            "description": "Returns the created faculty",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Faculty"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Create a faculty",
         "tags": [
           "V1",
           "Faculty"
@@ -3076,24 +3268,34 @@
             "description": "The start year of the course"
           },
           "endYear": {
-            "type": "object",
+            "type": "number",
             "description": "The end year of the course, if it is not active"
           },
           "status": {
-            "type": "object",
-            "description": "The status of the course"
+            "type": "string",
+            "description": "The status of the course",
+            "enum": [
+              "ACTIVE",
+              "INACTIVE"
+            ]
           },
           "facultyId": {
             "type": "string",
             "description": "The faculty id of the course"
           },
           "nameInt": {
-            "type": "object",
+            "type": "string",
             "description": "The name of the course in the international language"
           },
           "courseType": {
-            "type": "object",
-            "description": "The type of the course"
+            "type": "string",
+            "description": "The type of the course",
+            "enum": [
+              "INTEGRATED_MASTERS",
+              "BACHELORS",
+              "MASTERS",
+              "DOCTORATE"
+            ]
           }
         },
         "required": [
@@ -3104,6 +3306,74 @@
           "status",
           "facultyId",
           "courseType"
+        ]
+      },
+      "CreateCourseDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "The name of the course",
+            "example": "Computer Science"
+          },
+          "nameInt": {
+            "type": "string",
+            "description": "The international name of the course",
+            "example": "Computer Science"
+          },
+          "acronym": {
+            "type": "string",
+            "description": "The acronym of the course",
+            "example": "CS"
+          },
+          "courseType": {
+            "type": "string",
+            "description": "The type of the course",
+            "example": "BACHELORS",
+            "enum": [
+              "INTEGRATED_MASTERS",
+              "BACHELORS",
+              "MASTERS",
+              "DOCTORATE"
+            ]
+          },
+          "status": {
+            "type": "string",
+            "description": "The status of the course",
+            "example": "ACTIVE",
+            "enum": [
+              "ACTIVE",
+              "INACTIVE"
+            ]
+          },
+          "facultyId": {
+            "type": "string",
+            "description": "The faculty id of the course",
+            "example": "123"
+          },
+          "startYear": {
+            "type": "number",
+            "description": "The start year of the course",
+            "example": 2020
+          },
+          "endYear": {
+            "type": "number",
+            "description": "If the course is INACTIVE, the end year of the course",
+            "example": 2024
+          },
+          "createdBy": {
+            "type": "string",
+            "description": "The created by of the course",
+            "example": "123"
+          }
+        },
+        "required": [
+          "name",
+          "acronym",
+          "courseType",
+          "status",
+          "facultyId",
+          "startYear"
         ]
       },
       "Faculty": {
@@ -3133,6 +3403,36 @@
           "name",
           "nameInt",
           "acronym"
+        ]
+      },
+      "AddFacultyDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "The name of the faculty",
+            "example": "Faculty of Science"
+          },
+          "acronym": {
+            "type": "string",
+            "description": "The acronym of the faculty",
+            "example": "FCT"
+          },
+          "nameInt": {
+            "type": "string",
+            "description": "The international name of the faculty",
+            "example": "Faculty of Science"
+          },
+          "createdBy": {
+            "type": "string",
+            "description": "The created by of the faculty",
+            "example": "123"
+          }
+        },
+        "required": [
+          "name",
+          "acronym",
+          "nameInt"
         ]
       },
       "ReviewGeoJSONFeature": {

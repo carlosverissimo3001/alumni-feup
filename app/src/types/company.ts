@@ -10,3 +10,14 @@ export enum COMPANY_SIZE {
   I = "10,001+ employees",
 }
 
+export enum COMPANY_TYPE {
+  Educational = "Educational",
+  GovernmentAgency = "Government agency",
+  NonProfit = "Non-profit",
+  Partnership = "Partnership",
+  PrivatelyHeld = "Privately held",
+  PublicCompany = "Public company",
+  SelfEmployed = "Self-employed",
+  SelfOwned = "Self-owned",
+}
+

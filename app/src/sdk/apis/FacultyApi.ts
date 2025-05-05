@@ -15,12 +15,19 @@
 
 import * as runtime from '../runtime';
 import type {
+  AddFacultyDto,
   Faculty,
 } from '../models/index';
 import {
+    AddFacultyDtoFromJSON,
+    AddFacultyDtoToJSON,
     FacultyFromJSON,
     FacultyToJSON,
 } from '../models/index';
+
+export interface FacultyControllerCreateRequest {
+    addFacultyDto: AddFacultyDto;
+}
 
 /**
  * FacultyApi - interface
@@ -29,6 +36,21 @@ import {
  * @interface FacultyApiInterface
  */
 export interface FacultyApiInterface {
+    /**
+     * 
+     * @summary Create a faculty
+     * @param {AddFacultyDto} addFacultyDto 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof FacultyApiInterface
+     */
+    facultyControllerCreateRaw(requestParameters: FacultyControllerCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Faculty>>;
+
+    /**
+     * Create a faculty
+     */
+    facultyControllerCreate(requestParameters: FacultyControllerCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Faculty>;
+
     /**
      * 
      * @summary Get all faculties
@@ -49,6 +71,42 @@ export interface FacultyApiInterface {
  * 
  */
 export class FacultyApi extends runtime.BaseAPI implements FacultyApiInterface {
+
+    /**
+     * Create a faculty
+     */
+    async facultyControllerCreateRaw(requestParameters: FacultyControllerCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Faculty>> {
+        if (requestParameters['addFacultyDto'] == null) {
+            throw new runtime.RequiredError(
+                'addFacultyDto',
+                'Required parameter "addFacultyDto" was null or undefined when calling facultyControllerCreate().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
+
+        const response = await this.request({
+            path: `/api/faculty`,
+            method: 'POST',
+            headers: headerParameters,
+            query: queryParameters,
+            body: AddFacultyDtoToJSON(requestParameters['addFacultyDto']),
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => FacultyFromJSON(jsonValue));
+    }
+
+    /**
+     * Create a faculty
+     */
+    async facultyControllerCreate(requestParameters: FacultyControllerCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Faculty> {
+        const response = await this.facultyControllerCreateRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
 
     /**
      * Get all faculties

@@ -15,6 +15,7 @@
 
 import * as runtime from '../runtime';
 import type {
+  AddFacultyDto,
   Alumni,
   AlumniExtended,
   AlumniPastLocationsAndCompaniesDto,
@@ -26,6 +27,7 @@ import type {
   CountryOptionDto,
   CourseExtended,
   CreateAlumniDto,
+  CreateCourseDto,
   Faculty,
   GeoJSONFeatureCollection,
   IndustryListResponseDto,
@@ -39,6 +41,8 @@ import type {
   VerifyEmailTokenDto,
 } from '../models/index';
 import {
+    AddFacultyDtoFromJSON,
+    AddFacultyDtoToJSON,
     AlumniFromJSON,
     AlumniToJSON,
     AlumniExtendedFromJSON,
@@ -59,6 +63,8 @@ import {
     CourseExtendedToJSON,
     CreateAlumniDtoFromJSON,
     CreateAlumniDtoToJSON,
+    CreateCourseDtoFromJSON,
+    CreateCourseDtoToJSON,
     FacultyFromJSON,
     FacultyToJSON,
     GeoJSONFeatureCollectionFromJSON,
@@ -117,8 +123,8 @@ export interface CompaniesAnalyticsControllerGetCompaniesWithAlumniCountRequest 
     startDate?: string;
     endDate?: string;
     courseIds?: Array<string>;
-    companyIds?: Array<string>;
     graduationYears?: Array<string>;
+    companyIds?: Array<string>;
     industryIds?: Array<string>;
     countries?: Array<string>;
     cityIds?: Array<string>;
@@ -128,6 +134,7 @@ export interface CompaniesAnalyticsControllerGetCompaniesWithAlumniCountRequest 
     companySearch?: string;
     industrySearch?: string;
     companySize?: Array<CompaniesAnalyticsControllerGetCompaniesWithAlumniCountCompanySizeEnum>;
+    companyType?: Array<CompaniesAnalyticsControllerGetCompaniesWithAlumniCountCompanyTypeEnum>;
     limit?: number;
     offset?: number;
     search?: string;
@@ -140,8 +147,8 @@ export interface CompaniesAnalyticsControllerGetCompanyDetailsRequest {
     startDate?: string;
     endDate?: string;
     courseIds?: Array<string>;
-    companyIds?: Array<string>;
     graduationYears?: Array<string>;
+    companyIds?: Array<string>;
     industryIds?: Array<string>;
     countries?: Array<string>;
     cityIds?: Array<string>;
@@ -151,6 +158,7 @@ export interface CompaniesAnalyticsControllerGetCompanyDetailsRequest {
     companySearch?: string;
     industrySearch?: string;
     companySize?: Array<CompaniesAnalyticsControllerGetCompanyDetailsCompanySizeEnum>;
+    companyType?: Array<CompaniesAnalyticsControllerGetCompanyDetailsCompanyTypeEnum>;
     limit?: number;
     offset?: number;
     search?: string;
@@ -162,8 +170,8 @@ export interface CompaniesAnalyticsControllerGetHotCompaniesRequest {
     startDate?: string;
     endDate?: string;
     courseIds?: Array<string>;
-    companyIds?: Array<string>;
     graduationYears?: Array<string>;
+    companyIds?: Array<string>;
     industryIds?: Array<string>;
     countries?: Array<string>;
     cityIds?: Array<string>;
@@ -173,6 +181,7 @@ export interface CompaniesAnalyticsControllerGetHotCompaniesRequest {
     companySearch?: string;
     industrySearch?: string;
     companySize?: Array<CompaniesAnalyticsControllerGetHotCompaniesCompanySizeEnum>;
+    companyType?: Array<CompaniesAnalyticsControllerGetHotCompaniesCompanyTypeEnum>;
     limit?: number;
     offset?: number;
     search?: string;
@@ -192,8 +201,8 @@ export interface CountriesAnalyticsControllerGetCountriesWithAlumniCountRequest 
     startDate?: string;
     endDate?: string;
     courseIds?: Array<string>;
-    companyIds?: Array<string>;
     graduationYears?: Array<string>;
+    companyIds?: Array<string>;
     industryIds?: Array<string>;
     countries?: Array<string>;
     cityIds?: Array<string>;
@@ -203,11 +212,16 @@ export interface CountriesAnalyticsControllerGetCountriesWithAlumniCountRequest 
     companySearch?: string;
     industrySearch?: string;
     companySize?: Array<CountriesAnalyticsControllerGetCountriesWithAlumniCountCompanySizeEnum>;
+    companyType?: Array<CountriesAnalyticsControllerGetCountriesWithAlumniCountCompanyTypeEnum>;
     limit?: number;
     offset?: number;
     search?: string;
     sortBy?: string;
     sortOrder?: string;
+}
+
+export interface CourseControllerCreateRequest {
+    createCourseDto: CreateCourseDto;
 }
 
 export interface CourseControllerFindRequest {
@@ -219,6 +233,10 @@ export interface CourseControllerFindOneRequest {
     id: string;
 }
 
+export interface FacultyControllerCreateRequest {
+    addFacultyDto: AddFacultyDto;
+}
+
 export interface FileUploadControllerCreateRequest {
     uploadExtractionDto: UploadExtractionDto;
 }
@@ -227,8 +245,8 @@ export interface IndustriesAnalyticsControllerGetIndustryWithCountsRequest {
     startDate?: string;
     endDate?: string;
     courseIds?: Array<string>;
-    companyIds?: Array<string>;
     graduationYears?: Array<string>;
+    companyIds?: Array<string>;
     industryIds?: Array<string>;
     countries?: Array<string>;
     cityIds?: Array<string>;
@@ -238,6 +256,7 @@ export interface IndustriesAnalyticsControllerGetIndustryWithCountsRequest {
     companySearch?: string;
     industrySearch?: string;
     companySize?: Array<IndustriesAnalyticsControllerGetIndustryWithCountsCompanySizeEnum>;
+    companyType?: Array<IndustriesAnalyticsControllerGetIndustryWithCountsCompanyTypeEnum>;
     limit?: number;
     offset?: number;
     search?: string;
@@ -415,11 +434,11 @@ export interface V1ApiInterface {
     /**
      * 
      * @summary Get the companies, and the number of alumni working in them.
-     * @param {string} [startDate] The start date of the query
-     * @param {string} [endDate] The end date of the query
+     * @param {string} [startDate] The start date of the role
+     * @param {string} [endDate] The end date of the role
      * @param {Array<string>} [courseIds] The course IDs to filter by
-     * @param {Array<string>} [companyIds] The company IDs to filter by
      * @param {Array<string>} [graduationYears] The graduation years to filter by
+     * @param {Array<string>} [companyIds] The company IDs to filter by
      * @param {Array<string>} [industryIds] The industry IDs to filter by
      * @param {Array<string>} [countries] The countries to filter by
      * @param {Array<string>} [cityIds] The cities ids to filter by
@@ -429,6 +448,7 @@ export interface V1ApiInterface {
      * @param {string} [companySearch] Search query for companies
      * @param {string} [industrySearch] Search query for industries
      * @param {Array<'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G' | 'H' | 'I'>} [companySize] The company sizes to filter by
+     * @param {Array<'EDUCATIONAL' | 'GOVERNMENT_AGENCY' | 'NON_PROFIT' | 'PARTNERSHIP' | 'PRIVATELY_HELD' | 'PUBLIC_COMPANY' | 'SELF_EMPLOYED' | 'SELF_OWNED'>} [companyType] The company types to filter by
      * @param {number} [limit] The number of results to return
      * @param {number} [offset] The offset of the query
      * @param {string} [search] Broad search query
@@ -449,11 +469,11 @@ export interface V1ApiInterface {
      * 
      * @summary Returns detailed information about a specific company.
      * @param {string} id 
-     * @param {string} [startDate] The start date of the query
-     * @param {string} [endDate] The end date of the query
+     * @param {string} [startDate] The start date of the role
+     * @param {string} [endDate] The end date of the role
      * @param {Array<string>} [courseIds] The course IDs to filter by
-     * @param {Array<string>} [companyIds] The company IDs to filter by
      * @param {Array<string>} [graduationYears] The graduation years to filter by
+     * @param {Array<string>} [companyIds] The company IDs to filter by
      * @param {Array<string>} [industryIds] The industry IDs to filter by
      * @param {Array<string>} [countries] The countries to filter by
      * @param {Array<string>} [cityIds] The cities ids to filter by
@@ -463,6 +483,7 @@ export interface V1ApiInterface {
      * @param {string} [companySearch] Search query for companies
      * @param {string} [industrySearch] Search query for industries
      * @param {Array<'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G' | 'H' | 'I'>} [companySize] The company sizes to filter by
+     * @param {Array<'EDUCATIONAL' | 'GOVERNMENT_AGENCY' | 'NON_PROFIT' | 'PARTNERSHIP' | 'PRIVATELY_HELD' | 'PUBLIC_COMPANY' | 'SELF_EMPLOYED' | 'SELF_OWNED'>} [companyType] The company types to filter by
      * @param {number} [limit] The number of results to return
      * @param {number} [offset] The offset of the query
      * @param {string} [search] Broad search query
@@ -510,11 +531,11 @@ export interface V1ApiInterface {
     /**
      * 
      * @summary Returns companies that have seen a spike in alumni employment.
-     * @param {string} [startDate] The start date of the query
-     * @param {string} [endDate] The end date of the query
+     * @param {string} [startDate] The start date of the role
+     * @param {string} [endDate] The end date of the role
      * @param {Array<string>} [courseIds] The course IDs to filter by
-     * @param {Array<string>} [companyIds] The company IDs to filter by
      * @param {Array<string>} [graduationYears] The graduation years to filter by
+     * @param {Array<string>} [companyIds] The company IDs to filter by
      * @param {Array<string>} [industryIds] The industry IDs to filter by
      * @param {Array<string>} [countries] The countries to filter by
      * @param {Array<string>} [cityIds] The cities ids to filter by
@@ -524,6 +545,7 @@ export interface V1ApiInterface {
      * @param {string} [companySearch] Search query for companies
      * @param {string} [industrySearch] Search query for industries
      * @param {Array<'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G' | 'H' | 'I'>} [companySize] The company sizes to filter by
+     * @param {Array<'EDUCATIONAL' | 'GOVERNMENT_AGENCY' | 'NON_PROFIT' | 'PARTNERSHIP' | 'PRIVATELY_HELD' | 'PUBLIC_COMPANY' | 'SELF_EMPLOYED' | 'SELF_OWNED'>} [companyType] The company types to filter by
      * @param {number} [limit] The number of results to return
      * @param {number} [offset] The offset of the query
      * @param {string} [search] Broad search query
@@ -601,11 +623,11 @@ export interface V1ApiInterface {
     /**
      * 
      * @summary Get the countries, and the number of alumni working in them.
-     * @param {string} [startDate] The start date of the query
-     * @param {string} [endDate] The end date of the query
+     * @param {string} [startDate] The start date of the role
+     * @param {string} [endDate] The end date of the role
      * @param {Array<string>} [courseIds] The course IDs to filter by
-     * @param {Array<string>} [companyIds] The company IDs to filter by
      * @param {Array<string>} [graduationYears] The graduation years to filter by
+     * @param {Array<string>} [companyIds] The company IDs to filter by
      * @param {Array<string>} [industryIds] The industry IDs to filter by
      * @param {Array<string>} [countries] The countries to filter by
      * @param {Array<string>} [cityIds] The cities ids to filter by
@@ -615,6 +637,7 @@ export interface V1ApiInterface {
      * @param {string} [companySearch] Search query for companies
      * @param {string} [industrySearch] Search query for industries
      * @param {Array<'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G' | 'H' | 'I'>} [companySize] The company sizes to filter by
+     * @param {Array<'EDUCATIONAL' | 'GOVERNMENT_AGENCY' | 'NON_PROFIT' | 'PARTNERSHIP' | 'PRIVATELY_HELD' | 'PUBLIC_COMPANY' | 'SELF_EMPLOYED' | 'SELF_OWNED'>} [companyType] The company types to filter by
      * @param {number} [limit] The number of results to return
      * @param {number} [offset] The offset of the query
      * @param {string} [search] Broad search query
@@ -630,6 +653,21 @@ export interface V1ApiInterface {
      * Get the countries, and the number of alumni working in them.
      */
     countriesAnalyticsControllerGetCountriesWithAlumniCount(requestParameters: CountriesAnalyticsControllerGetCountriesWithAlumniCountRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<CountryListResponseDto>;
+
+    /**
+     * 
+     * @summary Create a course
+     * @param {CreateCourseDto} createCourseDto 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof V1ApiInterface
+     */
+    courseControllerCreateRaw(requestParameters: CourseControllerCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<CourseExtended>>;
+
+    /**
+     * Create a course
+     */
+    courseControllerCreate(requestParameters: CourseControllerCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<CourseExtended>;
 
     /**
      * 
@@ -661,6 +699,21 @@ export interface V1ApiInterface {
      * Get a course by id
      */
     courseControllerFindOne(requestParameters: CourseControllerFindOneRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<CourseExtended>;
+
+    /**
+     * 
+     * @summary Create a faculty
+     * @param {AddFacultyDto} addFacultyDto 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof V1ApiInterface
+     */
+    facultyControllerCreateRaw(requestParameters: FacultyControllerCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Faculty>>;
+
+    /**
+     * Create a faculty
+     */
+    facultyControllerCreate(requestParameters: FacultyControllerCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Faculty>;
 
     /**
      * 
@@ -709,11 +762,11 @@ export interface V1ApiInterface {
     /**
      * 
      * @summary Returns the number of alumni working in companies grouped by industry.
-     * @param {string} [startDate] The start date of the query
-     * @param {string} [endDate] The end date of the query
+     * @param {string} [startDate] The start date of the role
+     * @param {string} [endDate] The end date of the role
      * @param {Array<string>} [courseIds] The course IDs to filter by
-     * @param {Array<string>} [companyIds] The company IDs to filter by
      * @param {Array<string>} [graduationYears] The graduation years to filter by
+     * @param {Array<string>} [companyIds] The company IDs to filter by
      * @param {Array<string>} [industryIds] The industry IDs to filter by
      * @param {Array<string>} [countries] The countries to filter by
      * @param {Array<string>} [cityIds] The cities ids to filter by
@@ -723,6 +776,7 @@ export interface V1ApiInterface {
      * @param {string} [companySearch] Search query for companies
      * @param {string} [industrySearch] Search query for industries
      * @param {Array<'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G' | 'H' | 'I'>} [companySize] The company sizes to filter by
+     * @param {Array<'EDUCATIONAL' | 'GOVERNMENT_AGENCY' | 'NON_PROFIT' | 'PARTNERSHIP' | 'PRIVATELY_HELD' | 'PUBLIC_COMPANY' | 'SELF_EMPLOYED' | 'SELF_OWNED'>} [companyType] The company types to filter by
      * @param {number} [limit] The number of results to return
      * @param {number} [offset] The offset of the query
      * @param {string} [search] Broad search query
@@ -1176,12 +1230,12 @@ export class V1Api extends runtime.BaseAPI implements V1ApiInterface {
             queryParameters['courseIds'] = requestParameters['courseIds'];
         }
 
-        if (requestParameters['companyIds'] != null) {
-            queryParameters['companyIds'] = requestParameters['companyIds'];
-        }
-
         if (requestParameters['graduationYears'] != null) {
             queryParameters['graduationYears'] = requestParameters['graduationYears'];
+        }
+
+        if (requestParameters['companyIds'] != null) {
+            queryParameters['companyIds'] = requestParameters['companyIds'];
         }
 
         if (requestParameters['industryIds'] != null) {
@@ -1218,6 +1272,10 @@ export class V1Api extends runtime.BaseAPI implements V1ApiInterface {
 
         if (requestParameters['companySize'] != null) {
             queryParameters['companySize'] = requestParameters['companySize'];
+        }
+
+        if (requestParameters['companyType'] != null) {
+            queryParameters['companyType'] = requestParameters['companyType'];
         }
 
         if (requestParameters['limit'] != null) {
@@ -1285,12 +1343,12 @@ export class V1Api extends runtime.BaseAPI implements V1ApiInterface {
             queryParameters['courseIds'] = requestParameters['courseIds'];
         }
 
-        if (requestParameters['companyIds'] != null) {
-            queryParameters['companyIds'] = requestParameters['companyIds'];
-        }
-
         if (requestParameters['graduationYears'] != null) {
             queryParameters['graduationYears'] = requestParameters['graduationYears'];
+        }
+
+        if (requestParameters['companyIds'] != null) {
+            queryParameters['companyIds'] = requestParameters['companyIds'];
         }
 
         if (requestParameters['industryIds'] != null) {
@@ -1327,6 +1385,10 @@ export class V1Api extends runtime.BaseAPI implements V1ApiInterface {
 
         if (requestParameters['companySize'] != null) {
             queryParameters['companySize'] = requestParameters['companySize'];
+        }
+
+        if (requestParameters['companyType'] != null) {
+            queryParameters['companyType'] = requestParameters['companyType'];
         }
 
         if (requestParameters['limit'] != null) {
@@ -1437,12 +1499,12 @@ export class V1Api extends runtime.BaseAPI implements V1ApiInterface {
             queryParameters['courseIds'] = requestParameters['courseIds'];
         }
 
-        if (requestParameters['companyIds'] != null) {
-            queryParameters['companyIds'] = requestParameters['companyIds'];
-        }
-
         if (requestParameters['graduationYears'] != null) {
             queryParameters['graduationYears'] = requestParameters['graduationYears'];
+        }
+
+        if (requestParameters['companyIds'] != null) {
+            queryParameters['companyIds'] = requestParameters['companyIds'];
         }
 
         if (requestParameters['industryIds'] != null) {
@@ -1479,6 +1541,10 @@ export class V1Api extends runtime.BaseAPI implements V1ApiInterface {
 
         if (requestParameters['companySize'] != null) {
             queryParameters['companySize'] = requestParameters['companySize'];
+        }
+
+        if (requestParameters['companyType'] != null) {
+            queryParameters['companyType'] = requestParameters['companyType'];
         }
 
         if (requestParameters['limit'] != null) {
@@ -1651,12 +1717,12 @@ export class V1Api extends runtime.BaseAPI implements V1ApiInterface {
             queryParameters['courseIds'] = requestParameters['courseIds'];
         }
 
-        if (requestParameters['companyIds'] != null) {
-            queryParameters['companyIds'] = requestParameters['companyIds'];
-        }
-
         if (requestParameters['graduationYears'] != null) {
             queryParameters['graduationYears'] = requestParameters['graduationYears'];
+        }
+
+        if (requestParameters['companyIds'] != null) {
+            queryParameters['companyIds'] = requestParameters['companyIds'];
         }
 
         if (requestParameters['industryIds'] != null) {
@@ -1693,6 +1759,10 @@ export class V1Api extends runtime.BaseAPI implements V1ApiInterface {
 
         if (requestParameters['companySize'] != null) {
             queryParameters['companySize'] = requestParameters['companySize'];
+        }
+
+        if (requestParameters['companyType'] != null) {
+            queryParameters['companyType'] = requestParameters['companyType'];
         }
 
         if (requestParameters['limit'] != null) {
@@ -1732,6 +1802,42 @@ export class V1Api extends runtime.BaseAPI implements V1ApiInterface {
      */
     async countriesAnalyticsControllerGetCountriesWithAlumniCount(requestParameters: CountriesAnalyticsControllerGetCountriesWithAlumniCountRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<CountryListResponseDto> {
         const response = await this.countriesAnalyticsControllerGetCountriesWithAlumniCountRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Create a course
+     */
+    async courseControllerCreateRaw(requestParameters: CourseControllerCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<CourseExtended>> {
+        if (requestParameters['createCourseDto'] == null) {
+            throw new runtime.RequiredError(
+                'createCourseDto',
+                'Required parameter "createCourseDto" was null or undefined when calling courseControllerCreate().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
+
+        const response = await this.request({
+            path: `/api/course`,
+            method: 'POST',
+            headers: headerParameters,
+            query: queryParameters,
+            body: CreateCourseDtoToJSON(requestParameters['createCourseDto']),
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => CourseExtendedFromJSON(jsonValue));
+    }
+
+    /**
+     * Create a course
+     */
+    async courseControllerCreate(requestParameters: CourseControllerCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<CourseExtended> {
+        const response = await this.courseControllerCreateRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -1799,6 +1905,42 @@ export class V1Api extends runtime.BaseAPI implements V1ApiInterface {
      */
     async courseControllerFindOne(requestParameters: CourseControllerFindOneRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<CourseExtended> {
         const response = await this.courseControllerFindOneRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Create a faculty
+     */
+    async facultyControllerCreateRaw(requestParameters: FacultyControllerCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Faculty>> {
+        if (requestParameters['addFacultyDto'] == null) {
+            throw new runtime.RequiredError(
+                'addFacultyDto',
+                'Required parameter "addFacultyDto" was null or undefined when calling facultyControllerCreate().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
+
+        const response = await this.request({
+            path: `/api/faculty`,
+            method: 'POST',
+            headers: headerParameters,
+            query: queryParameters,
+            body: AddFacultyDtoToJSON(requestParameters['addFacultyDto']),
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => FacultyFromJSON(jsonValue));
+    }
+
+    /**
+     * Create a faculty
+     */
+    async facultyControllerCreate(requestParameters: FacultyControllerCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Faculty> {
+        const response = await this.facultyControllerCreateRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -1914,12 +2056,12 @@ export class V1Api extends runtime.BaseAPI implements V1ApiInterface {
             queryParameters['courseIds'] = requestParameters['courseIds'];
         }
 
-        if (requestParameters['companyIds'] != null) {
-            queryParameters['companyIds'] = requestParameters['companyIds'];
-        }
-
         if (requestParameters['graduationYears'] != null) {
             queryParameters['graduationYears'] = requestParameters['graduationYears'];
+        }
+
+        if (requestParameters['companyIds'] != null) {
+            queryParameters['companyIds'] = requestParameters['companyIds'];
         }
 
         if (requestParameters['industryIds'] != null) {
@@ -1956,6 +2098,10 @@ export class V1Api extends runtime.BaseAPI implements V1ApiInterface {
 
         if (requestParameters['companySize'] != null) {
             queryParameters['companySize'] = requestParameters['companySize'];
+        }
+
+        if (requestParameters['companyType'] != null) {
+            queryParameters['companyType'] = requestParameters['companyType'];
         }
 
         if (requestParameters['limit'] != null) {
@@ -2245,6 +2391,20 @@ export type CompaniesAnalyticsControllerGetCompaniesWithAlumniCountCompanySizeEn
 /**
  * @export
  */
+export const CompaniesAnalyticsControllerGetCompaniesWithAlumniCountCompanyTypeEnum = {
+    Educational: 'EDUCATIONAL',
+    GovernmentAgency: 'GOVERNMENT_AGENCY',
+    NonProfit: 'NON_PROFIT',
+    Partnership: 'PARTNERSHIP',
+    PrivatelyHeld: 'PRIVATELY_HELD',
+    PublicCompany: 'PUBLIC_COMPANY',
+    SelfEmployed: 'SELF_EMPLOYED',
+    SelfOwned: 'SELF_OWNED'
+} as const;
+export type CompaniesAnalyticsControllerGetCompaniesWithAlumniCountCompanyTypeEnum = typeof CompaniesAnalyticsControllerGetCompaniesWithAlumniCountCompanyTypeEnum[keyof typeof CompaniesAnalyticsControllerGetCompaniesWithAlumniCountCompanyTypeEnum];
+/**
+ * @export
+ */
 export const CompaniesAnalyticsControllerGetCompanyDetailsCompanySizeEnum = {
     A: 'A',
     B: 'B',
@@ -2257,6 +2417,20 @@ export const CompaniesAnalyticsControllerGetCompanyDetailsCompanySizeEnum = {
     I: 'I'
 } as const;
 export type CompaniesAnalyticsControllerGetCompanyDetailsCompanySizeEnum = typeof CompaniesAnalyticsControllerGetCompanyDetailsCompanySizeEnum[keyof typeof CompaniesAnalyticsControllerGetCompanyDetailsCompanySizeEnum];
+/**
+ * @export
+ */
+export const CompaniesAnalyticsControllerGetCompanyDetailsCompanyTypeEnum = {
+    Educational: 'EDUCATIONAL',
+    GovernmentAgency: 'GOVERNMENT_AGENCY',
+    NonProfit: 'NON_PROFIT',
+    Partnership: 'PARTNERSHIP',
+    PrivatelyHeld: 'PRIVATELY_HELD',
+    PublicCompany: 'PUBLIC_COMPANY',
+    SelfEmployed: 'SELF_EMPLOYED',
+    SelfOwned: 'SELF_OWNED'
+} as const;
+export type CompaniesAnalyticsControllerGetCompanyDetailsCompanyTypeEnum = typeof CompaniesAnalyticsControllerGetCompanyDetailsCompanyTypeEnum[keyof typeof CompaniesAnalyticsControllerGetCompanyDetailsCompanyTypeEnum];
 /**
  * @export
  */
@@ -2275,6 +2449,20 @@ export type CompaniesAnalyticsControllerGetHotCompaniesCompanySizeEnum = typeof 
 /**
  * @export
  */
+export const CompaniesAnalyticsControllerGetHotCompaniesCompanyTypeEnum = {
+    Educational: 'EDUCATIONAL',
+    GovernmentAgency: 'GOVERNMENT_AGENCY',
+    NonProfit: 'NON_PROFIT',
+    Partnership: 'PARTNERSHIP',
+    PrivatelyHeld: 'PRIVATELY_HELD',
+    PublicCompany: 'PUBLIC_COMPANY',
+    SelfEmployed: 'SELF_EMPLOYED',
+    SelfOwned: 'SELF_OWNED'
+} as const;
+export type CompaniesAnalyticsControllerGetHotCompaniesCompanyTypeEnum = typeof CompaniesAnalyticsControllerGetHotCompaniesCompanyTypeEnum[keyof typeof CompaniesAnalyticsControllerGetHotCompaniesCompanyTypeEnum];
+/**
+ * @export
+ */
 export const CountriesAnalyticsControllerGetCountriesWithAlumniCountCompanySizeEnum = {
     A: 'A',
     B: 'B',
@@ -2287,6 +2475,20 @@ export const CountriesAnalyticsControllerGetCountriesWithAlumniCountCompanySizeE
     I: 'I'
 } as const;
 export type CountriesAnalyticsControllerGetCountriesWithAlumniCountCompanySizeEnum = typeof CountriesAnalyticsControllerGetCountriesWithAlumniCountCompanySizeEnum[keyof typeof CountriesAnalyticsControllerGetCountriesWithAlumniCountCompanySizeEnum];
+/**
+ * @export
+ */
+export const CountriesAnalyticsControllerGetCountriesWithAlumniCountCompanyTypeEnum = {
+    Educational: 'EDUCATIONAL',
+    GovernmentAgency: 'GOVERNMENT_AGENCY',
+    NonProfit: 'NON_PROFIT',
+    Partnership: 'PARTNERSHIP',
+    PrivatelyHeld: 'PRIVATELY_HELD',
+    PublicCompany: 'PUBLIC_COMPANY',
+    SelfEmployed: 'SELF_EMPLOYED',
+    SelfOwned: 'SELF_OWNED'
+} as const;
+export type CountriesAnalyticsControllerGetCountriesWithAlumniCountCompanyTypeEnum = typeof CountriesAnalyticsControllerGetCountriesWithAlumniCountCompanyTypeEnum[keyof typeof CountriesAnalyticsControllerGetCountriesWithAlumniCountCompanyTypeEnum];
 /**
  * @export
  */
@@ -2305,8 +2507,22 @@ export type IndustriesAnalyticsControllerGetIndustryWithCountsCompanySizeEnum = 
 /**
  * @export
  */
-export const ReviewsControllerFindAllGeoJSONGroupByEnum = {
+export const IndustriesAnalyticsControllerGetIndustryWithCountsCompanyTypeEnum = {
+    Educational: 'EDUCATIONAL',
+    GovernmentAgency: 'GOVERNMENT_AGENCY',
+    NonProfit: 'NON_PROFIT',
+    Partnership: 'PARTNERSHIP',
+    PrivatelyHeld: 'PRIVATELY_HELD',
+    PublicCompany: 'PUBLIC_COMPANY',
+    SelfEmployed: 'SELF_EMPLOYED',
+    SelfOwned: 'SELF_OWNED'
+} as const;
+export type IndustriesAnalyticsControllerGetIndustryWithCountsCompanyTypeEnum = typeof IndustriesAnalyticsControllerGetIndustryWithCountsCompanyTypeEnum[keyof typeof IndustriesAnalyticsControllerGetIndustryWithCountsCompanyTypeEnum];
+/**
+ * @export
+ */
+export const ReviewControllerFindAllGeoJSONGroupByEnum = {
     Countries: 'countries',
     Cities: 'cities'
 } as const;
-export type ReviewsControllerFindAllGeoJSONGroupByEnum = typeof ReviewsControllerFindAllGeoJSONGroupByEnum[keyof typeof ReviewsControllerFindAllGeoJSONGroupByEnum];
+export type ReviewControllerFindAllGeoJSONGroupByEnum = typeof ReviewControllerFindAllGeoJSONGroupByEnum[keyof typeof ReviewControllerFindAllGeoJSONGroupByEnum];

@@ -1,8 +1,29 @@
 from datetime import datetime
 from typing import Optional
 
-from app.db.models import CompanySize
+from app.db.models import CompanySize, CompanyType
 from app.schemas.linkedin import ExperienceDate
+
+
+def convert_company_type_to_enum(company_type: str) -> CompanyType | None:
+    if company_type == 'Public Company':
+        return CompanyType.PUBLIC_COMPANY
+    elif company_type == 'Privately Held':
+        return CompanyType.PRIVATELY_HELD
+    elif company_type == 'Self-Owned':
+        return CompanyType.SELF_OWNED
+    elif company_type == 'Self-Employed':
+        return CompanyType.SELF_EMPLOYED
+    elif company_type == 'Partnership':
+        return CompanyType.PARTNERSHIP
+    elif company_type == 'Government Agency':
+        return CompanyType.GOVERNMENT_AGENCY
+    elif company_type == 'Nonprofit':
+        return CompanyType.NON_PROFIT
+    elif company_type == 'Educational':
+        return CompanyType.EDUCATIONAL
+    else:
+        return None
 
 
 def convert_company_size_to_enum(company_size: str) -> CompanySize:    
