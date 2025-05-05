@@ -82,9 +82,6 @@ class CompanyService:
             # Small delay between batches to prevent rate limiting
             if i + batch_size < len(companies):
                 await asyncio.sleep(1)
-                
-            # test
-            break
 
     async def extract_company_data(
         self,
@@ -134,12 +131,8 @@ class CompanyService:
             )
 
             if snapshot_response.get("status") == "ready":
-                logger.info(f"Snapshot ready after {retry_count} retries")
                 break
 
-            logger.info(
-                f"Snapshot not ready yet, waiting {wait_time}s before retry {retry_count + 1}/{max_retries}"  # noqa: E501
-            )
             sleep(wait_time)
             retry_count += 1
 
@@ -203,8 +196,6 @@ class CompanyService:
             linkedin_url=company_linkedin_url,
             industry_id=industry_id,
             logo=company_logo,
-            # We'll be updating this later, in the Agent
-            hq_location_id=NULL_ISLAND_ID,
             founded=company_response.founded,
             website=clean_website_url(company_response.website),
             company_size=convert_company_size_to_enum(company_response.company_size),
@@ -219,7 +210,7 @@ class CompanyService:
             # Now that the company is updated, trigger location processing
             if company_response.headquarters and company_response.country_code:
                 # Execute location agent after company is saved to database
-                await location_agent.parse_location(input)
+                await location_agent.process_location(input)
         except Exception as e:
             logger.error(f"Error updating company {company_id}: {str(e)}")
             raise

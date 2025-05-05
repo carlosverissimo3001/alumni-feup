@@ -16,7 +16,7 @@ from app.schemas.location import LocationAgentState, LocationInput, LocationResu
 from app.services.location import location_service
 from app.utils.alumni_db import find_by_id, update_alumni
 from app.utils.company_db import get_company_by_id, update_company
-from app.utils.consts import RESOLVE_LOCATION_PROMPT, get_resolve_country_code_prompt
+from app.utils.consts import RESOLVE_LOCATION_PROMPT, get_resolve_geo_prompt
 from app.utils.location_db import create_location, get_locations_by_country_code
 from app.utils.role_db import get_role_by_id, update_role
 
@@ -52,20 +52,20 @@ class LocationAgent:
         graph = StateGraph(LocationAgentState)
 
         # *** Nodes ***
-        graph.add_node("resolve_country_code", self.resolve_country_code)
+        graph.add_node("resolve_geo", self.resolve_geo)
         graph.add_node("fetch_locations_from_db", self.fetch_locations_from_db)
         graph.add_node("resolve_location", self.resolve_location)
         graph.add_node("insert_location_into_db", self.insert_location_into_db)
         graph.add_node("update_domain_with_location", self.update_domain_with_location)
 
         # *** Edges ***
-        graph.add_edge(START, "resolve_country_code")
+        graph.add_edge(START, "resolve_geo")
 
         # Conditional branching after code resolver
-        def check_country_code(state: dict) -> Literal["fetch_locations_from_db", "__end__"]:
+        def check_geo(state: dict) -> Literal["fetch_locations_from_db", "__end__"]:
             return "fetch_locations_from_db" if state.get("resolved_country_code") else END
 
-        graph.add_conditional_edges("resolve_country_code", check_country_code)
+        graph.add_conditional_edges("resolve_geo", check_geo)
 
         graph.add_edge("fetch_locations_from_db", "resolve_location")
 
@@ -85,63 +85,68 @@ class LocationAgent:
 
         # *** Compile the graph ***
         compiled_graph = graph.compile()
-        compiled_graph.get_graph().draw_mermaid_png(output_file_path="location_resolver_graph.png")
+        compiled_graph.get_graph().draw_mermaid_png(output_file_path="location_agent_graph.png")
         return compiled_graph
 
     def is_new_location(self, state: LocationAgentState) -> bool:
         """
-        Check if the location is new
+        Return True if location_result has no 'id', meaning it's a new location.
         """
-        # If we have a location id, it's not new
-        if state.get("location_result") and state["location_result"].id:
-            logger.info(f"Location has ID, not creating new: {state['location_result'].id}")
+        location = state.get("location_result")
+        if not location:
             return False
+        return (
+            getattr(location, "id", None) is None
+            if not isinstance(location, dict)
+            else location.get("id") is None
+        )
 
-        # Extra check: see if we have an exact match in our DB
-        if state.get("location_result") and state.get("db_locations"):
-            city = state["location_result"].city
-            country_code = state["location_result"].country_code
-
-            if city:
-                for loc in state["db_locations"]:
-                    if (
-                        loc.city
-                        and loc.city.lower() == city.lower()
-                        and loc.country_code == country_code
-                    ):
-                        # We found a match in our DB, update the ID
-                        logger.info(
-                            f"Found exact match in DB, using ID: {loc.id} instead of creating new"
-                        )
-                        state["location_result"].id = loc.id
-                        return False
-
-        # If we don't have a location id, it's new
-        return True
-
-    def resolve_country_code(self, state: LocationAgentState) -> LocationAgentState:
+    def resolve_geo(self, state: LocationAgentState) -> LocationAgentState:
         """
         Resolve the country code for the location
         """
+        clean_input = ""
+        if state["input"].type == LocationType.COMPANY:
+            clean_input = f'Company Headquarters: "{state["input"].headquarters}"\nCountry Codes: "{state["input"].country_codes}"'  # noqa: E501
+        elif state["input"].type == LocationType.ROLE:
+            clean_input = f'Role Location: "{state["input"].location}"'
+        elif state["input"].type == LocationType.ALUMNI:
+            clean_input = f'Alumni City: "{state["input"].city}"\nAlumni Country: "{state["input"].country}"\nAlumni Country Code: "{state["input"].country_code}"'  # noqa: E501
+
         response = cold_llm.invoke(
             [
-                SystemMessage(content=get_resolve_country_code_prompt(state["input"].type)),
-                SystemMessage(content=f"Here is the location to resolve: {state['input']}"),
+                SystemMessage(content=get_resolve_geo_prompt(state["input"].type)),
+                SystemMessage(content=f"Here is the location to resolve: {clean_input}"),
                 *state["messages"],
                 HumanMessage(
-                    content="""Please resolve the country code for the location above.
-                    Remember: please only answer with the ISO 3166-1 alpha-2 country code (or 'NULL' if undetermined).
-                    Do not include any explanations, quotes, or additional text.
+                    content="""Please resolve the location information for the location above.
+                    Return ONLY the JSON object as described in the instructions.
+                    DO NOT include any explanations, quotes, or additional text.
                     """  # noqa: E501
                 ),
             ]
         )
 
-        country_code = response.content.strip()
+        location_data = response.content.strip().replace("```json", "").replace("```", "").strip()
 
-        # Store the resolved country code in the state
-        state["resolved_country_code"] = country_code if country_code != "NULL" else None
+        location = {}
+        try:
+            location = json.loads(location_data)
+        except JSONDecodeError as e:
+            logger.error(f"Error parsing geo response: {str(e)}")
+            logger.error(f"Raw response: {location_data}")
+
         state["messages"].append(response)
+
+        country_code = location.get("country_code")
+        city = location.get("city")
+
+        state["resolved_country_code"] = (
+            country_code
+            if isinstance(country_code, str) and country_code.lower() != "null"
+            else None
+        )
+        state["resolved_city"] = city if isinstance(city, str) and city.lower() != "null" else None
 
         return state
 
@@ -185,26 +190,11 @@ class LocationAgent:
 
         db_locations_str = str(db_locations_json) if db_locations_json else "[]"
 
-        # Prepare detailed information about the input location
-        location_input = state["input"]
-        location_details = ""
-        extracted_city = None
-
-        if location_input.type == LocationType.COMPANY:
-            location_details = f'Company Headquarters: "{location_input.headquarters}"\nCountry Codes: "{location_input.country_codes}"'  # noqa: E501
-            # Extract city from headquarters (simple extraction)
-            if "," in location_input.headquarters:
-                extracted_city = location_input.headquarters.split(",")[0].strip()
-        elif location_input.type == LocationType.ROLE:
-            location_details = f'Role Location: "{location_input.location}"'
-            # Role location parsing is complex, let the LLM handle it
-        elif location_input.type == LocationType.ALUMNI:
-            location_details = f'Alumni City: "{location_input.city}"\nAlumni Country: "{location_input.country}"\nAlumni Country Code: "{location_input.country_code}"'  # noqa: E501
-            extracted_city = location_input.city
 
         # Check for exact matches before calling the LLM
+        extracted_city = state.get("resolved_city")
         exact_match = None
-        exact_match_info = ""
+   
         if extracted_city:
             for loc in state.get("db_locations", []):
                 if loc.city and loc.city.lower() == extracted_city.lower():
@@ -212,78 +202,64 @@ class LocationAgent:
                     logger.info(
                         f"Found exact match for city: {extracted_city} -> {loc.city} (ID: {loc.id})"
                     )
-                    exact_match_info = f"""
-                    IMPORTANT EXACT MATCH FOUND:
-                    I found an exact match for "{extracted_city}" in the database:
-                    - ID: {loc.id}
-                    - City: {loc.city}
-                    - Country: {loc.country}
-                    - Country Code: {loc.country_code}
-
-                    YOU MUST USE THIS EXISTING LOCATION INSTEAD OF CREATING A NEW ONE, IF IT MAKES SENSE TO DO SO.
-                    """  # noqa: E501
                     break
 
+        # Set the exact match in the state
+        if exact_match and exact_match.country_code == state.get("resolved_country_code"):
+            state["location_result"] = LocationResult(
+                id=exact_match.id,
+                country_code=exact_match.country_code,
+                country=exact_match.country,
+                city=exact_match.city,
+                is_country_only=exact_match.is_country_only,
+            )
+
+            # Return early, we don't need to call the LLM
+            return state
+
+        # Prepare detailed information about the input location
+        location_details = ""
+        location_input = state["input"]
+        if location_input.type == LocationType.COMPANY:
+            location_details = f'Company Headquarters: "{location_input.headquarters}"\nCountry Codes: "{location_input.country_codes}"'  # noqa: E501
+        elif location_input.type == LocationType.ROLE:
+            location_details = f'Role Location: "{location_input.location}"'
+        elif location_input.type == LocationType.ALUMNI:
+            location_details = f'Alumni City: "{location_input.city}"\nAlumni Country: "{location_input.country}"\nAlumni Country Code: "{location_input.country_code}"'  # noqa: E501
+
+        # We only call the LLM if we don't have an exact match using the city and country code resolver
         response = cold_llm.invoke(
             [
                 SystemMessage(content=RESOLVE_LOCATION_PROMPT),
-                SystemMessage(
-                    content=f"Resolved Country Code: {state.get('resolved_country_code')}"
-                ),
                 SystemMessage(content=f"Input Location Details:\n{location_details}"),
                 SystemMessage(content=f"Database Locations:\n{db_locations_str}"),
-                SystemMessage(content=exact_match_info)
-                if exact_match_info
-                else SystemMessage(content="No exact match was found in the database."),
                 HumanMessage(
-                    content="Parse the input location and either match it to a database location or create a new location. If an exact match was provided above, you MUST use that location. Return ONLY the JSON object as specified in the instructions."  # noqa: E501
+                    content="""Parse the input location and either match it to a database location or create a new location. 
+                    Return ONLY the JSON object as specified in the instructions.
+                    DO NOT include any text or comments before or after the JSON object."""  # noqa: E501
                 ),
             ]
         )
+        location = response.content.strip()
 
-        # Parse the response to get the location result
+        # Store the raw response content
         try:
-            # Clean the response content to extract just the JSON part
-            content = response.content.strip()
-            if content.startswith("```json"):
-                content = content[7:]
-            if content.endswith("```"):
-                content = content[:-3]
-            content = content.strip()
+            # Log the raw response for debugging
+            logger.debug(f"Raw LLM response for location resolution: {location}")
 
-            location_result = json.loads(content)
+            # Pre-process the JSON string to fix any Python boolean literals
+            location = location.replace("True", "true").replace("False", "false")
 
-            # Override with exact match if we found one but LLM didn't use it
-            if exact_match and (not location_result.get("id") or location_result.get("id") is None):
-                logger.info(
-                    f"LLM didn't use exact match for {extracted_city}, overriding with ID: {exact_match.id}"  # noqa: E501
-                )
-                location_result = {
-                    "id": str(exact_match.id),
-                    "country_code": exact_match.country_code,
-                    "country": exact_match.country,
-                    "city": exact_match.city,
-                    "is_country_only": exact_match.is_country_only,
-                }
+            parsed_location = json.loads(location)
+            state["location_result"] = parsed_location
+        except JSONDecodeError as e:
+            # Log detailed error information
+            logger.error(f"JSONDecodeError parsing location: {str(e)}")
+            logger.error(f"Raw location string: {location}")
 
-            # Create LocationResult object
-            state["location_result"] = LocationResult(
-                id=location_result.get("id"),
-                country_code=location_result.get("country_code"),
-                country=location_result.get("country"),
-                city=location_result.get("city"),
-                is_country_only=location_result.get("is_country_only"),
-            )
+            state["location_result"] = None
 
-        except (JSONDecodeError, KeyError, AttributeError) as e:
-            logger.error(f"Error parsing location result: {e}")
-            # Fall back to a minimal location with just the country code
-            state["location_result"] = LocationResult(
-                id=None,
-                country_code=state.get("resolved_country_code"),
-                country="Unknown",
-                city=None,
-            )
+        state["messages"].append(response)
 
         return state
 
@@ -292,23 +268,36 @@ class LocationAgent:
         Insert the location into the database;
         Triggers a background task to extract the coordinates
         """
-        is_country_only = state["location_result"].city is None
+        location_result = state["location_result"]
+        logger.info(f"Inserting location into db: {location_result}")
 
-        # Create the location object
+        # Helper to extract fields from dict or object
+        get = (
+            location_result.get
+            if isinstance(location_result, dict)
+            else lambda k: getattr(location_result, k, None)
+        )
+        
+
+        city = get("city")
+        country = get("country")
+        country_code = get("country_code")
+        is_country_only = city is None
+
         location = Location(
-            city=state["location_result"].city,
-            country=state["location_result"].country,
-            country_code=state["location_result"].country_code,
+            city=city,
+            country=country,
+            country_code=country_code,
             is_country_only=is_country_only,
         )
 
-        # Insert the location into the database
+        # Insert into DB and update ID
         location = create_location(location, db)
+        if isinstance(location_result, dict):
+            location_result["id"] = location.id
+        else:
+            location_result.id = location.id
 
-        # Update the state with the location id
-        state["location_result"].id = location.id
-
-        # Offload the coordinates extraction to a background task
         asyncio.create_task(location_service.update_location_coordinates(location))
 
         return state
@@ -319,25 +308,30 @@ class LocationAgent:
         """
         # Here, we know that the location is already in the database, so we have an ID
         # We just need to update the domain with the location id
-        return state
-
+        get = (
+            state["location_result"].get
+            if isinstance(state["location_result"], dict)
+            else lambda k: getattr(state["location_result"], k, None)
+        )
+        location_id = get("id")
+        
         if state["input"].type == LocationType.COMPANY:
             company = get_company_by_id(state["input"].company_id, db)
-            company.hq_location_id = state["location_result"].id
+            company.hq_location_id = location_id
             update_company(company, db)
         elif state["input"].type == LocationType.ROLE:
             role = get_role_by_id(state["input"].role_id, db)
-            role.location_id = state["location_result"].id
+            role.location_id = location_id
             update_role(role, db)
         elif state["input"].type == LocationType.ALUMNI:
             alumni = find_by_id(state["input"].alumni_id, db)
-            alumni.current_location_id = state["location_result"].id
+            alumni.current_location_id = location_id
             update_alumni(alumni, db)
 
         return state
 
     # This is the actual "Agent" code
-    async def _process_location(self, location_input: LocationInput):
+    async def process_location(self, location_input: LocationInput):
         """
         Async function that processes a single location and finds its ESCO classification
         """
@@ -356,19 +350,6 @@ class LocationAgent:
         # Consume all events from the stream
         # This ensures the graph execution completes
         [event for event in events]
-
-    async def parse_location(self, location_input: LocationInput):
-        """
-        Parse a free-form location into a structured location objetc.
-
-        Args:
-            location_input: the location to parse
-        """
-        try:
-            await asyncio.gather(self._process_location(location_input))
-
-        except Exception as e:
-            logger.error(f"Error parsing location {location_input}: {str(e)}")
 
 
 location_agent = LocationAgent()
