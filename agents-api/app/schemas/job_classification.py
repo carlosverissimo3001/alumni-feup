@@ -2,9 +2,16 @@ import enum
 from datetime import datetime
 from typing import List, Optional
 
+from fastapi import Query
 from langgraph.graph import add_messages
 from pydantic import BaseModel, Field
 from typing_extensions import Annotated, TypedDict
+
+
+class AlumniJobClassificationParams(BaseModel):
+    alumni_ids: Optional[str] = Field(
+        Query(None, description="Comma-separated list of alumni IDs to update")
+    )  # noqa: E501
 
 
 class Source(str, enum.Enum):
