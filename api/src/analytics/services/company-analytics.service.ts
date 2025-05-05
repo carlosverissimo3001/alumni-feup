@@ -7,10 +7,7 @@ import {
   IndustryListResponseDto,
   CompanyOptionDto,
 } from '../dto';
-import {
-  CompanyListItemDto,
-  CompanyListItemExtendedDto,
-} from '../dto/company-list.dto';
+import { CompanyListItemExtendedDto } from '../dto/company-list.dto';
 import {
   DEFAULT_QUERY_LIMIT,
   DEFAULT_QUERY_SORT_BY,

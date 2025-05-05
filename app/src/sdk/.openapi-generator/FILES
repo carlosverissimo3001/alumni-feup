@@ -10,6 +10,7 @@ apis/UserApi.ts
 apis/V1Api.ts
 apis/index.ts
 index.ts
+models/AddFacultyDto.ts
 models/Alumni.ts
 models/AlumniExtended.ts
 models/BasicAlumniProfileDto.ts
@@ -26,6 +27,7 @@ models/Course.ts
 models/CourseCompletion.ts
 models/CourseExtended.ts
 models/CreateAlumniDto.ts
+models/CreateCourseDto.ts
 models/CurrentRoleDto.ts
 models/Faculty.ts
 models/GeoJSONFeature.ts

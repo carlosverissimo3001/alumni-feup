@@ -7,7 +7,15 @@ import { GroupedMultiSelect } from "@/components/ui/grouped-multi-select";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
-import { ListFilterIcon, Info, Building, GraduationCap, Calendar, MapPin, Tags } from "lucide-react";
+import {
+  ListFilterIcon,
+  Info,
+  Building,
+  GraduationCap,
+  Calendar,
+  MapPin,
+  Tags,
+} from "lucide-react";
 import { useState, useMemo, useEffect } from "react";
 import {
   Tooltip,
@@ -21,13 +29,12 @@ import { useListCourses } from "@/hooks/courses/useListCourses";
 import { CourseSelect } from "@/components/common/courseSelect";
 import { useCityOptions } from "@/hooks/analytics/useCityOptions";
 import { useIndustryOptions } from "@/hooks/analytics/useIndustryOptions";
-import { 
-  Tabs, 
-  TabsList, 
-  TabsTrigger 
-} from "@/components/ui/tabs";
-import { COMPANY_SIZE } from "@/types/company";
-import { CompaniesAnalyticsControllerGetCompaniesWithAlumniCountCompanySizeEnum as CompanySizeEnum } from "@/sdk";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { COMPANY_SIZE, COMPANY_TYPE } from "@/types/company";
+import {
+  CompaniesAnalyticsControllerGetCompaniesWithAlumniCountCompanySizeEnum as CompanySizeEnum,
+  CompaniesAnalyticsControllerGetCompaniesWithAlumniCountCompanyTypeEnum as CompanyTypeEnum,
+} from "@/sdk";
 import { motion, AnimatePresence } from "framer-motion";
 
 export type FilterState = {
@@ -43,6 +50,7 @@ export type FilterState = {
   excludeResearchAndHighEducation?: boolean;
   onlyInternational?: boolean;
   companySize?: CompanySizeEnum[];
+  companyType?: CompanyTypeEnum[];
 };
 
 type GlobalFiltersProps = {
@@ -149,6 +157,11 @@ export default function GlobalFilters({
         value: value,
         label: COMPANY_SIZE[key as keyof typeof COMPANY_SIZE],
       })),
+      companyTypes: Object.entries(CompanyTypeEnum).map(([key, value]) => ({
+        value: value,
+          label: COMPANY_TYPE[key as keyof typeof COMPANY_TYPE],
+        }))
+        .sort((a, b) => a.label.localeCompare(b.label)),
     }),
     [
       companyOptions,
@@ -196,6 +209,7 @@ export default function GlobalFilters({
       excludeResearchAndHighEducation: false,
       onlyInternational: false,
       companySize: [],
+      companyType: [],
     };
 
     onFiltersChange(emptyFilters);
@@ -208,7 +222,7 @@ export default function GlobalFilters({
         onClick={() => setIsCollapsed(!isCollapsed)}
       >
         <div className="flex items-center gap-2">
-          <motion.button 
+          <motion.button
             className="p-1 hover:bg-gray-100 rounded-full transition-colors select-none"
             whileTap={{ scale: 0.9 }}
             onClick={(e) => e.stopPropagation()}
@@ -239,17 +253,33 @@ export default function GlobalFilters({
       {/* Filter Inputs - Without Animation for collapse/expand */}
       {!isCollapsed && (
         <div className="px-4 pb-4">
-          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+          <Tabs
+            value={activeTab}
+            onValueChange={setActiveTab}
+            className="w-full"
+          >
             <TabsList className="grid grid-cols-5 mb-3">
-              <TabsTrigger value="location" className="flex items-center gap-1.5">
+              <TabsTrigger
+                value="location"
+                className="flex items-center gap-1.5"
+              >
                 <MapPin className="h-4 w-4" />
-                <span>Location</span>
+                <span>Location </span>
+                {/* {activeFilterCount > 0 && (
+                  <span className="text-sm text-gray-500">({activeFilterCount})</span>
+                )} */}
               </TabsTrigger>
-              <TabsTrigger value="organization" className="flex items-center gap-1.5">
+              <TabsTrigger
+                value="organization"
+                className="flex items-center gap-1.5"
+              >
                 <Building className="h-4 w-4" />
                 <span>Organization</span>
               </TabsTrigger>
-              <TabsTrigger value="education" className="flex items-center gap-1.5">
+              <TabsTrigger
+                value="education"
+                className="flex items-center gap-1.5"
+              >
                 <GraduationCap className="h-4 w-4" />
                 <span>Education</span>
               </TabsTrigger>
@@ -257,7 +287,10 @@ export default function GlobalFilters({
                 <Calendar className="h-4 w-4" />
                 <span>Time</span>
               </TabsTrigger>
-              <TabsTrigger value="options" className="flex items-center gap-1.5">
+              <TabsTrigger
+                value="options"
+                className="flex items-center gap-1.5"
+              >
                 <Tags className="h-4 w-4" />
                 <span>Options</span>
               </TabsTrigger>
@@ -336,7 +369,7 @@ export default function GlobalFilters({
 
   function renderOrganizationTab() {
     return (
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4">
         <div>
           <Label
             htmlFor="companySelect"
@@ -366,9 +399,7 @@ export default function GlobalFilters({
             id="industrySelect"
             options={options.industries}
             value={filters.industryIds}
-            onValueChange={(value) =>
-              handleFilterChange("industryIds", value)
-            }
+            onValueChange={(value) => handleFilterChange("industryIds", value)}
             placeholder="Select industries"
             lazyLoading={true}
             isLoading={isIndustryOptionsLoading || isIndustryOptionsFetching}
@@ -387,10 +418,32 @@ export default function GlobalFilters({
               id="companySizeSelect"
               options={options.companySizes}
               value={filters.companySize || []}
-              onValueChange={(value) => 
+              onValueChange={(value) =>
                 handleFilterChange("companySize", value)
               }
               placeholder="Select company size"
+              allowSelectAll={true}
+              maxCount={1}
+            />
+          </div>
+        </div>
+
+        <div>
+          <Label
+            htmlFor="companyTypeSelect"
+            className="text-xs font-medium text-gray-700 mb-1 block"
+          >
+            Company Type
+          </Label>
+          <div className="flex items-center gap-2">
+            <MultiSelect
+              id="companyTypeSelect"
+              options={options.companyTypes}
+              value={filters.companyType || []}
+              onValueChange={(value) =>
+                handleFilterChange("companyType", value)
+              }
+              placeholder="Select company type"
               allowSelectAll={true}
             />
           </div>
@@ -460,14 +513,17 @@ export default function GlobalFilters({
                   className="bg-white p-2 border shadow-lg rounded-md text-gray-700"
                 >
                   <p className="text-sm">
-                    <strong className="text-[#8C2D19]">Role Range</strong>{" "}
-                    shows when people worked in roles:
+                    <strong className="text-[#8C2D19]">Role Range</strong> shows
+                    when people worked in roles:
                     <br />
                     • If you select a date range (e.g., 2020-2023), it shows
                     roles active during that period
                     <br />• If you leave the end date empty, it shows roles up
                     to the present day
-                    <br />• Selecting <strong className="text-[#8C2D19]">current roles only</strong>
+                    <br />• Selecting{" "}
+                    <strong className="text-[#8C2D19]">
+                      current roles only
+                    </strong>
                     will un
                   </p>
                 </TooltipContent>

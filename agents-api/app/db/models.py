@@ -14,7 +14,8 @@ from sqlalchemy import (
     String,
 )
 from sqlalchemy.orm import relationship
-
+from sqlalchemy.types import BigInteger
+from sqlalchemy.dialects.postgresql import JSONB
 from app.db.session import Base
 from app.utils.consts import DEFAULT_INDUSTRY_ID
 
@@ -59,6 +60,17 @@ class CompanySize(str, enum.Enum):
     I = "I"
 
 
+class CompanyType(str, enum.Enum):
+    EDUCATIONAL = "EDUCATIONAL"
+    GOVERNMENT_AGENCY = "GOVERNMENT_AGENCY"
+    NON_PROFIT = "NON_PROFIT"
+    PARTNERSHIP = "PARTNERSHIP"
+    PRIVATELY_HELD = "PRIVATELY_HELD"
+    PUBLIC_COMPANY = "PUBLIC_COMPANY"
+    SELF_EMPLOYED = "SELF_EMPLOYED"
+    SELF_OWNED = "SELF_OWNED"
+
+
 class Alumni(Base):
     __tablename__ = "alumni"
 
@@ -78,6 +90,7 @@ class Alumni(Base):
         DateTime, nullable=False, server_default="now()", onupdate=datetime.now(timezone.utc)
     )
     updated_by = Column(String, nullable=True)
+    metadata_ = Column(JSONB, name="metadata", nullable=True)
 
     source = Column(Enum(Source), nullable=True)
     is_in_group = Column(Boolean, nullable=False)
@@ -109,10 +122,15 @@ class Company(Base):
         String, ForeignKey("industry.id"), nullable=False, default=DEFAULT_INDUSTRY_ID
     )  # noqa: E501
     logo = Column(String, nullable=True)
+    hq_location_id = Column(String, ForeignKey("location.id"), nullable=True)
+
     founded = Column(Integer, nullable=True)
     website = Column(String, nullable=True)
-    crunchbase_url = Column(String, nullable=True)
+    market_cap = Column(BigInteger, nullable=True)
+    ticker = Column(String, nullable=True)
+    company_type = Column(Enum(CompanyType), nullable=True)
     company_size = Column(Enum(CompanySize), nullable=True)
+
     created_at = Column(DateTime, nullable=False, server_default="now()")
     updated_at = Column(
         DateTime, nullable=False, server_default="now()", onupdate=datetime.now(timezone.utc)
@@ -120,6 +138,7 @@ class Company(Base):
 
     industry = relationship("Industry", back_populates="companies")
     roles = relationship("Role", back_populates="company")
+    hq_location = relationship("Location", back_populates="company")
 
 
 class Course(Base):
@@ -205,9 +224,10 @@ class Location(Base):
     alumni = relationship("Alumni", back_populates="location")
     problematic_locations = relationship("ProblematicLocation", back_populates="location")
     roles = relationship("Role", back_populates="location")
+    company = relationship("Company", back_populates="hq_location")
 
     def __repr__(self):
-        return f"<Location(id={self.id}, city={self.city}, country={self.country}, country_code={self.country_code})>"
+        return f"<Location(id={self.id}, city={self.city}, country={self.country}, country_code={self.country_code}, latitude={self.latitude}, longitude={self.longitude})>"
 
 
 class ProblematicLocation(Base):
@@ -244,7 +264,6 @@ class Role(Base):
     role_raw = relationship("RoleRaw", back_populates="role")
 
 
-
 class RoleRaw(Base):
     __tablename__ = "role_raw"
 
@@ -270,4 +289,4 @@ class EscoClassification(Base):
     excluded_occupations = Column(String, nullable=False)
     notes = Column(String, nullable=True)
     # Using 3072 dimensions for OpenAI's text-embedding-3-large model
-    embedding = Column(Vector(3072), nullable=True)  
+    embedding = Column(Vector(3072), nullable=True)

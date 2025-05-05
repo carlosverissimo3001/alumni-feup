@@ -90,6 +90,11 @@ class LinkedInCompanyResponse(BaseModel):
     crunchbase_url: Optional[str] = None
     founded: Optional[int] = None
     company_size: Optional[str] = None
+    organization_type: Optional[str] = None
+    
+    # Headquarters info
+    country_code: Optional[str] = None
+    headquarters: Optional[str] = None
 
 
 def convert_to_linkedin_profile_response(json_data: dict) -> LinkedInProfileResponse:
@@ -127,5 +132,8 @@ def convert_to_linkedin_company_response(json_data: dict) -> LinkedInCompanyResp
         website=json_data.get('website'),
         founded=json_data.get('founded'),
         company_size=json_data.get('company_size'),
+        organization_type=json_data.get('organization_type'),
+        country_code=json_data.get('country_code'),
+        headquarters=json_data.get('headquarters'),
     )
 

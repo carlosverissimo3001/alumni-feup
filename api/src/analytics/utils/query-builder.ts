@@ -100,6 +100,14 @@ export const buildWhereClause = (
     });
   }
 
+  if (params.companyType) {
+    roleAndClauses.push({
+      Company: {
+        companyType: { in: params.companyType },
+      },
+    });
+  }
+
   if (params.excludeResearchAndHighEducation) {
     roleAndClauses.push({
       Company: {

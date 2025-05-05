@@ -45,16 +45,16 @@ export interface CourseExtended {
     startYear: number;
     /**
      * The end year of the course, if it is not active
-     * @type {object}
+     * @type {number}
      * @memberof CourseExtended
      */
-    endYear?: object;
+    endYear?: number;
     /**
      * The status of the course
-     * @type {object}
+     * @type {string}
      * @memberof CourseExtended
      */
-    status: object;
+    status: CourseExtendedStatusEnum;
     /**
      * The faculty id of the course
      * @type {string}
@@ -63,17 +63,39 @@ export interface CourseExtended {
     facultyId: string;
     /**
      * The name of the course in the international language
-     * @type {object}
+     * @type {string}
      * @memberof CourseExtended
      */
-    nameInt?: object;
+    nameInt?: string;
     /**
      * The type of the course
-     * @type {object}
+     * @type {string}
      * @memberof CourseExtended
      */
-    courseType: object;
+    courseType: CourseExtendedCourseTypeEnum;
 }
+
+
+/**
+ * @export
+ */
+export const CourseExtendedStatusEnum = {
+    Active: 'ACTIVE',
+    Inactive: 'INACTIVE'
+} as const;
+export type CourseExtendedStatusEnum = typeof CourseExtendedStatusEnum[keyof typeof CourseExtendedStatusEnum];
+
+/**
+ * @export
+ */
+export const CourseExtendedCourseTypeEnum = {
+    IntegratedMasters: 'INTEGRATED_MASTERS',
+    Bachelors: 'BACHELORS',
+    Masters: 'MASTERS',
+    Doctorate: 'DOCTORATE'
+} as const;
+export type CourseExtendedCourseTypeEnum = typeof CourseExtendedCourseTypeEnum[keyof typeof CourseExtendedCourseTypeEnum];
+
 
 /**
  * Check if a given object implements the CourseExtended interface.

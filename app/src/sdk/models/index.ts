@@ -1,5 +1,6 @@
 /* tslint:disable */
 /* eslint-disable */
+export * from './AddFacultyDto';
 export * from './Alumni';
 export * from './AlumniExtended';
 export * from './BasicAlumniProfileDto';
@@ -16,6 +17,7 @@ export * from './Course';
 export * from './CourseCompletion';
 export * from './CourseExtended';
 export * from './CreateAlumniDto';
+export * from './CreateCourseDto';
 export * from './CurrentRoleDto';
 export * from './Faculty';
 export * from './GeoJSONFeature';
