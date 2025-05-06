@@ -57,6 +57,10 @@ export interface AlumniControllerGetBasicProfileRequest {
     id: string;
 }
 
+export interface AlumniControllerGetPastLocationsAndCompaniesRequest {
+    id: string;
+}
+
 export interface AlumniControllerMarkAsReviewedRequest {
     markAsReviewedDto: MarkAsReviewedDto;
 }
@@ -159,6 +163,21 @@ export interface AlumniApiInterface {
      * Get basic profile of an alumni
      */
     alumniControllerGetBasicProfile(requestParameters: AlumniControllerGetBasicProfileRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<BasicAlumniProfileDto>;
+
+    /**
+     * 
+     * @summary Get the past locations and companies of an alumni
+     * @param {string} id 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof AlumniApiInterface
+     */
+    alumniControllerGetPastLocationsAndCompaniesRaw(requestParameters: AlumniControllerGetPastLocationsAndCompaniesRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<object>>;
+
+    /**
+     * Get the past locations and companies of an alumni
+     */
+    alumniControllerGetPastLocationsAndCompanies(requestParameters: AlumniControllerGetPastLocationsAndCompaniesRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<object>;
 
     /**
      * 
@@ -386,6 +405,39 @@ export class AlumniApi extends runtime.BaseAPI implements AlumniApiInterface {
      */
     async alumniControllerGetBasicProfile(requestParameters: AlumniControllerGetBasicProfileRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<BasicAlumniProfileDto> {
         const response = await this.alumniControllerGetBasicProfileRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Get the past locations and companies of an alumni
+     */
+    async alumniControllerGetPastLocationsAndCompaniesRaw(requestParameters: AlumniControllerGetPastLocationsAndCompaniesRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<object>> {
+        if (requestParameters['id'] == null) {
+            throw new runtime.RequiredError(
+                'id',
+                'Required parameter "id" was null or undefined when calling alumniControllerGetPastLocationsAndCompanies().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        const response = await this.request({
+            path: `/api/alumni/past-locations-companies/{id}`.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id']))),
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse<any>(response);
+    }
+
+    /**
+     * Get the past locations and companies of an alumni
+     */
+    async alumniControllerGetPastLocationsAndCompanies(requestParameters: AlumniControllerGetPastLocationsAndCompaniesRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<object> {
+        const response = await this.alumniControllerGetPastLocationsAndCompaniesRaw(requestParameters, initOverrides);
         return await response.value();
     }
 

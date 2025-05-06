@@ -16,6 +16,7 @@ import GlobalFilters, {
   FilterState,
 } from "@/components/analytics/common/GlobalFilters";
 import { handleDateRange } from "@/utils/date";
+import RoleDashboard from "@/components/analytics/RoleDashboard";
 
 export const initialFilters: FilterState = {
   dateRange: undefined,
@@ -30,6 +31,7 @@ export const initialFilters: FilterState = {
   excludeResearchAndHighEducation: false,
   search: undefined,
   companySize: [],
+  escoCodes: [],
 };
 
 export default function Analytics() {
@@ -139,6 +141,27 @@ export default function Analytics() {
     []
   );
 
+  const handleAddRoleToFilters = useCallback(
+    (escoCode: string) => {
+      setFilters((prev) => {
+        const currentEscoCodes = prev.escoCodes || [];
+        if (!currentEscoCodes.includes(escoCode)) {
+          return {
+            ...prev,
+            escoCodes: [...currentEscoCodes, escoCode],
+          };
+        }
+        else {
+          return {
+            ...prev,
+            escoCodes: currentEscoCodes.filter((id) => id !== escoCode),
+          };
+        }
+      });
+    },
+    []
+  );
+
   const statsConfig = [
     {
       name: "FEUP EI Alumni",
@@ -189,6 +212,10 @@ export default function Analytics() {
           onDataUpdate={handleCountriesDataUpdate}
           filters={combinedFilters}
           onAddToFilters={handleAddCountryToFilters}
+        />
+        <RoleDashboard
+          filters={combinedFilters}
+          onAddToFilters={handleAddRoleToFilters}
         />
         <IndustryDashboard
           onDataUpdate={handleIndustryDataUpdate}

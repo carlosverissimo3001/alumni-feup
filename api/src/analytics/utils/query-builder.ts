@@ -67,6 +67,16 @@ export const buildWhereClause = (
     });
   }
 
+  if (params.escoCodes?.length) {
+    roleAndClauses.push({
+      JobClassification: {
+        some: {
+          AND: [{ ranking: 1 }, { escoCode: { in: params.escoCodes } }],
+        },
+      },
+    });
+  }
+
   if (params.countries?.length) {
     roleAndClauses.push({
       Location: {

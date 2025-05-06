@@ -18,3 +18,7 @@ export { CityOptionDto } from './city-option.dto';
 export { GetCitiesDto } from './get-cities.dto';
 // Query
 export { QueryParamsDto } from './query-params.dto';
+
+// Role
+export { RoleListResponseDto } from './role-list.dto';
+export { RoleOptionDto } from './role-option.dto';

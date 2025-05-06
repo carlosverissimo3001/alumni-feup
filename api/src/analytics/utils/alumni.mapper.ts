@@ -1,4 +1,16 @@
-import { AlumniAnalyticsEntity, LocationAnalyticsEntity } from '../entities';
+import {
+  AlumniAnalyticsEntity,
+  JobClassificationAnalyticsEntity,
+  LocationAnalyticsEntity,
+} from '../entities';
+
+type RawJobClassification = {
+  title: string;
+  escoCode: string;
+  level: number;
+  confidence?: number | null;
+  ranking: number;
+};
 
 type RawLocation = {
   id: string;
@@ -11,6 +23,7 @@ type RawRole = {
   id: string;
   alumniId: string;
   Location?: RawLocation | null;
+  JobClassification?: RawJobClassification[] | null;
   Company: {
     id: string;
     name: string;
@@ -36,6 +49,7 @@ export function toAlumniAnalyticsEntity(
     roles: alumni.Roles.map((role) => ({
       id: role.id,
       alumniId: role.alumniId,
+      jobClassification: mapJobClassification(role.JobClassification),
       company: {
         id: role.Company.id,
         name: role.Company.name,
@@ -51,6 +65,18 @@ export function toAlumniAnalyticsEntity(
   };
 }
 
+const mapJobClassification = (
+  jobClassification?: RawJobClassification[] | null,
+): JobClassificationAnalyticsEntity[] | null => {
+  if (!jobClassification) return null;
+  return jobClassification.map((jobClassification) => ({
+    escoCode: jobClassification.escoCode,
+    title: jobClassification.title,
+    level: jobClassification.level,
+    confidence: jobClassification.confidence,
+    ranking: jobClassification.ranking,
+  }));
+};
 const mapLocation = (
   location?: RawLocation | null,
 ): LocationAnalyticsEntity | null => {

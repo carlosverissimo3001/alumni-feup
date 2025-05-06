@@ -15,12 +15,19 @@
 
 import * as runtime from '../runtime';
 import type {
+  CreateReviewDto,
   ReviewGeoJSONFeatureCollection,
 } from '../models/index';
 import {
+    CreateReviewDtoFromJSON,
+    CreateReviewDtoToJSON,
     ReviewGeoJSONFeatureCollectionFromJSON,
     ReviewGeoJSONFeatureCollectionToJSON,
 } from '../models/index';
+
+export interface ReviewControllerCreateRequest {
+    createReviewDto: CreateReviewDto;
+}
 
 export interface ReviewControllerFindAllGeoJSONRequest {
     groupBy: ReviewControllerFindAllGeoJSONGroupByEnum;
@@ -34,6 +41,21 @@ export interface ReviewControllerFindAllGeoJSONRequest {
  * @interface ReviewsApiInterface
  */
 export interface ReviewsApiInterface {
+    /**
+     * 
+     * @summary Create a new review
+     * @param {CreateReviewDto} createReviewDto 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ReviewsApiInterface
+     */
+    reviewControllerCreateRaw(requestParameters: ReviewControllerCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>>;
+
+    /**
+     * Create a new review
+     */
+    reviewControllerCreate(requestParameters: ReviewControllerCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void>;
+
     /**
      * 
      * @summary Get all the review to be displayed on the map
@@ -56,6 +78,41 @@ export interface ReviewsApiInterface {
  * 
  */
 export class ReviewsApi extends runtime.BaseAPI implements ReviewsApiInterface {
+
+    /**
+     * Create a new review
+     */
+    async reviewControllerCreateRaw(requestParameters: ReviewControllerCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+        if (requestParameters['createReviewDto'] == null) {
+            throw new runtime.RequiredError(
+                'createReviewDto',
+                'Required parameter "createReviewDto" was null or undefined when calling reviewControllerCreate().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
+
+        const response = await this.request({
+            path: `/api/reviews`,
+            method: 'POST',
+            headers: headerParameters,
+            query: queryParameters,
+            body: CreateReviewDtoToJSON(requestParameters['createReviewDto']),
+        }, initOverrides);
+
+        return new runtime.VoidApiResponse(response);
+    }
+
+    /**
+     * Create a new review
+     */
+    async reviewControllerCreate(requestParameters: ReviewControllerCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+        await this.reviewControllerCreateRaw(requestParameters, initOverrides);
+    }
 
     /**
      * Get all the review to be displayed on the map

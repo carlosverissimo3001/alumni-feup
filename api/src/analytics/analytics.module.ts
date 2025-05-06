@@ -4,6 +4,7 @@ import {
   CompaniesAnalyticsController,
   CountriesAnalyticsController,
   IndustriesAnalyticsController,
+  RoleAnalyticsController,
 } from '@/analytics/controllers';
 import {
   AlumniAnalyticsRepository,
@@ -14,6 +15,7 @@ import {
 import {
   CompanyAnalyticsService,
   CountryAnalyticsService,
+  RoleAnalyticsService,
 } from '@/analytics/services';
 
 @Module({
@@ -21,9 +23,11 @@ import {
     CompaniesAnalyticsController,
     CountriesAnalyticsController,
     IndustriesAnalyticsController,
+    RoleAnalyticsController,
   ],
   providers: [
     CompanyAnalyticsService,
+    RoleAnalyticsService,
     CountryAnalyticsService,
     PrismaService,
     AlumniAnalyticsRepository,

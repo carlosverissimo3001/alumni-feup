@@ -28,6 +28,7 @@ models/CourseCompletion.ts
 models/CourseExtended.ts
 models/CreateAlumniDto.ts
 models/CreateCourseDto.ts
+models/CreateReviewDto.ts
 models/CurrentRoleDto.ts
 models/Faculty.ts
 models/GeoJSONFeature.ts
@@ -45,6 +46,9 @@ models/ReviewGeoJSONFeature.ts
 models/ReviewGeoJSONFeatureCollection.ts
 models/ReviewLocation.ts
 models/Role.ts
+models/RoleListDto.ts
+models/RoleListResponseDto.ts
+models/RoleOptionDto.ts
 models/UploadExtractionDto.ts
 models/User.ts
 models/UserAuthResponse.ts

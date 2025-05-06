@@ -298,8 +298,6 @@ export class AlumniService {
         linkedinUrl,
         // If the alumni had to manually add their data, they 99.99% don't have a sigarra match
         hasSigarraMatch: false,
-        // keep false for now, as we'll probably remove the "group" feature
-        isInGroup: false,
         wasReviewed: false,
       },
     });
