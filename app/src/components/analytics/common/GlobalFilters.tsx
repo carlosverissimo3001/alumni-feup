@@ -12,9 +12,9 @@ import {
   Info,
   Building,
   GraduationCap,
-  Calendar,
   MapPin,
   Tags,
+  Briefcase,
 } from "lucide-react";
 import { useState, useMemo, useEffect } from "react";
 import {
@@ -36,6 +36,7 @@ import {
   CompaniesAnalyticsControllerGetCompaniesWithAlumniCountCompanyTypeEnum as CompanyTypeEnum,
 } from "@/sdk";
 import { motion, AnimatePresence } from "framer-motion";
+import { useRoleOptions } from "@/hooks/analytics/useRoleOptions";
 
 export type FilterState = {
   dateRange?: DateRange | undefined;
@@ -45,6 +46,7 @@ export type FilterState = {
   industryIds?: string[];
   countries?: string[];
   cityIds?: string[];
+  escoCodes?: string[];
   currentRolesOnly?: boolean;
   search?: string;
   excludeResearchAndHighEducation?: boolean;
@@ -108,6 +110,12 @@ export default function GlobalFilters({
   });
 
   const {
+    data: roleOptions,
+    isLoading: isRoleOptionsLoading,
+    isFetching: isRoleOptionsFetching,
+  } = useRoleOptions();
+
+  const {
     data: industryOptions,
     isLoading: isIndustryOptionsLoading,
     isFetching: isIndustryOptionsFetching,
@@ -162,6 +170,10 @@ export default function GlobalFilters({
           label: COMPANY_TYPE[key as keyof typeof COMPANY_TYPE],
         }))
         .sort((a, b) => a.label.localeCompare(b.label)),
+      roles: (roleOptions || []).map((role) => ({
+        value: role.escoCode,
+        label: role.title,
+      })),
     }),
     [
       companyOptions,
@@ -169,6 +181,7 @@ export default function GlobalFilters({
       courseOptions,
       cityOptions,
       industryOptions,
+      roleOptions,
     ]
   );
 
@@ -250,7 +263,6 @@ export default function GlobalFilters({
         )}
       </motion.div>
 
-      {/* Filter Inputs - Without Animation for collapse/expand */}
       {!isCollapsed && (
         <div className="px-4 pb-4">
           <Tabs
@@ -283,9 +295,9 @@ export default function GlobalFilters({
                 <GraduationCap className="h-4 w-4" />
                 <span>Education</span>
               </TabsTrigger>
-              <TabsTrigger value="time" className="flex items-center gap-1.5">
-                <Calendar className="h-4 w-4" />
-                <span>Time</span>
+              <TabsTrigger value="roles" className="flex items-center gap-1.5">
+                <Briefcase className="h-4 w-4" />
+                <span>Roles</span>
               </TabsTrigger>
               <TabsTrigger
                 value="options"
@@ -310,7 +322,7 @@ export default function GlobalFilters({
                   {activeTab === "location" && renderLocationTab()}
                   {activeTab === "organization" && renderOrganizationTab()}
                   {activeTab === "education" && renderEducationTab()}
-                  {activeTab === "time" && renderTimeTab()}
+                  {activeTab === "roles" && renderRolesTab()}
                   {activeTab === "options" && renderOptionsTab()}
                 </motion.div>
               </AnimatePresence>
@@ -492,9 +504,9 @@ export default function GlobalFilters({
     );
   }
 
-  function renderTimeTab() {
+  function renderRolesTab() {
     return (
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <div>
           <div className="flex items-center gap-1 mb-1">
             <Label
@@ -536,6 +548,24 @@ export default function GlobalFilters({
               handleFilterChange("dateRange", date);
             }}
             className="w-full"
+          />
+        </div>
+
+        <div>
+          <Label
+            htmlFor="roleSelect"
+            className="text-xs font-medium text-gray-700 mb-1 block"
+          >
+            Roles
+          </Label>
+          <MultiSelect
+            id="roleSelect"
+            isLoading={isRoleOptionsLoading || isRoleOptionsFetching}
+            options={options.roles}
+            value={filters.escoCodes}
+            onValueChange={(value) => handleFilterChange("escoCodes", value)}
+            placeholder="Select roles"
+            maxCount={3}
           />
         </div>
 

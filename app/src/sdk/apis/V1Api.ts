@@ -18,7 +18,6 @@ import type {
   AddFacultyDto,
   Alumni,
   AlumniExtended,
-  AlumniPastLocationsAndCompaniesDto,
   BasicAlumniProfileDto,
   CityOptionDto,
   CompanyListResponseDto,
@@ -28,6 +27,7 @@ import type {
   CourseExtended,
   CreateAlumniDto,
   CreateCourseDto,
+  CreateReviewDto,
   Faculty,
   GeoJSONFeatureCollection,
   IndustryListResponseDto,
@@ -35,6 +35,8 @@ import type {
   LinkedinAuthDto,
   MarkAsReviewedDto,
   ReviewGeoJSONFeatureCollection,
+  RoleListResponseDto,
+  RoleOptionDto,
   UploadExtractionDto,
   UserAuthResponse,
   VerifyEmailDto,
@@ -65,6 +67,8 @@ import {
     CreateAlumniDtoToJSON,
     CreateCourseDtoFromJSON,
     CreateCourseDtoToJSON,
+    CreateReviewDtoFromJSON,
+    CreateReviewDtoToJSON,
     FacultyFromJSON,
     FacultyToJSON,
     GeoJSONFeatureCollectionFromJSON,
@@ -79,6 +83,10 @@ import {
     MarkAsReviewedDtoToJSON,
     ReviewGeoJSONFeatureCollectionFromJSON,
     ReviewGeoJSONFeatureCollectionToJSON,
+    RoleListResponseDtoFromJSON,
+    RoleListResponseDtoToJSON,
+    RoleOptionDtoFromJSON,
+    RoleOptionDtoToJSON,
     UploadExtractionDtoFromJSON,
     UploadExtractionDtoToJSON,
     UserAuthResponseFromJSON,
@@ -87,9 +95,7 @@ import {
     VerifyEmailDtoToJSON,
     VerifyEmailTokenDtoFromJSON,
     VerifyEmailTokenDtoToJSON,
-    AlumniPastLocationsAndCompaniesDtoFromJSON,
 } from '../models/index';
-import { CreateReviewDto, CreateReviewDtoToJSON } from '../models/CreateReviewDto';
 
 export interface AlumniControllerCreateRequest {
     createAlumniDto: CreateAlumniDto;
@@ -111,12 +117,12 @@ export interface AlumniControllerGetBasicProfileRequest {
     id: string;
 }
 
-export interface AlumniControllerMarkAsReviewedRequest {
-    markAsReviewedDto: MarkAsReviewedDto;
-}
-
 export interface AlumniControllerGetPastLocationsAndCompaniesRequest {
     id: string;
+}
+
+export interface AlumniControllerMarkAsReviewedRequest {
+    markAsReviewedDto: MarkAsReviewedDto;
 }
 
 export interface CompaniesAnalyticsControllerGetCompaniesWithAlumniCountRequest {
@@ -135,6 +141,7 @@ export interface CompaniesAnalyticsControllerGetCompaniesWithAlumniCountRequest 
     industrySearch?: string;
     companySize?: Array<CompaniesAnalyticsControllerGetCompaniesWithAlumniCountCompanySizeEnum>;
     companyType?: Array<CompaniesAnalyticsControllerGetCompaniesWithAlumniCountCompanyTypeEnum>;
+    escoCodes?: Array<string>;
     limit?: number;
     offset?: number;
     search?: string;
@@ -159,6 +166,7 @@ export interface CompaniesAnalyticsControllerGetCompanyDetailsRequest {
     industrySearch?: string;
     companySize?: Array<CompaniesAnalyticsControllerGetCompanyDetailsCompanySizeEnum>;
     companyType?: Array<CompaniesAnalyticsControllerGetCompanyDetailsCompanyTypeEnum>;
+    escoCodes?: Array<string>;
     limit?: number;
     offset?: number;
     search?: string;
@@ -182,6 +190,7 @@ export interface CompaniesAnalyticsControllerGetHotCompaniesRequest {
     industrySearch?: string;
     companySize?: Array<CompaniesAnalyticsControllerGetHotCompaniesCompanySizeEnum>;
     companyType?: Array<CompaniesAnalyticsControllerGetHotCompaniesCompanyTypeEnum>;
+    escoCodes?: Array<string>;
     limit?: number;
     offset?: number;
     search?: string;
@@ -213,6 +222,7 @@ export interface CountriesAnalyticsControllerGetCountriesWithAlumniCountRequest 
     industrySearch?: string;
     companySize?: Array<CountriesAnalyticsControllerGetCountriesWithAlumniCountCompanySizeEnum>;
     companyType?: Array<CountriesAnalyticsControllerGetCountriesWithAlumniCountCompanyTypeEnum>;
+    escoCodes?: Array<string>;
     limit?: number;
     offset?: number;
     search?: string;
@@ -257,6 +267,7 @@ export interface IndustriesAnalyticsControllerGetIndustryWithCountsRequest {
     industrySearch?: string;
     companySize?: Array<IndustriesAnalyticsControllerGetIndustryWithCountsCompanySizeEnum>;
     companyType?: Array<IndustriesAnalyticsControllerGetIndustryWithCountsCompanyTypeEnum>;
+    escoCodes?: Array<string>;
     limit?: number;
     offset?: number;
     search?: string;
@@ -264,13 +275,37 @@ export interface IndustriesAnalyticsControllerGetIndustryWithCountsRequest {
     sortOrder?: string;
 }
 
-export interface ReviewsControllerFindAllGeoJSONRequest {
-    groupBy: ReviewsControllerFindAllGeoJSONGroupByEnum;
+export interface ReviewControllerCreateRequest {
+    createReviewDto: CreateReviewDto;
+}
+
+export interface ReviewControllerFindAllGeoJSONRequest {
+    groupBy: ReviewControllerFindAllGeoJSONGroupByEnum;
     reviewType?: string;
 }
 
-export interface ReviewsControllerCreateRequest {
-    createReviewDto: CreateReviewDto;
+export interface RoleAnalyticsControllerGetRolesRequest {
+    startDate?: string;
+    endDate?: string;
+    courseIds?: Array<string>;
+    graduationYears?: Array<string>;
+    companyIds?: Array<string>;
+    industryIds?: Array<string>;
+    countries?: Array<string>;
+    cityIds?: Array<string>;
+    currentRolesOnly?: boolean;
+    onlyInternational?: boolean;
+    excludeResearchAndHighEducation?: boolean;
+    companySearch?: string;
+    industrySearch?: string;
+    companySize?: Array<RoleAnalyticsControllerGetRolesCompanySizeEnum>;
+    companyType?: Array<RoleAnalyticsControllerGetRolesCompanyTypeEnum>;
+    escoCodes?: Array<string>;
+    limit?: number;
+    offset?: number;
+    search?: string;
+    sortBy?: string;
+    sortOrder?: string;
 }
 
 export interface UserControllerLinkedinAuthRequest {
@@ -418,6 +453,21 @@ export interface V1ApiInterface {
 
     /**
      * 
+     * @summary Get the past locations and companies of an alumni
+     * @param {string} id 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof V1ApiInterface
+     */
+    alumniControllerGetPastLocationsAndCompaniesRaw(requestParameters: AlumniControllerGetPastLocationsAndCompaniesRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<object>>;
+
+    /**
+     * Get the past locations and companies of an alumni
+     */
+    alumniControllerGetPastLocationsAndCompanies(requestParameters: AlumniControllerGetPastLocationsAndCompaniesRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<object>;
+
+    /**
+     * 
      * @summary Mark an alumni as reviewed
      * @param {MarkAsReviewedDto} markAsReviewedDto 
      * @param {*} [options] Override http request option.
@@ -449,6 +499,7 @@ export interface V1ApiInterface {
      * @param {string} [industrySearch] Search query for industries
      * @param {Array<'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G' | 'H' | 'I'>} [companySize] The company sizes to filter by
      * @param {Array<'EDUCATIONAL' | 'GOVERNMENT_AGENCY' | 'NON_PROFIT' | 'PARTNERSHIP' | 'PRIVATELY_HELD' | 'PUBLIC_COMPANY' | 'SELF_EMPLOYED' | 'SELF_OWNED'>} [companyType] The company types to filter by
+     * @param {Array<string>} [escoCodes] The ESCO codes to filter by
      * @param {number} [limit] The number of results to return
      * @param {number} [offset] The offset of the query
      * @param {string} [search] Broad search query
@@ -484,6 +535,7 @@ export interface V1ApiInterface {
      * @param {string} [industrySearch] Search query for industries
      * @param {Array<'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G' | 'H' | 'I'>} [companySize] The company sizes to filter by
      * @param {Array<'EDUCATIONAL' | 'GOVERNMENT_AGENCY' | 'NON_PROFIT' | 'PARTNERSHIP' | 'PRIVATELY_HELD' | 'PUBLIC_COMPANY' | 'SELF_EMPLOYED' | 'SELF_OWNED'>} [companyType] The company types to filter by
+     * @param {Array<string>} [escoCodes] The ESCO codes to filter by
      * @param {number} [limit] The number of results to return
      * @param {number} [offset] The offset of the query
      * @param {string} [search] Broad search query
@@ -546,6 +598,7 @@ export interface V1ApiInterface {
      * @param {string} [industrySearch] Search query for industries
      * @param {Array<'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G' | 'H' | 'I'>} [companySize] The company sizes to filter by
      * @param {Array<'EDUCATIONAL' | 'GOVERNMENT_AGENCY' | 'NON_PROFIT' | 'PARTNERSHIP' | 'PRIVATELY_HELD' | 'PUBLIC_COMPANY' | 'SELF_EMPLOYED' | 'SELF_OWNED'>} [companyType] The company types to filter by
+     * @param {Array<string>} [escoCodes] The ESCO codes to filter by
      * @param {number} [limit] The number of results to return
      * @param {number} [offset] The offset of the query
      * @param {string} [search] Broad search query
@@ -638,6 +691,7 @@ export interface V1ApiInterface {
      * @param {string} [industrySearch] Search query for industries
      * @param {Array<'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G' | 'H' | 'I'>} [companySize] The company sizes to filter by
      * @param {Array<'EDUCATIONAL' | 'GOVERNMENT_AGENCY' | 'NON_PROFIT' | 'PARTNERSHIP' | 'PRIVATELY_HELD' | 'PUBLIC_COMPANY' | 'SELF_EMPLOYED' | 'SELF_OWNED'>} [companyType] The company types to filter by
+     * @param {Array<string>} [escoCodes] The ESCO codes to filter by
      * @param {number} [limit] The number of results to return
      * @param {number} [offset] The offset of the query
      * @param {string} [search] Broad search query
@@ -777,6 +831,7 @@ export interface V1ApiInterface {
      * @param {string} [industrySearch] Search query for industries
      * @param {Array<'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G' | 'H' | 'I'>} [companySize] The company sizes to filter by
      * @param {Array<'EDUCATIONAL' | 'GOVERNMENT_AGENCY' | 'NON_PROFIT' | 'PARTNERSHIP' | 'PRIVATELY_HELD' | 'PUBLIC_COMPANY' | 'SELF_EMPLOYED' | 'SELF_OWNED'>} [companyType] The company types to filter by
+     * @param {Array<string>} [escoCodes] The ESCO codes to filter by
      * @param {number} [limit] The number of results to return
      * @param {number} [offset] The offset of the query
      * @param {string} [search] Broad search query
@@ -795,6 +850,21 @@ export interface V1ApiInterface {
 
     /**
      * 
+     * @summary Create a new review
+     * @param {CreateReviewDto} createReviewDto 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof V1ApiInterface
+     */
+    reviewControllerCreateRaw(requestParameters: ReviewControllerCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>>;
+
+    /**
+     * Create a new review
+     */
+    reviewControllerCreate(requestParameters: ReviewControllerCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void>;
+
+    /**
+     * 
      * @summary Get all the review to be displayed on the map
      * @param {'countries' | 'cities'} groupBy How to group the data
      * @param {string} [reviewType] The review type
@@ -802,12 +872,62 @@ export interface V1ApiInterface {
      * @throws {RequiredError}
      * @memberof V1ApiInterface
      */
-    reviewsControllerFindAllGeoJSONRaw(requestParameters: ReviewsControllerFindAllGeoJSONRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ReviewGeoJSONFeatureCollection>>;
+    reviewControllerFindAllGeoJSONRaw(requestParameters: ReviewControllerFindAllGeoJSONRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ReviewGeoJSONFeatureCollection>>;
 
     /**
      * Get all the review to be displayed on the map
      */
-    reviewsControllerFindAllGeoJSON(requestParameters: ReviewsControllerFindAllGeoJSONRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ReviewGeoJSONFeatureCollection>;
+    reviewControllerFindAllGeoJSON(requestParameters: ReviewControllerFindAllGeoJSONRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ReviewGeoJSONFeatureCollection>;
+
+    /**
+     * Returns a list of roles with their ESCO code and title.
+     * @summary List of possible role titles to search for.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof V1ApiInterface
+     */
+    roleAnalyticsControllerGetRoleOptionsRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<RoleOptionDto>>>;
+
+    /**
+     * Returns a list of roles with their ESCO code and title.
+     * List of possible role titles to search for.
+     */
+    roleAnalyticsControllerGetRoleOptions(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<RoleOptionDto>>;
+
+    /**
+     * 
+     * @summary Returns the number of roles classified with each ESCO classification
+     * @param {string} [startDate] The start date of the role
+     * @param {string} [endDate] The end date of the role
+     * @param {Array<string>} [courseIds] The course IDs to filter by
+     * @param {Array<string>} [graduationYears] The graduation years to filter by
+     * @param {Array<string>} [companyIds] The company IDs to filter by
+     * @param {Array<string>} [industryIds] The industry IDs to filter by
+     * @param {Array<string>} [countries] The countries to filter by
+     * @param {Array<string>} [cityIds] The cities ids to filter by
+     * @param {boolean} [currentRolesOnly] Filter for current roles only
+     * @param {boolean} [onlyInternational] Whether to exclude roles in Portugal
+     * @param {boolean} [excludeResearchAndHighEducation] Exclude research and high education roles
+     * @param {string} [companySearch] Search query for companies
+     * @param {string} [industrySearch] Search query for industries
+     * @param {Array<'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G' | 'H' | 'I'>} [companySize] The company sizes to filter by
+     * @param {Array<'EDUCATIONAL' | 'GOVERNMENT_AGENCY' | 'NON_PROFIT' | 'PARTNERSHIP' | 'PRIVATELY_HELD' | 'PUBLIC_COMPANY' | 'SELF_EMPLOYED' | 'SELF_OWNED'>} [companyType] The company types to filter by
+     * @param {Array<string>} [escoCodes] The ESCO codes to filter by
+     * @param {number} [limit] The number of results to return
+     * @param {number} [offset] The offset of the query
+     * @param {string} [search] Broad search query
+     * @param {string} [sortBy] How to sort the results
+     * @param {string} [sortOrder] The order of the results
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof V1ApiInterface
+     */
+    roleAnalyticsControllerGetRolesRaw(requestParameters: RoleAnalyticsControllerGetRolesRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<RoleListResponseDto>>;
+
+    /**
+     * Returns the number of roles classified with each ESCO classification
+     */
+    roleAnalyticsControllerGetRoles(requestParameters: RoleAnalyticsControllerGetRolesRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<RoleListResponseDto>;
 
     /**
      * 
@@ -1144,6 +1264,39 @@ export class V1Api extends runtime.BaseAPI implements V1ApiInterface {
     }
 
     /**
+     * Get the past locations and companies of an alumni
+     */
+    async alumniControllerGetPastLocationsAndCompaniesRaw(requestParameters: AlumniControllerGetPastLocationsAndCompaniesRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<object>> {
+        if (requestParameters['id'] == null) {
+            throw new runtime.RequiredError(
+                'id',
+                'Required parameter "id" was null or undefined when calling alumniControllerGetPastLocationsAndCompanies().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        const response = await this.request({
+            path: `/api/alumni/past-locations-companies/{id}`.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id']))),
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse<any>(response);
+    }
+
+    /**
+     * Get the past locations and companies of an alumni
+     */
+    async alumniControllerGetPastLocationsAndCompanies(requestParameters: AlumniControllerGetPastLocationsAndCompaniesRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<object> {
+        const response = await this.alumniControllerGetPastLocationsAndCompaniesRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
      * Mark an alumni as reviewed
      */
     async alumniControllerMarkAsReviewedRaw(requestParameters: AlumniControllerMarkAsReviewedRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Alumni>> {
@@ -1176,39 +1329,6 @@ export class V1Api extends runtime.BaseAPI implements V1ApiInterface {
      */
     async alumniControllerMarkAsReviewed(requestParameters: AlumniControllerMarkAsReviewedRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Alumni> {
         const response = await this.alumniControllerMarkAsReviewedRaw(requestParameters, initOverrides);
-        return await response.value();
-    }
-
-    /**
-     * Get the past locations and companies of an alumni
-     */
-    async alumniControllerGetPastLocationsAndCompaniesRaw(requestParameters: AlumniControllerGetPastLocationsAndCompaniesRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<AlumniPastLocationsAndCompaniesDto>> {
-        if (requestParameters['id'] == null) {
-            throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling alumniControllerGetPastLocationsAndCompanies().'
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        const response = await this.request({
-            path: `/api/alumni/past-locations-companies/{id}`.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id']))),
-            method: 'GET',
-            headers: headerParameters,
-            query: queryParameters,
-        }, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => AlumniPastLocationsAndCompaniesDtoFromJSON(jsonValue));
-    }
-
-    /**
-     * Get the past locations and companies an alumni
-     */
-    async alumniControllerGetPastLocationsAndCompanies(requestParameters: AlumniControllerGetPastLocationsAndCompaniesRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<AlumniPastLocationsAndCompaniesDto> {
-        const response = await this.alumniControllerGetPastLocationsAndCompaniesRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -1276,6 +1396,10 @@ export class V1Api extends runtime.BaseAPI implements V1ApiInterface {
 
         if (requestParameters['companyType'] != null) {
             queryParameters['companyType'] = requestParameters['companyType'];
+        }
+
+        if (requestParameters['escoCodes'] != null) {
+            queryParameters['escoCodes'] = requestParameters['escoCodes'];
         }
 
         if (requestParameters['limit'] != null) {
@@ -1389,6 +1513,10 @@ export class V1Api extends runtime.BaseAPI implements V1ApiInterface {
 
         if (requestParameters['companyType'] != null) {
             queryParameters['companyType'] = requestParameters['companyType'];
+        }
+
+        if (requestParameters['escoCodes'] != null) {
+            queryParameters['escoCodes'] = requestParameters['escoCodes'];
         }
 
         if (requestParameters['limit'] != null) {
@@ -1545,6 +1673,10 @@ export class V1Api extends runtime.BaseAPI implements V1ApiInterface {
 
         if (requestParameters['companyType'] != null) {
             queryParameters['companyType'] = requestParameters['companyType'];
+        }
+
+        if (requestParameters['escoCodes'] != null) {
+            queryParameters['escoCodes'] = requestParameters['escoCodes'];
         }
 
         if (requestParameters['limit'] != null) {
@@ -1763,6 +1895,10 @@ export class V1Api extends runtime.BaseAPI implements V1ApiInterface {
 
         if (requestParameters['companyType'] != null) {
             queryParameters['companyType'] = requestParameters['companyType'];
+        }
+
+        if (requestParameters['escoCodes'] != null) {
+            queryParameters['escoCodes'] = requestParameters['escoCodes'];
         }
 
         if (requestParameters['limit'] != null) {
@@ -2104,6 +2240,10 @@ export class V1Api extends runtime.BaseAPI implements V1ApiInterface {
             queryParameters['companyType'] = requestParameters['companyType'];
         }
 
+        if (requestParameters['escoCodes'] != null) {
+            queryParameters['escoCodes'] = requestParameters['escoCodes'];
+        }
+
         if (requestParameters['limit'] != null) {
             queryParameters['limit'] = requestParameters['limit'];
         }
@@ -2145,13 +2285,48 @@ export class V1Api extends runtime.BaseAPI implements V1ApiInterface {
     }
 
     /**
+     * Create a new review
+     */
+    async reviewControllerCreateRaw(requestParameters: ReviewControllerCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+        if (requestParameters['createReviewDto'] == null) {
+            throw new runtime.RequiredError(
+                'createReviewDto',
+                'Required parameter "createReviewDto" was null or undefined when calling reviewControllerCreate().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
+
+        const response = await this.request({
+            path: `/api/reviews`,
+            method: 'POST',
+            headers: headerParameters,
+            query: queryParameters,
+            body: CreateReviewDtoToJSON(requestParameters['createReviewDto']),
+        }, initOverrides);
+
+        return new runtime.VoidApiResponse(response);
+    }
+
+    /**
+     * Create a new review
+     */
+    async reviewControllerCreate(requestParameters: ReviewControllerCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+        await this.reviewControllerCreateRaw(requestParameters, initOverrides);
+    }
+
+    /**
      * Get all the review to be displayed on the map
      */
-    async reviewsControllerFindAllGeoJSONRaw(requestParameters: ReviewsControllerFindAllGeoJSONRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ReviewGeoJSONFeatureCollection>> {
+    async reviewControllerFindAllGeoJSONRaw(requestParameters: ReviewControllerFindAllGeoJSONRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ReviewGeoJSONFeatureCollection>> {
         if (requestParameters['groupBy'] == null) {
             throw new runtime.RequiredError(
                 'groupBy',
-                'Required parameter "groupBy" was null or undefined when calling reviewsControllerFindAllGeoJSON().'
+                'Required parameter "groupBy" was null or undefined when calling reviewControllerFindAllGeoJSON().'
             );
         }
 
@@ -2180,44 +2355,146 @@ export class V1Api extends runtime.BaseAPI implements V1ApiInterface {
     /**
      * Get all the review to be displayed on the map
      */
-    async reviewsControllerFindAllGeoJSON(requestParameters: ReviewsControllerFindAllGeoJSONRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ReviewGeoJSONFeatureCollection> {
-        const response = await this.reviewsControllerFindAllGeoJSONRaw(requestParameters, initOverrides);
+    async reviewControllerFindAllGeoJSON(requestParameters: ReviewControllerFindAllGeoJSONRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ReviewGeoJSONFeatureCollection> {
+        const response = await this.reviewControllerFindAllGeoJSONRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
-     * Create a new review
+     * Returns a list of roles with their ESCO code and title.
+     * List of possible role titles to search for.
      */
-    async reviewsControllerCreateRaw(requestParameters: ReviewsControllerCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
-        if (requestParameters['createReviewDto'] == null) {
-            throw new runtime.RequiredError(
-                'createReviewDto',
-                'Required parameter "createReviewDto" was null or undefined when calling reviewsControllerCreate().'
-            );
-        }
-
+    async roleAnalyticsControllerGetRoleOptionsRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<RoleOptionDto>>> {
         const queryParameters: any = {};
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
-    
         const response = await this.request({
-            path: `/api/reviews`,
-            method: 'POST',
+            path: `/api/analytics/roles/options`,
+            method: 'GET',
             headers: headerParameters,
             query: queryParameters,
-            body: CreateReviewDtoToJSON(requestParameters['createReviewDto']),
         }, initOverrides);
 
-        return new runtime.JSONApiResponse(response);
+        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(RoleOptionDtoFromJSON));
     }
 
     /**
-     * Create a new review
+     * Returns a list of roles with their ESCO code and title.
+     * List of possible role titles to search for.
      */
-    async reviewsControllerCreate(requestParameters: ReviewsControllerCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
-        const response = await this.reviewsControllerCreateRaw(requestParameters, initOverrides);
+    async roleAnalyticsControllerGetRoleOptions(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<RoleOptionDto>> {
+        const response = await this.roleAnalyticsControllerGetRoleOptionsRaw(initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Returns the number of roles classified with each ESCO classification
+     */
+    async roleAnalyticsControllerGetRolesRaw(requestParameters: RoleAnalyticsControllerGetRolesRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<RoleListResponseDto>> {
+        const queryParameters: any = {};
+
+        if (requestParameters['startDate'] != null) {
+            queryParameters['startDate'] = requestParameters['startDate'];
+        }
+
+        if (requestParameters['endDate'] != null) {
+            queryParameters['endDate'] = requestParameters['endDate'];
+        }
+
+        if (requestParameters['courseIds'] != null) {
+            queryParameters['courseIds'] = requestParameters['courseIds'];
+        }
+
+        if (requestParameters['graduationYears'] != null) {
+            queryParameters['graduationYears'] = requestParameters['graduationYears'];
+        }
+
+        if (requestParameters['companyIds'] != null) {
+            queryParameters['companyIds'] = requestParameters['companyIds'];
+        }
+
+        if (requestParameters['industryIds'] != null) {
+            queryParameters['industryIds'] = requestParameters['industryIds'];
+        }
+
+        if (requestParameters['countries'] != null) {
+            queryParameters['countries'] = requestParameters['countries'];
+        }
+
+        if (requestParameters['cityIds'] != null) {
+            queryParameters['cityIds'] = requestParameters['cityIds'];
+        }
+
+        if (requestParameters['currentRolesOnly'] != null) {
+            queryParameters['currentRolesOnly'] = requestParameters['currentRolesOnly'];
+        }
+
+        if (requestParameters['onlyInternational'] != null) {
+            queryParameters['onlyInternational'] = requestParameters['onlyInternational'];
+        }
+
+        if (requestParameters['excludeResearchAndHighEducation'] != null) {
+            queryParameters['excludeResearchAndHighEducation'] = requestParameters['excludeResearchAndHighEducation'];
+        }
+
+        if (requestParameters['companySearch'] != null) {
+            queryParameters['companySearch'] = requestParameters['companySearch'];
+        }
+
+        if (requestParameters['industrySearch'] != null) {
+            queryParameters['industrySearch'] = requestParameters['industrySearch'];
+        }
+
+        if (requestParameters['companySize'] != null) {
+            queryParameters['companySize'] = requestParameters['companySize'];
+        }
+
+        if (requestParameters['companyType'] != null) {
+            queryParameters['companyType'] = requestParameters['companyType'];
+        }
+
+        if (requestParameters['escoCodes'] != null) {
+            queryParameters['escoCodes'] = requestParameters['escoCodes'];
+        }
+
+        if (requestParameters['limit'] != null) {
+            queryParameters['limit'] = requestParameters['limit'];
+        }
+
+        if (requestParameters['offset'] != null) {
+            queryParameters['offset'] = requestParameters['offset'];
+        }
+
+        if (requestParameters['search'] != null) {
+            queryParameters['search'] = requestParameters['search'];
+        }
+
+        if (requestParameters['sortBy'] != null) {
+            queryParameters['sortBy'] = requestParameters['sortBy'];
+        }
+
+        if (requestParameters['sortOrder'] != null) {
+            queryParameters['sortOrder'] = requestParameters['sortOrder'];
+        }
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        const response = await this.request({
+            path: `/api/analytics/roles`,
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => RoleListResponseDtoFromJSON(jsonValue));
+    }
+
+    /**
+     * Returns the number of roles classified with each ESCO classification
+     */
+    async roleAnalyticsControllerGetRoles(requestParameters: RoleAnalyticsControllerGetRolesRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<RoleListResponseDto> {
+        const response = await this.roleAnalyticsControllerGetRolesRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -2526,3 +2803,32 @@ export const ReviewControllerFindAllGeoJSONGroupByEnum = {
     Cities: 'cities'
 } as const;
 export type ReviewControllerFindAllGeoJSONGroupByEnum = typeof ReviewControllerFindAllGeoJSONGroupByEnum[keyof typeof ReviewControllerFindAllGeoJSONGroupByEnum];
+/**
+ * @export
+ */
+export const RoleAnalyticsControllerGetRolesCompanySizeEnum = {
+    A: 'A',
+    B: 'B',
+    C: 'C',
+    D: 'D',
+    E: 'E',
+    F: 'F',
+    G: 'G',
+    H: 'H',
+    I: 'I'
+} as const;
+export type RoleAnalyticsControllerGetRolesCompanySizeEnum = typeof RoleAnalyticsControllerGetRolesCompanySizeEnum[keyof typeof RoleAnalyticsControllerGetRolesCompanySizeEnum];
+/**
+ * @export
+ */
+export const RoleAnalyticsControllerGetRolesCompanyTypeEnum = {
+    Educational: 'EDUCATIONAL',
+    GovernmentAgency: 'GOVERNMENT_AGENCY',
+    NonProfit: 'NON_PROFIT',
+    Partnership: 'PARTNERSHIP',
+    PrivatelyHeld: 'PRIVATELY_HELD',
+    PublicCompany: 'PUBLIC_COMPANY',
+    SelfEmployed: 'SELF_EMPLOYED',
+    SelfOwned: 'SELF_OWNED'
+} as const;
+export type RoleAnalyticsControllerGetRolesCompanyTypeEnum = typeof RoleAnalyticsControllerGetRolesCompanyTypeEnum[keyof typeof RoleAnalyticsControllerGetRolesCompanyTypeEnum];

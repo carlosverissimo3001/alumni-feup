@@ -307,6 +307,38 @@
         ]
       }
     },
+    "/api/alumni/past-locations-companies/{id}": {
+      "get": {
+        "operationId": "AlumniController_getPastLocationsAndCompanies",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": "Returns the past locations and companies of an alumni",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AlumniPastLocationsAndCompaniesDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Get the past locations and companies of an alumni",
+        "tags": [
+          "V1",
+          "Alumni"
+        ]
+      }
+    },
     "/api/analytics/companies": {
       "get": {
         "operationId": "CompaniesAnalyticsController_getCompaniesWithAlumniCount",
@@ -503,6 +535,18 @@
                   "SELF_EMPLOYED",
                   "SELF_OWNED"
                 ]
+              }
+            }
+          },
+          {
+            "name": "escoCodes",
+            "required": false,
+            "in": "query",
+            "description": "The ESCO codes to filter by",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
               }
             }
           },
@@ -827,6 +871,18 @@
             }
           },
           {
+            "name": "escoCodes",
+            "required": false,
+            "in": "query",
+            "description": "The ESCO codes to filter by",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
             "name": "limit",
             "required": false,
             "in": "query",
@@ -1090,6 +1146,18 @@
             }
           },
           {
+            "name": "escoCodes",
+            "required": false,
+            "in": "query",
+            "description": "The ESCO codes to filter by",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
             "name": "limit",
             "required": false,
             "in": "query",
@@ -1349,6 +1417,18 @@
                   "SELF_EMPLOYED",
                   "SELF_OWNED"
                 ]
+              }
+            }
+          },
+          {
+            "name": "escoCodes",
+            "required": false,
+            "in": "query",
+            "description": "The ESCO codes to filter by",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
               }
             }
           },
@@ -1688,6 +1768,18 @@
             }
           },
           {
+            "name": "escoCodes",
+            "required": false,
+            "in": "query",
+            "description": "The ESCO codes to filter by",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
             "name": "limit",
             "required": false,
             "in": "query",
@@ -1779,6 +1871,315 @@
           }
         },
         "summary": "List of possible industries to search for.",
+        "tags": [
+          "V1",
+          "Analytics"
+        ]
+      }
+    },
+    "/api/analytics/roles": {
+      "get": {
+        "operationId": "RoleAnalyticsController_getRoles",
+        "parameters": [
+          {
+            "name": "startDate",
+            "required": false,
+            "in": "query",
+            "description": "The start date of the role",
+            "schema": {
+              "example": "2023-11-16",
+              "type": "string"
+            }
+          },
+          {
+            "name": "endDate",
+            "required": false,
+            "in": "query",
+            "description": "The end date of the role",
+            "schema": {
+              "example": "2025-04-20",
+              "type": "string"
+            }
+          },
+          {
+            "name": "courseIds",
+            "required": false,
+            "in": "query",
+            "description": "The course IDs to filter by",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "graduationYears",
+            "required": false,
+            "in": "query",
+            "description": "The graduation years to filter by",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "companyIds",
+            "required": false,
+            "in": "query",
+            "description": "The company IDs to filter by",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "industryIds",
+            "required": false,
+            "in": "query",
+            "description": "The industry IDs to filter by",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "countries",
+            "required": false,
+            "in": "query",
+            "description": "The countries to filter by",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "cityIds",
+            "required": false,
+            "in": "query",
+            "description": "The cities ids to filter by",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "currentRolesOnly",
+            "required": false,
+            "in": "query",
+            "description": "Filter for current roles only",
+            "schema": {
+              "example": true,
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "onlyInternational",
+            "required": false,
+            "in": "query",
+            "description": "Whether to exclude roles in Portugal",
+            "schema": {
+              "example": true,
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "excludeResearchAndHighEducation",
+            "required": false,
+            "in": "query",
+            "description": "Exclude research and high education roles",
+            "schema": {
+              "example": true,
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "companySearch",
+            "required": false,
+            "in": "query",
+            "description": "Search query for companies",
+            "schema": {
+              "example": "search query",
+              "type": "string"
+            }
+          },
+          {
+            "name": "industrySearch",
+            "required": false,
+            "in": "query",
+            "description": "Search query for industries",
+            "schema": {
+              "example": "search query",
+              "type": "string"
+            }
+          },
+          {
+            "name": "companySize",
+            "required": false,
+            "in": "query",
+            "description": "The company sizes to filter by",
+            "schema": {
+              "example": [
+                "A",
+                "B"
+              ],
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "A",
+                  "B",
+                  "C",
+                  "D",
+                  "E",
+                  "F",
+                  "G",
+                  "H",
+                  "I"
+                ]
+              }
+            }
+          },
+          {
+            "name": "companyType",
+            "required": false,
+            "in": "query",
+            "description": "The company types to filter by",
+            "schema": {
+              "example": [
+                "PUBLIC_COMPANY",
+                "PRIVATELY_HELD"
+              ],
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "EDUCATIONAL",
+                  "GOVERNMENT_AGENCY",
+                  "NON_PROFIT",
+                  "PARTNERSHIP",
+                  "PRIVATELY_HELD",
+                  "PUBLIC_COMPANY",
+                  "SELF_EMPLOYED",
+                  "SELF_OWNED"
+                ]
+              }
+            }
+          },
+          {
+            "name": "escoCodes",
+            "required": false,
+            "in": "query",
+            "description": "The ESCO codes to filter by",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "The number of results to return",
+            "schema": {
+              "example": 10,
+              "type": "number"
+            }
+          },
+          {
+            "name": "offset",
+            "required": false,
+            "in": "query",
+            "description": "The offset of the query",
+            "schema": {
+              "default": 0,
+              "example": 0,
+              "type": "number"
+            }
+          },
+          {
+            "name": "search",
+            "required": false,
+            "in": "query",
+            "description": "Broad search query",
+            "schema": {
+              "example": "search query",
+              "type": "string"
+            }
+          },
+          {
+            "name": "sortBy",
+            "required": false,
+            "in": "query",
+            "description": "How to sort the results",
+            "schema": {
+              "$ref": "#/components/schemas/SortBy"
+            }
+          },
+          {
+            "name": "sortOrder",
+            "required": false,
+            "in": "query",
+            "description": "The order of the results",
+            "schema": {
+              "default": "desc",
+              "example": "asc",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The number of roles classified with each ESCO classification, and the level of classification of the role",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RoleListResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Returns the number of roles classified with each ESCO classification",
+        "tags": [
+          "V1",
+          "Analytics"
+        ]
+      }
+    },
+    "/api/analytics/roles/options": {
+      "get": {
+        "description": "Returns a list of roles with their ESCO code and title.",
+        "operationId": "RoleAnalyticsController_getRoleOptions",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Roles with their ESCO code and title.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/RoleOptionDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "List of possible role titles to search for.",
         "tags": [
           "V1",
           "Analytics"
@@ -2194,6 +2595,32 @@
           }
         },
         "summary": "Get all the review to be displayed on the map",
+        "tags": [
+          "V1",
+          "Reviews"
+        ]
+      }
+    },
+    "/api/reviews": {
+      "post": {
+        "operationId": "ReviewController_create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateReviewDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "default": {
+            "description": "Returns the created review"
+          }
+        },
+        "summary": "Create a new review",
         "tags": [
           "V1",
           "Reviews"
@@ -2885,6 +3312,10 @@
           "name"
         ]
       },
+      "AlumniPastLocationsAndCompaniesDto": {
+        "type": "object",
+        "properties": {}
+      },
       "SortBy": {
         "type": "string"
       },
@@ -3107,6 +3538,70 @@
         "required": [
           "id",
           "name"
+        ]
+      },
+      "RoleListDto": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "description": "The ESCO title of the role"
+          },
+          "level": {
+            "type": "number",
+            "description": "The level of classification of the role, 1 being a more general role and 2 being a more specific role"
+          },
+          "code": {
+            "type": "string",
+            "description": "The ESCO code of the role"
+          },
+          "roleCount": {
+            "type": "number",
+            "description": "The number of roles classified with this role"
+          }
+        },
+        "required": [
+          "title",
+          "level",
+          "code",
+          "roleCount"
+        ]
+      },
+      "RoleListResponseDto": {
+        "type": "object",
+        "properties": {
+          "roles": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RoleListDto"
+            }
+          },
+          "totalCount": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "roles",
+          "totalCount"
+        ]
+      },
+      "RoleOptionDto": {
+        "type": "object",
+        "properties": {
+          "escoCode": {
+            "type": "string",
+            "description": "The ESCO code of the role",
+            "example": "2512"
+          },
+          "title": {
+            "type": "string",
+            "description": "The title of the role",
+            "example": "Software Engineer"
+          }
+        },
+        "required": [
+          "escoCode",
+          "title"
         ]
       },
       "LinkedinAuthDto": {
@@ -3472,6 +3967,42 @@
         "required": [
           "type",
           "features"
+        ]
+      },
+      "CreateReviewDto": {
+        "type": "object",
+        "properties": {
+          "alumniId": {
+            "type": "string",
+            "description": "The id of the alumni"
+          },
+          "description": {
+            "type": "string",
+            "description": "The review description"
+          },
+          "rating": {
+            "type": "number",
+            "description": "The review rating"
+          },
+          "reviewType": {
+            "type": "string",
+            "description": "The Type of Review"
+          },
+          "companyId": {
+            "type": "string",
+            "description": "The id of the location"
+          },
+          "locationId": {
+            "type": "string",
+            "description": "The id of the location"
+          }
+        },
+        "required": [
+          "alumniId",
+          "description",
+          "reviewType",
+          "companyId",
+          "locationId"
         ]
       }
     }

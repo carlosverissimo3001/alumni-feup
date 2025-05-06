@@ -1,5 +1,8 @@
 import asyncio
 import logging
+import functools
+import time
+from typing import Dict, List, Tuple
 
 from langchain_core.messages import HumanMessage, SystemMessage
 from langchain_ollama import ChatOllama
@@ -54,6 +57,10 @@ tool_node = ToolNode(
 
 # Create the prompt template for job classification
 class JobClassificationService:
+    def __init__(self):
+        # Simple in-memory cache for ESCO classifications
+        self._esco_cache: Dict[str, List] = {}
+    
     def create_graph(self) -> StateGraph:
         graph = StateGraph(JobClassificationAgentState)
 
@@ -83,7 +90,6 @@ class JobClassificationService:
         # compiled_graph.get_graph().draw_mermaid_png(output_file_path="job_classification_graph.png")
         return compiled_graph
 
-    # Note: Maybe this should not be inside the service class
     def get_best_esco_matches_db(
         self,
         state: JobClassificationAgentState,
@@ -97,11 +103,20 @@ class JobClassificationService:
         query = state["role"].title
         if state["role"].description:
             query += f" {state['role'].description}"
+            
+        # Check cache first to avoid redundant embedding searches
+        if query in self._esco_cache:
+            state["esco_results_from_embeddings"] = self._esco_cache[query]
+            return state
 
+        start_time = time.time()
         esco_results = search_esco_classifications(query, 5)
         if len(esco_results) > 0:
             state["esco_results_from_embeddings"] = esco_results
-
+            # Cache for future use
+            self._esco_cache[query] = esco_results
+            
+        state["processing_time"] = time.time() - start_time
         return state
 
     def validate_esco_results(self, state: JobClassificationAgentState):
@@ -170,10 +185,19 @@ class JobClassificationService:
         try:
             # Get the roles of the alumni
             input_data = get_extended_roles_by_alumni_id(alumni_id, db)
+            
+            if not input_data.roles:
+                logger.info(f"No roles to classify for alumni {alumni_id}")
+                return
 
-            # Process all roles concurrently
-            logger.info(f"Started classification process for alumni {alumni_id}")
-            await asyncio.gather(*[self._process_role(role) for role in input_data.roles])
+            # Process all roles concurrently with parallelism limit to avoid overwhelming resources
+            tasks = [self._process_role(role) for role in input_data.roles]
+            
+            # Process in smaller chunks if there are many roles
+            max_concurrent = 5  # Process up to 5 roles concurrently
+            for i in range(0, len(tasks), max_concurrent):
+                batch = tasks[i:i+max_concurrent]
+                await asyncio.gather(*batch)
 
         except Exception as e:
             logger.error(f"Error classifying roles for alumni {alumni_id}: {str(e)}")
@@ -193,30 +217,32 @@ class JobClassificationService:
             alumni = find_by_ids(alumni_ids, db)
         else:
             alumni = find_all(db)
-            
+
         # just making sure the user was not dumb and provided duplicate alumni IDs
         # and newsflash, that user is me :))
         alumni = list(set(alumni))
-        
+
         logger.info(f"Going to update {len(alumni)} alumni")
-        
-        # Process in batches of 10 to avoid overwhelming the system
-        batch_size = 10
+
+        # Process in larger batches to improve throughput
+        batch_size = 30
         for i in range(0, len(alumni), batch_size):
-            batch = alumni[i:i+batch_size]
-            logger.info(f"Processing batch {i//batch_size + 1} of {(len(alumni) + batch_size - 1)//batch_size} ({len(batch)} alumni)")
+            batch = alumni[i : i + batch_size]
+            logger.info(
+                f"Processing batch {i // batch_size + 1} of {(len(alumni) + batch_size - 1) // batch_size} ({len(batch)} alumni)"
+            )
 
             tasks = []
-            for alumni_id in alumni_ids:
-                task = asyncio.create_task(self.classify_roles_for_alumni(alumni_id))
+            for alumni_obj in batch:
+                task = asyncio.create_task(self.classify_roles_for_alumni(alumni_obj.id))
                 tasks.append(task)
-            
+
             # Wait for all tasks in this batch to complete
             await asyncio.gather(*tasks)
-            
+
             # Small delay between batches to prevent rate limiting
             if i + batch_size < len(alumni):
-                await asyncio.sleep(1)
+                await asyncio.sleep(0.5) 
 
 
 job_classification_service = JobClassificationService()

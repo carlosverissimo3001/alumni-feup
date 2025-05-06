@@ -228,6 +228,22 @@ export class QueryParamsDto {
   companyType?: COMPANY_TYPE[];
 
   @ApiPropertyOptional({
+    description: 'The ESCO codes to filter by',
+    example: ['1', '2', '3'],
+  })
+  @IsOptional()
+  @TransformToArray()
+  @Transform(({ value }: { value: string | string[] }) => {
+    if (Array.isArray(value)) {
+      return value.filter((escoCode: string) => escoCode?.trim());
+    }
+    return value;
+  })
+  @IsArray()
+  @IsString({ each: true })
+  escoCodes?: string[];
+
+  @ApiPropertyOptional({
     description: 'The number of results to return',
     example: 10,
   })

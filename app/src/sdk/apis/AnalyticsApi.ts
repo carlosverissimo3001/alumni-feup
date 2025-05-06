@@ -22,6 +22,8 @@ import type {
   CountryOptionDto,
   IndustryListResponseDto,
   IndustryOptionDto,
+  RoleListResponseDto,
+  RoleOptionDto,
 } from '../models/index';
 import {
     CityOptionDtoFromJSON,
@@ -38,6 +40,10 @@ import {
     IndustryListResponseDtoToJSON,
     IndustryOptionDtoFromJSON,
     IndustryOptionDtoToJSON,
+    RoleListResponseDtoFromJSON,
+    RoleListResponseDtoToJSON,
+    RoleOptionDtoFromJSON,
+    RoleOptionDtoToJSON,
 } from '../models/index';
 
 export interface CompaniesAnalyticsControllerGetCompaniesWithAlumniCountRequest {
@@ -56,6 +62,7 @@ export interface CompaniesAnalyticsControllerGetCompaniesWithAlumniCountRequest 
     industrySearch?: string;
     companySize?: Array<CompaniesAnalyticsControllerGetCompaniesWithAlumniCountCompanySizeEnum>;
     companyType?: Array<CompaniesAnalyticsControllerGetCompaniesWithAlumniCountCompanyTypeEnum>;
+    escoCodes?: Array<string>;
     limit?: number;
     offset?: number;
     search?: string;
@@ -80,6 +87,7 @@ export interface CompaniesAnalyticsControllerGetCompanyDetailsRequest {
     industrySearch?: string;
     companySize?: Array<CompaniesAnalyticsControllerGetCompanyDetailsCompanySizeEnum>;
     companyType?: Array<CompaniesAnalyticsControllerGetCompanyDetailsCompanyTypeEnum>;
+    escoCodes?: Array<string>;
     limit?: number;
     offset?: number;
     search?: string;
@@ -103,6 +111,7 @@ export interface CompaniesAnalyticsControllerGetHotCompaniesRequest {
     industrySearch?: string;
     companySize?: Array<CompaniesAnalyticsControllerGetHotCompaniesCompanySizeEnum>;
     companyType?: Array<CompaniesAnalyticsControllerGetHotCompaniesCompanyTypeEnum>;
+    escoCodes?: Array<string>;
     limit?: number;
     offset?: number;
     search?: string;
@@ -130,6 +139,7 @@ export interface CountriesAnalyticsControllerGetCountriesWithAlumniCountRequest 
     industrySearch?: string;
     companySize?: Array<CountriesAnalyticsControllerGetCountriesWithAlumniCountCompanySizeEnum>;
     companyType?: Array<CountriesAnalyticsControllerGetCountriesWithAlumniCountCompanyTypeEnum>;
+    escoCodes?: Array<string>;
     limit?: number;
     offset?: number;
     search?: string;
@@ -153,6 +163,31 @@ export interface IndustriesAnalyticsControllerGetIndustryWithCountsRequest {
     industrySearch?: string;
     companySize?: Array<IndustriesAnalyticsControllerGetIndustryWithCountsCompanySizeEnum>;
     companyType?: Array<IndustriesAnalyticsControllerGetIndustryWithCountsCompanyTypeEnum>;
+    escoCodes?: Array<string>;
+    limit?: number;
+    offset?: number;
+    search?: string;
+    sortBy?: string;
+    sortOrder?: string;
+}
+
+export interface RoleAnalyticsControllerGetRolesRequest {
+    startDate?: string;
+    endDate?: string;
+    courseIds?: Array<string>;
+    graduationYears?: Array<string>;
+    companyIds?: Array<string>;
+    industryIds?: Array<string>;
+    countries?: Array<string>;
+    cityIds?: Array<string>;
+    currentRolesOnly?: boolean;
+    onlyInternational?: boolean;
+    excludeResearchAndHighEducation?: boolean;
+    companySearch?: string;
+    industrySearch?: string;
+    companySize?: Array<RoleAnalyticsControllerGetRolesCompanySizeEnum>;
+    companyType?: Array<RoleAnalyticsControllerGetRolesCompanyTypeEnum>;
+    escoCodes?: Array<string>;
     limit?: number;
     offset?: number;
     search?: string;
@@ -185,6 +220,7 @@ export interface AnalyticsApiInterface {
      * @param {string} [industrySearch] Search query for industries
      * @param {Array<'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G' | 'H' | 'I'>} [companySize] The company sizes to filter by
      * @param {Array<'EDUCATIONAL' | 'GOVERNMENT_AGENCY' | 'NON_PROFIT' | 'PARTNERSHIP' | 'PRIVATELY_HELD' | 'PUBLIC_COMPANY' | 'SELF_EMPLOYED' | 'SELF_OWNED'>} [companyType] The company types to filter by
+     * @param {Array<string>} [escoCodes] The ESCO codes to filter by
      * @param {number} [limit] The number of results to return
      * @param {number} [offset] The offset of the query
      * @param {string} [search] Broad search query
@@ -220,6 +256,7 @@ export interface AnalyticsApiInterface {
      * @param {string} [industrySearch] Search query for industries
      * @param {Array<'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G' | 'H' | 'I'>} [companySize] The company sizes to filter by
      * @param {Array<'EDUCATIONAL' | 'GOVERNMENT_AGENCY' | 'NON_PROFIT' | 'PARTNERSHIP' | 'PRIVATELY_HELD' | 'PUBLIC_COMPANY' | 'SELF_EMPLOYED' | 'SELF_OWNED'>} [companyType] The company types to filter by
+     * @param {Array<string>} [escoCodes] The ESCO codes to filter by
      * @param {number} [limit] The number of results to return
      * @param {number} [offset] The offset of the query
      * @param {string} [search] Broad search query
@@ -282,6 +319,7 @@ export interface AnalyticsApiInterface {
      * @param {string} [industrySearch] Search query for industries
      * @param {Array<'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G' | 'H' | 'I'>} [companySize] The company sizes to filter by
      * @param {Array<'EDUCATIONAL' | 'GOVERNMENT_AGENCY' | 'NON_PROFIT' | 'PARTNERSHIP' | 'PRIVATELY_HELD' | 'PUBLIC_COMPANY' | 'SELF_EMPLOYED' | 'SELF_OWNED'>} [companyType] The company types to filter by
+     * @param {Array<string>} [escoCodes] The ESCO codes to filter by
      * @param {number} [limit] The number of results to return
      * @param {number} [offset] The offset of the query
      * @param {string} [search] Broad search query
@@ -345,6 +383,7 @@ export interface AnalyticsApiInterface {
      * @param {string} [industrySearch] Search query for industries
      * @param {Array<'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G' | 'H' | 'I'>} [companySize] The company sizes to filter by
      * @param {Array<'EDUCATIONAL' | 'GOVERNMENT_AGENCY' | 'NON_PROFIT' | 'PARTNERSHIP' | 'PRIVATELY_HELD' | 'PUBLIC_COMPANY' | 'SELF_EMPLOYED' | 'SELF_OWNED'>} [companyType] The company types to filter by
+     * @param {Array<string>} [escoCodes] The ESCO codes to filter by
      * @param {number} [limit] The number of results to return
      * @param {number} [offset] The offset of the query
      * @param {string} [search] Broad search query
@@ -394,6 +433,7 @@ export interface AnalyticsApiInterface {
      * @param {string} [industrySearch] Search query for industries
      * @param {Array<'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G' | 'H' | 'I'>} [companySize] The company sizes to filter by
      * @param {Array<'EDUCATIONAL' | 'GOVERNMENT_AGENCY' | 'NON_PROFIT' | 'PARTNERSHIP' | 'PRIVATELY_HELD' | 'PUBLIC_COMPANY' | 'SELF_EMPLOYED' | 'SELF_OWNED'>} [companyType] The company types to filter by
+     * @param {Array<string>} [escoCodes] The ESCO codes to filter by
      * @param {number} [limit] The number of results to return
      * @param {number} [offset] The offset of the query
      * @param {string} [search] Broad search query
@@ -409,6 +449,56 @@ export interface AnalyticsApiInterface {
      * Returns the number of alumni working in companies grouped by industry.
      */
     industriesAnalyticsControllerGetIndustryWithCounts(requestParameters: IndustriesAnalyticsControllerGetIndustryWithCountsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<IndustryListResponseDto>;
+
+    /**
+     * Returns a list of roles with their ESCO code and title.
+     * @summary List of possible role titles to search for.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof AnalyticsApiInterface
+     */
+    roleAnalyticsControllerGetRoleOptionsRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<RoleOptionDto>>>;
+
+    /**
+     * Returns a list of roles with their ESCO code and title.
+     * List of possible role titles to search for.
+     */
+    roleAnalyticsControllerGetRoleOptions(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<RoleOptionDto>>;
+
+    /**
+     * 
+     * @summary Returns the number of roles classified with each ESCO classification
+     * @param {string} [startDate] The start date of the role
+     * @param {string} [endDate] The end date of the role
+     * @param {Array<string>} [courseIds] The course IDs to filter by
+     * @param {Array<string>} [graduationYears] The graduation years to filter by
+     * @param {Array<string>} [companyIds] The company IDs to filter by
+     * @param {Array<string>} [industryIds] The industry IDs to filter by
+     * @param {Array<string>} [countries] The countries to filter by
+     * @param {Array<string>} [cityIds] The cities ids to filter by
+     * @param {boolean} [currentRolesOnly] Filter for current roles only
+     * @param {boolean} [onlyInternational] Whether to exclude roles in Portugal
+     * @param {boolean} [excludeResearchAndHighEducation] Exclude research and high education roles
+     * @param {string} [companySearch] Search query for companies
+     * @param {string} [industrySearch] Search query for industries
+     * @param {Array<'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G' | 'H' | 'I'>} [companySize] The company sizes to filter by
+     * @param {Array<'EDUCATIONAL' | 'GOVERNMENT_AGENCY' | 'NON_PROFIT' | 'PARTNERSHIP' | 'PRIVATELY_HELD' | 'PUBLIC_COMPANY' | 'SELF_EMPLOYED' | 'SELF_OWNED'>} [companyType] The company types to filter by
+     * @param {Array<string>} [escoCodes] The ESCO codes to filter by
+     * @param {number} [limit] The number of results to return
+     * @param {number} [offset] The offset of the query
+     * @param {string} [search] Broad search query
+     * @param {string} [sortBy] How to sort the results
+     * @param {string} [sortOrder] The order of the results
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof AnalyticsApiInterface
+     */
+    roleAnalyticsControllerGetRolesRaw(requestParameters: RoleAnalyticsControllerGetRolesRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<RoleListResponseDto>>;
+
+    /**
+     * Returns the number of roles classified with each ESCO classification
+     */
+    roleAnalyticsControllerGetRoles(requestParameters: RoleAnalyticsControllerGetRolesRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<RoleListResponseDto>;
 
 }
 
@@ -481,6 +571,10 @@ export class AnalyticsApi extends runtime.BaseAPI implements AnalyticsApiInterfa
 
         if (requestParameters['companyType'] != null) {
             queryParameters['companyType'] = requestParameters['companyType'];
+        }
+
+        if (requestParameters['escoCodes'] != null) {
+            queryParameters['escoCodes'] = requestParameters['escoCodes'];
         }
 
         if (requestParameters['limit'] != null) {
@@ -594,6 +688,10 @@ export class AnalyticsApi extends runtime.BaseAPI implements AnalyticsApiInterfa
 
         if (requestParameters['companyType'] != null) {
             queryParameters['companyType'] = requestParameters['companyType'];
+        }
+
+        if (requestParameters['escoCodes'] != null) {
+            queryParameters['escoCodes'] = requestParameters['escoCodes'];
         }
 
         if (requestParameters['limit'] != null) {
@@ -750,6 +848,10 @@ export class AnalyticsApi extends runtime.BaseAPI implements AnalyticsApiInterfa
 
         if (requestParameters['companyType'] != null) {
             queryParameters['companyType'] = requestParameters['companyType'];
+        }
+
+        if (requestParameters['escoCodes'] != null) {
+            queryParameters['escoCodes'] = requestParameters['escoCodes'];
         }
 
         if (requestParameters['limit'] != null) {
@@ -913,6 +1015,10 @@ export class AnalyticsApi extends runtime.BaseAPI implements AnalyticsApiInterfa
             queryParameters['companyType'] = requestParameters['companyType'];
         }
 
+        if (requestParameters['escoCodes'] != null) {
+            queryParameters['escoCodes'] = requestParameters['escoCodes'];
+        }
+
         if (requestParameters['limit'] != null) {
             queryParameters['limit'] = requestParameters['limit'];
         }
@@ -1047,6 +1153,10 @@ export class AnalyticsApi extends runtime.BaseAPI implements AnalyticsApiInterfa
             queryParameters['companyType'] = requestParameters['companyType'];
         }
 
+        if (requestParameters['escoCodes'] != null) {
+            queryParameters['escoCodes'] = requestParameters['escoCodes'];
+        }
+
         if (requestParameters['limit'] != null) {
             queryParameters['limit'] = requestParameters['limit'];
         }
@@ -1084,6 +1194,144 @@ export class AnalyticsApi extends runtime.BaseAPI implements AnalyticsApiInterfa
      */
     async industriesAnalyticsControllerGetIndustryWithCounts(requestParameters: IndustriesAnalyticsControllerGetIndustryWithCountsRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<IndustryListResponseDto> {
         const response = await this.industriesAnalyticsControllerGetIndustryWithCountsRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Returns a list of roles with their ESCO code and title.
+     * List of possible role titles to search for.
+     */
+    async roleAnalyticsControllerGetRoleOptionsRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<RoleOptionDto>>> {
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        const response = await this.request({
+            path: `/api/analytics/roles/options`,
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(RoleOptionDtoFromJSON));
+    }
+
+    /**
+     * Returns a list of roles with their ESCO code and title.
+     * List of possible role titles to search for.
+     */
+    async roleAnalyticsControllerGetRoleOptions(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<RoleOptionDto>> {
+        const response = await this.roleAnalyticsControllerGetRoleOptionsRaw(initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Returns the number of roles classified with each ESCO classification
+     */
+    async roleAnalyticsControllerGetRolesRaw(requestParameters: RoleAnalyticsControllerGetRolesRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<RoleListResponseDto>> {
+        const queryParameters: any = {};
+
+        if (requestParameters['startDate'] != null) {
+            queryParameters['startDate'] = requestParameters['startDate'];
+        }
+
+        if (requestParameters['endDate'] != null) {
+            queryParameters['endDate'] = requestParameters['endDate'];
+        }
+
+        if (requestParameters['courseIds'] != null) {
+            queryParameters['courseIds'] = requestParameters['courseIds'];
+        }
+
+        if (requestParameters['graduationYears'] != null) {
+            queryParameters['graduationYears'] = requestParameters['graduationYears'];
+        }
+
+        if (requestParameters['companyIds'] != null) {
+            queryParameters['companyIds'] = requestParameters['companyIds'];
+        }
+
+        if (requestParameters['industryIds'] != null) {
+            queryParameters['industryIds'] = requestParameters['industryIds'];
+        }
+
+        if (requestParameters['countries'] != null) {
+            queryParameters['countries'] = requestParameters['countries'];
+        }
+
+        if (requestParameters['cityIds'] != null) {
+            queryParameters['cityIds'] = requestParameters['cityIds'];
+        }
+
+        if (requestParameters['currentRolesOnly'] != null) {
+            queryParameters['currentRolesOnly'] = requestParameters['currentRolesOnly'];
+        }
+
+        if (requestParameters['onlyInternational'] != null) {
+            queryParameters['onlyInternational'] = requestParameters['onlyInternational'];
+        }
+
+        if (requestParameters['excludeResearchAndHighEducation'] != null) {
+            queryParameters['excludeResearchAndHighEducation'] = requestParameters['excludeResearchAndHighEducation'];
+        }
+
+        if (requestParameters['companySearch'] != null) {
+            queryParameters['companySearch'] = requestParameters['companySearch'];
+        }
+
+        if (requestParameters['industrySearch'] != null) {
+            queryParameters['industrySearch'] = requestParameters['industrySearch'];
+        }
+
+        if (requestParameters['companySize'] != null) {
+            queryParameters['companySize'] = requestParameters['companySize'];
+        }
+
+        if (requestParameters['companyType'] != null) {
+            queryParameters['companyType'] = requestParameters['companyType'];
+        }
+
+        if (requestParameters['escoCodes'] != null) {
+            queryParameters['escoCodes'] = requestParameters['escoCodes'];
+        }
+
+        if (requestParameters['limit'] != null) {
+            queryParameters['limit'] = requestParameters['limit'];
+        }
+
+        if (requestParameters['offset'] != null) {
+            queryParameters['offset'] = requestParameters['offset'];
+        }
+
+        if (requestParameters['search'] != null) {
+            queryParameters['search'] = requestParameters['search'];
+        }
+
+        if (requestParameters['sortBy'] != null) {
+            queryParameters['sortBy'] = requestParameters['sortBy'];
+        }
+
+        if (requestParameters['sortOrder'] != null) {
+            queryParameters['sortOrder'] = requestParameters['sortOrder'];
+        }
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        const response = await this.request({
+            path: `/api/analytics/roles`,
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => RoleListResponseDtoFromJSON(jsonValue));
+    }
+
+    /**
+     * Returns the number of roles classified with each ESCO classification
+     */
+    async roleAnalyticsControllerGetRoles(requestParameters: RoleAnalyticsControllerGetRolesRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<RoleListResponseDto> {
+        const response = await this.roleAnalyticsControllerGetRolesRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -1234,3 +1482,32 @@ export const IndustriesAnalyticsControllerGetIndustryWithCountsCompanyTypeEnum =
     SelfOwned: 'SELF_OWNED'
 } as const;
 export type IndustriesAnalyticsControllerGetIndustryWithCountsCompanyTypeEnum = typeof IndustriesAnalyticsControllerGetIndustryWithCountsCompanyTypeEnum[keyof typeof IndustriesAnalyticsControllerGetIndustryWithCountsCompanyTypeEnum];
+/**
+ * @export
+ */
+export const RoleAnalyticsControllerGetRolesCompanySizeEnum = {
+    A: 'A',
+    B: 'B',
+    C: 'C',
+    D: 'D',
+    E: 'E',
+    F: 'F',
+    G: 'G',
+    H: 'H',
+    I: 'I'
+} as const;
+export type RoleAnalyticsControllerGetRolesCompanySizeEnum = typeof RoleAnalyticsControllerGetRolesCompanySizeEnum[keyof typeof RoleAnalyticsControllerGetRolesCompanySizeEnum];
+/**
+ * @export
+ */
+export const RoleAnalyticsControllerGetRolesCompanyTypeEnum = {
+    Educational: 'EDUCATIONAL',
+    GovernmentAgency: 'GOVERNMENT_AGENCY',
+    NonProfit: 'NON_PROFIT',
+    Partnership: 'PARTNERSHIP',
+    PrivatelyHeld: 'PRIVATELY_HELD',
+    PublicCompany: 'PUBLIC_COMPANY',
+    SelfEmployed: 'SELF_EMPLOYED',
+    SelfOwned: 'SELF_OWNED'
+} as const;
+export type RoleAnalyticsControllerGetRolesCompanyTypeEnum = typeof RoleAnalyticsControllerGetRolesCompanyTypeEnum[keyof typeof RoleAnalyticsControllerGetRolesCompanyTypeEnum];
