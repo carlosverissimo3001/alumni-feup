@@ -93,7 +93,6 @@ class Alumni(Base):
     metadata_ = Column(JSONB, name="metadata", nullable=True)
 
     source = Column(Enum(Source), nullable=True)
-    is_in_group = Column(Boolean, nullable=False)
     has_sigarra_match = Column(Boolean, nullable=False)
     was_reviewed = Column(Boolean, nullable=False, server_default="false")
 

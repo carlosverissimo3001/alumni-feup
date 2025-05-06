@@ -20,7 +20,9 @@ async def classify_job(
     params: AlumniJobClassificationParams = Depends(),
 ):
     """
-    Triggers the classification of all the roles of an alumni into the ESCO taxonomy.
+    Trigger the classification of the roles of the alumni
+    
+    If none are provided, it will update all alumni roles.
     """
     try:
         logger.info(f"Requesting alumni role classification for {params.alumni_ids}")

@@ -1,0 +1,187 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableRow,
+  TableContainer,
+} from "@/components/ui/table";
+import { Button } from "@/components/ui/button";
+import { RoleListDto } from "@/sdk";
+import { Briefcase, Filter } from "lucide-react";
+import { IndustryDataSkeleton } from "./skeletons/IndustryDataSkeleton";
+import PaginationControls from "./common/PaginationControls";
+import TableTitle from "./common/TableTitle";
+import CustomTableHeader from "./common/CustomeTableHeader";
+import { SortBy, SortOrder, ITEMS_PER_PAGE, DASHBOARD_HEIGHT } from "@/consts";
+import { FilterState } from "./common/GlobalFilters";
+import { NotFoundComponent } from "./common/NotFoundComponent";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { useRoleList } from "@/hooks/analytics/useRoleList";
+import { startCase } from "lodash";
+
+type RoleDashboardProps = {
+  filters: FilterState;
+  onAddToFilters?: (roleId: string) => void;
+};
+
+export default function IndustryDashboard({
+  filters,
+  onAddToFilters,
+}: RoleDashboardProps) {
+  const [page, setPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(ITEMS_PER_PAGE[2]);
+  const [sortField, setSortField] = useState<SortBy>(SortBy.ALUMNI_COUNT);
+  const [sortOrder, setSortOrder] = useState<SortOrder>(SortOrder.DESC);
+  
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [pageInput, setPageInput] = useState<string>(String(page));
+
+  // Reset page when filters change
+  useEffect(() => {
+    setPage(1);
+  }, [filters]);
+
+  const { data, isLoading, isFetching } = useRoleList({
+    ...filters,
+    limit: itemsPerPage,
+    sortBy: sortField,
+    sortOrder: sortOrder,
+    offset: (page - 1) * itemsPerPage,
+  });
+
+  const roles = data?.roles || [];
+  const totalItems = data?.totalCount || 0;
+
+
+  useEffect(() => {
+    setPageInput(String(page));
+  }, [page]);
+
+  const handleSort = (field: SortBy) => {
+    if (sortField === field) {
+      setSortOrder(
+        sortOrder === SortOrder.ASC ? SortOrder.DESC : SortOrder.ASC
+      );
+    } else {
+      setSortField(field);
+      setSortOrder(SortOrder.DESC);
+    }
+  };
+
+  return (
+    <div
+      className={`w-full ${DASHBOARD_HEIGHT} flex flex-col border rounded-xl shadow-lg p-3 box-border bg-white`}
+    >
+      <TableTitle
+        title="Alumni Roles"
+        icon={<Briefcase className="h-5 w-5 text-[#8C2D19]" />}
+      />
+
+      <div className="flex-1 relative border-t border-b border-gray-200 flex flex-col overflow-hidden">
+        <TableContainer className="flex-1 overflow-auto custom-scrollbar">
+          <Table className="min-w-full bg-white table-fixed [&>div]:overflow-visible">
+            <CustomTableHeader
+              sortField={sortField}
+              sortOrder={sortOrder}
+              onSort={handleSort}
+              includeCompanies={false}
+              useRoleTitle={true}
+            />
+
+            {isLoading || isFetching ? (
+              <IndustryDataSkeleton />
+            ) : (
+              <TableBody className="bg-white divide-y divide-gray-200">
+                {roles.length > 0 ? (
+                  roles.map(
+                    (role: RoleListDto, index: number) => {
+                      const rowNumber = (page - 1) * itemsPerPage + index + 1;
+                      return (
+                        <TableRow
+                          key={role.code}
+                          className={`group ${
+                            index % 2 === 0 ? "bg-gray-50" : "bg-white"
+                          } hover:bg-[#A13A23] hover:bg-opacity-10 transition-colors duration-200 relative`}
+                        >
+                          <TableCell className="w-1/12 py-1 pl-3 text-sm text-gray-500 font-medium align-middle">
+                            {rowNumber}
+                          </TableCell>
+                          <TableCell className="w-5/12 py-1.5 pl-3 text-sm font-medium text-[#000000] align-middle">
+                            <Button
+                              variant="link"
+                              className="text-sm font-medium text-[#000000] w-full text-left h-auto p-0 hover:text-[#8C2D19] transition-colors"
+                              onClick={() => {
+                                window.open(
+                                  `/role/${role.code}`,
+                                  "_blank"
+                                );
+                              }}
+                            >
+                              <div
+                                title={role.title}
+                                className="text-ellipsis overflow-hidden w-full text-left"
+                              >
+                                {startCase(role.title)}
+                              </div>
+                            </Button>
+                          </TableCell>
+                          <TableCell className="w-3/12 pl-3 py-1 text-sm text-[#000000] align-middle hover:text-[#8C2D19] transition-colors">
+                            <span className="font-semibold">
+                              {role.roleCount}
+                            </span>
+                          </TableCell>
+                          <TableCell className="absolute right-2 top-1/2 transform -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity">
+                            <TooltipProvider>
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <Button
+                                    aria-label="Add to filters"
+                                    variant="ghost"
+                                    size="sm"
+                                    className="p-1 h-6 w-6 rounded-full bg-gray-100 hover:bg-gray-200"
+                                    onClick={() => onAddToFilters?.(role.code)}
+                                  >
+                                    <Filter className="h-4 w-4 text-[#8C2D19]" />
+                                  </Button>
+                                </TooltipTrigger>
+                                <TooltipContent>
+                                  <p>Filter on {role.title}</p>
+                                </TooltipContent>
+                              </Tooltip>
+                            </TooltipProvider>
+                          </TableCell>
+                        </TableRow>
+                      );
+                    }
+                  )
+                ) : (
+                  <NotFoundComponent
+                    message="No role data available"
+                    description="Try adjusting your filters to find roles that match your criteria."
+                    colSpan={4}
+                  />
+                )}
+              </TableBody>
+            )}
+          </Table>
+        </TableContainer>
+      </div>
+
+      <PaginationControls
+        page={page}
+        setPage={setPage}
+        itemsPerPage={itemsPerPage}
+        setItemsPerPage={setItemsPerPage}
+        totalItems={totalItems}
+      />
+    </div>
+  );
+}

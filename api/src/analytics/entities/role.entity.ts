@@ -1,6 +1,8 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { LocationAnalyticsEntity } from './location.entity';
 import { CompanyAnalyticsEntity } from './company.entity';
+import { JobClassificationAnalyticsEntity } from './job-classification.entity';
+
 export class RoleAnalyticsEntity {
   @ApiProperty()
   id: string;
@@ -13,4 +15,11 @@ export class RoleAnalyticsEntity {
 
   @ApiProperty()
   company: CompanyAnalyticsEntity;
+
+  @ApiPropertyOptional({
+    type: JobClassificationAnalyticsEntity,
+    isArray: true,
+    nullable: true,
+  })
+  jobClassification?: JobClassificationAnalyticsEntity[] | null;
 }

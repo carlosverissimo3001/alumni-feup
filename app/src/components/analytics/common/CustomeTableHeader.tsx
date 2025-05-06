@@ -11,6 +11,7 @@ type CustomTableHeaderProps = {
   onSort?: (field: SortBy) => void;
   alumniHoverMessage?: string;
   companiesHoverMessage?: string;
+  useRoleTitle?: boolean;
 };
 
 export default function CustomTableHeader({
@@ -20,6 +21,7 @@ export default function CustomTableHeader({
   onSort,
   alumniHoverMessage,
   companiesHoverMessage,
+  useRoleTitle = false,
 }: CustomTableHeaderProps) {
   const renderSortIcon = (field: SortBy) => {
     if (sortField !== field) {
@@ -71,7 +73,7 @@ export default function CustomTableHeader({
               className="h-8 p-0 font-semibold hover:bg-transparent hover:text-[#A13A23] flex items-center gap-0.5"
               onClick={() => onSort?.(SortBy.ALUMNI_COUNT)}
             >
-              Alumni
+              {useRoleTitle ? "Roles" : "Alumni"}
               {renderSortIcon(SortBy.ALUMNI_COUNT)}
             </Button>
           </div>

@@ -29,6 +29,14 @@ const companySelect = {
   },
 };
 
+const jobClassificationSelect = {
+  title: true,
+  level: true,
+  confidence: true,
+  ranking: true,
+  escoCode: true,
+};
+
 const roleSelect = {
   id: true,
   alumniId: true,
@@ -37,6 +45,9 @@ const roleSelect = {
   },
   Company: {
     select: companySelect,
+  },
+  JobClassification: {
+    select: jobClassificationSelect,
   },
 } satisfies Prisma.RoleSelect;
 

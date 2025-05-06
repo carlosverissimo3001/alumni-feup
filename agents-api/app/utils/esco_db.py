@@ -28,9 +28,15 @@ def insert_classification(db: Session, classification: JobClassification):
     db.refresh(classification)
     return classification
 
+def delete_existing_classifications(db: Session, role_id: str):
+    db.query(JobClassification).filter(JobClassification.role_id == role_id).delete()
+
 def update_role_with_classifications(db: Session, state: JobClassificationAgentState, level: int):
-    results_from_agent = state["esco_results_from_agent"]
+    # 1. Delete existing classifications
+    delete_existing_classifications(db, state["role"].role_id)
     
+    # 2. Parse the results to DB format
+    results_from_agent = state["esco_results_from_agent"]
     results: List[EscoResult] = []
     if isinstance(results_from_agent, str):
         try:
@@ -42,11 +48,11 @@ def update_role_with_classifications(db: Session, state: JobClassificationAgentS
     else:
         results = results_from_agent
     
-    # Sort from best to worst confidence
+    # 3. Sort from best to worst confidence
     results = sorted(results, key=lambda x: x.confidence, reverse=True)
-    
     model_used = state.get("model_used", "mistral:7b")
     
+    # 4. Insert the classifications into the DB
     for i, result in enumerate(results):
         classification = JobClassification(
             title=result.title,
