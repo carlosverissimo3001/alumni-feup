@@ -9,48 +9,60 @@ import {
   TableContainer,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { IndustryListItemDto } from "@/sdk";
-import { Factory, Filter } from "lucide-react";
-import { IndustryDataSkeleton } from "./skeletons/IndustryDataSkeleton";
-import { useIndustryList } from "@/hooks/analytics/useIndustryList";
-import PaginationControls from "./common/PaginationControls";
-import TableTitle from "./common/TableTitle";
-import CustomTableHeader from "./common/CustomeTableHeader";
+import { RoleListDto } from "@/sdk";
+import { Briefcase, Filter, Info, ExternalLink } from "lucide-react";
+import { IndustryDataSkeleton } from "../skeletons/IndustryDataSkeleton";
+import PaginationControls from "../common/PaginationControls";
+import TableTitle from "../common/TableTitle";
+import CustomTableHeader from "../common/CustomeTableHeader";
 import { SortBy, SortOrder, ITEMS_PER_PAGE, DASHBOARD_HEIGHT } from "@/consts";
-import { FilterState } from "./common/GlobalFilters";
-import { NotFoundComponent } from "./common/NotFoundComponent";
+import { FilterState } from "../common/GlobalFilters";
+import { NotFoundComponent } from "../common/NotFoundComponent";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { useRoleList } from "@/hooks/analytics/useRoleList";
+import { startCase } from "lodash";
+import { Switch } from "@/components/ui/switch";
 
-type IndustryDashboardProps = {
-  onDataUpdate: (industryCount: number) => void;
+type RoleDashboardProps = {
+  onDataUpdate: (roleCount: number, roleFilteredCount: number) => void;
   filters: FilterState;
-  onAddToFilters?: (industryId: string) => void;
+  onAddToFilters?: (roleId: string) => void;
+  onLevelChange: (level: number) => void;
 };
 
-export default function IndustryDashboard({
-  onDataUpdate,
+export default function RoleDashboard({
   filters,
   onAddToFilters,
-}: IndustryDashboardProps) {
+  onDataUpdate,
+  onLevelChange,
+}: RoleDashboardProps) {
   const [page, setPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(ITEMS_PER_PAGE[2]);
   const [sortField, setSortField] = useState<SortBy>(SortBy.ALUMNI_COUNT);
   const [sortOrder, setSortOrder] = useState<SortOrder>(SortOrder.DESC);
+  const [level, setLevel] = useState<number>(1);
   
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [pageInput, setPageInput] = useState<string>(String(page));
+
+  const onLevelUpdate = (checked: boolean) => {
+    const newLevel = checked ? 2 : 1;
+    setLevel(newLevel);
+    onLevelChange(newLevel);
+    onDataUpdate(totalRoles, totalRolesFiltered);
+  };
 
   // Reset page when filters change
   useEffect(() => {
     setPage(1);
   }, [filters]);
 
-  const { data, isLoading, isFetching } = useIndustryList({
+  const { data, isLoading, isFetching } = useRoleList({
     ...filters,
     limit: itemsPerPage,
     sortBy: sortField,
@@ -58,15 +70,16 @@ export default function IndustryDashboard({
     offset: (page - 1) * itemsPerPage,
   });
 
-  const industries = data?.industries || [];
-  const totalItems = data?.total || 0;
+  const roles = data?.roles || [];
+  const totalRoles = data?.count || 0;
+  const totalRolesFiltered = data?.filteredCount || 0;
 
   // Update parent only when total changes
   useEffect(() => {
-    if (data?.total !== undefined) {
-      onDataUpdate(data.total);
+    if (data?.count !== undefined) {
+      onDataUpdate(data.count, data.filteredCount);
     }
-  }, [data?.total, onDataUpdate]);
+  }, [data?.count, data?.filteredCount, onDataUpdate]);
 
   useEffect(() => {
     setPageInput(String(page));
@@ -81,18 +94,63 @@ export default function IndustryDashboard({
       setSortField(field);
       setSortOrder(SortOrder.DESC);
     }
-    // Not sure if we should reset the page when sorting changes
-    // setPage(1);
   };
 
   return (
     <div
       className={`w-full ${DASHBOARD_HEIGHT} flex flex-col border rounded-xl shadow-lg p-3 box-border bg-white`}
     >
-      <TableTitle
-        title="Industries"
-        icon={<Factory className="h-5 w-5 text-[#8C2D19]" />}
-      />
+      <div className="flex items-center justify-between mb-1">
+        <TableTitle
+          title="Roles"
+          icon={
+            <Briefcase className="h-5 w-5 text-[#8C2D19]" />
+          }
+        />
+        <div className="flex items-center space-x-2">
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Info className="h-5 w-5 text-[#8C2D19]" />
+              </TooltipTrigger>
+              <TooltipContent className="max-w-xs">
+                <div className="space-y-2">
+                  <p><strong>Level 1:</strong> More general job classification, maps directly to level 4 of the ESCO taxonomy</p>
+                  <p><strong>Level 2:</strong> More granular classification, maps to lower levels of the ESCO taxonomy (5-7)</p>
+                  <a 
+                    href="https://esco.ec.europa.eu/en/classification/occupation_main" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="flex items-center text-sm font-medium text-blue-500 hover:underline mt-1"
+                  >
+                    View ESCO Classification
+                    <ExternalLink className="h-3.5 w-3.5 ml-1" />
+                  </a>
+                </div>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+          <div className="flex items-center space-x-2 bg-gray-50 px-2 py-1 rounded-full" title="Toggle view mode">
+                  <span 
+              className={`text-sm font-medium cursor-pointer ${level === 1 ? "text-[#8C2D19] font-semibold" : "text-gray-500"}`}
+              onClick={() => onLevelUpdate(false)}
+            >
+              Level 1
+            </span>
+            <Switch 
+              id="mode-toggle" 
+              checked={level === 2}
+              onCheckedChange={onLevelUpdate}
+            />
+            <span 
+              className={`text-sm font-medium cursor-pointer ${level === 2 ? "text-[#8C2D19] font-semibold" : "text-gray-500"}`}
+              onClick={() => onLevelUpdate(true)}
+            >
+              Level 2
+            </span>
+          </div>
+        </div>
+      </div>
 
       <div className="flex-1 relative border-t border-b border-gray-200 flex flex-col overflow-hidden">
         <TableContainer className="flex-1 overflow-auto custom-scrollbar">
@@ -101,19 +159,21 @@ export default function IndustryDashboard({
               sortField={sortField}
               sortOrder={sortOrder}
               onSort={handleSort}
+              includeCompanies={false}
+              useRoleTitle={true}
             />
 
             {isLoading || isFetching ? (
               <IndustryDataSkeleton />
             ) : (
               <TableBody className="bg-white divide-y divide-gray-200">
-                {industries.length > 0 ? (
-                  industries.map(
-                    (industry: IndustryListItemDto, index: number) => {
+                {roles.length > 0 ? (
+                  roles.map(
+                    (role: RoleListDto, index: number) => {
                       const rowNumber = (page - 1) * itemsPerPage + index + 1;
                       return (
                         <TableRow
-                          key={industry.id}
+                          key={role.code}
                           className={`group ${
                             index % 2 === 0 ? "bg-gray-50" : "bg-white"
                           } hover:bg-[#A13A23] hover:bg-opacity-10 transition-colors duration-200 relative`}
@@ -127,27 +187,22 @@ export default function IndustryDashboard({
                               className="text-sm font-medium text-[#000000] w-full text-left h-auto p-0 hover:text-[#8C2D19] transition-colors"
                               onClick={() => {
                                 window.open(
-                                  `/industry/${industry.id}`,
+                                  `/role/${role.code}`,
                                   "_blank"
                                 );
                               }}
                             >
                               <div
-                                title={industry.name}
+                                title={role.title}
                                 className="text-ellipsis overflow-hidden w-full text-left"
                               >
-                                {industry.name}
+                                {startCase(role.title)}
                               </div>
                             </Button>
                           </TableCell>
                           <TableCell className="w-3/12 pl-3 py-1 text-sm text-[#000000] align-middle hover:text-[#8C2D19] transition-colors">
                             <span className="font-semibold">
-                              {industry.companyCount}
-                            </span>
-                          </TableCell>
-                          <TableCell className="w-3/12 pl-3 py-1 text-sm text-[#000000] align-middle hover:text-[#8C2D19] transition-colors">
-                            <span className="font-semibold">
-                              {industry.alumniCount}
+                              {role.roleCount}
                             </span>
                           </TableCell>
                           <TableCell className="absolute right-2 top-1/2 transform -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -159,13 +214,13 @@ export default function IndustryDashboard({
                                     variant="ghost"
                                     size="sm"
                                     className="p-1 h-6 w-6 rounded-full bg-gray-100 hover:bg-gray-200"
-                                    onClick={() => onAddToFilters?.(industry.id)}
+                                    onClick={() => onAddToFilters?.(role.code)}
                                   >
                                     <Filter className="h-4 w-4 text-[#8C2D19]" />
                                   </Button>
                                 </TooltipTrigger>
                                 <TooltipContent>
-                                  <p>Filter on {industry.name}</p>
+                                  <p>Filter on {role.title}</p>
                                 </TooltipContent>
                               </Tooltip>
                             </TooltipProvider>
@@ -176,8 +231,8 @@ export default function IndustryDashboard({
                   )
                 ) : (
                   <NotFoundComponent
-                    message="No industry data available"
-                    description="Try adjusting your filters to find industries that match your criteria."
+                    message="No role data available"
+                    description="Try adjusting your filters to find roles that match your criteria."
                     colSpan={4}
                   />
                 )}
@@ -192,7 +247,7 @@ export default function IndustryDashboard({
         setPage={setPage}
         itemsPerPage={itemsPerPage}
         setItemsPerPage={setItemsPerPage}
-        totalItems={totalItems}
+        totalItems={totalRolesFiltered}
       />
     </div>
   );

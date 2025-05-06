@@ -28,13 +28,28 @@ export class CompanyListResponseDto {
 
   @ApiProperty({
     description:
-      'The total number of companies in the database, after applying the filters',
+      'The total number of companies in the database, regardless of filters',
+    type: Number,
   })
-  companyTotalCount: number;
+  companyCount: number;
 
   @ApiProperty({
     description:
-      'The total number of alumni in the database, after applying the filters',
+      'The total number of companies in the database, after applying the filters',
+    type: Number,
   })
-  alumniTotalCount: number;
+  companyFilteredCount: number;
+
+  @ApiProperty({
+    description: 'The total number of alumni in the database',
+    type: Number,
+  })
+  alumniCount: number;
+
+  @ApiProperty({
+    description:
+      'The total number of alumni with roles in the database, after applying the filters',
+    type: Number,
+  })
+  alumniFilteredCount: number;
 }

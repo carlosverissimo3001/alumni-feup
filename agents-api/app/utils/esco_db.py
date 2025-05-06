@@ -5,7 +5,7 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from app.db.models import EscoClassification, JobClassification
-from app.schemas.job_classification import JobClassificationAgentState, EscoResult
+from app.schemas.job_classification import EscoResult, JobClassificationAgentState
 
 
 def get_all_classifications_by_level(db: Session, level: int) -> List[EscoClassification]:
@@ -15,26 +15,30 @@ def get_all_classifications_by_level(db: Session, level: int) -> List[EscoClassi
         .all()
     )
 
+
 def get_classification_by_code(db: Session, code: str) -> EscoClassification | None:
     return (
         db.execute(select(EscoClassification).where(EscoClassification.code == code))
         .scalars()
         .first()
     )
-    
+
+
 def insert_classification(db: Session, classification: JobClassification):
     db.add(classification)
     db.commit()
     db.refresh(classification)
     return classification
 
+
 def delete_existing_classifications(db: Session, role_id: str):
     db.query(JobClassification).filter(JobClassification.role_id == role_id).delete()
+
 
 def update_role_with_classifications(db: Session, state: JobClassificationAgentState, level: int):
     # 1. Delete existing classifications
     delete_existing_classifications(db, state["role"].role_id)
-    
+
     # 2. Parse the results to DB format
     results_from_agent = state["esco_results_from_agent"]
     results: List[EscoResult] = []
@@ -47,20 +51,22 @@ def update_role_with_classifications(db: Session, state: JobClassificationAgentS
             return
     else:
         results = results_from_agent
-    
-    # 3. Sort from best to worst confidence
-    results = sorted(results, key=lambda x: x.confidence, reverse=True)
+
+    # 3. Get the best result
+    best_result = results[0]
     model_used = state.get("model_used", "mistral:7b")
-    
+
     # 4. Insert the classifications into the DB
-    for i, result in enumerate(results):
-        classification = JobClassification(
-            title=result.title,
-            level=level,
-            ranking=i + 1,
-            esco_code=result.code,
-            role_id=state["role"].role_id,
-            confidence=result.confidence,
-            model_used=model_used
-        )
-        insert_classification(db, classification)
+    # Convert the Pydantic models to dictionaries for JSON serialization
+    metadata_json = [result.model_dump() for result in results]
+    
+    classification = JobClassification(
+        title=best_result.title,
+        level=level,
+        esco_code=best_result.code,
+        role_id=state["role"].role_id,
+        confidence=best_result.confidence,
+        model_used=model_used,
+        metadata_=metadata_json,
+    )
+    insert_classification(db, classification)

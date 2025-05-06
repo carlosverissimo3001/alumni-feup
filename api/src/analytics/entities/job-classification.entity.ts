@@ -12,7 +12,4 @@ export class JobClassificationAnalyticsEntity {
 
   @ApiPropertyOptional()
   confidence?: number | null;
-
-  @ApiProperty()
-  ranking: number;
 }

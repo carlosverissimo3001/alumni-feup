@@ -34,17 +34,29 @@ export interface CompanyListResponseDto {
      */
     companies: Array<CompanyListItemDto>;
     /**
+     * The total number of companies in the database, regardless of filters
+     * @type {number}
+     * @memberof CompanyListResponseDto
+     */
+    companyCount: number;
+    /**
      * The total number of companies in the database, after applying the filters
      * @type {number}
      * @memberof CompanyListResponseDto
      */
-    companyTotalCount: number;
+    companyFilteredCount: number;
     /**
-     * The total number of alumni in the database, after applying the filters
+     * The total number of alumni in the database
      * @type {number}
      * @memberof CompanyListResponseDto
      */
-    alumniTotalCount: number;
+    alumniCount: number;
+    /**
+     * The total number of alumni with roles in the database, after applying the filters
+     * @type {number}
+     * @memberof CompanyListResponseDto
+     */
+    alumniFilteredCount: number;
 }
 
 /**
@@ -52,8 +64,10 @@ export interface CompanyListResponseDto {
  */
 export function instanceOfCompanyListResponseDto(value: object): value is CompanyListResponseDto {
     if (!('companies' in value) || value['companies'] === undefined) return false;
-    if (!('companyTotalCount' in value) || value['companyTotalCount'] === undefined) return false;
-    if (!('alumniTotalCount' in value) || value['alumniTotalCount'] === undefined) return false;
+    if (!('companyCount' in value) || value['companyCount'] === undefined) return false;
+    if (!('companyFilteredCount' in value) || value['companyFilteredCount'] === undefined) return false;
+    if (!('alumniCount' in value) || value['alumniCount'] === undefined) return false;
+    if (!('alumniFilteredCount' in value) || value['alumniFilteredCount'] === undefined) return false;
     return true;
 }
 
@@ -68,8 +82,10 @@ export function CompanyListResponseDtoFromJSONTyped(json: any, ignoreDiscriminat
     return {
         
         'companies': ((json['companies'] as Array<any>).map(CompanyListItemDtoFromJSON)),
-        'companyTotalCount': json['companyTotalCount'],
-        'alumniTotalCount': json['alumniTotalCount'],
+        'companyCount': json['companyCount'],
+        'companyFilteredCount': json['companyFilteredCount'],
+        'alumniCount': json['alumniCount'],
+        'alumniFilteredCount': json['alumniFilteredCount'],
     };
 }
 
@@ -85,8 +101,10 @@ export function CompanyListResponseDtoToJSONTyped(value?: CompanyListResponseDto
     return {
         
         'companies': ((value['companies'] as Array<any>).map(CompanyListItemDtoToJSON)),
-        'companyTotalCount': value['companyTotalCount'],
-        'alumniTotalCount': value['alumniTotalCount'],
+        'companyCount': value['companyCount'],
+        'companyFilteredCount': value['companyFilteredCount'],
+        'alumniCount': value['alumniCount'],
+        'alumniFilteredCount': value['alumniFilteredCount'],
     };
 }
 

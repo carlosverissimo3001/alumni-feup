@@ -1,11 +1,14 @@
 import { Controller, Get, Query } from '@nestjs/common';
 import { CountryAnalyticsService } from '../services/country-analytics.service';
 import { ApiOperation, ApiTags, ApiResponse } from '@nestjs/swagger';
-import { QueryParamsDto } from '../dto/query-params.dto';
-import { CountryListResponseDto } from '../dto/country-list.dto';
-import { CountryOptionDto } from '../dto/country-option.dto';
-import { CityOptionDto } from '../dto/city-option.dto';
-import { GetCitiesDto } from '../dto/get-cities.dto';
+import {
+  QueryParamsDto,
+  CountryListResponseDto,
+  CountryOptionDto,
+  CityOptionDto,
+  GetCitiesDto,
+  CityListResponseDto,
+} from '@/analytics/dto';
 
 @ApiTags('V1', 'Analytics')
 @Controller('analytics/countries')
@@ -25,6 +28,19 @@ export class CountriesAnalyticsController {
   })
   async getCountriesWithAlumniCount(@Query() query: QueryParamsDto) {
     return this.countryAnalyticsService.getCountriesWithAlumniCount(query);
+  }
+
+  @Get('/cities')
+  @ApiOperation({
+    summary: 'Get the cities, and the number of alumni working in them.',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'The countries with the number of alumni working in them.',
+    type: CityListResponseDto,
+  })
+  async getCitiesWithAlumniCount(@Query() query: QueryParamsDto) {
+    return this.countryAnalyticsService.getCitiesWithAlumniCount(query);
   }
 
   @Get('/options')

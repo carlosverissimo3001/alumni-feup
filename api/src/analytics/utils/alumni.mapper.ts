@@ -9,7 +9,6 @@ type RawJobClassification = {
   escoCode: string;
   level: number;
   confidence?: number | null;
-  ranking: number;
 };
 
 type RawLocation = {
@@ -23,7 +22,7 @@ type RawRole = {
   id: string;
   alumniId: string;
   Location?: RawLocation | null;
-  JobClassification?: RawJobClassification[] | null;
+  JobClassification?: RawJobClassification | null;
   Company: {
     id: string;
     name: string;
@@ -66,16 +65,15 @@ export function toAlumniAnalyticsEntity(
 }
 
 const mapJobClassification = (
-  jobClassification?: RawJobClassification[] | null,
-): JobClassificationAnalyticsEntity[] | null => {
+  jobClassification?: RawJobClassification | null,
+): JobClassificationAnalyticsEntity | null => {
   if (!jobClassification) return null;
-  return jobClassification.map((jobClassification) => ({
+  return {
     escoCode: jobClassification.escoCode,
     title: jobClassification.title,
     level: jobClassification.level,
     confidence: jobClassification.confidence,
-    ranking: jobClassification.ranking,
-  }));
+  };
 };
 const mapLocation = (
   location?: RawLocation | null,

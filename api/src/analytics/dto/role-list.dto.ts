@@ -31,6 +31,16 @@ export class RoleListResponseDto {
   @ApiProperty({ type: [RoleListDto] })
   roles: RoleListDto[];
 
-  @ApiProperty()
-  totalCount: number;
+  @ApiProperty({
+    description: 'The total number of roles in the database',
+    type: Number,
+  })
+  count: number;
+
+  @ApiProperty({
+    description:
+      'The total number of roles in the database after applying the filters',
+    type: Number,
+  })
+  filteredCount: number;
 }

@@ -4,6 +4,8 @@ export * from './AddFacultyDto';
 export * from './Alumni';
 export * from './AlumniExtended';
 export * from './BasicAlumniProfileDto';
+export * from './CityListItemDto';
+export * from './CityListResponseDto';
 export * from './CityOptionDto';
 export * from './Company';
 export * from './CompanyDto';

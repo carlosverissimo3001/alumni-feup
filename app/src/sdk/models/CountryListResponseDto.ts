@@ -38,7 +38,13 @@ export interface CountryListResponseDto {
      * @type {number}
      * @memberof CountryListResponseDto
      */
-    total: number;
+    count: number;
+    /**
+     * The total number of countries in the database before applying the filters
+     * @type {number}
+     * @memberof CountryListResponseDto
+     */
+    filteredCount: number;
 }
 
 /**
@@ -46,7 +52,8 @@ export interface CountryListResponseDto {
  */
 export function instanceOfCountryListResponseDto(value: object): value is CountryListResponseDto {
     if (!('countries' in value) || value['countries'] === undefined) return false;
-    if (!('total' in value) || value['total'] === undefined) return false;
+    if (!('count' in value) || value['count'] === undefined) return false;
+    if (!('filteredCount' in value) || value['filteredCount'] === undefined) return false;
     return true;
 }
 
@@ -61,7 +68,8 @@ export function CountryListResponseDtoFromJSONTyped(json: any, ignoreDiscriminat
     return {
         
         'countries': ((json['countries'] as Array<any>).map(CountryListItemDtoFromJSON)),
-        'total': json['total'],
+        'count': json['count'],
+        'filteredCount': json['filteredCount'],
     };
 }
 
@@ -77,7 +85,8 @@ export function CountryListResponseDtoToJSONTyped(value?: CountryListResponseDto
     return {
         
         'countries': ((value['countries'] as Array<any>).map(CountryListItemDtoToJSON)),
-        'total': value['total'],
+        'count': value['count'],
+        'filteredCount': value['filteredCount'],
     };
 }
 

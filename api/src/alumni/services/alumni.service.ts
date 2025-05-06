@@ -362,7 +362,7 @@ export class AlumniService {
             course_acronym: grad.Course.acronym,
             conclusion_year: grad.conclusionYear || null,
           })) || [],
-        jobTitle: alumnus.Roles?.[0]?.JobClassification?.[0]?.title || null,
+        jobTitle: alumnus.Roles?.[0]?.JobClassification?.title || null,
         companyName: alumnus.Roles?.[0]?.Company?.name || null,
       });
     }
@@ -413,7 +413,7 @@ export class AlumniService {
             course_acronym: grad.Course.acronym,
             conclusion_year: grad.conclusionYear || null,
           })) || [],
-        jobTitle: alumnus.Roles?.[0]?.JobClassification?.[0]?.title || null,
+        jobTitle: alumnus.Roles?.[0]?.JobClassification?.title || null,
         companyName: alumnus.Roles?.[0]?.Company?.name || null,
       });
     }
@@ -485,7 +485,7 @@ export class AlumniService {
             course_acronym: grad.Course.acronym,
             conclusion_year: grad.conclusionYear || null,
           })) || [],
-        jobTitle: alumnus.Roles?.[0]?.JobClassification?.[0]?.title || null,
+        jobTitle: alumnus.Roles?.[0]?.JobClassification?.title || null,
         companyName: alumnus.Roles?.[0]?.Company?.name || null,
       });
     }
@@ -547,7 +547,7 @@ export class AlumniService {
             course_acronym: grad.Course.acronym,
             conclusion_year: grad.conclusionYear || null,
           })) || [],
-        jobTitle: alumnus.Roles?.[0]?.JobClassification?.[0]?.title || null,
+        jobTitle: alumnus.Roles?.[0]?.JobClassification?.title || null,
         companyName: alumnus.Roles?.[0]?.Company?.name || null,
       });
       return acc;

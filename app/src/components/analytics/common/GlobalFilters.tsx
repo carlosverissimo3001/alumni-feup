@@ -53,6 +53,7 @@ export type FilterState = {
   onlyInternational?: boolean;
   companySize?: CompanySizeEnum[];
   companyType?: CompanyTypeEnum[];
+  classificationLevel?: number;
 };
 
 type GlobalFiltersProps = {
@@ -82,6 +83,8 @@ export default function GlobalFilters({
         return dateRange?.from || dateRange?.to;
       } else if (typeof value === "boolean") {
         return value;
+      } else if (key === "classificationLevel") {
+        return false;
       } else {
         return value && String(value).trim() !== "";
       }
@@ -123,6 +126,9 @@ export default function GlobalFilters({
 
   const { data: courseOptions, isLoading: isCourseOptionsLoading } =
     useListCourses({});
+
+  // React will run these hooks in parallel by default
+  // The component will render once all data is available
 
   const options = useMemo(
     () => ({
@@ -170,10 +176,13 @@ export default function GlobalFilters({
           label: COMPANY_TYPE[key as keyof typeof COMPANY_TYPE],
         }))
         .sort((a, b) => a.label.localeCompare(b.label)),
-      roles: (roleOptions || []).map((role) => ({
-        value: role.escoCode,
-        label: role.title,
-      })),
+      roles: (roleOptions || [])
+        .filter((role) => role.level === filters.classificationLevel)
+        .map((role) => ({
+          value: role.escoCode,
+          // label: `(${role.escoCode}) ${role.title} `,
+          label: role.title,
+        })),
     }),
     [
       companyOptions,
@@ -182,6 +191,7 @@ export default function GlobalFilters({
       cityOptions,
       industryOptions,
       roleOptions,
+      filters.classificationLevel,
     ]
   );
 
@@ -217,12 +227,14 @@ export default function GlobalFilters({
       industryIds: [],
       countries: [],
       cityIds: [],
+      escoCodes: [],
       currentRolesOnly: false,
       search: undefined,
       excludeResearchAndHighEducation: false,
       onlyInternational: false,
       companySize: [],
       companyType: [],
+      classificationLevel: 1,
     };
 
     onFiltersChange(emptyFilters);
@@ -353,7 +365,7 @@ export default function GlobalFilters({
             isLoading={isCountryOptionsLoading || isCountryOptionsFetching}
             disabled={isCountryOptionsLoading || isCountryOptionsFetching}
             allowSelectAll={true}
-            maxCount={2}
+            maxCount={6}
           />
         </div>
 
@@ -371,7 +383,7 @@ export default function GlobalFilters({
             value={filters.cityIds}
             placeholder="Select cities"
             onValueChange={(value) => handleFilterChange("cityIds", value)}
-            maxCount={2}
+            maxCount={6}
             isLoading={isCityOptionsLoading || isCityOptionsFetching}
           />
         </div>
@@ -506,7 +518,7 @@ export default function GlobalFilters({
 
   function renderRolesTab() {
     return (
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div>
           <div className="flex items-center gap-1 mb-1">
             <Label
@@ -565,7 +577,7 @@ export default function GlobalFilters({
             value={filters.escoCodes}
             onValueChange={(value) => handleFilterChange("escoCodes", value)}
             placeholder="Select roles"
-            maxCount={3}
+            maxCount={1}
           />
         </div>
 
