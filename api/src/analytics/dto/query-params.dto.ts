@@ -244,6 +244,16 @@ export class QueryParamsDto {
   escoCodes?: string[];
 
   @ApiPropertyOptional({
+    description: 'The classification level to filter by',
+    example: 1,
+    default: 1,
+  })
+  @IsOptional()
+  @IsNumber()
+  @Type(() => Number)
+  classificationLevel?: number;
+
+  @ApiPropertyOptional({
     description: 'The number of results to return',
     example: 10,
   })

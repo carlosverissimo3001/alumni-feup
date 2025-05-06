@@ -20,7 +20,7 @@ const Navbar = () => {
   const { isCollapsed, toggleCollapse } = useNavbar();
   const pathname = usePathname();
   const navbarRef = useRef<HTMLDivElement>(null);
-  const timeoutRef = useRef<NodeJS.Timeout>();
+  const timeoutRef = useRef<NodeJS.Timeout>(null);
 
   const handleMouseEnter = () => {
     if (timeoutRef.current) {
@@ -76,7 +76,7 @@ const Navbar = () => {
       href: "/analytics",
     },
     {
-      label: "Your Network",
+      label: "Profile",
       icon: <UserIcon size={20} />,
       href: user ? `/profile/${user.id}` : "/",
       disabled: !isAuthenticated,
@@ -155,7 +155,6 @@ const Navbar = () => {
         </div>
       </div>
 
-      {/* TODO: Add theme toggle later */}
 
       {/* Copyright notice */}
       <div

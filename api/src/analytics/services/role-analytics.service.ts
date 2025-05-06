@@ -1,5 +1,12 @@
-import { RoleListResponseDto, QueryParamsDto, RoleOptionDto } from '@/analytics/dto';
-import { AlumniAnalyticsRepository } from '@/analytics/repositories';
+import {
+  RoleListResponseDto,
+  QueryParamsDto,
+  RoleOptionDto,
+} from '@/analytics/dto';
+import {
+  AlumniAnalyticsRepository,
+  RoleRepository,
+} from '@/analytics/repositories';
 import { Injectable } from '@nestjs/common';
 import { RoleListDto } from '../dto/role-list.dto';
 import {
@@ -9,12 +16,11 @@ import {
 } from '../utils/consts';
 import { DEFAULT_QUERY_SORT_ORDER } from '../utils/consts';
 import { SortBy } from '../utils';
-import { PrismaService } from '@/prisma/prisma.service';
 @Injectable()
 export class RoleAnalyticsService {
   constructor(
     private readonly alumniRepository: AlumniAnalyticsRepository,
-    private readonly prisma: PrismaService,
+    private readonly roleRepository: RoleRepository,
   ) {}
 
   async getRolesWithCounts(
@@ -29,31 +35,36 @@ export class RoleAnalyticsService {
     // Flatten all alumni roles and their job classifications
     alumni
       .flatMap((alumni) => alumni.roles || [])
-      .filter(
-        (role) => role.jobClassification && role.jobClassification.length > 0,
-      )
+      .filter((role) => role.jobClassification)
       .forEach((role) => {
-        const bestClassification = role.jobClassification?.find(
-          (classification) => classification.ranking === 1,
-        );
+        const classification = role.jobClassification;
 
-        if (bestClassification) {
-          const { escoCode, title } = bestClassification;
+        // We filtered above, this is to make the linter happy
+        if (!classification) {
+          return;
+        }
 
-          if (roleMap.has(escoCode)) {
-            roleMap.get(escoCode)!.roleCount++;
-          } else {
-            roleMap.set(escoCode, {
-              title,
-              code: escoCode,
-              level,
-              roleCount: 1,
-            });
-          }
+        const { escoCode, title } = classification;
+
+        if (roleMap.has(escoCode)) {
+          roleMap.get(escoCode)!.roleCount++;
+        } else {
+          roleMap.set(escoCode, {
+            title,
+            code: escoCode,
+            level,
+            roleCount: 1,
+          });
         }
       });
 
     const roles = Array.from(roleMap.values());
+
+    // Fitered count
+    const filteredCount = roles.reduce((acc, role) => acc + role.roleCount, 0);
+
+    // Total count
+    const count = await this.roleRepository.count();
 
     const rolesOrdered = this.orderRoles(roles, {
       sortBy: query.sortBy || DEFAULT_QUERY_SORT_BY,
@@ -68,20 +79,13 @@ export class RoleAnalyticsService {
 
     return {
       roles: rolesPaginated,
-      totalCount: roles.length,
+      count,
+      filteredCount,
     };
   }
 
-  // TODO: Move this to the repository
   async findAllClassifications(): Promise<RoleOptionDto[]> {
-    // Dedupe by escoCode
-    return this.prisma.jobClassification.findMany({
-      distinct: ['escoCode'],
-      select: {
-        escoCode: true,
-        title: true,
-      },
-    });
+    return this.roleRepository.findAllClassifications();
   }
 
   orderRoles(

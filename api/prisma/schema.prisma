@@ -139,18 +139,19 @@ model Industry {
 }
 
 model JobClassification {
-  id             String  @id @default(dbgenerated("gen_random_uuid()"))
-  title          String
-  level          Int     @db.SmallInt
-  ranking        Int     @default(1) @db.SmallInt
-  escoCode       String  @map("esco_code")
-  roleId         String  @map("role_id")
-  confidence     Float?
-  processingTime Float?  @map("processing_time")
-  modelUsed      String? @map("model_used")
+  id         String @id @default(dbgenerated("gen_random_uuid()"))
+  title      String
+  level      Int    @db.SmallInt
+  escoCode   String @map("esco_code")
+  roleId     String @unique @map("role_id")
+  confidence Float?
+
+  modelUsed String? @map("model_used")
 
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamp(6)
   updatedAt DateTime @default(now()) @map("updated_at") @db.Timestamp(6)
+
+  metadata Json? @map("metadata")
 
   Role Role @relation(fields: [roleId], references: [id])
 
@@ -171,7 +172,6 @@ model Location {
   updatedAt     DateTime @default(now()) @map("updated_at") @db.Timestamp(6)
 
   Alumni         Alumni[]
-  Problematic    ProblematicLocation[]
   Role           Role[]
   ReviewCompany  ReviewCompany[]
   ReviewLocation ReviewLocation[]
@@ -183,23 +183,13 @@ model Location {
   @@map("location")
 }
 
-model ProblematicLocation {
-  id          String   @id @default(uuid())
-  location_id String
-  isExpected  Boolean  @default(false)
-  Location    Location @relation(fields: [location_id], references: [id])
-
-  @@map("problematic_location")
-}
-
 model Role {
   id String @id @default(dbgenerated("gen_random_uuid()"))
 
-  alumniId   String  @map("alumni_id")
-  companyId  String  @map("company_id")
-  locationId String? @map("location_id")
-
-  seniorityLevel SENIORITY_LEVEL @map("seniority_level")
+  alumniId            String          @map("alumni_id")
+  companyId           String          @map("company_id")
+  locationId          String?         @map("location_id")
+  seniorityLevel      SENIORITY_LEVEL @map("seniority_level")
 
   startDate DateTime  @map("start_date") @db.Timestamptz(6)
   endDate   DateTime? @map("end_date") @db.Timestamptz(6)
@@ -210,10 +200,10 @@ model Role {
   isCurrent   Boolean @default(false) @map("is_current")
   isPromotion Boolean @default(false) @map("is_promotion")
 
-  JobClassification JobClassification[]
-  Alumni            Alumni              @relation(fields: [alumniId], references: [id])
-  Company           Company             @relation(fields: [companyId], references: [id])
-  Location          Location?           @relation(fields: [locationId], references: [id])
+  JobClassification JobClassification?
+  Alumni            Alumni             @relation(fields: [alumniId], references: [id])
+  Company           Company            @relation(fields: [companyId], references: [id])
+  Location          Location?          @relation(fields: [locationId], references: [id])
   RoleRaw           RoleRaw?
 
   @@index([alumniId])
@@ -239,6 +229,9 @@ model EscoClassification {
   id                   String                 @id @default(dbgenerated("gen_random_uuid()"))
   level                Int                    @db.SmallInt
   code                 String
+
+  // Defines if this classification has no children
+  isLeaf               Boolean                @default(false)
   title_en             String
   definition           String
   tasks_include        String?
@@ -246,6 +239,9 @@ model EscoClassification {
   excluded_occupations String?
   notes                String?
   embedding            Unsupported("vector")?
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamp(6)
+  updatedAt DateTime @default(now()) @map("updated_at") @db.Timestamp(6)
 
   @@map("esco_classification")
 }

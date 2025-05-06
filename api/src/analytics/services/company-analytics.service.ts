@@ -31,27 +31,33 @@ export class CompanyAnalyticsService {
     query: QueryParamsDto,
   ): Promise<CompanyListResponseDto> {
     const alumnus = await this.alumniRepository.find(query);
-    const alumniCount = alumnus.length;
-
     const companiesWithAlumniCount = this.getCompanyMap(alumnus);
-    const companyCount = companiesWithAlumniCount.length;
+
+    // Count without filters
+    const companyCount = await this.companyRepository.count();
+    const alumniCount = await this.alumniRepository.countAlumni();
+
+    // Count with filters
+    const alumniFilteredCount = alumnus.length;
+    const companyFilteredCount = companiesWithAlumniCount.length;
 
     const companiesWithAlumniCountOrdered = sortData(companiesWithAlumniCount, {
       sortBy: query.sortBy || DEFAULT_QUERY_SORT_BY,
       direction: query.sortOrder || DEFAULT_QUERY_SORT_ORDER,
     });
 
-    const companiesWithAlumniCountPaginated =
-      companiesWithAlumniCountOrdered.slice(
-        query.offset || DEFAULT_QUERY_OFFSET,
-        (query.offset || DEFAULT_QUERY_OFFSET) +
-          (query.limit || DEFAULT_QUERY_LIMIT),
-      );
+    const companies = companiesWithAlumniCountOrdered.slice(
+      query.offset || DEFAULT_QUERY_OFFSET,
+      (query.offset || DEFAULT_QUERY_OFFSET) +
+        (query.limit || DEFAULT_QUERY_LIMIT),
+    );
 
     return {
-      companies: companiesWithAlumniCountPaginated,
-      companyTotalCount: companyCount,
-      alumniTotalCount: alumniCount,
+      companies,
+      companyCount,
+      companyFilteredCount,
+      alumniCount,
+      alumniFilteredCount,
     };
   }
 
@@ -74,6 +80,9 @@ export class CompanyAnalyticsService {
 
     const alumni = await this.alumniRepository.find(query);
     const companiesWithAlumniCount = this.getCompanyMap(alumni);
+
+    // Total Industries, regardless of filters
+    const totalIndustries = await this.companyRepository.countIndustries();
 
     companiesWithAlumniCount.forEach((company) => {
       const industryId = company.industryId;
@@ -114,7 +123,8 @@ export class CompanyAnalyticsService {
 
     return {
       industries: industriesPaginated,
-      total: industries.length,
+      count: totalIndustries,
+      filteredCount: industries.length,
     };
   }
 

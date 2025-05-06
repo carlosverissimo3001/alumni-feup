@@ -44,12 +44,11 @@ export const roleSelect = {
   },
 } satisfies Prisma.RoleSelect;
 
-
 export const companySelectWithRoles = {
   id: true,
   name: true,
   Role: {
-    select: roleSelect
+    select: roleSelect,
   },
 } satisfies Prisma.CompanySelect;
 
@@ -61,9 +60,9 @@ export const reviewCompanySelect = {
   description: true,
   createdAt: true,
   Company: {
-    select: companySelectWithRoles
-  }
-}satisfies Prisma.ReviewCompanySelect;
+    select: companySelectWithRoles,
+  },
+} satisfies Prisma.ReviewCompanySelect;
 
 export const reviewLocationSelect = {
   id: true,
@@ -73,9 +72,9 @@ export const reviewLocationSelect = {
   description: true,
   createdAt: true,
   Location: {
-    select: locationSelect
-  }
-}satisfies Prisma.ReviewLocationSelect;
+    select: locationSelect,
+  },
+} satisfies Prisma.ReviewLocationSelect;
 
 export const alumniBasic = {
   id: true,
@@ -98,9 +97,9 @@ export const alumniSelect = {
     select: roleSelect,
   },
   ReviewsCompany: {
-    select: reviewCompanySelect
+    select: reviewCompanySelect,
   },
   ReviewsLocation: {
-    select: reviewLocationSelect
+    select: reviewLocationSelect,
   },
 } satisfies Prisma.AlumniSelect;

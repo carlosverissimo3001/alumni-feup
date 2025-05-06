@@ -33,7 +33,6 @@ const jobClassificationSelect = {
   title: true,
   level: true,
   confidence: true,
-  ranking: true,
   escoCode: true,
 };
 
@@ -77,7 +76,11 @@ export class AlumniAnalyticsRepository {
     return alumnus.map(toAlumniAnalyticsEntity);
   }
 
-  async countAlumni(params: QueryParamsDto) {
+  async countAlumni(params?: QueryParamsDto) {
+    if (!params) {
+      return this.prisma.alumni.count();
+    }
+
     const { alumniWhere } = buildWhereClause(params);
 
     return this.prisma.alumni.count({

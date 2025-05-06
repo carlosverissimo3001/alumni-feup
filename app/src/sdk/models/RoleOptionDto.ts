@@ -31,6 +31,12 @@ export interface RoleOptionDto {
      * @memberof RoleOptionDto
      */
     title: string;
+    /**
+     * The classification level of the role
+     * @type {number}
+     * @memberof RoleOptionDto
+     */
+    level: number;
 }
 
 /**
@@ -39,6 +45,7 @@ export interface RoleOptionDto {
 export function instanceOfRoleOptionDto(value: object): value is RoleOptionDto {
     if (!('escoCode' in value) || value['escoCode'] === undefined) return false;
     if (!('title' in value) || value['title'] === undefined) return false;
+    if (!('level' in value) || value['level'] === undefined) return false;
     return true;
 }
 
@@ -54,6 +61,7 @@ export function RoleOptionDtoFromJSONTyped(json: any, ignoreDiscriminator: boole
         
         'escoCode': json['escoCode'],
         'title': json['title'],
+        'level': json['level'],
     };
 }
 
@@ -70,6 +78,7 @@ export function RoleOptionDtoToJSONTyped(value?: RoleOptionDto | null, ignoreDis
         
         'escoCode': value['escoCode'],
         'title': value['title'],
+        'level': value['level'],
     };
 }
 

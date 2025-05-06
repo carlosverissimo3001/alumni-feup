@@ -194,16 +194,18 @@ class JobClassification(Base):
     id = Column(String, primary_key=True, server_default="gen_random_uuid()")
     title = Column(String, nullable=False)
     level = Column(SmallInteger, nullable=False)
-    ranking = Column(SmallInteger, nullable=False)
     esco_code = Column(String, nullable=True)
-    role_id = Column(String, ForeignKey("role.id"), nullable=False)
+    role_id = Column(String, ForeignKey("role.id"), nullable=False, unique=True)
     confidence = Column(Float, nullable=True)
     created_at = Column(DateTime, nullable=False, server_default="now()")
     updated_at = Column(
         DateTime, nullable=False, server_default="now()", onupdate=datetime.now(timezone.utc)
     )
     model_used = Column(String, nullable=False)
-    role = relationship("Role", back_populates="job_classifications")
+    metadata_ = Column(JSONB, name="metadata", nullable=True)
+    
+    # Each job classification belongs to a single role (one-to-one)
+    role = relationship("Role", back_populates="job_classification", uselist=False)
 
 
 class Location(Base):
@@ -245,6 +247,8 @@ class Role(Base):
     id = Column(String, primary_key=True, server_default="gen_random_uuid()")
     alumni_id = Column(String, ForeignKey("alumni.id"), nullable=False)
     company_id = Column(String, ForeignKey("company.id"), nullable=False)
+    location_id = Column(String, ForeignKey("location.id"), nullable=True)
+    
     start_date = Column(DateTime(timezone=True), nullable=False)
     end_date = Column(DateTime(timezone=True), nullable=True)
     created_at = Column(DateTime, nullable=False, server_default="now()")
@@ -252,11 +256,11 @@ class Role(Base):
         DateTime, nullable=False, server_default="now()", onupdate=datetime.now(timezone.utc)
     )
     seniority_level = Column(Enum(SeniorityLevel), nullable=False, default=SeniorityLevel.ASSOCIATE)
-    location_id = Column(String, ForeignKey("location.id"), nullable=True)
     is_promotion = Column(Boolean, nullable=False, server_default="false")
     is_current = Column(Boolean, nullable=False, server_default="false")
 
-    job_classifications = relationship("JobClassification", back_populates="role")
+    # One-to-one relationship with JobClassification
+    job_classification = relationship("JobClassification", back_populates="role", uselist=False)
     alumni = relationship("Alumni", back_populates="roles")
     company = relationship("Company", back_populates="roles")
     location = relationship("Location", back_populates="roles")
