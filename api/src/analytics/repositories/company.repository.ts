@@ -14,4 +14,19 @@ export class CompanyRepository {
       },
     });
   }
+
+  async count(): Promise<number> {
+    return this.prisma.company.count();
+  }
+
+  async countIndustries() {
+    const industries = await this.prisma.company.groupBy({
+      by: ['industryId'],
+      _count: {
+        _all: true,
+      },
+    });
+
+    return industries.length;
+  }
 }

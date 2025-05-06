@@ -14,4 +14,11 @@ export class RoleOptionDto {
     type: String,
   })
   title: string;
+
+  @ApiProperty({
+    description: 'The classification level of the role',
+    example: 1,
+    type: Number,
+  })
+  level: number;
 }

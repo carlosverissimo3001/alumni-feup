@@ -11,6 +11,7 @@ import {
   CompanyRepository,
   IndustryRepository,
   LocationRepository,
+  RoleRepository,
 } from '@/analytics/repositories';
 import {
   CompanyAnalyticsService,
@@ -34,6 +35,7 @@ import {
     LocationRepository,
     CompanyRepository,
     IndustryRepository,
+    RoleRepository,
     Logger,
   ],
 })

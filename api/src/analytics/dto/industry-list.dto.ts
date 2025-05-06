@@ -29,6 +29,13 @@ export class IndustryListResponseDto {
   @ApiProperty({ type: [IndustryListItemDto] })
   industries: IndustryListItemDto[];
 
-  @ApiProperty()
-  total: number;
+  @ApiProperty({
+    description: 'The total number of industries in the database',
+  })
+  count: number;
+
+  @ApiProperty({
+    description: 'The total number of industries in the database before applying the filters',
+  })
+  filteredCount: number;
 }

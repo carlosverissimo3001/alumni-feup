@@ -34,11 +34,17 @@ export interface RoleListResponseDto {
      */
     roles: Array<RoleListDto>;
     /**
-     * 
+     * The total number of roles in the database
      * @type {number}
      * @memberof RoleListResponseDto
      */
-    totalCount: number;
+    count: number;
+    /**
+     * The total number of roles in the database after applying the filters
+     * @type {number}
+     * @memberof RoleListResponseDto
+     */
+    filteredCount: number;
 }
 
 /**
@@ -46,7 +52,8 @@ export interface RoleListResponseDto {
  */
 export function instanceOfRoleListResponseDto(value: object): value is RoleListResponseDto {
     if (!('roles' in value) || value['roles'] === undefined) return false;
-    if (!('totalCount' in value) || value['totalCount'] === undefined) return false;
+    if (!('count' in value) || value['count'] === undefined) return false;
+    if (!('filteredCount' in value) || value['filteredCount'] === undefined) return false;
     return true;
 }
 
@@ -61,7 +68,8 @@ export function RoleListResponseDtoFromJSONTyped(json: any, ignoreDiscriminator:
     return {
         
         'roles': ((json['roles'] as Array<any>).map(RoleListDtoFromJSON)),
-        'totalCount': json['totalCount'],
+        'count': json['count'],
+        'filteredCount': json['filteredCount'],
     };
 }
 
@@ -77,7 +85,8 @@ export function RoleListResponseDtoToJSONTyped(value?: RoleListResponseDto | nul
     return {
         
         'roles': ((value['roles'] as Array<any>).map(RoleListDtoToJSON)),
-        'totalCount': value['totalCount'],
+        'count': value['count'],
+        'filteredCount': value['filteredCount'],
     };
 }
 

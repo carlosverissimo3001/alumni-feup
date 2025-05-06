@@ -12,14 +12,14 @@ import { Button } from "@/components/ui/button";
 import { useCompanyList } from "@/hooks/analytics/useCompanyList";
 import { CompanyListItemDto } from "@/sdk";
 import { Building2, Filter } from "lucide-react";
-import ImageWithFallback from "../ui/image-with-fallback";
-import PaginationControls from "./common/PaginationControls";
-import { CompanyDataSkeleton } from "./skeletons/CompanyDataSkeleton";
-import TableTitle from "./common/TableTitle";
-import CustomTableHeader from "./common/CustomeTableHeader";
+import ImageWithFallback from "../../ui/image-with-fallback";
+import PaginationControls from "../common/PaginationControls";
+import { CompanyDataSkeleton } from "../skeletons/CompanyDataSkeleton";
+import TableTitle from "../common/TableTitle";
+import CustomTableHeader from "../common/CustomeTableHeader";
 import { SortBy, SortOrder, ITEMS_PER_PAGE, DASHBOARD_HEIGHT } from "@/consts";
-import { FilterState } from "./common/GlobalFilters";
-import { NotFoundComponent } from "./common/NotFoundComponent";
+import { FilterState } from "../common/GlobalFilters";
+import { NotFoundComponent } from "../common/NotFoundComponent";
 import {
   Tooltip,
   TooltipContent,
@@ -28,7 +28,12 @@ import {
 } from "@/components/ui/tooltip";
 
 type CompanyDashboardProps = {
-  onDataUpdate: (alumniCount: number, companyCount: number) => void;
+  onDataUpdate: (
+    alumniCount: number,
+    companyCount: number,
+    alumniFilteredCount: number,
+    companyFilteredCount: number
+  ) => void;
   filters: FilterState;
   onAddToFilters?: (companyId: string) => void;
 };
@@ -61,15 +66,29 @@ export default function CompanyDashboard({
 
   const companies = data?.companies || [];
 
+  // So ugly, try to fix if time allows
   useEffect(() => {
     if (
-      data?.alumniTotalCount !== undefined &&
-      data?.companyTotalCount !== undefined
+      data?.alumniCount !== undefined &&
+      data?.companyCount !== undefined &&
+      data?.alumniFilteredCount !== undefined &&
+      data?.companyFilteredCount !== undefined
     ) {
-      setTotalItems(data.companyTotalCount);
-      onDataUpdate(data.alumniTotalCount, data.companyTotalCount);
+      setTotalItems(data.companyCount);
+      onDataUpdate(
+        data.alumniCount,
+        data.companyCount,
+        data.alumniFilteredCount,
+        data.companyFilteredCount
+      );
     }
-  }, [data?.alumniTotalCount, data?.companyTotalCount, onDataUpdate]);
+  }, [
+    data?.alumniCount,
+    data?.companyCount,
+    data?.alumniFilteredCount,
+    data?.companyFilteredCount,
+    onDataUpdate,
+  ]);
 
   useEffect(() => {
     setPageInput(String(page));

@@ -35,5 +35,11 @@ export class CountryListResponseDto {
     description:
       'The total number of countries in the database after applying the filters',
   })
-  total: number;
+  count: number;
+
+  @ApiProperty({
+    description:
+      'The total number of countries in the database before applying the filters',
+  })
+  filteredCount: number;
 }

@@ -59,10 +59,10 @@ export interface Role {
     company: Company;
     /**
      * The job classifications
-     * @type {Array<string>}
+     * @type {object}
      * @memberof Role
      */
-    jobClassification: Array<string>;
+    jobClassification?: object;
     /**
      * The location of the role
      * @type {object}
@@ -95,7 +95,6 @@ export function instanceOfRole(value: object): value is Role {
     if (!('startDate' in value) || value['startDate'] === undefined) return false;
     if (!('seniorityLevel' in value) || value['seniorityLevel'] === undefined) return false;
     if (!('company' in value) || value['company'] === undefined) return false;
-    if (!('jobClassification' in value) || value['jobClassification'] === undefined) return false;
     return true;
 }
 
@@ -114,7 +113,7 @@ export function RoleFromJSONTyped(json: any, ignoreDiscriminator: boolean): Role
         'endDate': json['endDate'] == null ? undefined : json['endDate'],
         'seniorityLevel': json['seniorityLevel'],
         'company': CompanyFromJSON(json['Company']),
-        'jobClassification': json['JobClassification'],
+        'jobClassification': json['JobClassification'] == null ? undefined : json['JobClassification'],
         'location': json['Location'] == null ? undefined : json['Location'],
     };
 }

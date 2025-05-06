@@ -19,6 +19,7 @@ import type {
   Alumni,
   AlumniExtended,
   BasicAlumniProfileDto,
+  CityListResponseDto,
   CityOptionDto,
   CompanyListResponseDto,
   CompanyOptionDto,
@@ -51,6 +52,8 @@ import {
     AlumniExtendedToJSON,
     BasicAlumniProfileDtoFromJSON,
     BasicAlumniProfileDtoToJSON,
+    CityListResponseDtoFromJSON,
+    CityListResponseDtoToJSON,
     CityOptionDtoFromJSON,
     CityOptionDtoToJSON,
     CompanyListResponseDtoFromJSON,
@@ -142,6 +145,7 @@ export interface CompaniesAnalyticsControllerGetCompaniesWithAlumniCountRequest 
     companySize?: Array<CompaniesAnalyticsControllerGetCompaniesWithAlumniCountCompanySizeEnum>;
     companyType?: Array<CompaniesAnalyticsControllerGetCompaniesWithAlumniCountCompanyTypeEnum>;
     escoCodes?: Array<string>;
+    classificationLevel?: number;
     limit?: number;
     offset?: number;
     search?: string;
@@ -167,6 +171,7 @@ export interface CompaniesAnalyticsControllerGetCompanyDetailsRequest {
     companySize?: Array<CompaniesAnalyticsControllerGetCompanyDetailsCompanySizeEnum>;
     companyType?: Array<CompaniesAnalyticsControllerGetCompanyDetailsCompanyTypeEnum>;
     escoCodes?: Array<string>;
+    classificationLevel?: number;
     limit?: number;
     offset?: number;
     search?: string;
@@ -191,6 +196,7 @@ export interface CompaniesAnalyticsControllerGetHotCompaniesRequest {
     companySize?: Array<CompaniesAnalyticsControllerGetHotCompaniesCompanySizeEnum>;
     companyType?: Array<CompaniesAnalyticsControllerGetHotCompaniesCompanyTypeEnum>;
     escoCodes?: Array<string>;
+    classificationLevel?: number;
     limit?: number;
     offset?: number;
     search?: string;
@@ -204,6 +210,31 @@ export interface CompanyControllerFindOneRequest {
 
 export interface CountriesAnalyticsControllerGetCitiesOptionsRequest {
     countryCodes?: Array<string>;
+}
+
+export interface CountriesAnalyticsControllerGetCitiesWithAlumniCountRequest {
+    startDate?: string;
+    endDate?: string;
+    courseIds?: Array<string>;
+    graduationYears?: Array<string>;
+    companyIds?: Array<string>;
+    industryIds?: Array<string>;
+    countries?: Array<string>;
+    cityIds?: Array<string>;
+    currentRolesOnly?: boolean;
+    onlyInternational?: boolean;
+    excludeResearchAndHighEducation?: boolean;
+    companySearch?: string;
+    industrySearch?: string;
+    companySize?: Array<CountriesAnalyticsControllerGetCitiesWithAlumniCountCompanySizeEnum>;
+    companyType?: Array<CountriesAnalyticsControllerGetCitiesWithAlumniCountCompanyTypeEnum>;
+    escoCodes?: Array<string>;
+    classificationLevel?: number;
+    limit?: number;
+    offset?: number;
+    search?: string;
+    sortBy?: string;
+    sortOrder?: string;
 }
 
 export interface CountriesAnalyticsControllerGetCountriesWithAlumniCountRequest {
@@ -223,6 +254,7 @@ export interface CountriesAnalyticsControllerGetCountriesWithAlumniCountRequest 
     companySize?: Array<CountriesAnalyticsControllerGetCountriesWithAlumniCountCompanySizeEnum>;
     companyType?: Array<CountriesAnalyticsControllerGetCountriesWithAlumniCountCompanyTypeEnum>;
     escoCodes?: Array<string>;
+    classificationLevel?: number;
     limit?: number;
     offset?: number;
     search?: string;
@@ -268,6 +300,7 @@ export interface IndustriesAnalyticsControllerGetIndustryWithCountsRequest {
     companySize?: Array<IndustriesAnalyticsControllerGetIndustryWithCountsCompanySizeEnum>;
     companyType?: Array<IndustriesAnalyticsControllerGetIndustryWithCountsCompanyTypeEnum>;
     escoCodes?: Array<string>;
+    classificationLevel?: number;
     limit?: number;
     offset?: number;
     search?: string;
@@ -301,6 +334,7 @@ export interface RoleAnalyticsControllerGetRolesRequest {
     companySize?: Array<RoleAnalyticsControllerGetRolesCompanySizeEnum>;
     companyType?: Array<RoleAnalyticsControllerGetRolesCompanyTypeEnum>;
     escoCodes?: Array<string>;
+    classificationLevel?: number;
     limit?: number;
     offset?: number;
     search?: string;
@@ -500,6 +534,7 @@ export interface V1ApiInterface {
      * @param {Array<'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G' | 'H' | 'I'>} [companySize] The company sizes to filter by
      * @param {Array<'EDUCATIONAL' | 'GOVERNMENT_AGENCY' | 'NON_PROFIT' | 'PARTNERSHIP' | 'PRIVATELY_HELD' | 'PUBLIC_COMPANY' | 'SELF_EMPLOYED' | 'SELF_OWNED'>} [companyType] The company types to filter by
      * @param {Array<string>} [escoCodes] The ESCO codes to filter by
+     * @param {number} [classificationLevel] The classification level to filter by
      * @param {number} [limit] The number of results to return
      * @param {number} [offset] The offset of the query
      * @param {string} [search] Broad search query
@@ -536,6 +571,7 @@ export interface V1ApiInterface {
      * @param {Array<'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G' | 'H' | 'I'>} [companySize] The company sizes to filter by
      * @param {Array<'EDUCATIONAL' | 'GOVERNMENT_AGENCY' | 'NON_PROFIT' | 'PARTNERSHIP' | 'PRIVATELY_HELD' | 'PUBLIC_COMPANY' | 'SELF_EMPLOYED' | 'SELF_OWNED'>} [companyType] The company types to filter by
      * @param {Array<string>} [escoCodes] The ESCO codes to filter by
+     * @param {number} [classificationLevel] The classification level to filter by
      * @param {number} [limit] The number of results to return
      * @param {number} [offset] The offset of the query
      * @param {string} [search] Broad search query
@@ -599,6 +635,7 @@ export interface V1ApiInterface {
      * @param {Array<'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G' | 'H' | 'I'>} [companySize] The company sizes to filter by
      * @param {Array<'EDUCATIONAL' | 'GOVERNMENT_AGENCY' | 'NON_PROFIT' | 'PARTNERSHIP' | 'PRIVATELY_HELD' | 'PUBLIC_COMPANY' | 'SELF_EMPLOYED' | 'SELF_OWNED'>} [companyType] The company types to filter by
      * @param {Array<string>} [escoCodes] The ESCO codes to filter by
+     * @param {number} [classificationLevel] The classification level to filter by
      * @param {number} [limit] The number of results to return
      * @param {number} [offset] The offset of the query
      * @param {string} [search] Broad search query
@@ -661,6 +698,42 @@ export interface V1ApiInterface {
 
     /**
      * 
+     * @summary Get the cities, and the number of alumni working in them.
+     * @param {string} [startDate] The start date of the role
+     * @param {string} [endDate] The end date of the role
+     * @param {Array<string>} [courseIds] The course IDs to filter by
+     * @param {Array<string>} [graduationYears] The graduation years to filter by
+     * @param {Array<string>} [companyIds] The company IDs to filter by
+     * @param {Array<string>} [industryIds] The industry IDs to filter by
+     * @param {Array<string>} [countries] The countries to filter by
+     * @param {Array<string>} [cityIds] The cities ids to filter by
+     * @param {boolean} [currentRolesOnly] Filter for current roles only
+     * @param {boolean} [onlyInternational] Whether to exclude roles in Portugal
+     * @param {boolean} [excludeResearchAndHighEducation] Exclude research and high education roles
+     * @param {string} [companySearch] Search query for companies
+     * @param {string} [industrySearch] Search query for industries
+     * @param {Array<'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G' | 'H' | 'I'>} [companySize] The company sizes to filter by
+     * @param {Array<'EDUCATIONAL' | 'GOVERNMENT_AGENCY' | 'NON_PROFIT' | 'PARTNERSHIP' | 'PRIVATELY_HELD' | 'PUBLIC_COMPANY' | 'SELF_EMPLOYED' | 'SELF_OWNED'>} [companyType] The company types to filter by
+     * @param {Array<string>} [escoCodes] The ESCO codes to filter by
+     * @param {number} [classificationLevel] The classification level to filter by
+     * @param {number} [limit] The number of results to return
+     * @param {number} [offset] The offset of the query
+     * @param {string} [search] Broad search query
+     * @param {string} [sortBy] How to sort the results
+     * @param {string} [sortOrder] The order of the results
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof V1ApiInterface
+     */
+    countriesAnalyticsControllerGetCitiesWithAlumniCountRaw(requestParameters: CountriesAnalyticsControllerGetCitiesWithAlumniCountRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<CityListResponseDto>>;
+
+    /**
+     * Get the cities, and the number of alumni working in them.
+     */
+    countriesAnalyticsControllerGetCitiesWithAlumniCount(requestParameters: CountriesAnalyticsControllerGetCitiesWithAlumniCountRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<CityListResponseDto>;
+
+    /**
+     * 
      * @summary Get the countries options.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -692,6 +765,7 @@ export interface V1ApiInterface {
      * @param {Array<'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G' | 'H' | 'I'>} [companySize] The company sizes to filter by
      * @param {Array<'EDUCATIONAL' | 'GOVERNMENT_AGENCY' | 'NON_PROFIT' | 'PARTNERSHIP' | 'PRIVATELY_HELD' | 'PUBLIC_COMPANY' | 'SELF_EMPLOYED' | 'SELF_OWNED'>} [companyType] The company types to filter by
      * @param {Array<string>} [escoCodes] The ESCO codes to filter by
+     * @param {number} [classificationLevel] The classification level to filter by
      * @param {number} [limit] The number of results to return
      * @param {number} [offset] The offset of the query
      * @param {string} [search] Broad search query
@@ -832,6 +906,7 @@ export interface V1ApiInterface {
      * @param {Array<'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G' | 'H' | 'I'>} [companySize] The company sizes to filter by
      * @param {Array<'EDUCATIONAL' | 'GOVERNMENT_AGENCY' | 'NON_PROFIT' | 'PARTNERSHIP' | 'PRIVATELY_HELD' | 'PUBLIC_COMPANY' | 'SELF_EMPLOYED' | 'SELF_OWNED'>} [companyType] The company types to filter by
      * @param {Array<string>} [escoCodes] The ESCO codes to filter by
+     * @param {number} [classificationLevel] The classification level to filter by
      * @param {number} [limit] The number of results to return
      * @param {number} [offset] The offset of the query
      * @param {string} [search] Broad search query
@@ -913,6 +988,7 @@ export interface V1ApiInterface {
      * @param {Array<'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G' | 'H' | 'I'>} [companySize] The company sizes to filter by
      * @param {Array<'EDUCATIONAL' | 'GOVERNMENT_AGENCY' | 'NON_PROFIT' | 'PARTNERSHIP' | 'PRIVATELY_HELD' | 'PUBLIC_COMPANY' | 'SELF_EMPLOYED' | 'SELF_OWNED'>} [companyType] The company types to filter by
      * @param {Array<string>} [escoCodes] The ESCO codes to filter by
+     * @param {number} [classificationLevel] The classification level to filter by
      * @param {number} [limit] The number of results to return
      * @param {number} [offset] The offset of the query
      * @param {string} [search] Broad search query
@@ -1402,6 +1478,10 @@ export class V1Api extends runtime.BaseAPI implements V1ApiInterface {
             queryParameters['escoCodes'] = requestParameters['escoCodes'];
         }
 
+        if (requestParameters['classificationLevel'] != null) {
+            queryParameters['classificationLevel'] = requestParameters['classificationLevel'];
+        }
+
         if (requestParameters['limit'] != null) {
             queryParameters['limit'] = requestParameters['limit'];
         }
@@ -1517,6 +1597,10 @@ export class V1Api extends runtime.BaseAPI implements V1ApiInterface {
 
         if (requestParameters['escoCodes'] != null) {
             queryParameters['escoCodes'] = requestParameters['escoCodes'];
+        }
+
+        if (requestParameters['classificationLevel'] != null) {
+            queryParameters['classificationLevel'] = requestParameters['classificationLevel'];
         }
 
         if (requestParameters['limit'] != null) {
@@ -1679,6 +1763,10 @@ export class V1Api extends runtime.BaseAPI implements V1ApiInterface {
             queryParameters['escoCodes'] = requestParameters['escoCodes'];
         }
 
+        if (requestParameters['classificationLevel'] != null) {
+            queryParameters['classificationLevel'] = requestParameters['classificationLevel'];
+        }
+
         if (requestParameters['limit'] != null) {
             queryParameters['limit'] = requestParameters['limit'];
         }
@@ -1806,6 +1894,120 @@ export class V1Api extends runtime.BaseAPI implements V1ApiInterface {
     }
 
     /**
+     * Get the cities, and the number of alumni working in them.
+     */
+    async countriesAnalyticsControllerGetCitiesWithAlumniCountRaw(requestParameters: CountriesAnalyticsControllerGetCitiesWithAlumniCountRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<CityListResponseDto>> {
+        const queryParameters: any = {};
+
+        if (requestParameters['startDate'] != null) {
+            queryParameters['startDate'] = requestParameters['startDate'];
+        }
+
+        if (requestParameters['endDate'] != null) {
+            queryParameters['endDate'] = requestParameters['endDate'];
+        }
+
+        if (requestParameters['courseIds'] != null) {
+            queryParameters['courseIds'] = requestParameters['courseIds'];
+        }
+
+        if (requestParameters['graduationYears'] != null) {
+            queryParameters['graduationYears'] = requestParameters['graduationYears'];
+        }
+
+        if (requestParameters['companyIds'] != null) {
+            queryParameters['companyIds'] = requestParameters['companyIds'];
+        }
+
+        if (requestParameters['industryIds'] != null) {
+            queryParameters['industryIds'] = requestParameters['industryIds'];
+        }
+
+        if (requestParameters['countries'] != null) {
+            queryParameters['countries'] = requestParameters['countries'];
+        }
+
+        if (requestParameters['cityIds'] != null) {
+            queryParameters['cityIds'] = requestParameters['cityIds'];
+        }
+
+        if (requestParameters['currentRolesOnly'] != null) {
+            queryParameters['currentRolesOnly'] = requestParameters['currentRolesOnly'];
+        }
+
+        if (requestParameters['onlyInternational'] != null) {
+            queryParameters['onlyInternational'] = requestParameters['onlyInternational'];
+        }
+
+        if (requestParameters['excludeResearchAndHighEducation'] != null) {
+            queryParameters['excludeResearchAndHighEducation'] = requestParameters['excludeResearchAndHighEducation'];
+        }
+
+        if (requestParameters['companySearch'] != null) {
+            queryParameters['companySearch'] = requestParameters['companySearch'];
+        }
+
+        if (requestParameters['industrySearch'] != null) {
+            queryParameters['industrySearch'] = requestParameters['industrySearch'];
+        }
+
+        if (requestParameters['companySize'] != null) {
+            queryParameters['companySize'] = requestParameters['companySize'];
+        }
+
+        if (requestParameters['companyType'] != null) {
+            queryParameters['companyType'] = requestParameters['companyType'];
+        }
+
+        if (requestParameters['escoCodes'] != null) {
+            queryParameters['escoCodes'] = requestParameters['escoCodes'];
+        }
+
+        if (requestParameters['classificationLevel'] != null) {
+            queryParameters['classificationLevel'] = requestParameters['classificationLevel'];
+        }
+
+        if (requestParameters['limit'] != null) {
+            queryParameters['limit'] = requestParameters['limit'];
+        }
+
+        if (requestParameters['offset'] != null) {
+            queryParameters['offset'] = requestParameters['offset'];
+        }
+
+        if (requestParameters['search'] != null) {
+            queryParameters['search'] = requestParameters['search'];
+        }
+
+        if (requestParameters['sortBy'] != null) {
+            queryParameters['sortBy'] = requestParameters['sortBy'];
+        }
+
+        if (requestParameters['sortOrder'] != null) {
+            queryParameters['sortOrder'] = requestParameters['sortOrder'];
+        }
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        const response = await this.request({
+            path: `/api/analytics/countries/cities`,
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => CityListResponseDtoFromJSON(jsonValue));
+    }
+
+    /**
+     * Get the cities, and the number of alumni working in them.
+     */
+    async countriesAnalyticsControllerGetCitiesWithAlumniCount(requestParameters: CountriesAnalyticsControllerGetCitiesWithAlumniCountRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<CityListResponseDto> {
+        const response = await this.countriesAnalyticsControllerGetCitiesWithAlumniCountRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
      * Get the countries options.
      */
     async countriesAnalyticsControllerGetCountriesOptionsRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<CountryOptionDto>>> {
@@ -1899,6 +2101,10 @@ export class V1Api extends runtime.BaseAPI implements V1ApiInterface {
 
         if (requestParameters['escoCodes'] != null) {
             queryParameters['escoCodes'] = requestParameters['escoCodes'];
+        }
+
+        if (requestParameters['classificationLevel'] != null) {
+            queryParameters['classificationLevel'] = requestParameters['classificationLevel'];
         }
 
         if (requestParameters['limit'] != null) {
@@ -2244,6 +2450,10 @@ export class V1Api extends runtime.BaseAPI implements V1ApiInterface {
             queryParameters['escoCodes'] = requestParameters['escoCodes'];
         }
 
+        if (requestParameters['classificationLevel'] != null) {
+            queryParameters['classificationLevel'] = requestParameters['classificationLevel'];
+        }
+
         if (requestParameters['limit'] != null) {
             queryParameters['limit'] = requestParameters['limit'];
         }
@@ -2456,6 +2666,10 @@ export class V1Api extends runtime.BaseAPI implements V1ApiInterface {
 
         if (requestParameters['escoCodes'] != null) {
             queryParameters['escoCodes'] = requestParameters['escoCodes'];
+        }
+
+        if (requestParameters['classificationLevel'] != null) {
+            queryParameters['classificationLevel'] = requestParameters['classificationLevel'];
         }
 
         if (requestParameters['limit'] != null) {
@@ -2737,6 +2951,35 @@ export const CompaniesAnalyticsControllerGetHotCompaniesCompanyTypeEnum = {
     SelfOwned: 'SELF_OWNED'
 } as const;
 export type CompaniesAnalyticsControllerGetHotCompaniesCompanyTypeEnum = typeof CompaniesAnalyticsControllerGetHotCompaniesCompanyTypeEnum[keyof typeof CompaniesAnalyticsControllerGetHotCompaniesCompanyTypeEnum];
+/**
+ * @export
+ */
+export const CountriesAnalyticsControllerGetCitiesWithAlumniCountCompanySizeEnum = {
+    A: 'A',
+    B: 'B',
+    C: 'C',
+    D: 'D',
+    E: 'E',
+    F: 'F',
+    G: 'G',
+    H: 'H',
+    I: 'I'
+} as const;
+export type CountriesAnalyticsControllerGetCitiesWithAlumniCountCompanySizeEnum = typeof CountriesAnalyticsControllerGetCitiesWithAlumniCountCompanySizeEnum[keyof typeof CountriesAnalyticsControllerGetCitiesWithAlumniCountCompanySizeEnum];
+/**
+ * @export
+ */
+export const CountriesAnalyticsControllerGetCitiesWithAlumniCountCompanyTypeEnum = {
+    Educational: 'EDUCATIONAL',
+    GovernmentAgency: 'GOVERNMENT_AGENCY',
+    NonProfit: 'NON_PROFIT',
+    Partnership: 'PARTNERSHIP',
+    PrivatelyHeld: 'PRIVATELY_HELD',
+    PublicCompany: 'PUBLIC_COMPANY',
+    SelfEmployed: 'SELF_EMPLOYED',
+    SelfOwned: 'SELF_OWNED'
+} as const;
+export type CountriesAnalyticsControllerGetCitiesWithAlumniCountCompanyTypeEnum = typeof CountriesAnalyticsControllerGetCitiesWithAlumniCountCompanyTypeEnum[keyof typeof CountriesAnalyticsControllerGetCitiesWithAlumniCountCompanyTypeEnum];
 /**
  * @export
  */
