@@ -42,7 +42,7 @@ export interface Company {
      * @type {Array<string>}
      * @memberof Company
      */
-    role: Array<string>;
+    roles: Array<string>;
 }
 
 /**
@@ -51,7 +51,7 @@ export interface Company {
 export function instanceOfCompany(value: object): value is Company {
     if (!('id' in value) || value['id'] === undefined) return false;
     if (!('name' in value) || value['name'] === undefined) return false;
-    if (!('role' in value) || value['role'] === undefined) return false;
+    if (!('roles' in value) || value['roles'] === undefined) return false;
     return true;
 }
 
@@ -68,7 +68,7 @@ export function CompanyFromJSONTyped(json: any, ignoreDiscriminator: boolean): C
         'id': json['id'],
         'name': json['name'],
         'linkedinUrl': json['linkedinUrl'] == null ? undefined : json['linkedinUrl'],
-        'role': json['Role'],
+        'roles': json['roles'],
     };
 }
 
@@ -86,7 +86,7 @@ export function CompanyToJSONTyped(value?: Company | null, ignoreDiscriminator: 
         'id': value['id'],
         'name': value['name'],
         'linkedinUrl': value['linkedinUrl'],
-        'Role': value['role'],
+        'roles': value['roles'],
     };
 }
 

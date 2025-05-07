@@ -20,7 +20,7 @@ import { ReviewDTO } from '@/dto/review.dto'; */
 import { AlumniRepository } from '@/alumni/repositories/alumni.repository';
 import { GetReviewGeoJSONDto } from '@/dto/getreviewgeojson.dto';
 import { ReviewType } from '@/entities/reviewgeojson.entity';
-import { CreateReviewDto } from '@/dto/create-review.dto'; 
+import { CreateReviewDto } from '@/dto/create-review.dto';
 
 type ReviewsGrouped = {
   coordinates: [number, number];
@@ -67,7 +67,7 @@ export class ReviewService {
     if (groupBy === GROUP_BY.COUNTRIES) {
       reviewsByGroup = await this.groupReviewsByCountry(alumni);
     } else {
-      reviewsByGroup = await this.groupReviewsByCity(alumni);
+      reviewsByGroup = this.groupReviewsByCity(alumni);
     }
 
     const features: Array<Feature<Point, ReviewGeoJSONProperties>> =
@@ -241,7 +241,7 @@ export class ReviewService {
       }
       if (alumnus.ReviewsCompany) {
         for (const review of alumnus.ReviewsCompany) {
-          const location = review.Company.Role![0].Location;
+          const location = review.Company.roles![0].Location;
 
           if (
             !location ||
@@ -314,12 +314,12 @@ export class ReviewService {
     return { timeSincePosted, timeSincePostedType };
   }
 
-  async groupReviewsByCity(alumni: Alumni[]): Promise<ReviewsByCity> {
+  groupReviewsByCity(alumni: Alumni[]): ReviewsByCity {
     const acc: ReviewsByCity = {};
 
     for (const alumnus of alumni) {
       for (const review of alumnus.ReviewsCompany!) {
-        const location = review.Company.Role![0].Location;
+        const location = review.Company.roles![0].Location;
         if (
           !location ||
           !location.country ||
@@ -365,7 +365,7 @@ export class ReviewService {
   }
 
   async create(body: CreateReviewDto): Promise<void> {
-    if(body.reviewType === ReviewType.COMPANY.toString()) {
+    if (body.reviewType === ReviewType.COMPANY.toString()) {
       if (body.companyId === undefined || body.locationId === undefined) {
         throw new HttpException(
           'Missing Company or Location.',
@@ -379,17 +379,13 @@ export class ReviewService {
           upvotes: 0,
           downvotes: 0,
           alumniId: body.alumniId,
-          companyId: body.companyId!,
-          locationId: body.locationId!
+          companyId: body.companyId,
+          locationId: body.locationId,
         },
       });
-    }
-    else if(body.reviewType === ReviewType.LOCATION.toString()) { 
+    } else if (body.reviewType === ReviewType.LOCATION.toString()) {
       if (body.locationId === undefined) {
-        throw new HttpException(
-          'Missing Location.',
-          HttpStatus.CONFLICT,
-        );
+        throw new HttpException('Missing Location.', HttpStatus.CONFLICT);
       }
       await this.prisma.reviewLocation.create({
         data: {
@@ -398,11 +394,10 @@ export class ReviewService {
           upvotes: 0,
           downvotes: 0,
           alumniId: body.alumniId,
-          locationId: body.locationId!,
+          locationId: body.locationId,
         },
       });
     }
     return;
   }
-
 }

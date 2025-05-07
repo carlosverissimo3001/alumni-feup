@@ -11,8 +11,6 @@ model Alumni {
   id        String @id @default(dbgenerated("gen_random_uuid()"))
   firstName String @map("first_name")
   lastName  String @map("last_name")
-
-  // Note: Keeping as nullable for now, since we don't have a way to populate it yet
   fullName String? @map("full_name")
 
   // Data from LinkedIn
@@ -70,7 +68,7 @@ model Company {
   updatedAt    DateTime      @default(now()) @map("updated_at") @db.Timestamp(6)
 
   Industry      Industry        @relation(fields: [industryId], references: [id])
-  Role          Role[]
+  roles         Role[]
   ReviewCompany ReviewCompany[]
   Location      Location?       @relation(fields: [hqLocationId], references: [id])
 
@@ -217,6 +215,10 @@ model RoleRaw {
   id          String   @id @default(dbgenerated("gen_random_uuid()"))
   title       String
   description String?
+  
+  // free form location input from linkedin
+  location String?
+
   createdAt   DateTime @default(now()) @map("created_at") @db.Timestamp(6)
   roleId      String   @unique @map("role_id")
 

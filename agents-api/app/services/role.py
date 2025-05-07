@@ -1,29 +1,78 @@
+import asyncio
 import logging
-import random
 
-from app.db.session import get_db
-from app.utils.location_db import get_all_locations
-from app.utils.role_db import get_all_roles, update_role
-from app.schemas.linkedin import ExperienceBase
+from app.agents.location import location_agent
 from app.db.models import Role, RoleRaw, SeniorityLevel
+from app.db.session import get_db
+from app.schemas.linkedin import ExperienceBase
+from app.schemas.location import LocationType, RoleLocationInput
+from app.schemas.role import RoleResolveLocationParams
 from app.utils.misc.convert import linkedin_date_to_timestamp
+from app.utils.role_db import get_all_roles, get_role_raw_by_id, get_roles_by_ids, update_role
 
 logger = logging.getLogger(__name__)
 
 # Get a database session for the service
 db = next(get_db())
 
+REMOTE_LOCATION_ID = "15045675-0782-458b-9bb7-02567ac246fd"
+
+
 class RoleService:
-    def assign_random_location_to_roles(self) -> None:
-        no_location_roles = get_all_roles(db)
-        all_locations = get_all_locations(db)
-        
-        for role in no_location_roles:
-            location = random.choice(all_locations)
-            role.location_id = location.id
-            update_role(role, db)
-            
-    
+    async def resolve_role_location(self, params: RoleResolveLocationParams) -> None:
+        """
+        Resolves the location of the roles
+        """
+        role_ids = params.role_ids
+        logger.info(f"Requesting role location resolution for {role_ids}")
+
+        roles: list[Role] = []
+
+        if role_ids:
+            role_ids = role_ids.split(",")
+            roles = get_roles_by_ids(role_ids, db)
+        else:
+            roles = get_all_roles(db)
+
+        # just making sure the user was not dumb and provided duplicate role IDs
+        # and newsflash, that user is me :))
+        roles = list(set(roles))
+
+        logger.info(f"Going to update {len(roles)} roles")
+
+        batch_size = 30
+        for i in range(0, len(roles), batch_size):
+            batch = roles[i : i + batch_size]
+            logger.info(
+                f"Processing batch {i // batch_size + 1} of {(len(roles) + batch_size - 1) // batch_size} ({len(batch)} roles)"
+            )
+
+            tasks = []
+            for role in batch:
+                # Get the roleRaw for this role
+                role_raw = get_role_raw_by_id(role.id, db)
+                location = role_raw.location
+
+                if not location:
+                    # Not much we can so, set to remote
+                    role.location_id = REMOTE_LOCATION_ID
+                    update_role(role, db)
+                    continue
+
+                input = RoleLocationInput(
+                    type=LocationType.ROLE,
+                    role_id=role.id,
+                    location=role_raw.location,
+                )
+
+                task = asyncio.create_task(location_agent.process_location(input))
+                tasks.append(task)
+
+            await asyncio.gather(*tasks)
+
+            if i + batch_size < len(roles):
+                await asyncio.sleep(0.5)
+
     async def parse_role(
         self,
         role: ExperienceBase,
@@ -81,6 +130,8 @@ class RoleService:
             role_id=role_id,
             title=role_data.title,
             description=role_data.description,
+            location=role_data.location,
         )
+
 
 role_service = RoleService()

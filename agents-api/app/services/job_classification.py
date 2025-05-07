@@ -1,8 +1,7 @@
 import asyncio
 import logging
-import functools
 import time
-from typing import Dict, List, Tuple
+from typing import Dict, List
 
 from langchain_core.messages import HumanMessage, SystemMessage
 from langchain_ollama import ChatOllama
