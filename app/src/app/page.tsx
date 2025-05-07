@@ -93,7 +93,7 @@ const MapComponent = () => {
         setSelectedYear={setSelectedYear}
         showTimeLine={showTimeLine}
         isCollapsed={isCollapsed}
-        showCompareYear={showCompareYear}
+        showCompareYear={!showCompareYear}
         compareYear={compareYear}
         setCompareYear={setCompareYear}
       ></TimeLineBar>
