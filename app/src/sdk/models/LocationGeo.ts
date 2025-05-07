@@ -20,6 +20,12 @@ import { mapValues } from '../runtime';
  */
 export interface LocationGeo {
     /**
+     * The id of the location
+     * @type {string}
+     * @memberof LocationGeo
+     */
+    id?: string;
+    /**
      * The city of the location
      * @type {string}
      * @memberof LocationGeo
