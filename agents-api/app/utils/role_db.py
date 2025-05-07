@@ -13,6 +13,13 @@ def get_all_roles(db: Session):
 def get_role_by_id(id: str, db: Session) -> Role:
     return db.query(Role).filter(Role.id == id).first()
 
+def get_roles_by_ids(ids: list[str], db: Session) -> list[Role]:
+    return db.query(Role).filter(Role.id.in_(ids)).all()
+
+def get_role_raw_by_id(role_id: str, db: Session) -> RoleRaw:
+    return db.query(RoleRaw).filter(RoleRaw.role_id == role_id).first()
+
+
 def create_role(role: Role, db: Session) -> Role:
     db.add(role)
     db.commit()

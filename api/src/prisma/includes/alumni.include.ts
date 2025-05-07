@@ -47,7 +47,7 @@ export const roleSelect = {
 export const companySelectWithRoles = {
   id: true,
   name: true,
-  Role: {
+  roles: {
     select: roleSelect,
   },
 } satisfies Prisma.CompanySelect;

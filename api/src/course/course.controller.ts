@@ -12,7 +12,7 @@ import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CourseService } from './course.service';
 import { CourseExtended } from '@entities';
 import { CreateCourseDto, FindCoursesDto } from '@/dto';
-
+import { RequirePermission } from '@/auth/user-auth.guard';
 @ApiTags('V1', 'Course')
 @Controller('course')
 export class CourseController {
@@ -45,6 +45,7 @@ export class CourseController {
     description: 'Returns the created course',
     type: CourseExtended,
   })
+  @RequirePermission('admin', 'write')
   async create(
     @Body() createCourseDto: CreateCourseDto,
   ): Promise<CourseExtended> {

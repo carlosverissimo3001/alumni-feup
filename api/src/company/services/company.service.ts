@@ -17,4 +17,15 @@ export class CompanyService {
     }
     return company;
   }
+
+  async delete(id: string): Promise<void> {
+    await this.prisma.company.delete({ where: { id } });
+  }
+
+  async moveRoles(companyId: string, newCompanyId: string): Promise<void> {
+    await this.prisma.role.updateMany({
+      where: { companyId },
+      data: { companyId: newCompanyId },
+    });
+  }
 }

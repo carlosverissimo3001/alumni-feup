@@ -44,6 +44,8 @@ models/IndustryOptionDto.ts
 models/LinkedinAuthDto.ts
 models/LocationGeo.ts
 models/MarkAsReviewedDto.ts
+models/MergeCompaniesDto.ts
+models/MergeLocationsDto.ts
 models/ReviewCompany.ts
 models/ReviewGeoJSONFeature.ts
 models/ReviewGeoJSONFeatureCollection.ts

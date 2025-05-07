@@ -1,8 +1,9 @@
-import { Controller, Get, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, UseGuards, Body } from '@nestjs/common';
 import { AdminService } from './admin.service';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { SkipThrottle } from '@nestjs/throttler';
 import { UserAuthGuard, RequirePermission } from '../auth/user-auth.guard';
+import { MergeCompaniesDto, MergeLocationsDto } from '@/dto';
 
 @ApiTags('V1', 'Admin')
 @Controller('admin')
@@ -33,5 +34,27 @@ export class AdminController {
   })
   async getBrightDataBalance() {
     return this.adminService.getBrightDataBalance();
+  }
+
+  @Post('merge-companies')
+  @RequirePermission('admin', 'write')
+  @ApiOperation({ summary: 'Merge companies' })
+  @ApiResponse({
+    status: 200,
+    description: 'Companies merged',
+  })
+  async mergeCompanies(@Body() mergeCompaniesDto: MergeCompaniesDto) {
+    return this.adminService.mergeCompanies(mergeCompaniesDto);
+  }
+
+  @Post('merge-locations')
+  @RequirePermission('admin', 'write')
+  @ApiOperation({ summary: 'Merge locations' })
+  @ApiResponse({
+    status: 200,
+    description: 'Locations merged',
+  })
+  async mergeLocations(@Body() mergeLocationsDto: MergeLocationsDto) {
+    return this.adminService.mergeLocations(mergeLocationsDto);
   }
 }
