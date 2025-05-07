@@ -12,6 +12,7 @@ import { Feature, Point } from 'geojson';
 import { AlumniControllerFindAllGeoJSONGroupByEnum as GROUP_BY } from "@/sdk";
 import { Checkbox } from "../ui/checkbox";
 import { Label } from "../ui/label";
+import SwitchFilter from "../ui/switchFilter";
 
 export interface GeoJSONProperties {
   name: string[];
@@ -270,6 +271,7 @@ const MapFilters = ({
   const handleTimeLineCheckboxChange = () => {
     if(showTimeLine){
       setShowTimeLine(false);
+      setSelectedYear(undefined);
     }else{
       setShowTimeLine(true);
     }
@@ -414,20 +416,16 @@ const MapFilters = ({
             </Label>
           </div>
 
-          { selectedYear !== undefined && showTimeLine ?
+          { showTimeLine ?
           (
-          <div className="mb-4 ml-4">
-            <Checkbox
-            checked={showCompareYear}
-            onCheckedChange={handleCompareYearCheckboxChange}
-            />
-            <Label className="text-lg text-sm text-gray-800 ml-2">
-              Compare Year
-            </Label>
-          </div> ) : null }
+            <div className="flex items-center space-x-2">
+            <SwitchFilter checked={showCompareYear} onChange={handleCompareYearCheckboxChange} />
+            <Label className="font-bold">{showCompareYear ? "Range Selection" : "Single Year"}</Label>
+          </div>
+        ) : null }
 
           {/* Action Buttons */}
-          <div className="flex gap-2">
+          <div className="flex gap-2 mt-4">
             <Button
               onClick={onClickClean}
               disabled={!cleanButtonEnabled}
