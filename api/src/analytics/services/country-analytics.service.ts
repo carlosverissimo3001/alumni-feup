@@ -163,52 +163,58 @@ export class CountryAnalyticsService {
           return;
         }
 
-        const cityId = roleLocation?.id;
+        const roleCityId = roleLocation?.id;
 
         // Does the city exist in the map?
-        if (!cityMap.has(cityId)) {
+        if (!cityMap.has(roleCityId)) {
           // No: create it
-          cityMap.set(cityId, {
+          cityMap.set(roleCityId, {
             name: roleCity,
             code: roleLocation?.countryCode ?? '',
             alumniCount: 0,
             companyCount: 0,
           });
-          countedAlumniByCity.set(cityId, new Set());
-          countedCompaniesByCity.set(cityId, new Set());
+          countedAlumniByCity.set(roleCityId, new Set());
+          countedCompaniesByCity.set(roleCityId, new Set());
         }
 
         // Count unique alumni per city
-        const countedAlumni = countedAlumniByCity.get(cityId)!;
+        const countedAlumni = countedAlumniByCity.get(roleCityId)!;
         if (!countedAlumni.has(alumnus.id)) {
-          cityMap.get(cityId)!.alumniCount += 1;
+          cityMap.get(roleCityId)!.alumniCount += 1;
           countedAlumni.add(alumnus.id);
         }
 
         // Now handle company count - only count unique companies per city
         const companyLocation = role.company.location;
         const companyCity = companyLocation?.city;
-        const companyId = role.company.id;
 
-        if (companyCity && companyId) {
+        if (!companyCity) {
+          return;
+        }
+
+        const companyId = role.company.id;
+        const companyCityId = companyLocation?.id;
+
+        if (companyCity) {
           // Does the city exist in the map?
-          if (!cityMap.has(companyCity)) {
+          if (!cityMap.has(companyCityId)) {
             // No: create it
-            cityMap.set(companyCity, {
+            cityMap.set(companyCityId, {
               name: companyCity,
               code: companyLocation?.countryCode ?? '',
               alumniCount: 0,
               companyCount: 0,
             });
             // Initialize tracking sets
-            countedAlumniByCity.set(companyCity, new Set());
-            countedCompaniesByCity.set(companyCity, new Set());
+            countedAlumniByCity.set(companyCityId, new Set());
+            countedCompaniesByCity.set(companyCityId, new Set());
           }
 
           // Count unique companies per country
-          const countedCompanies = countedCompaniesByCity.get(companyCity)!;
+          const countedCompanies = countedCompaniesByCity.get(companyCityId)!;
           if (!countedCompanies.has(companyId)) {
-            cityMap.get(companyCity)!.companyCount += 1;
+            cityMap.get(companyCityId)!.companyCount += 1;
             countedCompanies.add(companyId);
           }
         }
