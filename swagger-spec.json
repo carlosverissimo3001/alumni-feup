@@ -3070,6 +3070,58 @@
           "Reviews"
         ]
       }
+    },
+    "/api/esco/level-one": {
+      "get": {
+        "operationId": "EscoController_getLevelOneClassifications",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Returns all level 1 ESCO classifications",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/EscoClassificationDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "Get all level 1 ESCO classifications",
+        "tags": [
+          "V1",
+          "ESCO"
+        ]
+      }
+    },
+    "/api/esco/level-two": {
+      "get": {
+        "operationId": "EscoController_getLevelTwoClassifications",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Returns all level 2 ESCO classifications",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/EscoClassificationDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "Get all level 2 ESCO classifications",
+        "tags": [
+          "V1",
+          "ESCO"
+        ]
+      }
     }
   },
   "info": {
@@ -4609,6 +4661,25 @@
           "reviewType",
           "companyId",
           "locationId"
+        ]
+      },
+      "EscoClassificationDto": {
+        "type": "object",
+        "properties": {
+          "escoCode": {
+            "type": "string",
+            "description": "The ESCO code for the classification",
+            "example": "2512"
+          },
+          "title": {
+            "type": "string",
+            "description": "The title for the classification",
+            "example": "Software Engineer"
+          }
+        },
+        "required": [
+          "escoCode",
+          "title"
         ]
       }
     }

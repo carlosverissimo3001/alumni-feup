@@ -6,15 +6,15 @@ import { AdminModule } from './admin/admin.module';
 import { AgentsApiModule } from './agents-api/agents-api.module';
 import { AlumniModule } from './alumni/alumni.module';
 import { AnalyticsModule } from './analytics/analytics.module';
+import { AuthModule } from './auth/auth.module';
 import { CompanyModule } from './company/company.module';
 import { CourseModule } from './course/course.module';
+import { EscoModule } from './esco/esco.module';
 import { FacultyModule } from './faculty/faculty.module';
 import { FileUploadModule } from './file-upload/file-upload.module';
 import { OtpModule } from './otp/otp.module';
-import { UserModule } from './user/user.module';
 import { ReviewModule } from './reviews/review.module';
-import { AuthModule } from './auth/auth.module';
-
+import { UserModule } from './user/user.module';
 @Module({
   imports: [
     ThrottlerModule.forRoot({
@@ -41,6 +41,7 @@ import { AuthModule } from './auth/auth.module';
     AgentsApiModule,
     ReviewModule,
     AuthModule,
+    EscoModule,
   ],
   providers: [
     {

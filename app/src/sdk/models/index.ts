@@ -23,6 +23,7 @@ export * from './CreateAlumniDto';
 export * from './CreateCourseDto';
 export * from './CreateReviewDto';
 export * from './CurrentRoleDto';
+export * from './EscoClassificationDto';
 export * from './Faculty';
 export * from './GeoJSONFeature';
 export * from './GeoJSONFeatureCollection';
