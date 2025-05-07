@@ -1,4 +1,11 @@
-import { Controller, Post, Body, HttpCode, HttpStatus } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  HttpCode,
+  HttpStatus,
+  Get,
+} from '@nestjs/common';
 import { ApiOperation, ApiTags, ApiResponse } from '@nestjs/swagger';
 import { UserService } from './user.service';
 import {
@@ -6,6 +13,7 @@ import {
   UserAuthResponse,
   VerifyEmailDto,
   VerifyEmailTokenDto,
+  CheckPermissionDto,
 } from '@/dto';
 
 @ApiTags('V1', 'User')
@@ -66,5 +74,17 @@ export class UserController {
     @Body() body: LinkedinAuthDto,
   ): Promise<UserAuthResponse> {
     return this.userService.linkedinConfirm(body);
+  }
+
+  @Post('check-permission')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Check if a user has a permission' })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'User has the permission',
+    type: Boolean,
+  })
+  async checkPermission(@Body() body: CheckPermissionDto): Promise<boolean> {
+    return this.userService.checkPermission(body);
   }
 }

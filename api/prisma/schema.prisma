@@ -45,6 +45,7 @@ model Alumni {
   Roles           Role[]
   ReviewsCompany  ReviewCompany[]
   ReviewsLocation ReviewLocation[]
+  Permissions     Permission[]
 
   @@index([currentLocationId])
   @@index([firstName, lastName])
@@ -292,6 +293,18 @@ model ReviewLocation {
 
   @@map("review_location")
 }
+
+model Permission {
+  id        String   @id @default(dbgenerated("gen_random_uuid()"))
+  userId    String    @map("user_id")
+  resource  String
+  actions   String[] 
+  
+  Alumni      Alumni   @relation(fields: [userId], references: [id])
+
+  @@map("permission")
+}
+
 
 /**
  * model ReviewLocationProperty {
