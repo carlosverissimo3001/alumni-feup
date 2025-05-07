@@ -95,11 +95,7 @@ export class AlumniService {
 
     let alumniCompareYear: Alumni[] = [];
     if (query.compareYear) {
-      alumniCompareYear = this.filterAlumniByCompareDate(
-        alumni,
-        query.selectedYear,
-        query.compareYear,
-      );
+      alumniCompareYear = this.filterAlumniByStartDate(alumni, query.compareYear);
     }
 
     alumni = this.filterAlumniByStartDate(alumni, query.selectedYear);
@@ -119,7 +115,16 @@ export class AlumniService {
         alumniByGroup = await this.groupAlumniByCountry(alumni);
       }
     } else {
-      alumniByGroup = this.groupAlumniByCity(alumni);
+      if (query.compareYear && query.selectedYear) {
+        alumniByGroup = await this.groupAlumniByCityWithRoleAndCompareYear(
+          alumni,
+          alumniCompareYear,
+        );
+      }else if (query.selectedYear) {
+        alumniByGroup = await this.groupAlumniByCityWithRole(alumni);
+      }else{
+        alumniByGroup = this.groupAlumniByCity(alumni);
+      }
     }
 
     // Convert grouped data to GeoJSON features
@@ -212,9 +217,9 @@ export class AlumniService {
           ); //Order By Start Date
           const roleFound = alumnus.Roles.find(
             (role) =>
-              role.startDate < new Date(selectedYear, 0, 1) &&
+              role.startDate <= new Date(selectedYear, 11, 31) &&
               (role.endDate == null ||
-                role.endDate > new Date(selectedYear, 0, 1)),
+                role.endDate >= new Date(selectedYear, 11, 31)),
           );
           if (roleFound && roleFound.Location) {
             const alumniToAdd = JSON.parse(JSON.stringify(alumnus));
@@ -552,5 +557,130 @@ export class AlumniService {
       });
       return acc;
     }, {});
+  }
+
+  async groupAlumniByCityWithRoleAndCompareYear(
+    alumni: Alumni[],
+    alumniCompareYear: Alumni[],
+  ): Promise<AlumniByCity> {
+    const acc: AlumniByCity = {};
+
+    for (const alumnus of alumni) {
+      if (
+        !alumnus.Roles![0].Location?.city ||
+        !alumnus.Roles![0].Location?.latitude ||
+        !alumnus.Roles![0].Location?.longitude
+      ) {
+        continue;
+      }
+
+      const city = alumnus.Roles![0].Location.city;
+
+      if (!acc[city]) {
+        acc[city] = {
+          coordinates: [alumnus.Roles![0].Location.longitude, alumnus.Roles![0].Location.latitude],
+          compareYearStudents: 0,
+          alumni: [],
+        };
+      }
+
+      const alumnusCY = alumniCompareYear.find(
+        (alumnusCY) => alumnusCY.id == alumnus.id,
+      );
+
+      if (alumnusCY) {
+        if (
+          !alumnusCY.Roles![0].Location ||
+          alumnus.Roles![0].Location.country !=
+            alumnusCY.Roles![0].Location.country
+        ) {
+          acc[city].compareYearStudents! += 1;
+        } else if (
+          alumnus.Roles![0].Location.country ==
+          alumnusCY.Roles![0].Location.country
+        ) {
+          acc[city].compareYearStudents! += 1;
+        }
+      } else {
+        acc[city].compareYearStudents! += 1;
+      }
+
+      acc[city].alumni.push({
+        name: `${alumnus.firstName} ${alumnus.lastName}`,
+        linkedin_url: alumnus.linkedinUrl || '',
+        profile_pic: alumnus.profilePictureUrl || '',
+        graduations:
+          alumnus.Graduations?.map((grad: GraduationWithCourse) => ({
+            course_acronym: grad.Course.acronym,
+            conclusion_year: grad.conclusionYear || null,
+          })) || [],
+        jobTitle: alumnus.Roles?.[0]?.JobClassification?.title || null,
+        companyName: alumnus.Roles?.[0]?.Company?.name || null,
+      });
+    }
+
+    for (const alumnusCompareYear of alumniCompareYear) {
+      if (
+        alumnusCompareYear.Roles![0].Location &&
+        alumnusCompareYear.Roles![0].Location.city &&
+        alumnusCompareYear.Roles![0].Location.latitude &&
+        alumnusCompareYear.Roles![0].Location.longitude
+      ) {
+        const city = alumnusCompareYear.Roles![0].Location.city;
+
+        if (!acc[city]) {
+          acc[city] = {
+            coordinates: [alumnusCompareYear.Roles![0].Location.longitude, alumnusCompareYear.Roles![0].Location.latitude],
+            compareYearStudents: 0,
+            alumni: [],
+          };
+        }
+
+        acc[city].compareYearStudents! -= 1;
+      }
+    }
+
+    return acc;
+  }
+
+  async groupAlumniByCityWithRole(
+    alumni: Alumni[],
+  ): Promise<AlumniByCity> {
+    const acc: AlumniByCity = {};
+
+    for (const alumnus of alumni) {
+      if (
+        !alumnus.Roles![0].Location?.city ||
+        !alumnus.Roles![0].Location?.latitude ||
+        !alumnus.Roles![0].Location?.longitude
+      ) {
+        continue;
+      }
+
+      const city = alumnus.Roles![0].Location.city;
+
+      if (!acc[city]) {
+        acc[city] = {
+          coordinates: [alumnus.Roles![0].Location.longitude, alumnus.Roles![0].Location.latitude],
+          compareYearStudents: undefined,
+          alumni: [],
+        };
+      }
+
+      acc[city].alumni.push({
+        name: `${alumnus.firstName} ${alumnus.lastName}`,
+        linkedin_url: alumnus.linkedinUrl || '',
+        profile_pic: alumnus.profilePictureUrl || '',
+        graduations:
+          alumnus.Graduations?.map((grad: GraduationWithCourse) => ({
+            course_acronym: grad.Course.acronym,
+            conclusion_year: grad.conclusionYear || null,
+          })) || [],
+        jobTitle: alumnus.Roles?.[0]?.JobClassification?.title || null,
+        companyName: alumnus.Roles?.[0]?.Company?.name || null,
+      });
+    }
+
+    return acc;
   }
 }

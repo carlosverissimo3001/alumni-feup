@@ -819,7 +819,7 @@ p {
 }
 
 .timeline-width-collap {
-    width: calc(100vw - 5rem);
+    width: calc(100vw - 26rem);
 }
 
 .timeline-width-nocollap {
