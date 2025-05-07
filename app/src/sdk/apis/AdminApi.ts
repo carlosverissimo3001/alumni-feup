@@ -14,6 +14,24 @@
 
 
 import * as runtime from '../runtime';
+import type {
+  MergeCompaniesDto,
+  MergeLocationsDto,
+} from '../models/index';
+import {
+    MergeCompaniesDtoFromJSON,
+    MergeCompaniesDtoToJSON,
+    MergeLocationsDtoFromJSON,
+    MergeLocationsDtoToJSON,
+} from '../models/index';
+
+export interface AdminControllerMergeCompaniesRequest {
+    mergeCompaniesDto: MergeCompaniesDto;
+}
+
+export interface AdminControllerMergeLocationsRequest {
+    mergeLocationsDto: MergeLocationsDto;
+}
 
 /**
  * AdminApi - interface
@@ -49,6 +67,36 @@ export interface AdminApiInterface {
      * Get ProxyCurl balance
      */
     adminControllerGetProxyCurlBalance(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<number>;
+
+    /**
+     * 
+     * @summary Merge companies
+     * @param {MergeCompaniesDto} mergeCompaniesDto 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof AdminApiInterface
+     */
+    adminControllerMergeCompaniesRaw(requestParameters: AdminControllerMergeCompaniesRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>>;
+
+    /**
+     * Merge companies
+     */
+    adminControllerMergeCompanies(requestParameters: AdminControllerMergeCompaniesRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void>;
+
+    /**
+     * 
+     * @summary Merge locations
+     * @param {MergeLocationsDto} mergeLocationsDto 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof AdminApiInterface
+     */
+    adminControllerMergeLocationsRaw(requestParameters: AdminControllerMergeLocationsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>>;
+
+    /**
+     * Merge locations
+     */
+    adminControllerMergeLocations(requestParameters: AdminControllerMergeLocationsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void>;
 
 }
 
@@ -115,6 +163,76 @@ export class AdminApi extends runtime.BaseAPI implements AdminApiInterface {
     async adminControllerGetProxyCurlBalance(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<number> {
         const response = await this.adminControllerGetProxyCurlBalanceRaw(initOverrides);
         return await response.value();
+    }
+
+    /**
+     * Merge companies
+     */
+    async adminControllerMergeCompaniesRaw(requestParameters: AdminControllerMergeCompaniesRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+        if (requestParameters['mergeCompaniesDto'] == null) {
+            throw new runtime.RequiredError(
+                'mergeCompaniesDto',
+                'Required parameter "mergeCompaniesDto" was null or undefined when calling adminControllerMergeCompanies().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
+
+        const response = await this.request({
+            path: `/api/admin/merge-companies`,
+            method: 'POST',
+            headers: headerParameters,
+            query: queryParameters,
+            body: MergeCompaniesDtoToJSON(requestParameters['mergeCompaniesDto']),
+        }, initOverrides);
+
+        return new runtime.VoidApiResponse(response);
+    }
+
+    /**
+     * Merge companies
+     */
+    async adminControllerMergeCompanies(requestParameters: AdminControllerMergeCompaniesRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+        await this.adminControllerMergeCompaniesRaw(requestParameters, initOverrides);
+    }
+
+    /**
+     * Merge locations
+     */
+    async adminControllerMergeLocationsRaw(requestParameters: AdminControllerMergeLocationsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+        if (requestParameters['mergeLocationsDto'] == null) {
+            throw new runtime.RequiredError(
+                'mergeLocationsDto',
+                'Required parameter "mergeLocationsDto" was null or undefined when calling adminControllerMergeLocations().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
+
+        const response = await this.request({
+            path: `/api/admin/merge-locations`,
+            method: 'POST',
+            headers: headerParameters,
+            query: queryParameters,
+            body: MergeLocationsDtoToJSON(requestParameters['mergeLocationsDto']),
+        }, initOverrides);
+
+        return new runtime.VoidApiResponse(response);
+    }
+
+    /**
+     * Merge locations
+     */
+    async adminControllerMergeLocations(requestParameters: AdminControllerMergeLocationsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+        await this.adminControllerMergeLocationsRaw(requestParameters, initOverrides);
     }
 
 }

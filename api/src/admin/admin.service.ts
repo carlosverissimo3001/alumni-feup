@@ -1,5 +1,8 @@
 import { ConfigService } from '@nestjs/config';
 import { Injectable } from '@nestjs/common';
+import { MergeCompaniesDto, MergeLocationsDto } from '@/dto';
+import { CompanyService } from '@/company/services/company.service';
+import { LocationService } from '@/location/location.service';
 
 type ProxyCurlBalanceResponse = {
   // This is an interger value
@@ -21,7 +24,11 @@ export class AdminService {
   private readonly brightdataBaseUrl: string;
   private readonly brightdataApiKey: string;
 
-  constructor(private readonly config: ConfigService) {
+  constructor(
+    private readonly config: ConfigService,
+    private readonly companyService: CompanyService,
+    private readonly locationService: LocationService,
+  ) {
     this.proxycurlBaseUrl = this.config.get<string>('PROXYCURL_BASE_URL') || '';
     this.proxycurlApiKey = this.config.get<string>('PROXYCURL_API_KEY') || '';
     this.brightdataBaseUrl =
@@ -75,5 +82,41 @@ export class AdminService {
     }
 
     return balance;
+  }
+
+  async mergeCompanies(mergeCompaniesDto: MergeCompaniesDto) {
+    const { companyIds, mergeIntoCompanyId } = mergeCompaniesDto;
+
+    // Move the roles from the companies to the new company
+    await Promise.all(
+      companyIds.map((companyId) =>
+        this.companyService.moveRoles(companyId, mergeIntoCompanyId),
+      ),
+    );
+
+    // Delete the companies
+    await Promise.all(
+      companyIds.map((companyId) => this.companyService.delete(companyId)),
+    );
+
+    return;
+  }
+
+  async mergeLocations(mergeLocationsDto: MergeLocationsDto) {
+    const { locationIds, mergeIntoLocationId } = mergeLocationsDto;
+
+    // Move the roles from the locations to the new location
+    await Promise.all(
+      locationIds.map((locationId) =>
+        this.locationService.moveRoles(locationId, mergeIntoLocationId),
+      ),
+    );
+
+    // Delete the locations
+    await Promise.all(
+      locationIds.map((locationId) => this.locationService.delete(locationId)),
+    );
+
+    return;
   }
 }

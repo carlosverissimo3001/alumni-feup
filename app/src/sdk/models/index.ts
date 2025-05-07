@@ -34,6 +34,8 @@ export * from './IndustryOptionDto';
 export * from './LinkedinAuthDto';
 export * from './LocationGeo';
 export * from './MarkAsReviewedDto';
+export * from './MergeCompaniesDto';
+export * from './MergeLocationsDto';
 export * from './ReviewCompany';
 export * from './ReviewGeoJSONFeature';
 export * from './ReviewGeoJSONFeatureCollection';

@@ -1,4 +1,5 @@
 import json
+import logging
 from typing import List
 
 from sqlalchemy import select
@@ -7,6 +8,7 @@ from sqlalchemy.orm import Session
 from app.db.models import EscoClassification, JobClassification
 from app.schemas.job_classification import EscoResult, JobClassificationAgentState
 
+logger = logging.getLogger(__name__)
 
 def get_all_classifications_by_level(db: Session, level: int) -> List[EscoClassification]:
     return (
@@ -60,6 +62,7 @@ def update_role_with_classifications(db: Session, state: JobClassificationAgentS
     # Convert the Pydantic models to dictionaries for JSON serialization
     metadata_json = [result.model_dump() for result in results]
     
+    
     classification = JobClassification(
         title=best_result.title,
         level=level,
@@ -69,4 +72,5 @@ def update_role_with_classifications(db: Session, state: JobClassificationAgentS
         model_used=model_used,
         metadata_=metadata_json,
     )
+    
     insert_classification(db, classification)

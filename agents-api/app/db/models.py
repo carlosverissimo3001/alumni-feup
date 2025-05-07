@@ -194,7 +194,7 @@ class JobClassification(Base):
     id = Column(String, primary_key=True, server_default="gen_random_uuid()")
     title = Column(String, nullable=False)
     level = Column(SmallInteger, nullable=False)
-    esco_code = Column(String, nullable=True)
+    esco_code = Column(String)
     role_id = Column(String, ForeignKey("role.id"), nullable=False, unique=True)
     confidence = Column(Float, nullable=True)
     created_at = Column(DateTime, nullable=False, server_default="now()")
@@ -203,10 +203,9 @@ class JobClassification(Base):
     )
     model_used = Column(String, nullable=False)
     metadata_ = Column(JSONB, name="metadata", nullable=True)
-    
+
     # Each job classification belongs to a single role (one-to-one)
     role = relationship("Role", back_populates="job_classification", uselist=False)
-
 
 class Location(Base):
     __tablename__ = "location"
@@ -248,7 +247,7 @@ class Role(Base):
     alumni_id = Column(String, ForeignKey("alumni.id"), nullable=False)
     company_id = Column(String, ForeignKey("company.id"), nullable=False)
     location_id = Column(String, ForeignKey("location.id"), nullable=True)
-    
+
     start_date = Column(DateTime(timezone=True), nullable=False)
     end_date = Column(DateTime(timezone=True), nullable=True)
     created_at = Column(DateTime, nullable=False, server_default="now()")
@@ -273,6 +272,7 @@ class RoleRaw(Base):
     id = Column(String, primary_key=True, server_default="gen_random_uuid()")
     title = Column(String, nullable=False)
     description = Column(String, nullable=True)
+    location = Column(String, nullable=True)
     created_at = Column(DateTime, nullable=False, server_default="now()")
     role_id = Column(String, ForeignKey("role.id"), nullable=False)
 

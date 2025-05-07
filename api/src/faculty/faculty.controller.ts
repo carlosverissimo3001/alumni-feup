@@ -1,10 +1,17 @@
-import { Controller, Get, HttpCode, HttpStatus, Post, Body } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Post,
+  Body,
+} from '@nestjs/common';
 import { FacultyService } from './faculty.service';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { ApiResponse } from '@nestjs/swagger';
 import { Faculty } from '@/entities/faculty.entity';
 import { AddFacultyDto } from '@/dto';
-
+import { RequirePermission } from '@/auth/user-auth.guard';
 @ApiTags('V1', 'Faculty')
 @Controller('faculty')
 export class FacultyController {
@@ -29,6 +36,7 @@ export class FacultyController {
     description: 'Returns the created faculty',
     type: Faculty,
   })
+  @RequirePermission('admin', 'write')
   async create(@Body() addFacultyDto: AddFacultyDto): Promise<Faculty> {
     return this.facultyService.create(addFacultyDto);
   }

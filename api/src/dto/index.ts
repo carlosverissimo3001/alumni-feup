@@ -20,3 +20,7 @@ export { FindCoursesDto } from './find-courses.dto';
 
 // Faculty
 export { AddFacultyDto } from './create-faculty.dto';
+
+// Admin
+export { MergeCompaniesDto } from './merge-companies.dto';
+export { MergeLocationsDto } from './merge-locations.dto';
