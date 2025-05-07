@@ -22,7 +22,8 @@ import {
 } from "@/components/ui/select";
 import { useReviewSubmit } from "@/hooks/reviews/useReviewSubmit";
 import { CreateReviewDto } from "@/sdk/models/CreateReviewDto";
-import { ExtendedCompanyDto } from "@/sdk";
+import { ExtendedCompanyDto } from "@/sdk/models/ExtendedCompanyDto";
+
 
 interface FormValues {
   reviewType: ReviewType
@@ -232,7 +233,7 @@ const SubmitReview = () => {
                       </SelectTrigger>
                       <SelectContent>
                         {locations?.map((location) => (
-                          <SelectItem key={location.id} value={location.id}>
+                          <SelectItem key={location.id} value={location.id!}>
                              {location.city}, {location.country}
                           </SelectItem>
                         ))}
