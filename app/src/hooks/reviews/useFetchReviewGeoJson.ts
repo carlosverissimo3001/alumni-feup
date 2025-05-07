@@ -18,7 +18,7 @@ export const useFetchReviewGeoJson = ({ groupBy, reviewType }: Props) => {
   const query = useQuery({
     queryKey: ["geoJson", {groupBy, reviewType}],
     queryFn: () =>
-      NestAPI.reviewsControllerFindAllGeoJSON({
+      NestAPI.reviewControllerFindAllGeoJSON({
         groupBy,
         reviewType: reviewType || ''
       }),
