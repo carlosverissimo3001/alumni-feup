@@ -12,7 +12,7 @@ type Input = {
 export const useReviewSubmit = ({ data, onSuccess }: Input) => {
   const mutation = useMutation(
     {
-      mutationFn: () => NestAPI.reviewsControllerCreate({createReviewDto: data}),
+      mutationFn: () => NestAPI.reviewControllerCreate({createReviewDto: data}),
       onSuccess
     }
   );

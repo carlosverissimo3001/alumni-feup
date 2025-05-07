@@ -38,10 +38,7 @@ const ReviewMapFilters = ({
   // Panel state
   const [isVisible, setIsVisible] = useState(true);
 
-  // Options
-  const { data: courses, isLoading: isLoadingCourses } = useListCourses({
-    enabled:true
-  });
+
   const reviewTypes = ['Company', 'Location'];
   
   /** Selectors & Filters **/
@@ -139,13 +136,6 @@ const ReviewMapFilters = ({
     // Reset alumni selection
     onSelectReview("", [-9.142685, 38.736946]);
 
-    // Only refetch if we have courses data
-    if (courses) {
-      // Use a slight delay to ensure state updates first
-      setTimeout(() => {
-        refetchGeoJson();
-      }, 50);
-    }
     clearUrlParams();
   };
 
