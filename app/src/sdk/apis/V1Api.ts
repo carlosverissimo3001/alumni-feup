@@ -30,6 +30,7 @@ import type {
   CreateAlumniDto,
   CreateCourseDto,
   CreateReviewDto,
+  EscoClassificationDto,
   Faculty,
   GeoJSONFeatureCollection,
   IndustryListResponseDto,
@@ -77,6 +78,8 @@ import {
     CreateCourseDtoToJSON,
     CreateReviewDtoFromJSON,
     CreateReviewDtoToJSON,
+    EscoClassificationDtoFromJSON,
+    EscoClassificationDtoToJSON,
     FacultyFromJSON,
     FacultyToJSON,
     GeoJSONFeatureCollectionFromJSON,
@@ -878,6 +881,34 @@ export interface V1ApiInterface {
      * Get a course by id
      */
     courseControllerFindOne(requestParameters: CourseControllerFindOneRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<CourseExtended>;
+
+    /**
+     * 
+     * @summary Get all level 1 ESCO classifications
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof V1ApiInterface
+     */
+    escoControllerGetLevelOneClassificationsRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<EscoClassificationDto>>>;
+
+    /**
+     * Get all level 1 ESCO classifications
+     */
+    escoControllerGetLevelOneClassifications(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<EscoClassificationDto>>;
+
+    /**
+     * 
+     * @summary Get all level 2 ESCO classifications
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof V1ApiInterface
+     */
+    escoControllerGetLevelTwoClassificationsRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<EscoClassificationDto>>>;
+
+    /**
+     * Get all level 2 ESCO classifications
+     */
+    escoControllerGetLevelTwoClassifications(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<EscoClassificationDto>>;
 
     /**
      * 
@@ -2383,6 +2414,58 @@ export class V1Api extends runtime.BaseAPI implements V1ApiInterface {
      */
     async courseControllerFindOne(requestParameters: CourseControllerFindOneRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<CourseExtended> {
         const response = await this.courseControllerFindOneRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Get all level 1 ESCO classifications
+     */
+    async escoControllerGetLevelOneClassificationsRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<EscoClassificationDto>>> {
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        const response = await this.request({
+            path: `/api/esco/level-one`,
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(EscoClassificationDtoFromJSON));
+    }
+
+    /**
+     * Get all level 1 ESCO classifications
+     */
+    async escoControllerGetLevelOneClassifications(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<EscoClassificationDto>> {
+        const response = await this.escoControllerGetLevelOneClassificationsRaw(initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Get all level 2 ESCO classifications
+     */
+    async escoControllerGetLevelTwoClassificationsRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<EscoClassificationDto>>> {
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        const response = await this.request({
+            path: `/api/esco/level-two`,
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(EscoClassificationDtoFromJSON));
+    }
+
+    /**
+     * Get all level 2 ESCO classifications
+     */
+    async escoControllerGetLevelTwoClassifications(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<EscoClassificationDto>> {
+        const response = await this.escoControllerGetLevelTwoClassificationsRaw(initOverrides);
         return await response.value();
     }
 

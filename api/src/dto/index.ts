@@ -24,3 +24,6 @@ export { AddFacultyDto } from './create-faculty.dto';
 // Admin
 export { MergeCompaniesDto } from './merge-companies.dto';
 export { MergeLocationsDto } from './merge-locations.dto';
+
+// Esco
+export { EscoClassificationDto } from './esco-classification.dto';
