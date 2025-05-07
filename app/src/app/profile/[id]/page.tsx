@@ -6,44 +6,40 @@ import { useParams } from "next/navigation";
 import { useFetchBasicProfile } from "@/hooks/profile/useFetchBasicProfile";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { AlertCircle, Globe, ArrowUpRight, MapPin, Briefcase, Clock, RefreshCw, Trash2, TagIcon, Gauge, Sparkles, Database } from "lucide-react";
+import {
+  AlertCircle,
+  Globe,
+  ArrowUpRight,
+  MapPin,
+  Briefcase,
+  Clock,
+  RefreshCw,
+  Trash2,
+  TagIcon,
+  Gauge
+} from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { mapSeniorityLevel } from "@/utils/mappings";
 import { Button } from "@/components/ui/button";
-import { MultiSelect } from "@/components/ui/multi-select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Progress } from "@/components/ui/progress";
 import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { useAuth } from "@/contexts/AuthContext";
+import { useListEscoClassifications } from "@/hooks/esco/useListEscoClassifications";
+import { Combobox } from "@/components/ui/combobox";
 
 const ESCO_BASE_URL = process.env.NEXT_PUBLIC_ESCO_BASE_URL;
-
-// Placeholder ESCO classifications data
-const placeholderEscoL1Options = [
-  { label: "Software Developers", value: "2512", icon: Database },
-  { label: "Web and Multimedia Developers", value: "2513", icon: Globe },
-  { label: "Systems Analysts", value: "2511", icon: Briefcase },
-  { label: "Database Designers and Administrators", value: "2521", icon: Database },
-  { label: "Systems Administrators", value: "2522", icon: Briefcase },
-  { label: "Computer Network Professionals", value: "2523", icon: Globe },
-  { label: "AI and Machine Learning Specialists", value: "2519.1", icon: Sparkles },
-  { label: "Application Programmers", value: "2514", icon: Database },
-];
-
-const placeholderEscoL2Options = [
-  { label: "Frontend Developer", value: "2513.1", icon: Globe },
-  { label: "Backend Developer", value: "2512.1", icon: Database },
-  { label: "Full Stack Developer", value: "2512.2", icon: Database },
-  { label: "Mobile Application Developer", value: "2514.1", icon: Database },
-  { label: "Data Engineer", value: "2521.1", icon: Database },
-  { label: "DevOps Engineer", value: "2522.1", icon: Briefcase },
-  { label: "Cloud Engineer", value: "2522.2", icon: Globe },
-  { label: "React Developer", value: "2513.2", icon: Globe },
-  { label: "JavaScript Developer", value: "2513.3", icon: Globe },
-  { label: "Python Developer", value: "2512.3", icon: Database },
-];
 
 export default function Profile() {
   const { id } = useParams();
@@ -51,18 +47,39 @@ export default function Profile() {
     data: profile,
     isLoading,
     error,
-  } = useFetchBasicProfile({id: id as string});
+  } = useFetchBasicProfile({ id: id as string });
 
-  const escoUrl = ESCO_BASE_URL ? ESCO_BASE_URL + profile?.role?.escoCode : '#';
-  
+  const { user } = useAuth();
+
+  const escoUrl = ESCO_BASE_URL ? ESCO_BASE_URL + profile?.role?.escoCode : "#";
+
   // For placeholder purposes, simulate confidence if not provided
   const confidenceValue = 0.65;
-  
+
   // State for selected ESCO classifications
-  const [selectedEscoL1, setSelectedEscoL1] = useState<string[]>([]);
-  const [selectedEscoL2, setSelectedEscoL2] = useState<string[]>([]);
+  const [selectedEscoL1, setSelectedEscoL1] = useState<string | null>(null);
+  const [selectedEscoL2, setSelectedEscoL2] = useState<string | null>(null);
   const [escoDialogOpen, setEscoDialogOpen] = useState(false);
 
+  const { data: escoL1 } = useListEscoClassifications({
+    level: 1,
+    enabled: escoDialogOpen,
+  });
+  const { data: escoL2 } = useListEscoClassifications({
+    level: 2,
+    enabled: escoDialogOpen,
+  });
+
+  const escoL1Options = escoL1?.map((item) => ({
+    label: item.title,
+    value: item.escoCode,
+  })) || [];
+
+  const escoL2Options = escoL2?.map((item) => ({
+    label: item.title,
+    value: item.escoCode,
+  })) || [];
+  
   // Placeholder function for updating ESCO classifications
   const handleUpdateEsco = () => {
     console.log("Updating ESCO classifications:", {
@@ -98,7 +115,9 @@ export default function Profile() {
       <div className="max-w-4xl mx-auto py-12 px-4">
         <Alert variant="destructive" className="rounded-lg">
           <AlertCircle className="h-5 w-5 mr-2" />
-          <AlertDescription className="text-base">Error loading profile: {error}</AlertDescription>
+          <AlertDescription className="text-base">
+            Error loading profile: {error}
+          </AlertDescription>
         </Alert>
       </div>
     );
@@ -144,7 +163,8 @@ export default function Profile() {
               Graduated from
               {profile.graduations.map((graduation, index) => (
                 <div key={index} className="font-semibold">
-                  {graduation.acronym} ({graduation.conclusionYear}) @{graduation.facultyAcronym}
+                  {graduation.acronym} ({graduation.conclusionYear}) @
+                  {graduation.facultyAcronym}
                 </div>
               ))}
             </div>
@@ -156,41 +176,48 @@ export default function Profile() {
         <CardHeader className="pb-2">
           <CardTitle className="text-xl flex items-center">
             <Briefcase className="mr-2 h-5 w-5 text-primary" />
-            Career Overview
+            Current Role
           </CardTitle>
         </CardHeader>
-        <CardContent className="pt-6">
+        <CardContent className="pt-3">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div className="space-y-2">
-              <div className="text-lg font-semibold">{jobTitle || "No role specified"}</div>
+              <div className="text-lg font-semibold">
+                {jobTitle || "No role specified"}
+              </div>
               {profile?.role?.seniorityLevel && (
                 <>
-                <div className="flex items-center text-sm text-muted-foreground">
-                  <span className="inline-block w-2 h-2 rounded-full bg-primary/80 mr-2"></span>
-                  {mapSeniorityLevel(profile?.role?.seniorityLevel)}
-                </div>
-                <div className="flex items-center text-sm text-muted-foreground">
-                  <Clock className="h-3.5 w-3.5 mr-1.5 opacity-70" />
-                  {profile?.role?.startDate
-                    ? new Date(profile?.role?.startDate).toLocaleDateString(
-                        "en-US",
-                        { month: "long", year: "numeric" }
-                      )
-                    : ""}
-                  {profile?.role?.endDate
-                    ? ` to ${new Date(profile?.role?.endDate).toLocaleDateString(
-                        "en-US",
-                        { month: "long", year: "numeric" }
-                      )}`
-                    : " - Present"}
-                </div>
+                  <div className="flex items-center text-sm text-muted-foreground">
+                    <span className="inline-block w-2 h-2 rounded-full bg-primary/80 mr-2"></span>
+                    {mapSeniorityLevel(profile?.role?.seniorityLevel)}
+                  </div>
+                  <div className="flex items-center text-sm text-muted-foreground">
+                    <Clock className="h-3.5 w-3.5 mr-1.5 opacity-70" />
+                    {profile?.role?.startDate
+                      ? new Date(profile?.role?.startDate).toLocaleDateString(
+                          "en-US",
+                          { month: "long", year: "numeric" }
+                        )
+                      : ""}
+                    {profile?.role?.endDate
+                      ? ` to ${new Date(
+                          profile?.role?.endDate
+                        ).toLocaleDateString("en-US", {
+                          month: "long",
+                          year: "numeric",
+                        })}`
+                      : " - Present"}
+                  </div>
                   <Link
-                      href={escoUrl}
-                      className="text-xs hover:text-primary transition-colors group flex items-center gap-1 mt-2"
-                      >
-                      In ESCO as <span className="font-bold underline">{profile?.role?.title}</span>
-                      <ArrowUpRight className="w-3.5 h-3.5 group-hover:text-primary transition-colors" />
-                    </Link>
+                    href={escoUrl}
+                    className="text-xs hover:text-primary transition-colors group flex items-center gap-1 mt-2"
+                  >
+                    In ESCO as{" "}
+                    <span className="font-bold underline">
+                      {profile?.role?.title}
+                    </span>
+                    <ArrowUpRight className="w-3.5 h-3.5 group-hover:text-primary transition-colors" />
+                  </Link>
                 </>
               )}
             </div>
@@ -257,186 +284,254 @@ export default function Profile() {
                 {profile?.location?.city && profile?.location?.country
                   ? `${profile.location.city}, ${profile.location.country}`
                   : "Location not specified"}
-              </div>
-              {profile?.location?.countryCode && (
-                <div className="mt-2">
+                {profile?.location?.countryCode && (
                   <Image
                     src={`https://flagcdn.com/${profile.location.countryCode.toLowerCase()}.svg`}
                     alt={profile.location.country || ""}
-                    className="w-8 h-5 rounded shadow-sm"
+                    className="w-8 h-5 rounded shadow-sm ml-2"
                     width={32}
                     height={20}
                   />
-                </div>
-              )}
+                )}
+              </div>
             </div>
           </div>
         </CardContent>
       </Card>
 
-      {/* Actions the user accessing this page is the owner of the profile */}
-      <h3 className="text-xl font-semibold mb-6">Profile Actions</h3>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <Card className="border-l-4 border-l-primary shadow-sm hover:shadow-md transition-shadow duration-300 flex flex-col">
-          <CardHeader className="pb-2">
-            <CardTitle className="text-lg flex items-center">
-              <RefreshCw className="mr-2 h-5 w-5 text-primary" />
-              Request Profile Update
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="flex-1 flex flex-col">
-            <p className="text-muted-foreground mb-4 flex-grow">
-              If you have recently updated your LinkedIn profile, you can request an update to this profile. We update all profiles automatically, every X days.
-            </p>
-            <div className="pt-4 mt-auto">
-              <Button className="w-full" size="lg">
-                <RefreshCw className="mr-2 h-4 w-4" />
-                Request Profile Update
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
-        
-        <Card className="border-l-4 border-l-destructive shadow-sm hover:shadow-md transition-shadow duration-300 flex flex-col">
-          <CardHeader className="pb-2">
-            <CardTitle className="text-lg flex items-center">
-              <Trash2 className="mr-2 h-5 w-5 text-destructive" />
-              Request Account Deletion
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="flex-1 flex flex-col">
-            <p className="text-muted-foreground mb-4 flex-grow">
-              If you want to delete your account, you can request it here. We will delete your account and all your data from our database.
-            </p>
-            <div className="pt-4 mt-auto">
-              <Button variant="destructive" className="w-full" size="lg">
-                <Trash2 className="mr-2 h-4 w-4" />
-                Request Account Deletion
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="border-l-4 border-l-amber-500 shadow-sm hover:shadow-md transition-shadow duration-300 flex flex-col">
-          <CardHeader className="pb-2">
-            <CardTitle className="text-lg flex items-center">
-              <TagIcon className="mr-2 h-5 w-5 text-amber-500" />
-              Update ESCO Classification
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="flex-1 flex flex-col">
-            <p className="text-muted-foreground mb-4 flex-grow">
-              Our AI might have incorrectly classified your role. You can help us improve by updating your ESCO job classification.
-            </p>
-            <div className="pt-4 mt-auto">
-              <Dialog open={escoDialogOpen} onOpenChange={setEscoDialogOpen}>
-                <DialogTrigger asChild>
-                  <Button className="w-full" size="lg" variant="outline">
-                    <TagIcon className="mr-2 h-4 w-4" />
-                    Update Job Classification
+      {user?.id === profile?.id && (
+        <>
+          {/* Actions the user accessing this page is the owner of the profile */}
+          <h3 className="text-xl font-semibold mb-6">Profile Actions</h3>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <Card className="border-l-4 border-l-primary shadow-sm hover:shadow-md transition-shadow duration-300 flex flex-col">
+              <CardHeader className="pb-2">
+                <CardTitle className="text-lg flex items-center">
+                  <RefreshCw className="mr-2 h-5 w-5 text-primary" />
+                  Request Profile Update
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="flex-1 flex flex-col">
+                <p className="text-muted-foreground mb-4 flex-grow">
+                  If you have recently updated your LinkedIn profile, you can
+                  request an update to this profile. We update all profiles
+                  automatically, every X days.
+                </p>
+                <div className="pt-4 mt-auto">
+                  <Button className="w-full" size="lg">
+                    <RefreshCw className="mr-2 h-4 w-4" />
+                    Request Profile Update
                   </Button>
-                </DialogTrigger>
-                <DialogContent className="sm:max-w-[600px]">
-                  <DialogHeader>
-                    <DialogTitle className="flex items-center gap-2 text-xl">
-                      <TagIcon className="h-5 w-5 text-amber-500" />
-                      Update Your Job Classification
-                    </DialogTitle>
-                    <DialogDescription>
-                      ESCO is the European multilingual classification of Skills, Competences, Qualifications and Occupations.
-                      Our AI has classified your role, but you can refine it below.
-                    </DialogDescription>
-                  </DialogHeader>
-                  
-                  <div className="mt-4 space-y-6">
-                    <div className="space-y-1">
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-2">
-                          <Gauge className="h-4 w-4 text-amber-500" />
-                          <p className="text-sm font-medium">Current Classification</p>
-                        </div>
-                        <Badge variant="outline" className="bg-amber-50 text-amber-800 hover:bg-amber-100 border-amber-200">
-                          {profile?.role?.escoCode || "Not Classified"}
-                        </Badge>
-                      </div>
-                      <p className="text-sm text-muted-foreground mb-4">
-                        Currently classified as <span className="font-semibold">{profile?.role?.title || "Unknown"}</span>
-                      </p>
-                      
-                      <div className="space-y-4">
-                        <div className="flex items-center justify-between">
-                          <p className="text-sm font-medium">Classification Confidence</p>
-                          <span className="text-xs font-medium">{Math.round(confidenceValue * 100)}%</span>
-                        </div>
-                        <Progress 
-                          value={confidenceValue * 100} 
-                          className="h-2"
-                        />
-                        <div className="flex justify-between text-xs mt-1">
-                          <span className={confidenceValue < 0.6 ? "font-medium text-red-500" : "text-muted-foreground"}>Low</span>
-                          <span className={confidenceValue >= 0.6 && confidenceValue <= 0.8 ? "font-medium text-amber-500" : "text-muted-foreground"}>Medium</span>
-                          <span className={confidenceValue > 0.8 ? "font-medium text-green-500" : "text-muted-foreground"}>High</span>
-                        </div>
-                      </div>
-                    </div>
+                </div>
+              </CardContent>
+            </Card>
 
-                    <Tabs defaultValue="level1" className="w-full">
-                      <TabsList className="grid w-full grid-cols-2">
-                        <TabsTrigger value="level1" className="data-[state=active]:bg-amber-100 data-[state=active]:text-amber-900">
-                          Level 1 (General)
-                        </TabsTrigger>
-                        <TabsTrigger value="level2" className="data-[state=active]:bg-amber-100 data-[state=active]:text-amber-900">
-                          Level 2 (Specific)
-                        </TabsTrigger>
-                      </TabsList>
-                      <TabsContent value="level1" className="mt-4">
-                        <p className="text-sm text-muted-foreground mb-2">
-                          Select the general job classification that best represents your role:
-                        </p>
-                        <MultiSelect
-                          options={placeholderEscoL1Options}
-                          placeholder="Select a classification..."
-                          onValueChange={setSelectedEscoL1}
-                          maxCount={1}
-                          className="w-full border-amber-200 focus-within:border-amber-500"
-                          animation={0.5}
-                          variant="secondary"
-                        />
-                      </TabsContent>
-                      <TabsContent value="level2" className="mt-4">
-                        <p className="text-sm text-muted-foreground mb-2">
-                          Select the specific job classifications that best represent your role (up to 3):
-                        </p>
-                        <MultiSelect
-                          options={placeholderEscoL2Options}
-                          placeholder="Select classifications..."
-                          onValueChange={setSelectedEscoL2}
-                          maxCount={3}
-                          className="w-full border-amber-200 focus-within:border-amber-500"
-                          animation={0.5}
-                          variant="secondary"
-                        />
-                      </TabsContent>
-                    </Tabs>
-                  </div>
+            <Card className="border-l-4 border-l-destructive shadow-sm hover:shadow-md transition-shadow duration-300 flex flex-col">
+              <CardHeader className="pb-2">
+                <CardTitle className="text-lg flex items-center">
+                  <Trash2 className="mr-2 h-5 w-5 text-destructive" />
+                  Request Account Deletion
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="flex-1 flex flex-col">
+                <p className="text-muted-foreground mb-4 flex-grow">
+                  If you want to delete your account, you can request it here.
+                  We will delete your account and all your data from our
+                  database.
+                </p>
+                <div className="pt-4 mt-auto">
+                  <Button variant="destructive" className="w-full" size="lg">
+                    <Trash2 className="mr-2 h-4 w-4" />
+                    Request Account Deletion
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
 
-                  <DialogFooter className="mt-6">
-                    <Button variant="ghost" onClick={() => setEscoDialogOpen(false)}>Cancel</Button>
-                    <Button 
-                      variant="default" 
-                      className="bg-amber-500 hover:bg-amber-600 text-white"
-                      onClick={handleUpdateEsco}
-                      disabled={selectedEscoL1.length === 0 && selectedEscoL2.length === 0}
-                    >
-                      Update Classification
-                    </Button>
-                  </DialogFooter>
-                </DialogContent>
-              </Dialog>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
+            <Card className="border-l-4 border-l-amber-500 shadow-sm hover:shadow-md transition-shadow duration-300 flex flex-col">
+              <CardHeader className="pb-2">
+                <CardTitle className="text-lg flex items-center">
+                  <TagIcon className="mr-2 h-5 w-5 text-amber-500" />
+                  Update ESCO Classification
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="flex-1 flex flex-col">
+                <p className="text-muted-foreground mb-4 flex-grow">
+                  Our AI might have incorrectly classified your role. You can
+                  help us improve by updating your ESCO job classification.
+                </p>
+                <div className="pt-4 mt-auto">
+                  <Dialog
+                    open={escoDialogOpen}
+                    onOpenChange={setEscoDialogOpen}
+                  >
+                    <DialogTrigger asChild>
+                      <Button className="w-full" size="lg" variant="outline">
+                        <TagIcon className="mr-2 h-4 w-4" />
+                        Update Job Classification
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent className="sm:max-w-[600px]">
+                      <DialogHeader>
+                        <DialogTitle className="flex items-center gap-2 text-xl">
+                          <TagIcon className="h-5 w-5 text-amber-500" />
+                          Update Your Job Classification
+                        </DialogTitle>
+                        <DialogDescription>
+                          ESCO is the European multilingual classification of
+                          Skills, Competences, Qualifications and Occupations.
+                          Our AI has classified your role, but you can refine it
+                          below.
+                        </DialogDescription>
+                      </DialogHeader>
+
+                      <div className="mt-4 space-y-6">
+                        <div className="space-y-1">
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-2">
+                              <Gauge className="h-4 w-4 text-amber-500" />
+                              <p className="text-sm font-medium">
+                                Current Classification
+                              </p>
+                            </div>
+                            <Badge
+                              variant="outline"
+                              className="bg-amber-50 text-amber-800 hover:bg-amber-100 border-amber-200"
+                            >
+                              {profile?.role?.escoCode || "Not Classified"}
+                            </Badge>
+                          </div>
+                          <p className="text-sm text-muted-foreground mb-4">
+                            Currently classified as{" "}
+                            <span className="font-semibold">
+                              {profile?.role?.title || "Unknown"}
+                            </span>
+                          </p>
+
+                          <div className="space-y-4">
+                            <div className="flex items-center justify-between">
+                              <p className="text-sm font-medium">
+                                Confidence
+                              </p>
+                              <span className="text-xs font-medium">
+                                {Math.round(confidenceValue * 100)}%
+                              </span>
+                            </div>
+                            <Progress
+                              value={confidenceValue * 100}
+                              className="h-2"
+                            />
+                            <div className="flex justify-between text-xs mt-1">
+                              <span
+                                className={
+                                  confidenceValue < 0.6
+                                    ? "font-medium text-red-500"
+                                    : "text-muted-foreground"
+                                }
+                              >
+                                Low
+                              </span>
+                              <span
+                                className={
+                                  confidenceValue >= 0.6 &&
+                                  confidenceValue <= 0.8
+                                    ? "font-medium text-amber-500"
+                                    : "text-muted-foreground"
+                                }
+                              >
+                                Medium
+                              </span>
+                              <span
+                                className={
+                                  confidenceValue > 0.8
+                                    ? "font-medium text-green-500"
+                                    : "text-muted-foreground"
+                                }
+                              >
+                                High
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+
+                        <Tabs defaultValue="level1" className="w-full">
+                          <TabsList className="grid w-full grid-cols-2">
+                            <TabsTrigger
+                              value="level1"
+                              className="data-[state=active]:bg-amber-100 data-[state=active]:text-amber-900"
+                            >
+                              Level 1 (General)
+                            </TabsTrigger>
+                            <TabsTrigger
+                              value="level2"
+                              className="data-[state=active]:bg-amber-100 data-[state=active]:text-amber-900"
+                            >
+                              Level 2 (Specific)
+                            </TabsTrigger>
+                          </TabsList>
+                          <TabsContent value="level1" className="mt-4">
+                            <p className="text-sm text-muted-foreground mb-2">
+                              Select the general job classification that best
+                              represents your role:
+                            </p>
+                            <Combobox
+                              options={escoL1Options}
+                              value={selectedEscoL1}
+                              onChange={setSelectedEscoL1}
+                              placeholder="Select classification..."
+                              searchPlaceholder="Search classifications..."
+                              emptyMessage="No classifications found."
+                              className="border-amber-200 focus-within:border-amber-500"
+                              maxDisplayCount={30}
+                              isLoading={!escoL1Options.length && escoDialogOpen}
+                            />
+                          </TabsContent>
+                          <TabsContent value="level2" className="mt-4">
+                            <p className="text-sm text-muted-foreground mb-2">
+                              Select the specific job classification that best
+                              represents your role:
+                            </p>
+                            <Combobox
+                              options={escoL2Options}
+                              value={selectedEscoL2}
+                              onChange={setSelectedEscoL2}
+                              placeholder="Select classification..."
+                              searchPlaceholder="Search classifications..."
+                              emptyMessage="No classifications found."
+                              className="border-amber-200 focus-within:border-amber-500"
+                              maxDisplayCount={30}
+                              isLoading={!escoL2Options.length && escoDialogOpen}
+                            />
+                          </TabsContent>
+                        </Tabs>
+                      </div>
+
+                      <DialogFooter className="mt-6">
+                        <Button
+                          variant="ghost"
+                          onClick={() => setEscoDialogOpen(false)}
+                        >
+                          Cancel
+                        </Button>
+                        <Button
+                          variant="default"
+                          className="bg-amber-500 hover:bg-amber-600 text-white"
+                          onClick={handleUpdateEsco}
+                          disabled={
+                            !selectedEscoL1 || !selectedEscoL2
+                          }
+                        >
+                          Update Classification
+                        </Button>
+                      </DialogFooter>
+                    </DialogContent>
+                  </Dialog>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </>
+      )}
     </div>
   );
 }

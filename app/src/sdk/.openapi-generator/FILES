@@ -3,6 +3,7 @@ apis/AlumniApi.ts
 apis/AnalyticsApi.ts
 apis/CompanyApi.ts
 apis/CourseApi.ts
+apis/ESCOApi.ts
 apis/FacultyApi.ts
 apis/FilesApi.ts
 apis/ReviewsApi.ts
@@ -33,6 +34,7 @@ models/CreateAlumniDto.ts
 models/CreateCourseDto.ts
 models/CreateReviewDto.ts
 models/CurrentRoleDto.ts
+models/EscoClassificationDto.ts
 models/Faculty.ts
 models/GeoJSONFeature.ts
 models/GeoJSONFeatureCollection.ts

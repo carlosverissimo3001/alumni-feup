@@ -5,6 +5,7 @@ export * from './AlumniApi';
 export * from './AnalyticsApi';
 export * from './CompanyApi';
 export * from './CourseApi';
+export * from './ESCOApi';
 export * from './FacultyApi';
 export * from './FilesApi';
 export * from './ReviewsApi';

@@ -1,16 +1,24 @@
 import { useQuery } from "@tanstack/react-query";
-import { useJsonFromResponse } from "@/commom";
 import NestAPI from "@/api";
-import { CourseControllerFindRequest } from "@/sdk";
+import { useJsonFromResponse } from "@/commom";
 
-export const useListCourses = (params: CourseControllerFindRequest) => {
+type escoParams = {
+  enabled: boolean;
+  level: 1 | 2;
+};
+
+export const useListEscoClassifications = (params: escoParams) => {
   const query = useQuery({
-    queryKey: ["courses", params],
-    queryFn: () => NestAPI.courseControllerFind(params),
+    queryKey: ["esco", params],
+    queryFn: () =>
+      params.level === 1
+        ? NestAPI.escoControllerGetLevelOneClassifications()
+        : NestAPI.escoControllerGetLevelTwoClassifications(),
     staleTime: Infinity,
     gcTime: Infinity,
     refetchOnMount: false,
     refetchOnWindowFocus: false,
+    enabled: params.enabled,
   });
 
   const parsedError = useJsonFromResponse<{ error?: string }>(
