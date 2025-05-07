@@ -1,5 +1,6 @@
 import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
 import {
+  CheckPermissionDto,
   LinkedinAuthDto,
   UserAuthResponse,
   VerifyEmailDto,
@@ -11,6 +12,7 @@ import { ConfigService } from '@nestjs/config';
 import { OtpService } from '../otp/otp.service';
 import { UserStatus } from '@/dto/user.dto';
 import { sanitizeLinkedinUrl } from '@/alumni/utils';
+import { Permission } from '@prisma/client';
 @Injectable()
 export class UserService {
   constructor(
@@ -191,5 +193,26 @@ export class UserService {
         profilePictureUrl: alumni.profilePictureUrl,
       },
     };
+  }
+
+  async checkPermission(body: CheckPermissionDto): Promise<boolean> {
+    const { userId, resource, action } = body;
+
+    const user = await this.prisma.alumni.findUnique({
+      where: { id: userId },
+      include: {
+        Permissions: true,
+      },
+    });
+
+    if (!user) {
+      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+    }
+
+    const hasPermission = user.Permissions.some(
+      (p: Permission) => p.resource === resource && p.actions.includes(action),
+    );
+
+    return hasPermission;
   }
 }

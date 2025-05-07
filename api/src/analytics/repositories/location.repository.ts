@@ -41,17 +41,11 @@ export class LocationRepository {
   async countCities() {
     // Note: It's highly unlikely that 2 cities in the same country have the same name
     // So we can deduplicate the cities by country
-    const cities = await this.prismaService.location.groupBy({
-      by: ['countryCode', 'city'],
+    return await this.prismaService.location.count({
       where: {
         city: { not: null },
       },
-      _count: {
-        _all: true,
-      },
     });
-
-    return cities.length;
   }
 
   async getCities(countryCodes?: string[]) {

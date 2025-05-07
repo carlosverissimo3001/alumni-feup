@@ -14,6 +14,7 @@ models/AddFacultyDto.ts
 models/Alumni.ts
 models/AlumniExtended.ts
 models/BasicAlumniProfileDto.ts
+models/CheckPermissionDto.ts
 models/CityListItemDto.ts
 models/CityListResponseDto.ts
 models/CityOptionDto.ts

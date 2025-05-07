@@ -3,7 +3,6 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { User } from '@/sdk/api';
 import Cookies from 'js-cookie';
-import { useToast } from '@/hooks/misc/useToast';
 
 interface AuthContextType {
   user: User | null;
@@ -28,7 +27,6 @@ interface AuthProviderProps {
 }
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
-  const { toast } = useToast();
   const [user, setUser] = useState<User | null>(null);
   const [token, setToken] = useState<string | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
@@ -40,6 +38,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         const parsedUser = JSON.parse(decodeURIComponent(storedUser));
         setUser(parsedUser);
         setIsAuthenticated(true);
+        
+        // Initialize userId in localStorage if not already set
+        if (typeof window !== 'undefined' && parsedUser.id) {
+          localStorage.setItem('userId', parsedUser.id);
+        }
       } catch (error: unknown) {
         if (error instanceof Error) {
           console.error('Error parsing stored user data from cookies:', error.message);
@@ -49,6 +52,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         setUser(null);
         setIsAuthenticated(false);
         Cookies.remove('user');
+        
+        // Also remove userId from localStorage if user data is invalid
+        if (typeof window !== 'undefined') {
+          localStorage.removeItem('userId');
+        }
       }
     } else {
       setUser(null);
@@ -62,12 +70,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     setIsAuthenticated(true);
     Cookies.set('auth_token', newToken, { expires: 7 });
     Cookies.set('user', encodeURIComponent(JSON.stringify(newUser)), { expires: 7 });
-
-/*     toast({
-      title: 'Logged in',
-      description: `Welcome ${newUser.firstName} ${newUser.lastName}`,
-      variant: 'default',
-    }); */
+    
+    // Store userId in localStorage for API middleware
+    if (typeof window !== 'undefined' && newUser.id) {
+      localStorage.setItem('userId', newUser.id);
+    }
   };
 
   const logout = () => {
@@ -76,6 +83,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     setIsAuthenticated(false);
     Cookies.remove('auth_token');
     Cookies.remove('user');
+    
+    // Remove userId from localStorage
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('userId');
+    }
 
     // TODO: Maybe invalidate the token in the backend
 

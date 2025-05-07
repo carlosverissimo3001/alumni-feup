@@ -1,6 +1,11 @@
 import { Info } from "lucide-react";
 import { Card } from "../ui/card";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../ui/tooltip";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "../ui/tooltip";
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { Badge } from "../ui/badge";
@@ -12,20 +17,26 @@ export type StatsCardProps = {
   infoMessage?: string;
 };
 
-export default function StatsCard({ icon, name, values, infoMessage }: StatsCardProps) {
+export default function StatsCard({
+  icon,
+  name,
+  values,
+  infoMessage,
+}: StatsCardProps) {
   const [isLoaded, setIsLoaded] = useState(false);
   const [percentage, setPercentage] = useState(0);
-  
+
   useEffect(() => {
     // Calculate percentage
-    const calculatedPercentage = values[1] > 0 ? Math.round((values[0] / values[1]) * 100) : 0;
-    
+    const calculatedPercentage =
+      values[1] > 0 ? Math.round((values[0] / values[1]) * 100) : 0;
+
     // Animate loading effect
     const timer = setTimeout(() => {
       setIsLoaded(true);
       setPercentage(calculatedPercentage);
     }, 300);
-    
+
     return () => clearTimeout(timer);
   }, [values]);
 
@@ -56,9 +67,13 @@ export default function StatsCard({ icon, name, values, infoMessage }: StatsCard
                   <TooltipProvider>
                     <Tooltip>
                       <TooltipTrigger asChild>
-                        <Info className="w-4 h-4 text-[#8C2D19] cursor-help" />
+                        <Info className="h-5 w-5 text-[#8C2D19]" />
                       </TooltipTrigger>
-                      <TooltipContent side="right" align="start" className="max-w-xs bg-[#8C2D19] text-white">
+                      <TooltipContent
+                        side="right"
+                        align="start"
+                        className="max-w-xs"
+                      >
                         <p className="text-sm">{infoMessage}</p>
                       </TooltipContent>
                     </Tooltip>
@@ -75,7 +90,7 @@ export default function StatsCard({ icon, name, values, infoMessage }: StatsCard
                 </Badge>
               </motion.div>
             </div>
-            <motion.h3 
+            <motion.h3
               initial={{ opacity: 0.5 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.5 }}

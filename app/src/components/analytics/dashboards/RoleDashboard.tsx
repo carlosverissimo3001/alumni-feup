@@ -11,7 +11,9 @@ import {
 import { Button } from "@/components/ui/button";
 import { RoleListDto } from "@/sdk";
 import { Briefcase, Filter, Info, ExternalLink } from "lucide-react";
-import { IndustryDataSkeleton } from "../skeletons/IndustryDataSkeleton";
+
+// Define a skeleton for the role dashboard
+import { CompanyDataSkeleton } from "../skeletons/CompanyDataSkeleton";
 import PaginationControls from "../common/PaginationControls";
 import TableTitle from "../common/TableTitle";
 import CustomTableHeader from "../common/CustomeTableHeader";
@@ -164,7 +166,7 @@ export default function RoleDashboard({
             />
 
             {isLoading || isFetching ? (
-              <IndustryDataSkeleton />
+              <CompanyDataSkeleton />
             ) : (
               <TableBody className="bg-white divide-y divide-gray-200">
                 {roles.length > 0 ? (

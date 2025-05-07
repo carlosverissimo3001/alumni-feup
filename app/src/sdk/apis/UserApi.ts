@@ -15,12 +15,15 @@
 
 import * as runtime from '../runtime';
 import type {
+  CheckPermissionDto,
   LinkedinAuthDto,
   UserAuthResponse,
   VerifyEmailDto,
   VerifyEmailTokenDto,
 } from '../models/index';
 import {
+    CheckPermissionDtoFromJSON,
+    CheckPermissionDtoToJSON,
     LinkedinAuthDtoFromJSON,
     LinkedinAuthDtoToJSON,
     UserAuthResponseFromJSON,
@@ -30,6 +33,10 @@ import {
     VerifyEmailTokenDtoFromJSON,
     VerifyEmailTokenDtoToJSON,
 } from '../models/index';
+
+export interface UserControllerCheckPermissionRequest {
+    checkPermissionDto: CheckPermissionDto;
+}
 
 export interface UserControllerLinkedinAuthRequest {
     linkedinAuthDto: LinkedinAuthDto;
@@ -54,6 +61,21 @@ export interface UserControllerVerifyEmailTokenRequest {
  * @interface UserApiInterface
  */
 export interface UserApiInterface {
+    /**
+     * 
+     * @summary Check if a user has a permission
+     * @param {CheckPermissionDto} checkPermissionDto 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof UserApiInterface
+     */
+    userControllerCheckPermissionRaw(requestParameters: UserControllerCheckPermissionRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<boolean>>;
+
+    /**
+     * Check if a user has a permission
+     */
+    userControllerCheckPermission(requestParameters: UserControllerCheckPermissionRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<boolean>;
+
     /**
      * 
      * @summary Authenticate a user with LinkedIn
@@ -120,6 +142,46 @@ export interface UserApiInterface {
  * 
  */
 export class UserApi extends runtime.BaseAPI implements UserApiInterface {
+
+    /**
+     * Check if a user has a permission
+     */
+    async userControllerCheckPermissionRaw(requestParameters: UserControllerCheckPermissionRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<boolean>> {
+        if (requestParameters['checkPermissionDto'] == null) {
+            throw new runtime.RequiredError(
+                'checkPermissionDto',
+                'Required parameter "checkPermissionDto" was null or undefined when calling userControllerCheckPermission().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
+
+        const response = await this.request({
+            path: `/api/user/check-permission`,
+            method: 'POST',
+            headers: headerParameters,
+            query: queryParameters,
+            body: CheckPermissionDtoToJSON(requestParameters['checkPermissionDto']),
+        }, initOverrides);
+
+        if (this.isJsonMime(response.headers.get('content-type'))) {
+            return new runtime.JSONApiResponse<boolean>(response);
+        } else {
+            return new runtime.TextApiResponse(response) as any;
+        }
+    }
+
+    /**
+     * Check if a user has a permission
+     */
+    async userControllerCheckPermission(requestParameters: UserControllerCheckPermissionRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<boolean> {
+        const response = await this.userControllerCheckPermissionRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
 
     /**
      * Authenticate a user with LinkedIn

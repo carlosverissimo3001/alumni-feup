@@ -19,6 +19,7 @@ import type {
   Alumni,
   AlumniExtended,
   BasicAlumniProfileDto,
+  CheckPermissionDto,
   CityListResponseDto,
   CityOptionDto,
   CompanyListResponseDto,
@@ -52,6 +53,8 @@ import {
     AlumniExtendedToJSON,
     BasicAlumniProfileDtoFromJSON,
     BasicAlumniProfileDtoToJSON,
+    CheckPermissionDtoFromJSON,
+    CheckPermissionDtoToJSON,
     CityListResponseDtoFromJSON,
     CityListResponseDtoToJSON,
     CityOptionDtoFromJSON,
@@ -340,6 +343,10 @@ export interface RoleAnalyticsControllerGetRolesRequest {
     search?: string;
     sortBy?: string;
     sortOrder?: string;
+}
+
+export interface UserControllerCheckPermissionRequest {
+    checkPermissionDto: CheckPermissionDto;
 }
 
 export interface UserControllerLinkedinAuthRequest {
@@ -1004,6 +1011,21 @@ export interface V1ApiInterface {
      * Returns the number of roles classified with each ESCO classification
      */
     roleAnalyticsControllerGetRoles(requestParameters: RoleAnalyticsControllerGetRolesRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<RoleListResponseDto>;
+
+    /**
+     * 
+     * @summary Check if a user has a permission
+     * @param {CheckPermissionDto} checkPermissionDto 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof V1ApiInterface
+     */
+    userControllerCheckPermissionRaw(requestParameters: UserControllerCheckPermissionRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<boolean>>;
+
+    /**
+     * Check if a user has a permission
+     */
+    userControllerCheckPermission(requestParameters: UserControllerCheckPermissionRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<boolean>;
 
     /**
      * 
@@ -2709,6 +2731,46 @@ export class V1Api extends runtime.BaseAPI implements V1ApiInterface {
      */
     async roleAnalyticsControllerGetRoles(requestParameters: RoleAnalyticsControllerGetRolesRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<RoleListResponseDto> {
         const response = await this.roleAnalyticsControllerGetRolesRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Check if a user has a permission
+     */
+    async userControllerCheckPermissionRaw(requestParameters: UserControllerCheckPermissionRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<boolean>> {
+        if (requestParameters['checkPermissionDto'] == null) {
+            throw new runtime.RequiredError(
+                'checkPermissionDto',
+                'Required parameter "checkPermissionDto" was null or undefined when calling userControllerCheckPermission().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
+
+        const response = await this.request({
+            path: `/api/user/check-permission`,
+            method: 'POST',
+            headers: headerParameters,
+            query: queryParameters,
+            body: CheckPermissionDtoToJSON(requestParameters['checkPermissionDto']),
+        }, initOverrides);
+
+        if (this.isJsonMime(response.headers.get('content-type'))) {
+            return new runtime.JSONApiResponse<boolean>(response);
+        } else {
+            return new runtime.TextApiResponse(response) as any;
+        }
+    }
+
+    /**
+     * Check if a user has a permission
+     */
+    async userControllerCheckPermission(requestParameters: UserControllerCheckPermissionRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<boolean> {
+        const response = await this.userControllerCheckPermissionRaw(requestParameters, initOverrides);
         return await response.value();
     }
 

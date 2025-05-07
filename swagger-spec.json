@@ -2707,6 +2707,39 @@
         ]
       }
     },
+    "/api/user/check-permission": {
+      "post": {
+        "operationId": "UserController_checkPermission",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CheckPermissionDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "User has the permission",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "boolean"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Check if a user has a permission",
+        "tags": [
+          "V1",
+          "User"
+        ]
+      }
+    },
     "/api/files": {
       "post": {
         "operationId": "FileUploadController_create",
@@ -4170,6 +4203,31 @@
         "required": [
           "email",
           "token"
+        ]
+      },
+      "CheckPermissionDto": {
+        "type": "object",
+        "properties": {
+          "userId": {
+            "type": "string",
+            "description": "The ID of the user to check permission for",
+            "example": "123e4567-e89b-12d3-a456-426614174000"
+          },
+          "resource": {
+            "type": "string",
+            "description": "The resource to check permission for",
+            "example": "read"
+          },
+          "action": {
+            "type": "string",
+            "description": "The action to check permission for",
+            "example": "read"
+          }
+        },
+        "required": [
+          "userId",
+          "resource",
+          "action"
         ]
       },
       "UploadExtractionDto": {

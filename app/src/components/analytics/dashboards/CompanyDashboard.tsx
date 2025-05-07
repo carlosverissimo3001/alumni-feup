@@ -140,10 +140,10 @@ export default function CompanyDashboard({
                             index % 2 === 0 ? "bg-gray-50" : "bg-white"
                           } hover:bg-[#A13A23] hover:bg-opacity-10 transition-colors duration-200 relative`}
                         >
-                          <TableCell className="w-1/12 py-1.5 pl-3 text-sm text-gray-500 font-medium align-middle">
+                          <TableCell className="w-[3%] py-1.5 pl-3 text-sm text-gray-500 font-medium align-middle">
                             {rowNumber}
                           </TableCell>
-                          <TableCell className="w-8/12 py-1.5 pl-3 text-sm font-medium text-[#000000] flex items-center gap-1 align-middle">
+                          <TableCell className="w-[85%] py-1.5 pl-3 text-sm font-medium text-[#000000] flex items-center gap-1 align-middle">
                             <div className="min-w-[24px] w-6 h-6 mr-1.5 rounded-full overflow-hidden flex items-center justify-center bg-gray-50">
                               <ImageWithFallback
                                 src={company.logo || ""}
@@ -162,13 +162,13 @@ export default function CompanyDashboard({
                             >
                               <div
                                 title={company.name}
-                                className="text-ellipsis overflow-hidden w-full text-left"
+                                className="truncate max-w-full w-full text-left"
                               >
                                 {company.name}
                               </div>
                             </Button>
                           </TableCell>
-                          <TableCell className="w-3/12 px-3 py-1 text-sm text-[#000000] align-middle hover:text-[#8C2D19] transition-colors">
+                          <TableCell className="w-[12%] px-3 py-1 text-sm text-[#000000] align-middle hover:text-[#8C2D19] transition-colors">
                             <span className="font-semibold">
                               {company.alumniCount}
                             </span>
