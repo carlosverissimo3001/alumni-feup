@@ -13,6 +13,7 @@ import { OtpService } from '../otp/otp.service';
 import { UserStatus } from '@/dto/user.dto';
 import { sanitizeLinkedinUrl } from '@/alumni/utils';
 import { Permission } from '@prisma/client';
+import { EmailService } from '@/email/services/email.service';
 @Injectable()
 export class UserService {
   constructor(
@@ -21,6 +22,7 @@ export class UserService {
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService,
     private readonly otpService: OtpService,
+    private readonly emailService: EmailService,
   ) {}
 
   async linkedinAuth(body: LinkedinAuthDto): Promise<UserAuthResponse> {
@@ -97,21 +99,13 @@ export class UserService {
   async verifyEmail(body: VerifyEmailDto): Promise<void> {
     const { email } = body;
 
-    // ! *** NOT READY FOR PROD CODE START ***
-    const code = '123456';
+    // Generate a verification code, and save it to Redis
+    const code = await this.otpService.generateOTP(email);
     const hashed = this.otpService['hash'](code);
     await this.otpService['redis'].set(`otp:${email}`, hashed, 'EX', 600);
-    console.log(`Test code set for ${email}: ${code}`);
-    // ! *** NOT READY FOR PROD CODE END ***
 
-    // *** ACTUAL GOOD LOGIC START ***
-    // const code = await this.otpService.generateOTP(email);
-    // await this.mailService.sendEmail({
-    //   to: email,
-    //   subject: 'Your Verification Code',
-    //   text: `Your verification code is: ${code}`,
-    // });
-    // *** ACTUAL GOOD LOGIC END ***
+    // Send the verification code to the user's email
+    await this.emailService.sendOtpEmail(email, code);
   }
 
   /**

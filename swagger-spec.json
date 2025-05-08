@@ -2638,6 +2638,289 @@
         ]
       }
     },
+    "/api/course": {
+      "get": {
+        "operationId": "CourseController_find",
+        "parameters": [
+          {
+            "name": "courseIds",
+            "required": false,
+            "in": "query",
+            "description": "The courses to filter by",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "facultyIds",
+            "required": false,
+            "in": "query",
+            "description": "The faculties to filter by",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": "Returns courses",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CourseExtended"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "Get courses",
+        "tags": [
+          "V1",
+          "Course"
+        ]
+      },
+      "post": {
+        "operationId": "CourseController_create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateCourseDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "default": {
+            "description": "Returns the created course",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CourseExtended"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Create a course",
+        "tags": [
+          "V1",
+          "Course"
+        ]
+      }
+    },
+    "/api/course/{id}": {
+      "get": {
+        "operationId": "CourseController_findOne",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": "Returns a course",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CourseExtended"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Get a course by id",
+        "tags": [
+          "V1",
+          "Course"
+        ]
+      }
+    },
+    "/api/esco/level-one": {
+      "get": {
+        "operationId": "EscoController_getLevelOneClassifications",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Returns all level 1 ESCO classifications",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/EscoClassificationDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "Get all level 1 ESCO classifications",
+        "tags": [
+          "V1",
+          "ESCO"
+        ]
+      }
+    },
+    "/api/esco/level-two": {
+      "get": {
+        "operationId": "EscoController_getLevelTwoClassifications",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Returns all level 2 ESCO classifications",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/EscoClassificationDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "Get all level 2 ESCO classifications",
+        "tags": [
+          "V1",
+          "ESCO"
+        ]
+      }
+    },
+    "/api/faculty": {
+      "get": {
+        "operationId": "FacultyController_findAll",
+        "parameters": [],
+        "responses": {
+          "default": {
+            "description": "Returns all faculties",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Faculty"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "Get all faculties",
+        "tags": [
+          "V1",
+          "Faculty"
+        ]
+      },
+      "post": {
+        "operationId": "FacultyController_create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddFacultyDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "default": {
+            "description": "Returns the created faculty",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Faculty"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Create a faculty",
+        "tags": [
+          "V1",
+          "Faculty"
+        ]
+      }
+    },
+    "/api/feedback": {
+      "post": {
+        "operationId": "FeedbackController_create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SendFeedbackDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "summary": "Handles the feedback by inserting it into the database and sending an email to the administrators",
+        "tags": [
+          "V1",
+          "Feedback"
+        ]
+      }
+    },
+    "/api/files": {
+      "post": {
+        "operationId": "FileUploadController_create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "description": "Data to upload",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UploadExtractionDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "default": {
+            "description": "Returns the status of the upload",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Upload a file",
+        "tags": [
+          "V1",
+          "Files"
+        ]
+      }
+    },
     "/api/user/linkedinAuth": {
       "post": {
         "operationId": "UserController_linkedinAuth",
@@ -2792,211 +3075,6 @@
         ]
       }
     },
-    "/api/files": {
-      "post": {
-        "operationId": "FileUploadController_create",
-        "parameters": [],
-        "requestBody": {
-          "required": true,
-          "description": "Data to upload",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/UploadExtractionDto"
-              }
-            }
-          }
-        },
-        "responses": {
-          "default": {
-            "description": "Returns the status of the upload",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "string"
-                }
-              }
-            }
-          }
-        },
-        "summary": "Upload a file",
-        "tags": [
-          "V1",
-          "Files"
-        ]
-      }
-    },
-    "/api/course": {
-      "get": {
-        "operationId": "CourseController_find",
-        "parameters": [
-          {
-            "name": "courseIds",
-            "required": false,
-            "in": "query",
-            "description": "The courses to filter by",
-            "schema": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
-            }
-          },
-          {
-            "name": "facultyIds",
-            "required": false,
-            "in": "query",
-            "description": "The faculties to filter by",
-            "schema": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
-            }
-          }
-        ],
-        "responses": {
-          "default": {
-            "description": "Returns courses",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/CourseExtended"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "summary": "Get courses",
-        "tags": [
-          "V1",
-          "Course"
-        ]
-      },
-      "post": {
-        "operationId": "CourseController_create",
-        "parameters": [],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CreateCourseDto"
-              }
-            }
-          }
-        },
-        "responses": {
-          "default": {
-            "description": "Returns the created course",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/CourseExtended"
-                }
-              }
-            }
-          }
-        },
-        "summary": "Create a course",
-        "tags": [
-          "V1",
-          "Course"
-        ]
-      }
-    },
-    "/api/course/{id}": {
-      "get": {
-        "operationId": "CourseController_findOne",
-        "parameters": [
-          {
-            "name": "id",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "default": {
-            "description": "Returns a course",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/CourseExtended"
-                }
-              }
-            }
-          }
-        },
-        "summary": "Get a course by id",
-        "tags": [
-          "V1",
-          "Course"
-        ]
-      }
-    },
-    "/api/faculty": {
-      "get": {
-        "operationId": "FacultyController_findAll",
-        "parameters": [],
-        "responses": {
-          "default": {
-            "description": "Returns all faculties",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/Faculty"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "summary": "Get all faculties",
-        "tags": [
-          "V1",
-          "Faculty"
-        ]
-      },
-      "post": {
-        "operationId": "FacultyController_create",
-        "parameters": [],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/AddFacultyDto"
-              }
-            }
-          }
-        },
-        "responses": {
-          "default": {
-            "description": "Returns the created faculty",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Faculty"
-                }
-              }
-            }
-          }
-        },
-        "summary": "Create a faculty",
-        "tags": [
-          "V1",
-          "Faculty"
-        ]
-      }
-    },
     "/api/reviews/geoJSON": {
       "get": {
         "operationId": "ReviewController_findAllGeoJSON",
@@ -3068,58 +3146,6 @@
         "tags": [
           "V1",
           "Reviews"
-        ]
-      }
-    },
-    "/api/esco/level-one": {
-      "get": {
-        "operationId": "EscoController_getLevelOneClassifications",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "Returns all level 1 ESCO classifications",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/EscoClassificationDto"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "summary": "Get all level 1 ESCO classifications",
-        "tags": [
-          "V1",
-          "ESCO"
-        ]
-      }
-    },
-    "/api/esco/level-two": {
-      "get": {
-        "operationId": "EscoController_getLevelTwoClassifications",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "Returns all level 2 ESCO classifications",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/EscoClassificationDto"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "summary": "Get all level 2 ESCO classifications",
-        "tags": [
-          "V1",
-          "ESCO"
         ]
       }
     }
@@ -4237,6 +4263,259 @@
           "level"
         ]
       },
+      "CourseExtended": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The id of the course"
+          },
+          "name": {
+            "type": "string",
+            "description": "The name of the course"
+          },
+          "acronym": {
+            "type": "string",
+            "description": "The acronym of the course"
+          },
+          "startYear": {
+            "type": "number",
+            "description": "The start year of the course"
+          },
+          "endYear": {
+            "type": "number",
+            "description": "The end year of the course, if it is not active"
+          },
+          "status": {
+            "type": "string",
+            "description": "The status of the course",
+            "enum": [
+              "ACTIVE",
+              "INACTIVE"
+            ]
+          },
+          "facultyId": {
+            "type": "string",
+            "description": "The faculty id of the course"
+          },
+          "nameInt": {
+            "type": "string",
+            "description": "The name of the course in the international language"
+          },
+          "courseType": {
+            "type": "string",
+            "description": "The type of the course",
+            "enum": [
+              "INTEGRATED_MASTERS",
+              "BACHELORS",
+              "MASTERS",
+              "DOCTORATE"
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "acronym",
+          "startYear",
+          "status",
+          "facultyId",
+          "courseType"
+        ]
+      },
+      "CreateCourseDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "The name of the course",
+            "example": "Computer Science"
+          },
+          "nameInt": {
+            "type": "string",
+            "description": "The international name of the course",
+            "example": "Computer Science"
+          },
+          "acronym": {
+            "type": "string",
+            "description": "The acronym of the course",
+            "example": "CS"
+          },
+          "courseType": {
+            "type": "string",
+            "description": "The type of the course",
+            "example": "BACHELORS",
+            "enum": [
+              "INTEGRATED_MASTERS",
+              "BACHELORS",
+              "MASTERS",
+              "DOCTORATE"
+            ]
+          },
+          "status": {
+            "type": "string",
+            "description": "The status of the course",
+            "example": "ACTIVE",
+            "enum": [
+              "ACTIVE",
+              "INACTIVE"
+            ]
+          },
+          "facultyId": {
+            "type": "string",
+            "description": "The faculty id of the course",
+            "example": "123"
+          },
+          "startYear": {
+            "type": "number",
+            "description": "The start year of the course",
+            "example": 2020
+          },
+          "endYear": {
+            "type": "number",
+            "description": "If the course is INACTIVE, the end year of the course",
+            "example": 2024
+          },
+          "createdBy": {
+            "type": "string",
+            "description": "The created by of the course",
+            "example": "123"
+          }
+        },
+        "required": [
+          "name",
+          "acronym",
+          "courseType",
+          "status",
+          "facultyId",
+          "startYear"
+        ]
+      },
+      "EscoClassificationDto": {
+        "type": "object",
+        "properties": {
+          "escoCode": {
+            "type": "string",
+            "description": "The ESCO code for the classification",
+            "example": "2512"
+          },
+          "title": {
+            "type": "string",
+            "description": "The title for the classification",
+            "example": "Software Engineer"
+          }
+        },
+        "required": [
+          "escoCode",
+          "title"
+        ]
+      },
+      "Faculty": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string",
+            "description": "The local name of the faculty",
+            "example": "Faculdade de Engenharia da Universidade do Porto"
+          },
+          "nameInt": {
+            "type": "object",
+            "description": "The international name of the faculty",
+            "example": "Faculty of Engineering of the University of Porto"
+          },
+          "acronym": {
+            "type": "string",
+            "description": "The acronym of the faculty",
+            "example": "FEUP"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "nameInt",
+          "acronym"
+        ]
+      },
+      "AddFacultyDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "The name of the faculty",
+            "example": "Faculty of Science"
+          },
+          "acronym": {
+            "type": "string",
+            "description": "The acronym of the faculty",
+            "example": "FCT"
+          },
+          "nameInt": {
+            "type": "string",
+            "description": "The international name of the faculty",
+            "example": "Faculty of Science"
+          },
+          "createdBy": {
+            "type": "string",
+            "description": "The created by of the faculty",
+            "example": "123"
+          }
+        },
+        "required": [
+          "name",
+          "acronym",
+          "nameInt"
+        ]
+      },
+      "SendFeedbackDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "The name of the user sending the feedback"
+          },
+          "email": {
+            "type": "string",
+            "description": "The email of the user sending the feedback"
+          },
+          "feedback": {
+            "type": "string",
+            "description": "The feedback message"
+          },
+          "type": {
+            "type": "string",
+            "description": "The type of feedback",
+            "enum": [
+              "BUG",
+              "FEATURE_REQUEST",
+              "OTHER"
+            ]
+          }
+        },
+        "required": [
+          "name",
+          "email",
+          "feedback",
+          "type"
+        ]
+      },
+      "UploadExtractionDto": {
+        "type": "object",
+        "properties": {
+          "faculty_id": {
+            "type": "string"
+          },
+          "course_id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "faculty_id",
+          "course_id"
+        ]
+      },
       "LinkedinAuthDto": {
         "type": "object",
         "properties": {
@@ -4386,208 +4665,6 @@
           "action"
         ]
       },
-      "UploadExtractionDto": {
-        "type": "object",
-        "properties": {
-          "faculty_id": {
-            "type": "string"
-          },
-          "course_id": {
-            "type": "string"
-          }
-        },
-        "required": [
-          "faculty_id",
-          "course_id"
-        ]
-      },
-      "CourseExtended": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string",
-            "description": "The id of the course"
-          },
-          "name": {
-            "type": "string",
-            "description": "The name of the course"
-          },
-          "acronym": {
-            "type": "string",
-            "description": "The acronym of the course"
-          },
-          "startYear": {
-            "type": "number",
-            "description": "The start year of the course"
-          },
-          "endYear": {
-            "type": "number",
-            "description": "The end year of the course, if it is not active"
-          },
-          "status": {
-            "type": "string",
-            "description": "The status of the course",
-            "enum": [
-              "ACTIVE",
-              "INACTIVE"
-            ]
-          },
-          "facultyId": {
-            "type": "string",
-            "description": "The faculty id of the course"
-          },
-          "nameInt": {
-            "type": "string",
-            "description": "The name of the course in the international language"
-          },
-          "courseType": {
-            "type": "string",
-            "description": "The type of the course",
-            "enum": [
-              "INTEGRATED_MASTERS",
-              "BACHELORS",
-              "MASTERS",
-              "DOCTORATE"
-            ]
-          }
-        },
-        "required": [
-          "id",
-          "name",
-          "acronym",
-          "startYear",
-          "status",
-          "facultyId",
-          "courseType"
-        ]
-      },
-      "CreateCourseDto": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string",
-            "description": "The name of the course",
-            "example": "Computer Science"
-          },
-          "nameInt": {
-            "type": "string",
-            "description": "The international name of the course",
-            "example": "Computer Science"
-          },
-          "acronym": {
-            "type": "string",
-            "description": "The acronym of the course",
-            "example": "CS"
-          },
-          "courseType": {
-            "type": "string",
-            "description": "The type of the course",
-            "example": "BACHELORS",
-            "enum": [
-              "INTEGRATED_MASTERS",
-              "BACHELORS",
-              "MASTERS",
-              "DOCTORATE"
-            ]
-          },
-          "status": {
-            "type": "string",
-            "description": "The status of the course",
-            "example": "ACTIVE",
-            "enum": [
-              "ACTIVE",
-              "INACTIVE"
-            ]
-          },
-          "facultyId": {
-            "type": "string",
-            "description": "The faculty id of the course",
-            "example": "123"
-          },
-          "startYear": {
-            "type": "number",
-            "description": "The start year of the course",
-            "example": 2020
-          },
-          "endYear": {
-            "type": "number",
-            "description": "If the course is INACTIVE, the end year of the course",
-            "example": 2024
-          },
-          "createdBy": {
-            "type": "string",
-            "description": "The created by of the course",
-            "example": "123"
-          }
-        },
-        "required": [
-          "name",
-          "acronym",
-          "courseType",
-          "status",
-          "facultyId",
-          "startYear"
-        ]
-      },
-      "Faculty": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string"
-          },
-          "name": {
-            "type": "string",
-            "description": "The local name of the faculty",
-            "example": "Faculdade de Engenharia da Universidade do Porto"
-          },
-          "nameInt": {
-            "type": "object",
-            "description": "The international name of the faculty",
-            "example": "Faculty of Engineering of the University of Porto"
-          },
-          "acronym": {
-            "type": "string",
-            "description": "The acronym of the faculty",
-            "example": "FEUP"
-          }
-        },
-        "required": [
-          "id",
-          "name",
-          "nameInt",
-          "acronym"
-        ]
-      },
-      "AddFacultyDto": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string",
-            "description": "The name of the faculty",
-            "example": "Faculty of Science"
-          },
-          "acronym": {
-            "type": "string",
-            "description": "The acronym of the faculty",
-            "example": "FCT"
-          },
-          "nameInt": {
-            "type": "string",
-            "description": "The international name of the faculty",
-            "example": "Faculty of Science"
-          },
-          "createdBy": {
-            "type": "string",
-            "description": "The created by of the faculty",
-            "example": "123"
-          }
-        },
-        "required": [
-          "name",
-          "acronym",
-          "nameInt"
-        ]
-      },
       "ReviewGeoJSONFeature": {
         "type": "object",
         "properties": {
@@ -4661,25 +4738,6 @@
           "reviewType",
           "companyId",
           "locationId"
-        ]
-      },
-      "EscoClassificationDto": {
-        "type": "object",
-        "properties": {
-          "escoCode": {
-            "type": "string",
-            "description": "The ESCO code for the classification",
-            "example": "2512"
-          },
-          "title": {
-            "type": "string",
-            "description": "The title for the classification",
-            "example": "Software Engineer"
-          }
-        },
-        "required": [
-          "escoCode",
-          "title"
         ]
       }
     }

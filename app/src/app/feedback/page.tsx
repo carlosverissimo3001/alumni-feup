@@ -6,32 +6,32 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { useToast } from "@/hooks/misc/useToast";
+import { useSendFeedback } from "@/hooks/feedback/useSendFeeback";
+import { SendFeedbackDtoTypeEnum as FeedbackType } from "@/sdk";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+
+const displayNames = {
+  'BUG': 'Bug',
+  'FEATURE_REQUEST': 'Feature Request',
+  'OTHER': 'Other'
+};
 
 export default function Feedback() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [feedback, setFeedback] = useState("");
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const { toast } = useToast();
+  const [type, setType] = useState<FeedbackType>(FeedbackType.Other);
+  const { mutate, isPending } = useSendFeedback();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsSubmitting(true);
     
-    // Simulate API call
-    // We'll probably store this in the database and then use smth like SendGrid to send the email to the Admins
-    setTimeout(() => {
-      toast({
-        title: "Feedback received!",
-        description: "Thank you for your valuable feedback.",
-        variant: "default",
-      });
-      setName("");
-      setEmail("");
-      setFeedback("");
-      setIsSubmitting(false);
-    }, 1500);
+    mutate({ sendFeedbackDto: {
+      name,
+      email,
+      feedback,
+      type,
+    }});
   };
 
   return (
@@ -90,16 +90,44 @@ export default function Feedback() {
             onChange={(e) => setFeedback(e.target.value)}
             placeholder="Please share your thoughts with us..." 
             required
-            className="w-full min-h-[120px]"
+            className="w-full min-h-[80px]"
           />
+        </div>
+        <div className="space-y-2">
+          <label htmlFor="type" className="text-sm font-medium">
+            Feedback Type
+          </label>
+
+          <Select
+                onValueChange={(value: string) => setType(value as FeedbackType)}
+                value={type}
+              >
+                <SelectTrigger
+                  id="course"
+                  className="h-11 border-slate-200 focus:ring-2 focus:ring-primary/20"
+                >
+                  <SelectValue
+                    placeholder={
+                      "Feedback Type"
+                    }
+                  />
+                </SelectTrigger>
+                <SelectContent>
+                  {Object.entries(FeedbackType).map(([key, value]) => (
+                    <SelectItem key={key} value={value}>
+                      {displayNames[value]}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
         </div>
 
         <Button 
           type="submit" 
           className="w-full"
-          disabled={isSubmitting}
+          disabled={isPending}
         >
-          {isSubmitting ? (
+          {isPending ? (
             <>
               <span className="animate-spin mr-2">⏳</span>
               Sending...

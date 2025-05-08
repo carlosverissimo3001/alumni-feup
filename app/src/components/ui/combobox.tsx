@@ -54,6 +54,11 @@ interface ComboboxProps {
    * Optional, defaults to false.
    */
   lazyLoading?: boolean
+  /**
+   * If true, will enable the search functionality.
+   * Optional, defaults to true.
+   */
+  enableSearch?: boolean
 }
 
 export function Combobox({
@@ -70,6 +75,7 @@ export function Combobox({
   isLoading = false,
   onSearchChange,
   lazyLoading = false,
+  enableSearch = true,
 }: ComboboxProps) {
   const [open, setOpen] = React.useState(false)
   const [searchValue, setSearchValue] = React.useState("")
@@ -119,12 +125,14 @@ export function Combobox({
       </PopoverTrigger>
       <PopoverContent className={cn(popoverWidth, "p-0")}>
         <Command shouldFilter={false}>
+          {enableSearch && (
           <CommandInput 
             placeholder={!lazyLoading ? searchPlaceholder : "Type at least 3 characters..."}
             onValueChange={handleSearchChange}
             value={searchValue}
-            className="h-9"
-          />
+              className="h-9"
+            />
+          )}
           <CommandList>
             <CommandEmpty className="p-2">
               {isLoading 
