@@ -66,7 +66,6 @@ const ManualSubmissionForm = ({ onBack }: ManualSubmissionFormProps) => {
     enabled: !!selectedFaculty,
   });
 
-  // Email verification hooks
   const { mutate: sendVerificationEmail, isPending: isSendingEmail,} = useVerifyEmail({
     data: { verifyEmailDto: { email: personalEmail } },
     onSuccess: () => {
@@ -75,7 +74,7 @@ const ManualSubmissionForm = ({ onBack }: ManualSubmissionFormProps) => {
         description: "Please check your email for the verification code.",
         variant: "success",
       });
-      setResendCooldown(60); // Start cooldown for 60 seconds
+      setResendCooldown(60); 
     },
     onError: () => {
       toast({
@@ -105,7 +104,7 @@ const ManualSubmissionForm = ({ onBack }: ManualSubmissionFormProps) => {
     },
   });
 
-  // Countdown effect for resend cooldown
+
   useEffect(() => {
     let timer: NodeJS.Timeout;
     if (resendCooldown > 0) {
