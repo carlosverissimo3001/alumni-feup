@@ -49,6 +49,7 @@ const ManualSubmissionForm = ({ onBack }: ManualSubmissionFormProps) => {
   const [personalEmail, setPersonalEmail] = useState("");
   const [otpCode, setOtpCode] = useState("");
   const [isEmailVerified, setIsEmailVerified] = useState(false);
+  const [resendCooldown, setResendCooldown] = useState(0);
   const [selectedFaculty, setSelectedFaculty] = useState<string | undefined>(
     undefined
   );
@@ -59,7 +60,10 @@ const ManualSubmissionForm = ({ onBack }: ManualSubmissionFormProps) => {
 
   const { data: faculties, isLoading: isLoadingFaculties } = useListFaculties();
   const { data: courses, isLoading: isLoadingCourses } = useListCourses({
-    facultyIds: selectedFaculty ? [selectedFaculty] : undefined,
+    params: {
+      facultyIds: selectedFaculty ? [selectedFaculty] : undefined,
+    },
+    enabled: !!selectedFaculty,
   });
 
   // Email verification hooks
@@ -71,6 +75,7 @@ const ManualSubmissionForm = ({ onBack }: ManualSubmissionFormProps) => {
         description: "Please check your email for the verification code.",
         variant: "success",
       });
+      setResendCooldown(60); // Start cooldown for 60 seconds
     },
     onError: () => {
       toast({
@@ -99,6 +104,19 @@ const ManualSubmissionForm = ({ onBack }: ManualSubmissionFormProps) => {
       });
     },
   });
+
+  // Countdown effect for resend cooldown
+  useEffect(() => {
+    let timer: NodeJS.Timeout;
+    if (resendCooldown > 0) {
+      timer = setTimeout(() => {
+        setResendCooldown(prevCooldown => prevCooldown - 1);
+      }, 1000);
+    }
+    return () => {
+      if (timer) clearTimeout(timer);
+    };
+  }, [resendCooldown]);
 
   const onSuccess = () => {
     toast({
@@ -289,9 +307,9 @@ const ManualSubmissionForm = ({ onBack }: ManualSubmissionFormProps) => {
                         type="button"
                         variant="secondary"
                         onClick={() => sendVerificationEmail()}
-                        disabled={ isEmailVerified || isSendingEmail}
+                        disabled={isEmailVerified || isSendingEmail || resendCooldown > 0}
                         className={`min-w-[100px] transition-all duration-200 ${
-                          isEmailVerified 
+                          isEmailVerified || resendCooldown > 0
                             ? 'opacity-50 cursor-not-allowed' 
                             : ''
                         }`}
@@ -300,6 +318,10 @@ const ManualSubmissionForm = ({ onBack }: ManualSubmissionFormProps) => {
                           <div className="flex items-center gap-2">
                             <div className="h-4 w-4 animate-spin rounded-full border-2 border-gray-500 border-t-transparent"></div>
                             <span>Sending...</span>
+                          </div>
+                        ) : resendCooldown > 0 ? (
+                          <div className="flex items-center gap-1">
+                            <span>Wait {resendCooldown}s</span>
                           </div>
                         ) : (
                           'Send Code'
@@ -341,14 +363,20 @@ const ManualSubmissionForm = ({ onBack }: ManualSubmissionFormProps) => {
                       </div>
                       <p className="mt-2 text-sm text-gray-500">
                         Didn&apos;t receive the code?{" "}
-                        <button
-                          type="button"
-                          onClick={() => sendVerificationEmail()}
-                          disabled={isSendingEmail}
-                          className="text-primary hover:underline disabled:opacity-50"
-                        >
-                          Send again
-                        </button>
+                        {resendCooldown > 0 ? (
+                          <span className="text-gray-400">
+                            Resend in {resendCooldown}s
+                          </span>
+                        ) : (
+                          <button
+                            type="button"
+                            onClick={() => sendVerificationEmail()}
+                            disabled={isSendingEmail || resendCooldown > 0}
+                            className="text-primary hover:underline disabled:opacity-50"
+                          >
+                            Send again
+                          </button>
+                        )}
                       </p>
                     </div>
                   )}

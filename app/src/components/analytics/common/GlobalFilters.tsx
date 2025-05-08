@@ -173,8 +173,8 @@ export default function GlobalFilters({
       })),
       companyTypes: Object.entries(CompanyTypeEnum).map(([key, value]) => ({
         value: value,
-          label: COMPANY_TYPE[key as keyof typeof COMPANY_TYPE],
-        }))
+        label: COMPANY_TYPE[key as keyof typeof COMPANY_TYPE],
+      }))
         .sort((a, b) => a.label.localeCompare(b.label)),
       roles: (roleOptions || [])
         .filter((role) => role.level === filters.classificationLevel)

@@ -42,6 +42,7 @@ import type {
   ReviewGeoJSONFeatureCollection,
   RoleListResponseDto,
   RoleOptionDto,
+  SendFeedbackDto,
   UploadExtractionDto,
   UserAuthResponse,
   VerifyEmailDto,
@@ -102,6 +103,8 @@ import {
     RoleListResponseDtoToJSON,
     RoleOptionDtoFromJSON,
     RoleOptionDtoToJSON,
+    SendFeedbackDtoFromJSON,
+    SendFeedbackDtoToJSON,
     UploadExtractionDtoFromJSON,
     UploadExtractionDtoToJSON,
     UserAuthResponseFromJSON,
@@ -297,6 +300,10 @@ export interface CourseControllerFindOneRequest {
 
 export interface FacultyControllerCreateRequest {
     addFacultyDto: AddFacultyDto;
+}
+
+export interface FeedbackControllerCreateRequest {
+    sendFeedbackDto: SendFeedbackDto;
 }
 
 export interface FileUploadControllerCreateRequest {
@@ -938,6 +945,21 @@ export interface V1ApiInterface {
      * Get all faculties
      */
     facultyControllerFindAll(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<Faculty>>;
+
+    /**
+     * 
+     * @summary Insert feedback into the database
+     * @param {SendFeedbackDto} sendFeedbackDto 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof V1ApiInterface
+     */
+    feedbackControllerCreateRaw(requestParameters: FeedbackControllerCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>>;
+
+    /**
+     * Insert feedback into the database
+     */
+    feedbackControllerCreate(requestParameters: FeedbackControllerCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void>;
 
     /**
      * 
@@ -2529,6 +2551,41 @@ export class V1Api extends runtime.BaseAPI implements V1ApiInterface {
     async facultyControllerFindAll(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<Faculty>> {
         const response = await this.facultyControllerFindAllRaw(initOverrides);
         return await response.value();
+    }
+
+    /**
+     * Insert feedback into the database
+     */
+    async feedbackControllerCreateRaw(requestParameters: FeedbackControllerCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+        if (requestParameters['sendFeedbackDto'] == null) {
+            throw new runtime.RequiredError(
+                'sendFeedbackDto',
+                'Required parameter "sendFeedbackDto" was null or undefined when calling feedbackControllerCreate().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
+
+        const response = await this.request({
+            path: `/api/feedback`,
+            method: 'POST',
+            headers: headerParameters,
+            query: queryParameters,
+            body: SendFeedbackDtoToJSON(requestParameters['sendFeedbackDto']),
+        }, initOverrides);
+
+        return new runtime.VoidApiResponse(response);
+    }
+
+    /**
+     * Insert feedback into the database
+     */
+    async feedbackControllerCreate(requestParameters: FeedbackControllerCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+        await this.feedbackControllerCreateRaw(requestParameters, initOverrides);
     }
 
     /**
