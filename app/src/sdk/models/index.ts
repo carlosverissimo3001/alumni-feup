@@ -45,6 +45,7 @@ export * from './Role';
 export * from './RoleListDto';
 export * from './RoleListResponseDto';
 export * from './RoleOptionDto';
+export * from './SendFeedbackDto';
 export * from './UploadExtractionDto';
 export * from './User';
 export * from './UserAuthResponse';

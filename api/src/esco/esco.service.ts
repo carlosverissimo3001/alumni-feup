@@ -10,7 +10,7 @@ export class EscoService {
       await this.prismaService.escoClassification.findMany({
         select: {
           code: true,
-          title_en: true,
+          titleEn: true,
         },
         where: {
           // I know it's not intuitive, but level 1 of granularity means level 4 of the classification
@@ -22,7 +22,7 @@ export class EscoService {
 
     return classifications.map((classification) => ({
       escoCode: classification.code,
-      title: classification.title_en,
+      title: classification.titleEn,
     }));
   }
 
@@ -31,7 +31,7 @@ export class EscoService {
       await this.prismaService.escoClassification.findMany({
         select: {
           code: true,
-          title_en: true,
+          titleEn: true,
         },
         where: {
           // The most possible granular classifications -> no children
@@ -43,7 +43,7 @@ export class EscoService {
 
     return classifications.map((classification) => ({
       escoCode: classification.code,
-      title: classification.title_en,
+      title: classification.titleEn,
     }));
   }
 }

@@ -8,10 +8,10 @@ datasource db {
 }
 
 model Alumni {
-  id        String @id @default(dbgenerated("gen_random_uuid()"))
-  firstName String @map("first_name")
-  lastName  String @map("last_name")
-  fullName String? @map("full_name")
+  id        String  @id @default(dbgenerated("gen_random_uuid()"))
+  firstName String  @map("first_name")
+  lastName  String  @map("last_name")
+  fullName  String? @map("full_name")
 
   // Data from LinkedIn
   linkedinUrl       String? @unique @map("linkedin_url")
@@ -185,10 +185,10 @@ model Location {
 model Role {
   id String @id @default(dbgenerated("gen_random_uuid()"))
 
-  alumniId            String          @map("alumni_id")
-  companyId           String          @map("company_id")
-  locationId          String?         @map("location_id")
-  seniorityLevel      SENIORITY_LEVEL @map("seniority_level")
+  alumniId       String          @map("alumni_id")
+  companyId      String          @map("company_id")
+  locationId     String?         @map("location_id")
+  seniorityLevel SENIORITY_LEVEL @map("seniority_level")
 
   startDate DateTime  @map("start_date") @db.Timestamptz(6)
   endDate   DateTime? @map("end_date") @db.Timestamptz(6)
@@ -212,15 +212,15 @@ model Role {
 }
 
 model RoleRaw {
-  id          String   @id @default(dbgenerated("gen_random_uuid()"))
+  id          String  @id @default(dbgenerated("gen_random_uuid()"))
   title       String
   description String?
-  
+
   // free form location input from linkedin
   location String?
 
-  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamp(6)
-  roleId      String   @unique @map("role_id")
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamp(6)
+  roleId    String   @unique @map("role_id")
 
   Role Role @relation(fields: [roleId], references: [id])
 
@@ -229,19 +229,19 @@ model RoleRaw {
 }
 
 model EscoClassification {
-  id                   String                 @id @default(dbgenerated("gen_random_uuid()"))
-  level                Int                    @db.SmallInt
-  code                 String
+  id    String @id @default(dbgenerated("gen_random_uuid()"))
+  level Int    @db.SmallInt
+  code  String
 
   // Defines if this classification has no children
-  isLeaf               Boolean                @default(false)
-  title_en             String
-  definition           String
-  tasks_include        String?
-  included_occupations String?
-  excluded_occupations String?
-  notes                String?
-  embedding            Unsupported("vector")?
+  isLeaf              Boolean                @default(false) @map("is_leaf")
+  titleEn             String                 @map("title_en")
+  definition          String                 @map("definition")
+  tasksInclude        String?                @map("tasks_include")
+  includedOccupations String?                @map("included_occupations")
+  excludedOccupations String?                @map("excluded_occupations")
+  notes               String?                @map("notes")
+  embedding           Unsupported("vector")?
 
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamp(6)
   updatedAt DateTime @default(now()) @map("updated_at") @db.Timestamp(6)
@@ -297,16 +297,35 @@ model ReviewLocation {
 }
 
 model Permission {
-  id        String   @id @default(dbgenerated("gen_random_uuid()"))
-  userId    String    @map("user_id")
-  resource  String
-  actions   String[] 
-  
-  Alumni      Alumni   @relation(fields: [userId], references: [id])
+  id       String   @id @default(dbgenerated("gen_random_uuid()"))
+  userId   String   @map("user_id")
+  resource String
+  actions  String[]
+
+  Alumni Alumni @relation(fields: [userId], references: [id])
 
   @@map("permission")
 }
 
+model Feedback {
+  id       String        @id @default(dbgenerated("gen_random_uuid()"))
+  name     String
+  email    String
+  feedback String
+  type     FEEDBACK_TYPE
+
+  // Metadata
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamp(6)
+  updatedAt DateTime @default(now()) @map("updated_at") @db.Timestamp(6)
+
+  @@map("feedback")
+}
+
+enum FEEDBACK_TYPE {
+  BUG
+  FEATURE_REQUEST
+  OTHER
+}
 
 /**
  * model ReviewLocationProperty {

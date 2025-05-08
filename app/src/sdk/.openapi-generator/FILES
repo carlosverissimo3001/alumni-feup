@@ -5,6 +5,7 @@ apis/CompanyApi.ts
 apis/CourseApi.ts
 apis/ESCOApi.ts
 apis/FacultyApi.ts
+apis/FeedbackApi.ts
 apis/FilesApi.ts
 apis/ReviewsApi.ts
 apis/UserApi.ts
@@ -56,6 +57,7 @@ models/Role.ts
 models/RoleListDto.ts
 models/RoleListResponseDto.ts
 models/RoleOptionDto.ts
+models/SendFeedbackDto.ts
 models/UploadExtractionDto.ts
 models/User.ts
 models/UserAuthResponse.ts

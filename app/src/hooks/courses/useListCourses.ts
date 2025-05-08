@@ -3,7 +3,15 @@ import { useJsonFromResponse } from "@/commom";
 import NestAPI from "@/api";
 import { CourseControllerFindRequest } from "@/sdk";
 
-export const useListCourses = (params: CourseControllerFindRequest) => {
+type UseListCoursesProps = {
+  enabled?: boolean;
+  params: CourseControllerFindRequest;
+};
+
+export const useListCourses = ({
+  params,
+  enabled = true,
+}: UseListCoursesProps) => {
   const query = useQuery({
     queryKey: ["courses", params],
     queryFn: () => NestAPI.courseControllerFind(params),
@@ -11,6 +19,7 @@ export const useListCourses = (params: CourseControllerFindRequest) => {
     gcTime: Infinity,
     refetchOnMount: false,
     refetchOnWindowFocus: false,
+    enabled,
   });
 
   const parsedError = useJsonFromResponse<{ error?: string }>(

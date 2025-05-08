@@ -11,10 +11,13 @@ import { CompanyModule } from './company/company.module';
 import { CourseModule } from './course/course.module';
 import { EscoModule } from './esco/esco.module';
 import { FacultyModule } from './faculty/faculty.module';
+import { FeedbackModule } from './feeback/feeback.module';
 import { FileUploadModule } from './file-upload/file-upload.module';
 import { OtpModule } from './otp/otp.module';
 import { ReviewModule } from './reviews/review.module';
 import { UserModule } from './user/user.module';
+import { EmailModule } from './email/email.module';
+
 @Module({
   imports: [
     ThrottlerModule.forRoot({
@@ -34,14 +37,16 @@ import { UserModule } from './user/user.module';
     AlumniModule,
     AnalyticsModule,
     CompanyModule,
-    UserModule,
-    FileUploadModule,
+    EmailModule,
     CourseModule,
+    EscoModule,
     FacultyModule,
+    FeedbackModule,
+    AuthModule,
+    FileUploadModule,
+    UserModule,
     AgentsApiModule,
     ReviewModule,
-    AuthModule,
-    EscoModule,
   ],
   providers: [
     {
