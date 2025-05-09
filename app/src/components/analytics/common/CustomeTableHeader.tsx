@@ -1,5 +1,5 @@
 import { TableHead, TableRow, TableHeader } from "@/components/ui/table";
-import { ArrowUpDown, ArrowUp, ArrowDown } from "lucide-react";
+import { ArrowUp, ArrowDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { SortBy, SortOrder } from "@/consts";
 
