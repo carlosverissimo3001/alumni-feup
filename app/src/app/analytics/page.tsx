@@ -279,7 +279,7 @@ export default function Analytics() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        <CompanyDashboard
+{/*         <CompanyDashboard
           onDataUpdate={handleCompanyDataUpdate}
           filters={combinedFilters}
           onAddToFilters={handleAddCompanyToFilters}
@@ -296,7 +296,7 @@ export default function Analytics() {
           filters={combinedFilters}
           onAddToFilters={handleAddRoleToFilters}
           onLevelChange={handleLevelChange}
-        />
+        /> */}
         <IndustryDashboard
           onDataUpdate={handleIndustryDataUpdate}
           filters={combinedFilters}

@@ -109,11 +109,13 @@ export default function CompanyDashboard({
     <div
       className={`w-full ${DASHBOARD_HEIGHT} flex flex-col border rounded-xl shadow-lg p-3 box-border bg-white`}
     >
-      <TableTitle
-        title="Companies"
-        icon={<Building2 className="h-5 w-5 text-[#8C2D19]" />}
-        tooltipMessage="Companies that have hired alumni from our programs."
-      />
+      <div className="flex items-center justify-between mb-3">
+        <TableTitle
+          title="Companies"
+          icon={<Building2 className="h-5 w-5 text-[#8C2D19]" />}
+          tooltipMessage="Companies that have hired alumni from our programs."
+        />
+      </div>
 
       <div className="flex-1 relative border-t border-b border-gray-200 flex flex-col overflow-hidden">
         <TableContainer className="flex-1 overflow-auto custom-scrollbar">
