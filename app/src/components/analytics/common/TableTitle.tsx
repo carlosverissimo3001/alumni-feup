@@ -4,22 +4,27 @@ type TableTitleProps = {
   title: string;
   icon: React.ReactNode;
   tooltipMessage?: string;
+  className?: string;
 };
 
-export default function TableTitle({ title, icon, tooltipMessage }: TableTitleProps) {
+export default function TableTitle({ title, icon, tooltipMessage, className }: TableTitleProps) {
   return (
-    <h1 className="text-md font-bold text-[#8C2D19] mb-2 flex items-center gap-2 pl-2 pb-1 flex-shrink-0">
-      <TooltipProvider> 
-        <Tooltip> 
-          <TooltipTrigger>
-            {icon}
-          </TooltipTrigger>
-          <TooltipContent>
-            {tooltipMessage}
-          </TooltipContent>
-        </Tooltip>
-      </TooltipProvider>
-      {title}
-    </h1>
+    <div className={`inline-flex items-center ${className}`}>
+      {tooltipMessage ? (
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger className="flex items-center">
+              {icon}
+            </TooltipTrigger>
+            <TooltipContent>
+              {tooltipMessage}
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+      ) : (
+        icon
+      )}
+      <span className="ml-2 text-md font-bold text-[#8C2D19]">{title}</span>
+    </div>
   );
 }
