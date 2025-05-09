@@ -356,8 +356,8 @@ export default function IndustryChartView({
       .style("font-size", "11px")
       .style("fill", "#333")
       .text((d: any) => {
-        const displayName = d.name.length > 22 ? d.name.substring(0, 22) + "..." : d.name;
-        return `${displayName} (${d[dataKey]})`;
+        const displayName = d.name.length > 27 ? d.name.substring(0, 27) + "..." : d.name;
+        return `${displayName}`;
       });
   };
 
@@ -389,16 +389,16 @@ export default function IndustryChartView({
           <div className="w-full h-2 mb-1 rounded-sm" style={{ backgroundColor: tooltip.color }} />
         )}
         
-        <div className="font-bold text-base truncate max-w-[200px] mb-1">{tooltip.name}</div>
+        <div className="font-bold text-sm truncate max-w-[200px] mb-1">{tooltip.name}</div>
         
-        <div className="flex justify-between items-center mb-1 text-sm">
+        <div className="flex justify-between items-center mb-1">
           <span className="text-gray-600">{dataKey === "alumniCount" ? "Alumni" : "Companies"}</span>
           <span className="font-medium text-[#8C2D19]">{tooltip.value.toLocaleString()}</span>
         </div>
         
         {tooltip.percentage && (
-          <div className="flex justify-between items-center">
-            <span className="text-gray-600">Percentage</span>
+          <div className="flex justify-between items-center mr-0">
+            <span className="text-gray-600 mr-2">Percentage</span>
             <div className="flex items-center">
               <div 
                 className="w-[50px] h-3 rounded-sm mr-2 overflow-hidden"
