@@ -94,7 +94,7 @@ export default function PaginationControls({
             <Button
               variant="outline"
               size="sm"
-              className="min-w-[140px] justify-start text-left font-medium text-[#000000] border-gray-200 rounded-lg"
+              className="min-w-[90px] justify-start text-left font-medium text-[#000000] border-gray-200 rounded-lg"
             >
               {itemsPerPage} / page
             </Button>
@@ -113,18 +113,18 @@ export default function PaginationControls({
       </div>
 
       <div className="flex items-center space-x-4">
-        <div className="flex items-center space-x-2">
+        <div className="flex items-center space-x-1">
           <Button
-            variant="outline"
+            variant="ghost"
             size="sm"
             disabled={page === 1 || totalPages === 0}
             onClick={() => handlePageChange(page - 1)}
-            className="rounded-full p-2 border-gray-200 hover:bg-[#A13A23] hover:bg-opacity-10"
+            className="rounded-full p-1 border-gray-200 hover:bg-[#A13A23] hover:bg-opacity-10"
           >
             <ArrowLeftIcon className="h-4 w-4 text-[#8C2D19]" />
           </Button>
 
-          <div className="flex items-center text-xs text-[#000000] space-x-1">
+          <div className="flex items-center text-xs text-[#000000] space-x-0.5">
             <Input
               type="number"
               value={pageInput}
@@ -133,14 +133,16 @@ export default function PaginationControls({
               onBlur={handlePageInputBlur}
               min={totalPages > 0 ? 1 : 0}
               max={totalPages}
-              className="h-8 w-10 p-1 text-center border border-gray-200 rounded-lg focus:border-[#8C2D19] focus:ring-[#8C2D19] hover:bg-gray-50"
+              className={`h-8 p-1 text-center border border-gray-200 rounded-lg focus:border-[#8C2D19] focus:ring-[#8C2D19] hover:bg-gray-50 ${
+                pageInput.length === 1 ? "w-9" : pageInput.length === 2 ? "w-12" : "w-16"
+              }`}
               disabled={totalPages === 0}
             />
             <span>of {totalPages}</span>
           </div>
 
           <Button
-            variant="outline"
+            variant="ghost"
             size="sm"
             disabled={page === totalPages || totalPages === 0}
             onClick={() => handlePageChange(page + 1)}
