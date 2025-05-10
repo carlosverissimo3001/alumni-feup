@@ -11,10 +11,19 @@ import {
 import { Button } from "@/components/ui/button";
 import { useCompanyList } from "@/hooks/analytics/useCompanyList";
 import { CompanyListItemDto } from "@/sdk";
-import { Building2, Filter, Info, LineChart, PieChart, TableIcon, TrendingDown, TrendingUp } from "lucide-react";
+import {
+  Building2,
+  Filter,
+  Info,
+  LineChart,
+  PieChart,
+  TableIcon,
+  TrendingDown,
+  TrendingUp,
+} from "lucide-react";
 import ImageWithFallback from "../../ui/image-with-fallback";
 import PaginationControls from "../common/PaginationControls";
-import { CompanyDataSkeleton } from "../skeletons/CompanyDataSkeleton";
+import { DashboardSkeleton } from "../skeletons/DashboardSkeleton";
 import TableTitle from "../common/TableTitle";
 import CustomTableHeader from "../common/CustomeTableHeader";
 import { SortBy, SortOrder, ITEMS_PER_PAGE, DASHBOARD_HEIGHT } from "@/consts";
@@ -31,7 +40,7 @@ import { ViewType } from "@/types/view";
 import CountComponent from "../common/CountComponent";
 import TrendLineComponent from "../common/TrendLineComponent";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
-
+import LoadingChart from "../common/LoadingChart";
 type CompanyDashboardProps = {
   onDataUpdate: (
     alumniCount: number,
@@ -125,7 +134,7 @@ export default function CompanyDashboard({
               />
 
               {isLoading || isFetching ? (
-                <CompanyDataSkeleton />
+                <DashboardSkeleton />
               ) : (
                 <TableBody className="bg-white divide-y divide-gray-200">
                   {companies.length > 0 ? (
@@ -164,7 +173,7 @@ export default function CompanyDashboard({
                               >
                                 <div
                                   title={company.name}
-                                  className="truncate max-w-full w-full text-left flex items-center"
+                                  className="text-ellipsis overflow-hidden w-full text-left"
                                 >
                                   {company.name}
                                 </div>
@@ -179,7 +188,11 @@ export default function CompanyDashboard({
                                     dataPoints={[20, 25, 30, 35, 40]}
                                   />
                                 )}
-                                <div className={`opacity-0 group-hover:opacity-100 transition-opacity ${view === ViewType.TABLE ? 'ml-2' : 'ml-0'}`}>
+                                <div
+                                  className={`opacity-0 group-hover:opacity-100 transition-opacity ${
+                                    view === ViewType.TABLE ? "ml-2" : "ml-0"
+                                  }`}
+                                >
                                   <TooltipProvider>
                                     <Tooltip>
                                       <TooltipTrigger asChild>
@@ -225,6 +238,7 @@ export default function CompanyDashboard({
           itemsPerPage={itemsPerPage}
           setItemsPerPage={setItemsPerPage}
           totalItems={totalItems}
+          visible={companies.length > 0}
         />
       </>
     );
@@ -234,7 +248,7 @@ export default function CompanyDashboard({
     <div className="flex-1 flex flex-col border-t border-b border-gray-200 overflow-hidden">
       <div className="flex-1 flex items-center justify-center">
         {isLoading || isFetching ? (
-          <div className="text-center">Loading chart data...</div>
+          <LoadingChart />
         ) : companies.length === 0 ? (
           <NotFoundComponent
             message="No company data available"
@@ -266,29 +280,32 @@ export default function CompanyDashboard({
             tooltipMessage="Companies that have hired alumni from our programs."
             className="pl-1"
           />
-      
+
           {view === ViewType.TREND && (
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Info className="h-5 w-5 text-[#8C2D19] ml-2" />
-                  </TooltipTrigger>
-                  <TooltipContent className="max-w-xs" align="start">
-                    <div className="space-y-2">
-                      <p><strong>Trend View:</strong> Shows the change in company presence over the past 5 years</p>
-                      <p>
-                        <TrendingUp className="h-3.5 w-3.5 inline text-green-500 mr-1" />{" "}
-                        Indicates growing companies
-                      </p>
-                      <p>
-                        <TrendingDown className="h-3.5 w-3.5 inline text-red-500 mr-1" />{" "}
-                        Indicates declining companies
-                      </p>
-                    </div>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-            )}
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Info className="h-5 w-5 text-[#8C2D19] ml-2" />
+                </TooltipTrigger>
+                <TooltipContent className="max-w-xs" align="start">
+                  <div className="space-y-2">
+                    <p>
+                      <strong>Trend View:</strong> Shows the change in company
+                      presence over the past 5 years
+                    </p>
+                    <p>
+                      <TrendingUp className="h-3.5 w-3.5 inline text-green-500 mr-1" />{" "}
+                      Indicates growing companies
+                    </p>
+                    <p>
+                      <TrendingDown className="h-3.5 w-3.5 inline text-red-500 mr-1" />{" "}
+                      Indicates declining companies
+                    </p>
+                  </div>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          )}
         </div>
 
         <div className="border rounded-md overflow-hidden">

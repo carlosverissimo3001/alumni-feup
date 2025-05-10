@@ -10,10 +10,19 @@ import {
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { RoleListDto } from "@/sdk";
-import { Briefcase, Filter, Info, ExternalLink } from "lucide-react";
+import {
+  Briefcase,
+  Filter,
+  Info,
+  ExternalLink,
+  TrendingDown,
+  TrendingUp,
+  TableIcon,
+  PieChart,
+  LineChart,
+} from "lucide-react";
 
-// Define a skeleton for the role dashboard
-import { CompanyDataSkeleton } from "../skeletons/CompanyDataSkeleton";
+import { DashboardSkeleton } from "../skeletons/DashboardSkeleton";
 import PaginationControls from "../common/PaginationControls";
 import TableTitle from "../common/TableTitle";
 import CustomTableHeader from "../common/CustomeTableHeader";
@@ -29,6 +38,12 @@ import {
 import { useRoleList } from "@/hooks/analytics/useRoleList";
 import { startCase } from "lodash";
 import { Switch } from "@/components/ui/switch";
+import ChartView from "../common/ChartView";
+import { ViewType } from "@/types/view";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+import CountComponent from "../common/CountComponent";
+import TrendLineComponent from "../common/TrendLineComponent";
+import LoadingChart from "../common/LoadingChart";
 
 type RoleDashboardProps = {
   onDataUpdate: (roleCount: number, roleFilteredCount: number) => void;
@@ -44,11 +59,12 @@ export default function RoleDashboard({
   onLevelChange,
 }: RoleDashboardProps) {
   const [page, setPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(ITEMS_PER_PAGE[2]);
+  const [itemsPerPage, setItemsPerPage] = useState(ITEMS_PER_PAGE[1]);
   const [sortField, setSortField] = useState<SortBy>(SortBy.ALUMNI_COUNT);
   const [sortOrder, setSortOrder] = useState<SortOrder>(SortOrder.DESC);
+  const [view, setView] = useState<ViewType>(ViewType.TABLE);
   const [level, setLevel] = useState<number>(1);
-  
+
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [pageInput, setPageInput] = useState<string>(String(page));
 
@@ -98,80 +114,26 @@ export default function RoleDashboard({
     }
   };
 
-  return (
-    <div
-      className={`w-full ${DASHBOARD_HEIGHT} flex flex-col border rounded-xl shadow-lg p-3 box-border bg-white`}
-    >
-      <div className="flex items-center justify-between mb-1">
-        <TableTitle
-          title="Roles"
-          icon={
-            <Briefcase className="h-5 w-5 text-[#8C2D19]" />
-          }
-        />
-        <div className="flex items-center space-x-2">
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Info className="h-5 w-5 text-[#8C2D19]" />
-              </TooltipTrigger>
-              <TooltipContent className="max-w-xs">
-                <div className="space-y-2">
-                  <p><strong>Level 1:</strong> More general job classification, maps directly to level 4 of the ESCO taxonomy</p>
-                  <p><strong>Level 2:</strong> More granular classification, maps to lower levels of the ESCO taxonomy (5-7)</p>
-                  <a 
-                    href="https://esco.ec.europa.eu/en/classification/occupation_main" 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    className="flex items-center text-sm font-medium text-blue-500 hover:underline mt-1"
-                  >
-                    View ESCO Classification
-                    <ExternalLink className="h-3.5 w-3.5 ml-1" />
-                  </a>
-                </div>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
-          <div className="flex items-center space-x-2 bg-gray-50 px-2 py-1 rounded-full" title="Toggle view mode">
-                  <span 
-              className={`text-sm font-medium cursor-pointer ${level === 1 ? "text-[#8C2D19] font-semibold" : "text-gray-500"}`}
-              onClick={() => onLevelUpdate(false)}
-            >
-              Level 1
-            </span>
-            <Switch 
-              id="mode-toggle" 
-              checked={level === 2}
-              onCheckedChange={onLevelUpdate}
-            />
-            <span 
-              className={`text-sm font-medium cursor-pointer ${level === 2 ? "text-[#8C2D19] font-semibold" : "text-gray-500"}`}
-              onClick={() => onLevelUpdate(true)}
-            >
-              Level 2
-            </span>
-          </div>
-        </div>
-      </div>
+  const renderTable = () => {
+    return (
+      <>
+        <div className="flex-1 relative border-t border-b border-gray-200 flex flex-col overflow-hidden">
+          <TableContainer className="flex-1 overflow-auto custom-scrollbar">
+            <Table className="min-w-full bg-white table-fixed [&>div]:overflow-visible">
+              <CustomTableHeader
+                sortField={sortField}
+                sortOrder={sortOrder}
+                onSort={handleSort}
+                includeCompanies={false}
+                useRoleTitle={true}
+              />
 
-      <div className="flex-1 relative border-t border-b border-gray-200 flex flex-col overflow-hidden">
-        <TableContainer className="flex-1 overflow-auto custom-scrollbar">
-          <Table className="min-w-full bg-white table-fixed [&>div]:overflow-visible">
-            <CustomTableHeader
-              sortField={sortField}
-              sortOrder={sortOrder}
-              onSort={handleSort}
-              includeCompanies={false}
-              useRoleTitle={true}
-            />
-
-            {isLoading || isFetching ? (
-              <CompanyDataSkeleton />
-            ) : (
-              <TableBody className="bg-white divide-y divide-gray-200">
-                {roles.length > 0 ? (
-                  roles.map(
-                    (role: RoleListDto, index: number) => {
+              {isLoading || isFetching ? (
+                <DashboardSkeleton />
+              ) : (
+                <TableBody className="bg-white divide-y divide-gray-200">
+                  {roles.length > 0 ? (
+                    roles.map((role: RoleListDto, index: number) => {
                       const rowNumber = (page - 1) * itemsPerPage + index + 1;
                       return (
                         <TableRow
@@ -180,18 +142,15 @@ export default function RoleDashboard({
                             index % 2 === 0 ? "bg-gray-50" : "bg-white"
                           } hover:bg-[#A13A23] hover:bg-opacity-10 transition-colors duration-200 relative`}
                         >
-                          <TableCell className="w-1/12 py-1 pl-3 text-sm text-gray-500 font-medium align-middle">
+                          <TableCell className="w-1/12 py-1.5 pl-3 text-sm text-gray-500 font-medium align-middle">
                             {rowNumber}
                           </TableCell>
                           <TableCell className="w-5/12 py-1.5 pl-3 text-sm font-medium text-[#000000] align-middle">
                             <Button
                               variant="link"
-                              className="text-sm font-medium text-[#000000] w-full text-left h-auto p-0 hover:text-[#8C2D19] transition-colors"
+                              className="text-sm font-medium text-[#000000] w-full text-left h-auto p-1 hover:text-[#8C2D19] transition-colors mr-2"
                               onClick={() => {
-                                window.open(
-                                  `/role/${role.code}`,
-                                  "_blank"
-                                );
+                                window.open(`/role/${role.code}`, "_blank");
                               }}
                             >
                               <div
@@ -202,55 +161,231 @@ export default function RoleDashboard({
                               </div>
                             </Button>
                           </TableCell>
-                          <TableCell className="w-3/12 pl-3 py-1 text-sm text-[#000000] align-middle hover:text-[#8C2D19] transition-colors">
-                            <span className="font-semibold">
-                              {role.roleCount}
-                            </span>
-                          </TableCell>
-                          <TableCell className="absolute right-2 top-1/2 transform -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity">
-                            <TooltipProvider>
-                              <Tooltip>
-                                <TooltipTrigger asChild>
-                                  <Button
-                                    aria-label="Add to filters"
-                                    variant="ghost"
-                                    size="sm"
-                                    className="p-1 h-6 w-6 rounded-full bg-gray-100 hover:bg-gray-200"
-                                    onClick={() => onAddToFilters?.(role.code)}
-                                  >
-                                    <Filter className="h-4 w-4 text-[#8C2D19]" />
-                                  </Button>
-                                </TooltipTrigger>
-                                <TooltipContent>
-                                  <p>Filter on {role.title}</p>
-                                </TooltipContent>
-                              </Tooltip>
-                            </TooltipProvider>
+                          <TableCell className="w-2/12 px-3 py-1 text-sm text-[#000000] align-middle hover:text-[#8C2D19] transition-colors relative">
+                            <div className="flex items-center gap-0 justify-center">
+                              {view === ViewType.TABLE ? (
+                                <CountComponent count={role.roleCount} />
+                              ) : (
+                                <TrendLineComponent
+                                  dataPoints={[25, 27, 29, 30, 31]}
+                                />
+                              )}
+                              <div
+                                className={`opacity-0 group-hover:opacity-100 transition-opacity ${
+                                  view === ViewType.TABLE ? "ml-2" : "ml-0"
+                                }`}
+                              >
+                                <TooltipProvider>
+                                  <Tooltip>
+                                    <TooltipTrigger asChild>
+                                      <Button
+                                        aria-label="Add to filters"
+                                        variant="ghost"
+                                        size="sm"
+                                        className="p-1 h-6 w-6 rounded-full bg-gray-100 hover:bg-gray-200"
+                                        onClick={() =>
+                                          onAddToFilters?.(role.code)
+                                        }
+                                      >
+                                        <Filter className="h-4 w-4 text-[#8C2D19]" />
+                                      </Button>
+                                    </TooltipTrigger>
+                                    <TooltipContent>
+                                      <p>Filter on {role.title}</p>
+                                    </TooltipContent>
+                                  </Tooltip>
+                                </TooltipProvider>
+                              </div>
+                            </div>
                           </TableCell>
                         </TableRow>
                       );
-                    }
-                  )
-                ) : (
-                  <NotFoundComponent
-                    message="No role data available"
-                    description="Try adjusting your filters to find roles that match your criteria."
-                    colSpan={4}
-                  />
-                )}
-              </TableBody>
-            )}
-          </Table>
-        </TableContainer>
+                    })
+                  ) : (
+                    <NotFoundComponent
+                      message="No role data available"
+                      description="Try adjusting your filters to find roles that match your criteria."
+                      colSpan={4}
+                    />
+                  )}
+                </TableBody>
+              )}
+            </Table>
+          </TableContainer>
+        </div>
+
+        <PaginationControls
+          page={page}
+          setPage={setPage}
+          itemsPerPage={itemsPerPage}
+          setItemsPerPage={setItemsPerPage}
+          totalItems={totalRolesFiltered}
+          visible={roles.length > 0}
+        />
+      </>
+    );
+  };
+
+  const renderChartView = () => (
+    <div className="flex-1 flex flex-col border-t border-b border-gray-200 overflow-hidden">
+      <div className="flex-1 flex items-center justify-center">
+        {isLoading || isFetching ? (
+          <LoadingChart message="Loading chart data..." />
+        ) : roles.length === 0 ? (
+          <NotFoundComponent
+            message="No industry data available"
+            description="Try adjusting your filters to find industries that match your criteria."
+            colSpan={1}
+          />
+        ) : (
+          <ChartView
+            data={roles.map((role) => ({
+              name: role.title,
+              id: role.code,
+              alumniCount: role.roleCount,
+            }))}
+            isLoading={isLoading || isFetching}
+            dataKey="alumniCount"
+          />
+        )}
+      </div>
+    </div>
+  );
+
+  return (
+    <div
+      className={`w-full ${DASHBOARD_HEIGHT} flex flex-col border rounded-xl shadow-lg p-3 box-border bg-white`}
+    >
+      <div className="flex items-center justify-between mb-2">
+        <div className="flex items-center gap-2">
+          <TableTitle
+            title="Roles"
+            icon={<Briefcase className="h-5 w-5 text-[#8C2D19]" />}
+          />
+          {view === ViewType.TREND && (
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Info className="h-5 w-5 text-[#8C2D19] ml-2" />
+                </TooltipTrigger>
+                <TooltipContent className="max-w-xs" align="start">
+                  <div className="space-y-2">
+                    <p>
+                      <strong>Trend View:</strong> Shows the change in ro
+                      presence over the past 5 years
+                    </p>
+                    <p>
+                      <TrendingUp className="h-3.5 w-3.5 inline text-green-500 mr-1" />{" "}
+                      Indicates growing roles
+                    </p>
+                    <p>
+                      <TrendingDown className="h-3.5 w-3.5 inline text-red-500 mr-1" />{" "}
+                      Indicates declining roles
+                    </p>
+                  </div>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          )}
+        </div>
+
+        <div className="border rounded-md overflow-hidden">
+          <ToggleGroup
+            type="single"
+            value={view}
+            onValueChange={(value: string) =>
+              value && setView(value as ViewType)
+            }
+            className="flex"
+          >
+            <ToggleGroupItem
+              value={ViewType.TABLE}
+              aria-label="Table View"
+              className="px-1.5 py-1"
+              title="Table View"
+            >
+              <TableIcon className="h-4 w-4" />
+            </ToggleGroupItem>
+            <ToggleGroupItem
+              value={ViewType.CHART}
+              aria-label="Chart View"
+              className="px-1.5 py-1 disabled:opacity-10"
+              title="Chart View"
+            >
+              <PieChart className="h-4 w-4" />
+            </ToggleGroupItem>
+            <ToggleGroupItem
+              value={ViewType.TREND}
+              aria-label="Trend View"
+              className="px-1.5 py-1"
+              title="Trend View"
+            >
+              <LineChart className="h-4 w-4" />
+            </ToggleGroupItem>
+          </ToggleGroup>
+        </div>
+
+        <div className="flex items-center space-x-2">
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Info className="h-5 w-5 text-[#8C2D19]" />
+              </TooltipTrigger>
+              <TooltipContent className="max-w-xs">
+                <div className="space-y-2">
+                  <p>
+                    <strong>Level 1:</strong> More general job classification,
+                    maps directly to level 4 of the ESCO taxonomy
+                  </p>
+                  <p>
+                    <strong>Level 2:</strong> More granular classification, maps
+                    to lower levels of the ESCO taxonomy (5-7)
+                  </p>
+                  <a
+                    href="https://esco.ec.europa.eu/en/classification/occupation_main"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center text-sm font-medium text-blue-500 hover:underline mt-1"
+                  >
+                    View ESCO Classification
+                    <ExternalLink className="h-3.5 w-3.5 ml-1" />
+                  </a>
+                </div>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+          <div
+            className="flex items-center space-x-2 bg-gray-50 px-2 py-1 rounded-full"
+            title="Toggle view mode"
+          >
+            <span
+              className={`text-sm font-medium cursor-pointer ${
+                level === 1 ? "text-[#8C2D19] font-semibold" : "text-gray-500"
+              }`}
+              onClick={() => onLevelUpdate(false)}
+            >
+              Level 1
+            </span>
+            <Switch
+              id="mode-toggle"
+              checked={level === 2}
+              onCheckedChange={onLevelUpdate}
+            />
+            <span
+              className={`text-sm font-medium cursor-pointer ${
+                level === 2 ? "text-[#8C2D19] font-semibold" : "text-gray-500"
+              }`}
+              onClick={() => onLevelUpdate(true)}
+            >
+              Level 2
+            </span>
+          </div>
+        </div>
       </div>
 
-      <PaginationControls
-        page={page}
-        setPage={setPage}
-        itemsPerPage={itemsPerPage}
-        setItemsPerPage={setItemsPerPage}
-        totalItems={totalRolesFiltered}
-      />
+      {view === ViewType.TABLE && renderTable()}
+      {view === ViewType.TREND && renderTable()}
+      {view === ViewType.CHART && renderChartView()}
     </div>
   );
 }

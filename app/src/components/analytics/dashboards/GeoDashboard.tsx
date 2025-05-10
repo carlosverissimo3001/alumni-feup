@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react";
 
 import { Button } from "@/components/ui/button";
-import { CountryListItemDto, CityListItemDto } from "@/sdk";
 import {
   Filter,
   Flag,
@@ -15,7 +14,7 @@ import {
   PieChart,
   LineChart,
 } from "lucide-react";
-import { IndustryDataSkeleton } from "../skeletons/IndustryDataSkeleton";
+import { DashboardSkeleton } from "../skeletons/DashboardSkeleton";
 import PaginationControls from "../common/PaginationControls";
 import TableTitle from "../common/TableTitle";
 import { useCountryList } from "@/hooks/analytics/useCountryList";
@@ -44,7 +43,7 @@ import { ViewType } from "@/types/view";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import CountComponent from "../common/CountComponent";
 import TrendLineComponent from "../common/TrendLineComponent";
-
+import LoadingChart from "../common/LoadingChart";
 type GeoDashboardProps = {
   onDataUpdate: (
     countryCount: number,
@@ -172,7 +171,7 @@ export default function GeoDashboard({
               />
 
               {isLoading ? (
-                <IndustryDataSkeleton />
+                <DashboardSkeleton hasExtraColumn={true} />
               ) : (
                 <TableBody className="bg-white divide-y divide-gray-200">
                   {data.length > 0 ? (
@@ -218,13 +217,15 @@ export default function GeoDashboard({
                             </Button>
                           </TableCell>
                           <TableCell className="w-2/12 pl-3 py-1 text-sm text-[#000000] align-middle hover:text-[#8C2D19] transition-colors">
-                            {view === ViewType.TABLE ? (
-                              <CountComponent count={row.companyCount} />
-                            ) : (
+                            <div className="flex items-center gap-0 justify-center">
+                              {view === ViewType.TABLE ? (
+                                <CountComponent count={row.companyCount} />
+                              ) : (
                                 <TrendLineComponent
-                                dataPoints={[25, 27, 29, 30, 31]}
-                              />
-                            )}
+                                  dataPoints={[25, 27, 29, 30, 31]}
+                                />
+                              )}
+                            </div>
                           </TableCell>
                           <TableCell className="w-2/12 px-3 py-1 text-sm text-[#000000] align-middle hover:text-[#8C2D19] transition-colors relative">
                             <div className="flex items-center gap-0 justify-center">
@@ -283,6 +284,7 @@ export default function GeoDashboard({
           itemsPerPage={itemsPerPage}
           setItemsPerPage={setItemsPerPage}
           totalItems={mode === "country" ? totalCountries : totalCities}
+          visible={data.length > 0}
         />
       </>
     );
@@ -292,49 +294,41 @@ export default function GeoDashboard({
     <div className="flex-1 flex flex-col border-t border-b border-gray-200 overflow-hidden">
       <div className="flex-1 flex items-center justify-center">
         {mode === "country" ? (
-          <>
-            {isCountryLoading || isCountryFetching ? (
-              <div className="text-center">Loading chart data...</div>
-            ) : countries.length === 0 ? (
-              <NotFoundComponent
-                message="No country data available"
-                description="Try adjusting your filters to find countries that match your criteria."
-                colSpan={1}
-              />
-            ) : (
-              <ChartView
-                data={countries}
-                isLoading={isCountryLoading || isCountryFetching}
-                dataKey={
-                  sortField === SortBy.ALUMNI_COUNT
-                    ? "alumniCount"
-                    : "companyCount"
-                }
-              />
-            )}
-          </>
+          isCountryLoading || isCountryFetching ? (
+            <LoadingChart message="Loading chart data..." />
+          ) : countries.length === 0 ? (
+            <NotFoundComponent
+              message="No country data available"
+              description="Try adjusting your filters to find countries that match your criteria."
+              colSpan={1}
+            />
+          ) : (
+            <ChartView
+              data={countries}
+              isLoading={isCountryLoading || isCountryFetching}
+              dataKey={
+                sortField === SortBy.ALUMNI_COUNT
+                  ? "alumniCount"
+                  : "companyCount"
+              }
+            />
+          )
+        ) : isCityLoading || isCityFetching ? (
+          <LoadingChart message="Loading chart data..." />
+        ) : cities.length === 0 ? (
+          <NotFoundComponent
+            message="No city data available"
+            description="Try adjusting your filters to find cities that match your criteria."
+            colSpan={1}
+          />
         ) : (
-          <>
-            {isCityLoading || isCityFetching ? (
-              <div className="text-center">Loading chart data...</div>
-            ) : cities.length === 0 ? (
-              <NotFoundComponent
-                message="No city data available"
-                description="Try adjusting your filters to find cities that match your criteria."
-                colSpan={1}
-              />
-            ) : (
-              <ChartView
-                data={cities}
-                isLoading={isCityLoading || isCityFetching}
-                dataKey={
-                  sortField === SortBy.ALUMNI_COUNT
-                    ? "alumniCount"
-                    : "companyCount"
-                }
-              />
-            )}
-          </>
+          <ChartView
+            data={cities}
+            isLoading={isCityLoading || isCityFetching}
+            dataKey={
+              sortField === SortBy.ALUMNI_COUNT ? "alumniCount" : "companyCount"
+            }
+          />
         )}
       </div>
     </div>
