@@ -279,11 +279,11 @@ export default function Analytics() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-{/*         <CompanyDashboard
+         <CompanyDashboard
           onDataUpdate={handleCompanyDataUpdate}
           filters={combinedFilters}
           onAddToFilters={handleAddCompanyToFilters}
-        />
+        /> 
         <GeoDashboard
           onDataUpdate={handleGeoDataUpdate}
           filters={combinedFilters}
@@ -291,6 +291,7 @@ export default function Analytics() {
           mode={geoMode}
           setMode={setGeoMode}
         />
+        {/*
         <RoleDashboard
           onDataUpdate={handleRoleDataUpdate}
           filters={combinedFilters}

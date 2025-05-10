@@ -2,11 +2,17 @@
 
 import { useEffect, useRef, useState } from "react";
 import * as d3 from "d3";
-import { IndustryListItemDto } from "@/sdk";
 import { Loader2 } from "lucide-react";
 
+type InputData = {
+  id: string;
+  name: string;
+  companyCount?: number;
+  alumniCount: number;
+}
+
 type IndustryChartViewProps = {
-  data: IndustryListItemDto[];
+  data: InputData[];
   isLoading: boolean;
   dataKey: "alumniCount" | "companyCount";
 };
@@ -21,7 +27,7 @@ type TooltipData = {
   id?: string;
 };
 
-export default function IndustryChartView({
+export default function ChartView({
   data,
   isLoading,
   dataKey,
@@ -59,7 +65,7 @@ export default function IndustryChartView({
     if (isLoading || !chartRef.current || !data.length || dimensions.width === 0) return;
 
     const topData = [...data]
-      .sort((a, b) => b[dataKey] - a[dataKey])
+      .sort((a, b) => (b[dataKey] ?? 0) - (a[dataKey] ?? 0))
       .slice(0, 10);
 
     drawPieChart(topData, dimensions.width, dimensions.height, dataKey);
@@ -68,7 +74,7 @@ export default function IndustryChartView({
   }, [data, isLoading, dataKey, dimensions]);
 
   const drawPieChart = (
-    data: IndustryListItemDto[],
+    data: InputData[],
     width: number,
     height: number,
     dataKey: "alumniCount" | "companyCount"
@@ -128,24 +134,24 @@ export default function IndustryChartView({
       .attr("stroke", "#eee")
       .attr("stroke-width", 1);
 
-    const total = d3.sum(data, (d: IndustryListItemDto) => d[dataKey]);
+    const total = d3.sum(data, (d: InputData) => d[dataKey]);
 
-    const pie = d3.pie<IndustryListItemDto>()
-      .value((d: IndustryListItemDto) => d[dataKey])
+    const pie = d3.pie<InputData>()
+      .value((d: InputData) => d[dataKey] ?? 0)
       .sort(null);
       
-    const arcTween = (d: d3.PieArcDatum<IndustryListItemDto>) => {
+    const arcTween = (d: d3.PieArcDatum<InputData>) => {
       const interpolate = d3.interpolate({startAngle: 0, endAngle: 0}, d);
       return (t: number) => arc(interpolate(t)) || "";
     };
 
     const arc = d3
-      .arc<d3.PieArcDatum<IndustryListItemDto>>()
+      .arc<d3.PieArcDatum<InputData>>()
       .innerRadius(radius * 0.3)
       .outerRadius(radius);
 
     const hoverArc = d3
-      .arc<d3.PieArcDatum<IndustryListItemDto>>()
+      .arc<d3.PieArcDatum<InputData>>()
       .innerRadius(radius * 0.3)
       .outerRadius(radius + 15);
 
@@ -160,7 +166,7 @@ export default function IndustryChartView({
     arcs
       .append("path")
       .attr("d", d => arc(d))
-      .attr("fill", (d: d3.PieArcDatum<IndustryListItemDto>) => color(d.data.name))
+      .attr("fill", (d: d3.PieArcDatum<InputData>) => color(d.data.name))
       .attr("stroke", "white")
       .style("stroke-width", "2px")
       .style("transition", "opacity 0.3s")
@@ -184,13 +190,13 @@ export default function IndustryChartView({
           .duration(200)
           .style("opacity", 0.7);
         
-        const percentage = ((d.data[dataKey] / total) * 100).toFixed(1);
+        const percentage = ((d.data[dataKey ?? 'alumniCount'] / total) * 100).toFixed(1);
         
         setTooltip({
           x: event.clientX,
           y: event.clientY,
           name: d.data.name,
-          value: d.data[dataKey],
+          value: d.data[dataKey ?? 'alumniCount'],
           percentage,
           color: color(d.data.name),
           id: d.data.id
@@ -220,7 +226,7 @@ export default function IndustryChartView({
 
     arcs
       .append("text")
-      .attr("transform", (d: d3.PieArcDatum<IndustryListItemDto>) => {
+      .attr("transform", (d: d3.PieArcDatum<InputData>) => {
         const centroid = arc.centroid(d);
         return `translate(${centroid[0]},${centroid[1]})`;
       })
@@ -230,22 +236,23 @@ export default function IndustryChartView({
       .style("font-weight", "bold")
       .style("fill", "white")
       .style("pointer-events", "none")
-      .text((d: d3.PieArcDatum<IndustryListItemDto>) => {
-        const percent = ((d.data[dataKey] / total) * 100).toFixed(1);
+      .text((d: d3.PieArcDatum<InputData>) => {
+        const percent = ((d.data[dataKey ?? 'alumniCount'] / total) * 100).toFixed(1);
         return parseFloat(percent) > 4 ? `${percent}%` : "";
       })
       .transition()
       .duration(800)
       .delay((d, i) => 500 + i * 50)
-      .style("font-size", "10px");
+      .style("font-size", "12px")
+      .style("font-weight", "900");
 
     arcs
-      .filter((d: d3.PieArcDatum<IndustryListItemDto>) => {
-        const percent = (d.data[dataKey] / total) * 100;
-        return percent > 10;
+      .filter((d: d3.PieArcDatum<InputData>) => {
+        const percent = (d.data[dataKey ?? 'alumniCount'] / total) * 100;
+        return percent > 7 ;
       })
       .append("text")
-      .attr("transform", (d: d3.PieArcDatum<IndustryListItemDto>) => {
+      .attr("transform", (d: d3.PieArcDatum<InputData>) => {
         const centroid = arc.centroid(d);
         return `translate(${centroid[0]},${centroid[1] + 12})`;
       })
@@ -254,13 +261,14 @@ export default function IndustryChartView({
       .style("font-size", "0px")
       .style("fill", "white")
       .style("pointer-events", "none")
-      .text((d: d3.PieArcDatum<IndustryListItemDto>) => {
+      .text((d: d3.PieArcDatum<InputData>) => {
         return d.data.name.length > 12 ? d.data.name.substring(0, 12) + "..." : d.data.name;
       })
       .transition()
       .duration(800)
       .delay((d, i) => 800 + i * 50)
-      .style("font-size", "8px");
+      .style("font-size", "9px")
+      .style("font-weight", "700");
 
     const legendWrapper = svg
       .append("g")
