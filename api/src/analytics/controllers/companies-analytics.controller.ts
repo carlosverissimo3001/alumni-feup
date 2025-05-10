@@ -54,11 +54,8 @@ export class CompaniesAnalyticsController {
   @ApiOperation({
     summary: 'Returns detailed information about a specific company.',
   })
-  async getCompanyDetails(
-    @Param('id') id: string,
-    @Query() query: QueryParamsDto,
-  ) {
-    // TODO: Implement this
+  async getCompanyDetails(@Param('id') id: string) {
+    return this.companyAnalyticsService.getCompanyDetails(id);
   }
 
   @Get('/hot-companies')

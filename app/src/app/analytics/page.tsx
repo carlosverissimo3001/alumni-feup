@@ -59,6 +59,7 @@ export default function Analytics() {
 
   const [filters, setFilters] = useState<FilterState>(initialFilters);
 
+
   const processedDateRange = useMemo(() => {
     if (filters.dateRange) {
       return handleDateRange(filters.dateRange);
@@ -156,9 +157,15 @@ export default function Analytics() {
         setFilters((prev) => {
           const currentCountries = prev.countries || [];
           if (!currentCountries.includes(geoId)) {
+            const updatedCountries = [...currentCountries, geoId];
+            
+            // Drilling down to cities after adding a country filter
+            if (updatedCountries.length === 1) {
+              setTimeout(() => setGeoMode("city"), 0);
+            }
             return {
               ...prev,
-              countries: [...currentCountries, geoId],
+              countries: updatedCountries,
             };
           } else {
             return {
@@ -184,7 +191,7 @@ export default function Analytics() {
         });
       }
     },
-    [geoMode]
+    [geoMode, setGeoMode]
   );
 
   const handleAddIndustryToFilters = useCallback((industryId: string) => {
