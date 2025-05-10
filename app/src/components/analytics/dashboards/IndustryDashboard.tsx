@@ -124,13 +124,13 @@ export default function IndustryDashboard({
                             index % 2 === 0 ? "bg-gray-50" : "bg-white"
                           } hover:bg-[#A13A23] hover:bg-opacity-10 transition-colors duration-200 relative`}
                         >
-                          <TableCell className="w-1/12 py-1-5 pl-3 text-sm text-gray-500 font-medium align-middle">
+                          <TableCell className="w-[3%] py-1.5 pl-3 text-sm text-gray-500 font-medium align-middle">
                             {rowNumber}
                           </TableCell>
                           <TableCell className="w-5/12 py-1.5 pl-3 text-sm font-medium text-[#000000] align-middle">
                             <Button
                               variant="link"
-                              className="text-sm font-medium text-[#000000] w-full text-left h-auto p-0 hover:text-[#8C2D19] transition-colors"
+                              className="text-sm font-medium text-[#000000] w-full text-left h-auto p-1 hover:text-[#8C2D19] transition-colors flex items-center"
                               onClick={() => {
                                 window.open(
                                   `/industry/${industry.id}`,
@@ -140,13 +140,14 @@ export default function IndustryDashboard({
                             >
                               <div
                                 title={industry.name}
-                                className="text-ellipsis overflow-hidden w-full text-left"
+                                className="truncate max-w-full w-full text-left flex items-center"
                               >
                                 {industry.name}
                               </div>
                             </Button>
                           </TableCell>
-                          <TableCell className="w-3/12 px-3 py-1 text-sm text-[#000000] align-middle hover:text-[#8C2D19] transition-colors">
+                          <TableCell className="w-2/12 pl-3 py-1 text-sm text-[#000000] align-middle hover:text-[#8C2D19] transition-colors">
+                            {" "}
                             {view === ViewType.TABLE ? (
                               <CountComponent count={industry.companyCount} />
                             ) : (
@@ -155,7 +156,7 @@ export default function IndustryDashboard({
                               />
                             )}
                           </TableCell>
-                          <TableCell className="w-3/12 pl-3 py-1 text-sm text-[#000000] align-middle hover:text-[#8C2D19] transition-colors">
+                          <TableCell className="w-2/12 px-3 py-1 text-sm text-[#000000] align-middle hover:text-[#8C2D19] transition-colors relative">
                             <div className="flex items-center gap-0 justify-center">
                               {view === ViewType.TABLE ? (
                                 <CountComponent count={industry.alumniCount} />
