@@ -4,8 +4,7 @@ type TrendLineComponentProps = {
     dataPoints: number[];
 }
 
-export const trendLineComponent = (props: TrendLineComponentProps) => {
-    // Mock data for the past 5 years
+const TrendLineComponent = (props: TrendLineComponentProps) => {
     const data = props.dataPoints;
     
     const trendUp = data[data.length - 1] > data[0];
@@ -56,9 +55,11 @@ export const trendLineComponent = (props: TrendLineComponentProps) => {
         <svg 
           ref={svgRef} 
           width="70" 
-          height="35" 
+          height="30" 
           className="inline-block"
         />
       </div>
     );
   };
+
+export default TrendLineComponent;
