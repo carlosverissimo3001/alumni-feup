@@ -11,7 +11,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { useCompanyList } from "@/hooks/analytics/useCompanyList";
 import { CompanyListItemDto } from "@/sdk";
-import { Building2, Filter } from "lucide-react";
+import { Building2, Filter, Info, LineChart, PieChart, TableIcon, TrendingDown, TrendingUp } from "lucide-react";
 import ImageWithFallback from "../../ui/image-with-fallback";
 import PaginationControls from "../common/PaginationControls";
 import { CompanyDataSkeleton } from "../skeletons/CompanyDataSkeleton";
@@ -26,6 +26,11 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import ChartView from "../common/ChartView";
+import { ViewType } from "@/types/view";
+import CountComponent from "../common/CountComponent";
+import TrendLineComponent from "../common/TrendLineComponent";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 
 type CompanyDashboardProps = {
   onDataUpdate: (
@@ -48,6 +53,7 @@ export default function CompanyDashboard({
   const [totalItems, setTotalItems] = useState(0);
   const [sortField, setSortField] = useState<SortBy>(SortBy.ALUMNI_COUNT);
   const [sortOrder, setSortOrder] = useState<SortOrder>(SortOrder.DESC);
+  const [view, setView] = useState<ViewType>(ViewType.TABLE);
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [pageInput, setPageInput] = useState<string>(String(page));
@@ -105,119 +111,227 @@ export default function CompanyDashboard({
     }
   };
 
+  const renderTableView = () => {
+    return (
+      <>
+        <div className="flex-1 relative border-t border-b border-gray-200 flex flex-col overflow-hidden">
+          <TableContainer className="flex-1 overflow-auto custom-scrollbar">
+            <Table className="min-w-full bg-white table-fixed [&>div]:overflow-visible">
+              <CustomTableHeader
+                includeCompanies={false}
+                sortField={sortField}
+                sortOrder={sortOrder}
+                onSort={handleSort}
+              />
+
+              {isLoading || isFetching ? (
+                <CompanyDataSkeleton />
+              ) : (
+                <TableBody className="bg-white divide-y divide-gray-200">
+                  {companies.length > 0 ? (
+                    companies.map(
+                      (company: CompanyListItemDto, index: number) => {
+                        const rowNumber = (page - 1) * itemsPerPage + index + 1;
+                        return (
+                          <TableRow
+                            key={company.id}
+                            className={`group ${
+                              index % 2 === 0 ? "bg-gray-50" : "bg-white"
+                            } hover:bg-[#A13A23] hover:bg-opacity-10 transition-colors duration-200 relative items-center`}
+                          >
+                            <TableCell className="w-[3%] py-1.5 pl-3 text-sm text-gray-500 font-medium align-middle">
+                              {rowNumber}
+                            </TableCell>
+                            <TableCell className="w-[85%] py-1.5 pl-3 text-sm font-medium text-[#000000] flex items-center gap-1 align-middle">
+                              <div className="min-w-[24px] w-6 h-6 mr-1.5 rounded-full overflow-hidden flex items-center justify-center bg-gray-50">
+                                <ImageWithFallback
+                                  src={company.logo || ""}
+                                  alt={company.name}
+                                  width={24}
+                                  height={24}
+                                  className="rounded-full object-contain w-full h-full"
+                                />
+                              </div>
+                              <Button
+                                variant="link"
+                                className="text-sm font-medium text-[#000000] w-full text-left h-auto p-1 hover:text-[#8C2D19] transition-colors flex items-center"
+                                onClick={() => {
+                                  window.open(
+                                    `/company/${company.id}`,
+                                    "_blank"
+                                  );
+                                }}
+                              >
+                                <div
+                                  title={company.name}
+                                  className="truncate max-w-full w-full text-left flex items-center"
+                                >
+                                  {company.name}
+                                </div>
+                              </Button>
+                            </TableCell>
+                            <TableCell className="w-[12%] px-3 py-1 text-sm text-[#000000] align-middle hover:text-[#8C2D19] transition-colors relative">
+                              <div className="flex items-center gap-0 justify-center">
+                                {view === ViewType.TABLE ? (
+                                  <CountComponent count={company.alumniCount} />
+                                ) : (
+                                  <TrendLineComponent
+                                    dataPoints={[20, 25, 30, 35, 40]}
+                                  />
+                                )}
+                                <div className={`opacity-0 group-hover:opacity-100 transition-opacity ${view === ViewType.TABLE ? 'ml-2' : 'ml-0'}`}>
+                                  <TooltipProvider>
+                                    <Tooltip>
+                                      <TooltipTrigger asChild>
+                                        <Button
+                                          aria-label="Add to filters"
+                                          variant="ghost"
+                                          size="sm"
+                                          className="p-1 h-6 w-6 rounded-full bg-gray-100 hover:bg-gray-200"
+                                          onClick={() =>
+                                            onAddToFilters?.(company.id)
+                                          }
+                                        >
+                                          <Filter className="h-4 w-4 text-[#8C2D19]" />
+                                        </Button>
+                                      </TooltipTrigger>
+                                      <TooltipContent>
+                                        <p>Filter on {company.name}</p>
+                                      </TooltipContent>
+                                    </Tooltip>
+                                  </TooltipProvider>
+                                </div>
+                              </div>
+                            </TableCell>
+                          </TableRow>
+                        );
+                      }
+                    )
+                  ) : (
+                    <NotFoundComponent
+                      message="No company data available"
+                      description="Try adjusting your filters to find companies that match your criteria."
+                    />
+                  )}
+                </TableBody>
+              )}
+            </Table>
+          </TableContainer>
+        </div>
+
+        <PaginationControls
+          page={page}
+          setPage={setPage}
+          itemsPerPage={itemsPerPage}
+          setItemsPerPage={setItemsPerPage}
+          totalItems={totalItems}
+        />
+      </>
+    );
+  };
+
+  const renderChartView = () => (
+    <div className="flex-1 flex flex-col border-t border-b border-gray-200 overflow-hidden">
+      <div className="flex-1 flex items-center justify-center">
+        {isLoading || isFetching ? (
+          <div className="text-center">Loading chart data...</div>
+        ) : companies.length === 0 ? (
+          <NotFoundComponent
+            message="No company data available"
+            description="Try adjusting your filters to find companies that match your criteria."
+            colSpan={1}
+          />
+        ) : (
+          <ChartView
+            data={companies}
+            isLoading={isLoading || isFetching}
+            dataKey={
+              sortField === SortBy.ALUMNI_COUNT ? "alumniCount" : "companyCount"
+            }
+          />
+        )}
+      </div>
+    </div>
+  );
+
   return (
     <div
       className={`w-full ${DASHBOARD_HEIGHT} flex flex-col border rounded-xl shadow-lg p-3 box-border bg-white`}
     >
-      <div className="flex items-center justify-between mb-3">
-        <TableTitle
-          title="Companies"
-          icon={<Building2 className="h-5 w-5 text-[#8C2D19]" />}
-          tooltipMessage="Companies that have hired alumni from our programs."
-        />
-      </div>
-
-      <div className="flex-1 relative border-t border-b border-gray-200 flex flex-col overflow-hidden">
-        <TableContainer className="flex-1 overflow-auto custom-scrollbar">
-          <Table className="min-w-full bg-white table-fixed [&>div]:overflow-visible">
-            <CustomTableHeader
-              includeCompanies={false}
-              sortField={sortField}
-              sortOrder={sortOrder}
-              onSort={handleSort}
-            />
-
-            {isLoading || isFetching ? (
-              <CompanyDataSkeleton />
-            ) : (
-              <TableBody className="bg-white divide-y divide-gray-200">
-                {companies.length > 0 ? (
-                  companies.map(
-                    (company: CompanyListItemDto, index: number) => {
-                      const rowNumber = (page - 1) * itemsPerPage + index + 1;
-                      return (
-                        <TableRow
-                          key={company.id}
-                          className={`group ${
-                            index % 2 === 0 ? "bg-gray-50" : "bg-white"
-                          } hover:bg-[#A13A23] hover:bg-opacity-10 transition-colors duration-200 relative`}
-                        >
-                          <TableCell className="w-[3%] py-1.5 pl-3 text-sm text-gray-500 font-medium align-middle">
-                            {rowNumber}
-                          </TableCell>
-                          <TableCell className="w-[85%] py-1.5 pl-3 text-sm font-medium text-[#000000] flex items-center gap-1 align-middle">
-                            <div className="min-w-[24px] w-6 h-6 mr-1.5 rounded-full overflow-hidden flex items-center justify-center bg-gray-50">
-                              <ImageWithFallback
-                                src={company.logo || ""}
-                                alt={company.name}
-                                width={24}
-                                height={24}
-                                className="rounded-full object-contain w-full h-full"
-                              />
-                            </div>
-                            <Button
-                              variant="link"
-                              className="text-sm font-medium text-[#000000] w-full text-left h-auto p-1 hover:text-[#8C2D19] transition-colors"
-                              onClick={() => {
-                                window.open(`/company/${company.id}`, "_blank");
-                              }}
-                            >
-                              <div
-                                title={company.name}
-                                className="truncate max-w-full w-full text-left"
-                              >
-                                {company.name}
-                              </div>
-                            </Button>
-                          </TableCell>
-                          <TableCell className="w-[12%] px-3 py-1 text-sm text-[#000000] align-middle hover:text-[#8C2D19] transition-colors">
-                            <span className="font-semibold">
-                              {company.alumniCount}
-                            </span>
-                          </TableCell>
-                          <TableCell className="absolute right-2 top-1/2 transform -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity">
-                            <TooltipProvider>
-                              <Tooltip>
-                                <TooltipTrigger asChild>
-                                  <Button
-                                    aria-label="Add to filters"
-                                    variant="ghost"
-                                    size="sm"
-                                    className="p-1 h-6 w-6 rounded-full bg-gray-100 hover:bg-gray-200"
-                                    onClick={() => onAddToFilters?.(company.id)}
-                                  >
-                                    <Filter className="h-4 w-4 text-[#8C2D19]" />
-                                  </Button>
-                                </TooltipTrigger>
-                                <TooltipContent>
-                                  <p>Filter on {company.name}</p>
-                                </TooltipContent>
-                              </Tooltip>
-                            </TooltipProvider>
-                          </TableCell>
-                        </TableRow>
-                      );
-                    }
-                  )
-                ) : (
-                  <NotFoundComponent
-                    message="No company data available"
-                    description="Try adjusting your filters to find companies that match your criteria."
-                  />
-                )}
-              </TableBody>
+      <div className="flex items-center justify-between mb-2">
+        <div className="flex items-center gap-2">
+          <TableTitle
+            title="Companies"
+            icon={<Building2 className="h-5 w-5 text-[#8C2D19]" />}
+            tooltipMessage="Companies that have hired alumni from our programs."
+            className="pl-1"
+          />
+      
+          {view === ViewType.TREND && (
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Info className="h-5 w-5 text-[#8C2D19] ml-2" />
+                  </TooltipTrigger>
+                  <TooltipContent className="max-w-xs" align="start">
+                    <div className="space-y-2">
+                      <p><strong>Trend View:</strong> Shows the change in company presence over the past 5 years</p>
+                      <p>
+                        <TrendingUp className="h-3.5 w-3.5 inline text-green-500 mr-1" />{" "}
+                        Indicates growing companies
+                      </p>
+                      <p>
+                        <TrendingDown className="h-3.5 w-3.5 inline text-red-500 mr-1" />{" "}
+                        Indicates declining companies
+                      </p>
+                    </div>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
             )}
-          </Table>
-        </TableContainer>
+        </div>
+
+        <div className="border rounded-md overflow-hidden">
+          <ToggleGroup
+            type="single"
+            value={view}
+            onValueChange={(value: string) =>
+              value && setView(value as ViewType)
+            }
+            className="flex"
+          >
+            <ToggleGroupItem
+              value={ViewType.TABLE}
+              aria-label="Table View"
+              className="px-1.5 py-1"
+              title="Table View"
+            >
+              <TableIcon className="h-4 w-4" />
+            </ToggleGroupItem>
+            <ToggleGroupItem
+              value={ViewType.CHART}
+              aria-label="Chart View"
+              className="px-1.5 py-1 disabled:opacity-10"
+              title="Chart View"
+            >
+              <PieChart className="h-4 w-4" />
+            </ToggleGroupItem>
+            <ToggleGroupItem
+              value={ViewType.TREND}
+              aria-label="Trend View"
+              className="px-1.5 py-1"
+              title="Trend View"
+            >
+              <LineChart className="h-4 w-4" />
+            </ToggleGroupItem>
+          </ToggleGroup>
+        </div>
       </div>
 
-      <PaginationControls
-        page={page}
-        setPage={setPage}
-        itemsPerPage={itemsPerPage}
-        setItemsPerPage={setItemsPerPage}
-        totalItems={totalItems}
-      />
+      {/* Maybe fix this weird logic */}
+      {view === ViewType.TABLE && renderTableView()}
+      {view === ViewType.TREND && renderTableView()}
+      {view === ViewType.CHART && renderChartView()}
     </div>
   );
 }

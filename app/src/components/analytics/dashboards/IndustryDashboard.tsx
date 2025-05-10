@@ -35,12 +35,10 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
-import IndustryChartView from "../views/IndustryChartView";
-import { trendLineComponent } from "../common/TrendLineComponent";
-
-// Define view types
-export type ViewType = "table" | "chart" | "trend";
-
+import TrendLineComponent from "../common/TrendLineComponent";
+import ChartView from "../common/ChartView";
+import { ViewType } from "@/types/view";
+import CountComponent from "../common/CountComponent";
 type IndustryDashboardProps = {
   onDataUpdate: (industryCount: number, industryFilteredCount: number) => void;
   filters: FilterState;
@@ -56,7 +54,7 @@ export default function IndustryDashboard({
   const [itemsPerPage, setItemsPerPage] = useState(ITEMS_PER_PAGE[2]);
   const [sortField, setSortField] = useState<SortBy>(SortBy.ALUMNI_COUNT);
   const [sortOrder, setSortOrder] = useState<SortOrder>(SortOrder.DESC);
-  const [view, setView] = useState<ViewType>("table");
+  const [view, setView] = useState<ViewType>(ViewType.TABLE);
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [pageInput, setPageInput] = useState<string>(String(page));
@@ -97,18 +95,7 @@ export default function IndustryDashboard({
       setSortField(field);
       setSortOrder(SortOrder.DESC);
     }
-    // Not sure if we should reset the page when sorting changes
-    // setPage(1);
   };
-
-  const companyCountComponent = (industry: IndustryListItemDto) => {
-    return <span className="font-semibold">{industry.companyCount}</span>;
-  };
-
-  const alumniCountComponent = (industry: IndustryListItemDto) => {
-    return <span className="font-semibold">{industry.alumniCount}</span>;
-  };
-
 
   // Table View Component
   const renderTableView = () => (
@@ -137,7 +124,7 @@ export default function IndustryDashboard({
                             index % 2 === 0 ? "bg-gray-50" : "bg-white"
                           } hover:bg-[#A13A23] hover:bg-opacity-10 transition-colors duration-200 relative`}
                         >
-                          <TableCell className="w-1/12 py-1 pl-3 text-sm text-gray-500 font-medium align-middle">
+                          <TableCell className="w-1/12 py-1-5 pl-3 text-sm text-gray-500 font-medium align-middle">
                             {rowNumber}
                           </TableCell>
                           <TableCell className="w-5/12 py-1.5 pl-3 text-sm font-medium text-[#000000] align-middle">
@@ -159,37 +146,51 @@ export default function IndustryDashboard({
                               </div>
                             </Button>
                           </TableCell>
-                          <TableCell className="w-3/12 pl-3 py-1 text-sm text-[#000000] align-middle hover:text-[#8C2D19] transition-colors">
-                            {view === "table"
-                              ? companyCountComponent(industry)
-                              : trendLineComponent({dataPoints: [25, 27, 29, 30, 31]})}
+                          <TableCell className="w-3/12 px-3 py-1 text-sm text-[#000000] align-middle hover:text-[#8C2D19] transition-colors">
+                            {view === ViewType.TABLE ? (
+                              <CountComponent count={industry.companyCount} />
+                            ) : (
+                              <TrendLineComponent
+                                dataPoints={[25, 27, 29, 30, 31]}
+                              />
+                            )}
                           </TableCell>
                           <TableCell className="w-3/12 pl-3 py-1 text-sm text-[#000000] align-middle hover:text-[#8C2D19] transition-colors">
-                            {view === "table"
-                              ? alumniCountComponent(industry)
-                              : trendLineComponent({dataPoints: [20, 25, 30, 35, 40]})}
-                          </TableCell>
-                          <TableCell className="absolute right-2 top-1/2 transform -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity">
-                            <TooltipProvider>
-                              <Tooltip>
-                                <TooltipTrigger asChild>
-                                  <Button
-                                    aria-label="Add to filters"
-                                    variant="ghost"
-                                    size="sm"
-                                    className="p-1 h-6 w-6 rounded-full bg-gray-100 hover:bg-gray-200"
-                                    onClick={() =>
-                                      onAddToFilters?.(industry.id)
-                                    }
-                                  >
-                                    <Filter className="h-4 w-4 text-[#8C2D19]" />
-                                  </Button>
-                                </TooltipTrigger>
-                                <TooltipContent>
-                                  <p>Filter on {industry.name}</p>
-                                </TooltipContent>
-                              </Tooltip>
-                            </TooltipProvider>
+                            <div className="flex items-center gap-0 justify-center">
+                              {view === ViewType.TABLE ? (
+                                <CountComponent count={industry.alumniCount} />
+                              ) : (
+                                <TrendLineComponent
+                                  dataPoints={[20, 25, 30, 35, 40]}
+                                />
+                              )}
+                              <div
+                                className={`opacity-0 group-hover:opacity-100 transition-opacity ${
+                                  view === ViewType.TABLE ? "ml-2" : "ml-0"
+                                }`}
+                              >
+                                <TooltipProvider>
+                                  <Tooltip>
+                                    <TooltipTrigger asChild>
+                                      <Button
+                                        aria-label="Add to filters"
+                                        variant="ghost"
+                                        size="sm"
+                                        className="p-1 h-6 w-6 rounded-full bg-gray-100 hover:bg-gray-200"
+                                        onClick={() =>
+                                          onAddToFilters?.(industry.id)
+                                        }
+                                      >
+                                        <Filter className="h-4 w-4 text-[#8C2D19]" />
+                                      </Button>
+                                    </TooltipTrigger>
+                                    <TooltipContent>
+                                      <p>Filter on {industry.name}</p>
+                                    </TooltipContent>
+                                  </Tooltip>
+                                </TooltipProvider>
+                              </div>
+                            </div>
                           </TableCell>
                         </TableRow>
                       );
@@ -231,7 +232,7 @@ export default function IndustryDashboard({
             colSpan={1}
           />
         ) : (
-          <IndustryChartView
+          <ChartView
             data={industries}
             isLoading={isLoading || isFetching}
             dataKey={
@@ -263,9 +264,18 @@ export default function IndustryDashboard({
                 </TooltipTrigger>
                 <TooltipContent className="max-w-xs" align="start">
                   <div className="space-y-2">
-                    <p><strong>Trend View:</strong> Shows the change in industry presence over the past 5 years</p>
-                    <p><TrendingUp className="h-3.5 w-3.5 inline text-green-500 mr-1" /> Indicates growing industries</p>
-                    <p><TrendingDown className="h-3.5 w-3.5 inline text-red-500 mr-1" /> Indicates declining industries</p>
+                    <p>
+                      <strong>Trend View:</strong> Shows the change in industry
+                      presence over the past 5 years
+                    </p>
+                    <p>
+                      <TrendingUp className="h-3.5 w-3.5 inline text-green-500 mr-1" />{" "}
+                      Indicates growing industries
+                    </p>
+                    <p>
+                      <TrendingDown className="h-3.5 w-3.5 inline text-red-500 mr-1" />{" "}
+                      Indicates declining industries
+                    </p>
                   </div>
                 </TooltipContent>
               </Tooltip>
@@ -283,7 +293,7 @@ export default function IndustryDashboard({
             className="flex"
           >
             <ToggleGroupItem
-              value="table"
+              value={ViewType.TABLE}
               aria-label="Table View"
               className="px-1.5 py-1"
               title="Table View"
@@ -291,16 +301,15 @@ export default function IndustryDashboard({
               <TableIcon className="h-4 w-4" />
             </ToggleGroupItem>
             <ToggleGroupItem
-              value="chart"
+              value={ViewType.CHART}
               aria-label="Chart View"
               className="px-1.5 py-1 disabled:opacity-10"
               title="Chart View"
-              //disabled={true}
             >
               <PieChart className="h-4 w-4" />
             </ToggleGroupItem>
             <ToggleGroupItem
-              value="trend"
+              value={ViewType.TREND}
               aria-label="Trend View"
               className="px-1.5 py-1"
               title="Trend View"
@@ -312,9 +321,9 @@ export default function IndustryDashboard({
       </div>
 
       {/* Maybe fix this weird logic */}
-      {view === "table" && renderTableView()}
-      {view === "trend" && renderTableView()}
-      {view === "chart" && renderChartView()}
+      {view === ViewType.TABLE && renderTableView()}
+      {view === ViewType.TREND && renderTableView()}
+      {view === ViewType.CHART && renderChartView()}
     </div>
   );
 }
