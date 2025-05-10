@@ -13,6 +13,7 @@ import {
   TableIcon,
   PieChart,
   LineChart,
+  XIcon,
 } from "lucide-react";
 import { DashboardSkeleton } from "../skeletons/DashboardSkeleton";
 import PaginationControls from "../common/PaginationControls";
@@ -157,6 +158,14 @@ export default function GeoDashboard({
         ? isCountryLoading || isCountryFetching
         : isCityLoading || isCityFetching;
 
+    const isRowInFilters = (row: DataRowProps) => {
+      if (mode === "country") {
+        return filters.countries?.includes(row.id);
+      } else {
+        return filters.cityIds?.includes(row.id);
+      }
+    };
+
     return (
       <>
         <div className="flex-1 relative border-t border-b border-gray-200 flex flex-col overflow-hidden">
@@ -190,7 +199,7 @@ export default function GeoDashboard({
                           <TableCell className="w-1/12 py-1.5 pl-3 text-sm text-gray-500 font-medium align-middle">
                             {rowNumber}
                           </TableCell>
-                          <TableCell className="w-7/12 py-1.5 pl-3 text-sm font-medium text-[#000000] flex items-center gap-1 align-middle">
+                          <TableCell className={`w-7/12 py-1.5 pl-3 text-sm ${isRowInFilters(row) ? "font-bold text-[#8C2D19]" : "font-medium text-[#000000]"} flex items-center gap-1 align-middle`}>
                             <div className="min-w-[24px] w-6 h-6 mr-1.5 rounded-full overflow-hidden flex items-center justify-center bg-gray-50">
                               <ImageWithFallback
                                 src={flagUrl}
@@ -203,7 +212,7 @@ export default function GeoDashboard({
                             </div>
                             <Button
                               variant="link"
-                              className="text-sm font-medium text-[#000000] h-auto p-1 hover:text-[#8C2D19] transition-colors mr-2"
+                              className={`text-sm ${isRowInFilters(row) ? "font-bold" : "font-medium"} text-[#000000] h-auto p-1 hover:text-[#8C2D19] transition-colors mr-2`}
                               onClick={() => {
                                 window.open(`/${mode}/${row.id}`, "_blank");
                               }}
@@ -216,7 +225,7 @@ export default function GeoDashboard({
                               </div>
                             </Button>
                           </TableCell>
-                          <TableCell className="w-2/12 pl-3 py-1 text-sm text-[#000000] align-middle hover:text-[#8C2D19] transition-colors">
+                          <TableCell className={`w-2/12 pl-3 py-1 text-sm ${isRowInFilters(row) ? "font-bold text-[#8C2D19]" : "text-[#000000]"} align-middle hover:text-[#8C2D19] transition-colors`}>
                             <div className="flex items-center gap-0 justify-center">
                               {view === ViewType.TABLE ? (
                                 <CountComponent count={row.companyCount} />
@@ -227,7 +236,7 @@ export default function GeoDashboard({
                               )}
                             </div>
                           </TableCell>
-                          <TableCell className="w-2/12 px-3 py-1 text-sm text-[#000000] align-middle hover:text-[#8C2D19] transition-colors relative">
+                          <TableCell className={`w-2/12 px-3 py-1 text-sm ${isRowInFilters(row) ? "font-bold text-[#8C2D19]" : "text-[#000000]"} align-middle hover:text-[#8C2D19] transition-colors relative`}>
                             <div className="flex items-center gap-0 justify-center">
                               {view === ViewType.TABLE ? (
                                 <CountComponent count={row.alumniCount} />
@@ -237,7 +246,11 @@ export default function GeoDashboard({
                                 />
                               )}
                               <div
-                                className={`opacity-0 group-hover:opacity-100 transition-opacity ${
+                                className={`${
+                                  isRowInFilters(row) 
+                                    ? "opacity-100" 
+                                    : "opacity-0 group-hover:opacity-100"
+                                } transition-opacity ${
                                   view === ViewType.TABLE ? "ml-2" : "ml-0"
                                 }`}
                               >
@@ -245,17 +258,25 @@ export default function GeoDashboard({
                                   <Tooltip>
                                     <TooltipTrigger asChild>
                                       <Button
-                                        aria-label="Add to filters"
+                                        aria-label={`${isRowInFilters(row) ? "Remove from filters" : "Add to filters"}`}
                                         variant="ghost"
                                         size="sm"
-                                        className="p-1 h-6 w-6 rounded-full bg-gray-100 hover:bg-gray-200"
+                                        className={`p-1 h-6 w-6 rounded-full ${
+                                          isRowInFilters(row)
+                                            ? "bg-[#8C2D19] bg-opacity-20 hover:bg-[#8C2D19] hover:bg-opacity-30"
+                                            : "bg-gray-100 hover:bg-gray-200"
+                                        }`}
                                         onClick={() => onAddToFilters?.(row.id)}
                                       >
-                                        <Filter className="h-4 w-4 text-[#8C2D19]" />
+                                        {isRowInFilters(row) ? (
+                                          <XIcon className="h-4 w-4 text-[#8C2D19]" />
+                                        ) : (
+                                          <Filter className="h-4 w-4 text-[#8C2D19]" />
+                                        )}
                                       </Button>
                                     </TooltipTrigger>
                                     <TooltipContent>
-                                      <p>Filter on {row.name}</p>
+                                      <p>{isRowInFilters(row) ? `Remove ${row.name} from filters` : `Add ${row.name} to filters`}</p>
                                     </TooltipContent>
                                   </Tooltip>
                                 </TooltipProvider>

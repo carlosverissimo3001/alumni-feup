@@ -179,4 +179,8 @@ export class CompanyAnalyticsService {
 
     return companiesWithAlumniCount;
   }
+
+  async getCompanyDetails(id: string) {
+    return undefined;
+  }
 }
