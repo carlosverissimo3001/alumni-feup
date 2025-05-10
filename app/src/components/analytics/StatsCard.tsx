@@ -27,11 +27,9 @@ export default function StatsCard({
   const [percentage, setPercentage] = useState(0);
 
   useEffect(() => {
-    // Calculate percentage
     const calculatedPercentage =
       values[1] > 0 ? Math.round((values[0] / values[1]) * 100) : 0;
 
-    // Animate loading effect
     const timer = setTimeout(() => {
       setIsLoaded(true);
       setPercentage(calculatedPercentage);
@@ -40,7 +38,6 @@ export default function StatsCard({
     return () => clearTimeout(timer);
   }, [values]);
 
-  // Determine badge variant based on percentage
   const getBadgeVariant = () => {
     if (percentage < 30) return "destructive";
     if (percentage < 70) return "secondary";
@@ -53,25 +50,26 @@ export default function StatsCard({
       animate={{ opacity: 1 }}
       transition={{ duration: 0.4 }}
       whileHover={{ scale: 1.02 }}
+      className="h-full"
     >
-      <Card className="p-3 bg-gradient-to-br from-white via-[#FCEFEA] to-[#8C2D19]/15 hover:shadow-lg hover:shadow-[#8C2D19]/10 transition-all duration-300 rounded-xl border border-[#8C2D19]/20">
-        <div className="flex items-center gap-4">
-          <div className="p-3 rounded-full bg-[#8C2D19]/20 hover:bg-[#8C2D19]/30 transition-colors shadow-sm">
+      <Card className="p-3 h-full bg-gradient-to-br from-white via-[#FCEFEA] to-[#8C2D19]/15 hover:shadow-lg hover:shadow-[#8C2D19]/10 transition-all duration-300 rounded-xl border border-[#8C2D19]/20">
+        <div className="flex items-center gap-3">
+          <div className="p-2.5 rounded-full bg-[#8C2D19]/20 hover:bg-[#8C2D19]/30 transition-colors shadow-sm flex-shrink-0">
             {icon}
           </div>
           <div className="w-full">
-            <div className="flex items-center justify-between mb-1">
+            <div className="flex items-center justify-between mb-0.5">
               <div className="flex items-center gap-1">
-                <p className="text-sm font-semibold text-[#000000]">{name}</p>
+                <p className="text-sm font-semibold text-[#000000] truncate max-w-[100px] sm:max-w-full">{name}</p>
                 {infoMessage && (
                   <TooltipProvider>
                     <Tooltip>
                       <TooltipTrigger asChild>
-                        <Info className="h-5 w-5 text-[#8C2D19]" />
+                        <Info className="h-4 w-4 text-[#8C2D19]" />
                       </TooltipTrigger>
                       <TooltipContent
-                        side="right"
-                        align="start"
+                        side="top"
+                        align="center"
                         className="max-w-xs"
                       >
                         <p className="text-sm">{infoMessage}</p>
@@ -85,7 +83,7 @@ export default function StatsCard({
                 animate={{ opacity: isLoaded ? 1 : 0, scale: 1 }}
                 transition={{ duration: 0.5 }}
               >
-                <Badge variant={getBadgeVariant()} className="font-medium">
+                <Badge variant={getBadgeVariant()} className="text-xs font-medium px-2 py-0.5">
                   {percentage}%
                 </Badge>
               </motion.div>
@@ -94,13 +92,13 @@ export default function StatsCard({
               initial={{ opacity: 0.5 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.5 }}
-              className="text-3xl font-extrabold text-[#8C2D19] tracking-tight"
+              className="text-2xl font-extrabold text-[#8C2D19] tracking-tight"
             >
               {values[0]}
             </motion.h3>
-            <p className="text-xs font-normal text-[#5D5D5D]">
+            <p className="text-[10px] font-normal text-[#5D5D5D]">
               (out of a total of{" "}
-              <span className="text-xs font-semibold text-[#5D5D5D] italic">
+              <span className="text-[10px] font-semibold text-[#5D5D5D] italic">
                 {values[1]}
               </span>
               )
