@@ -20,7 +20,7 @@ import {
   TrendingDown,
   Info,
 } from "lucide-react";
-import { IndustryDataSkeleton } from "../skeletons/IndustryDataSkeleton";
+import { DashboardSkeleton } from "../skeletons/DashboardSkeleton";
 import { useIndustryList } from "@/hooks/analytics/useIndustryList";
 import PaginationControls from "../common/PaginationControls";
 import TableTitle from "../common/TableTitle";
@@ -39,6 +39,7 @@ import TrendLineComponent from "../common/TrendLineComponent";
 import ChartView from "../common/ChartView";
 import { ViewType } from "@/types/view";
 import CountComponent from "../common/CountComponent";
+import LoadingChart from "../common/LoadingChart";
 type IndustryDashboardProps = {
   onDataUpdate: (industryCount: number, industryFilteredCount: number) => void;
   filters: FilterState;
@@ -51,7 +52,7 @@ export default function IndustryDashboard({
   onAddToFilters,
 }: IndustryDashboardProps) {
   const [page, setPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(ITEMS_PER_PAGE[2]);
+  const [itemsPerPage, setItemsPerPage] = useState(ITEMS_PER_PAGE[1]);
   const [sortField, setSortField] = useState<SortBy>(SortBy.ALUMNI_COUNT);
   const [sortOrder, setSortOrder] = useState<SortOrder>(SortOrder.DESC);
   const [view, setView] = useState<ViewType>(ViewType.TABLE);
@@ -110,7 +111,7 @@ export default function IndustryDashboard({
             />
 
             {isLoading || isFetching ? (
-              <IndustryDataSkeleton />
+              <DashboardSkeleton hasExtraColumn={true} />
             ) : (
               <TableBody className="bg-white divide-y divide-gray-200">
                 {industries.length > 0 ? (
@@ -147,14 +148,15 @@ export default function IndustryDashboard({
                             </Button>
                           </TableCell>
                           <TableCell className="w-2/12 pl-3 py-1 text-sm text-[#000000] align-middle hover:text-[#8C2D19] transition-colors">
-                            {" "}
-                            {view === ViewType.TABLE ? (
-                              <CountComponent count={industry.companyCount} />
-                            ) : (
+                            <div className="flex items-center gap-0 justify-center">
+                              {view === ViewType.TABLE ? (
+                                <CountComponent count={industry.companyCount} />
+                              ) : (
                               <TrendLineComponent
                                 dataPoints={[25, 27, 29, 30, 31]}
                               />
                             )}
+                            </div>
                           </TableCell>
                           <TableCell className="w-2/12 px-3 py-1 text-sm text-[#000000] align-middle hover:text-[#8C2D19] transition-colors relative">
                             <div className="flex items-center gap-0 justify-center">
@@ -216,6 +218,7 @@ export default function IndustryDashboard({
         itemsPerPage={itemsPerPage}
         setItemsPerPage={setItemsPerPage}
         totalItems={totalItems}
+        visible={industries.length > 0}
       />
     </>
   );
@@ -225,7 +228,7 @@ export default function IndustryDashboard({
     <div className="flex-1 flex flex-col border-t border-b border-gray-200 overflow-hidden">
       <div className="flex-1 flex items-center justify-center">
         {isLoading || isFetching ? (
-          <div className="text-center">Loading chart data...</div>
+          <LoadingChart message="Loading chart data..." />
         ) : industries.length === 0 ? (
           <NotFoundComponent
             message="No industry data available"
