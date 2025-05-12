@@ -14,8 +14,9 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { TrendFrequency } from "@/types/entityTypes";
+import { ArrowLeftIcon, ArrowRightIcon, CheckIcon } from "lucide-react";
 import { Input } from "@/components/ui/input";
-import { ArrowLeftIcon, ArrowRightIcon } from "lucide-react";
 
 const ITEMS_PER_PAGE = [5, 10, 25, 50, 100];
 
@@ -26,6 +27,9 @@ interface PaginationControlsProps {
   setItemsPerPage: (n: number) => void;
   totalItems: number;
   visible: boolean;
+  trendFrequency: TrendFrequency;
+  showTrendFrequency?: boolean;
+  setTrendFrequency?: (trendFrequency: TrendFrequency) => void;
 }
 
 export default function PaginationControls({
@@ -34,7 +38,10 @@ export default function PaginationControls({
   itemsPerPage,
   setItemsPerPage,
   totalItems,
-  visible
+  visible,
+  showTrendFrequency = false,
+  setTrendFrequency,
+  trendFrequency,
 }: PaginationControlsProps) {
   const totalPages = Math.ceil(totalItems / itemsPerPage);
   const [pageInput, setPageInput] = useState<string>(String(page));
@@ -103,17 +110,49 @@ export default function PaginationControls({
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent>
-              {ITEMS_PER_PAGE.map((items) => (
+              {ITEMS_PER_PAGE.map((item) => (
                 <DropdownMenuItem
-                  key={items}
-                  onClick={() => handleItemsPerPageChange(items)}
+                  key={item}
+                  onClick={() => handleItemsPerPageChange(item)}
                 >
-                  {items}
+                  {item}
+                  {item === itemsPerPage && (
+                  <CheckIcon className="h-4 w-4 text-[#8C2D19]" />
+                )}
                 </DropdownMenuItem>
               ))}
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
+
+        {showTrendFrequency && (
+          <div>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                variant="outline"
+                size="sm"
+                className="min-w-[90px] justify-start text-left font-medium text-[#000000] border-gray-200 rounded-lg"
+              >
+                {trendFrequency}
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+              {Object.values(TrendFrequency).map((item) => (
+                <DropdownMenuItem
+                  key={item}
+                  onClick={() => setTrendFrequency?.(item)}
+                >
+                  {item}
+                  {item === trendFrequency && (
+                    <CheckIcon className="h-4 w-4 text-[#8C2D19]" />
+                  )}
+                </DropdownMenuItem>
+              ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
+          </div>
+        )}
 
         <div className="flex items-center space-x-4">
           <div className="flex items-center space-x-1">

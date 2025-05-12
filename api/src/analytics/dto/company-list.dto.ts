@@ -1,24 +1,46 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-
+import { DataPointDto } from './data-point.dto';
 export class CompanyListItemDto {
-  @ApiProperty()
+  @ApiProperty({
+    description: 'The ID of the company',
+    type: String,
+  })
   id: string;
 
-  @ApiProperty()
+  @ApiProperty({
+    description: 'The name of the company',
+    type: String,
+  })
   name: string;
 
-  @ApiProperty()
-  alumniCount: number;
+  @ApiProperty({
+    description: 'The number of alumni in the company',
+    type: Number,
+  })
+  count: number;
+
+  @ApiProperty({
+    description: 'The trend of the company',
+    type: DataPointDto,
+    isArray: true,
+  })
+  trend: DataPointDto[];
 
   @ApiPropertyOptional({ type: String, nullable: true })
   logo?: string | null;
 }
 
 export class CompanyListItemExtendedDto extends CompanyListItemDto {
-  @ApiProperty()
+  @ApiProperty({
+    description: 'The industry name of the company',
+    type: String,
+  })
   industry: string;
 
-  @ApiProperty()
+  @ApiProperty({
+    description: 'The ID of the industry',
+    type: String,
+  })
   industryId: string;
 }
 

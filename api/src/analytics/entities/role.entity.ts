@@ -10,6 +10,12 @@ export class RoleAnalyticsEntity {
   @ApiProperty()
   alumniId: string;
 
+  @ApiProperty()
+  startDate: Date;
+
+  @ApiPropertyOptional()
+  endDate?: Date | null;
+
   @ApiPropertyOptional({ type: LocationAnalyticsEntity, nullable: true })
   location?: LocationAnalyticsEntity | null;
 

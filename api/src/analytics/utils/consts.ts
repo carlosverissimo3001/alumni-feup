@@ -2,7 +2,7 @@ import { SortBy } from './types';
 
 export const DEFAULT_QUERY_LIMIT = Number.MAX_SAFE_INTEGER;
 export const DEFAULT_QUERY_OFFSET = 0;
-export const DEFAULT_QUERY_SORT_BY = SortBy.ALUMNI_COUNT;
+export const DEFAULT_QUERY_SORT_BY = SortBy.COUNT;
 export const DEFAULT_QUERY_SORT_ORDER = 'desc';
 
 const RESEARCH_SERVICES_INDUSTRY_ID = '5ef5c029-b671-4957-b33d-28a959e4dd9c';

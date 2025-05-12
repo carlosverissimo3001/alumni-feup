@@ -13,6 +13,14 @@
  */
 
 import { mapValues } from '../runtime';
+import type { DataPointDto } from './DataPointDto';
+import {
+    DataPointDtoFromJSON,
+    DataPointDtoFromJSONTyped,
+    DataPointDtoToJSON,
+    DataPointDtoToJSONTyped,
+} from './DataPointDto';
+
 /**
  * 
  * @export
@@ -32,17 +40,17 @@ export interface IndustryListItemDto {
      */
     name: string;
     /**
-     * The number of companies in the industry
-     * @type {number}
-     * @memberof IndustryListItemDto
-     */
-    companyCount: number;
-    /**
      * The number of alumni working in the industry
      * @type {number}
      * @memberof IndustryListItemDto
      */
-    alumniCount: number;
+    count: number;
+    /**
+     * The alumni trend of the industry
+     * @type {Array<DataPointDto>}
+     * @memberof IndustryListItemDto
+     */
+    trend: Array<DataPointDto>;
 }
 
 /**
@@ -51,8 +59,8 @@ export interface IndustryListItemDto {
 export function instanceOfIndustryListItemDto(value: object): value is IndustryListItemDto {
     if (!('id' in value) || value['id'] === undefined) return false;
     if (!('name' in value) || value['name'] === undefined) return false;
-    if (!('companyCount' in value) || value['companyCount'] === undefined) return false;
-    if (!('alumniCount' in value) || value['alumniCount'] === undefined) return false;
+    if (!('count' in value) || value['count'] === undefined) return false;
+    if (!('trend' in value) || value['trend'] === undefined) return false;
     return true;
 }
 
@@ -68,8 +76,8 @@ export function IndustryListItemDtoFromJSONTyped(json: any, ignoreDiscriminator:
         
         'id': json['id'],
         'name': json['name'],
-        'companyCount': json['companyCount'],
-        'alumniCount': json['alumniCount'],
+        'count': json['count'],
+        'trend': ((json['trend'] as Array<any>).map(DataPointDtoFromJSON)),
     };
 }
 
@@ -86,8 +94,8 @@ export function IndustryListItemDtoToJSONTyped(value?: IndustryListItemDto | nul
         
         'id': value['id'],
         'name': value['name'],
-        'companyCount': value['companyCount'],
-        'alumniCount': value['alumniCount'],
+        'count': value['count'],
+        'trend': ((value['trend'] as Array<any>).map(DataPointDtoToJSON)),
     };
 }
 

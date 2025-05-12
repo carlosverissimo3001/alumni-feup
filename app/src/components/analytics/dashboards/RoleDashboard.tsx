@@ -9,14 +9,12 @@ import {
   TableContainer,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { RoleListDto } from "@/sdk";
+import { RoleListItemDto } from "@/sdk";
 import {
   Briefcase,
   Filter,
   Info,
   ExternalLink,
-  TrendingDown,
-  TrendingUp,
   TableIcon,
   PieChart,
   LineChart,
@@ -44,6 +42,8 @@ import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import CountComponent from "../common/CountComponent";
 import TrendLineComponent from "../common/TrendLineComponent";
 import LoadingChart from "../common/LoadingChart";
+import { EntityType, TrendFrequency } from "@/types/entityTypes";
+import { TrendTooltip } from "../common/TrendTooltip";
 
 type RoleDashboardProps = {
   onDataUpdate: (roleCount: number, roleFilteredCount: number) => void;
@@ -60,10 +60,12 @@ export default function RoleDashboard({
 }: RoleDashboardProps) {
   const [page, setPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(ITEMS_PER_PAGE[1]);
-  const [sortField, setSortField] = useState<SortBy>(SortBy.ALUMNI_COUNT);
+  const [sortField, setSortField] = useState<SortBy>(SortBy.COUNT);
   const [sortOrder, setSortOrder] = useState<SortOrder>(SortOrder.DESC);
   const [view, setView] = useState<ViewType>(ViewType.TABLE);
   const [level, setLevel] = useState<number>(1);
+  const [trendFrequency, setTrendFrequency] = useState<TrendFrequency>(TrendFrequency.Y5);
+  
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [pageInput, setPageInput] = useState<string>(String(page));
@@ -86,6 +88,7 @@ export default function RoleDashboard({
     sortBy: sortField,
     sortOrder: sortOrder,
     offset: (page - 1) * itemsPerPage,
+    includeTrend: view === ViewType.TREND,
   });
 
   const roles = data?.roles || [];
@@ -124,7 +127,8 @@ export default function RoleDashboard({
                 sortField={sortField}
                 sortOrder={sortOrder}
                 onSort={handleSort}
-                includeCompanies={false}
+                showTrend={view === ViewType.TREND}
+                trendFrequency={trendFrequency}
                 useRoleTitle={true}
               />
 
@@ -133,7 +137,7 @@ export default function RoleDashboard({
               ) : (
                 <TableBody className="bg-white divide-y divide-gray-200">
                   {roles.length > 0 ? (
-                    roles.map((role: RoleListDto, index: number) => {
+                    roles.map((role: RoleListItemDto, index: number) => {
                       const rowNumber = (page - 1) * itemsPerPage + index + 1;
                       return (
                         <TableRow
@@ -154,20 +158,21 @@ export default function RoleDashboard({
                               }}
                             >
                               <div
-                                title={role.title}
+                                title={role.name}
                                 className="text-ellipsis overflow-hidden w-full text-left"
                               >
-                                {startCase(role.title)}
+                                {startCase(role.name)}
                               </div>
                             </Button>
                           </TableCell>
                           <TableCell className="w-2/12 px-3 py-1 text-sm text-[#000000] align-middle hover:text-[#8C2D19] transition-colors relative">
                             <div className="flex items-center gap-0 justify-center">
                               {view === ViewType.TABLE ? (
-                                <CountComponent count={role.roleCount} />
+                                <CountComponent count={role.count} />
                               ) : (
                                 <TrendLineComponent
-                                  dataPoints={[25, 27, 29, 30, 31]}
+                                  dataPoints={role.trend}
+                                  trendFrequency={trendFrequency}
                                 />
                               )}
                               <div
@@ -191,7 +196,7 @@ export default function RoleDashboard({
                                       </Button>
                                     </TooltipTrigger>
                                     <TooltipContent>
-                                      <p>Filter on {role.title}</p>
+                                      <p>Filter on {role.name}</p>
                                     </TooltipContent>
                                   </Tooltip>
                                 </TooltipProvider>
@@ -221,6 +226,9 @@ export default function RoleDashboard({
           setItemsPerPage={setItemsPerPage}
           totalItems={totalRolesFiltered}
           visible={roles.length > 0}
+          showTrendFrequency={view === ViewType.TREND}
+          trendFrequency={trendFrequency}
+          setTrendFrequency={setTrendFrequency}
         />
       </>
     );
@@ -240,12 +248,12 @@ export default function RoleDashboard({
         ) : (
           <ChartView
             data={roles.map((role) => ({
-              name: role.title,
+              name: role.name,
               id: role.code,
-              alumniCount: role.roleCount,
+              count: role.count,
             }))}
             isLoading={isLoading || isFetching}
-            dataKey="alumniCount"
+            entityType={EntityType.ROLE}
           />
         )}
       </div>
@@ -263,29 +271,7 @@ export default function RoleDashboard({
             icon={<Briefcase className="h-5 w-5 text-[#8C2D19]" />}
           />
           {view === ViewType.TREND && (
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Info className="h-5 w-5 text-[#8C2D19] ml-2" />
-                </TooltipTrigger>
-                <TooltipContent className="max-w-xs" align="start">
-                  <div className="space-y-2">
-                    <p>
-                      <strong>Trend View:</strong> Shows the change in ro
-                      presence over the past 5 years
-                    </p>
-                    <p>
-                      <TrendingUp className="h-3.5 w-3.5 inline text-green-500 mr-1" />{" "}
-                      Indicates growing roles
-                    </p>
-                    <p>
-                      <TrendingDown className="h-3.5 w-3.5 inline text-red-500 mr-1" />{" "}
-                      Indicates declining roles
-                    </p>
-                  </div>
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
+            <TrendTooltip entityType={EntityType.ROLE} trendFrequency={trendFrequency} />
           )}
         </div>
 

@@ -152,14 +152,17 @@ export interface AlumniControllerMarkAsReviewedRequest {
 }
 
 export interface CompaniesAnalyticsControllerGetCompaniesWithAlumniCountRequest {
+    includeTrend: boolean;
     startDate?: string;
     endDate?: string;
     courseIds?: Array<string>;
     graduationYears?: Array<string>;
     companyIds?: Array<string>;
     industryIds?: Array<string>;
-    countries?: Array<string>;
-    cityIds?: Array<string>;
+    roleCountryCodes?: Array<string>;
+    roleCityIds?: Array<string>;
+    companyHQsCountryCodes?: Array<string>;
+    companyHQsCityIds?: Array<string>;
     currentRolesOnly?: boolean;
     onlyInternational?: boolean;
     excludeResearchAndHighEducation?: boolean;
@@ -178,39 +181,20 @@ export interface CompaniesAnalyticsControllerGetCompaniesWithAlumniCountRequest 
 
 export interface CompaniesAnalyticsControllerGetCompanyDetailsRequest {
     id: string;
-    startDate?: string;
-    endDate?: string;
-    courseIds?: Array<string>;
-    graduationYears?: Array<string>;
-    companyIds?: Array<string>;
-    industryIds?: Array<string>;
-    countries?: Array<string>;
-    cityIds?: Array<string>;
-    currentRolesOnly?: boolean;
-    onlyInternational?: boolean;
-    excludeResearchAndHighEducation?: boolean;
-    companySearch?: string;
-    industrySearch?: string;
-    companySize?: Array<CompaniesAnalyticsControllerGetCompanyDetailsCompanySizeEnum>;
-    companyType?: Array<CompaniesAnalyticsControllerGetCompanyDetailsCompanyTypeEnum>;
-    escoCodes?: Array<string>;
-    classificationLevel?: number;
-    limit?: number;
-    offset?: number;
-    search?: string;
-    sortBy?: string;
-    sortOrder?: string;
 }
 
 export interface CompaniesAnalyticsControllerGetHotCompaniesRequest {
+    includeTrend: boolean;
     startDate?: string;
     endDate?: string;
     courseIds?: Array<string>;
     graduationYears?: Array<string>;
     companyIds?: Array<string>;
     industryIds?: Array<string>;
-    countries?: Array<string>;
-    cityIds?: Array<string>;
+    roleCountryCodes?: Array<string>;
+    roleCityIds?: Array<string>;
+    companyHQsCountryCodes?: Array<string>;
+    companyHQsCityIds?: Array<string>;
     currentRolesOnly?: boolean;
     onlyInternational?: boolean;
     excludeResearchAndHighEducation?: boolean;
@@ -229,60 +213,6 @@ export interface CompaniesAnalyticsControllerGetHotCompaniesRequest {
 
 export interface CompanyControllerFindOneRequest {
     id: string;
-}
-
-export interface CountriesAnalyticsControllerGetCitiesOptionsRequest {
-    countryCodes?: Array<string>;
-}
-
-export interface CountriesAnalyticsControllerGetCitiesWithAlumniCountRequest {
-    startDate?: string;
-    endDate?: string;
-    courseIds?: Array<string>;
-    graduationYears?: Array<string>;
-    companyIds?: Array<string>;
-    industryIds?: Array<string>;
-    countries?: Array<string>;
-    cityIds?: Array<string>;
-    currentRolesOnly?: boolean;
-    onlyInternational?: boolean;
-    excludeResearchAndHighEducation?: boolean;
-    companySearch?: string;
-    industrySearch?: string;
-    companySize?: Array<CountriesAnalyticsControllerGetCitiesWithAlumniCountCompanySizeEnum>;
-    companyType?: Array<CountriesAnalyticsControllerGetCitiesWithAlumniCountCompanyTypeEnum>;
-    escoCodes?: Array<string>;
-    classificationLevel?: number;
-    limit?: number;
-    offset?: number;
-    search?: string;
-    sortBy?: string;
-    sortOrder?: string;
-}
-
-export interface CountriesAnalyticsControllerGetCountriesWithAlumniCountRequest {
-    startDate?: string;
-    endDate?: string;
-    courseIds?: Array<string>;
-    graduationYears?: Array<string>;
-    companyIds?: Array<string>;
-    industryIds?: Array<string>;
-    countries?: Array<string>;
-    cityIds?: Array<string>;
-    currentRolesOnly?: boolean;
-    onlyInternational?: boolean;
-    excludeResearchAndHighEducation?: boolean;
-    companySearch?: string;
-    industrySearch?: string;
-    companySize?: Array<CountriesAnalyticsControllerGetCountriesWithAlumniCountCompanySizeEnum>;
-    companyType?: Array<CountriesAnalyticsControllerGetCountriesWithAlumniCountCompanyTypeEnum>;
-    escoCodes?: Array<string>;
-    classificationLevel?: number;
-    limit?: number;
-    offset?: number;
-    search?: string;
-    sortBy?: string;
-    sortOrder?: string;
 }
 
 export interface CourseControllerCreateRequest {
@@ -310,15 +240,78 @@ export interface FileUploadControllerCreateRequest {
     uploadExtractionDto: UploadExtractionDto;
 }
 
-export interface IndustriesAnalyticsControllerGetIndustryWithCountsRequest {
+export interface GeoAnalyticsControllerGetCitiesOptionsRequest {
+    countryCodes?: Array<string>;
+}
+
+export interface GeoAnalyticsControllerGetCitiesWithAlumniCountRequest {
+    includeTrend: boolean;
     startDate?: string;
     endDate?: string;
     courseIds?: Array<string>;
     graduationYears?: Array<string>;
     companyIds?: Array<string>;
     industryIds?: Array<string>;
-    countries?: Array<string>;
-    cityIds?: Array<string>;
+    roleCountryCodes?: Array<string>;
+    roleCityIds?: Array<string>;
+    companyHQsCountryCodes?: Array<string>;
+    companyHQsCityIds?: Array<string>;
+    currentRolesOnly?: boolean;
+    onlyInternational?: boolean;
+    excludeResearchAndHighEducation?: boolean;
+    companySearch?: string;
+    industrySearch?: string;
+    companySize?: Array<GeoAnalyticsControllerGetCitiesWithAlumniCountCompanySizeEnum>;
+    companyType?: Array<GeoAnalyticsControllerGetCitiesWithAlumniCountCompanyTypeEnum>;
+    escoCodes?: Array<string>;
+    classificationLevel?: number;
+    limit?: number;
+    offset?: number;
+    search?: string;
+    sortBy?: string;
+    sortOrder?: string;
+}
+
+export interface GeoAnalyticsControllerGetCountriesWithAlumniCountRequest {
+    includeTrend: boolean;
+    startDate?: string;
+    endDate?: string;
+    courseIds?: Array<string>;
+    graduationYears?: Array<string>;
+    companyIds?: Array<string>;
+    industryIds?: Array<string>;
+    roleCountryCodes?: Array<string>;
+    roleCityIds?: Array<string>;
+    companyHQsCountryCodes?: Array<string>;
+    companyHQsCityIds?: Array<string>;
+    currentRolesOnly?: boolean;
+    onlyInternational?: boolean;
+    excludeResearchAndHighEducation?: boolean;
+    companySearch?: string;
+    industrySearch?: string;
+    companySize?: Array<GeoAnalyticsControllerGetCountriesWithAlumniCountCompanySizeEnum>;
+    companyType?: Array<GeoAnalyticsControllerGetCountriesWithAlumniCountCompanyTypeEnum>;
+    escoCodes?: Array<string>;
+    classificationLevel?: number;
+    limit?: number;
+    offset?: number;
+    search?: string;
+    sortBy?: string;
+    sortOrder?: string;
+}
+
+export interface IndustriesAnalyticsControllerGetIndustryWithCountsRequest {
+    includeTrend: boolean;
+    startDate?: string;
+    endDate?: string;
+    courseIds?: Array<string>;
+    graduationYears?: Array<string>;
+    companyIds?: Array<string>;
+    industryIds?: Array<string>;
+    roleCountryCodes?: Array<string>;
+    roleCityIds?: Array<string>;
+    companyHQsCountryCodes?: Array<string>;
+    companyHQsCityIds?: Array<string>;
     currentRolesOnly?: boolean;
     onlyInternational?: boolean;
     excludeResearchAndHighEducation?: boolean;
@@ -345,14 +338,17 @@ export interface ReviewControllerFindAllGeoJSONRequest {
 }
 
 export interface RoleAnalyticsControllerGetRolesRequest {
+    includeTrend: boolean;
     startDate?: string;
     endDate?: string;
     courseIds?: Array<string>;
     graduationYears?: Array<string>;
     companyIds?: Array<string>;
     industryIds?: Array<string>;
-    countries?: Array<string>;
-    cityIds?: Array<string>;
+    roleCountryCodes?: Array<string>;
+    roleCityIds?: Array<string>;
+    companyHQsCountryCodes?: Array<string>;
+    companyHQsCityIds?: Array<string>;
     currentRolesOnly?: boolean;
     onlyInternational?: boolean;
     excludeResearchAndHighEducation?: boolean;
@@ -579,14 +575,17 @@ export interface V1ApiInterface {
     /**
      * 
      * @summary Get the companies, and the number of alumni working in them.
+     * @param {boolean} includeTrend Whether to include the trend data
      * @param {string} [startDate] The start date of the role
      * @param {string} [endDate] The end date of the role
      * @param {Array<string>} [courseIds] The course IDs to filter by
      * @param {Array<string>} [graduationYears] The graduation years to filter by
      * @param {Array<string>} [companyIds] The company IDs to filter by
      * @param {Array<string>} [industryIds] The industry IDs to filter by
-     * @param {Array<string>} [countries] The countries to filter by
-     * @param {Array<string>} [cityIds] The cities ids to filter by
+     * @param {Array<string>} [roleCountryCodes] The country codes where alumni exerced their roles
+     * @param {Array<string>} [roleCityIds] The city IDS where alumni exerced their roles
+     * @param {Array<string>} [companyHQsCountryCodes] The company HQs country codes to filter by
+     * @param {Array<string>} [companyHQsCityIds] The company HQs city ids to filter by
      * @param {boolean} [currentRolesOnly] Filter for current roles only
      * @param {boolean} [onlyInternational] Whether to exclude roles in Portugal
      * @param {boolean} [excludeResearchAndHighEducation] Exclude research and high education roles
@@ -616,28 +615,6 @@ export interface V1ApiInterface {
      * 
      * @summary Returns detailed information about a specific company.
      * @param {string} id 
-     * @param {string} [startDate] The start date of the role
-     * @param {string} [endDate] The end date of the role
-     * @param {Array<string>} [courseIds] The course IDs to filter by
-     * @param {Array<string>} [graduationYears] The graduation years to filter by
-     * @param {Array<string>} [companyIds] The company IDs to filter by
-     * @param {Array<string>} [industryIds] The industry IDs to filter by
-     * @param {Array<string>} [countries] The countries to filter by
-     * @param {Array<string>} [cityIds] The cities ids to filter by
-     * @param {boolean} [currentRolesOnly] Filter for current roles only
-     * @param {boolean} [onlyInternational] Whether to exclude roles in Portugal
-     * @param {boolean} [excludeResearchAndHighEducation] Exclude research and high education roles
-     * @param {string} [companySearch] Search query for companies
-     * @param {string} [industrySearch] Search query for industries
-     * @param {Array<'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G' | 'H' | 'I'>} [companySize] The company sizes to filter by
-     * @param {Array<'EDUCATIONAL' | 'GOVERNMENT_AGENCY' | 'NON_PROFIT' | 'PARTNERSHIP' | 'PRIVATELY_HELD' | 'PUBLIC_COMPANY' | 'SELF_EMPLOYED' | 'SELF_OWNED'>} [companyType] The company types to filter by
-     * @param {Array<string>} [escoCodes] The ESCO codes to filter by
-     * @param {number} [classificationLevel] The classification level to filter by
-     * @param {number} [limit] The number of results to return
-     * @param {number} [offset] The offset of the query
-     * @param {string} [search] Broad search query
-     * @param {string} [sortBy] How to sort the results
-     * @param {string} [sortOrder] The order of the results
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof V1ApiInterface
@@ -680,14 +657,17 @@ export interface V1ApiInterface {
     /**
      * 
      * @summary Returns companies that have seen a spike in alumni employment.
+     * @param {boolean} includeTrend Whether to include the trend data
      * @param {string} [startDate] The start date of the role
      * @param {string} [endDate] The end date of the role
      * @param {Array<string>} [courseIds] The course IDs to filter by
      * @param {Array<string>} [graduationYears] The graduation years to filter by
      * @param {Array<string>} [companyIds] The company IDs to filter by
      * @param {Array<string>} [industryIds] The industry IDs to filter by
-     * @param {Array<string>} [countries] The countries to filter by
-     * @param {Array<string>} [cityIds] The cities ids to filter by
+     * @param {Array<string>} [roleCountryCodes] The country codes where alumni exerced their roles
+     * @param {Array<string>} [roleCityIds] The city IDS where alumni exerced their roles
+     * @param {Array<string>} [companyHQsCountryCodes] The company HQs country codes to filter by
+     * @param {Array<string>} [companyHQsCityIds] The company HQs city ids to filter by
      * @param {boolean} [currentRolesOnly] Filter for current roles only
      * @param {boolean} [onlyInternational] Whether to exclude roles in Portugal
      * @param {boolean} [excludeResearchAndHighEducation] Exclude research and high education roles
@@ -741,107 +721,6 @@ export interface V1ApiInterface {
      * Get company by id
      */
     companyControllerFindOne(requestParameters: CompanyControllerFindOneRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void>;
-
-    /**
-     * 
-     * @summary Get the cities options.
-     * @param {Array<string>} [countryCodes] The country codes  to filter by
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof V1ApiInterface
-     */
-    countriesAnalyticsControllerGetCitiesOptionsRaw(requestParameters: CountriesAnalyticsControllerGetCitiesOptionsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<CityOptionDto>>>;
-
-    /**
-     * Get the cities options.
-     */
-    countriesAnalyticsControllerGetCitiesOptions(requestParameters: CountriesAnalyticsControllerGetCitiesOptionsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<CityOptionDto>>;
-
-    /**
-     * 
-     * @summary Get the cities, and the number of alumni working in them.
-     * @param {string} [startDate] The start date of the role
-     * @param {string} [endDate] The end date of the role
-     * @param {Array<string>} [courseIds] The course IDs to filter by
-     * @param {Array<string>} [graduationYears] The graduation years to filter by
-     * @param {Array<string>} [companyIds] The company IDs to filter by
-     * @param {Array<string>} [industryIds] The industry IDs to filter by
-     * @param {Array<string>} [countries] The countries to filter by
-     * @param {Array<string>} [cityIds] The cities ids to filter by
-     * @param {boolean} [currentRolesOnly] Filter for current roles only
-     * @param {boolean} [onlyInternational] Whether to exclude roles in Portugal
-     * @param {boolean} [excludeResearchAndHighEducation] Exclude research and high education roles
-     * @param {string} [companySearch] Search query for companies
-     * @param {string} [industrySearch] Search query for industries
-     * @param {Array<'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G' | 'H' | 'I'>} [companySize] The company sizes to filter by
-     * @param {Array<'EDUCATIONAL' | 'GOVERNMENT_AGENCY' | 'NON_PROFIT' | 'PARTNERSHIP' | 'PRIVATELY_HELD' | 'PUBLIC_COMPANY' | 'SELF_EMPLOYED' | 'SELF_OWNED'>} [companyType] The company types to filter by
-     * @param {Array<string>} [escoCodes] The ESCO codes to filter by
-     * @param {number} [classificationLevel] The classification level to filter by
-     * @param {number} [limit] The number of results to return
-     * @param {number} [offset] The offset of the query
-     * @param {string} [search] Broad search query
-     * @param {string} [sortBy] How to sort the results
-     * @param {string} [sortOrder] The order of the results
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof V1ApiInterface
-     */
-    countriesAnalyticsControllerGetCitiesWithAlumniCountRaw(requestParameters: CountriesAnalyticsControllerGetCitiesWithAlumniCountRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<CityListResponseDto>>;
-
-    /**
-     * Get the cities, and the number of alumni working in them.
-     */
-    countriesAnalyticsControllerGetCitiesWithAlumniCount(requestParameters: CountriesAnalyticsControllerGetCitiesWithAlumniCountRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<CityListResponseDto>;
-
-    /**
-     * 
-     * @summary Get the countries options.
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof V1ApiInterface
-     */
-    countriesAnalyticsControllerGetCountriesOptionsRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<CountryOptionDto>>>;
-
-    /**
-     * Get the countries options.
-     */
-    countriesAnalyticsControllerGetCountriesOptions(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<CountryOptionDto>>;
-
-    /**
-     * 
-     * @summary Get the countries, and the number of alumni working in them.
-     * @param {string} [startDate] The start date of the role
-     * @param {string} [endDate] The end date of the role
-     * @param {Array<string>} [courseIds] The course IDs to filter by
-     * @param {Array<string>} [graduationYears] The graduation years to filter by
-     * @param {Array<string>} [companyIds] The company IDs to filter by
-     * @param {Array<string>} [industryIds] The industry IDs to filter by
-     * @param {Array<string>} [countries] The countries to filter by
-     * @param {Array<string>} [cityIds] The cities ids to filter by
-     * @param {boolean} [currentRolesOnly] Filter for current roles only
-     * @param {boolean} [onlyInternational] Whether to exclude roles in Portugal
-     * @param {boolean} [excludeResearchAndHighEducation] Exclude research and high education roles
-     * @param {string} [companySearch] Search query for companies
-     * @param {string} [industrySearch] Search query for industries
-     * @param {Array<'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G' | 'H' | 'I'>} [companySize] The company sizes to filter by
-     * @param {Array<'EDUCATIONAL' | 'GOVERNMENT_AGENCY' | 'NON_PROFIT' | 'PARTNERSHIP' | 'PRIVATELY_HELD' | 'PUBLIC_COMPANY' | 'SELF_EMPLOYED' | 'SELF_OWNED'>} [companyType] The company types to filter by
-     * @param {Array<string>} [escoCodes] The ESCO codes to filter by
-     * @param {number} [classificationLevel] The classification level to filter by
-     * @param {number} [limit] The number of results to return
-     * @param {number} [offset] The offset of the query
-     * @param {string} [search] Broad search query
-     * @param {string} [sortBy] How to sort the results
-     * @param {string} [sortOrder] The order of the results
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof V1ApiInterface
-     */
-    countriesAnalyticsControllerGetCountriesWithAlumniCountRaw(requestParameters: CountriesAnalyticsControllerGetCountriesWithAlumniCountRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<CountryListResponseDto>>;
-
-    /**
-     * Get the countries, and the number of alumni working in them.
-     */
-    countriesAnalyticsControllerGetCountriesWithAlumniCount(requestParameters: CountriesAnalyticsControllerGetCountriesWithAlumniCountRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<CountryListResponseDto>;
 
     /**
      * 
@@ -948,7 +827,7 @@ export interface V1ApiInterface {
 
     /**
      * 
-     * @summary Insert feedback into the database
+     * @summary Handles the feedback by inserting it into the database and sending an email to the administrators
      * @param {SendFeedbackDto} sendFeedbackDto 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -957,7 +836,7 @@ export interface V1ApiInterface {
     feedbackControllerCreateRaw(requestParameters: FeedbackControllerCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>>;
 
     /**
-     * Insert feedback into the database
+     * Handles the feedback by inserting it into the database and sending an email to the administrators
      */
     feedbackControllerCreate(requestParameters: FeedbackControllerCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void>;
 
@@ -977,6 +856,113 @@ export interface V1ApiInterface {
     fileUploadControllerCreate(requestParameters: FileUploadControllerCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<string>;
 
     /**
+     * 
+     * @summary Get the cities options.
+     * @param {Array<string>} [countryCodes] The country codes  to filter by
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof V1ApiInterface
+     */
+    geoAnalyticsControllerGetCitiesOptionsRaw(requestParameters: GeoAnalyticsControllerGetCitiesOptionsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<CityOptionDto>>>;
+
+    /**
+     * Get the cities options.
+     */
+    geoAnalyticsControllerGetCitiesOptions(requestParameters: GeoAnalyticsControllerGetCitiesOptionsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<CityOptionDto>>;
+
+    /**
+     * 
+     * @summary Get the cities, and the number of alumni working in them.
+     * @param {boolean} includeTrend Whether to include the trend data
+     * @param {string} [startDate] The start date of the role
+     * @param {string} [endDate] The end date of the role
+     * @param {Array<string>} [courseIds] The course IDs to filter by
+     * @param {Array<string>} [graduationYears] The graduation years to filter by
+     * @param {Array<string>} [companyIds] The company IDs to filter by
+     * @param {Array<string>} [industryIds] The industry IDs to filter by
+     * @param {Array<string>} [roleCountryCodes] The country codes where alumni exerced their roles
+     * @param {Array<string>} [roleCityIds] The city IDS where alumni exerced their roles
+     * @param {Array<string>} [companyHQsCountryCodes] The company HQs country codes to filter by
+     * @param {Array<string>} [companyHQsCityIds] The company HQs city ids to filter by
+     * @param {boolean} [currentRolesOnly] Filter for current roles only
+     * @param {boolean} [onlyInternational] Whether to exclude roles in Portugal
+     * @param {boolean} [excludeResearchAndHighEducation] Exclude research and high education roles
+     * @param {string} [companySearch] Search query for companies
+     * @param {string} [industrySearch] Search query for industries
+     * @param {Array<'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G' | 'H' | 'I'>} [companySize] The company sizes to filter by
+     * @param {Array<'EDUCATIONAL' | 'GOVERNMENT_AGENCY' | 'NON_PROFIT' | 'PARTNERSHIP' | 'PRIVATELY_HELD' | 'PUBLIC_COMPANY' | 'SELF_EMPLOYED' | 'SELF_OWNED'>} [companyType] The company types to filter by
+     * @param {Array<string>} [escoCodes] The ESCO codes to filter by
+     * @param {number} [classificationLevel] The classification level to filter by
+     * @param {number} [limit] The number of results to return
+     * @param {number} [offset] The offset of the query
+     * @param {string} [search] Broad search query
+     * @param {string} [sortBy] How to sort the results
+     * @param {string} [sortOrder] The order of the results
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof V1ApiInterface
+     */
+    geoAnalyticsControllerGetCitiesWithAlumniCountRaw(requestParameters: GeoAnalyticsControllerGetCitiesWithAlumniCountRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<CityListResponseDto>>;
+
+    /**
+     * Get the cities, and the number of alumni working in them.
+     */
+    geoAnalyticsControllerGetCitiesWithAlumniCount(requestParameters: GeoAnalyticsControllerGetCitiesWithAlumniCountRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<CityListResponseDto>;
+
+    /**
+     * 
+     * @summary Get the countries options.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof V1ApiInterface
+     */
+    geoAnalyticsControllerGetCountriesOptionsRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<CountryOptionDto>>>;
+
+    /**
+     * Get the countries options.
+     */
+    geoAnalyticsControllerGetCountriesOptions(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<CountryOptionDto>>;
+
+    /**
+     * 
+     * @summary Get the countries, and the number of alumni working in them.
+     * @param {boolean} includeTrend Whether to include the trend data
+     * @param {string} [startDate] The start date of the role
+     * @param {string} [endDate] The end date of the role
+     * @param {Array<string>} [courseIds] The course IDs to filter by
+     * @param {Array<string>} [graduationYears] The graduation years to filter by
+     * @param {Array<string>} [companyIds] The company IDs to filter by
+     * @param {Array<string>} [industryIds] The industry IDs to filter by
+     * @param {Array<string>} [roleCountryCodes] The country codes where alumni exerced their roles
+     * @param {Array<string>} [roleCityIds] The city IDS where alumni exerced their roles
+     * @param {Array<string>} [companyHQsCountryCodes] The company HQs country codes to filter by
+     * @param {Array<string>} [companyHQsCityIds] The company HQs city ids to filter by
+     * @param {boolean} [currentRolesOnly] Filter for current roles only
+     * @param {boolean} [onlyInternational] Whether to exclude roles in Portugal
+     * @param {boolean} [excludeResearchAndHighEducation] Exclude research and high education roles
+     * @param {string} [companySearch] Search query for companies
+     * @param {string} [industrySearch] Search query for industries
+     * @param {Array<'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G' | 'H' | 'I'>} [companySize] The company sizes to filter by
+     * @param {Array<'EDUCATIONAL' | 'GOVERNMENT_AGENCY' | 'NON_PROFIT' | 'PARTNERSHIP' | 'PRIVATELY_HELD' | 'PUBLIC_COMPANY' | 'SELF_EMPLOYED' | 'SELF_OWNED'>} [companyType] The company types to filter by
+     * @param {Array<string>} [escoCodes] The ESCO codes to filter by
+     * @param {number} [classificationLevel] The classification level to filter by
+     * @param {number} [limit] The number of results to return
+     * @param {number} [offset] The offset of the query
+     * @param {string} [search] Broad search query
+     * @param {string} [sortBy] How to sort the results
+     * @param {string} [sortOrder] The order of the results
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof V1ApiInterface
+     */
+    geoAnalyticsControllerGetCountriesWithAlumniCountRaw(requestParameters: GeoAnalyticsControllerGetCountriesWithAlumniCountRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<CountryListResponseDto>>;
+
+    /**
+     * Get the countries, and the number of alumni working in them.
+     */
+    geoAnalyticsControllerGetCountriesWithAlumniCount(requestParameters: GeoAnalyticsControllerGetCountriesWithAlumniCountRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<CountryListResponseDto>;
+
+    /**
      * Returns a list of industries with their id and name.
      * @summary List of possible industries to search for.
      * @param {*} [options] Override http request option.
@@ -994,14 +980,17 @@ export interface V1ApiInterface {
     /**
      * 
      * @summary Returns the number of alumni working in companies grouped by industry.
+     * @param {boolean} includeTrend Whether to include the trend data
      * @param {string} [startDate] The start date of the role
      * @param {string} [endDate] The end date of the role
      * @param {Array<string>} [courseIds] The course IDs to filter by
      * @param {Array<string>} [graduationYears] The graduation years to filter by
      * @param {Array<string>} [companyIds] The company IDs to filter by
      * @param {Array<string>} [industryIds] The industry IDs to filter by
-     * @param {Array<string>} [countries] The countries to filter by
-     * @param {Array<string>} [cityIds] The cities ids to filter by
+     * @param {Array<string>} [roleCountryCodes] The country codes where alumni exerced their roles
+     * @param {Array<string>} [roleCityIds] The city IDS where alumni exerced their roles
+     * @param {Array<string>} [companyHQsCountryCodes] The company HQs country codes to filter by
+     * @param {Array<string>} [companyHQsCityIds] The company HQs city ids to filter by
      * @param {boolean} [currentRolesOnly] Filter for current roles only
      * @param {boolean} [onlyInternational] Whether to exclude roles in Portugal
      * @param {boolean} [excludeResearchAndHighEducation] Exclude research and high education roles
@@ -1076,14 +1065,17 @@ export interface V1ApiInterface {
     /**
      * 
      * @summary Returns the number of roles classified with each ESCO classification
+     * @param {boolean} includeTrend Whether to include the trend data
      * @param {string} [startDate] The start date of the role
      * @param {string} [endDate] The end date of the role
      * @param {Array<string>} [courseIds] The course IDs to filter by
      * @param {Array<string>} [graduationYears] The graduation years to filter by
      * @param {Array<string>} [companyIds] The company IDs to filter by
      * @param {Array<string>} [industryIds] The industry IDs to filter by
-     * @param {Array<string>} [countries] The countries to filter by
-     * @param {Array<string>} [cityIds] The cities ids to filter by
+     * @param {Array<string>} [roleCountryCodes] The country codes where alumni exerced their roles
+     * @param {Array<string>} [roleCityIds] The city IDS where alumni exerced their roles
+     * @param {Array<string>} [companyHQsCountryCodes] The company HQs country codes to filter by
+     * @param {Array<string>} [companyHQsCityIds] The company HQs city ids to filter by
      * @param {boolean} [currentRolesOnly] Filter for current roles only
      * @param {boolean} [onlyInternational] Whether to exclude roles in Portugal
      * @param {boolean} [excludeResearchAndHighEducation] Exclude research and high education roles
@@ -1601,124 +1593,10 @@ export class V1Api extends runtime.BaseAPI implements V1ApiInterface {
      * Get the companies, and the number of alumni working in them.
      */
     async companiesAnalyticsControllerGetCompaniesWithAlumniCountRaw(requestParameters: CompaniesAnalyticsControllerGetCompaniesWithAlumniCountRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<CompanyListResponseDto>> {
-        const queryParameters: any = {};
-
-        if (requestParameters['startDate'] != null) {
-            queryParameters['startDate'] = requestParameters['startDate'];
-        }
-
-        if (requestParameters['endDate'] != null) {
-            queryParameters['endDate'] = requestParameters['endDate'];
-        }
-
-        if (requestParameters['courseIds'] != null) {
-            queryParameters['courseIds'] = requestParameters['courseIds'];
-        }
-
-        if (requestParameters['graduationYears'] != null) {
-            queryParameters['graduationYears'] = requestParameters['graduationYears'];
-        }
-
-        if (requestParameters['companyIds'] != null) {
-            queryParameters['companyIds'] = requestParameters['companyIds'];
-        }
-
-        if (requestParameters['industryIds'] != null) {
-            queryParameters['industryIds'] = requestParameters['industryIds'];
-        }
-
-        if (requestParameters['countries'] != null) {
-            queryParameters['countries'] = requestParameters['countries'];
-        }
-
-        if (requestParameters['cityIds'] != null) {
-            queryParameters['cityIds'] = requestParameters['cityIds'];
-        }
-
-        if (requestParameters['currentRolesOnly'] != null) {
-            queryParameters['currentRolesOnly'] = requestParameters['currentRolesOnly'];
-        }
-
-        if (requestParameters['onlyInternational'] != null) {
-            queryParameters['onlyInternational'] = requestParameters['onlyInternational'];
-        }
-
-        if (requestParameters['excludeResearchAndHighEducation'] != null) {
-            queryParameters['excludeResearchAndHighEducation'] = requestParameters['excludeResearchAndHighEducation'];
-        }
-
-        if (requestParameters['companySearch'] != null) {
-            queryParameters['companySearch'] = requestParameters['companySearch'];
-        }
-
-        if (requestParameters['industrySearch'] != null) {
-            queryParameters['industrySearch'] = requestParameters['industrySearch'];
-        }
-
-        if (requestParameters['companySize'] != null) {
-            queryParameters['companySize'] = requestParameters['companySize'];
-        }
-
-        if (requestParameters['companyType'] != null) {
-            queryParameters['companyType'] = requestParameters['companyType'];
-        }
-
-        if (requestParameters['escoCodes'] != null) {
-            queryParameters['escoCodes'] = requestParameters['escoCodes'];
-        }
-
-        if (requestParameters['classificationLevel'] != null) {
-            queryParameters['classificationLevel'] = requestParameters['classificationLevel'];
-        }
-
-        if (requestParameters['limit'] != null) {
-            queryParameters['limit'] = requestParameters['limit'];
-        }
-
-        if (requestParameters['offset'] != null) {
-            queryParameters['offset'] = requestParameters['offset'];
-        }
-
-        if (requestParameters['search'] != null) {
-            queryParameters['search'] = requestParameters['search'];
-        }
-
-        if (requestParameters['sortBy'] != null) {
-            queryParameters['sortBy'] = requestParameters['sortBy'];
-        }
-
-        if (requestParameters['sortOrder'] != null) {
-            queryParameters['sortOrder'] = requestParameters['sortOrder'];
-        }
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        const response = await this.request({
-            path: `/api/analytics/companies`,
-            method: 'GET',
-            headers: headerParameters,
-            query: queryParameters,
-        }, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => CompanyListResponseDtoFromJSON(jsonValue));
-    }
-
-    /**
-     * Get the companies, and the number of alumni working in them.
-     */
-    async companiesAnalyticsControllerGetCompaniesWithAlumniCount(requestParameters: CompaniesAnalyticsControllerGetCompaniesWithAlumniCountRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<CompanyListResponseDto> {
-        const response = await this.companiesAnalyticsControllerGetCompaniesWithAlumniCountRaw(requestParameters, initOverrides);
-        return await response.value();
-    }
-
-    /**
-     * Returns detailed information about a specific company.
-     */
-    async companiesAnalyticsControllerGetCompanyDetailsRaw(requestParameters: CompaniesAnalyticsControllerGetCompanyDetailsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
-        if (requestParameters['id'] == null) {
+        if (requestParameters['includeTrend'] == null) {
             throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling companiesAnalyticsControllerGetCompanyDetails().'
+                'includeTrend',
+                'Required parameter "includeTrend" was null or undefined when calling companiesAnalyticsControllerGetCompaniesWithAlumniCount().'
             );
         }
 
@@ -1748,12 +1626,20 @@ export class V1Api extends runtime.BaseAPI implements V1ApiInterface {
             queryParameters['industryIds'] = requestParameters['industryIds'];
         }
 
-        if (requestParameters['countries'] != null) {
-            queryParameters['countries'] = requestParameters['countries'];
+        if (requestParameters['roleCountryCodes'] != null) {
+            queryParameters['roleCountryCodes'] = requestParameters['roleCountryCodes'];
         }
 
-        if (requestParameters['cityIds'] != null) {
-            queryParameters['cityIds'] = requestParameters['cityIds'];
+        if (requestParameters['roleCityIds'] != null) {
+            queryParameters['roleCityIds'] = requestParameters['roleCityIds'];
+        }
+
+        if (requestParameters['companyHQsCountryCodes'] != null) {
+            queryParameters['companyHQsCountryCodes'] = requestParameters['companyHQsCountryCodes'];
+        }
+
+        if (requestParameters['companyHQsCityIds'] != null) {
+            queryParameters['companyHQsCityIds'] = requestParameters['companyHQsCityIds'];
         }
 
         if (requestParameters['currentRolesOnly'] != null) {
@@ -1811,6 +1697,43 @@ export class V1Api extends runtime.BaseAPI implements V1ApiInterface {
         if (requestParameters['sortOrder'] != null) {
             queryParameters['sortOrder'] = requestParameters['sortOrder'];
         }
+
+        if (requestParameters['includeTrend'] != null) {
+            queryParameters['includeTrend'] = requestParameters['includeTrend'];
+        }
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        const response = await this.request({
+            path: `/api/analytics/companies`,
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => CompanyListResponseDtoFromJSON(jsonValue));
+    }
+
+    /**
+     * Get the companies, and the number of alumni working in them.
+     */
+    async companiesAnalyticsControllerGetCompaniesWithAlumniCount(requestParameters: CompaniesAnalyticsControllerGetCompaniesWithAlumniCountRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<CompanyListResponseDto> {
+        const response = await this.companiesAnalyticsControllerGetCompaniesWithAlumniCountRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Returns detailed information about a specific company.
+     */
+    async companiesAnalyticsControllerGetCompanyDetailsRaw(requestParameters: CompaniesAnalyticsControllerGetCompanyDetailsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+        if (requestParameters['id'] == null) {
+            throw new runtime.RequiredError(
+                'id',
+                'Required parameter "id" was null or undefined when calling companiesAnalyticsControllerGetCompanyDetails().'
+            );
+        }
+
+        const queryParameters: any = {};
 
         const headerParameters: runtime.HTTPHeaders = {};
 
@@ -1886,6 +1809,13 @@ export class V1Api extends runtime.BaseAPI implements V1ApiInterface {
      * Returns companies that have seen a spike in alumni employment.
      */
     async companiesAnalyticsControllerGetHotCompaniesRaw(requestParameters: CompaniesAnalyticsControllerGetHotCompaniesRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+        if (requestParameters['includeTrend'] == null) {
+            throw new runtime.RequiredError(
+                'includeTrend',
+                'Required parameter "includeTrend" was null or undefined when calling companiesAnalyticsControllerGetHotCompanies().'
+            );
+        }
+
         const queryParameters: any = {};
 
         if (requestParameters['startDate'] != null) {
@@ -1912,12 +1842,20 @@ export class V1Api extends runtime.BaseAPI implements V1ApiInterface {
             queryParameters['industryIds'] = requestParameters['industryIds'];
         }
 
-        if (requestParameters['countries'] != null) {
-            queryParameters['countries'] = requestParameters['countries'];
+        if (requestParameters['roleCountryCodes'] != null) {
+            queryParameters['roleCountryCodes'] = requestParameters['roleCountryCodes'];
         }
 
-        if (requestParameters['cityIds'] != null) {
-            queryParameters['cityIds'] = requestParameters['cityIds'];
+        if (requestParameters['roleCityIds'] != null) {
+            queryParameters['roleCityIds'] = requestParameters['roleCityIds'];
+        }
+
+        if (requestParameters['companyHQsCountryCodes'] != null) {
+            queryParameters['companyHQsCountryCodes'] = requestParameters['companyHQsCountryCodes'];
+        }
+
+        if (requestParameters['companyHQsCityIds'] != null) {
+            queryParameters['companyHQsCityIds'] = requestParameters['companyHQsCityIds'];
         }
 
         if (requestParameters['currentRolesOnly'] != null) {
@@ -1976,6 +1914,10 @@ export class V1Api extends runtime.BaseAPI implements V1ApiInterface {
             queryParameters['sortOrder'] = requestParameters['sortOrder'];
         }
 
+        if (requestParameters['includeTrend'] != null) {
+            queryParameters['includeTrend'] = requestParameters['includeTrend'];
+        }
+
         const headerParameters: runtime.HTTPHeaders = {};
 
         const response = await this.request({
@@ -1991,7 +1933,7 @@ export class V1Api extends runtime.BaseAPI implements V1ApiInterface {
     /**
      * Returns companies that have seen a spike in alumni employment.
      */
-    async companiesAnalyticsControllerGetHotCompanies(requestParameters: CompaniesAnalyticsControllerGetHotCompaniesRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+    async companiesAnalyticsControllerGetHotCompanies(requestParameters: CompaniesAnalyticsControllerGetHotCompaniesRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
         await this.companiesAnalyticsControllerGetHotCompaniesRaw(requestParameters, initOverrides);
     }
 
@@ -2050,290 +1992,6 @@ export class V1Api extends runtime.BaseAPI implements V1ApiInterface {
      */
     async companyControllerFindOne(requestParameters: CompanyControllerFindOneRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
         await this.companyControllerFindOneRaw(requestParameters, initOverrides);
-    }
-
-    /**
-     * Get the cities options.
-     */
-    async countriesAnalyticsControllerGetCitiesOptionsRaw(requestParameters: CountriesAnalyticsControllerGetCitiesOptionsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<CityOptionDto>>> {
-        const queryParameters: any = {};
-
-        if (requestParameters['countryCodes'] != null) {
-            queryParameters['countryCodes'] = requestParameters['countryCodes'];
-        }
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        const response = await this.request({
-            path: `/api/analytics/countries/cities/options`,
-            method: 'GET',
-            headers: headerParameters,
-            query: queryParameters,
-        }, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(CityOptionDtoFromJSON));
-    }
-
-    /**
-     * Get the cities options.
-     */
-    async countriesAnalyticsControllerGetCitiesOptions(requestParameters: CountriesAnalyticsControllerGetCitiesOptionsRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<CityOptionDto>> {
-        const response = await this.countriesAnalyticsControllerGetCitiesOptionsRaw(requestParameters, initOverrides);
-        return await response.value();
-    }
-
-    /**
-     * Get the cities, and the number of alumni working in them.
-     */
-    async countriesAnalyticsControllerGetCitiesWithAlumniCountRaw(requestParameters: CountriesAnalyticsControllerGetCitiesWithAlumniCountRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<CityListResponseDto>> {
-        const queryParameters: any = {};
-
-        if (requestParameters['startDate'] != null) {
-            queryParameters['startDate'] = requestParameters['startDate'];
-        }
-
-        if (requestParameters['endDate'] != null) {
-            queryParameters['endDate'] = requestParameters['endDate'];
-        }
-
-        if (requestParameters['courseIds'] != null) {
-            queryParameters['courseIds'] = requestParameters['courseIds'];
-        }
-
-        if (requestParameters['graduationYears'] != null) {
-            queryParameters['graduationYears'] = requestParameters['graduationYears'];
-        }
-
-        if (requestParameters['companyIds'] != null) {
-            queryParameters['companyIds'] = requestParameters['companyIds'];
-        }
-
-        if (requestParameters['industryIds'] != null) {
-            queryParameters['industryIds'] = requestParameters['industryIds'];
-        }
-
-        if (requestParameters['countries'] != null) {
-            queryParameters['countries'] = requestParameters['countries'];
-        }
-
-        if (requestParameters['cityIds'] != null) {
-            queryParameters['cityIds'] = requestParameters['cityIds'];
-        }
-
-        if (requestParameters['currentRolesOnly'] != null) {
-            queryParameters['currentRolesOnly'] = requestParameters['currentRolesOnly'];
-        }
-
-        if (requestParameters['onlyInternational'] != null) {
-            queryParameters['onlyInternational'] = requestParameters['onlyInternational'];
-        }
-
-        if (requestParameters['excludeResearchAndHighEducation'] != null) {
-            queryParameters['excludeResearchAndHighEducation'] = requestParameters['excludeResearchAndHighEducation'];
-        }
-
-        if (requestParameters['companySearch'] != null) {
-            queryParameters['companySearch'] = requestParameters['companySearch'];
-        }
-
-        if (requestParameters['industrySearch'] != null) {
-            queryParameters['industrySearch'] = requestParameters['industrySearch'];
-        }
-
-        if (requestParameters['companySize'] != null) {
-            queryParameters['companySize'] = requestParameters['companySize'];
-        }
-
-        if (requestParameters['companyType'] != null) {
-            queryParameters['companyType'] = requestParameters['companyType'];
-        }
-
-        if (requestParameters['escoCodes'] != null) {
-            queryParameters['escoCodes'] = requestParameters['escoCodes'];
-        }
-
-        if (requestParameters['classificationLevel'] != null) {
-            queryParameters['classificationLevel'] = requestParameters['classificationLevel'];
-        }
-
-        if (requestParameters['limit'] != null) {
-            queryParameters['limit'] = requestParameters['limit'];
-        }
-
-        if (requestParameters['offset'] != null) {
-            queryParameters['offset'] = requestParameters['offset'];
-        }
-
-        if (requestParameters['search'] != null) {
-            queryParameters['search'] = requestParameters['search'];
-        }
-
-        if (requestParameters['sortBy'] != null) {
-            queryParameters['sortBy'] = requestParameters['sortBy'];
-        }
-
-        if (requestParameters['sortOrder'] != null) {
-            queryParameters['sortOrder'] = requestParameters['sortOrder'];
-        }
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        const response = await this.request({
-            path: `/api/analytics/countries/cities`,
-            method: 'GET',
-            headers: headerParameters,
-            query: queryParameters,
-        }, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => CityListResponseDtoFromJSON(jsonValue));
-    }
-
-    /**
-     * Get the cities, and the number of alumni working in them.
-     */
-    async countriesAnalyticsControllerGetCitiesWithAlumniCount(requestParameters: CountriesAnalyticsControllerGetCitiesWithAlumniCountRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<CityListResponseDto> {
-        const response = await this.countriesAnalyticsControllerGetCitiesWithAlumniCountRaw(requestParameters, initOverrides);
-        return await response.value();
-    }
-
-    /**
-     * Get the countries options.
-     */
-    async countriesAnalyticsControllerGetCountriesOptionsRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<CountryOptionDto>>> {
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        const response = await this.request({
-            path: `/api/analytics/countries/options`,
-            method: 'GET',
-            headers: headerParameters,
-            query: queryParameters,
-        }, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(CountryOptionDtoFromJSON));
-    }
-
-    /**
-     * Get the countries options.
-     */
-    async countriesAnalyticsControllerGetCountriesOptions(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<CountryOptionDto>> {
-        const response = await this.countriesAnalyticsControllerGetCountriesOptionsRaw(initOverrides);
-        return await response.value();
-    }
-
-    /**
-     * Get the countries, and the number of alumni working in them.
-     */
-    async countriesAnalyticsControllerGetCountriesWithAlumniCountRaw(requestParameters: CountriesAnalyticsControllerGetCountriesWithAlumniCountRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<CountryListResponseDto>> {
-        const queryParameters: any = {};
-
-        if (requestParameters['startDate'] != null) {
-            queryParameters['startDate'] = requestParameters['startDate'];
-        }
-
-        if (requestParameters['endDate'] != null) {
-            queryParameters['endDate'] = requestParameters['endDate'];
-        }
-
-        if (requestParameters['courseIds'] != null) {
-            queryParameters['courseIds'] = requestParameters['courseIds'];
-        }
-
-        if (requestParameters['graduationYears'] != null) {
-            queryParameters['graduationYears'] = requestParameters['graduationYears'];
-        }
-
-        if (requestParameters['companyIds'] != null) {
-            queryParameters['companyIds'] = requestParameters['companyIds'];
-        }
-
-        if (requestParameters['industryIds'] != null) {
-            queryParameters['industryIds'] = requestParameters['industryIds'];
-        }
-
-        if (requestParameters['countries'] != null) {
-            queryParameters['countries'] = requestParameters['countries'];
-        }
-
-        if (requestParameters['cityIds'] != null) {
-            queryParameters['cityIds'] = requestParameters['cityIds'];
-        }
-
-        if (requestParameters['currentRolesOnly'] != null) {
-            queryParameters['currentRolesOnly'] = requestParameters['currentRolesOnly'];
-        }
-
-        if (requestParameters['onlyInternational'] != null) {
-            queryParameters['onlyInternational'] = requestParameters['onlyInternational'];
-        }
-
-        if (requestParameters['excludeResearchAndHighEducation'] != null) {
-            queryParameters['excludeResearchAndHighEducation'] = requestParameters['excludeResearchAndHighEducation'];
-        }
-
-        if (requestParameters['companySearch'] != null) {
-            queryParameters['companySearch'] = requestParameters['companySearch'];
-        }
-
-        if (requestParameters['industrySearch'] != null) {
-            queryParameters['industrySearch'] = requestParameters['industrySearch'];
-        }
-
-        if (requestParameters['companySize'] != null) {
-            queryParameters['companySize'] = requestParameters['companySize'];
-        }
-
-        if (requestParameters['companyType'] != null) {
-            queryParameters['companyType'] = requestParameters['companyType'];
-        }
-
-        if (requestParameters['escoCodes'] != null) {
-            queryParameters['escoCodes'] = requestParameters['escoCodes'];
-        }
-
-        if (requestParameters['classificationLevel'] != null) {
-            queryParameters['classificationLevel'] = requestParameters['classificationLevel'];
-        }
-
-        if (requestParameters['limit'] != null) {
-            queryParameters['limit'] = requestParameters['limit'];
-        }
-
-        if (requestParameters['offset'] != null) {
-            queryParameters['offset'] = requestParameters['offset'];
-        }
-
-        if (requestParameters['search'] != null) {
-            queryParameters['search'] = requestParameters['search'];
-        }
-
-        if (requestParameters['sortBy'] != null) {
-            queryParameters['sortBy'] = requestParameters['sortBy'];
-        }
-
-        if (requestParameters['sortOrder'] != null) {
-            queryParameters['sortOrder'] = requestParameters['sortOrder'];
-        }
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        const response = await this.request({
-            path: `/api/analytics/countries`,
-            method: 'GET',
-            headers: headerParameters,
-            query: queryParameters,
-        }, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => CountryListResponseDtoFromJSON(jsonValue));
-    }
-
-    /**
-     * Get the countries, and the number of alumni working in them.
-     */
-    async countriesAnalyticsControllerGetCountriesWithAlumniCount(requestParameters: CountriesAnalyticsControllerGetCountriesWithAlumniCountRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<CountryListResponseDto> {
-        const response = await this.countriesAnalyticsControllerGetCountriesWithAlumniCountRaw(requestParameters, initOverrides);
-        return await response.value();
     }
 
     /**
@@ -2554,7 +2212,7 @@ export class V1Api extends runtime.BaseAPI implements V1ApiInterface {
     }
 
     /**
-     * Insert feedback into the database
+     * Handles the feedback by inserting it into the database and sending an email to the administrators
      */
     async feedbackControllerCreateRaw(requestParameters: FeedbackControllerCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
         if (requestParameters['sendFeedbackDto'] == null) {
@@ -2582,7 +2240,7 @@ export class V1Api extends runtime.BaseAPI implements V1ApiInterface {
     }
 
     /**
-     * Insert feedback into the database
+     * Handles the feedback by inserting it into the database and sending an email to the administrators
      */
     async feedbackControllerCreate(requestParameters: FeedbackControllerCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
         await this.feedbackControllerCreateRaw(requestParameters, initOverrides);
@@ -2629,37 +2287,46 @@ export class V1Api extends runtime.BaseAPI implements V1ApiInterface {
     }
 
     /**
-     * Returns a list of industries with their id and name.
-     * List of possible industries to search for.
+     * Get the cities options.
      */
-    async industriesAnalyticsControllerGetIndustryOptionsRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<IndustryOptionDto>>> {
+    async geoAnalyticsControllerGetCitiesOptionsRaw(requestParameters: GeoAnalyticsControllerGetCitiesOptionsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<CityOptionDto>>> {
         const queryParameters: any = {};
+
+        if (requestParameters['countryCodes'] != null) {
+            queryParameters['countryCodes'] = requestParameters['countryCodes'];
+        }
 
         const headerParameters: runtime.HTTPHeaders = {};
 
         const response = await this.request({
-            path: `/api/analytics/industries/options`,
+            path: `/api/analytics/geo/city-options`,
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
         }, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(IndustryOptionDtoFromJSON));
+        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(CityOptionDtoFromJSON));
     }
 
     /**
-     * Returns a list of industries with their id and name.
-     * List of possible industries to search for.
+     * Get the cities options.
      */
-    async industriesAnalyticsControllerGetIndustryOptions(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<IndustryOptionDto>> {
-        const response = await this.industriesAnalyticsControllerGetIndustryOptionsRaw(initOverrides);
+    async geoAnalyticsControllerGetCitiesOptions(requestParameters: GeoAnalyticsControllerGetCitiesOptionsRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<CityOptionDto>> {
+        const response = await this.geoAnalyticsControllerGetCitiesOptionsRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
-     * Returns the number of alumni working in companies grouped by industry.
+     * Get the cities, and the number of alumni working in them.
      */
-    async industriesAnalyticsControllerGetIndustryWithCountsRaw(requestParameters: IndustriesAnalyticsControllerGetIndustryWithCountsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<IndustryListResponseDto>> {
+    async geoAnalyticsControllerGetCitiesWithAlumniCountRaw(requestParameters: GeoAnalyticsControllerGetCitiesWithAlumniCountRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<CityListResponseDto>> {
+        if (requestParameters['includeTrend'] == null) {
+            throw new runtime.RequiredError(
+                'includeTrend',
+                'Required parameter "includeTrend" was null or undefined when calling geoAnalyticsControllerGetCitiesWithAlumniCount().'
+            );
+        }
+
         const queryParameters: any = {};
 
         if (requestParameters['startDate'] != null) {
@@ -2686,12 +2353,20 @@ export class V1Api extends runtime.BaseAPI implements V1ApiInterface {
             queryParameters['industryIds'] = requestParameters['industryIds'];
         }
 
-        if (requestParameters['countries'] != null) {
-            queryParameters['countries'] = requestParameters['countries'];
+        if (requestParameters['roleCountryCodes'] != null) {
+            queryParameters['roleCountryCodes'] = requestParameters['roleCountryCodes'];
         }
 
-        if (requestParameters['cityIds'] != null) {
-            queryParameters['cityIds'] = requestParameters['cityIds'];
+        if (requestParameters['roleCityIds'] != null) {
+            queryParameters['roleCityIds'] = requestParameters['roleCityIds'];
+        }
+
+        if (requestParameters['companyHQsCountryCodes'] != null) {
+            queryParameters['companyHQsCountryCodes'] = requestParameters['companyHQsCountryCodes'];
+        }
+
+        if (requestParameters['companyHQsCityIds'] != null) {
+            queryParameters['companyHQsCityIds'] = requestParameters['companyHQsCityIds'];
         }
 
         if (requestParameters['currentRolesOnly'] != null) {
@@ -2750,6 +2425,330 @@ export class V1Api extends runtime.BaseAPI implements V1ApiInterface {
             queryParameters['sortOrder'] = requestParameters['sortOrder'];
         }
 
+        if (requestParameters['includeTrend'] != null) {
+            queryParameters['includeTrend'] = requestParameters['includeTrend'];
+        }
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        const response = await this.request({
+            path: `/api/analytics/geo/cities`,
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => CityListResponseDtoFromJSON(jsonValue));
+    }
+
+    /**
+     * Get the cities, and the number of alumni working in them.
+     */
+    async geoAnalyticsControllerGetCitiesWithAlumniCount(requestParameters: GeoAnalyticsControllerGetCitiesWithAlumniCountRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<CityListResponseDto> {
+        const response = await this.geoAnalyticsControllerGetCitiesWithAlumniCountRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Get the countries options.
+     */
+    async geoAnalyticsControllerGetCountriesOptionsRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<CountryOptionDto>>> {
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        const response = await this.request({
+            path: `/api/analytics/geo/country-options`,
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(CountryOptionDtoFromJSON));
+    }
+
+    /**
+     * Get the countries options.
+     */
+    async geoAnalyticsControllerGetCountriesOptions(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<CountryOptionDto>> {
+        const response = await this.geoAnalyticsControllerGetCountriesOptionsRaw(initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Get the countries, and the number of alumni working in them.
+     */
+    async geoAnalyticsControllerGetCountriesWithAlumniCountRaw(requestParameters: GeoAnalyticsControllerGetCountriesWithAlumniCountRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<CountryListResponseDto>> {
+        if (requestParameters['includeTrend'] == null) {
+            throw new runtime.RequiredError(
+                'includeTrend',
+                'Required parameter "includeTrend" was null or undefined when calling geoAnalyticsControllerGetCountriesWithAlumniCount().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        if (requestParameters['startDate'] != null) {
+            queryParameters['startDate'] = requestParameters['startDate'];
+        }
+
+        if (requestParameters['endDate'] != null) {
+            queryParameters['endDate'] = requestParameters['endDate'];
+        }
+
+        if (requestParameters['courseIds'] != null) {
+            queryParameters['courseIds'] = requestParameters['courseIds'];
+        }
+
+        if (requestParameters['graduationYears'] != null) {
+            queryParameters['graduationYears'] = requestParameters['graduationYears'];
+        }
+
+        if (requestParameters['companyIds'] != null) {
+            queryParameters['companyIds'] = requestParameters['companyIds'];
+        }
+
+        if (requestParameters['industryIds'] != null) {
+            queryParameters['industryIds'] = requestParameters['industryIds'];
+        }
+
+        if (requestParameters['roleCountryCodes'] != null) {
+            queryParameters['roleCountryCodes'] = requestParameters['roleCountryCodes'];
+        }
+
+        if (requestParameters['roleCityIds'] != null) {
+            queryParameters['roleCityIds'] = requestParameters['roleCityIds'];
+        }
+
+        if (requestParameters['companyHQsCountryCodes'] != null) {
+            queryParameters['companyHQsCountryCodes'] = requestParameters['companyHQsCountryCodes'];
+        }
+
+        if (requestParameters['companyHQsCityIds'] != null) {
+            queryParameters['companyHQsCityIds'] = requestParameters['companyHQsCityIds'];
+        }
+
+        if (requestParameters['currentRolesOnly'] != null) {
+            queryParameters['currentRolesOnly'] = requestParameters['currentRolesOnly'];
+        }
+
+        if (requestParameters['onlyInternational'] != null) {
+            queryParameters['onlyInternational'] = requestParameters['onlyInternational'];
+        }
+
+        if (requestParameters['excludeResearchAndHighEducation'] != null) {
+            queryParameters['excludeResearchAndHighEducation'] = requestParameters['excludeResearchAndHighEducation'];
+        }
+
+        if (requestParameters['companySearch'] != null) {
+            queryParameters['companySearch'] = requestParameters['companySearch'];
+        }
+
+        if (requestParameters['industrySearch'] != null) {
+            queryParameters['industrySearch'] = requestParameters['industrySearch'];
+        }
+
+        if (requestParameters['companySize'] != null) {
+            queryParameters['companySize'] = requestParameters['companySize'];
+        }
+
+        if (requestParameters['companyType'] != null) {
+            queryParameters['companyType'] = requestParameters['companyType'];
+        }
+
+        if (requestParameters['escoCodes'] != null) {
+            queryParameters['escoCodes'] = requestParameters['escoCodes'];
+        }
+
+        if (requestParameters['classificationLevel'] != null) {
+            queryParameters['classificationLevel'] = requestParameters['classificationLevel'];
+        }
+
+        if (requestParameters['limit'] != null) {
+            queryParameters['limit'] = requestParameters['limit'];
+        }
+
+        if (requestParameters['offset'] != null) {
+            queryParameters['offset'] = requestParameters['offset'];
+        }
+
+        if (requestParameters['search'] != null) {
+            queryParameters['search'] = requestParameters['search'];
+        }
+
+        if (requestParameters['sortBy'] != null) {
+            queryParameters['sortBy'] = requestParameters['sortBy'];
+        }
+
+        if (requestParameters['sortOrder'] != null) {
+            queryParameters['sortOrder'] = requestParameters['sortOrder'];
+        }
+
+        if (requestParameters['includeTrend'] != null) {
+            queryParameters['includeTrend'] = requestParameters['includeTrend'];
+        }
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        const response = await this.request({
+            path: `/api/analytics/geo/countries`,
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => CountryListResponseDtoFromJSON(jsonValue));
+    }
+
+    /**
+     * Get the countries, and the number of alumni working in them.
+     */
+    async geoAnalyticsControllerGetCountriesWithAlumniCount(requestParameters: GeoAnalyticsControllerGetCountriesWithAlumniCountRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<CountryListResponseDto> {
+        const response = await this.geoAnalyticsControllerGetCountriesWithAlumniCountRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Returns a list of industries with their id and name.
+     * List of possible industries to search for.
+     */
+    async industriesAnalyticsControllerGetIndustryOptionsRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<IndustryOptionDto>>> {
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        const response = await this.request({
+            path: `/api/analytics/industries/options`,
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(IndustryOptionDtoFromJSON));
+    }
+
+    /**
+     * Returns a list of industries with their id and name.
+     * List of possible industries to search for.
+     */
+    async industriesAnalyticsControllerGetIndustryOptions(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<IndustryOptionDto>> {
+        const response = await this.industriesAnalyticsControllerGetIndustryOptionsRaw(initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Returns the number of alumni working in companies grouped by industry.
+     */
+    async industriesAnalyticsControllerGetIndustryWithCountsRaw(requestParameters: IndustriesAnalyticsControllerGetIndustryWithCountsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<IndustryListResponseDto>> {
+        if (requestParameters['includeTrend'] == null) {
+            throw new runtime.RequiredError(
+                'includeTrend',
+                'Required parameter "includeTrend" was null or undefined when calling industriesAnalyticsControllerGetIndustryWithCounts().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        if (requestParameters['startDate'] != null) {
+            queryParameters['startDate'] = requestParameters['startDate'];
+        }
+
+        if (requestParameters['endDate'] != null) {
+            queryParameters['endDate'] = requestParameters['endDate'];
+        }
+
+        if (requestParameters['courseIds'] != null) {
+            queryParameters['courseIds'] = requestParameters['courseIds'];
+        }
+
+        if (requestParameters['graduationYears'] != null) {
+            queryParameters['graduationYears'] = requestParameters['graduationYears'];
+        }
+
+        if (requestParameters['companyIds'] != null) {
+            queryParameters['companyIds'] = requestParameters['companyIds'];
+        }
+
+        if (requestParameters['industryIds'] != null) {
+            queryParameters['industryIds'] = requestParameters['industryIds'];
+        }
+
+        if (requestParameters['roleCountryCodes'] != null) {
+            queryParameters['roleCountryCodes'] = requestParameters['roleCountryCodes'];
+        }
+
+        if (requestParameters['roleCityIds'] != null) {
+            queryParameters['roleCityIds'] = requestParameters['roleCityIds'];
+        }
+
+        if (requestParameters['companyHQsCountryCodes'] != null) {
+            queryParameters['companyHQsCountryCodes'] = requestParameters['companyHQsCountryCodes'];
+        }
+
+        if (requestParameters['companyHQsCityIds'] != null) {
+            queryParameters['companyHQsCityIds'] = requestParameters['companyHQsCityIds'];
+        }
+
+        if (requestParameters['currentRolesOnly'] != null) {
+            queryParameters['currentRolesOnly'] = requestParameters['currentRolesOnly'];
+        }
+
+        if (requestParameters['onlyInternational'] != null) {
+            queryParameters['onlyInternational'] = requestParameters['onlyInternational'];
+        }
+
+        if (requestParameters['excludeResearchAndHighEducation'] != null) {
+            queryParameters['excludeResearchAndHighEducation'] = requestParameters['excludeResearchAndHighEducation'];
+        }
+
+        if (requestParameters['companySearch'] != null) {
+            queryParameters['companySearch'] = requestParameters['companySearch'];
+        }
+
+        if (requestParameters['industrySearch'] != null) {
+            queryParameters['industrySearch'] = requestParameters['industrySearch'];
+        }
+
+        if (requestParameters['companySize'] != null) {
+            queryParameters['companySize'] = requestParameters['companySize'];
+        }
+
+        if (requestParameters['companyType'] != null) {
+            queryParameters['companyType'] = requestParameters['companyType'];
+        }
+
+        if (requestParameters['escoCodes'] != null) {
+            queryParameters['escoCodes'] = requestParameters['escoCodes'];
+        }
+
+        if (requestParameters['classificationLevel'] != null) {
+            queryParameters['classificationLevel'] = requestParameters['classificationLevel'];
+        }
+
+        if (requestParameters['limit'] != null) {
+            queryParameters['limit'] = requestParameters['limit'];
+        }
+
+        if (requestParameters['offset'] != null) {
+            queryParameters['offset'] = requestParameters['offset'];
+        }
+
+        if (requestParameters['search'] != null) {
+            queryParameters['search'] = requestParameters['search'];
+        }
+
+        if (requestParameters['sortBy'] != null) {
+            queryParameters['sortBy'] = requestParameters['sortBy'];
+        }
+
+        if (requestParameters['sortOrder'] != null) {
+            queryParameters['sortOrder'] = requestParameters['sortOrder'];
+        }
+
+        if (requestParameters['includeTrend'] != null) {
+            queryParameters['includeTrend'] = requestParameters['includeTrend'];
+        }
+
         const headerParameters: runtime.HTTPHeaders = {};
 
         const response = await this.request({
@@ -2765,7 +2764,7 @@ export class V1Api extends runtime.BaseAPI implements V1ApiInterface {
     /**
      * Returns the number of alumni working in companies grouped by industry.
      */
-    async industriesAnalyticsControllerGetIndustryWithCounts(requestParameters: IndustriesAnalyticsControllerGetIndustryWithCountsRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<IndustryListResponseDto> {
+    async industriesAnalyticsControllerGetIndustryWithCounts(requestParameters: IndustriesAnalyticsControllerGetIndustryWithCountsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<IndustryListResponseDto> {
         const response = await this.industriesAnalyticsControllerGetIndustryWithCountsRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -2878,6 +2877,13 @@ export class V1Api extends runtime.BaseAPI implements V1ApiInterface {
      * Returns the number of roles classified with each ESCO classification
      */
     async roleAnalyticsControllerGetRolesRaw(requestParameters: RoleAnalyticsControllerGetRolesRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<RoleListResponseDto>> {
+        if (requestParameters['includeTrend'] == null) {
+            throw new runtime.RequiredError(
+                'includeTrend',
+                'Required parameter "includeTrend" was null or undefined when calling roleAnalyticsControllerGetRoles().'
+            );
+        }
+
         const queryParameters: any = {};
 
         if (requestParameters['startDate'] != null) {
@@ -2904,12 +2910,20 @@ export class V1Api extends runtime.BaseAPI implements V1ApiInterface {
             queryParameters['industryIds'] = requestParameters['industryIds'];
         }
 
-        if (requestParameters['countries'] != null) {
-            queryParameters['countries'] = requestParameters['countries'];
+        if (requestParameters['roleCountryCodes'] != null) {
+            queryParameters['roleCountryCodes'] = requestParameters['roleCountryCodes'];
         }
 
-        if (requestParameters['cityIds'] != null) {
-            queryParameters['cityIds'] = requestParameters['cityIds'];
+        if (requestParameters['roleCityIds'] != null) {
+            queryParameters['roleCityIds'] = requestParameters['roleCityIds'];
+        }
+
+        if (requestParameters['companyHQsCountryCodes'] != null) {
+            queryParameters['companyHQsCountryCodes'] = requestParameters['companyHQsCountryCodes'];
+        }
+
+        if (requestParameters['companyHQsCityIds'] != null) {
+            queryParameters['companyHQsCityIds'] = requestParameters['companyHQsCityIds'];
         }
 
         if (requestParameters['currentRolesOnly'] != null) {
@@ -2968,6 +2982,10 @@ export class V1Api extends runtime.BaseAPI implements V1ApiInterface {
             queryParameters['sortOrder'] = requestParameters['sortOrder'];
         }
 
+        if (requestParameters['includeTrend'] != null) {
+            queryParameters['includeTrend'] = requestParameters['includeTrend'];
+        }
+
         const headerParameters: runtime.HTTPHeaders = {};
 
         const response = await this.request({
@@ -2983,7 +3001,7 @@ export class V1Api extends runtime.BaseAPI implements V1ApiInterface {
     /**
      * Returns the number of roles classified with each ESCO classification
      */
-    async roleAnalyticsControllerGetRoles(requestParameters: RoleAnalyticsControllerGetRolesRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<RoleListResponseDto> {
+    async roleAnalyticsControllerGetRoles(requestParameters: RoleAnalyticsControllerGetRolesRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<RoleListResponseDto> {
         const response = await this.roleAnalyticsControllerGetRolesRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -3212,35 +3230,6 @@ export type CompaniesAnalyticsControllerGetCompaniesWithAlumniCountCompanyTypeEn
 /**
  * @export
  */
-export const CompaniesAnalyticsControllerGetCompanyDetailsCompanySizeEnum = {
-    A: 'A',
-    B: 'B',
-    C: 'C',
-    D: 'D',
-    E: 'E',
-    F: 'F',
-    G: 'G',
-    H: 'H',
-    I: 'I'
-} as const;
-export type CompaniesAnalyticsControllerGetCompanyDetailsCompanySizeEnum = typeof CompaniesAnalyticsControllerGetCompanyDetailsCompanySizeEnum[keyof typeof CompaniesAnalyticsControllerGetCompanyDetailsCompanySizeEnum];
-/**
- * @export
- */
-export const CompaniesAnalyticsControllerGetCompanyDetailsCompanyTypeEnum = {
-    Educational: 'EDUCATIONAL',
-    GovernmentAgency: 'GOVERNMENT_AGENCY',
-    NonProfit: 'NON_PROFIT',
-    Partnership: 'PARTNERSHIP',
-    PrivatelyHeld: 'PRIVATELY_HELD',
-    PublicCompany: 'PUBLIC_COMPANY',
-    SelfEmployed: 'SELF_EMPLOYED',
-    SelfOwned: 'SELF_OWNED'
-} as const;
-export type CompaniesAnalyticsControllerGetCompanyDetailsCompanyTypeEnum = typeof CompaniesAnalyticsControllerGetCompanyDetailsCompanyTypeEnum[keyof typeof CompaniesAnalyticsControllerGetCompanyDetailsCompanyTypeEnum];
-/**
- * @export
- */
 export const CompaniesAnalyticsControllerGetHotCompaniesCompanySizeEnum = {
     A: 'A',
     B: 'B',
@@ -3270,7 +3259,7 @@ export type CompaniesAnalyticsControllerGetHotCompaniesCompanyTypeEnum = typeof 
 /**
  * @export
  */
-export const CountriesAnalyticsControllerGetCitiesWithAlumniCountCompanySizeEnum = {
+export const GeoAnalyticsControllerGetCitiesWithAlumniCountCompanySizeEnum = {
     A: 'A',
     B: 'B',
     C: 'C',
@@ -3281,11 +3270,11 @@ export const CountriesAnalyticsControllerGetCitiesWithAlumniCountCompanySizeEnum
     H: 'H',
     I: 'I'
 } as const;
-export type CountriesAnalyticsControllerGetCitiesWithAlumniCountCompanySizeEnum = typeof CountriesAnalyticsControllerGetCitiesWithAlumniCountCompanySizeEnum[keyof typeof CountriesAnalyticsControllerGetCitiesWithAlumniCountCompanySizeEnum];
+export type GeoAnalyticsControllerGetCitiesWithAlumniCountCompanySizeEnum = typeof GeoAnalyticsControllerGetCitiesWithAlumniCountCompanySizeEnum[keyof typeof GeoAnalyticsControllerGetCitiesWithAlumniCountCompanySizeEnum];
 /**
  * @export
  */
-export const CountriesAnalyticsControllerGetCitiesWithAlumniCountCompanyTypeEnum = {
+export const GeoAnalyticsControllerGetCitiesWithAlumniCountCompanyTypeEnum = {
     Educational: 'EDUCATIONAL',
     GovernmentAgency: 'GOVERNMENT_AGENCY',
     NonProfit: 'NON_PROFIT',
@@ -3295,11 +3284,11 @@ export const CountriesAnalyticsControllerGetCitiesWithAlumniCountCompanyTypeEnum
     SelfEmployed: 'SELF_EMPLOYED',
     SelfOwned: 'SELF_OWNED'
 } as const;
-export type CountriesAnalyticsControllerGetCitiesWithAlumniCountCompanyTypeEnum = typeof CountriesAnalyticsControllerGetCitiesWithAlumniCountCompanyTypeEnum[keyof typeof CountriesAnalyticsControllerGetCitiesWithAlumniCountCompanyTypeEnum];
+export type GeoAnalyticsControllerGetCitiesWithAlumniCountCompanyTypeEnum = typeof GeoAnalyticsControllerGetCitiesWithAlumniCountCompanyTypeEnum[keyof typeof GeoAnalyticsControllerGetCitiesWithAlumniCountCompanyTypeEnum];
 /**
  * @export
  */
-export const CountriesAnalyticsControllerGetCountriesWithAlumniCountCompanySizeEnum = {
+export const GeoAnalyticsControllerGetCountriesWithAlumniCountCompanySizeEnum = {
     A: 'A',
     B: 'B',
     C: 'C',
@@ -3310,11 +3299,11 @@ export const CountriesAnalyticsControllerGetCountriesWithAlumniCountCompanySizeE
     H: 'H',
     I: 'I'
 } as const;
-export type CountriesAnalyticsControllerGetCountriesWithAlumniCountCompanySizeEnum = typeof CountriesAnalyticsControllerGetCountriesWithAlumniCountCompanySizeEnum[keyof typeof CountriesAnalyticsControllerGetCountriesWithAlumniCountCompanySizeEnum];
+export type GeoAnalyticsControllerGetCountriesWithAlumniCountCompanySizeEnum = typeof GeoAnalyticsControllerGetCountriesWithAlumniCountCompanySizeEnum[keyof typeof GeoAnalyticsControllerGetCountriesWithAlumniCountCompanySizeEnum];
 /**
  * @export
  */
-export const CountriesAnalyticsControllerGetCountriesWithAlumniCountCompanyTypeEnum = {
+export const GeoAnalyticsControllerGetCountriesWithAlumniCountCompanyTypeEnum = {
     Educational: 'EDUCATIONAL',
     GovernmentAgency: 'GOVERNMENT_AGENCY',
     NonProfit: 'NON_PROFIT',
@@ -3324,7 +3313,7 @@ export const CountriesAnalyticsControllerGetCountriesWithAlumniCountCompanyTypeE
     SelfEmployed: 'SELF_EMPLOYED',
     SelfOwned: 'SELF_OWNED'
 } as const;
-export type CountriesAnalyticsControllerGetCountriesWithAlumniCountCompanyTypeEnum = typeof CountriesAnalyticsControllerGetCountriesWithAlumniCountCompanyTypeEnum[keyof typeof CountriesAnalyticsControllerGetCountriesWithAlumniCountCompanyTypeEnum];
+export type GeoAnalyticsControllerGetCountriesWithAlumniCountCompanyTypeEnum = typeof GeoAnalyticsControllerGetCountriesWithAlumniCountCompanyTypeEnum[keyof typeof GeoAnalyticsControllerGetCountriesWithAlumniCountCompanyTypeEnum];
 /**
  * @export
  */

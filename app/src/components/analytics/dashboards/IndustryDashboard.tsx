@@ -40,6 +40,8 @@ import ChartView from "../common/ChartView";
 import { ViewType } from "@/types/view";
 import CountComponent from "../common/CountComponent";
 import LoadingChart from "../common/LoadingChart";
+import { TrendFrequency, EntityType } from "@/types/entityTypes";
+
 type IndustryDashboardProps = {
   onDataUpdate: (industryCount: number, industryFilteredCount: number) => void;
   filters: FilterState;
@@ -56,6 +58,7 @@ export default function IndustryDashboard({
   const [sortField, setSortField] = useState<SortBy>(SortBy.ALUMNI_COUNT);
   const [sortOrder, setSortOrder] = useState<SortOrder>(SortOrder.DESC);
   const [view, setView] = useState<ViewType>(ViewType.TABLE);
+  const [trendFrequency, setTrendFrequency] = useState<TrendFrequency>(TrendFrequency.Y5);
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [pageInput, setPageInput] = useState<string>(String(page));
@@ -71,6 +74,7 @@ export default function IndustryDashboard({
     sortBy: sortField,
     sortOrder: sortOrder,
     offset: (page - 1) * itemsPerPage,
+    includeTrend: view === ViewType.TREND,
   });
 
   const industries = data?.industries || [];
@@ -108,6 +112,8 @@ export default function IndustryDashboard({
               sortField={sortField}
               sortOrder={sortOrder}
               onSort={handleSort}
+              showTrend={view === ViewType.TREND}
+              trendFrequency={trendFrequency}
             />
 
             {isLoading || isFetching ? (
@@ -147,24 +153,14 @@ export default function IndustryDashboard({
                               </div>
                             </Button>
                           </TableCell>
-                          <TableCell className="w-2/12 pl-3 py-1 text-sm text-[#000000] align-middle hover:text-[#8C2D19] transition-colors">
-                            <div className="flex items-center gap-0 justify-center">
-                              {view === ViewType.TABLE ? (
-                                <CountComponent count={industry.companyCount} />
-                              ) : (
-                              <TrendLineComponent
-                                dataPoints={[25, 27, 29, 30, 31]}
-                              />
-                            )}
-                            </div>
-                          </TableCell>
                           <TableCell className="w-2/12 px-3 py-1 text-sm text-[#000000] align-middle hover:text-[#8C2D19] transition-colors relative">
                             <div className="flex items-center gap-0 justify-center">
                               {view === ViewType.TABLE ? (
-                                <CountComponent count={industry.alumniCount} />
+                                <CountComponent count={industry.count} />
                               ) : (
                                 <TrendLineComponent
-                                  dataPoints={[20, 25, 30, 35, 40]}
+                                  dataPoints={industry.trend}
+                                  trendFrequency={trendFrequency}
                                 />
                               )}
                               <div
@@ -219,6 +215,9 @@ export default function IndustryDashboard({
         setItemsPerPage={setItemsPerPage}
         totalItems={totalItems}
         visible={industries.length > 0}
+        showTrendFrequency={view === ViewType.TREND}
+        trendFrequency={trendFrequency}
+        setTrendFrequency={setTrendFrequency}
       />
     </>
   );
@@ -238,10 +237,8 @@ export default function IndustryDashboard({
         ) : (
           <ChartView
             data={industries}
-            isLoading={isLoading || isFetching}
-            dataKey={
-              sortField === SortBy.ALUMNI_COUNT ? "alumniCount" : "companyCount"
-            }
+            isLoading={isLoading || isFetching} 
+            entityType={EntityType.INDUSTRY}
           />
         )}
       </div>
