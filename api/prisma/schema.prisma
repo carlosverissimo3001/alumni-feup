@@ -256,8 +256,8 @@ model ReviewCompany {
   locationId  String?  @map("location_id")
   rating      Int      @db.SmallInt
   description String?
-  upvotes     Int      @default(0) @db.SmallInt
-  downvotes   Int      @default(0) @db.SmallInt
+  upvotes     String[] 
+  downvotes   String[] 
   createdAt   DateTime @default(now()) @map("created_at") @db.Timestamp(6)
   updatedAt   DateTime @default(now()) @map("updated_at") @db.Timestamp(6)
 
@@ -285,8 +285,8 @@ model ReviewLocation {
   locationId  String   @map("location_id")
   rating      Int      @db.SmallInt
   description String?
-  upvotes     Int      @default(0) @db.SmallInt
-  downvotes   Int      @default(0) @db.SmallInt
+  upvotes     String[]
+  downvotes   String[]
   createdAt   DateTime @default(now()) @map("created_at") @db.Timestamp(6)
   updatedAt   DateTime @default(now()) @map("updated_at") @db.Timestamp(6)
 
