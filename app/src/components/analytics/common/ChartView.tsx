@@ -1,28 +1,52 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { useEffect, useRef, useState } from "react";
 import * as d3 from "d3";
 import { Loader2 } from "lucide-react";
+import { EntityType } from "@/types/entityTypes";
 
-const getDistributionBy = (dataKey: "alumniCount" | "companyCount" | "roleCount") => {
-  return dataKey === "alumniCount"
-    ? "Alumni"
-    : dataKey === "companyCount"
-    ? "Companies"
-    : "Roles";
+
+const getTitle = (entity: EntityType) => {
+  let title = "Top 10 ";
+  
+  switch (entity) {
+    case EntityType.COMPANY:
+      title += "Companies";
+      break;
+    case EntityType.ROLE:
+      title += "Roles";
+      break;
+    case EntityType.INDUSTRY:
+      title += "Industries";
+      break;
+    case EntityType.COUNTRY:
+      title += "Countries";
+      break;
+    case EntityType.CITY:
+      title += "Cities";
+      break;
+    default:
+      title = "Top 10";
+  }
+
+  return title;
+};
+
+const getDistributionKey = (entity: EntityType) => {
+  return entity === EntityType.ROLE ? "Roles" : "Alumni";
 };
 
 type InputData = {
   id: string;
   name: string;
-  companyCount?: number;
-  alumniCount: number;
+  count: number;
 };
 
-type IndustryChartViewProps = {
+type ChartViewProps = {
   data: InputData[];
   isLoading: boolean;
-  dataKey: "alumniCount" | "companyCount" | "roleCount";
+  entityType: EntityType;
 };
 
 type TooltipData = {
@@ -38,11 +62,12 @@ type TooltipData = {
 export default function ChartView({
   data,
   isLoading,
-  dataKey,
-}: IndustryChartViewProps) {
+  entityType,
+}: ChartViewProps) {
   const chartRef = useRef<HTMLDivElement>(null);
   const [tooltip, setTooltip] = useState<TooltipData | null>(null);
   const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
+  const [showNames, setShowNames] = useState(false);
 
   // Update dimensions when window is resized
   useEffect(() => {
@@ -77,23 +102,26 @@ export default function ChartView({
     )
       return;
 
+    d3.select(chartRef.current).selectAll("svg").remove();
+
     const topData = [...data]
-      .sort((a, b) => (b[dataKey] ?? 0) - (a[dataKey] ?? 0))
+      .sort((a, b) => (b.count ?? 0) - (a.count ?? 0))
       .slice(0, 10);
 
-    drawPieChart(topData, dimensions.width, dimensions.height, dataKey);
+    drawPieChart(topData, dimensions.width, dimensions.height);
 
     setTooltip(null);
-  }, [data, isLoading, dataKey, dimensions]);
+  }, [data, isLoading, dimensions, showNames]);
 
   const drawPieChart = (
     data: InputData[],
     width: number,
     height: number,
-    dataKey: "alumniCount" | "companyCount" | "roleCount"
   ) => {
+    // Raidus of the pie chart
     const radius = Math.min(width, height) / 2 - 55;
 
+    // The main svg element
     const svg = d3
       .select(chartRef.current)
       .append("svg")
@@ -107,16 +135,17 @@ export default function ChartView({
       .append("text")
       .attr("class", "chart-title")
       .attr("x", width / 1.25)
-      .attr("y", 25)
+      .attr("y", 27)
       .attr("text-anchor", "middle")
       .style("font-size", "14px")
       .style("font-weight", "bold")
       .style("fill", "#333")
       .style("opacity", 0)
-      .text(`Distribution by ${getDistributionBy(dataKey)}`);
+      .text(`${getTitle(entityType)}`);
 
     title.transition().duration(700).style("opacity", 1);
 
+    // The graph container
     const g = svg
       .append("g")
       .attr("transform", `translate(${width / 3.5},${height / 2 - 49})`)
@@ -147,6 +176,7 @@ export default function ChartView({
       .domain(data.map((d) => d.name))
       .range(colorScheme);
 
+    // The circle element
     g.append("circle")
       .attr("cx", 0)
       .attr("cy", 0)
@@ -155,11 +185,12 @@ export default function ChartView({
       .attr("stroke", "#eee")
       .attr("stroke-width", 1);
 
-    const total = d3.sum(data, (d: InputData) => d[dataKey]);
+    // The total value of the pie chart
+    const total = d3.sum(data, (d: InputData) => d.count);
 
     const pie = d3
       .pie<InputData>()
-      .value((d: InputData) => d[dataKey] ?? 0)
+      .value((d: InputData) => d.count)
       .sort(null);
 
     const arcTween = (d: d3.PieArcDatum<InputData>) => {
@@ -216,7 +247,7 @@ export default function ChartView({
           .style("opacity", 0.7);
 
         const percentage = (
-          (d.data[dataKey ?? "alumniCount"] / total) *
+          (d.data.count / total) *
           100
         ).toFixed(1);
 
@@ -224,7 +255,7 @@ export default function ChartView({
           x: event.pageX,
           y: event.pageY,
           name: d.data.name,
-          value: d.data[dataKey ?? "alumniCount"],
+          value: d.data.count,
           percentage,
           color: color(d.data.name),
           id: d.data.id,
@@ -269,7 +300,7 @@ export default function ChartView({
       .style("pointer-events", "none")
       .text((d: d3.PieArcDatum<InputData>) => {
         const percent = (
-          (d.data[dataKey ?? "alumniCount"] / total) *
+          (d.data.count / total) *
           100
         ).toFixed(1);
         return parseFloat(percent) > 4 ? `${percent}%` : "";
@@ -282,8 +313,8 @@ export default function ChartView({
 
     arcs
       .filter((d: d3.PieArcDatum<InputData>) => {
-        const percent = (d.data[dataKey ?? "alumniCount"] / total) * 100;
-        return percent > 7;
+        const percent = (d.data.count / total) * 100;
+        return percent > 7 && showNames;
       })
       .append("text")
       .attr("transform", (d: d3.PieArcDatum<InputData>) => {
@@ -311,10 +342,16 @@ export default function ChartView({
       .attr("class", "legend-wrapper")
       .attr("transform", `translate(${width / 2 + 80}, 40)`);
 
+    const legendPadding = 5;
+    const legendElementHeight = 22;
+    const elements = data.length;
+
+    const legendContainerHeight = (legendPadding * 2) + (legendElementHeight * elements);
+
     legendWrapper
       .append("rect")
       .attr("width", 180)
-      .attr("height", 235)
+      .attr("height", legendContainerHeight)
       .attr("rx", 5)
       .attr("fill", "#f9f9f9")
       .attr("stroke", "#eee")
@@ -364,13 +401,13 @@ export default function ChartView({
 
         d3.select(this).transition().duration(200).style("font-weight", "bold");
 
-        const percentage = ((d[dataKey] / total) * 100).toFixed(1);
+        const percentage = ((d.count / total) * 100).toFixed(1);
 
         setTooltip({
           x: event.pageX,
           y: event.pageY,
           name: d.name,
-          value: d[dataKey],
+          value: d.count,
           percentage,
           color: color(d.name),
           id: d.id,
@@ -419,9 +456,54 @@ export default function ChartView({
       .style("fill", "#333")
       .text((d: any) => {
         const displayName =
-          d.name.length > 27 ? d.name.substring(0, 27) + "..." : d.name;
+          d.name.length > 27 ? d.name.substring(0, 25) + "..." : d.name;
         return `${displayName}`;
       });
+
+    // Add checkbox control at the bottom of the legend
+    const checkboxGroup = legendWrapper
+      .append("g")
+      .attr("transform", `translate(10, ${10 + data.length * 22 + 10})`)
+      .style("cursor", "pointer")
+      .style("opacity", 0)
+      .on("click", () => {
+        setShowNames(!showNames);
+      });
+      
+    checkboxGroup
+      .transition()
+      .duration(500)
+      .delay(300 + data.length * 30)
+      .style("opacity", 1);
+
+    // Checkbox border
+    checkboxGroup
+      .append("rect")
+      .attr("width", 12)
+      .attr("height", 12)
+      .attr("rx", 2)
+      .attr("fill", "white")
+      .attr("stroke", "#333")
+      .attr("stroke-width", 1);
+
+    if (showNames) {
+      checkboxGroup
+        .append("rect")
+        .attr("x", 2)
+        .attr("y", 2)
+        .attr("width", 8)
+        .attr("height", 8)
+        .attr("rx", 1)
+        .attr("fill", "#8C2D19");
+    }
+
+    checkboxGroup
+      .append("text")
+      .attr("x", 20)
+      .attr("y", 10)
+      .style("font-size", "11px")
+      .style("fill", "#333")
+      .text("Show labels in chart");
   };
 
   const renderTooltip = () => {
@@ -465,7 +547,7 @@ export default function ChartView({
 
         <div className="flex justify-between items-center mb-1">
           <span className="text-gray-600">
-            {dataKey === "alumniCount" ? "Alumni" : "Companies"}
+            {getDistributionKey(entityType)}
           </span>
           <span className="font-medium text-[#8C2D19]">
             {tooltip.value.toLocaleString()}

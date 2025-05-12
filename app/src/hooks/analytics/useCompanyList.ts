@@ -5,7 +5,10 @@ import { filterApiRequestParams } from "@/utils/query-params";
 
 export const useCompanyList = (params: CompaniesAnalyticsControllerGetCompaniesWithAlumniCountRequest) => {
   // No need to send the boolean values if they are false
-  const filteredParams = filterApiRequestParams(params);
+  const filteredParams = {
+    ...filterApiRequestParams(params),
+    includeTrend: params.includeTrend ?? false,
+  };
 
   return useQuery({
     queryKey: ['company-list', filteredParams],

@@ -8,7 +8,7 @@ import {
   IsEnum,
 } from 'class-validator';
 
-import { ApiPropertyOptional } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Transform, Type } from 'class-transformer';
 import { SortBy } from '../utils/types';
 import {
@@ -110,9 +110,13 @@ export class QueryParamsDto {
   @IsString({ each: true })
   industryIds?: string[];
 
+  /**
+   * *** GEO PARAMS ***
+   */
+
   @ApiPropertyOptional({
-    description: 'The countries to filter by',
-    example: ['Portugal', 'Spain', 'France'],
+    description: 'The country codes where alumni exerced their roles',
+    example: ['PT', 'ES', 'FR'],
   })
   @IsOptional()
   @TransformToArray()
@@ -124,10 +128,10 @@ export class QueryParamsDto {
   })
   @IsArray()
   @IsString({ each: true })
-  countries?: string[];
+  roleCountryCodes?: string[];
 
   @ApiPropertyOptional({
-    description: 'The cities ids to filter by',
+    description: 'The city IDS where alumni exerced their roles',
     example: ['1', '2', '3'],
   })
   @IsOptional()
@@ -140,7 +144,39 @@ export class QueryParamsDto {
   })
   @IsArray()
   @IsString({ each: true })
-  cityIds?: string[];
+  roleCityIds?: string[];
+
+  @ApiPropertyOptional({
+    description: 'The company HQs country codes to filter by',
+    example: ['PT', 'ES', 'FR'],
+  })
+  @IsOptional()
+  @TransformToArray()
+  @Transform(({ value }: { value: string | string[] }) => {
+    if (Array.isArray(value)) {
+      return value.filter((country: string) => country?.trim());
+    }
+    return value;
+  })
+  @IsArray()
+  @IsString({ each: true })
+  companyHQsCountryCodes?: string[];
+
+  @ApiPropertyOptional({
+    description: 'The company HQs city ids to filter by',
+    example: ['1', '2', '3'],
+  })
+  @IsOptional()
+  @TransformToArray()
+  @Transform(({ value }: { value: string | string[] }) => {
+    if (Array.isArray(value)) {
+      return value.filter((city: string) => city?.trim());
+    }
+    return value;
+  })
+  @IsArray()
+  @IsString({ each: true })
+  companyHQsCityIds?: string[];
 
   @ApiPropertyOptional({
     description: 'Filter for current roles only',
@@ -285,7 +321,7 @@ export class QueryParamsDto {
 
   @ApiPropertyOptional({
     description: 'How to sort the results',
-    default: SortBy.ALUMNI_COUNT,
+    default: SortBy.COUNT,
     type: SortBy,
     enumName: 'SortBy',
   })
@@ -301,7 +337,14 @@ export class QueryParamsDto {
   @IsOptional()
   @IsString()
   sortOrder?: 'asc' | 'desc';
-  /* 
-  TODO: Filter by ESCO title
-  */
+
+  @ApiProperty({
+    description: 'Whether to include the trend data',
+    example: true,
+    type: 'boolean',
+  })
+  @IsNotNullableOptional()
+  @IsBoolean()
+  @Transform(({ obj }) => toBoolean(obj.includeTrend))
+  includeTrend?: boolean = false;
 }

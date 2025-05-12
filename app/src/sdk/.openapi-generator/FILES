@@ -35,6 +35,7 @@ models/CreateAlumniDto.ts
 models/CreateCourseDto.ts
 models/CreateReviewDto.ts
 models/CurrentRoleDto.ts
+models/DataPointDto.ts
 models/EscoClassificationDto.ts
 models/Faculty.ts
 models/GeoJSONFeature.ts
@@ -54,7 +55,7 @@ models/ReviewGeoJSONFeature.ts
 models/ReviewGeoJSONFeatureCollection.ts
 models/ReviewLocation.ts
 models/Role.ts
-models/RoleListDto.ts
+models/RoleListItemDto.ts
 models/RoleListResponseDto.ts
 models/RoleOptionDto.ts
 models/SendFeedbackDto.ts

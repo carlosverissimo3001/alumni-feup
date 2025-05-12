@@ -1,18 +1,21 @@
 import { useQuery } from '@tanstack/react-query';
 import NestAPI from '@/api';
 import {
-  CountriesAnalyticsControllerGetCitiesWithAlumniCountRequest,
+  GeoAnalyticsControllerGetCitiesWithAlumniCountRequest,
 } from '@/sdk';
 import { filterApiRequestParams } from '@/utils/query-params';
 
 export const useCityList = (
-  params: CountriesAnalyticsControllerGetCitiesWithAlumniCountRequest,
+  params: GeoAnalyticsControllerGetCitiesWithAlumniCountRequest,
 ) => {
-  const filteredParams = filterApiRequestParams(params);
+  const filteredParams = {
+    ...filterApiRequestParams(params),
+    includeTrend: params.includeTrend ?? false,
+  };
   const { data, isLoading, isError, isSuccess, isFetching, refetch } =
     useQuery({
     queryKey: ['city-list', filteredParams],
-    queryFn: () => NestAPI.countriesAnalyticsControllerGetCitiesWithAlumniCount(filteredParams),
+    queryFn: () => NestAPI.geoAnalyticsControllerGetCitiesWithAlumniCount(filteredParams),
     refetchOnWindowFocus: false,
     staleTime: 5 * 60 * 1000, 
     gcTime: 10 * 60 * 1000,

@@ -24,84 +24,84 @@ import {
 /**
  * 
  * @export
- * @interface CityListItemDto
+ * @interface RoleListItemDto
  */
-export interface CityListItemDto {
+export interface RoleListItemDto {
     /**
-     * The city ID
+     * The name of the role
      * @type {string}
-     * @memberof CityListItemDto
-     */
-    id: string;
-    /**
-     * The city name
-     * @type {string}
-     * @memberof CityListItemDto
+     * @memberof RoleListItemDto
      */
     name: string;
     /**
-     * The country code of the country that the city belongs to
+     * The level of classification of the role, 1 being a more general role and 2 being a more specific role
+     * @type {number}
+     * @memberof RoleListItemDto
+     */
+    level: number;
+    /**
+     * The ESCO code of the role
      * @type {string}
-     * @memberof CityListItemDto
+     * @memberof RoleListItemDto
      */
     code: string;
     /**
-     * The number of alumni in the city
+     * The number of roles classified with this role
      * @type {number}
-     * @memberof CityListItemDto
+     * @memberof RoleListItemDto
      */
     count: number;
     /**
-     * The alumni count trend of the city
+     * The trend of the role
      * @type {Array<DataPointDto>}
-     * @memberof CityListItemDto
+     * @memberof RoleListItemDto
      */
     trend: Array<DataPointDto>;
 }
 
 /**
- * Check if a given object implements the CityListItemDto interface.
+ * Check if a given object implements the RoleListItemDto interface.
  */
-export function instanceOfCityListItemDto(value: object): value is CityListItemDto {
-    if (!('id' in value) || value['id'] === undefined) return false;
+export function instanceOfRoleListItemDto(value: object): value is RoleListItemDto {
     if (!('name' in value) || value['name'] === undefined) return false;
+    if (!('level' in value) || value['level'] === undefined) return false;
     if (!('code' in value) || value['code'] === undefined) return false;
     if (!('count' in value) || value['count'] === undefined) return false;
     if (!('trend' in value) || value['trend'] === undefined) return false;
     return true;
 }
 
-export function CityListItemDtoFromJSON(json: any): CityListItemDto {
-    return CityListItemDtoFromJSONTyped(json, false);
+export function RoleListItemDtoFromJSON(json: any): RoleListItemDto {
+    return RoleListItemDtoFromJSONTyped(json, false);
 }
 
-export function CityListItemDtoFromJSONTyped(json: any, ignoreDiscriminator: boolean): CityListItemDto {
+export function RoleListItemDtoFromJSONTyped(json: any, ignoreDiscriminator: boolean): RoleListItemDto {
     if (json == null) {
         return json;
     }
     return {
         
-        'id': json['id'],
         'name': json['name'],
+        'level': json['level'],
         'code': json['code'],
         'count': json['count'],
         'trend': ((json['trend'] as Array<any>).map(DataPointDtoFromJSON)),
     };
 }
 
-export function CityListItemDtoToJSON(json: any): CityListItemDto {
-    return CityListItemDtoToJSONTyped(json, false);
+export function RoleListItemDtoToJSON(json: any): RoleListItemDto {
+    return RoleListItemDtoToJSONTyped(json, false);
 }
 
-export function CityListItemDtoToJSONTyped(value?: CityListItemDto | null, ignoreDiscriminator: boolean = false): any {
+export function RoleListItemDtoToJSONTyped(value?: RoleListItemDto | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
         
-        'id': value['id'],
         'name': value['name'],
+        'level': value['level'],
         'code': value['code'],
         'count': value['count'],
         'trend': ((value['trend'] as Array<any>).map(DataPointDtoToJSON)),

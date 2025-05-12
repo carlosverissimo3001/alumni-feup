@@ -28,9 +28,11 @@ export const initialFilters: FilterState = {
   graduationYears: undefined,
   companyIds: undefined,
   industryIds: undefined,
-  countries: undefined,
-  cityIds: undefined,
-  currentRolesOnly: false,
+  roleCountryCodes: undefined,
+  roleCityIds: undefined,
+  companyHQsCountryCodes: undefined,
+  companyHQsCityIds: undefined,
+  currentRolesOnly: true,
   onlyInternational: false,
   excludeResearchAndHighEducation: false,
   search: undefined,
@@ -155,7 +157,7 @@ export default function Analytics() {
     (geoId: string) => {
       if (geoMode === "country") {
         setFilters((prev) => {
-          const currentCountries = prev.countries || [];
+          const currentCountries = prev.roleCountryCodes || [];
           if (!currentCountries.includes(geoId)) {
             const updatedCountries = [...currentCountries, geoId];
             
@@ -165,27 +167,27 @@ export default function Analytics() {
             }
             return {
               ...prev,
-              countries: updatedCountries,
+              roleCountryCodes: updatedCountries,
             };
           } else {
             return {
               ...prev,
-              countries: currentCountries.filter((id) => id !== geoId),
+              roleCountryCodes: currentCountries.filter((id) => id !== geoId),
             };
           }
         });
       } else {
         setFilters((prev) => {
-          const currentCities = prev.cityIds || [];
+          const currentCities = prev.roleCityIds || [];
           if (!currentCities.includes(geoId)) {
             return {
               ...prev,
-              cityIds: [...currentCities, geoId],
+              roleCityIds: [...currentCities, geoId],
             };
           } else {
             return {
               ...prev,
-              cityIds: currentCities.filter((id) => id !== geoId),
+              roleCityIds: currentCities.filter((id) => id !== geoId),
             };
           }
         });
@@ -286,12 +288,12 @@ export default function Analytics() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3 gap-4">
-         <CompanyDashboard
+        <CompanyDashboard
           onDataUpdate={handleCompanyDataUpdate}
           filters={combinedFilters}
           onAddToFilters={handleAddCompanyToFilters}
         /> 
-        <GeoDashboard
+         <GeoDashboard
           onDataUpdate={handleGeoDataUpdate}
           filters={combinedFilters}
           onAddToFilters={handleGeoAddToFilters}

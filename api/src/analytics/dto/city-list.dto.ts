@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNumber, IsString } from 'class-validator';
-
+import { DataPointDto } from './data-point.dto';
 export class CityListItemDto {
   @ApiProperty({
     description: 'The city ID',
@@ -28,14 +28,14 @@ export class CityListItemDto {
     type: Number,
   })
   @IsNumber()
-  alumniCount: number;
+  count: number;
 
   @ApiProperty({
-    description: 'The number of companies in the city',
-    type: Number,
+    description: 'The alumni count trend of the city',
+    type: DataPointDto,
+    isArray: true,
   })
-  @IsNumber()
-  companyCount: number;
+  trend: DataPointDto[];
 }
 
 export class CityListResponseDto {

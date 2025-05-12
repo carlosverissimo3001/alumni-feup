@@ -4,7 +4,7 @@ import { buildWhereClause } from '../utils/query-builder';
 import { Injectable, Logger } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { toAlumniAnalyticsEntity } from '../utils/alumni.mapper';
-
+import { AlumniAnalyticsEntity } from '../entities/alumni.entity';
 const industrySelect = {
   id: true,
   name: true,
@@ -39,6 +39,8 @@ const jobClassificationSelect = {
 const roleSelect = {
   id: true,
   alumniId: true,
+  startDate: true,
+  endDate: true,
   Location: {
     select: locationSelect,
   },
@@ -57,7 +59,7 @@ export class AlumniAnalyticsRepository {
     private readonly logger: Logger,
   ) {}
 
-  async find(params: QueryParamsDto) {
+  async find(params: QueryParamsDto): Promise<AlumniAnalyticsEntity[]> {
     // Build all the filters using your existing function
     const { alumniWhere, roleWhere } = buildWhereClause(params);
 

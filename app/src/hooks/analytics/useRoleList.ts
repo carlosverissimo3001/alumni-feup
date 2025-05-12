@@ -5,7 +5,10 @@ import { filterApiRequestParams } from "@/utils/query-params";
 
 
 export const useRoleList = (params: RoleAnalyticsControllerGetRolesRequest) => {
-  const filteredParams = filterApiRequestParams(params);
+  const filteredParams = {
+    ...filterApiRequestParams(params),
+    includeTrend: params.includeTrend ?? false,
+  };
   const { data, isLoading, isError, isSuccess, isFetching, refetch } = useQuery({
     queryKey: ['role-list', filteredParams],
     queryFn: () => NestAPI.roleAnalyticsControllerGetRoles(filteredParams),

@@ -1,7 +1,10 @@
 import {
   AlumniAnalyticsEntity,
+  CompanyAnalyticsEntity,
+  IndustryAnalyticsEntity,
   JobClassificationAnalyticsEntity,
   LocationAnalyticsEntity,
+  RoleAnalyticsEntity,
 } from '../entities';
 
 type RawJobClassification = {
@@ -21,6 +24,8 @@ type RawLocation = {
 type RawRole = {
   id: string;
   alumniId: string;
+  startDate: Date;
+  endDate?: Date | null;
   Location?: RawLocation | null;
   JobClassification?: RawJobClassification | null;
   Company: {
@@ -40,29 +45,44 @@ type RawAlumni = {
   Roles: RawRole[];
 };
 
+type RawCompany = {
+  id: string;
+  name: string;
+  logo?: string | null;
+  Industry: RawIndustry;
+  Location?: RawLocation | null;
+};
+
+type RawIndustry = {
+  id: string;
+  name: string;
+};
+
 export function toAlumniAnalyticsEntity(
   alumni: RawAlumni,
 ): AlumniAnalyticsEntity {
   return {
     id: alumni.id,
-    roles: alumni.Roles.map((role) => ({
-      id: role.id,
-      alumniId: role.alumniId,
-      jobClassification: mapJobClassification(role.JobClassification),
-      company: {
-        id: role.Company.id,
-        name: role.Company.name,
-        logo: role.Company.logo,
-        industry: {
-          id: role.Company.Industry.id,
-          name: role.Company.Industry.name,
-        },
-        location: mapLocation(role.Company.Location),
-      },
-      location: mapLocation(role.Location),
-    })),
+    roles: alumni.Roles.map(mapRole),
   };
 }
+
+const mapCompany = (company: RawCompany): CompanyAnalyticsEntity => {
+  return {
+    id: company.id,
+    name: company.name,
+    logo: company.logo,
+    industry: mapIndustry(company.Industry),
+    location: mapLocation(company.Location),
+  };
+};
+
+const mapIndustry = (industry: RawIndustry): IndustryAnalyticsEntity => {
+  return {
+    id: industry.id,
+    name: industry.name,
+  };
+};
 
 const mapJobClassification = (
   jobClassification?: RawJobClassification | null,
@@ -70,7 +90,7 @@ const mapJobClassification = (
   if (!jobClassification) return null;
   return {
     escoCode: jobClassification.escoCode,
-    title: jobClassification.title,
+    name: jobClassification.title,
     level: jobClassification.level,
     confidence: jobClassification.confidence,
   };
@@ -86,3 +106,17 @@ const mapLocation = (
     city: location.city ?? '',
   };
 };
+
+const mapRole = (role: RawRole): RoleAnalyticsEntity => {
+  return {
+    id: role.id,
+    alumniId: role.alumniId,
+    startDate: role.startDate,
+    endDate: role.endDate,
+    jobClassification: mapJobClassification(role.JobClassification),
+    company: mapCompany(role.Company),
+    location: mapLocation(role.Location),
+  };
+};
+
+// Need to map the graduations next

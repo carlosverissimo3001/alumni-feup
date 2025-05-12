@@ -1,33 +1,42 @@
-import { CompanyListItemDto } from '../dto/company-list.dto';
-import { IndustryListItemDto } from '../dto/industry-list.dto';
+import {
+  CompanyListItemExtendedDto,
+  IndustryListItemDto,
+  RoleListItemDto,
+  CountryListItemDto,
+  CityListItemDto,
+} from '@/analytics/dto';
 import { SortBy } from './types';
 
-type SortableData = CompanyListItemDto | IndustryListItemDto;
+type SortableData =
+  | CompanyListItemExtendedDto
+  | IndustryListItemDto
+  | RoleListItemDto
+  | CountryListItemDto
+  | CityListItemDto;
 
-export const sortData = (
-  data: SortableData[],
+export const sortData = <T extends SortableData>(
+  data: T[],
   order: {
     sortBy: SortBy;
     direction: 'asc' | 'desc';
   },
-) => {
-  return data.sort((a, b) => {
+): T[] => {
+  if (typeof data === 'undefined' || data === null || data.length === 0) {
+    return [];
+  }
+  return [...data].sort((a, b) => {
     let comparison = 0;
 
     switch (order.sortBy) {
-      case SortBy.ALUMNI_COUNT:
-        comparison = a.alumniCount - b.alumniCount;
-        break;
       case SortBy.NAME:
         comparison = a.name.localeCompare(b.name);
         break;
-      case SortBy.COMPANY_COUNT:
-        if ('companyCount' in a && 'companyCount' in b) {
-          comparison = a.companyCount - b.companyCount;
-        }
+      case SortBy.COUNT:
+        comparison = a.count - b.count;
         break;
       default:
-        comparison = a.alumniCount - b.alumniCount;
+        // Default fallback - use name
+        comparison = a.name.localeCompare(b.name);
     }
 
     if (order.direction === 'desc') {

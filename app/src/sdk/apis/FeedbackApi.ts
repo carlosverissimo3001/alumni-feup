@@ -35,7 +35,7 @@ export interface FeedbackControllerCreateRequest {
 export interface FeedbackApiInterface {
     /**
      * 
-     * @summary Insert feedback into the database
+     * @summary Handles the feedback by inserting it into the database and sending an email to the administrators
      * @param {SendFeedbackDto} sendFeedbackDto 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -44,7 +44,7 @@ export interface FeedbackApiInterface {
     feedbackControllerCreateRaw(requestParameters: FeedbackControllerCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>>;
 
     /**
-     * Insert feedback into the database
+     * Handles the feedback by inserting it into the database and sending an email to the administrators
      */
     feedbackControllerCreate(requestParameters: FeedbackControllerCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void>;
 
@@ -56,7 +56,7 @@ export interface FeedbackApiInterface {
 export class FeedbackApi extends runtime.BaseAPI implements FeedbackApiInterface {
 
     /**
-     * Insert feedback into the database
+     * Handles the feedback by inserting it into the database and sending an email to the administrators
      */
     async feedbackControllerCreateRaw(requestParameters: FeedbackControllerCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
         if (requestParameters['sendFeedbackDto'] == null) {
@@ -84,7 +84,7 @@ export class FeedbackApi extends runtime.BaseAPI implements FeedbackApiInterface
     }
 
     /**
-     * Insert feedback into the database
+     * Handles the feedback by inserting it into the database and sending an email to the administrators
      */
     async feedbackControllerCreate(requestParameters: FeedbackControllerCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
         await this.feedbackControllerCreateRaw(requestParameters, initOverrides);

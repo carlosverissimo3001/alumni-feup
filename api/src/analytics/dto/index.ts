@@ -1,5 +1,8 @@
 // Company
-export { CompanyListResponseDto } from './company-list.dto';
+export {
+  CompanyListResponseDto,
+  CompanyListItemExtendedDto,
+} from './company-list.dto';
 export { CompanyOptionDto } from './company-option.dto';
 
 // Industry
@@ -22,5 +25,8 @@ export { GetCitiesDto } from './get-cities.dto';
 export { QueryParamsDto } from './query-params.dto';
 
 // Role
-export { RoleListResponseDto } from './role-list.dto';
+export { RoleListResponseDto, RoleListItemDto } from './role-list.dto';
 export { RoleOptionDto } from './role-option.dto';
+
+// Data point
+export { DataPointDto } from './data-point.dto';
