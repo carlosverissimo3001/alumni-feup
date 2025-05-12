@@ -4,8 +4,7 @@ export const DASHBOARD_HEIGHT = "h-[375px]";
 
 
 export enum SortBy {
-  ALUMNI_COUNT = 'alumniCount',
-  COMPANY_COUNT = 'companyCount',
+  COUNT = 'count',
   // General, could be either company, industry, country...
   NAME = 'name',
 }

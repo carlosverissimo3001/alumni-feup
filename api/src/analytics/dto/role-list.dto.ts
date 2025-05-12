@@ -1,11 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
-
-export class RoleListDto {
+import { DataPointDto } from './data-point.dto';
+export class RoleListItemDto {
   @ApiProperty({
-    description: 'The ESCO title of the role',
+    description: 'The name of the role',
     type: String,
   })
-  title: string;
+  name: string;
 
   @ApiProperty({
     description:
@@ -24,12 +24,18 @@ export class RoleListDto {
     description: 'The number of roles classified with this role',
     type: Number,
   })
-  roleCount: number;
+  count: number;
+
+  @ApiProperty({
+    description: 'The trend of the role',
+    type: [DataPointDto],
+  })
+  trend: DataPointDto[];
 }
 
 export class RoleListResponseDto {
-  @ApiProperty({ type: [RoleListDto] })
-  roles: RoleListDto[];
+  @ApiProperty({ type: [RoleListItemDto] })
+  roles: RoleListItemDto[];
 
   @ApiProperty({
     description: 'The total number of roles in the database',

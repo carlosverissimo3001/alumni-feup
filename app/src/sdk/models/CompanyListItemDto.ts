@@ -13,6 +13,14 @@
  */
 
 import { mapValues } from '../runtime';
+import type { DataPointDto } from './DataPointDto';
+import {
+    DataPointDtoFromJSON,
+    DataPointDtoFromJSONTyped,
+    DataPointDtoToJSON,
+    DataPointDtoToJSONTyped,
+} from './DataPointDto';
+
 /**
  * 
  * @export
@@ -20,23 +28,29 @@ import { mapValues } from '../runtime';
  */
 export interface CompanyListItemDto {
     /**
-     * 
+     * The ID of the company
      * @type {string}
      * @memberof CompanyListItemDto
      */
     id: string;
     /**
-     * 
+     * The name of the company
      * @type {string}
      * @memberof CompanyListItemDto
      */
     name: string;
     /**
-     * 
+     * The number of alumni in the company
      * @type {number}
      * @memberof CompanyListItemDto
      */
-    alumniCount: number;
+    count: number;
+    /**
+     * The trend of the company
+     * @type {Array<DataPointDto>}
+     * @memberof CompanyListItemDto
+     */
+    trend: Array<DataPointDto>;
     /**
      * 
      * @type {string}
@@ -51,7 +65,8 @@ export interface CompanyListItemDto {
 export function instanceOfCompanyListItemDto(value: object): value is CompanyListItemDto {
     if (!('id' in value) || value['id'] === undefined) return false;
     if (!('name' in value) || value['name'] === undefined) return false;
-    if (!('alumniCount' in value) || value['alumniCount'] === undefined) return false;
+    if (!('count' in value) || value['count'] === undefined) return false;
+    if (!('trend' in value) || value['trend'] === undefined) return false;
     return true;
 }
 
@@ -67,7 +82,8 @@ export function CompanyListItemDtoFromJSONTyped(json: any, ignoreDiscriminator: 
         
         'id': json['id'],
         'name': json['name'],
-        'alumniCount': json['alumniCount'],
+        'count': json['count'],
+        'trend': ((json['trend'] as Array<any>).map(DataPointDtoFromJSON)),
         'logo': json['logo'] == null ? undefined : json['logo'],
     };
 }
@@ -85,7 +101,8 @@ export function CompanyListItemDtoToJSONTyped(value?: CompanyListItemDto | null,
         
         'id': value['id'],
         'name': value['name'],
-        'alumniCount': value['alumniCount'],
+        'count': value['count'],
+        'trend': ((value['trend'] as Array<any>).map(DataPointDtoToJSON)),
         'logo': value['logo'],
     };
 }

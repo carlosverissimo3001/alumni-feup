@@ -45,6 +45,9 @@ import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import CountComponent from "../common/CountComponent";
 import TrendLineComponent from "../common/TrendLineComponent";
 import LoadingChart from "../common/LoadingChart";
+import { TrendFrequency, EntityType } from "@/types/entityTypes";
+import { DataPointDto } from "@/sdk";
+
 type GeoDashboardProps = {
   onDataUpdate: (
     countryCount: number,
@@ -62,8 +65,8 @@ type DataRowProps = {
   id: string;
   code: string;
   name: string;
-  companyCount: number;
-  alumniCount: number;
+  count: number;
+  trend: DataPointDto[];
 };
 
 export default function GeoDashboard({
@@ -75,10 +78,10 @@ export default function GeoDashboard({
 }: GeoDashboardProps) {
   const [page, setPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(ITEMS_PER_PAGE[1]);
-  const [sortField, setSortField] = useState<SortBy>(SortBy.ALUMNI_COUNT);
+  const [sortField, setSortField] = useState<SortBy>(SortBy.COUNT);
   const [sortOrder, setSortOrder] = useState<SortOrder>(SortOrder.DESC);
   const [view, setView] = useState<ViewType>(ViewType.TABLE);
-
+  const [trendFrequency, setTrendFrequency] = useState<TrendFrequency>(TrendFrequency.Y5);
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [pageInput, setPageInput] = useState<string>(String(page));
 
@@ -97,6 +100,7 @@ export default function GeoDashboard({
     sortBy: sortField,
     sortOrder: sortOrder,
     offset: (page - 1) * itemsPerPage,
+    includeTrend: view === ViewType.TREND,
   });
 
   const {
@@ -109,6 +113,7 @@ export default function GeoDashboard({
     sortBy: sortField,
     sortOrder: sortOrder,
     offset: (page - 1) * itemsPerPage,
+    includeTrend: view === ViewType.TREND,
   });
 
   const countries = countryData?.countries || [];
@@ -160,9 +165,9 @@ export default function GeoDashboard({
 
     const isRowInFilters = (row: DataRowProps) => {
       if (mode === "country") {
-        return filters.countries?.includes(row.id);
+        return filters.roleCountryCodes?.includes(row.id);
       } else {
-        return filters.cityIds?.includes(row.id);
+        return filters.roleCityIds?.includes(row.id);
       }
     };
 
@@ -175,8 +180,8 @@ export default function GeoDashboard({
                 sortField={sortField}
                 sortOrder={sortOrder}
                 onSort={handleSort}
-                companiesHoverMessage={`Number of companies headquartered in this ${mode}`}
-                alumniHoverMessage={`Number of alumni who have had at least one role in this ${mode}`}
+                showTrend={view === ViewType.TREND}
+                trendFrequency={trendFrequency}
               />
 
               {isLoading ? (
@@ -225,24 +230,14 @@ export default function GeoDashboard({
                               </div>
                             </Button>
                           </TableCell>
-                          <TableCell className={`w-2/12 pl-3 py-1 text-sm ${isRowInFilters(row) ? "font-bold text-[#8C2D19]" : "text-[#000000]"} align-middle hover:text-[#8C2D19] transition-colors`}>
-                            <div className="flex items-center gap-0 justify-center">
-                              {view === ViewType.TABLE ? (
-                                <CountComponent count={row.companyCount} />
-                              ) : (
-                                <TrendLineComponent
-                                  dataPoints={[25, 27, 29, 30, 31]}
-                                />
-                              )}
-                            </div>
-                          </TableCell>
                           <TableCell className={`w-2/12 px-3 py-1 text-sm ${isRowInFilters(row) ? "font-bold text-[#8C2D19]" : "text-[#000000]"} align-middle hover:text-[#8C2D19] transition-colors relative`}>
                             <div className="flex items-center gap-0 justify-center">
                               {view === ViewType.TABLE ? (
-                                <CountComponent count={row.alumniCount} />
+                                <CountComponent count={row.count} />
                               ) : (
                                 <TrendLineComponent
-                                  dataPoints={[25, 27, 29, 30, 31]}
+                                  dataPoints={row.trend}
+                                  trendFrequency={trendFrequency}
                                 />
                               )}
                               <div
@@ -306,6 +301,9 @@ export default function GeoDashboard({
           setItemsPerPage={setItemsPerPage}
           totalItems={mode === "country" ? totalCountries : totalCities}
           visible={data.length > 0}
+          showTrendFrequency={view === ViewType.TREND}
+          trendFrequency={trendFrequency}
+          setTrendFrequency={setTrendFrequency}
         />
       </>
     );
@@ -327,11 +325,7 @@ export default function GeoDashboard({
             <ChartView
               data={countries}
               isLoading={isCountryLoading || isCountryFetching}
-              dataKey={
-                sortField === SortBy.ALUMNI_COUNT
-                  ? "alumniCount"
-                  : "companyCount"
-              }
+              entityType={EntityType.COUNTRY}
             />
           )
         ) : isCityLoading || isCityFetching ? (
@@ -346,9 +340,7 @@ export default function GeoDashboard({
           <ChartView
             data={cities}
             isLoading={isCityLoading || isCityFetching}
-            dataKey={
-              sortField === SortBy.ALUMNI_COUNT ? "alumniCount" : "companyCount"
-            }
+            entityType={EntityType.CITY}
           />
         )}
       </div>

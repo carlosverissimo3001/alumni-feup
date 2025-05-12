@@ -44,8 +44,10 @@ export type FilterState = {
   courseIds?: string[];
   graduationYears?: string[];
   industryIds?: string[];
-  countries?: string[];
-  cityIds?: string[];
+  companyHQsCountryCodes?: string[];
+  companyHQsCityIds?: string[];
+  roleCountryCodes?: string[];
+  roleCityIds?: string[];
   escoCodes?: string[];
   currentRolesOnly?: boolean;
   search?: string;
@@ -67,7 +69,7 @@ export default function GlobalFilters({
 }: GlobalFiltersProps) {
   const [isCollapsed, setIsCollapsed] = useState(true);
   const [activeFilterCount, setActiveFilterCount] = useState(0);
-  const [activeTab, setActiveTab] = useState("location");
+  const [activeTab, setActiveTab] = useState("roles");
 
   useEffect(() => {
     // Active:
@@ -125,7 +127,7 @@ export default function GlobalFilters({
   } = useIndustryOptions();
 
   const { data: courseOptions, isLoading: isCourseOptionsLoading } =
-    useListCourses({});
+    useListCourses({ enabled: true, params: {} });
 
   // React will run these hooks in parallel by default
   // The component will render once all data is available
@@ -171,10 +173,11 @@ export default function GlobalFilters({
         value: value,
         label: COMPANY_SIZE[key as keyof typeof COMPANY_SIZE],
       })),
-      companyTypes: Object.entries(CompanyTypeEnum).map(([key, value]) => ({
-        value: value,
-        label: COMPANY_TYPE[key as keyof typeof COMPANY_TYPE],
-      }))
+      companyTypes: Object.entries(CompanyTypeEnum)
+        .map(([key, value]) => ({
+          value: value,
+          label: COMPANY_TYPE[key as keyof typeof COMPANY_TYPE],
+        }))
         .sort((a, b) => a.label.localeCompare(b.label)),
       roles: (roleOptions || [])
         .filter((role) => role.level === filters.classificationLevel)
@@ -225,8 +228,10 @@ export default function GlobalFilters({
       courseIds: [],
       graduationYears: [],
       industryIds: [],
-      countries: [],
-      cityIds: [],
+      companyHQsCountryCodes: [],
+      companyHQsCityIds: [],
+      roleCountryCodes: [],
+      roleCityIds: [],
       escoCodes: [],
       currentRolesOnly: false,
       search: undefined,
@@ -248,16 +253,23 @@ export default function GlobalFilters({
       >
         <div className="flex items-center gap-2">
           <motion.button
-            className="p-1 hover:bg-gray-100 rounded-full transition-colors select-none"
+            className="p-1 hover:bg-gray-100 rounded-full transition-colors select-none relative"
             whileTap={{ scale: 0.9 }}
             onClick={(e) => e.stopPropagation()}
           >
             <ListFilterIcon className="w-5 h-5 text-[#8C2D19]" />
+            {Math.max(0, activeFilterCount) > 0 && (
+              <span
+                className={`absolute -top-1 -right-1 bg-[#8C2D19] text-white text-xs rounded-full flex items-center justify-center ${
+                  activeFilterCount > 9 ? "h-5 w-5" : "h-4 w-4"
+                }`}
+                aria-label={`Active filters: ${activeFilterCount}`}
+              >
+                {activeFilterCount}
+              </span>
+            )}
           </motion.button>
           <h2 className="text-lg font-bold text-[#8C2D19]">Filters</h2>
-          {activeFilterCount > 0 && (
-            <span className="text-sm text-gray-500">({activeFilterCount})</span>
-          )}
         </div>
 
         {activeFilterCount > 0 && (
@@ -359,8 +371,8 @@ export default function GlobalFilters({
           <MultiSelect
             id="countrySelect"
             options={options.countries}
-            value={filters.countries}
-            onValueChange={(value) => handleFilterChange("countries", value)}
+            value={filters.roleCountryCodes}
+            onValueChange={(value) => handleFilterChange("roleCountryCodes", value)}
             placeholder="Select countries"
             isLoading={isCountryOptionsLoading || isCountryOptionsFetching}
             disabled={isCountryOptionsLoading || isCountryOptionsFetching}
@@ -378,15 +390,17 @@ export default function GlobalFilters({
           </Label>
           <GroupedMultiSelect
             id="citySelect"
-            disabled={!filters.countries || filters.countries.length === 0}
+            disabled={!filters.roleCountryCodes || filters.roleCountryCodes.length === 0}
             options={options.citiesGrouped}
-            value={filters.cityIds}
+            value={filters.roleCityIds}
             placeholder="Select cities"
-            onValueChange={(value) => handleFilterChange("cityIds", value)}
+            onValueChange={(value) => handleFilterChange("roleCityIds", value)}
             maxCount={6}
             isLoading={isCityOptionsLoading || isCityOptionsFetching}
           />
         </div>
+
+        {/* TODO: Allow to also filter by the location of the company HQs */}
       </div>
     );
   }
@@ -548,7 +562,7 @@ export default function GlobalFilters({
                     <strong className="text-[#8C2D19]">
                       current roles only
                     </strong>
-                    will un
+                    {" "} will return only those that do not have an end date
                   </p>
                 </TooltipContent>
               </Tooltip>

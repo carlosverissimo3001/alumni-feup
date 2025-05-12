@@ -34,30 +34,6 @@ export const buildWhereClause = (
     });
   }
 
-  /**
-   * Role-specific filters
-   * 1. Current roles only means roles whose endDate is null (here, we might be able to also use the startDate)
-   * 2. If startDate and endDate are provided, we use them to filter roles, and, obv, ignore the currentRolesOnly filter
-   */
-  if (params.startDate && params.endDate) {
-    // Both dates provided: find roles that started after startDate and ended before endDate
-    roleAndClauses.push({
-      startDate: { gte: new Date(params.startDate) },
-      endDate: { lte: new Date(params.endDate) },
-    });
-  } else if (params.startDate) {
-    // Only startDate: find roles that started after this date
-    roleAndClauses.push({
-      startDate: { gte: new Date(params.startDate) },
-    });
-  } else if (params.endDate) {
-    // Only endDate: find roles that ended before this date
-    roleAndClauses.push({
-      endDate: { lte: new Date(params.endDate) },
-    });
-  } else if (params.currentRolesOnly) {
-    roleAndClauses.push({ isCurrent: true });
-  }
 
   if (params.onlyInternational) {
     roleAndClauses.push({
@@ -84,18 +60,34 @@ export const buildWhereClause = (
     },
   }); */
 
-  if (params.countries?.length) {
+  if (params.roleCountryCodes?.length) {
     roleAndClauses.push({
       Location: {
-        countryCode: { in: params.countries },
+        countryCode: { in: params.roleCountryCodes },
       },
     });
   }
 
-  if (params.cityIds?.length) {
+  if (params.roleCityIds?.length) {
     roleAndClauses.push({
       Location: {
-        id: { in: params.cityIds },
+        id: { in: params.roleCityIds },
+      },
+    });
+  }
+
+  if (params.companyHQsCountryCodes?.length) {
+    roleAndClauses.push({
+      Company: {
+        Location: { countryCode: { in: params.companyHQsCountryCodes } },
+      },
+    });
+  }
+
+  if (params.companyHQsCityIds?.length) {
+    roleAndClauses.push({
+      Company: {
+        Location: { id: { in: params.companyHQsCityIds } },
       },
     });
   }

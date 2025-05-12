@@ -2,38 +2,42 @@ import {
   RoleListResponseDto,
   QueryParamsDto,
   RoleOptionDto,
+  RoleListItemDto,
 } from '@/analytics/dto';
 import {
   AlumniAnalyticsRepository,
   RoleRepository,
 } from '@/analytics/repositories';
 import { Injectable } from '@nestjs/common';
-import { RoleListDto } from '../dto/role-list.dto';
 import {
   DEFAULT_QUERY_LIMIT,
   DEFAULT_QUERY_OFFSET,
   DEFAULT_QUERY_SORT_BY,
 } from '../utils/consts';
 import { DEFAULT_QUERY_SORT_ORDER } from '../utils/consts';
-import { SortBy } from '../utils';
+import { sortData } from '../utils';
+import { TrendAnalyticsService } from './trend-analytics.service';
+import { applyDateFilters } from '../utils/filters';
 @Injectable()
 export class RoleAnalyticsService {
   constructor(
     private readonly alumniRepository: AlumniAnalyticsRepository,
     private readonly roleRepository: RoleRepository,
+    private readonly trendAnalyticsService: TrendAnalyticsService,
   ) {}
 
   async getRolesWithCounts(
     query: QueryParamsDto,
   ): Promise<RoleListResponseDto> {
-    const alumni = await this.alumniRepository.find(query);
-    const roleMap = new Map<string, RoleListDto>();
+    const alumnusUnfiltered = await this.alumniRepository.find(query);
+    const alumnus = applyDateFilters(alumnusUnfiltered, query);
 
+    const roleMap = new Map<string, RoleListItemDto>();
     // We'll probably get this from the query
     const level = 1;
 
     // Flatten all alumni roles and their job classifications
-    alumni
+    alumnus
       .flatMap((alumni) => alumni.roles || [])
       .filter((role) => role.jobClassification)
       .forEach((role) => {
@@ -44,16 +48,22 @@ export class RoleAnalyticsService {
           return;
         }
 
-        const { escoCode, title } = classification;
+        const { escoCode, name } = classification;
 
         if (roleMap.has(escoCode)) {
-          roleMap.get(escoCode)!.roleCount++;
+          roleMap.get(escoCode)!.count++;
         } else {
           roleMap.set(escoCode, {
-            title,
+            name,
             code: escoCode,
             level,
-            roleCount: 1,
+            count: 1,
+            trend: query.includeTrend
+              ? this.trendAnalyticsService.getRoleTrend({
+                  data: alumnusUnfiltered,
+                  entityId: escoCode,
+                })
+              : [],
           });
         }
       });
@@ -61,12 +71,12 @@ export class RoleAnalyticsService {
     const roles = Array.from(roleMap.values());
 
     // Fitered count
-    const filteredCount = roles.reduce((acc, role) => acc + role.roleCount, 0);
+    const filteredCount = roles.reduce((acc, role) => acc + role.count, 0);
 
     // Total count
     const count = await this.roleRepository.count();
 
-    const rolesOrdered = this.orderRoles(roles, {
+    const rolesOrdered = sortData(roles, {
       sortBy: query.sortBy || DEFAULT_QUERY_SORT_BY,
       direction: query.sortOrder || DEFAULT_QUERY_SORT_ORDER,
     });
@@ -86,34 +96,5 @@ export class RoleAnalyticsService {
 
   async findAllClassifications(): Promise<RoleOptionDto[]> {
     return this.roleRepository.findAllClassifications();
-  }
-
-  orderRoles(
-    roles: RoleListDto[],
-    order: {
-      sortBy: SortBy;
-      direction: 'asc' | 'desc';
-    },
-  ) {
-    return roles.sort((a, b) => {
-      let comparison = 0;
-
-      switch (order.sortBy) {
-        case SortBy.ROLE_COUNT:
-          comparison = a.roleCount - b.roleCount;
-          break;
-        case SortBy.NAME:
-          comparison = a.title.localeCompare(b.title);
-          break;
-        default:
-          comparison = a.roleCount - b.roleCount;
-      }
-
-      if (order.direction === 'desc') {
-        comparison = -comparison;
-      }
-
-      return comparison;
-    });
   }
 }

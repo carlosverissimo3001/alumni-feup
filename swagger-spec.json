@@ -464,10 +464,10 @@
             }
           },
           {
-            "name": "countries",
+            "name": "roleCountryCodes",
             "required": false,
             "in": "query",
-            "description": "The countries to filter by",
+            "description": "The country codes where alumni exerced their roles",
             "schema": {
               "type": "array",
               "items": {
@@ -476,10 +476,34 @@
             }
           },
           {
-            "name": "cityIds",
+            "name": "roleCityIds",
             "required": false,
             "in": "query",
-            "description": "The cities ids to filter by",
+            "description": "The city IDS where alumni exerced their roles",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "companyHQsCountryCodes",
+            "required": false,
+            "in": "query",
+            "description": "The company HQs country codes to filter by",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "companyHQsCityIds",
+            "required": false,
+            "in": "query",
+            "description": "The company HQs city ids to filter by",
             "schema": {
               "type": "array",
               "items": {
@@ -662,6 +686,16 @@
               "default": "desc",
               "example": "asc",
               "type": "string"
+            }
+          },
+          {
+            "name": "includeTrend",
+            "required": true,
+            "in": "query",
+            "description": "Whether to include the trend data",
+            "schema": {
+              "example": true,
+              "type": "boolean"
             }
           }
         ],
@@ -824,10 +858,10 @@
             }
           },
           {
-            "name": "countries",
+            "name": "roleCountryCodes",
             "required": false,
             "in": "query",
-            "description": "The countries to filter by",
+            "description": "The country codes where alumni exerced their roles",
             "schema": {
               "type": "array",
               "items": {
@@ -836,10 +870,34 @@
             }
           },
           {
-            "name": "cityIds",
+            "name": "roleCityIds",
             "required": false,
             "in": "query",
-            "description": "The cities ids to filter by",
+            "description": "The city IDS where alumni exerced their roles",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "companyHQsCountryCodes",
+            "required": false,
+            "in": "query",
+            "description": "The company HQs country codes to filter by",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "companyHQsCityIds",
+            "required": false,
+            "in": "query",
+            "description": "The company HQs city ids to filter by",
             "schema": {
               "type": "array",
               "items": {
@@ -1023,6 +1081,16 @@
               "example": "asc",
               "type": "string"
             }
+          },
+          {
+            "name": "includeTrend",
+            "required": true,
+            "in": "query",
+            "description": "Whether to include the trend data",
+            "schema": {
+              "example": true,
+              "type": "boolean"
+            }
           }
         ],
         "responses": {
@@ -1037,9 +1105,9 @@
         ]
       }
     },
-    "/api/analytics/countries": {
+    "/api/analytics/geo/countries": {
       "get": {
-        "operationId": "CountriesAnalyticsController_getCountriesWithAlumniCount",
+        "operationId": "GeoAnalyticsController_getCountriesWithAlumniCount",
         "parameters": [
           {
             "name": "startDate",
@@ -1110,10 +1178,10 @@
             }
           },
           {
-            "name": "countries",
+            "name": "roleCountryCodes",
             "required": false,
             "in": "query",
-            "description": "The countries to filter by",
+            "description": "The country codes where alumni exerced their roles",
             "schema": {
               "type": "array",
               "items": {
@@ -1122,10 +1190,34 @@
             }
           },
           {
-            "name": "cityIds",
+            "name": "roleCityIds",
             "required": false,
             "in": "query",
-            "description": "The cities ids to filter by",
+            "description": "The city IDS where alumni exerced their roles",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "companyHQsCountryCodes",
+            "required": false,
+            "in": "query",
+            "description": "The company HQs country codes to filter by",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "companyHQsCityIds",
+            "required": false,
+            "in": "query",
+            "description": "The company HQs city ids to filter by",
             "schema": {
               "type": "array",
               "items": {
@@ -1308,6 +1400,16 @@
               "default": "desc",
               "example": "asc",
               "type": "string"
+            }
+          },
+          {
+            "name": "includeTrend",
+            "required": true,
+            "in": "query",
+            "description": "Whether to include the trend data",
+            "schema": {
+              "example": true,
+              "type": "boolean"
             }
           }
         ],
@@ -1330,9 +1432,9 @@
         ]
       }
     },
-    "/api/analytics/countries/cities": {
+    "/api/analytics/geo/cities": {
       "get": {
-        "operationId": "CountriesAnalyticsController_getCitiesWithAlumniCount",
+        "operationId": "GeoAnalyticsController_getCitiesWithAlumniCount",
         "parameters": [
           {
             "name": "startDate",
@@ -1403,10 +1505,10 @@
             }
           },
           {
-            "name": "countries",
+            "name": "roleCountryCodes",
             "required": false,
             "in": "query",
-            "description": "The countries to filter by",
+            "description": "The country codes where alumni exerced their roles",
             "schema": {
               "type": "array",
               "items": {
@@ -1415,10 +1517,34 @@
             }
           },
           {
-            "name": "cityIds",
+            "name": "roleCityIds",
             "required": false,
             "in": "query",
-            "description": "The cities ids to filter by",
+            "description": "The city IDS where alumni exerced their roles",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "companyHQsCountryCodes",
+            "required": false,
+            "in": "query",
+            "description": "The company HQs country codes to filter by",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "companyHQsCityIds",
+            "required": false,
+            "in": "query",
+            "description": "The company HQs city ids to filter by",
             "schema": {
               "type": "array",
               "items": {
@@ -1602,6 +1728,16 @@
               "example": "asc",
               "type": "string"
             }
+          },
+          {
+            "name": "includeTrend",
+            "required": true,
+            "in": "query",
+            "description": "Whether to include the trend data",
+            "schema": {
+              "example": true,
+              "type": "boolean"
+            }
           }
         ],
         "responses": {
@@ -1623,9 +1759,9 @@
         ]
       }
     },
-    "/api/analytics/countries/options": {
+    "/api/analytics/geo/country-options": {
       "get": {
-        "operationId": "CountriesAnalyticsController_getCountriesOptions",
+        "operationId": "GeoAnalyticsController_getCountriesOptions",
         "parameters": [],
         "responses": {
           "200": {
@@ -1649,9 +1785,9 @@
         ]
       }
     },
-    "/api/analytics/countries/cities/options": {
+    "/api/analytics/geo/city-options": {
       "get": {
-        "operationId": "CountriesAnalyticsController_getCitiesOptions",
+        "operationId": "GeoAnalyticsController_getCitiesOptions",
         "parameters": [
           {
             "name": "countryCodes",
@@ -1761,10 +1897,10 @@
             }
           },
           {
-            "name": "countries",
+            "name": "roleCountryCodes",
             "required": false,
             "in": "query",
-            "description": "The countries to filter by",
+            "description": "The country codes where alumni exerced their roles",
             "schema": {
               "type": "array",
               "items": {
@@ -1773,10 +1909,34 @@
             }
           },
           {
-            "name": "cityIds",
+            "name": "roleCityIds",
             "required": false,
             "in": "query",
-            "description": "The cities ids to filter by",
+            "description": "The city IDS where alumni exerced their roles",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "companyHQsCountryCodes",
+            "required": false,
+            "in": "query",
+            "description": "The company HQs country codes to filter by",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "companyHQsCityIds",
+            "required": false,
+            "in": "query",
+            "description": "The company HQs city ids to filter by",
             "schema": {
               "type": "array",
               "items": {
@@ -1959,6 +2119,16 @@
               "default": "desc",
               "example": "asc",
               "type": "string"
+            }
+          },
+          {
+            "name": "includeTrend",
+            "required": true,
+            "in": "query",
+            "description": "Whether to include the trend data",
+            "schema": {
+              "example": true,
+              "type": "boolean"
             }
           }
         ],
@@ -2081,10 +2251,10 @@
             }
           },
           {
-            "name": "countries",
+            "name": "roleCountryCodes",
             "required": false,
             "in": "query",
-            "description": "The countries to filter by",
+            "description": "The country codes where alumni exerced their roles",
             "schema": {
               "type": "array",
               "items": {
@@ -2093,10 +2263,34 @@
             }
           },
           {
-            "name": "cityIds",
+            "name": "roleCityIds",
             "required": false,
             "in": "query",
-            "description": "The cities ids to filter by",
+            "description": "The city IDS where alumni exerced their roles",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "companyHQsCountryCodes",
+            "required": false,
+            "in": "query",
+            "description": "The company HQs country codes to filter by",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "companyHQsCityIds",
+            "required": false,
+            "in": "query",
+            "description": "The company HQs city ids to filter by",
             "schema": {
               "type": "array",
               "items": {
@@ -2279,6 +2473,16 @@
               "default": "desc",
               "example": "asc",
               "type": "string"
+            }
+          },
+          {
+            "name": "includeTrend",
+            "required": true,
+            "in": "query",
+            "description": "Whether to include the trend data",
+            "schema": {
+              "example": true,
+              "type": "boolean"
             }
           }
         ],
@@ -3620,17 +3824,46 @@
       "SortBy": {
         "type": "string"
       },
+      "DataPointDto": {
+        "type": "object",
+        "properties": {
+          "label": {
+            "type": "string",
+            "description": "The label of the data point",
+            "example": "2021-01-01"
+          },
+          "value": {
+            "type": "number",
+            "description": "The value of the data point",
+            "example": 100
+          }
+        },
+        "required": [
+          "label",
+          "value"
+        ]
+      },
       "CompanyListItemDto": {
         "type": "object",
         "properties": {
           "id": {
-            "type": "string"
+            "type": "string",
+            "description": "The ID of the company"
           },
           "name": {
-            "type": "string"
+            "type": "string",
+            "description": "The name of the company"
           },
-          "alumniCount": {
-            "type": "number"
+          "count": {
+            "type": "number",
+            "description": "The number of alumni in the company"
+          },
+          "trend": {
+            "description": "The trend of the company",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DataPointDto"
+            }
           },
           "logo": {
             "type": "string",
@@ -3640,7 +3873,8 @@
         "required": [
           "id",
           "name",
-          "alumniCount"
+          "count",
+          "trend"
         ]
       },
       "CompanyListResponseDto": {
@@ -3707,21 +3941,24 @@
             "type": "string",
             "description": "The country code (ISO 3166-1 alpha-2)"
           },
-          "alumniCount": {
+          "count": {
             "type": "number",
             "description": "The number of alumni in the country"
           },
-          "companyCount": {
-            "type": "number",
-            "description": "The number of companies in the country"
+          "trend": {
+            "description": "The alumni count trend of the country",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DataPointDto"
+            }
           }
         },
         "required": [
           "id",
           "name",
           "code",
-          "alumniCount",
-          "companyCount"
+          "count",
+          "trend"
         ]
       },
       "CountryListResponseDto": {
@@ -3763,21 +4000,24 @@
             "type": "string",
             "description": "The country code of the country that the city belongs to"
           },
-          "alumniCount": {
+          "count": {
             "type": "number",
             "description": "The number of alumni in the city"
           },
-          "companyCount": {
-            "type": "number",
-            "description": "The number of companies in the city"
+          "trend": {
+            "description": "The alumni count trend of the city",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DataPointDto"
+            }
           }
         },
         "required": [
           "id",
           "name",
           "code",
-          "alumniCount",
-          "companyCount"
+          "count",
+          "trend"
         ]
       },
       "CityListResponseDto": {
@@ -3859,22 +4099,24 @@
             "description": "The name of the industry",
             "example": "Financial Services"
           },
-          "companyCount": {
-            "type": "number",
-            "description": "The number of companies in the industry",
-            "example": 100
-          },
-          "alumniCount": {
+          "count": {
             "type": "number",
             "description": "The number of alumni working in the industry",
             "example": 100
+          },
+          "trend": {
+            "description": "The alumni trend of the industry",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DataPointDto"
+            }
           }
         },
         "required": [
           "id",
           "name",
-          "companyCount",
-          "alumniCount"
+          "count",
+          "trend"
         ]
       },
       "IndustryListResponseDto": {
@@ -3918,12 +4160,12 @@
           "name"
         ]
       },
-      "RoleListDto": {
+      "RoleListItemDto": {
         "type": "object",
         "properties": {
-          "title": {
+          "name": {
             "type": "string",
-            "description": "The ESCO title of the role"
+            "description": "The name of the role"
           },
           "level": {
             "type": "number",
@@ -3933,16 +4175,24 @@
             "type": "string",
             "description": "The ESCO code of the role"
           },
-          "roleCount": {
+          "count": {
             "type": "number",
             "description": "The number of roles classified with this role"
+          },
+          "trend": {
+            "description": "The trend of the role",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DataPointDto"
+            }
           }
         },
         "required": [
-          "title",
+          "name",
           "level",
           "code",
-          "roleCount"
+          "count",
+          "trend"
         ]
       },
       "RoleListResponseDto": {
@@ -3951,7 +4201,7 @@
           "roles": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/RoleListDto"
+              "$ref": "#/components/schemas/RoleListItemDto"
             }
           },
           "count": {

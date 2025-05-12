@@ -13,13 +13,13 @@
  */
 
 import { mapValues } from '../runtime';
-import type { RoleListDto } from './RoleListDto';
+import type { RoleListItemDto } from './RoleListItemDto';
 import {
-    RoleListDtoFromJSON,
-    RoleListDtoFromJSONTyped,
-    RoleListDtoToJSON,
-    RoleListDtoToJSONTyped,
-} from './RoleListDto';
+    RoleListItemDtoFromJSON,
+    RoleListItemDtoFromJSONTyped,
+    RoleListItemDtoToJSON,
+    RoleListItemDtoToJSONTyped,
+} from './RoleListItemDto';
 
 /**
  * 
@@ -29,10 +29,10 @@ import {
 export interface RoleListResponseDto {
     /**
      * 
-     * @type {Array<RoleListDto>}
+     * @type {Array<RoleListItemDto>}
      * @memberof RoleListResponseDto
      */
-    roles: Array<RoleListDto>;
+    roles: Array<RoleListItemDto>;
     /**
      * The total number of roles in the database
      * @type {number}
@@ -67,7 +67,7 @@ export function RoleListResponseDtoFromJSONTyped(json: any, ignoreDiscriminator:
     }
     return {
         
-        'roles': ((json['roles'] as Array<any>).map(RoleListDtoFromJSON)),
+        'roles': ((json['roles'] as Array<any>).map(RoleListItemDtoFromJSON)),
         'count': json['count'],
         'filteredCount': json['filteredCount'],
     };
@@ -84,7 +84,7 @@ export function RoleListResponseDtoToJSONTyped(value?: RoleListResponseDto | nul
 
     return {
         
-        'roles': ((value['roles'] as Array<any>).map(RoleListDtoToJSON)),
+        'roles': ((value['roles'] as Array<any>).map(RoleListItemDtoToJSON)),
         'count': value['count'],
         'filteredCount': value['filteredCount'],
     };

@@ -10,7 +10,7 @@ const sortCountries = (countries: CountryOptionDto[]) => {
 export const useCountryOptions = () => {
   const { data, isLoading, isError, isSuccess, isFetching, refetch } = useQuery({
     queryKey: ['country-options'],
-    queryFn: () => NestAPI.countriesAnalyticsControllerGetCountriesOptions().then(sortCountries),
+    queryFn: () => NestAPI.geoAnalyticsControllerGetCountriesOptions().then(sortCountries),
     refetchOnWindowFocus: false,
     staleTime: 5 * 60 * 1000, 
     gcTime: 10 * 60 * 1000,

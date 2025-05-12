@@ -2,7 +2,7 @@ import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 export class JobClassificationAnalyticsEntity {
   @ApiProperty()
-  title: string;
+  name: string;
 
   @ApiProperty()
   escoCode: string;

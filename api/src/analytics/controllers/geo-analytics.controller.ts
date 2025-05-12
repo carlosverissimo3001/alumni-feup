@@ -1,5 +1,5 @@
 import { Controller, Get, Query } from '@nestjs/common';
-import { CountryAnalyticsService } from '../services/country-analytics.service';
+import { GeoAnalyticsService } from '@/analytics/services';
 import { ApiOperation, ApiTags, ApiResponse } from '@nestjs/swagger';
 import {
   QueryParamsDto,
@@ -11,13 +11,11 @@ import {
 } from '@/analytics/dto';
 
 @ApiTags('V1', 'Analytics')
-@Controller('analytics/countries')
-export class CountriesAnalyticsController {
-  constructor(
-    private readonly countryAnalyticsService: CountryAnalyticsService,
-  ) {}
+@Controller('analytics/geo')
+export class GeoAnalyticsController {
+  constructor(private readonly geoAnalyticsService: GeoAnalyticsService) {}
 
-  @Get('/')
+  @Get('/countries')
   @ApiOperation({
     summary: 'Get the countries, and the number of alumni working in them.',
   })
@@ -27,7 +25,7 @@ export class CountriesAnalyticsController {
     type: CountryListResponseDto,
   })
   async getCountriesWithAlumniCount(@Query() query: QueryParamsDto) {
-    return this.countryAnalyticsService.getCountriesWithAlumniCount(query);
+    return this.geoAnalyticsService.getCountriesWithAlumniCount(query);
   }
 
   @Get('/cities')
@@ -40,10 +38,10 @@ export class CountriesAnalyticsController {
     type: CityListResponseDto,
   })
   async getCitiesWithAlumniCount(@Query() query: QueryParamsDto) {
-    return this.countryAnalyticsService.getCitiesWithAlumniCount(query);
+    return this.geoAnalyticsService.getCitiesWithAlumniCount(query);
   }
 
-  @Get('/options')
+  @Get('/country-options')
   @ApiOperation({
     summary: 'Get the countries options.',
   })
@@ -54,10 +52,10 @@ export class CountriesAnalyticsController {
     isArray: true,
   })
   async getCountriesOptions() {
-    return this.countryAnalyticsService.getCountriesOptions();
+    return this.geoAnalyticsService.getCountriesOptions();
   }
 
-  @Get('/cities/options')
+  @Get('/city-options')
   @ApiOperation({
     summary: 'Get the cities options.',
   })
@@ -68,6 +66,6 @@ export class CountriesAnalyticsController {
     isArray: true,
   })
   async getCitiesOptions(@Query() query: GetCitiesDto) {
-    return this.countryAnalyticsService.getCityOptions(query);
+    return this.geoAnalyticsService.getCityOptions(query);
   }
 }

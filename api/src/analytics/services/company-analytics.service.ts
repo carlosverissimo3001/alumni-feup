@@ -1,22 +1,23 @@
-import { QueryParamsDto } from '../dto/query-params.dto';
-import { AlumniAnalyticsRepository, CompanyRepository } from '../repositories';
 import { Injectable } from '@nestjs/common';
 import {
+  CompanyListItemExtendedDto,
   CompanyListResponseDto,
+  CompanyOptionDto,
   IndustryListItemDto,
   IndustryListResponseDto,
-  CompanyOptionDto,
+  QueryParamsDto,
 } from '../dto';
-import { CompanyListItemExtendedDto } from '../dto/company-list.dto';
+import { AlumniAnalyticsEntity } from '../entities/';
+import { AlumniAnalyticsRepository, CompanyRepository } from '../repositories';
 import {
+  sortData,
   DEFAULT_QUERY_LIMIT,
+  DEFAULT_QUERY_OFFSET,
   DEFAULT_QUERY_SORT_BY,
   DEFAULT_QUERY_SORT_ORDER,
-  DEFAULT_QUERY_OFFSET,
-} from '../utils/consts';
-import { AlumniAnalyticsEntity } from '../entities/alumni.entity';
-import { sortData } from '../utils';
-
+} from '../utils/';
+import { TrendAnalyticsService } from './trend-analytics.service';
+import { applyDateFilters } from '../utils/filters';
 /* Mental note: Try not to use prisma directly in services.
 Shouldd use be used in the DAL, ie. repositories.
 */
@@ -25,12 +26,24 @@ export class CompanyAnalyticsService {
   constructor(
     private readonly alumniRepository: AlumniAnalyticsRepository,
     private readonly companyRepository: CompanyRepository,
+    private readonly trendAnalyticsService: TrendAnalyticsService,
   ) {}
 
+  /**
+   * Given a query, returns a list of companies with the number of alumni they have.
+   * @param query - The filters to apply to the DB query
+   * @returns A list of companies with the number of alumni they have
+   */
   async getCompaniesWithAlumniCount(
     query: QueryParamsDto,
   ): Promise<CompanyListResponseDto> {
-    const alumnus = await this.alumniRepository.find(query);
+    // I know, it's really ugly, but I need the unfiltered data to get the trend
+    // As it is always fixed to the last 15 years
+    const alumnusUnfiltered = await this.alumniRepository.find(query);
+
+    // This contains the actual data
+    const alumnus = applyDateFilters(alumnusUnfiltered, query);
+
     const companiesWithAlumniCount = this.getCompanyMap(alumnus);
 
     // Count without filters
@@ -52,6 +65,16 @@ export class CompanyAnalyticsService {
         (query.limit || DEFAULT_QUERY_LIMIT),
     );
 
+    // Trend data
+    companies.map((company) => {
+      company.trend = query.includeTrend
+        ? this.trendAnalyticsService.getCompanyTrend({
+            data: alumnusUnfiltered,
+            entityId: company.id,
+          })
+        : [];
+    });
+
     return {
       companies,
       companyCount,
@@ -61,6 +84,10 @@ export class CompanyAnalyticsService {
     };
   }
 
+  /**
+   * Returns a value-label pair of all companies in the database.
+   * @returns A list of companies with their id and name
+   */
   async getCompanyOptions(): Promise<CompanyOptionDto[]> {
     const companies = await this.companyRepository.findAll();
 
@@ -70,16 +97,19 @@ export class CompanyAnalyticsService {
     }));
   }
 
+  /**
+   * Returns a list of industries with the number of companies and alumni they have.
+   * @param query - The filters to apply to the DB query
+   * @returns A list of industries with the number of companies and alumni they have
+   */
   async getIndustryWithCounts(
     query: QueryParamsDto,
   ): Promise<IndustryListResponseDto> {
-    const industriesMap = new Map<
-      string,
-      { name: string; companyCount: number; alumniCount: number }
-    >();
+    const industriesMap = new Map<string, { name: string; count: number }>();
 
-    const alumni = await this.alumniRepository.find(query);
-    const companiesWithAlumniCount = this.getCompanyMap(alumni);
+    const alumnusUnfiltered = await this.alumniRepository.find(query);
+    const alumnus = applyDateFilters(alumnusUnfiltered, query);
+    const companiesWithAlumniCount = this.getCompanyMap(alumnus);
 
     // Total Industries, regardless of filters
     const totalIndustries = await this.companyRepository.countIndustries();
@@ -90,30 +120,35 @@ export class CompanyAnalyticsService {
       if (industryId && !industriesMap.has(industryId)) {
         industriesMap.set(industryId, {
           name: company.industry,
-          companyCount: 0,
-          alumniCount: 0,
+          count: 0,
         });
       }
 
       const industryData = industriesMap.get(industryId)!; // We just made sure it exists above, so we're gucci
 
-      industryData.alumniCount += company.alumniCount;
-      industryData.companyCount += 1;
+      industryData.count += company.count;
     });
 
     const industries: IndustryListItemDto[] = Array.from(
       industriesMap.entries(),
-    ).map(([industryId, data]) => ({
-      id: industryId,
-      name: data.name,
-      companyCount: data.companyCount,
-      alumniCount: data.alumniCount,
-    }));
+    ).map(([industryId, data]) => {
+      return {
+        id: industryId,
+        name: data.name,
+        count: data.count,
+        trend: query.includeTrend
+          ? this.trendAnalyticsService.getIndustryTrend({
+              data: alumnusUnfiltered,
+              entityId: industryId,
+            })
+          : [],
+      };
+    });
 
     const industriesOrdered = sortData(industries, {
       sortBy: query.sortBy || DEFAULT_QUERY_SORT_BY,
       direction: query.sortOrder || DEFAULT_QUERY_SORT_ORDER,
-    }) as IndustryListItemDto[];
+    });
 
     const industriesPaginated = industriesOrdered.slice(
       query.offset || DEFAULT_QUERY_OFFSET,
@@ -128,11 +163,11 @@ export class CompanyAnalyticsService {
     };
   }
 
-  async getCompanyGrowth() {
-    // TODO: Implement company growth calculation
-    return Promise.resolve([]);
-  }
-
+  /**
+   * Maps an alumni to a set of companies they've worked at.
+   * @param alumnus - The alumni to map
+   * @returns A list of companies with the number of alumni they have
+   */
   getCompanyMap(
     alumnus: AlumniAnalyticsEntity[],
   ): CompanyListItemExtendedDto[] {
@@ -169,10 +204,11 @@ export class CompanyAnalyticsService {
         companiesWithAlumniCount.push({
           id: companyId,
           name: role.company.name,
-          alumniCount: count,
+          count: count,
           logo: role.company.logo,
           industry: role.company.industry.name,
           industryId: role.company.industry.id,
+          trend: [],
         });
       }
     });
@@ -180,7 +216,11 @@ export class CompanyAnalyticsService {
     return companiesWithAlumniCount;
   }
 
-  async getCompanyDetails(id: string) {
-    return undefined;
+  /**
+   * Get detailed information about a specific company
+   */
+  async getCompanyDetails(id: string): Promise<any> {
+    // Implementation will be added Ina future PR
+    return Promise.resolve({ id });
   }
 }

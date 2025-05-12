@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { DataPointDto } from './data-point.dto';
 
 export class CountryListItemDto {
   @ApiProperty({
@@ -19,12 +20,14 @@ export class CountryListItemDto {
   @ApiProperty({
     description: 'The number of alumni in the country',
   })
-  alumniCount: number;
+  count: number;
 
   @ApiProperty({
-    description: 'The number of companies in the country',
+    description: 'The alumni count trend of the country',
+    type: DataPointDto,
+    isArray: true,
   })
-  companyCount: number;
+  trend: DataPointDto[];
 }
 
 export class CountryListResponseDto {
