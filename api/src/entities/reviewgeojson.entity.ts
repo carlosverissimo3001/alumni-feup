@@ -13,8 +13,8 @@ export interface CustomProperties {
     profilePics: { [key: string]: string };
     descriptions: { [key: string]: string };
     ratings: { [key: string]: number };
-    upvotes: { [key: string]: number };
-    downvotes: { [key: string]: number };
+    upvotes: { [key: string]: string[] };
+    downvotes: { [key: string]: string[] };
     reviewTypes: { [key: string]: string };
     companyNames: { [key: string]: string };
     timeSincePosted: { [key: string]: number };

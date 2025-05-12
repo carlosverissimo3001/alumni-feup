@@ -24,6 +24,7 @@ type props = {
   hoveredMouseCoords: number[];
   reviewData: ReviewData[];
 };
+
 const ReviewClusterInfo = ({
   hoveredCluster,
   listAlumniNames,
@@ -118,7 +119,6 @@ const ReviewClusterInfo = ({
   const getReviewTypeIcon = (type: string) => {
     return type === ReviewType.Company ? <Building2 className="h-3.5 w-3.5" /> : <MapPin className="h-3.5 w-3.5" />
   }
-
 
   return (
     <AnimatePresence>

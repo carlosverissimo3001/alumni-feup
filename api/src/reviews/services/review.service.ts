@@ -21,6 +21,8 @@ import { AlumniRepository } from '@/alumni/repositories/alumni.repository';
 import { GetReviewGeoJSONDto } from '@/dto/getreviewgeojson.dto';
 import { ReviewType } from '@/entities/reviewgeojson.entity';
 import { CreateReviewDto } from '@/dto/create-review.dto';
+import { Prisma } from '@prisma/client';
+import { ReviewRepository } from '../repositories/review.repository';
 
 type ReviewsGrouped = {
   coordinates: [number, number];
@@ -31,8 +33,8 @@ type ReviewsGrouped = {
     profile_pic: string;
     description: string;
     rating: number;
-    upvotes: number;
-    downvotes: number;
+    upvotes: string[];
+    downvotes: string[];
     reviewType: string;
     companyName: string;
     timeSincePosted: number;
@@ -54,6 +56,7 @@ export class ReviewService {
     private readonly prisma: PrismaService,
     private readonly geolocationService: GeolocationService,
     private readonly alumniRepository: AlumniRepository,
+    //private readonly reviewRepository: ReviewRepository,
   ) {}
 
   async findAllGeoJSON(
@@ -132,7 +135,7 @@ export class ReviewService {
               }
               return acc;
             },
-            {} as { [key: string]: number },
+            {} as { [key: string]: string[] },
           ),
           downvotes: data.reviews.reduce(
             (acc, curr) => {
@@ -141,7 +144,7 @@ export class ReviewService {
               }
               return acc;
             },
-            {} as { [key: string]: number },
+            {} as { [key: string]: string[] },
           ),
           reviewTypes: data.reviews.reduce(
             (acc, curr) => {
@@ -376,8 +379,8 @@ export class ReviewService {
         data: {
           description: body.description,
           rating: body.rating,
-          upvotes: 0,
-          downvotes: 0,
+          upvotes: [],
+          downvotes: [],
           alumniId: body.alumniId,
           companyId: body.companyId,
           locationId: body.locationId,
@@ -391,8 +394,8 @@ export class ReviewService {
         data: {
           description: body.description,
           rating: body.rating,
-          upvotes: 0,
-          downvotes: 0,
+          upvotes: [],
+          downvotes: [],
           alumniId: body.alumniId,
           locationId: body.locationId,
         },
@@ -400,4 +403,31 @@ export class ReviewService {
     }
     return;
   }
+
+  // async changeReviewScoring(reviewId: string, upvote: boolean) {
+  //   const data = this.buildData(upvote);
+  //   let reviewCompany = await this.reviewRepository.updateReviewCompany(reviewId, data);
+  //   if (!reviewCompany) {
+  //     const reviewLocation =  this.reviewRepository.updateReviewLocation(reviewId, data);
+  //     if (!reviewLocation) {
+  //       throw new NotFoundException('Review not found');
+  //     }
+  //   }
+  // }
+
+  // private buildData(upvote: boolean): Prisma.ReviewCompanyUpdateInput {
+  //   if (upvote) {
+  //     return {
+  //       upvotes: {
+  //         increment: 1,
+  //       },
+  //     };
+  //   } else {
+  //     return {
+  //       downvotes: {
+  //         increment: 1,
+  //       },
+  //     };
+  //   }
+  // }
 }
