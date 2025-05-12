@@ -3277,12 +3277,18 @@
             "description": "The rating of the review"
           },
           "upvotes": {
-            "type": "number",
-            "description": "upvotes fo the review"
+            "description": "upvotes fo the review",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
           },
           "downvotes": {
-            "type": "number",
-            "description": "downvvotes of the review"
+            "description": "downvvotes of the review",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
           },
           "Location": {
             "description": "The location of the review",
@@ -3331,12 +3337,18 @@
             "description": "The rating of the review"
           },
           "upvotes": {
-            "type": "number",
-            "description": "upvotes fo the review"
+            "description": "upvotes fo the review",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
           },
           "downvotes": {
-            "type": "number",
-            "description": "downvvotes of the review"
+            "description": "downvvotes of the review",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
           },
           "Location": {
             "type": "object",

@@ -1,7 +1,7 @@
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
 import { TableContainer } from "@/components/ui/table";
 import { ViewType } from "@/types/view";
-import CustomTableHeader from "./CustomeTableHeader";
+import CustomTableHeader from "./CustomTableHeader";
 import { DashboardSkeleton } from "../skeletons/DashboardSkeleton";
 import { Button } from "@/components/ui/button";
 import ImageWithFallback from "@/components/ui/image-with-fallback";
