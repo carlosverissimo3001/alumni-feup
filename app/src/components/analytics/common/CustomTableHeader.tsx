@@ -10,7 +10,8 @@ type CustomTableHeaderProps = {
   sortOrder?: SortOrder;
   onSort?: (field: SortBy) => void;
   hoverMessage?: string;
-  useRoleTitle?: boolean;
+  customNameHeader?: string;
+  customCountHeader?: string;
   showTrend?: boolean;
   trendFrequency?: TrendFrequency;
 };
@@ -20,7 +21,8 @@ export default function CustomTableHeader({
   sortOrder,
   onSort,
   hoverMessage,
-  useRoleTitle = false,
+  customNameHeader,
+  customCountHeader,
   showTrend = false,
   trendFrequency = TrendFrequency.MAX,
 }: CustomTableHeaderProps) {
@@ -48,7 +50,7 @@ export default function CustomTableHeader({
               className="h-8 p-0 font-semibold hover:bg-transparent hover:text-[#A13A23] flex items-center gap-0.5"
               onClick={() => onSort?.(SortBy.NAME)}
             >
-              Name
+              {customNameHeader || "Name"}
               {renderSortIcon(SortBy.NAME)}
             </Button>
           </div>
@@ -60,7 +62,7 @@ export default function CustomTableHeader({
               className="h-8 p-0 font-semibold hover:bg-transparent hover:text-[#A13A23] flex items-center gap-0.5"
               onClick={() => onSort?.(SortBy.COUNT)}
             >
-              {useRoleTitle ? "Roles" : "Alumni"}
+              {customCountHeader || "Alumni"}
               {renderSortIcon(SortBy.COUNT)}
             </Button>
             {showTrend && (

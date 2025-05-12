@@ -23,7 +23,7 @@ import {
 import { DashboardSkeleton } from "../skeletons/DashboardSkeleton";
 import PaginationControls from "../common/PaginationControls";
 import TableTitle from "../common/TableTitle";
-import CustomTableHeader from "../common/CustomeTableHeader";
+import CustomTableHeader from "../common/CustomTableHeader";
 import { SortBy, SortOrder, ITEMS_PER_PAGE, DASHBOARD_HEIGHT } from "@/consts";
 import { FilterState } from "../common/GlobalFilters";
 import { NotFoundComponent } from "../common/NotFoundComponent";
@@ -129,7 +129,7 @@ export default function RoleDashboard({
                 onSort={handleSort}
                 showTrend={view === ViewType.TREND}
                 trendFrequency={trendFrequency}
-                useRoleTitle={true}
+                customCountHeader="Roles"
               />
 
               {isLoading || isFetching ? (
@@ -146,7 +146,7 @@ export default function RoleDashboard({
                             index % 2 === 0 ? "bg-gray-50" : "bg-white"
                           } hover:bg-[#A13A23] hover:bg-opacity-10 transition-colors duration-200 relative`}
                         >
-                          <TableCell className="w-1/12 py-1.5 pl-3 text-sm text-gray-500 font-medium align-middle">
+                          <TableCell className="w-[3%] py-1.5 pl-3 text-sm text-gray-500 font-medium align-middle">
                             {rowNumber}
                           </TableCell>
                           <TableCell className="w-5/12 py-1.5 pl-3 text-sm font-medium text-[#000000] align-middle">

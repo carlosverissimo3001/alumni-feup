@@ -113,12 +113,12 @@ export const GroupedMultiSelect = React.forwardRef<
       return groups;
     }, [options]);
 
-    // Effect to sync internal state with external value changes
     React.useEffect(() => {
       if (value !== undefined) {
         setInternalSelectedValues(value);
       }
     }, [value]);
+
 
     const toggleOption = (optionId: string) => {
       const newSelectedValues = selectedValues.includes(optionId)
@@ -259,7 +259,7 @@ export const GroupedMultiSelect = React.forwardRef<
             ) : (
               <div className="flex items-center justify-between w-full mx-auto">
                 <span className="text-sm text-muted-foreground mx-3">
-                  {disabled ? "Select a country" : placeholder}
+                  {placeholder}
                 </span>
                 <ChevronDown className="h-4 cursor-pointer text-muted-foreground mx-2" />
               </div>
