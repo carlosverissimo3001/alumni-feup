@@ -94,7 +94,7 @@ export class AlumniService {
     }
 
     let alumniCompareYear: Alumni[] = [];
-    if (query.compareYear) {
+    if (query.compareYear && query.compareYear !== query.selectedYear) {
       alumniCompareYear = this.filterAlumniByStartDate(alumni, query.compareYear);
     }
 
@@ -104,7 +104,7 @@ export class AlumniService {
     let alumniByGroup: AlumniByCountry | AlumniByCity;
 
     if (groupBy === GROUP_BY.COUNTRIES) {
-      if (query.compareYear && query.selectedYear) {
+      if (query.compareYear && query.selectedYear && query.compareYear !== query.selectedYear) {
         alumniByGroup = await this.groupAlumniByCountryWithRoleAndCompareYear(
           alumni,
           alumniCompareYear,

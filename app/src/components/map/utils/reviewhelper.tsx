@@ -32,6 +32,7 @@ export function buildReviewData(
 
     return listReviewIds.map((reviewId, index) => {
       return {
+        id: reviewId,
         name: listAlumniNames[index],
         linkedin_url: linkedInLinks[reviewId],
         profile_pic_url: profilePics[reviewId],

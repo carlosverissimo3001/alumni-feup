@@ -17,10 +17,10 @@ export class ReviewCompany {
     rating: number;
 
     @ApiProperty({ description: 'upvotes fo the review' })
-    upvotes: number;
+    upvotes: string[];
 
     @ApiProperty({ description: 'downvvotes of the review' })
-    downvotes: number;
+    downvotes: string[];
 
     @ApiPropertyOptional({ description: 'The location of the review' })
     Location?: LocationGeo;
