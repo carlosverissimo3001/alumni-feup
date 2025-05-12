@@ -52,13 +52,13 @@ export default function StatsCard({
       whileHover={{ scale: 1.02 }}
       className="h-full"
     >
-      <Card className="p-3 h-full bg-gradient-to-br from-white via-[#FCEFEA] to-[#8C2D19]/15 hover:shadow-lg hover:shadow-[#8C2D19]/10 transition-all duration-300 rounded-xl border border-[#8C2D19]/20">
+      <Card className="p-2.5 h-full bg-gradient-to-br from-white via-[#FCEFEA] to-[#8C2D19]/15 hover:shadow-lg hover:shadow-[#8C2D19]/10 transition-all duration-300 rounded-xl border border-[#8C2D19]/20">
         <div className="flex items-center gap-3">
           <div className="p-2.5 rounded-full bg-[#8C2D19]/20 hover:bg-[#8C2D19]/30 transition-colors shadow-sm flex-shrink-0">
             {icon}
           </div>
           <div className="w-full">
-            <div className="flex items-center justify-between mb-0.5">
+            <div className="flex items-center justify-between">
               <div className="flex items-center gap-1">
                 <p className="text-sm font-semibold text-[#000000] truncate max-w-[100px] sm:max-w-full">{name}</p>
                 {infoMessage && (
@@ -83,7 +83,7 @@ export default function StatsCard({
                 animate={{ opacity: isLoaded ? 1 : 0, scale: 1 }}
                 transition={{ duration: 0.5 }}
               >
-                <Badge variant={getBadgeVariant()} className="text-xs font-medium px-2 py-0.5">
+                <Badge variant={getBadgeVariant()} className="text-xs font-medium px-2">
                   {percentage}%
                 </Badge>
               </motion.div>
@@ -92,7 +92,7 @@ export default function StatsCard({
               initial={{ opacity: 0.5 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.5 }}
-              className="text-2xl font-extrabold text-[#8C2D19] tracking-tight"
+              className="text-xl font-extrabold text-[#8C2D19] tracking-tight"
             >
               {values[0]}
             </motion.h3>

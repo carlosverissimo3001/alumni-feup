@@ -107,12 +107,21 @@ export default function GlobalFilters({
   } = useCountryOptions();
 
   const {
-    data: cityOptions,
-    isLoading: isCityOptionsLoading,
-    isFetching: isCityOptionsFetching,
+    data: roleCityOptions,
+    isLoading: isRoleCityOptionsLoading,
+    isFetching: isRoleCityOptionsFetching,
   } = useCityOptions({
-    countryCodes: filters.countries,
+    countryCodes: filters.roleCountryCodes,
   });
+
+  const {
+    data: companyCityOptions,
+    isLoading: isCompanyCityOptionsLoading,
+    isFetching: isCompanyCityOptionsFetching,
+  } = useCityOptions({
+    countryCodes: filters.companyHQsCountryCodes,
+  });
+
 
   const {
     data: roleOptions,
@@ -127,6 +136,7 @@ export default function GlobalFilters({
   } = useIndustryOptions();
 
   const { data: courseOptions, isLoading: isCourseOptionsLoading } =
+    useListCourses({ enabled: true, params: {} });
     useListCourses({ enabled: true, params: {} });
 
   // React will run these hooks in parallel by default
@@ -150,12 +160,21 @@ export default function GlobalFilters({
         value: course.id,
         label: course.name,
       })),
-      citiesGrouped: (cityOptions || []).map((city) => ({
+      roleCitiesGrouped: (roleCityOptions || []).map((city) => ({
         id: city.id,
         name: city.name,
         group: city.country,
       })),
-      cities: (cityOptions || []).map((city) => ({
+      roleCities: (roleCityOptions || []).map((city) => ({
+        value: city.id,
+        label: city.name,
+      })),
+      companyCitiesGrouped: (companyCityOptions || []).map((city) => ({
+        id: city.id,
+        name: city.name,
+        group: city.country,
+      })),
+      companyCities: (companyCityOptions || []).map((city) => ({
         value: city.id,
         label: city.name,
       })),
@@ -191,7 +210,8 @@ export default function GlobalFilters({
       companyOptions,
       countryOptions,
       courseOptions,
-      cityOptions,
+      roleCityOptions,
+      companyCityOptions,
       industryOptions,
       roleOptions,
       filters.classificationLevel,
@@ -268,6 +288,16 @@ export default function GlobalFilters({
                 {activeFilterCount}
               </span>
             )}
+            {Math.max(0, activeFilterCount) > 0 && (
+              <span
+                className={`absolute -top-1 -right-1 bg-[#8C2D19] text-white text-xs rounded-full flex items-center justify-center ${
+                  activeFilterCount > 9 ? "h-5 w-5" : "h-4 w-4"
+                }`}
+                aria-label={`Active filters: ${activeFilterCount}`}
+              >
+                {activeFilterCount}
+              </span>
+            )}
           </motion.button>
           <h2 className="text-lg font-bold text-[#8C2D19]">Filters</h2>
         </div>
@@ -294,7 +324,7 @@ export default function GlobalFilters({
             onValueChange={setActiveTab}
             className="w-full"
           >
-            <TabsList className="grid grid-cols-5 mb-3">
+            <TabsList className="grid grid-cols-4 mb-3">
               <TabsTrigger
                 value="location"
                 className="flex items-center gap-1.5"
@@ -323,13 +353,6 @@ export default function GlobalFilters({
                 <Briefcase className="h-4 w-4" />
                 <span>Roles</span>
               </TabsTrigger>
-              <TabsTrigger
-                value="options"
-                className="flex items-center gap-1.5"
-              >
-                <Tags className="h-4 w-4" />
-                <span>Options</span>
-              </TabsTrigger>
             </TabsList>
 
             <div className="relative">
@@ -347,7 +370,7 @@ export default function GlobalFilters({
                   {activeTab === "organization" && renderOrganizationTab()}
                   {activeTab === "education" && renderEducationTab()}
                   {activeTab === "roles" && renderRolesTab()}
-                  {activeTab === "options" && renderOptionsTab()}
+                  {/* {activeTab === "options" && renderOptionsTab()} */}
                 </motion.div>
               </AnimatePresence>
             </div>
@@ -361,46 +384,131 @@ export default function GlobalFilters({
   function renderLocationTab() {
     return (
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {/* Company Location Section */}
         <div>
-          <Label
-            htmlFor="countrySelect"
-            className="text-xs font-medium text-gray-700 mb-1 block"
-          >
-            Countries
-          </Label>
-          <MultiSelect
-            id="countrySelect"
-            options={options.countries}
-            value={filters.roleCountryCodes}
-            onValueChange={(value) => handleFilterChange("roleCountryCodes", value)}
-            placeholder="Select countries"
-            isLoading={isCountryOptionsLoading || isCountryOptionsFetching}
-            disabled={isCountryOptionsLoading || isCountryOptionsFetching}
-            allowSelectAll={true}
-            maxCount={6}
-          />
+          <div className="mb-0.5 flex items-center space-x-2">
+            <span className="font-semibold text-sm text-[#8C2D19]">
+              Company Location
+            </span>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Info className="h-4 w-4 text-gray-500" />
+                </TooltipTrigger>
+                <TooltipContent align="start">
+                  <p>The alumni worked for a company that is HQ&apos;ed in this country/city.</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          </div>
+          <div className="mb-0.5 grid grid-cols-2 gap-2">
+            <div>
+              <Label
+                htmlFor="companyCountrySelect"
+                className="text-xs font-medium text-gray-700 mb-1 block"
+              >
+                Countries
+              </Label>
+              <MultiSelect
+                id="companyCountrySelect"
+                options={options.countries}
+                value={filters.companyHQsCountryCodes}
+                onValueChange={(value) =>
+                  handleFilterChange("companyHQsCountryCodes", value)
+                }
+                placeholder="Select countries"
+                isLoading={isCountryOptionsLoading || isCountryOptionsFetching}
+                disabled={isCountryOptionsLoading || isCountryOptionsFetching}
+                allowSelectAll={true}
+                maxCount={6}
+              />
+            </div>
+            <div>
+              <Label
+                htmlFor="companyCitySelect"
+                className="text-xs font-medium text-gray-700 mb-1 block"
+              >
+                Cities
+              </Label>
+              <GroupedMultiSelect
+                id="companyCitySelect"
+                disabled={
+                  !filters.companyHQsCountryCodes ||
+                  filters.companyHQsCountryCodes.length === 0
+                }
+                options={options.companyCitiesGrouped}
+                value={filters.companyHQsCityIds}
+                placeholder="Select cities"
+                onValueChange={(value) =>
+                  handleFilterChange("companyHQsCityIds", value)
+                }
+                maxCount={6}
+                isLoading={isCompanyCityOptionsLoading || isCompanyCityOptionsFetching}
+              />
+            </div>
+          </div>
         </div>
 
+        {/* Role Location Section */}
         <div>
-          <Label
-            htmlFor="citySelect"
-            className="text-xs font-medium text-gray-700 mb-1 block"
-          >
-            Cities
-          </Label>
-          <GroupedMultiSelect
-            id="citySelect"
-            disabled={!filters.roleCountryCodes || filters.roleCountryCodes.length === 0}
-            options={options.citiesGrouped}
-            value={filters.roleCityIds}
-            placeholder="Select cities"
-            onValueChange={(value) => handleFilterChange("roleCityIds", value)}
-            maxCount={6}
-            isLoading={isCityOptionsLoading || isCityOptionsFetching}
-          />
+          <div className="mb-0.5 flex items-center space-x-2">
+            <span className="font-semibold text-sm text-[#8C2D19]">Role Location</span>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Info className="h-4 w-4 text-gray-500" />
+                </TooltipTrigger>
+              <TooltipContent align="start">
+                <p>The alumni exercised the roles from this country/city.</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          </div>
+          <div className="grid grid-cols-2 gap-2">
+            <div>
+              <Label
+                htmlFor="roleCountryCodeSelect"
+                className="text-xs font-medium text-gray-700 mb-1 block"
+              >
+                Countries
+              </Label>
+              <MultiSelect
+                id="roleCountryCodeSelect"
+                isLoading={isRoleOptionsLoading || isRoleOptionsFetching}
+                options={options.countries}
+                value={filters.roleCountryCodes}
+                onValueChange={(value) =>
+                  handleFilterChange("roleCountryCodes", value)
+                }
+                placeholder="Select countries"
+                maxCount={6}
+              />
+            </div>
+            <div>
+              <Label
+                htmlFor="roleCityIdSelect"
+                className="text-xs font-medium text-gray-700 mb-1 block"
+              >
+                Cities
+              </Label>
+              <GroupedMultiSelect
+                id="roleCityIdSelect"
+                disabled={
+                  !filters.roleCountryCodes ||
+                  filters.roleCountryCodes.length === 0
+                }
+                options={options.roleCitiesGrouped}
+                value={filters.roleCityIds}
+                placeholder="Select cities"
+                onValueChange={(value) =>
+                  handleFilterChange("roleCityIds", value)
+                }
+                maxCount={6}
+                isLoading={isRoleCityOptionsLoading || isRoleCityOptionsFetching}
+              />
+            </div>
+          </div>
         </div>
-
-        {/* TODO: Allow to also filter by the location of the company HQs */}
       </div>
     );
   }
@@ -532,7 +640,7 @@ export default function GlobalFilters({
 
   function renderRolesTab() {
     return (
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-start">
         <div>
           <div className="flex items-center gap-1 mb-1">
             <Label
@@ -561,8 +669,8 @@ export default function GlobalFilters({
                     <br />• Selecting{" "}
                     <strong className="text-[#8C2D19]">
                       current roles only
-                    </strong>
-                    {" "} will return only those that do not have an end date
+                    </strong>{" "}
+                    will return only those that do not have an end date
                   </p>
                 </TooltipContent>
               </Tooltip>
@@ -595,7 +703,7 @@ export default function GlobalFilters({
           />
         </div>
 
-        <div className="space-y-2 flex flex-col justify-center">
+        <div className="mt-1 grid grid-cols-2 gap-y-2">
           <div className="flex items-center space-x-2">
             <Checkbox
               id="currentRoles"
@@ -612,15 +720,6 @@ export default function GlobalFilters({
               Current roles only
             </Label>
           </div>
-        </div>
-      </div>
-    );
-  }
-
-  function renderOptionsTab() {
-    return (
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div className="space-y-3">
           <div className="flex items-center space-x-2">
             <Checkbox
               id="excludeResearchAndHighEducation"
@@ -637,7 +736,6 @@ export default function GlobalFilters({
               Exclude education and research roles
             </Label>
           </div>
-
           <div className="flex items-center space-x-2">
             <Checkbox
               id="onlyInternational"

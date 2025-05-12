@@ -10,8 +10,6 @@ import {
   ReviewGeoJSONProperties,
 } from 'src/entities/';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { CreateAlumniDto } from '../../dto/create-alumni.dto';
-import { GetGeoJSONDto } from 'src/dto/getgeojson.dto';
 import { Feature, Point } from 'geojson';
 import { GROUP_BY } from '@/consts';
 import { GeolocationService } from 'src/geolocation/geolocation.service';
@@ -21,8 +19,6 @@ import { AlumniRepository } from '@/alumni/repositories/alumni.repository';
 import { GetReviewGeoJSONDto } from '@/dto/getreviewgeojson.dto';
 import { ReviewType } from '@/entities/reviewgeojson.entity';
 import { CreateReviewDto } from '@/dto/create-review.dto';
-import { Prisma } from '@prisma/client';
-import { ReviewRepository } from '../repositories/review.repository';
 
 type ReviewsGrouped = {
   coordinates: [number, number];

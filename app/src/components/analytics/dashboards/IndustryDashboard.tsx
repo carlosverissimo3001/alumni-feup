@@ -24,7 +24,7 @@ import { DashboardSkeleton } from "../skeletons/DashboardSkeleton";
 import { useIndustryList } from "@/hooks/analytics/useIndustryList";
 import PaginationControls from "../common/PaginationControls";
 import TableTitle from "../common/TableTitle";
-import CustomTableHeader from "../common/CustomeTableHeader";
+import CustomTableHeader from "../common/CustomTableHeader";
 import { SortBy, SortOrder, ITEMS_PER_PAGE, DASHBOARD_HEIGHT } from "@/consts";
 import { FilterState } from "../common/GlobalFilters";
 import { NotFoundComponent } from "../common/NotFoundComponent";
@@ -55,7 +55,7 @@ export default function IndustryDashboard({
 }: IndustryDashboardProps) {
   const [page, setPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(ITEMS_PER_PAGE[1]);
-  const [sortField, setSortField] = useState<SortBy>(SortBy.ALUMNI_COUNT);
+  const [sortField, setSortField] = useState<SortBy>(SortBy.COUNT);
   const [sortOrder, setSortOrder] = useState<SortOrder>(SortOrder.DESC);
   const [view, setView] = useState<ViewType>(ViewType.TABLE);
   const [trendFrequency, setTrendFrequency] = useState<TrendFrequency>(TrendFrequency.Y5);

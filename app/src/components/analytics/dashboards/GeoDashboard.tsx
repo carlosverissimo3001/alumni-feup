@@ -20,7 +20,7 @@ import PaginationControls from "../common/PaginationControls";
 import TableTitle from "../common/TableTitle";
 import { useCountryList } from "@/hooks/analytics/useCountryList";
 import { useCityList } from "@/hooks/analytics/useCityList";
-import CustomTableHeader from "../common/CustomeTableHeader";
+import CustomTableHeader from "../common/CustomTableHeader";
 import {
   Table,
   TableBody,
