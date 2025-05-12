@@ -1,4 +1,5 @@
 export type ReviewData = {
+    id: string;
     name: string;
     linkedin_url?: string;
     profile_pic_url?: string;
