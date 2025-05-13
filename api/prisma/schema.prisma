@@ -220,6 +220,7 @@ model RoleRaw {
   location String?
 
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamp(6)
+  updatedAt DateTime @default(now()) @map("updated_at") @db.Timestamp(6)
   roleId    String   @unique @map("role_id")
 
   Role Role @relation(fields: [roleId], references: [id])
