@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "role_raw" ADD COLUMN     "updated_at" TIMESTAMP(6) NOT NULL DEFAULT CURRENT_TIMESTAMP;
