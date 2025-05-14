@@ -131,8 +131,8 @@ export class GeoAnalyticsService {
     // Total Cities, regardless of filters
     const totalCities = await this.locationRepository.countCities();
 
-    const alumnus = await this.alumniRepository.find(query);
-
+    const alumnusUnfiltered = await this.alumniRepository.find(query);
+    const alumnus = applyDateFilters(alumnusUnfiltered, query);
     alumnus.forEach((alumnus) => {
       alumnus.roles.forEach((role) => {
         const roleLocation = role.location;
@@ -172,7 +172,7 @@ export class GeoAnalyticsService {
         count: data.count,
         trend: query.includeTrend
           ? this.trendAnalyticsService.getCityTrend({
-              data: alumnus,
+              data: alumnusUnfiltered,
               entityId: cityId,
             })
           : [],
