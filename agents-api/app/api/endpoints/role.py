@@ -2,7 +2,7 @@ import logging
 
 from fastapi import APIRouter, BackgroundTasks, HTTPException, status
 
-from app.schemas.role import RoleResolveLocationParams
+from app.schemas.role import RoleAlumniResolveLocationParams, RoleResolveLocationParams
 from app.services.role import role_service
 
 router = APIRouter()

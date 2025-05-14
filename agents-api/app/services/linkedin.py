@@ -2,14 +2,17 @@ import asyncio
 import logging
 from typing import List, Optional
 
+from app.agents.location import location_agent
 from app.core.config import settings
 from app.db import get_db
-from app.db.models import Alumni, Company, Location
+from app.db.models import Alumni, Company
 from app.schemas.linkedin import (
     AlumniData,
     LinkedInProfileResponse,
     convert_to_linkedin_profile_response,
 )
+from app.schemas.location import AlumniLocationInput, LocationType
+from app.schemas.role import RoleAlumniResolveLocationParams
 from app.services.company import company_service
 from app.services.image_storage import image_storage_service
 from app.services.job_classification import job_classification_service
@@ -18,14 +21,15 @@ from app.utils.alumni_db import delete_profile_data, find_all, update_alumni
 from app.utils.company_db import get_company_by_linkedin_url, insert_company
 from app.utils.consts import NULL_ISLAND_ID
 from app.utils.http_client import HTTPClient
-from app.utils.location_db import create_location, get_location
+from app.utils.location_db import get_location
 from app.utils.misc.string import sanitize_linkedin_url
-from app.utils.role_db import create_role, create_role_raw
+from app.utils.role_db import create_role, create_role_raw, get_roles_by_alumni_id
 
 logger = logging.getLogger(__name__)
 
 # Get a database session for the service
 db = next(get_db())
+
 
 class LinkedInService:
     """Service for interacting with LinkedIn and processing profile data."""
@@ -111,7 +115,9 @@ class LinkedInService:
                     company_id = db_company.id
 
                     # Let's offload the company extraction to a background task
-                    asyncio.create_task(company_service.extract_company_data(sanitized_url, company_id))
+                    asyncio.create_task(
+                        company_service.extract_company_data(sanitized_url, company_id)
+                    )
 
                 # Now we can parse the role
                 role_db = await role_service.parse_role(role, alumni_id, company_id)
@@ -136,25 +142,25 @@ class LinkedInService:
         location_id = NULL_ISLAND_ID
         if city or country or country_code:
             location = get_location(city, country, country_code, db)
-            
-            logger.info(f"Location: {location}")
 
-            # TODO: We might need to leverage an agent, instead of just assuming the location was not found
-            # I.e, in the DB, we might have Seattle, United States
-            # But this user location is Seattle, United States of America
-            # This is obviously a trivial case, but it might be a problem for more complex ones
-            
             if not location:
-                location = create_location(
-                    Location(city=city, country=country, country_code=country_code), db
+                input = AlumniLocationInput(
+                    type=LocationType.ALUMNI,
+                    alumni_id=alumni_id,
+                    city=city,
+                    country=country,
+                    country_code=country_code,
                 )
+                asyncio.create_task(location_agent.run(input))
             
-            location_id = location.id
-            
+            else:
+                location_id = location.id
         # Let's upload their picture to cloudinary
         profile_picture_url = None
         if profile_data.profile_pic_url:
-            profile_picture_url = image_storage_service.upload_image(profile_data.profile_pic_url, alumni_id)
+            profile_picture_url = image_storage_service.upload_image(
+                profile_data.profile_pic_url, alumni_id
+            )
 
         # Update the alumni table (Alumni was already created by our backend)
         update_alumni(
@@ -165,11 +171,14 @@ class LinkedInService:
             ),
             db,
         )
-        
+
         # We'll now offload the role classification to a background task, using the agent
         # Note that we do NOT wait for this to finish, as it can take a while
         asyncio.create_task(job_classification_service.classify_roles_for_alumni(alumni_id))
-        
+
+        # We'll also use the location agent to update the alumni roles
+        asyncio.create_task(role_service.resolve_role_location_for_alumni(alumni_id))
+
     async def update_profile_data(
         self,
         data: Optional[List[AlumniData]] = None,
@@ -181,20 +190,23 @@ class LinkedInService:
             data: List of alumni data to update
         """
         alumni = data
-        
+
         # If no data is provided, we update all alumni
         if not alumni:
             alumni_db = find_all(db)
-            alumni = [AlumniData(alumni_id=alumni.id, profile_url=alumni.linkedin_url) for alumni in alumni_db]
+            alumni = [
+                AlumniData(alumni_id=alumni.id, profile_url=alumni.linkedin_url)
+                for alumni in alumni_db
+            ]
 
         for alumni_data in alumni:
             # 1. Delete existing data
             logger.info(f"Deleting existing data for {alumni_data.profile_url}")
             delete_profile_data(alumni_data.alumni_id, db)
-            
+
             # 2. Extract new data
             logger.info(f"Extracting LinkedIn data for {alumni_data.profile_url}")
             await self.extract_profile_data(alumni_data.profile_url, alumni_data.alumni_id)
-    
+
 
 linkedin_service = LinkedInService()

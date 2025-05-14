@@ -54,16 +54,16 @@ export interface ReviewCompany {
     rating: number;
     /**
      * upvotes fo the review
-     * @type {number}
+     * @type {Array<string>}
      * @memberof ReviewCompany
      */
-    upvotes: number;
+    upvotes: Array<string>;
     /**
      * downvvotes of the review
-     * @type {number}
+     * @type {Array<string>}
      * @memberof ReviewCompany
      */
-    downvotes: number;
+    downvotes: Array<string>;
     /**
      * The location of the review
      * @type {LocationGeo}

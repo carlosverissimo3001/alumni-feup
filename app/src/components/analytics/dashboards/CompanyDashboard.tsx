@@ -91,7 +91,7 @@ export default function CompanyDashboard({
       data?.alumniFilteredCount !== undefined &&
       data?.companyFilteredCount !== undefined
     ) {
-      setTotalItems(data.companyCount);
+      setTotalItems(data.companyFilteredCount);
       onDataUpdate(
         data.alumniCount,
         data.companyCount,
