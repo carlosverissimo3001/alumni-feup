@@ -107,11 +107,11 @@ TASK:
 - If you cannot determine a valid country from the inputs, set `"country_code": "null"`.
 
 SPECIAL CASES:
+- If the location indicates remote work (e.g., "Remote", "Remote - Lisbon", "All over the world", "Worldwide", "Global", "Work from anywhere"), return `"country_code": "REMOTE"` and `"city": "null"`.
 - If the location mentions a neighborhood or district of a known city, resolve to the main city:
   - "Parque das Nações, Lisbon" → "Lisboa" 
   - "Stadtkreis 8 Riesbach, Zurich" → "Zurich"
   - "Manhattan, NY" → "New York"
-- If the location contains "Remote", "Worldwide", or "Global", use the hinted country if available, and `"city": "null"`.
 - Use "GB" for United Kingdom, not "UK".
 - For US/Canada sub-national regions, map to "US" or "CA".
 - For Swiss cantons, map to "CH".
@@ -126,12 +126,15 @@ CITY NAME STANDARDIZATION:
 RESPONSE FORMAT:
 Return only a JSON object with:
 - "city": the city name or "null"
-- "country_code": the ISO code or "null"
+- "country_code": the ISO code or "null" or "REMOTE" for remote work
 
 EXAMPLES:
 - "New York, USA" → {"city": "New York", "country_code": "US"}
 - "London, United Kingdom" → {"city": "London", "country_code": "GB"}
-- "Remote - based in Germany" → {"city": "null", "country_code": "DE"}
+- "Remote - based in Germany" → {"city": "null", "country_code": "REMOTE"}
+- "Remote" → {"city": "null", "country_code": "REMOTE"}
+- "All over the world" → {"city": "null", "country_code": "REMOTE"}
+- "Work from anywhere" → {"city": "null", "country_code": "REMOTE"}
 - "Porto, Portugal" → {"city": "Porto", "country_code": "PT"}
 - "Oporto, Portugal" → {"city": "Porto", "country_code": "PT"}
 - "Lisbon, Portugal" → {"city": "Lisboa", "country_code": "PT"}
@@ -140,7 +143,7 @@ EXAMPLES:
 - "Munich, Germany" → {"city": "Munich", "country_code": "DE"}
 - "München, Germany" → {"city": "Munich", "country_code": "DE"}
 - "EMEA" → {"city": "null", "country_code": "null"}
-- "Remote" → {"city": "null", "country_code": "null"}
+- "Remote - Lisbon" → {"city": "null", "country_code": "REMOTE"}
 
 IMPORTANT:
 - Do not include markdown syntax or explanations.

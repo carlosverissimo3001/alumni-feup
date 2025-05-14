@@ -154,40 +154,41 @@ export default function Analytics() {
   }, []);
 
   const handleGeoAddToFilters = useCallback(
-    (geoId: string) => {
+    (geoId: string, type: "role" | "company") => {
       if (geoMode === "country") {
         setFilters((prev) => {
-          const currentCountries = prev.roleCountryCodes || [];
-          if (!currentCountries.includes(geoId)) {
-            const updatedCountries = [...currentCountries, geoId];
-            
-            // Drilling down to cities after adding a country filter
-            if (updatedCountries.length === 1) {
+          const key = type === "role" ? "roleCountryCodes" : "companyHQsCountryCodes";
+          const current = prev[key] || [];
+          if (!current.includes(geoId)) {
+            const updated = [...current, geoId];
+            // Drilling down to cities after adding a country filter (only for role)
+            if (type === "role" && updated.length === 1) {
               setTimeout(() => setGeoMode("city"), 0);
             }
             return {
               ...prev,
-              roleCountryCodes: updatedCountries,
+              [key]: updated,
             };
           } else {
             return {
               ...prev,
-              roleCountryCodes: currentCountries.filter((id) => id !== geoId),
+              [key]: current.filter((id: string) => id !== geoId),
             };
           }
         });
       } else {
         setFilters((prev) => {
-          const currentCities = prev.roleCityIds || [];
-          if (!currentCities.includes(geoId)) {
+          const key = type === "role" ? "roleCityIds" : "companyHQsCityIds";
+          const current = prev[key] || [];
+          if (!current.includes(geoId)) {
             return {
               ...prev,
-              roleCityIds: [...currentCities, geoId],
+              [key]: [...current, geoId],
             };
           } else {
             return {
               ...prev,
-              roleCityIds: currentCities.filter((id) => id !== geoId),
+              [key]: current.filter((id: string) => id !== geoId),
             };
           }
         });

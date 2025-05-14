@@ -78,7 +78,7 @@ export default function IndustryDashboard({
   });
 
   const industries = data?.industries || [];
-  const totalItems = data?.count || 0;
+  const totalItems = data?.filteredCount || 0;
 
   // Update parent only when total changes
   useEffect(() => {

@@ -4223,12 +4223,17 @@
           "filteredCount": {
             "type": "number",
             "description": "The total number of roles in the database after applying the filters"
+          },
+          "distinctCount": {
+            "type": "number",
+            "description": "The total number of distinct roles in the database after applying the filters"
           }
         },
         "required": [
           "roles",
           "count",
-          "filteredCount"
+          "filteredCount",
+          "distinctCount"
         ]
       },
       "RoleOptionDto": {

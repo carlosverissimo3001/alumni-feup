@@ -20,6 +20,9 @@ from app.utils.consts import RESOLVE_LOCATION_PROMPT, get_resolve_geo_prompt
 from app.utils.location_db import create_location, get_locations_by_country_code
 from app.utils.role_db import get_role_by_id, update_role
 
+REMOTE_LOCATION_ID = "15045675-0782-458b-9bb7-02567ac246fd"
+REMOTE_COUNTRY_CODE = "REMOTE"
+
 logger = logging.getLogger(__name__)
 
 # Get a database session for the service
@@ -62,8 +65,26 @@ class LocationAgent:
         graph.add_edge(START, "resolve_geo")
 
         # Conditional branching after code resolver
-        def check_geo(state: dict) -> Literal["fetch_locations_from_db", "__end__"]:
-            return "fetch_locations_from_db" if state.get("resolved_country_code") else END
+        def check_geo(
+            state: dict,
+        ) -> Literal["fetch_locations_from_db", "update_domain_with_location", "__end__"]:
+            # Cases:
+            # 1. No country code - End
+            # 2. Country code is REMOTE - Sets the location result to the remote location and goes to update_domain_with_location
+            # 3. Country code is not REMOTE - Go to fetch_locations_from_db
+            if not state.get("resolved_country_code"):
+                return END
+            if state.get("resolved_country_code") == REMOTE_COUNTRY_CODE:
+                state["location_result"] = LocationResult(
+                    id=REMOTE_LOCATION_ID,
+                    country_code=REMOTE_COUNTRY_CODE,
+                    # This is hacky, I know :))
+                    country="Remote",
+                    city="Remote",
+                    is_country_only=True,
+                )
+                return "update_domain_with_location"
+            return "fetch_locations_from_db"
 
         graph.add_conditional_edges("resolve_geo", check_geo)
 
@@ -85,7 +106,7 @@ class LocationAgent:
 
         # *** Compile the graph ***
         compiled_graph = graph.compile()
-        compiled_graph.get_graph().draw_mermaid_png(output_file_path="location_agent_graph.png")
+        #compiled_graph.get_graph().draw_mermaid_png(output_file_path="location_agent_graph.png")
         return compiled_graph
 
     def is_new_location(self, state: LocationAgentState) -> bool:
@@ -190,11 +211,10 @@ class LocationAgent:
 
         db_locations_str = str(db_locations_json) if db_locations_json else "[]"
 
-
         # Check for exact matches before calling the LLM
         extracted_city = state.get("resolved_city")
         exact_match = None
-   
+
         if extracted_city:
             for loc in state.get("db_locations", []):
                 if loc.city and loc.city.lower() == extracted_city.lower():
@@ -277,7 +297,6 @@ class LocationAgent:
             if isinstance(location_result, dict)
             else lambda k: getattr(location_result, k, None)
         )
-        
 
         city = get("city")
         country = get("country")
@@ -308,6 +327,9 @@ class LocationAgent:
         """
         # Here, we know that the location is already in the database, so we have an ID
         # We just need to update the domain with the location id
+        if not state.get("location_result"):
+            return state
+        
         get = (
             state["location_result"].get
             if isinstance(state["location_result"], dict)

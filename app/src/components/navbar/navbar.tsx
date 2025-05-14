@@ -7,6 +7,7 @@ import {
   UserIcon,
   ChartSpline,
   MessageCircleCode,
+  BrainIcon,
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -66,14 +67,20 @@ const Navbar = () => {
       href: "/",
     },
     {
-      label: "Reviews",
-      icon: <MessageCircleCode size={20} />,
-      href: "/reviews",
-    },
-    {
       label: "Analytics",
       icon: <ChartSpline size={20} />,
       href: "/analytics",
+    },
+    {
+      label: "Insights",
+      icon: <BrainIcon   size={20} />,
+      href: "/insights",
+    },
+    {
+      label: "Reviews",
+      icon: <MessageCircleCode size={20} />,
+      href: "/reviews",
+      disabled: !isAuthenticated,
     },
     {
       label: "Profile",
@@ -125,32 +132,30 @@ const Navbar = () => {
 
         {/* Routes - World, Dashboard, Profile, Leave Feedback */}
         <div className="space-y-1 px-1">
-          {routes.map((route) => (
-            !route.disabled && (
-              <Link
-                key={route.href}
-                href={route.href}
+          {routes.filter((route) => !route.disabled).map((route) => (
+            <Link
+              key={`${route.label}-${route.href}`}
+              href={route.href}
+              className={cn(
+                "text-sm group flex p-3 w-full justify-start font-medium cursor-pointer hover:text-white hover:bg-zinc-800 rounded-lg transition",
+                pathname === route.href
+                  ? "text-white bg-zinc-800"
+                  : "text-zinc-400",
+                isCollapsed && "justify-center",
+              )}
+            >
+              <div
                 className={cn(
-                  "text-sm group flex p-3 w-full justify-start font-medium cursor-pointer hover:text-white hover:bg-zinc-800 rounded-lg transition",
-                  pathname === route.href
-                    ? "text-white bg-zinc-800"
-                    : "text-zinc-400",
+                  "flex items-center flex-1",
                   isCollapsed && "justify-center"
                 )}
               >
-                <div
-                  className={cn(
-                    "flex items-center flex-1",
-                    isCollapsed && "justify-center"
-                  )}
-                >
-                  {route.icon}
-                  <span className={cn("ml-3 whitespace-nowrap", isCollapsed && "hidden")}>
-                    {route.label}
-                  </span>
-                </div>
-              </Link>
-            )
+                {route.icon}
+                <span className={cn("ml-3 whitespace-nowrap", isCollapsed && "hidden")}>
+                  {route.label}
+                </span>
+              </div>
+            </Link>
           ))}
         </div>
       </div>
