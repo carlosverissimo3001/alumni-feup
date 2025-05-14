@@ -91,6 +91,7 @@ export class RoleAnalyticsService {
       roles: rolesPaginated,
       count,
       filteredCount,
+      distinctCount: roles.length,
     };
   }
 

@@ -94,6 +94,7 @@ export default function RoleDashboard({
   const roles = data?.roles || [];
   const totalRoles = data?.count || 0;
   const totalRolesFiltered = data?.filteredCount || 0;
+  const totalItems = data?.distinctCount || 0;
 
   // Update parent only when total changes
   useEffect(() => {
@@ -224,7 +225,7 @@ export default function RoleDashboard({
           setPage={setPage}
           itemsPerPage={itemsPerPage}
           setItemsPerPage={setItemsPerPage}
-          totalItems={totalRolesFiltered}
+          totalItems={totalItems}
           visible={roles.length > 0}
           showTrendFrequency={view === ViewType.TREND}
           trendFrequency={trendFrequency}

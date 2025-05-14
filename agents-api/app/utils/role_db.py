@@ -8,7 +8,10 @@ from app.schemas.job_classification import JobClassificationInput, JobClassifica
 logger = logging.getLogger(__name__)
 
 def get_all_roles(db: Session):
-    return db.query(Role).all()
+    # temp
+    return db.query(Role).filter(Role.location_id.is_(None)).all()
+    
+    #return db.query(Role).all()
 
 def get_role_by_id(id: str, db: Session) -> Role:
     return db.query(Role).filter(Role.id == id).first()
@@ -19,6 +22,8 @@ def get_roles_by_ids(ids: list[str], db: Session) -> list[Role]:
 def get_role_raw_by_id(role_id: str, db: Session) -> RoleRaw:
     return db.query(RoleRaw).filter(RoleRaw.role_id == role_id).first()
 
+def get_roles_by_alumni_id(alumni_id: str, db: Session) -> list[Role]:
+    return db.query(Role).filter(Role.alumni_id == alumni_id).all()
 
 def create_role(role: Role, db: Session) -> Role:
     db.add(role)
@@ -73,10 +78,9 @@ def delete_role(role: Role, db: Session) -> None:
             for raw in list(role.role_raw):
                 db.delete(raw)
         
-        # Delete associated job_classifications
-        if hasattr(role, 'job_classifications') and role.job_classifications:
-            for job_classification in list(role.job_classifications):
-                db.delete(job_classification) 
+        # Delete associated job_classification
+        if hasattr(role, 'job_classification') and role.job_classification:
+            db.delete(role.job_classification)
         
         # Delete the role itself
         db.delete(role)

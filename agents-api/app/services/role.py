@@ -6,9 +6,9 @@ from app.db.models import Role, RoleRaw, SeniorityLevel
 from app.db.session import get_db
 from app.schemas.linkedin import ExperienceBase
 from app.schemas.location import LocationType, RoleLocationInput
-from app.schemas.role import RoleResolveLocationParams
+from app.schemas.role import RoleAlumniResolveLocationParams, RoleResolveLocationParams
 from app.utils.misc.convert import linkedin_date_to_timestamp
-from app.utils.role_db import get_all_roles, get_role_raw_by_id, get_roles_by_ids, update_role
+from app.utils.role_db import get_all_roles, get_role_raw_by_id, get_roles_by_alumni_id, get_roles_by_ids, update_role
 
 logger = logging.getLogger(__name__)
 
@@ -54,9 +54,7 @@ class RoleService:
                 location = role_raw.location
 
                 if not location:
-                    # Not much we can so, set to remote
-                    role.location_id = REMOTE_LOCATION_ID
-                    update_role(role, db)
+                    # Not much we can do
                     continue
 
                 input = RoleLocationInput(
@@ -72,6 +70,15 @@ class RoleService:
 
             if i + batch_size < len(roles):
                 await asyncio.sleep(0.5)
+    
+    async def resolve_role_location_for_alumni(self, alumni_ids: str) -> None:
+        """
+        Resolves the location of the roles for a given alumni
+        """
+        roles = get_roles_by_alumni_id(alumni_ids, db)
+        role_ids = [role.id for role in roles]
+        role_ids_str = ",".join(role_ids)
+        await self.resolve_role_location(RoleResolveLocationParams(role_ids=role_ids_str))
 
     async def parse_role(
         self,

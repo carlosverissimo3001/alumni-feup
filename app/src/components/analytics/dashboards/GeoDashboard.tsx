@@ -13,7 +13,6 @@ import {
   TableIcon,
   PieChart,
   LineChart,
-  XIcon,
 } from "lucide-react";
 import { DashboardSkeleton } from "../skeletons/DashboardSkeleton";
 import PaginationControls from "../common/PaginationControls";
@@ -32,12 +31,6 @@ import ImageWithFallback from "../../ui/image-with-fallback";
 import { SortBy, SortOrder, ITEMS_PER_PAGE, DASHBOARD_HEIGHT } from "@/consts";
 import { FilterState } from "../common/GlobalFilters";
 import { NotFoundComponent } from "../common/NotFoundComponent";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
 import { Switch } from "@/components/ui/switch";
 import ChartView from "../common/ChartView";
 import { ViewType } from "@/types/view";
@@ -47,6 +40,8 @@ import TrendLineComponent from "../common/TrendLineComponent";
 import LoadingChart from "../common/LoadingChart";
 import { TrendFrequency, EntityType } from "@/types/entityTypes";
 import { DataPointDto } from "@/sdk";
+import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 type GeoDashboardProps = {
   onDataUpdate: (
@@ -56,7 +51,7 @@ type GeoDashboardProps = {
     cityFilteredCount: number
   ) => void;
   filters: FilterState;
-  onAddToFilters?: (countryId: string) => void;
+  onAddToFilters?: (id: string, type: "role" | "company") => void;
   mode: "country" | "city";
   setMode: (mode: "country" | "city") => void;
 };
@@ -84,6 +79,7 @@ export default function GeoDashboard({
   const [trendFrequency, setTrendFrequency] = useState<TrendFrequency>(TrendFrequency.Y5);
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [pageInput, setPageInput] = useState<string>(String(page));
+  const [openPopoverId, setOpenPopoverId] = useState<string | null>(null);
 
   // Reset page when filters change
   useEffect(() => {
@@ -249,32 +245,51 @@ export default function GeoDashboard({
                                   view === ViewType.TABLE ? "ml-2" : "ml-0"
                                 }`}
                               >
-                                <TooltipProvider>
-                                  <Tooltip>
-                                    <TooltipTrigger asChild>
+                                {/*  Note that we have a bug when filtering citiesdirectly on the dashboard */}
+                                {mode === "country" && (
+                                  <Popover open={openPopoverId === row.id} onOpenChange={open => setOpenPopoverId(open ? row.id : null)}>
+                                    <PopoverTrigger asChild>
                                       <Button
-                                        aria-label={`${isRowInFilters(row) ? "Remove from filters" : "Add to filters"}`}
-                                        variant="ghost"
-                                        size="sm"
-                                        className={`p-1 h-6 w-6 rounded-full ${
-                                          isRowInFilters(row)
-                                            ? "bg-[#8C2D19] bg-opacity-20 hover:bg-[#8C2D19] hover:bg-opacity-30"
-                                            : "bg-gray-100 hover:bg-gray-200"
-                                        }`}
-                                        onClick={() => onAddToFilters?.(row.id)}
-                                      >
-                                        {isRowInFilters(row) ? (
-                                          <XIcon className="h-4 w-4 text-[#8C2D19]" />
-                                        ) : (
-                                          <Filter className="h-4 w-4 text-[#8C2D19]" />
-                                        )}
-                                      </Button>
-                                    </TooltipTrigger>
-                                    <TooltipContent>
-                                      <p>{isRowInFilters(row) ? `Remove ${row.name} from filters` : `Add ${row.name} to filters`}</p>
-                                    </TooltipContent>
-                                  </Tooltip>
-                                </TooltipProvider>
+                                      aria-label="Add to filters"
+                                      variant="ghost"
+                                      size="sm"
+                                      className={`p-1 h-6 w-6 rounded-full ${isRowInFilters(row) ? "bg-[#8C2D19] bg-opacity-20 hover:bg-[#8C2D19] hover:bg-opacity-30" : "bg-gray-100 hover:bg-gray-200"}`}
+                                      onClick={e => {
+                                        e.stopPropagation();
+                                        setOpenPopoverId(row.id);
+                                      }}
+                                    >
+                                      <Filter className="h-4 w-4 text-[#8C2D19]" />
+                                    </Button>
+                                  </PopoverTrigger>
+                                  <PopoverContent className="w-56 p-0 rounded-lg shadow-xl border bg-white" align="end" sideOffset={8} >
+                                    <div className="px-4 py-2 border-b bg-gray-50 rounded-t-lg">
+                                      <span className="font-semibold text-gray-700 text-sm">Add Filter</span>
+                                    </div>
+                                    <button
+                                      className="flex items-center gap-2 w-full text-left px-4 py-2 hover:bg-[#F7E7E3] active:bg-[#F2D3C7] transition-colors text-[#8C2D19] text-sm font-medium"
+                                      onClick={() => {
+                                        onAddToFilters?.(row.id, "role");
+                                        setOpenPopoverId(null);
+                                      }}
+                                    >
+                                      <svg className="w-4 h-4 text-[#8C2D19]" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M12 11c0 1.104-.896 2-2 2s-2-.896-2-2 .896-2 2-2 2 .896 2 2zm0 0c0 1.104.896 2 2 2s2-.896 2-2-.896-2-2-2-2 .896-2 2zm-6 8v-2a4 4 0 014-4h4a4 4 0 014 4v2"/></svg>
+                                      Add as Role Filter
+                                    </button>
+                                    <div className="border-t mx-2" />
+                                    <button
+                                      className="flex items-center gap-2 w-full text-left px-4 py-2 hover:bg-[#F7E7E3] active:bg-[#F2D3C7] transition-colors text-[#8C2D19] text-sm font-medium rounded-b-lg"
+                                      onClick={() => {
+                                        onAddToFilters?.(row.id, "company");
+                                        setOpenPopoverId(null);
+                                      }}
+                                    >
+                                      <svg className="w-4 h-4 text-[#8C2D19]" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M3 21V7a2 2 0 012-2h2a2 2 0 012 2v14M7 21V7m0 0V5a2 2 0 012-2h2a2 2 0 012 2v2m0 0v14m0-14h2a2 2 0 012 2v14"/></svg>
+                                      Add as Company Filter
+                                    </button>
+                                  </PopoverContent>
+                                </Popover>
+                              )}
                               </div>
                             </div>
                           </TableCell>
@@ -299,7 +314,7 @@ export default function GeoDashboard({
           setPage={setPage}
           itemsPerPage={itemsPerPage}
           setItemsPerPage={setItemsPerPage}
-          totalItems={mode === "country" ? totalCountries : totalCities}
+          totalItems={mode === "country" ? countryFilteredCount : cityFilteredCount}
           visible={data.length > 0}
           showTrendFrequency={view === ViewType.TREND}
           trendFrequency={trendFrequency}
