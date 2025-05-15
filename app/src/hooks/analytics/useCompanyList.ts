@@ -1,9 +1,9 @@
 import { useQuery } from "@tanstack/react-query";
 import NestAPI from "@/api";
-import { CompaniesAnalyticsControllerGetCompaniesWithAlumniCountRequest } from "@/sdk";
+import { CompanyAnalyticsControllerGetCompaniesWithAlumniCountRequest } from "@/sdk";
 import { filterApiRequestParams } from "@/utils/query-params";
 
-export const useCompanyList = (params: CompaniesAnalyticsControllerGetCompaniesWithAlumniCountRequest) => {
+export const useCompanyList = (params: CompanyAnalyticsControllerGetCompaniesWithAlumniCountRequest) => {
   // No need to send the boolean values if they are false
   const filteredParams = {
     ...filterApiRequestParams(params),
@@ -12,7 +12,7 @@ export const useCompanyList = (params: CompaniesAnalyticsControllerGetCompaniesW
 
   return useQuery({
     queryKey: ['company-list', filteredParams],
-    queryFn: () => NestAPI.companiesAnalyticsControllerGetCompaniesWithAlumniCount(filteredParams),
+    queryFn: () => NestAPI.companyAnalyticsControllerGetCompaniesWithAlumniCount(filteredParams),
     refetchOnWindowFocus: false,
     staleTime: 5 * 60 * 1000, // 5 minutes
     gcTime: 10 * 60 * 1000, // 10 minutes

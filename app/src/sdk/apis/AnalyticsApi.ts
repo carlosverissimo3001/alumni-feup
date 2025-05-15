@@ -17,6 +17,7 @@ import * as runtime from '../runtime';
 import type {
   CityListResponseDto,
   CityOptionDto,
+  CompanyInsightsDto,
   CompanyListResponseDto,
   CompanyOptionDto,
   CountryListResponseDto,
@@ -31,6 +32,8 @@ import {
     CityListResponseDtoToJSON,
     CityOptionDtoFromJSON,
     CityOptionDtoToJSON,
+    CompanyInsightsDtoFromJSON,
+    CompanyInsightsDtoToJSON,
     CompanyListResponseDtoFromJSON,
     CompanyListResponseDtoToJSON,
     CompanyOptionDtoFromJSON,
@@ -49,7 +52,7 @@ import {
     RoleOptionDtoToJSON,
 } from '../models/index';
 
-export interface CompaniesAnalyticsControllerGetCompaniesWithAlumniCountRequest {
+export interface CompanyAnalyticsControllerGetCompaniesWithAlumniCountRequest {
     includeTrend: boolean;
     startDate?: string;
     endDate?: string;
@@ -66,8 +69,8 @@ export interface CompaniesAnalyticsControllerGetCompaniesWithAlumniCountRequest 
     excludeResearchAndHighEducation?: boolean;
     companySearch?: string;
     industrySearch?: string;
-    companySize?: Array<CompaniesAnalyticsControllerGetCompaniesWithAlumniCountCompanySizeEnum>;
-    companyType?: Array<CompaniesAnalyticsControllerGetCompaniesWithAlumniCountCompanyTypeEnum>;
+    companySize?: Array<CompanyAnalyticsControllerGetCompaniesWithAlumniCountCompanySizeEnum>;
+    companyType?: Array<CompanyAnalyticsControllerGetCompaniesWithAlumniCountCompanyTypeEnum>;
     escoCodes?: Array<string>;
     classificationLevel?: number;
     limit?: number;
@@ -77,11 +80,11 @@ export interface CompaniesAnalyticsControllerGetCompaniesWithAlumniCountRequest 
     sortOrder?: string;
 }
 
-export interface CompaniesAnalyticsControllerGetCompanyDetailsRequest {
+export interface CompanyAnalyticsControllerGetCompanyDetailsRequest {
     id: string;
 }
 
-export interface CompaniesAnalyticsControllerGetHotCompaniesRequest {
+export interface CompanyAnalyticsControllerGetHotCompaniesRequest {
     includeTrend: boolean;
     startDate?: string;
     endDate?: string;
@@ -98,8 +101,8 @@ export interface CompaniesAnalyticsControllerGetHotCompaniesRequest {
     excludeResearchAndHighEducation?: boolean;
     companySearch?: string;
     industrySearch?: string;
-    companySize?: Array<CompaniesAnalyticsControllerGetHotCompaniesCompanySizeEnum>;
-    companyType?: Array<CompaniesAnalyticsControllerGetHotCompaniesCompanyTypeEnum>;
+    companySize?: Array<CompanyAnalyticsControllerGetHotCompaniesCompanySizeEnum>;
+    companyType?: Array<CompanyAnalyticsControllerGetHotCompaniesCompanyTypeEnum>;
     escoCodes?: Array<string>;
     classificationLevel?: number;
     limit?: number;
@@ -169,7 +172,7 @@ export interface GeoAnalyticsControllerGetCountriesWithAlumniCountRequest {
     sortOrder?: string;
 }
 
-export interface IndustriesAnalyticsControllerGetIndustryWithCountsRequest {
+export interface IndustryAnalyticsControllerGetIndustryWithCountsRequest {
     includeTrend: boolean;
     startDate?: string;
     endDate?: string;
@@ -186,8 +189,8 @@ export interface IndustriesAnalyticsControllerGetIndustryWithCountsRequest {
     excludeResearchAndHighEducation?: boolean;
     companySearch?: string;
     industrySearch?: string;
-    companySize?: Array<IndustriesAnalyticsControllerGetIndustryWithCountsCompanySizeEnum>;
-    companyType?: Array<IndustriesAnalyticsControllerGetIndustryWithCountsCompanyTypeEnum>;
+    companySize?: Array<IndustryAnalyticsControllerGetIndustryWithCountsCompanySizeEnum>;
+    companyType?: Array<IndustryAnalyticsControllerGetIndustryWithCountsCompanyTypeEnum>;
     escoCodes?: Array<string>;
     classificationLevel?: number;
     limit?: number;
@@ -264,12 +267,12 @@ export interface AnalyticsApiInterface {
      * @throws {RequiredError}
      * @memberof AnalyticsApiInterface
      */
-    companiesAnalyticsControllerGetCompaniesWithAlumniCountRaw(requestParameters: CompaniesAnalyticsControllerGetCompaniesWithAlumniCountRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<CompanyListResponseDto>>;
+    companyAnalyticsControllerGetCompaniesWithAlumniCountRaw(requestParameters: CompanyAnalyticsControllerGetCompaniesWithAlumniCountRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<CompanyListResponseDto>>;
 
     /**
      * Get the companies, and the number of alumni working in them.
      */
-    companiesAnalyticsControllerGetCompaniesWithAlumniCount(requestParameters: CompaniesAnalyticsControllerGetCompaniesWithAlumniCountRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<CompanyListResponseDto>;
+    companyAnalyticsControllerGetCompaniesWithAlumniCount(requestParameters: CompanyAnalyticsControllerGetCompaniesWithAlumniCountRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<CompanyListResponseDto>;
 
     /**
      * 
@@ -279,12 +282,12 @@ export interface AnalyticsApiInterface {
      * @throws {RequiredError}
      * @memberof AnalyticsApiInterface
      */
-    companiesAnalyticsControllerGetCompanyDetailsRaw(requestParameters: CompaniesAnalyticsControllerGetCompanyDetailsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>>;
+    companyAnalyticsControllerGetCompanyDetailsRaw(requestParameters: CompanyAnalyticsControllerGetCompanyDetailsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<CompanyInsightsDto>>;
 
     /**
      * Returns detailed information about a specific company.
      */
-    companiesAnalyticsControllerGetCompanyDetails(requestParameters: CompaniesAnalyticsControllerGetCompanyDetailsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void>;
+    companyAnalyticsControllerGetCompanyDetails(requestParameters: CompanyAnalyticsControllerGetCompanyDetailsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<CompanyInsightsDto>;
 
     /**
      * 
@@ -293,12 +296,12 @@ export interface AnalyticsApiInterface {
      * @throws {RequiredError}
      * @memberof AnalyticsApiInterface
      */
-    companiesAnalyticsControllerGetCompanyGrowthRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>>;
+    companyAnalyticsControllerGetCompanyGrowthRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>>;
 
     /**
      * Returns company employment growth over time.
      */
-    companiesAnalyticsControllerGetCompanyGrowth(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void>;
+    companyAnalyticsControllerGetCompanyGrowth(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void>;
 
     /**
      * 
@@ -307,12 +310,12 @@ export interface AnalyticsApiInterface {
      * @throws {RequiredError}
      * @memberof AnalyticsApiInterface
      */
-    companiesAnalyticsControllerGetCompanyOptionsRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<CompanyOptionDto>>>;
+    companyAnalyticsControllerGetCompanyOptionsRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<CompanyOptionDto>>>;
 
     /**
      * List of possible companies to search for.
      */
-    companiesAnalyticsControllerGetCompanyOptions(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<CompanyOptionDto>>;
+    companyAnalyticsControllerGetCompanyOptions(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<CompanyOptionDto>>;
 
     /**
      * 
@@ -346,12 +349,12 @@ export interface AnalyticsApiInterface {
      * @throws {RequiredError}
      * @memberof AnalyticsApiInterface
      */
-    companiesAnalyticsControllerGetHotCompaniesRaw(requestParameters: CompaniesAnalyticsControllerGetHotCompaniesRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>>;
+    companyAnalyticsControllerGetHotCompaniesRaw(requestParameters: CompanyAnalyticsControllerGetHotCompaniesRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>>;
 
     /**
      * Returns companies that have seen a spike in alumni employment.
      */
-    companiesAnalyticsControllerGetHotCompanies(requestParameters: CompaniesAnalyticsControllerGetHotCompaniesRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void>;
+    companyAnalyticsControllerGetHotCompanies(requestParameters: CompanyAnalyticsControllerGetHotCompaniesRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void>;
 
     /**
      * 
@@ -467,13 +470,13 @@ export interface AnalyticsApiInterface {
      * @throws {RequiredError}
      * @memberof AnalyticsApiInterface
      */
-    industriesAnalyticsControllerGetIndustryOptionsRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<IndustryOptionDto>>>;
+    industryAnalyticsControllerGetIndustryOptionsRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<IndustryOptionDto>>>;
 
     /**
      * Returns a list of industries with their id and name.
      * List of possible industries to search for.
      */
-    industriesAnalyticsControllerGetIndustryOptions(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<IndustryOptionDto>>;
+    industryAnalyticsControllerGetIndustryOptions(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<IndustryOptionDto>>;
 
     /**
      * 
@@ -507,12 +510,12 @@ export interface AnalyticsApiInterface {
      * @throws {RequiredError}
      * @memberof AnalyticsApiInterface
      */
-    industriesAnalyticsControllerGetIndustryWithCountsRaw(requestParameters: IndustriesAnalyticsControllerGetIndustryWithCountsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<IndustryListResponseDto>>;
+    industryAnalyticsControllerGetIndustryWithCountsRaw(requestParameters: IndustryAnalyticsControllerGetIndustryWithCountsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<IndustryListResponseDto>>;
 
     /**
      * Returns the number of alumni working in companies grouped by industry.
      */
-    industriesAnalyticsControllerGetIndustryWithCounts(requestParameters: IndustriesAnalyticsControllerGetIndustryWithCountsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<IndustryListResponseDto>;
+    industryAnalyticsControllerGetIndustryWithCounts(requestParameters: IndustryAnalyticsControllerGetIndustryWithCountsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<IndustryListResponseDto>;
 
     /**
      * Returns a list of roles with their ESCO code and title.
@@ -578,11 +581,11 @@ export class AnalyticsApi extends runtime.BaseAPI implements AnalyticsApiInterfa
     /**
      * Get the companies, and the number of alumni working in them.
      */
-    async companiesAnalyticsControllerGetCompaniesWithAlumniCountRaw(requestParameters: CompaniesAnalyticsControllerGetCompaniesWithAlumniCountRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<CompanyListResponseDto>> {
+    async companyAnalyticsControllerGetCompaniesWithAlumniCountRaw(requestParameters: CompanyAnalyticsControllerGetCompaniesWithAlumniCountRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<CompanyListResponseDto>> {
         if (requestParameters['includeTrend'] == null) {
             throw new runtime.RequiredError(
                 'includeTrend',
-                'Required parameter "includeTrend" was null or undefined when calling companiesAnalyticsControllerGetCompaniesWithAlumniCount().'
+                'Required parameter "includeTrend" was null or undefined when calling companyAnalyticsControllerGetCompaniesWithAlumniCount().'
             );
         }
 
@@ -703,19 +706,19 @@ export class AnalyticsApi extends runtime.BaseAPI implements AnalyticsApiInterfa
     /**
      * Get the companies, and the number of alumni working in them.
      */
-    async companiesAnalyticsControllerGetCompaniesWithAlumniCount(requestParameters: CompaniesAnalyticsControllerGetCompaniesWithAlumniCountRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<CompanyListResponseDto> {
-        const response = await this.companiesAnalyticsControllerGetCompaniesWithAlumniCountRaw(requestParameters, initOverrides);
+    async companyAnalyticsControllerGetCompaniesWithAlumniCount(requestParameters: CompanyAnalyticsControllerGetCompaniesWithAlumniCountRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<CompanyListResponseDto> {
+        const response = await this.companyAnalyticsControllerGetCompaniesWithAlumniCountRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      * Returns detailed information about a specific company.
      */
-    async companiesAnalyticsControllerGetCompanyDetailsRaw(requestParameters: CompaniesAnalyticsControllerGetCompanyDetailsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+    async companyAnalyticsControllerGetCompanyDetailsRaw(requestParameters: CompanyAnalyticsControllerGetCompanyDetailsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<CompanyInsightsDto>> {
         if (requestParameters['id'] == null) {
             throw new runtime.RequiredError(
                 'id',
-                'Required parameter "id" was null or undefined when calling companiesAnalyticsControllerGetCompanyDetails().'
+                'Required parameter "id" was null or undefined when calling companyAnalyticsControllerGetCompanyDetails().'
             );
         }
 
@@ -730,20 +733,21 @@ export class AnalyticsApi extends runtime.BaseAPI implements AnalyticsApiInterfa
             query: queryParameters,
         }, initOverrides);
 
-        return new runtime.VoidApiResponse(response);
+        return new runtime.JSONApiResponse(response, (jsonValue) => CompanyInsightsDtoFromJSON(jsonValue));
     }
 
     /**
      * Returns detailed information about a specific company.
      */
-    async companiesAnalyticsControllerGetCompanyDetails(requestParameters: CompaniesAnalyticsControllerGetCompanyDetailsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
-        await this.companiesAnalyticsControllerGetCompanyDetailsRaw(requestParameters, initOverrides);
+    async companyAnalyticsControllerGetCompanyDetails(requestParameters: CompanyAnalyticsControllerGetCompanyDetailsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<CompanyInsightsDto> {
+        const response = await this.companyAnalyticsControllerGetCompanyDetailsRaw(requestParameters, initOverrides);
+        return await response.value();
     }
 
     /**
      * Returns company employment growth over time.
      */
-    async companiesAnalyticsControllerGetCompanyGrowthRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+    async companyAnalyticsControllerGetCompanyGrowthRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
         const queryParameters: any = {};
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -761,14 +765,14 @@ export class AnalyticsApi extends runtime.BaseAPI implements AnalyticsApiInterfa
     /**
      * Returns company employment growth over time.
      */
-    async companiesAnalyticsControllerGetCompanyGrowth(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
-        await this.companiesAnalyticsControllerGetCompanyGrowthRaw(initOverrides);
+    async companyAnalyticsControllerGetCompanyGrowth(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+        await this.companyAnalyticsControllerGetCompanyGrowthRaw(initOverrides);
     }
 
     /**
      * List of possible companies to search for.
      */
-    async companiesAnalyticsControllerGetCompanyOptionsRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<CompanyOptionDto>>> {
+    async companyAnalyticsControllerGetCompanyOptionsRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<CompanyOptionDto>>> {
         const queryParameters: any = {};
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -786,19 +790,19 @@ export class AnalyticsApi extends runtime.BaseAPI implements AnalyticsApiInterfa
     /**
      * List of possible companies to search for.
      */
-    async companiesAnalyticsControllerGetCompanyOptions(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<CompanyOptionDto>> {
-        const response = await this.companiesAnalyticsControllerGetCompanyOptionsRaw(initOverrides);
+    async companyAnalyticsControllerGetCompanyOptions(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<CompanyOptionDto>> {
+        const response = await this.companyAnalyticsControllerGetCompanyOptionsRaw(initOverrides);
         return await response.value();
     }
 
     /**
      * Returns companies that have seen a spike in alumni employment.
      */
-    async companiesAnalyticsControllerGetHotCompaniesRaw(requestParameters: CompaniesAnalyticsControllerGetHotCompaniesRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+    async companyAnalyticsControllerGetHotCompaniesRaw(requestParameters: CompanyAnalyticsControllerGetHotCompaniesRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
         if (requestParameters['includeTrend'] == null) {
             throw new runtime.RequiredError(
                 'includeTrend',
-                'Required parameter "includeTrend" was null or undefined when calling companiesAnalyticsControllerGetHotCompanies().'
+                'Required parameter "includeTrend" was null or undefined when calling companyAnalyticsControllerGetHotCompanies().'
             );
         }
 
@@ -919,8 +923,8 @@ export class AnalyticsApi extends runtime.BaseAPI implements AnalyticsApiInterfa
     /**
      * Returns companies that have seen a spike in alumni employment.
      */
-    async companiesAnalyticsControllerGetHotCompanies(requestParameters: CompaniesAnalyticsControllerGetHotCompaniesRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
-        await this.companiesAnalyticsControllerGetHotCompaniesRaw(requestParameters, initOverrides);
+    async companyAnalyticsControllerGetHotCompanies(requestParameters: CompanyAnalyticsControllerGetHotCompaniesRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+        await this.companyAnalyticsControllerGetHotCompaniesRaw(requestParameters, initOverrides);
     }
 
     /**
@@ -1249,7 +1253,7 @@ export class AnalyticsApi extends runtime.BaseAPI implements AnalyticsApiInterfa
      * Returns a list of industries with their id and name.
      * List of possible industries to search for.
      */
-    async industriesAnalyticsControllerGetIndustryOptionsRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<IndustryOptionDto>>> {
+    async industryAnalyticsControllerGetIndustryOptionsRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<IndustryOptionDto>>> {
         const queryParameters: any = {};
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -1268,19 +1272,19 @@ export class AnalyticsApi extends runtime.BaseAPI implements AnalyticsApiInterfa
      * Returns a list of industries with their id and name.
      * List of possible industries to search for.
      */
-    async industriesAnalyticsControllerGetIndustryOptions(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<IndustryOptionDto>> {
-        const response = await this.industriesAnalyticsControllerGetIndustryOptionsRaw(initOverrides);
+    async industryAnalyticsControllerGetIndustryOptions(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<IndustryOptionDto>> {
+        const response = await this.industryAnalyticsControllerGetIndustryOptionsRaw(initOverrides);
         return await response.value();
     }
 
     /**
      * Returns the number of alumni working in companies grouped by industry.
      */
-    async industriesAnalyticsControllerGetIndustryWithCountsRaw(requestParameters: IndustriesAnalyticsControllerGetIndustryWithCountsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<IndustryListResponseDto>> {
+    async industryAnalyticsControllerGetIndustryWithCountsRaw(requestParameters: IndustryAnalyticsControllerGetIndustryWithCountsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<IndustryListResponseDto>> {
         if (requestParameters['includeTrend'] == null) {
             throw new runtime.RequiredError(
                 'includeTrend',
-                'Required parameter "includeTrend" was null or undefined when calling industriesAnalyticsControllerGetIndustryWithCounts().'
+                'Required parameter "includeTrend" was null or undefined when calling industryAnalyticsControllerGetIndustryWithCounts().'
             );
         }
 
@@ -1401,8 +1405,8 @@ export class AnalyticsApi extends runtime.BaseAPI implements AnalyticsApiInterfa
     /**
      * Returns the number of alumni working in companies grouped by industry.
      */
-    async industriesAnalyticsControllerGetIndustryWithCounts(requestParameters: IndustriesAnalyticsControllerGetIndustryWithCountsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<IndustryListResponseDto> {
-        const response = await this.industriesAnalyticsControllerGetIndustryWithCountsRaw(requestParameters, initOverrides);
+    async industryAnalyticsControllerGetIndustryWithCounts(requestParameters: IndustryAnalyticsControllerGetIndustryWithCountsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<IndustryListResponseDto> {
+        const response = await this.industryAnalyticsControllerGetIndustryWithCountsRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -1572,7 +1576,7 @@ export class AnalyticsApi extends runtime.BaseAPI implements AnalyticsApiInterfa
 /**
  * @export
  */
-export const CompaniesAnalyticsControllerGetCompaniesWithAlumniCountCompanySizeEnum = {
+export const CompanyAnalyticsControllerGetCompaniesWithAlumniCountCompanySizeEnum = {
     A: 'A',
     B: 'B',
     C: 'C',
@@ -1583,11 +1587,11 @@ export const CompaniesAnalyticsControllerGetCompaniesWithAlumniCountCompanySizeE
     H: 'H',
     I: 'I'
 } as const;
-export type CompaniesAnalyticsControllerGetCompaniesWithAlumniCountCompanySizeEnum = typeof CompaniesAnalyticsControllerGetCompaniesWithAlumniCountCompanySizeEnum[keyof typeof CompaniesAnalyticsControllerGetCompaniesWithAlumniCountCompanySizeEnum];
+export type CompanyAnalyticsControllerGetCompaniesWithAlumniCountCompanySizeEnum = typeof CompanyAnalyticsControllerGetCompaniesWithAlumniCountCompanySizeEnum[keyof typeof CompanyAnalyticsControllerGetCompaniesWithAlumniCountCompanySizeEnum];
 /**
  * @export
  */
-export const CompaniesAnalyticsControllerGetCompaniesWithAlumniCountCompanyTypeEnum = {
+export const CompanyAnalyticsControllerGetCompaniesWithAlumniCountCompanyTypeEnum = {
     Educational: 'EDUCATIONAL',
     GovernmentAgency: 'GOVERNMENT_AGENCY',
     NonProfit: 'NON_PROFIT',
@@ -1597,11 +1601,11 @@ export const CompaniesAnalyticsControllerGetCompaniesWithAlumniCountCompanyTypeE
     SelfEmployed: 'SELF_EMPLOYED',
     SelfOwned: 'SELF_OWNED'
 } as const;
-export type CompaniesAnalyticsControllerGetCompaniesWithAlumniCountCompanyTypeEnum = typeof CompaniesAnalyticsControllerGetCompaniesWithAlumniCountCompanyTypeEnum[keyof typeof CompaniesAnalyticsControllerGetCompaniesWithAlumniCountCompanyTypeEnum];
+export type CompanyAnalyticsControllerGetCompaniesWithAlumniCountCompanyTypeEnum = typeof CompanyAnalyticsControllerGetCompaniesWithAlumniCountCompanyTypeEnum[keyof typeof CompanyAnalyticsControllerGetCompaniesWithAlumniCountCompanyTypeEnum];
 /**
  * @export
  */
-export const CompaniesAnalyticsControllerGetHotCompaniesCompanySizeEnum = {
+export const CompanyAnalyticsControllerGetHotCompaniesCompanySizeEnum = {
     A: 'A',
     B: 'B',
     C: 'C',
@@ -1612,11 +1616,11 @@ export const CompaniesAnalyticsControllerGetHotCompaniesCompanySizeEnum = {
     H: 'H',
     I: 'I'
 } as const;
-export type CompaniesAnalyticsControllerGetHotCompaniesCompanySizeEnum = typeof CompaniesAnalyticsControllerGetHotCompaniesCompanySizeEnum[keyof typeof CompaniesAnalyticsControllerGetHotCompaniesCompanySizeEnum];
+export type CompanyAnalyticsControllerGetHotCompaniesCompanySizeEnum = typeof CompanyAnalyticsControllerGetHotCompaniesCompanySizeEnum[keyof typeof CompanyAnalyticsControllerGetHotCompaniesCompanySizeEnum];
 /**
  * @export
  */
-export const CompaniesAnalyticsControllerGetHotCompaniesCompanyTypeEnum = {
+export const CompanyAnalyticsControllerGetHotCompaniesCompanyTypeEnum = {
     Educational: 'EDUCATIONAL',
     GovernmentAgency: 'GOVERNMENT_AGENCY',
     NonProfit: 'NON_PROFIT',
@@ -1626,7 +1630,7 @@ export const CompaniesAnalyticsControllerGetHotCompaniesCompanyTypeEnum = {
     SelfEmployed: 'SELF_EMPLOYED',
     SelfOwned: 'SELF_OWNED'
 } as const;
-export type CompaniesAnalyticsControllerGetHotCompaniesCompanyTypeEnum = typeof CompaniesAnalyticsControllerGetHotCompaniesCompanyTypeEnum[keyof typeof CompaniesAnalyticsControllerGetHotCompaniesCompanyTypeEnum];
+export type CompanyAnalyticsControllerGetHotCompaniesCompanyTypeEnum = typeof CompanyAnalyticsControllerGetHotCompaniesCompanyTypeEnum[keyof typeof CompanyAnalyticsControllerGetHotCompaniesCompanyTypeEnum];
 /**
  * @export
  */
@@ -1688,7 +1692,7 @@ export type GeoAnalyticsControllerGetCountriesWithAlumniCountCompanyTypeEnum = t
 /**
  * @export
  */
-export const IndustriesAnalyticsControllerGetIndustryWithCountsCompanySizeEnum = {
+export const IndustryAnalyticsControllerGetIndustryWithCountsCompanySizeEnum = {
     A: 'A',
     B: 'B',
     C: 'C',
@@ -1699,11 +1703,11 @@ export const IndustriesAnalyticsControllerGetIndustryWithCountsCompanySizeEnum =
     H: 'H',
     I: 'I'
 } as const;
-export type IndustriesAnalyticsControllerGetIndustryWithCountsCompanySizeEnum = typeof IndustriesAnalyticsControllerGetIndustryWithCountsCompanySizeEnum[keyof typeof IndustriesAnalyticsControllerGetIndustryWithCountsCompanySizeEnum];
+export type IndustryAnalyticsControllerGetIndustryWithCountsCompanySizeEnum = typeof IndustryAnalyticsControllerGetIndustryWithCountsCompanySizeEnum[keyof typeof IndustryAnalyticsControllerGetIndustryWithCountsCompanySizeEnum];
 /**
  * @export
  */
-export const IndustriesAnalyticsControllerGetIndustryWithCountsCompanyTypeEnum = {
+export const IndustryAnalyticsControllerGetIndustryWithCountsCompanyTypeEnum = {
     Educational: 'EDUCATIONAL',
     GovernmentAgency: 'GOVERNMENT_AGENCY',
     NonProfit: 'NON_PROFIT',
@@ -1713,7 +1717,7 @@ export const IndustriesAnalyticsControllerGetIndustryWithCountsCompanyTypeEnum =
     SelfEmployed: 'SELF_EMPLOYED',
     SelfOwned: 'SELF_OWNED'
 } as const;
-export type IndustriesAnalyticsControllerGetIndustryWithCountsCompanyTypeEnum = typeof IndustriesAnalyticsControllerGetIndustryWithCountsCompanyTypeEnum[keyof typeof IndustriesAnalyticsControllerGetIndustryWithCountsCompanyTypeEnum];
+export type IndustryAnalyticsControllerGetIndustryWithCountsCompanyTypeEnum = typeof IndustryAnalyticsControllerGetIndustryWithCountsCompanyTypeEnum[keyof typeof IndustryAnalyticsControllerGetIndustryWithCountsCompanyTypeEnum];
 /**
  * @export
  */

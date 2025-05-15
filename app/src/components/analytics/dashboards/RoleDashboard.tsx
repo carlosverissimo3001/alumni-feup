@@ -151,20 +151,12 @@ export default function RoleDashboard({
                             {rowNumber}
                           </TableCell>
                           <TableCell className="w-5/12 py-1.5 pl-3 text-sm font-medium text-[#000000] align-middle">
-                            <Button
-                              variant="link"
-                              className="text-sm font-medium text-[#000000] w-full text-left h-auto p-1 hover:text-[#8C2D19] transition-colors mr-2"
-                              onClick={() => {
-                                window.open(`/role/${role.code}`, "_blank");
-                              }}
-                            >
                               <div
                                 title={role.name}
-                                className="text-ellipsis overflow-hidden w-full text-left"
+                                className="text-ellipsis overflow-hidden whitespace-nowrap w-full text-left p-1"
                               >
                                 {startCase(role.name)}
                               </div>
-                            </Button>
                           </TableCell>
                           <TableCell className="w-2/12 px-3 py-1 text-sm text-[#000000] align-middle hover:text-[#8C2D19] transition-colors relative">
                             <div className="flex items-center gap-0 justify-center">

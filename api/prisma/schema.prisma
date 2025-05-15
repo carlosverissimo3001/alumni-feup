@@ -257,8 +257,8 @@ model ReviewCompany {
   locationId  String?  @map("location_id")
   rating      Int      @db.SmallInt
   description String?
-  upvotes     String[] 
-  downvotes   String[] 
+  upvotes     String[]
+  downvotes   String[]
   createdAt   DateTime @default(now()) @map("created_at") @db.Timestamp(6)
   updatedAt   DateTime @default(now()) @map("updated_at") @db.Timestamp(6)
 
@@ -320,6 +320,37 @@ model Feedback {
   updatedAt DateTime @default(now()) @map("updated_at") @db.Timestamp(6)
 
   @@map("feedback")
+}
+
+model Trend {
+  id         String     @id @default(dbgenerated("gen_random_uuid()"))
+  entityName String     @map("entity_name")
+  type       TREND_TYPE
+  unit       TREND_UNIT @default(MONTH)
+
+  // E.g 2000-01
+  initLabel String @map("init_label")
+
+  // E.g 2025-12
+  endLabel String @map("end_label")
+
+  // The data points
+  trend Int[]
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamp(6)
+  updatedAt DateTime @default(now()) @map("updated_at") @db.Timestamp(6)
+}
+
+enum TREND_TYPE {
+  INDUSTRY
+  COMPANY_AVERAGE
+}
+
+enum TREND_UNIT {
+  MONTH
+  QUARTER
+  SEMESTER
+  YEAR
 }
 
 enum FEEDBACK_TYPE {
