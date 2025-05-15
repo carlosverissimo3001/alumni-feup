@@ -10,7 +10,7 @@ import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 @ApiTags('V1', 'Analytics')
 @Controller('analytics/industries')
-export class IndustriesAnalyticsController {
+export class IndustryAnalyticsController {
   constructor(
     private readonly companyAnalyticsService: CompanyAnalyticsService,
     private readonly industryRepository: IndustryRepository,

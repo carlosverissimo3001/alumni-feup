@@ -30,3 +30,6 @@ export { RoleOptionDto } from './role-option.dto';
 
 // Data point
 export { DataPointDto } from './data-point.dto';
+
+// Insights
+export { CompanyInsightsDto } from './insights/company-insights.dto';

@@ -2,6 +2,11 @@ import { DataPointDto } from "@/sdk/models/DataPointDto";
 import * as d3 from "d3";
 import { TrendFrequency } from "@/types/entityTypes";
 
+enum TrendLineType {
+  UP = "up",
+  DOWN = "down",
+  NEUTRAL = "neutral",
+}
 
 type TrendLineComponentProps = {
   dataPoints: DataPointDto[];
@@ -86,14 +91,38 @@ const spliceData = (
     });
 };
 
+const getTrend = (data: number[]): TrendLineType => {
+  const lastPoint = data[data.length - 1];
+  const firstPoint = data[0];
+
+  if (lastPoint > firstPoint) {
+    return TrendLineType.UP;
+  } else if (lastPoint < firstPoint) {
+    return TrendLineType.DOWN;
+  } else {
+    return TrendLineType.NEUTRAL;
+  }
+};
+
+const getTrendColor = (trend: TrendLineType) => {
+  switch (trend) {
+    case TrendLineType.UP:
+      return "#22c55e";
+    case TrendLineType.DOWN:
+      return "#ef4444";
+    case TrendLineType.NEUTRAL:
+      return "#6b7280";
+  }
+};
+
 const TrendLineComponent = (props: TrendLineComponentProps) => {
   const raw = spliceData(props.dataPoints, props.trendFrequency);
   const data = raw.map((point) => point.value);
 
   console.log(raw);
 
-  const trendUp = data[data.length - 1] > data[0];
-  const trendColor = trendUp ? "#22c55e" : "#ef4444";
+  const trend = getTrend(data);
+  const trendColor = getTrendColor(trend);
 
   const svgRef = (node: SVGSVGElement) => {
     if (!node) return;

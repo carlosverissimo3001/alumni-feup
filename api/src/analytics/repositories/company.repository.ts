@@ -1,6 +1,16 @@
 import { PrismaService } from '@/prisma/prisma.service';
 import { Injectable } from '@nestjs/common';
-import { CompanySummaryEntity } from '../entities';
+import { CompanySummaryEntity, CompanyEntity } from '../entities';
+import { companySelect } from '../utils/selectors';
+import { Prisma } from '@prisma/client';
+const extendedSelect = {
+  ...companySelect,
+  founded: true,
+  companySize: true,
+  linkedinUrl: true,
+  companyType: true,
+  website: true,
+} satisfies Prisma.CompanySelect;
 
 @Injectable()
 export class CompanyRepository {
@@ -28,5 +38,23 @@ export class CompanyRepository {
     });
 
     return industries.length;
+  }
+
+  async findById(id: string): Promise<CompanyEntity> {
+    const company = await this.prisma.company.findUnique({
+      where: { id },
+      select: extendedSelect,
+    });
+
+    if (!company) {
+      throw new Error('Company not found');
+    }
+
+    // TODO: Fix this
+    return {
+      ...company,
+      industry: company.Industry,
+      location: company.Location,
+    };
   }
 }

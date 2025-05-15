@@ -1,4 +1,8 @@
-export { CompanyAnalyticsEntity, CompanySummaryEntity } from './company.entity';
+export {
+  CompanyAnalyticsEntity,
+  CompanySummaryEntity,
+  CompanyEntity,
+} from './company.entity';
 export { IndustryAnalyticsEntity } from './industry.entity';
 export { RoleAnalyticsEntity } from './role.entity';
 export { LocationAnalyticsEntity } from './location.entity';

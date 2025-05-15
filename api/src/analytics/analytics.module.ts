@@ -1,9 +1,9 @@
 import { Logger, Module } from '@nestjs/common';
 import { PrismaService } from '@/prisma/prisma.service';
 import {
-  CompaniesAnalyticsController,
+  CompanyAnalyticsController,
   GeoAnalyticsController,
-  IndustriesAnalyticsController,
+  IndustryAnalyticsController,
   RoleAnalyticsController,
 } from '@/analytics/controllers';
 import {
@@ -22,9 +22,9 @@ import {
 
 @Module({
   controllers: [
-    CompaniesAnalyticsController,
+    CompanyAnalyticsController,
     GeoAnalyticsController,
-    IndustriesAnalyticsController,
+    IndustryAnalyticsController,
     RoleAnalyticsController,
   ],
   providers: [

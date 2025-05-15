@@ -83,29 +83,26 @@ export default function CompanyDashboard({
 
   const companies = data?.companies || [];
 
-  // So ugly, try to fix if time allows
   useEffect(() => {
-    if (
-      data?.alumniCount !== undefined &&
-      data?.companyCount !== undefined &&
-      data?.alumniFilteredCount !== undefined &&
-      data?.companyFilteredCount !== undefined
-    ) {
-      setTotalItems(data.companyFilteredCount);
-      onDataUpdate(
-        data.alumniCount,
-        data.companyCount,
-        data.alumniFilteredCount,
-        data.companyFilteredCount
-      );
+    if (data) {
+      const {
+        alumniCount,
+        companyCount,
+        alumniFilteredCount,
+        companyFilteredCount,
+      } = data;
+  
+      if (
+        alumniCount !== undefined &&
+        companyCount !== undefined &&
+        alumniFilteredCount !== undefined &&
+        companyFilteredCount !== undefined
+      ) {
+        setTotalItems(companyFilteredCount);
+        onDataUpdate(alumniCount, companyCount, alumniFilteredCount, companyFilteredCount);
+      }
     }
-  }, [
-    data?.alumniCount,
-    data?.companyCount,
-    data?.alumniFilteredCount,
-    data?.companyFilteredCount,
-    onDataUpdate,
-  ]);
+  }, [data, onDataUpdate]);
 
   useEffect(() => {
     setPageInput(String(page));

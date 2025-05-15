@@ -32,8 +32,8 @@ import { useIndustryOptions } from "@/hooks/analytics/useIndustryOptions";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { COMPANY_SIZE, COMPANY_TYPE } from "@/types/company";
 import {
-  CompaniesAnalyticsControllerGetCompaniesWithAlumniCountCompanySizeEnum as CompanySizeEnum,
-  CompaniesAnalyticsControllerGetCompaniesWithAlumniCountCompanyTypeEnum as CompanyTypeEnum,
+  CompanyAnalyticsControllerGetCompaniesWithAlumniCountCompanySizeEnum as CompanySizeEnum,
+  CompanyAnalyticsControllerGetCompaniesWithAlumniCountCompanyTypeEnum as CompanyTypeEnum,
 } from "@/sdk";
 import { motion, AnimatePresence } from "framer-motion";
 import { useRoleOptions } from "@/hooks/analytics/useRoleOptions";
@@ -53,6 +53,7 @@ export type FilterState = {
   search?: string;
   excludeResearchAndHighEducation?: boolean;
   onlyInternational?: boolean;
+  hideUnknownRoles?: boolean;
   companySize?: CompanySizeEnum[];
   companyType?: CompanyTypeEnum[];
   classificationLevel?: number;
@@ -684,7 +685,7 @@ export default function GlobalFilters({
             className="w-full"
           />
         </div>
-
+  
         <div>
           <Label
             htmlFor="roleSelect"
@@ -702,8 +703,8 @@ export default function GlobalFilters({
             maxCount={1}
           />
         </div>
-
-        <div className="mt-1 grid grid-cols-2 gap-y-2">
+  
+        <div className="grid grid-cols-2 gap-2 gap-x-4 mt-5">
           <div className="flex items-center space-x-2">
             <Checkbox
               id="currentRoles"
@@ -750,6 +751,22 @@ export default function GlobalFilters({
               className="text-xs font-medium text-gray-700 peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
             >
               Only international roles
+            </Label>
+          </div>
+          <div className="flex items-center space-x-2">
+            <Checkbox
+              id="hideUnknownRoles"
+              checked={filters.hideUnknownRoles}
+              onCheckedChange={(checked) =>
+                handleFilterChange("hideUnknownRoles", checked)
+              }
+              className="border-gray-300 data-[state=checked]:bg-[#8C2D19] data-[state=checked]:border-[#8C2D19]"
+            />
+            <Label
+              htmlFor="hideUnknownRoles"
+              className="text-xs font-medium text-gray-700 peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+            >
+              Hide remote/unlocated roles
             </Label>
           </div>
         </div>

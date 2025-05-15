@@ -5,12 +5,12 @@ import {
   QueryParamsDto,
   CompanyOptionDto,
   CompanyListResponseDto,
-  IndustryListResponseDto,
+  CompanyInsightsDto,
 } from '../dto';
 
 @ApiTags('V1', 'Analytics')
 @Controller('analytics/companies')
-export class CompaniesAnalyticsController {
+export class CompanyAnalyticsController {
   constructor(
     private readonly companyAnalyticsService: CompanyAnalyticsService,
   ) {}
@@ -54,8 +54,13 @@ export class CompaniesAnalyticsController {
   @ApiOperation({
     summary: 'Returns detailed information about a specific company.',
   })
+  @ApiResponse({
+    status: 200,
+    description: 'Detailed information about a specific company.',
+    type: CompanyInsightsDto,
+  })
   async getCompanyDetails(@Param('id') id: string) {
-    return this.companyAnalyticsService.getCompanyDetails(id);
+    return this.companyAnalyticsService.getCompanyInsights(id);
   }
 
   @Get('/hot-companies')

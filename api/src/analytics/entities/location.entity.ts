@@ -1,15 +1,15 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 export class LocationAnalyticsEntity {
   @ApiProperty()
   id: string;
 
-  @ApiProperty()
-  country: string;
+  @ApiPropertyOptional({ nullable: true })
+  country?: string | null;
 
-  @ApiProperty()
-  countryCode: string;
+  @ApiPropertyOptional({ nullable: true })
+  countryCode?: string | null;
 
-  @ApiProperty()
-  city: string;
+  @ApiPropertyOptional({ nullable: true })
+  city?: string | null;
 }

@@ -6,6 +6,7 @@ import {
   IndustryListItemDto,
   IndustryListResponseDto,
   QueryParamsDto,
+  CompanyInsightsDto,
 } from '../dto';
 import { AlumniAnalyticsEntity } from '../entities/';
 import { AlumniAnalyticsRepository, CompanyRepository } from '../repositories';
@@ -16,8 +17,12 @@ import {
   DEFAULT_QUERY_SORT_BY,
   DEFAULT_QUERY_SORT_ORDER,
 } from '../utils/';
+import { formatYearsToHuman } from '../../utils/format';
 import { TrendAnalyticsService } from './trend-analytics.service';
 import { applyDateFilters } from '../utils/filters';
+import { COMPANY_SIZE, COMPANY_TYPE } from '@/consts';
+import { differenceInYears } from 'date-fns';
+
 /* Mental note: Try not to use prisma directly in services.
 Shouldd use be used in the DAL, ie. repositories.
 */
@@ -160,6 +165,76 @@ export class CompanyAnalyticsService {
       industries: industriesPaginated,
       count: totalIndustries,
       filteredCount: industries.length,
+    };
+  }
+
+  async getCompanyInsights(id: string): Promise<CompanyInsightsDto> {
+    const alumnus = await this.alumniRepository.find({
+      companyIds: [id],
+    });
+
+    const company = await this.companyRepository.findById(id);
+    const roles = alumnus.flatMap((alumnus) => alumnus.roles);
+
+    // Years in Company, regardless of end date
+    const yearsInCompany =
+      roles
+        .map((role) => {
+          const startDate = new Date(role.startDate);
+          const endDate = role.endDate ? new Date(role.endDate) : new Date();
+          const years = endDate.getFullYear() - startDate.getFullYear();
+          return years;
+        })
+        .reduce((acc, curr) => acc + curr, 0) / roles.length;
+
+    const companyAlumni = [
+      ...new Set(
+        roles.filter((role) => role.isCurrent).map((role) => role.alumniId),
+      ),
+    ];
+
+    const yoes = await Promise.all(
+      companyAlumni.map(async (alumniId) => {
+        const oldestRole =
+          await this.alumniRepository.findOldestAlumniRole(alumniId);
+        if (!oldestRole) return 0;
+
+        return differenceInYears(new Date(), new Date(oldestRole.startDate));
+      }),
+    );
+
+    const yoe = Math.round(
+      yoes.reduce((acc, curr) => acc + curr, 0) / yoes.length,
+    );
+
+    return {
+      id,
+      name: company.name,
+      logo: company.logo,
+      linkedinUrl: company.linkedinUrl,
+      foundedByAlumni: false,
+      companySize: company.companySize
+        ? COMPANY_SIZE[company.companySize]
+        : null,
+      companyType: company.companyType
+        ? COMPANY_TYPE[company.companyType]
+        : null,
+      founded: company.founded,
+      website: company.website,
+      headquarters: company.location,
+      industry: company.industry,
+      similarCompanies: [],
+      averageYOE: yoe,
+      averageYOC: formatYearsToHuman(yearsInCompany),
+      roles: [],
+      currentAlumni: [],
+      alumni: [],
+      countries: [],
+      cities: [],
+      alumniTrend: [],
+      averageTrend: [],
+      industryTrend: [],
+      migrations: [],
     };
   }
 

@@ -16,6 +16,9 @@ export class RoleAnalyticsEntity {
   @ApiPropertyOptional()
   endDate?: Date | null;
 
+  @ApiProperty()
+  isCurrent: boolean;
+
   @ApiPropertyOptional({ type: LocationAnalyticsEntity, nullable: true })
   location?: LocationAnalyticsEntity | null;
 
