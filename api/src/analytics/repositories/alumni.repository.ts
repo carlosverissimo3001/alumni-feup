@@ -2,55 +2,10 @@ import { PrismaService } from '@/prisma/prisma.service';
 import { QueryParamsDto } from '../dto/query-params.dto';
 import { buildWhereClause } from '../utils/query-builder';
 import { Injectable, Logger } from '@nestjs/common';
-import { Prisma } from '@prisma/client';
-import { toAlumniAnalyticsEntity } from '../utils/alumni.mapper';
+import { toAlumniAnalyticsEntity, toRoleAnalyticsEntity } from '../utils/alumni.mapper';
 import { AlumniAnalyticsEntity } from '../entities/alumni.entity';
-const industrySelect = {
-  id: true,
-  name: true,
-} satisfies Prisma.IndustrySelect;
-
-const locationSelect = {
-  id: true,
-  country: true,
-  countryCode: true,
-  city: true,
-};
-
-const companySelect = {
-  id: true,
-  name: true,
-  logo: true,
-  Industry: {
-    select: industrySelect,
-  },
-  Location: {
-    select: locationSelect,
-  },
-};
-
-const jobClassificationSelect = {
-  title: true,
-  level: true,
-  confidence: true,
-  escoCode: true,
-};
-
-const roleSelect = {
-  id: true,
-  alumniId: true,
-  startDate: true,
-  endDate: true,
-  Location: {
-    select: locationSelect,
-  },
-  Company: {
-    select: companySelect,
-  },
-  JobClassification: {
-    select: jobClassificationSelect,
-  },
-} satisfies Prisma.RoleSelect;
+import { roleSelect } from '../utils/selectors';
+import { RoleAnalyticsEntity } from '../entities/role.entity';
 
 @Injectable()
 export class AlumniAnalyticsRepository {
@@ -76,6 +31,30 @@ export class AlumniAnalyticsRepository {
     });
 
     return alumnus.map(toAlumniAnalyticsEntity);
+  }
+
+  async findAllAlumniRoles(id: string) {
+    const roles = await this.prisma.role.findMany({
+      where: { alumniId: id },
+      select: roleSelect,
+    });
+
+    return roles;
+  }
+
+  /** For a given alumni, find the oldest role
+   * @param id - The id of the alumni
+   * @returns The oldest role
+   */
+  async findOldestAlumniRole(id: string) {
+    const roles = await this.prisma.role.findMany({
+      where: { alumniId: id },
+      select: roleSelect,
+      orderBy: { startDate: 'asc' },
+      take: 1,
+    });
+
+    return roles[0];
   }
 
   async countAlumni(params?: QueryParamsDto) {

@@ -1,14 +1,16 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavbar } from "@/contexts/NavbarContext";
 import { cn } from "@/lib/utils";
 import { GeoJSONFeatureCollection } from "@/sdk";
+import { useRouter } from "next/navigation";
 
 
 import ReviewMapView from '@/components/map/reviews/reviewMapView';
 import ReviewMapFilters from '@/components/map/reviews/reviewMapFilters';
 import ReviewButton from './review-button';
+import { useAuth } from '@/contexts/AuthContext';
 
 // Type definitions
 interface Coordinates {
@@ -22,6 +24,15 @@ interface SelectedReviews {
 }
 
 const ReviewMapComponent = () => {
+  const router = useRouter();
+  const { user, isAuthenticated } = useAuth();
+
+  useEffect(() => {
+    if (!isAuthenticated || !user) {
+      router.push("/analytics");
+    }
+  }, [isAuthenticated, router, user]);
+  
   const [reviewGeoJSON, setReviewGeoJSON] = useState<GeoJSONFeatureCollection | null>(null);
 
   // The alumni the user is searching for.

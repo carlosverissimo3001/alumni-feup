@@ -12,7 +12,7 @@ export const CourseSelect = ({ courses, setCourseIds, isLoadingCourses, courseId
   return (
     <MultiSelect
       options={Array.isArray(courses) ? courses.map((course) => ({
-        label: course.acronym,
+        label: `${course.acronym} - ${course.name}`,
         value: course.id,
       })) : []}
         onValueChange={(values) => setCourseIds(values || [])}

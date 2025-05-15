@@ -1,10 +1,9 @@
 import { useQuery } from "@tanstack/react-query";
 import NestAPI from "@/api";
-import { IndustriesAnalyticsControllerGetIndustryWithCountsRequest } from "@/sdk";
+import { IndustryAnalyticsControllerGetIndustryWithCountsRequest } from "@/sdk";
 import { filterApiRequestParams } from "@/utils/query-params";
 
-
-export const useIndustryList = (params: IndustriesAnalyticsControllerGetIndustryWithCountsRequest) => {
+export const useIndustryList = (params: IndustryAnalyticsControllerGetIndustryWithCountsRequest) => {
   const filteredParams = {
     ...filterApiRequestParams(params),
     includeTrend: params.includeTrend ?? false,
@@ -12,7 +11,7 @@ export const useIndustryList = (params: IndustriesAnalyticsControllerGetIndustry
 
   const { data, isLoading, isError, isSuccess, isFetching, refetch } = useQuery({
     queryKey: ['industry-list', filteredParams],
-    queryFn: () => NestAPI.industriesAnalyticsControllerGetIndustryWithCounts(filteredParams),
+    queryFn: () => NestAPI.industryAnalyticsControllerGetIndustryWithCounts(filteredParams),
     refetchOnWindowFocus: false,
     staleTime: 5 * 60 * 1000, 
     gcTime: 10 * 60 * 1000,

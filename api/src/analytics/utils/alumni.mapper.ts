@@ -24,6 +24,7 @@ type RawLocation = {
 type RawRole = {
   id: string;
   alumniId: string;
+  isCurrent: boolean;
   startDate: Date;
   endDate?: Date | null;
   Location?: RawLocation | null;
@@ -64,6 +65,17 @@ export function toAlumniAnalyticsEntity(
   return {
     id: alumni.id,
     roles: alumni.Roles.map(mapRole),
+  };
+}
+
+export function toRoleAnalyticsEntity(
+  role: Pick<RawRole, 'id' | 'startDate' | 'endDate' | 'alumniId'>,
+): Partial<RoleAnalyticsEntity> {
+  return {
+    id: role.id,
+    startDate: role.startDate,
+    endDate: role.endDate,
+    alumniId: role.alumniId,
   };
 }
 
@@ -113,6 +125,7 @@ const mapRole = (role: RawRole): RoleAnalyticsEntity => {
     alumniId: role.alumniId,
     startDate: role.startDate,
     endDate: role.endDate,
+    isCurrent: role.isCurrent,
     jobClassification: mapJobClassification(role.JobClassification),
     company: mapCompany(role.Company),
     location: mapLocation(role.Location),

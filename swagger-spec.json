@@ -393,7 +393,7 @@
     },
     "/api/analytics/companies": {
       "get": {
-        "operationId": "CompaniesAnalyticsController_getCompaniesWithAlumniCount",
+        "operationId": "CompanyAnalyticsController_getCompaniesWithAlumniCount",
         "parameters": [
           {
             "name": "startDate",
@@ -720,7 +720,7 @@
     },
     "/api/analytics/companies/options": {
       "get": {
-        "operationId": "CompaniesAnalyticsController_getCompanyOptions",
+        "operationId": "CompanyAnalyticsController_getCompanyOptions",
         "parameters": [],
         "responses": {
           "200": {
@@ -746,7 +746,7 @@
     },
     "/api/analytics/companies/growth": {
       "get": {
-        "operationId": "CompaniesAnalyticsController_getCompanyGrowth",
+        "operationId": "CompanyAnalyticsController_getCompanyGrowth",
         "parameters": [],
         "responses": {
           "200": {
@@ -762,7 +762,7 @@
     },
     "/api/analytics/companies/{id}": {
       "get": {
-        "operationId": "CompaniesAnalyticsController_getCompanyDetails",
+        "operationId": "CompanyAnalyticsController_getCompanyDetails",
         "parameters": [
           {
             "name": "id",
@@ -775,7 +775,14 @@
         ],
         "responses": {
           "200": {
-            "description": ""
+            "description": "Detailed information about a specific company.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CompanyInsightsDto"
+                }
+              }
+            }
           }
         },
         "summary": "Returns detailed information about a specific company.",
@@ -787,7 +794,7 @@
     },
     "/api/analytics/companies/hot-companies": {
       "get": {
-        "operationId": "CompaniesAnalyticsController_getHotCompanies",
+        "operationId": "CompanyAnalyticsController_getHotCompanies",
         "parameters": [
           {
             "name": "startDate",
@@ -1826,7 +1833,7 @@
     },
     "/api/analytics/industries": {
       "get": {
-        "operationId": "IndustriesAnalyticsController_getIndustryWithCounts",
+        "operationId": "IndustryAnalyticsController_getIndustryWithCounts",
         "parameters": [
           {
             "name": "startDate",
@@ -2154,7 +2161,7 @@
     "/api/analytics/industries/options": {
       "get": {
         "description": "Returns a list of industries with their id and name.",
-        "operationId": "IndustriesAnalyticsController_getIndustryOptions",
+        "operationId": "IndustryAnalyticsController_getIndustryOptions",
         "parameters": [],
         "responses": {
           "200": {
@@ -3936,6 +3943,305 @@
         "required": [
           "id",
           "name"
+        ]
+      },
+      "COMPANY_SIZE": {
+        "type": "string",
+        "enum": [
+          "Not specified",
+          "1-10 employees",
+          "11-50 employees",
+          "51-200 employees",
+          "201-500 employees",
+          "501-1000 employees",
+          "1,001-5,000 employees",
+          "5,001-10,000 employees",
+          "10,001+ employees"
+        ],
+        "description": "The size of the company"
+      },
+      "COMPANY_TYPE": {
+        "type": "string",
+        "enum": [
+          "EDUCATIONAL",
+          "GOVERNMENT_AGENCY",
+          "NON_PROFIT",
+          "PARTNERSHIP",
+          "PRIVATELY_HELD",
+          "PUBLIC_COMPANY",
+          "SELF_EMPLOYED",
+          "SELF_OWNED"
+        ],
+        "description": "The type of the company"
+      },
+      "IndustryAnalyticsEntity": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "name"
+        ]
+      },
+      "BasicCompanyDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The id of the company"
+          },
+          "name": {
+            "type": "string",
+            "description": "The name of the company"
+          }
+        },
+        "required": [
+          "id",
+          "name"
+        ]
+      },
+      "BasicRoleDto": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string",
+            "description": "The code of the role"
+          },
+          "title": {
+            "type": "string",
+            "description": "The title of the role"
+          },
+          "count": {
+            "type": "string",
+            "description": "The number of roles with this title"
+          }
+        },
+        "required": [
+          "code",
+          "title",
+          "count"
+        ]
+      },
+      "BasicAlumniDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The id of the alumni"
+          },
+          "name": {
+            "type": "string",
+            "description": "The name of the alumni"
+          },
+          "seniority": {
+            "type": "string",
+            "description": "The seniority of the role"
+          },
+          "startDate": {
+            "type": "string",
+            "description": "The role start date"
+          },
+          "endDate": {
+            "type": "string",
+            "description": "The role end date, if applicable"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "seniority",
+          "startDate",
+          "endDate"
+        ]
+      },
+      "BasicGeoDto": {
+        "type": "object",
+        "properties": {
+          "country": {
+            "type": "string",
+            "description": "The country name"
+          },
+          "code": {
+            "type": "string",
+            "description": "The code of the country"
+          },
+          "count": {
+            "type": "number",
+            "description": "The number of alumni in the country"
+          }
+        },
+        "required": [
+          "country",
+          "code",
+          "count"
+        ]
+      },
+      "CompanyInsightsDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The id of the company"
+          },
+          "name": {
+            "type": "string",
+            "description": "The name of the company"
+          },
+          "logo": {
+            "type": "string",
+            "description": "The logo of the company"
+          },
+          "linkedinUrl": {
+            "type": "string",
+            "description": "The linkedin url of the company"
+          },
+          "headquarters": {
+            "description": "The headquarters of the company",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/LocationGeo"
+              }
+            ]
+          },
+          "companySize": {
+            "description": "The size of the company",
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/COMPANY_SIZE"
+              }
+            ]
+          },
+          "companyType": {
+            "description": "The type of the company",
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/COMPANY_TYPE"
+              }
+            ]
+          },
+          "foundedByAlumni": {
+            "type": "boolean",
+            "description": "Was the company founded by an alumni"
+          },
+          "founded": {
+            "type": "string",
+            "description": "The founded year of the company"
+          },
+          "website": {
+            "type": "string",
+            "description": "The website of the company"
+          },
+          "industry": {
+            "description": "The industry of the company",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/IndustryAnalyticsEntity"
+              }
+            ]
+          },
+          "similarCompanies": {
+            "description": "The similar companies of the company, whether by industry, # of employees, etc.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/BasicCompanyDto"
+            }
+          },
+          "averageYOE": {
+            "type": "number",
+            "description": "The average YOE of the current employees"
+          },
+          "averageYOC": {
+            "type": "string",
+            "description": "The average length of employment in company",
+            "example": "2 years and 3 months"
+          },
+          "roles": {
+            "description": "The roles of the company",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/BasicRoleDto"
+            }
+          },
+          "currentAlumni": {
+            "description": "The alumni of the company",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/BasicAlumniDto"
+            }
+          },
+          "alumni": {
+            "description": "The past alumni of the company",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/BasicAlumniDto"
+            }
+          },
+          "countries": {
+            "description": "The countries where alumni that work for the company are located",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/BasicGeoDto"
+            }
+          },
+          "cities": {
+            "description": "The cities where alumni that work for the company are located",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/BasicGeoDto"
+            }
+          },
+          "alumniTrend": {
+            "description": "The trend of the company",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DataPointDto"
+            }
+          },
+          "averageTrend": {
+            "description": "The average trend of the company",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DataPointDto"
+            }
+          },
+          "industryTrend": {
+            "description": "The trend of companies in the same industry",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DataPointDto"
+            }
+          },
+          "migrations": {
+            "description": "The most common migration paths",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "foundedByAlumni",
+          "averageYOE",
+          "averageYOC",
+          "roles",
+          "currentAlumni",
+          "alumni",
+          "countries",
+          "cities",
+          "alumniTrend",
+          "averageTrend",
+          "industryTrend",
+          "migrations"
         ]
       },
       "CountryListItemDto": {

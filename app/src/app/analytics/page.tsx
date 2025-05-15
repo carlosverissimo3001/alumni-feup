@@ -36,6 +36,7 @@ export const initialFilters: FilterState = {
   onlyInternational: false,
   excludeResearchAndHighEducation: false,
   search: undefined,
+  hideUnknownRoles: false,
   classificationLevel: 1,
   companySize: [],
   escoCodes: [],
@@ -162,7 +163,7 @@ export default function Analytics() {
           if (!current.includes(geoId)) {
             const updated = [...current, geoId];
             // Drilling down to cities after adding a country filter (only for role)
-            if (type === "role" && updated.length === 1) {
+            if (updated.length === 1) {
               setTimeout(() => setGeoMode("city"), 0);
             }
             return {
@@ -176,6 +177,7 @@ export default function Analytics() {
             };
           }
         });
+      // Note: We're currently not supporting city filtering, directly from the dashboard
       } else {
         setFilters((prev) => {
           const key = type === "role" ? "roleCityIds" : "companyHQsCityIds";

@@ -40,8 +40,17 @@ import TrendLineComponent from "../common/TrendLineComponent";
 import LoadingChart from "../common/LoadingChart";
 import { TrendFrequency, EntityType } from "@/types/entityTypes";
 import { DataPointDto } from "@/sdk";
-import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import {
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+} from "@/components/ui/popover";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 type GeoDashboardProps = {
   onDataUpdate: (
@@ -76,7 +85,9 @@ export default function GeoDashboard({
   const [sortField, setSortField] = useState<SortBy>(SortBy.COUNT);
   const [sortOrder, setSortOrder] = useState<SortOrder>(SortOrder.DESC);
   const [view, setView] = useState<ViewType>(ViewType.TABLE);
-  const [trendFrequency, setTrendFrequency] = useState<TrendFrequency>(TrendFrequency.Y5);
+  const [trendFrequency, setTrendFrequency] = useState<TrendFrequency>(
+    TrendFrequency.Y5
+  );
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [pageInput, setPageInput] = useState<string>(String(page));
   const [openPopoverId, setOpenPopoverId] = useState<string | null>(null);
@@ -200,7 +211,13 @@ export default function GeoDashboard({
                           <TableCell className="w-1/12 py-1.5 pl-3 text-sm text-gray-500 font-medium align-middle">
                             {rowNumber}
                           </TableCell>
-                          <TableCell className={`w-7/12 py-1.5 pl-3 text-sm ${isRowInFilters(row) ? "font-bold text-[#8C2D19]" : "font-medium text-[#000000]"} flex items-center gap-1 align-middle`}>
+                          <TableCell
+                            className={`w-7/12 py-1.5 pl-3 text-sm ${
+                              isRowInFilters(row)
+                                ? "font-bold text-[#8C2D19]"
+                                : "font-medium text-[#000000]"
+                            } flex items-center gap-1 align-middle`}
+                          >
                             <div className="min-w-[24px] w-6 h-6 mr-1.5 rounded-full overflow-hidden flex items-center justify-center bg-gray-50">
                               <ImageWithFallback
                                 src={flagUrl}
@@ -211,22 +228,20 @@ export default function GeoDashboard({
                                 className="rounded-full object-contain w-full h-full"
                               />
                             </div>
-                            <Button
-                              variant="link"
-                              className={`text-sm ${isRowInFilters(row) ? "font-bold" : "font-medium"} text-[#000000] h-auto p-1 hover:text-[#8C2D19] transition-colors mr-2`}
-                              onClick={() => {
-                                window.open(`/${mode}/${row.id}`, "_blank");
-                              }}
+                            <div
+                              title={row.name}
+                              className="text-ellipsis overflow-hidden text-left p-1"
                             >
-                              <div
-                                title={row.name}
-                                className="text-ellipsis overflow-hidden text-left"
-                              >
-                                {row.name}
-                              </div>
-                            </Button>
+                              {row.name}
+                            </div>
                           </TableCell>
-                          <TableCell className={`w-2/12 px-3 py-1 text-sm ${isRowInFilters(row) ? "font-bold text-[#8C2D19]" : "text-[#000000]"} align-middle hover:text-[#8C2D19] transition-colors relative`}>
+                          <TableCell
+                            className={`w-2/12 px-3 py-1 text-sm ${
+                              isRowInFilters(row)
+                                ? "font-bold text-[#8C2D19]"
+                                : "text-[#000000]"
+                            } align-middle hover:text-[#8C2D19] transition-colors relative`}
+                          >
                             <div className="flex items-center gap-0 justify-center">
                               {view === ViewType.TABLE ? (
                                 <CountComponent count={row.count} />
@@ -238,8 +253,8 @@ export default function GeoDashboard({
                               )}
                               <div
                                 className={`${
-                                  isRowInFilters(row) 
-                                    ? "opacity-100" 
+                                  isRowInFilters(row)
+                                    ? "opacity-100"
                                     : "opacity-0 group-hover:opacity-100"
                                 } transition-opacity ${
                                   view === ViewType.TABLE ? "ml-2" : "ml-0"
@@ -247,49 +262,88 @@ export default function GeoDashboard({
                               >
                                 {/*  Note that we have a bug when filtering citiesdirectly on the dashboard */}
                                 {mode === "country" && (
-                                  <Popover open={openPopoverId === row.id} onOpenChange={open => setOpenPopoverId(open ? row.id : null)}>
+                                  <Popover
+                                    open={openPopoverId === row.id}
+                                    onOpenChange={(open) =>
+                                      setOpenPopoverId(open ? row.id : null)
+                                    }
+                                  >
                                     <PopoverTrigger asChild>
                                       <Button
-                                      aria-label="Add to filters"
-                                      variant="ghost"
-                                      size="sm"
-                                      className={`p-1 h-6 w-6 rounded-full ${isRowInFilters(row) ? "bg-[#8C2D19] bg-opacity-20 hover:bg-[#8C2D19] hover:bg-opacity-30" : "bg-gray-100 hover:bg-gray-200"}`}
-                                      onClick={e => {
-                                        e.stopPropagation();
-                                        setOpenPopoverId(row.id);
-                                      }}
+                                        aria-label="Add to filters"
+                                        variant="ghost"
+                                        size="sm"
+                                        className={`p-1 h-6 w-6 rounded-full ${
+                                          isRowInFilters(row)
+                                            ? "bg-[#8C2D19] bg-opacity-20 hover:bg-[#8C2D19] hover:bg-opacity-30"
+                                            : "bg-gray-100 hover:bg-gray-200"
+                                        }`}
+                                        onClick={(e) => {
+                                          e.stopPropagation();
+                                          setOpenPopoverId(row.id);
+                                        }}
+                                      >
+                                        <Filter className="h-4 w-4 text-[#8C2D19]" />
+                                      </Button>
+                                    </PopoverTrigger>
+                                    <PopoverContent
+                                      className="w-56 p-0 rounded-lg shadow-xl border bg-white"
+                                      align="end"
+                                      sideOffset={8}
                                     >
-                                      <Filter className="h-4 w-4 text-[#8C2D19]" />
-                                    </Button>
-                                  </PopoverTrigger>
-                                  <PopoverContent className="w-56 p-0 rounded-lg shadow-xl border bg-white" align="end" sideOffset={8} >
-                                    <div className="px-4 py-2 border-b bg-gray-50 rounded-t-lg">
-                                      <span className="font-semibold text-gray-700 text-sm">Add Filter</span>
-                                    </div>
-                                    <button
-                                      className="flex items-center gap-2 w-full text-left px-4 py-2 hover:bg-[#F7E7E3] active:bg-[#F2D3C7] transition-colors text-[#8C2D19] text-sm font-medium"
-                                      onClick={() => {
-                                        onAddToFilters?.(row.id, "role");
-                                        setOpenPopoverId(null);
-                                      }}
-                                    >
-                                      <svg className="w-4 h-4 text-[#8C2D19]" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M12 11c0 1.104-.896 2-2 2s-2-.896-2-2 .896-2 2-2 2 .896 2 2zm0 0c0 1.104.896 2 2 2s2-.896 2-2-.896-2-2-2-2 .896-2 2zm-6 8v-2a4 4 0 014-4h4a4 4 0 014 4v2"/></svg>
-                                      Add as Role Filter
-                                    </button>
-                                    <div className="border-t mx-2" />
-                                    <button
-                                      className="flex items-center gap-2 w-full text-left px-4 py-2 hover:bg-[#F7E7E3] active:bg-[#F2D3C7] transition-colors text-[#8C2D19] text-sm font-medium rounded-b-lg"
-                                      onClick={() => {
-                                        onAddToFilters?.(row.id, "company");
-                                        setOpenPopoverId(null);
-                                      }}
-                                    >
-                                      <svg className="w-4 h-4 text-[#8C2D19]" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M3 21V7a2 2 0 012-2h2a2 2 0 012 2v14M7 21V7m0 0V5a2 2 0 012-2h2a2 2 0 012 2v2m0 0v14m0-14h2a2 2 0 012 2v14"/></svg>
-                                      Add as Company Filter
-                                    </button>
-                                  </PopoverContent>
-                                </Popover>
-                              )}
+                                      <div className="px-4 py-2 border-b bg-gray-50 rounded-t-lg">
+                                        <span className="font-semibold text-gray-700 text-sm">
+                                          Add Filter
+                                        </span>
+                                      </div>
+                                      <button
+                                        className="flex items-center gap-2 w-full text-left px-4 py-2 hover:bg-[#F7E7E3] active:bg-[#F2D3C7] transition-colors text-[#8C2D19] text-sm font-medium"
+                                        onClick={() => {
+                                          onAddToFilters?.(row.id, "role");
+                                          setOpenPopoverId(null);
+                                        }}
+                                      >
+                                        <svg
+                                          className="w-4 h-4 text-[#8C2D19]"
+                                          fill="none"
+                                          stroke="currentColor"
+                                          strokeWidth="2"
+                                          viewBox="0 0 24 24"
+                                        >
+                                          <path
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                            d="M12 11c0 1.104-.896 2-2 2s-2-.896-2-2 .896-2 2-2 2 .896 2 2zm0 0c0 1.104.896 2 2 2s2-.896 2-2-.896-2-2-2-2 .896-2 2zm-6 8v-2a4 4 0 014-4h4a4 4 0 014 4v2"
+                                          />
+                                        </svg>
+                                        Add as Role Filter
+                                      </button>
+                                      <div className="border-t mx-2" />
+                                      <button
+                                        className="flex items-center gap-2 w-full text-left px-4 py-2 hover:bg-[#F7E7E3] active:bg-[#F2D3C7] transition-colors text-[#8C2D19] text-sm font-medium rounded-b-lg"
+                                        onClick={() => {
+                                          onAddToFilters?.(row.id, "company");
+                                          setOpenPopoverId(null);
+                                        }}
+                                      >
+                                        <svg
+                                          className="w-4 h-4 text-[#8C2D19]"
+                                          fill="none"
+                                          stroke="currentColor"
+                                          strokeWidth="2"
+                                          viewBox="0 0 24 24"
+                                        >
+                                          <path
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                            d="M3 21V7a2 2 0 012-2h2a2 2 0 012 2v14M7 21V7m0 0V5a2 2 0 012-2h2a2 2 0 012 2v2m0 0v14m0-14h2a2 2 0 012 2v14"
+                                          />
+                                        </svg>
+                                        Add as Company Filter
+                                      </button>
+                                    </PopoverContent>
+                                  </Popover>
+                                )}
                               </div>
                             </div>
                           </TableCell>
@@ -314,7 +368,9 @@ export default function GeoDashboard({
           setPage={setPage}
           itemsPerPage={itemsPerPage}
           setItemsPerPage={setItemsPerPage}
-          totalItems={mode === "country" ? countryFilteredCount : cityFilteredCount}
+          totalItems={
+            mode === "country" ? countryFilteredCount : cityFilteredCount
+          }
           visible={data.length > 0}
           showTrendFrequency={view === ViewType.TREND}
           trendFrequency={trendFrequency}
