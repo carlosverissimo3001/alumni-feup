@@ -44,7 +44,7 @@ export default function CompanyOverview({
               </div>
 
               <div className="flex flex-col items-end gap-2">
-                <div className="flex items-center gap-4">
+                <div className="flex items-center">
                   {data.website && (
                     <Link
                       href={data.website}
@@ -75,7 +75,7 @@ export default function CompanyOverview({
             </div>
 
             <div className="space-y-2">
-              {!data.foundedByAlumni && (
+              {data.foundedByAlumni && (
                 <div className="inline-flex items-center gap-2 px-3 py-1.5 my-2 rounded-md bg-primary/10 text-primary border border-primary/20 hover:shadow-md hover:shadow-primary/20 transition-all duration-300">
                   <GraduationCap className="h-5 w-5 text-primary hover:text-primary/80" />
                   <span className="text-sm font-medium">
