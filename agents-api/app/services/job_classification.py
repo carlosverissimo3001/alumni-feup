@@ -21,8 +21,8 @@ from app.utils.agents.esco_reference import (
     search_esco_classifications,
 )
 from app.utils.alumni_db import find_all, find_by_ids
-from app.utils.consts import VALIDATE_ESCO_RESULTS_PROMPT
 from app.utils.esco_db import update_role_with_classifications
+from app.utils.prompts import VALIDATE_ESCO_RESULTS_PROMPT
 from app.utils.role_db import get_extended_roles_by_alumni_id
 
 logger = logging.getLogger(__name__)

@@ -51,14 +51,13 @@ class Settings(BaseSettings):
     CLOUDINARY_CLOUD_NAME: str = ""
     CLOUDINARY_API_KEY: str = ""
     CLOUDINARY_API_SECRET: str = ""
-
-    # Alpha Vantage Settings
-    ALPHA_VANTAGE_API_KEY: str = ""
-    ALPHA_VANTAGE_BASE_URL: str = "https://www.alphavantage.co/query?function=OVERVIEW&symbol="
     
     # Geolocation API Settings
     GEOLOCATION_API_KEY: str = ""
     GEOLOCATION_BASE_URL: str = "https://api.openweathermap.org/geo/1.0/direct?q="
+
+    # Levels.fyi Settings
+    LEVELS_FYI_BASE_URL: str = "https://www.levels.fyi/api/salaries"
 
     class Config:
         env_file = ".env"

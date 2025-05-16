@@ -108,6 +108,12 @@ export interface CompanyInsightsDto {
      */
     linkedinUrl?: string;
     /**
+     * The URL of the company on Levels.fyi
+     * @type {string}
+     * @memberof CompanyInsightsDto
+     */
+    levelsFyiUrl?: string;
+    /**
      * The headquarters of the company
      * @type {LocationGeo}
      * @memberof CompanyInsightsDto
@@ -260,6 +266,7 @@ export function CompanyInsightsDtoFromJSONTyped(json: any, ignoreDiscriminator: 
         'name': json['name'],
         'logo': json['logo'] == null ? undefined : json['logo'],
         'linkedinUrl': json['linkedinUrl'] == null ? undefined : json['linkedinUrl'],
+        'levelsFyiUrl': json['levelsFyiUrl'] == null ? undefined : json['levelsFyiUrl'],
         'headquarters': json['headquarters'] == null ? undefined : LocationGeoFromJSON(json['headquarters']),
         'companySize': json['companySize'] == null ? undefined : COMPANYSIZEFromJSON(json['companySize']),
         'companyType': json['companyType'] == null ? undefined : COMPANYTYPEFromJSON(json['companyType']),
@@ -297,6 +304,7 @@ export function CompanyInsightsDtoToJSONTyped(value?: CompanyInsightsDto | null,
         'name': value['name'],
         'logo': value['logo'],
         'linkedinUrl': value['linkedinUrl'],
+        'levelsFyiUrl': value['levelsFyiUrl'],
         'headquarters': LocationGeoToJSON(value['headquarters']),
         'companySize': COMPANYSIZEToJSON(value['companySize']),
         'companyType': COMPANYTYPEToJSON(value['companyType']),

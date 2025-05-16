@@ -212,6 +212,7 @@ export class CompanyAnalyticsService {
       name: company.name,
       logo: company.logo,
       linkedinUrl: company.linkedinUrl,
+      levelsFyiUrl: company.levelsFyiUrl,
       foundedByAlumni: false,
       companySize: company.companySize
         ? COMPANY_SIZE[company.companySize]
@@ -283,6 +284,7 @@ export class CompanyAnalyticsService {
           logo: role.company.logo,
           industry: role.company.industry.name,
           industryId: role.company.industry.id,
+          levelsFyiUrl: role.company.levelsFyiUrl,
           trend: [],
         });
       }

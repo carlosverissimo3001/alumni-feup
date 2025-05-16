@@ -534,6 +534,16 @@
             }
           },
           {
+            "name": "onlyCompaniesWithSalaryData",
+            "required": false,
+            "in": "query",
+            "description": "Include only companies with salary data",
+            "schema": {
+              "example": true,
+              "type": "boolean"
+            }
+          },
+          {
             "name": "onlyInternational",
             "required": false,
             "in": "query",
@@ -947,6 +957,16 @@
             }
           },
           {
+            "name": "onlyCompaniesWithSalaryData",
+            "required": false,
+            "in": "query",
+            "description": "Include only companies with salary data",
+            "schema": {
+              "example": true,
+              "type": "boolean"
+            }
+          },
+          {
             "name": "onlyInternational",
             "required": false,
             "in": "query",
@@ -1280,6 +1300,16 @@
             "required": false,
             "in": "query",
             "description": "Filter for current roles only",
+            "schema": {
+              "example": true,
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "onlyCompaniesWithSalaryData",
+            "required": false,
+            "in": "query",
+            "description": "Include only companies with salary data",
             "schema": {
               "example": true,
               "type": "boolean"
@@ -1690,6 +1720,16 @@
             }
           },
           {
+            "name": "onlyCompaniesWithSalaryData",
+            "required": false,
+            "in": "query",
+            "description": "Include only companies with salary data",
+            "schema": {
+              "example": true,
+              "type": "boolean"
+            }
+          },
+          {
             "name": "onlyInternational",
             "required": false,
             "in": "query",
@@ -2056,6 +2096,16 @@
             }
           },
           {
+            "name": "onlyCompaniesWithSalaryData",
+            "required": false,
+            "in": "query",
+            "description": "Include only companies with salary data",
+            "schema": {
+              "example": true,
+              "type": "boolean"
+            }
+          },
+          {
             "name": "onlyInternational",
             "required": false,
             "in": "query",
@@ -2416,6 +2466,16 @@
             "required": false,
             "in": "query",
             "description": "Filter for current roles only",
+            "schema": {
+              "example": true,
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "onlyCompaniesWithSalaryData",
+            "required": false,
+            "in": "query",
+            "description": "Include only companies with salary data",
             "schema": {
               "example": true,
               "type": "boolean"
@@ -3990,8 +4050,10 @@
             }
           },
           "logo": {
-            "type": "string",
-            "nullable": true
+            "type": "string"
+          },
+          "levelsFyiUrl": {
+            "type": "string"
           }
         },
         "required": [
@@ -4205,6 +4267,10 @@
           "linkedinUrl": {
             "type": "string",
             "description": "The linkedin url of the company"
+          },
+          "levelsFyiUrl": {
+            "type": "string",
+            "description": "The URL of the company on Levels.fyi"
           },
           "headquarters": {
             "description": "The headquarters of the company",
