@@ -24,6 +24,8 @@ import GlobalFilters, {
 import { handleDateRange } from "@/utils/date";
 import AlumniTable from "@/components/analytics/dashboards/AlumniTable";
 import { Button } from "@/components/ui/button";
+import { useSearchParams, useRouter } from "next/navigation";
+import { useCompanyOptions } from "@/hooks/analytics/useCompanyOptions";
 
 export const initialFilters: FilterState = {
   dateRange: undefined,
@@ -47,6 +49,10 @@ export const initialFilters: FilterState = {
 };
 
 export default function Analytics() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const { data: companyOptions } = useCompanyOptions();
+
   const [stats, setStats] = useState({
     alumniFilteredCount: 0,
     alumniCount: 0,
@@ -64,9 +70,82 @@ export default function Analytics() {
 
   const [geoMode, setGeoMode] = useState<"country" | "city">("country");
 
+  const initializeFiltersFromURL = useCallback(() => {
+    const urlFilters: FilterState = { ...initialFilters };
+
+    const companyNames = searchParams.get("company")?.toLowerCase().split(",");
+    if (companyNames && companyOptions) {
+      const companyIds = companyNames
+        .map((name) =>
+          companyOptions.find((c) => c.name.toLowerCase() === name.trim())
+        )
+        .filter((company) => company !== undefined)
+        .map((company) => company!.id);
+
+      if (companyIds.length > 0) {
+        urlFilters.companyIds = companyIds;
+      }
+    }
+
+    return urlFilters;
+  }, [searchParams, companyOptions]);
+
   const [filters, setFilters] = useState<FilterState>(initialFilters);
 
-  const [showScrollButton, setShowScrollButton] = useState(false);
+  useEffect(() => {
+    if (companyOptions) {
+      setFilters(initializeFiltersFromURL());
+    }
+  }, [companyOptions, initializeFiltersFromURL]);
+
+  const updateURL = useCallback(
+    (newFilters: FilterState) => {
+      const companyIds = newFilters.companyIds;
+      if (companyIds && companyIds.length > 0 && companyOptions) {
+        const companies = companyIds
+          .map((id) => companyOptions.find((c) => c.id === id))
+          .filter((company) => company !== undefined)
+          .map((company) => company!.name.toLowerCase());
+
+        if (companies.length > 0) {
+          const params = new URLSearchParams();
+          params.set("company", companies.join(","));
+          const newURL = `${window.location.pathname}${
+            params.toString() ? "?" + params.toString() : ""
+          }`;
+          router.push(newURL);
+        }
+      } else {
+        router.push(window.location.pathname);
+      }
+    },
+    [router, companyOptions]
+  );
+
+  const handleFiltersChange = useCallback(
+    (newFilters: FilterState) => {
+      setFilters(newFilters);
+
+      // Here, we're checking if the company filters have changed.
+      // If so, no sense in having the parms in the url.
+      const onlyCompaniesChanged = Object.entries(newFilters).every(
+        ([key, value]) => {
+          if (key === "companyIds") return true;
+          if (Array.isArray(value)) return value.length === 0;
+          if (typeof value === "boolean")
+            return value === initialFilters[key as keyof FilterState];
+          return !value;
+        }
+      );
+
+      if (onlyCompaniesChanged) {
+        updateURL(newFilters);
+      } else {
+        router.push(window.location.pathname);
+      }
+    },
+    [updateURL, router]
+  );
 
   const processedDateRange = useMemo(() => {
     if (filters.dateRange) {
@@ -168,7 +247,6 @@ export default function Analytics() {
           const current = prev[key] || [];
           if (!current.includes(geoId)) {
             const updated = [...current, geoId];
-            // Drilling down to cities after adding a country filter (only for role)
             if (updated.length === 1) {
               setTimeout(() => setGeoMode("city"), 0);
             }
@@ -183,7 +261,6 @@ export default function Analytics() {
             };
           }
         });
-        // Note: We're currently not supporting city filtering, directly from the dashboard
       } else {
         setFilters((prev) => {
           const key = type === "role" ? "roleCityIds" : "companyHQsCityIds";
@@ -240,7 +317,10 @@ export default function Analytics() {
   }, []);
 
   const handleAddAlumniToFilters = useCallback((alumniId: string) => {
-    setFilters((prev) => ({ ...prev, alumniIds: [...(prev.alumniIds || []), alumniId] }));
+    setFilters((prev) => ({
+      ...prev,
+      alumniIds: [...(prev.alumniIds || []), alumniId],
+    }));
   }, []);
 
   const handleLevelChange = useCallback((level: number) => {
@@ -283,6 +363,8 @@ export default function Analytics() {
     },
   ];
 
+  const [showScrollButton, setShowScrollButton] = useState(false);
+
   useEffect(() => {
     const handleScroll = () => {
       setShowScrollButton(window.scrollY > 700);
@@ -310,7 +392,10 @@ export default function Analytics() {
       <OverallStats stats={statsConfig} />
 
       <div className="bg-white rounded-xl shadow-lg border border-gray-200">
-        <GlobalFilters filters={filters} onFiltersChange={setFilters} />
+        <GlobalFilters
+          filters={filters}
+          onFiltersChange={handleFiltersChange}
+        />
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3 gap-4">
@@ -338,7 +423,6 @@ export default function Analytics() {
           onAddToFilters={handleAddIndustryToFilters}
         />
 
-        {/* TODO: Add graduation dashboard & seniority dashboard, using this just to check the layout */}
         <IndustryDashboard
           onDataUpdate={handleIndustryDataUpdate}
           filters={combinedFilters}
