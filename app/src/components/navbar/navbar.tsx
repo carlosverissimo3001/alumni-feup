@@ -15,7 +15,7 @@ import Image from "next/image";
 import { useNavbar } from "@/contexts/NavbarContext";
 import { useEffect, useRef } from "react";
 import { useAuth } from "@/contexts/AuthContext";
-
+import { motion } from "framer-motion";
 const Navbar = () => {
   const { isAuthenticated, user } = useAuth();
   const { isCollapsed, toggleCollapse } = useNavbar();
@@ -83,7 +83,7 @@ const Navbar = () => {
       disabled: !isAuthenticated,
     },
     {
-      label: "Profile",
+      label: "My Profile",
       icon: <UserIcon size={20} />,
       href: user ? `/profile/${user.id}` : "/",
       disabled: !isAuthenticated,
@@ -101,7 +101,7 @@ const Navbar = () => {
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
       className={cn(
-        "relative space-y-4 py-8 flex flex-col h-full bg-zinc-900 text-white transition-all duration-300 z-50",
+        "relative space-y-4 py-8 flex flex-col h-full bg-gradient-to-b from-zinc-900 to-zinc-800 text-white transition-all duration-500 ease-in-out z-50 hover:shadow-xl hover:shadow-[#8C2D19]/20",
         isCollapsed ? "w-20" : "w-60"
       )}
     >
@@ -115,60 +115,86 @@ const Navbar = () => {
           <Link href="/">
             <h1
               className={cn(
-                "text-2xl font-bold flex items-center gap-2 overflow-hidden whitespace-nowrap transition-opacity duration-300"
+                "text-2xl font-bold flex items-center gap-2 overflow-hidden whitespace-nowrap transition-opacity duration-300 group"
               )}
             >
-              <Image
-                src="/images/logo-simple.png"
-                alt="logo"
-                width={32}
-                height={32}
-                className="shrink-0"
-              />
-              {!isCollapsed && <span>30EIC</span>}
+              <motion.div
+                whileHover={{ scale: 1.1 }}
+                transition={{ duration: 0.5 }}
+              >
+                <Image
+                  src="/images/logo-simple.png"
+                  alt="logo"
+                  width={32}
+                  height={32}
+                  className="shrink-0"
+                />
+              </motion.div>
+              {!isCollapsed && (
+                <motion.span
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  30EIC
+                </motion.span>
+              )}
             </h1>
           </Link>
         </div>
 
         {/* Routes - World, Dashboard, Profile, Leave Feedback */}
         <div className="space-y-1 px-1">
-          {routes.filter((route) => !route.disabled).map((route) => (
-            <Link
-              key={`${route.label}-${route.href}`}
-              href={route.href}
-              className={cn(
-                "text-sm group flex p-3 w-full justify-start font-medium cursor-pointer hover:text-white hover:bg-zinc-800 rounded-lg transition",
-                pathname === route.href
-                  ? "text-white bg-zinc-800"
-                  : "text-zinc-400",
-                isCollapsed && "justify-center",
-              )}
-            >
-              <div
+          {routes
+            .filter((route) => !route.disabled)
+            .map((route) => (
+              <Link
+                key={`${route.label}-${route.href}`}
+                href={route.href}
                 className={cn(
-                  "flex items-center flex-1",
+                  "text-sm group flex p-3 w-full justify-start font-medium cursor-pointer hover:text-white hover:bg-gradient-to-r hover:from-[#8C2D19]/20 hover:to-zinc-800 rounded-lg transition-all duration-200",
+                  pathname === route.href
+                    ? "text-white bg-gradient-to-r from-[#8C2D19]/20 to-zinc-800"
+                    : "text-zinc-400",
                   isCollapsed && "justify-center"
                 )}
               >
-                {route.icon}
-                <span className={cn("ml-3 whitespace-nowrap", isCollapsed && "hidden")}>
-                  {route.label}
-                </span>
-              </div>
-            </Link>
-          ))}
+                <div
+                  className={cn(
+                    "flex items-center flex-1",
+                    isCollapsed && "justify-center"
+                  )}
+                >
+                  <motion.div
+                    whileHover={{ scale: 1.2, rotate: 15 }}
+                    transition={{ duration: 0.3 }}
+                  >
+                    {route.icon}
+                  </motion.div>
+                  <span
+                    className={cn(
+                      "ml-3 whitespace-nowrap",
+                      isCollapsed && "hidden"
+                    )}
+                  >
+                    {route.label}
+                  </span>
+                </div>
+              </Link>
+            ))}
         </div>
       </div>
 
-
-      {/* Copyright notice */}
-      <div
+      <motion.div
         className={cn(
           "px-2 py-2 text-center text-zinc-500 transition-opacity duration-300 text-[0.6rem]"
         )}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.5, delay: 0.3 }}
       >
         <span>© FEUP 2025</span>
-      </div>
+      </motion.div>
     </div>
   );
 };
