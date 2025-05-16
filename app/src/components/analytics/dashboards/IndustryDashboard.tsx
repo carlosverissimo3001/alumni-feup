@@ -5,7 +5,6 @@ import {
   Table,
   TableBody,
   TableCell,
-  TableRow,
   TableContainer,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
@@ -41,7 +40,7 @@ import { ViewType } from "@/types/view";
 import CountComponent from "../common/CountComponent";
 import LoadingChart from "../common/LoadingChart";
 import { TrendFrequency, EntityType } from "@/types/entityTypes";
-
+import CustomTableRow from "../common/CustomTableRow";
 type IndustryDashboardProps = {
   onDataUpdate: (industryCount: number, industryFilteredCount: number) => void;
   filters: FilterState;
@@ -125,11 +124,9 @@ export default function IndustryDashboard({
                     (industry: IndustryListItemDto, index: number) => {
                       const rowNumber = (page - 1) * itemsPerPage + index + 1;
                       return (
-                        <TableRow
+                        <CustomTableRow
                           key={industry.id}
-                          className={`group ${
-                            index % 2 === 0 ? "bg-gray-50" : "bg-white"
-                          } hover:bg-[#A13A23] hover:bg-opacity-10 transition-colors duration-200 relative`}
+                          index={index}
                         >
                           <TableCell className="w-[3%] py-1.5 pl-3 text-sm text-gray-500 font-medium align-middle">
                             {rowNumber}
@@ -181,7 +178,7 @@ export default function IndustryDashboard({
                               </div>
                             </div>
                           </TableCell>
-                        </TableRow>
+                        </CustomTableRow>
                       );
                     }
                   )

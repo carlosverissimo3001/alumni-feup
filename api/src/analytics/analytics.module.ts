@@ -18,7 +18,9 @@ import {
   GeoAnalyticsService,
   RoleAnalyticsService,
   TrendAnalyticsService,
+  AlumniAnalyticsService,
 } from '@/analytics/services';
+import { AlumniAnalyticsController } from './controllers/alumni-analytics.controller';
 
 @Module({
   controllers: [
@@ -26,10 +28,12 @@ import {
     GeoAnalyticsController,
     IndustryAnalyticsController,
     RoleAnalyticsController,
+    AlumniAnalyticsController,
   ],
   providers: [
     CompanyAnalyticsService,
     RoleAnalyticsService,
+    AlumniAnalyticsService,
     GeoAnalyticsService,
     PrismaService,
     AlumniAnalyticsRepository,

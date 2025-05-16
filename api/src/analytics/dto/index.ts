@@ -33,3 +33,7 @@ export { DataPointDto } from './data-point.dto';
 
 // Insights
 export { CompanyInsightsDto } from './insights/company-insights.dto';
+
+// Alumni
+export { AlumniOptionDto } from './alumni-option.dto';
+export { AlumniListResponseDto, AlumniListItemDto } from './alumni-list.dto';
