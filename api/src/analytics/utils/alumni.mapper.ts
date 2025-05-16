@@ -52,6 +52,7 @@ type RawAlumni = {
 type RawCompany = {
   id: string;
   name: string;
+  levelsFyiUrl?: string | null;
   logo?: string | null;
   Industry: RawIndustry;
   Location?: RawLocation | null;
@@ -85,11 +86,25 @@ export function toRoleAnalyticsEntity(
   };
 }
 
+export function toCompanyAnalyticsEntity(
+  company: RawCompany,
+): CompanyAnalyticsEntity {
+  return {
+    id: company.id,
+    name: company.name,
+    logo: company.logo ?? undefined,
+    levelsFyiUrl: company.levelsFyiUrl ?? undefined,
+    industry: mapIndustry(company.Industry),
+    location: mapLocation(company.Location),
+  };
+}
+
 const mapCompany = (company: RawCompany): CompanyAnalyticsEntity => {
   return {
     id: company.id,
     name: company.name,
-    logo: company.logo,
+    logo: company.logo ?? undefined,
+    levelsFyiUrl: company.levelsFyiUrl ?? undefined,
     industry: mapIndustry(company.Industry),
     location: mapLocation(company.Location),
   };

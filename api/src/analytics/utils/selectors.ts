@@ -16,6 +16,7 @@ export const companySelect = {
   id: true,
   name: true,
   logo: true,
+  levelsFyiUrl: true,
   Industry: {
     select: industrySelect,
   },

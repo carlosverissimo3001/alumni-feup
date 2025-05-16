@@ -1,8 +1,8 @@
 import asyncio
 import logging
 from time import sleep
+from typing import Optional
 
-from app.agents.location import location_agent
 from app.core.config import settings
 from app.db import get_db
 from app.db.models import Company
@@ -15,9 +15,10 @@ from app.utils.company_db import (
     get_companies_by_ids,
     update_company,
 )
-from app.utils.consts import BASE_WAIT_TIME, DEFAULT_INDUSTRY_ID, NULL_ISLAND_ID
+from app.utils.consts import BASE_WAIT_TIME, DEFAULT_INDUSTRY_ID
 from app.utils.http_client import HTTPClient
 from app.utils.industry_db import get_industry_by_name
+from app.utils.mappings import get_levels_fyi_name
 from app.utils.misc.convert import convert_company_size_to_enum, convert_company_type_to_enum
 from app.utils.misc.string import clean_website_url
 
@@ -39,6 +40,38 @@ class CompanyService:
             },
             base_url=settings.BRIGHTDATA_BASE_URL,
         )
+
+        self.levels_client = HTTPClient(
+            timeout=5,
+            headers={
+                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
+                "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
+            },
+        )
+
+    async def validate_levels_fyi_url(self, company: Company) -> Optional[str]:
+        """
+        Construct and validate a Levels.fyi URL for the company.
+        Returns the URL if valid, None otherwise.
+        """
+        # Get the normalized name, handling special cases
+        normalized_name = get_levels_fyi_name(company)
+
+        # If the company should be excluded or couldn't be normalized
+        if not normalized_name:
+            return None
+
+        try:
+            url = f"{settings.LEVELS_FYI_BASE_URL}/{normalized_name}/salaries"
+            response = await self.levels_client.aget(url, follow_redirects=False)
+
+            if response.status_code in [200, 301, 302]:
+                return url
+
+        except Exception as e:
+            logger.warning(f"Failed to validate Levels.fyi URL for {company.name}: {str(e)}")
+
+        return None
 
     async def request_company_update(self, params: CompanyUpdateParams):
         """
@@ -63,22 +96,26 @@ class CompanyService:
         companies = list(set(companies))
 
         logger.info(f"Going to update {len(companies)} companies")
-        
+
         # Process in batches of 10 to avoid overwhelming the system
         batch_size = 10
         for i in range(0, len(companies), batch_size):
-            batch = companies[i:i+batch_size]
-            logger.info(f"Processing batch {i//batch_size + 1} of {(len(companies) + batch_size - 1)//batch_size} ({len(batch)} companies)")
-            
+            batch = companies[i : i + batch_size]
+            logger.info(
+                f"Processing batch {i // batch_size + 1} of {(len(companies) + batch_size - 1) // batch_size} ({len(batch)} companies)"
+            )
+
             # Create and track tasks for this batch
             tasks = []
             for company in batch:
-                task = asyncio.create_task(self.extract_company_data(company.linkedin_url, company.id))
+                task = asyncio.create_task(
+                    self.extract_company_data(company.linkedin_url, company.id)
+                )
                 tasks.append(task)
-            
+
             # Wait for all tasks in this batch to complete
             await asyncio.gather(*tasks)
-            
+
             # Small delay between batches to prevent rate limiting
             if i + batch_size < len(companies):
                 await asyncio.sleep(1)
@@ -202,15 +239,21 @@ class CompanyService:
             company_type=convert_company_type_to_enum(company_response.organization_type),
         )
 
+        # Validate and get Levels.fyi URL
+        levels_fyi_url = await self.validate_levels_fyi_url(company)
+        if levels_fyi_url:
+            company.levels_fyi_url = levels_fyi_url
+
         try:
             # Update the company
             logger.info(f"Updating company {company_id}")
             update_company(company, db)
-            
+
             # Now that the company is updated, trigger location processing
             if company_response.headquarters and company_response.country_code:
+                pass
                 # Execute location agent after company is saved to database
-                await location_agent.process_location(input)
+                # await location_agent.process_location(input)
         except Exception as e:
             logger.error(f"Error updating company {company_id}: {str(e)}")
             raise

@@ -1,7 +1,6 @@
 import {
   Building2,
   Users,
-  Calendar,
   Clock,
   Trophy,
   GraduationCap,
@@ -31,11 +30,10 @@ import { useToast } from "@/hooks/misc/useToast";
 import { cn } from "@/lib/utils";
 
 type props = {
-  data: CompanyInsightsDto;
+  data: CompanyInsightsDto & { levelsFyiUrl?: string };
 };
 
 export default function CompanyOverview({ data }: props) {
-  const [isCopied, setIsCopied] = useState(false);
   const companyType = data.companyType
     ? companyTypeConfig[data.companyType]
     : null;
@@ -43,6 +41,7 @@ export default function CompanyOverview({ data }: props) {
     ? companySizeConfig[data.companySize]
     : null;
   const { toast } = useToast();
+  const [isCopied, setIsCopied] = useState(false);
 
   const handleShare = async () => {
     try {
@@ -54,8 +53,7 @@ export default function CompanyOverview({ data }: props) {
         duration: 2000,
       });
       setTimeout(() => setIsCopied(false), 2000);
-    } catch (err) {
-      console.error("Failed to copy URL:", err);
+    } catch  {
       toast({
         title: "Failed to copy link",
         description: "Please try again",
@@ -64,18 +62,17 @@ export default function CompanyOverview({ data }: props) {
     }
   };
 
-
   return (
     <div className="relative">
       <Card className="w-[95%] md:w-4/5 lg:w-3/5 mx-auto bg-gradient-to-br from-white via-[#FCEFEA] to-[#8C2D19]/10 hover:shadow-xl hover:shadow-[#8C2D19]/20 hover:scale-101 transition-all duration-300 rounded-xl border border-[#8C2D19]/20">
-        <CardHeader className="flex flex-row items-start gap-6 pb-4">
+        <CardHeader className="responsive-card-header flex flex-col sm:flex-row items-start gap-4 sm:gap-6 pb-4">
           <Avatar className="h-24 w-24 border-2 border-[#8C2D19]/20 shadow-sm hover:border-[#8C2D19]/50 hover:ring-2 hover:ring-[#8C2D19]/30 transition-all duration-300">
             <AvatarImage src={data.logo || ""} alt={data.name} />
             <AvatarFallback className="text-2xl font-semibold bg-primary/10">
               {data.name.substring(0, 2).toUpperCase()}
             </AvatarFallback>
           </Avatar>
-          <div className="space-y-4 flex-1">
+          <div className="space-y-4 flex-1 w-full">
             <div>
               <div className="flex items-start justify-between mb-2">
                 <div className="flex items-center gap-3">
@@ -90,7 +87,7 @@ export default function CompanyOverview({ data }: props) {
                 </div>
 
                 <div className="flex flex-col items-end gap-2">
-                  <div className="flex items-center">
+                  <div className="flex flex-col sm:flex-row items-end sm:items-center gap-2 flex-wrap">
                     {data.website && (
                       <Link
                         href={data.website}
@@ -115,6 +112,33 @@ export default function CompanyOverview({ data }: props) {
                         />
                         LinkedIn Profile
                       </Link>
+                    )}
+                    {data.levelsFyiUrl && (
+                      <div className="relative">
+                        <Link
+                          href={data.levelsFyiUrl}
+                          target="_blank"
+                          className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm text-muted-foreground hover:text-foreground hover:bg-gradient-to-r from-[#8C2D19]/10 to-gray-100 hover:scale-105 transition-all duration-200 rounded-md"
+                        >
+                          <Image
+                            src="/images/levels-fyi-logo.png"
+                            alt="Levels.fyi"
+                            width={20}
+                            height={20}
+                          />
+                          Salary Insights
+                        </Link>
+                        <motion.div
+                          initial={{ opacity: 0, y: -5 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ duration: 0.3, delay: 0.1 }}
+                          className="absolute right-0 -mt-2"
+                        >
+                          <span className="text-[11px] text-muted-foreground/70 hover:text-muted-foreground transition-colors duration-200 italic px-3">
+                            by Levels.fyi
+                          </span>
+                        </motion.div>
+                      </div>
                     )}
                   </div>
                 </div>
@@ -166,60 +190,44 @@ export default function CompanyOverview({ data }: props) {
         </div>
         <CardContent className="pt-4">
           <motion.div
-            className="grid grid-cols-1 sm:grid-cols-2 md:auto-cols-fr md:grid-flow-col gap-x-6 gap-y-3 text-center justify-center"
+            className="grid grid-cols-1 sm:grid-cols-2 md:auto-cols-fr md:grid-flow-col gap-x-4 sm:gap-x-6 gap-y-3 text-center justify-center"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, staggerChildren: 0.1 }}
           >
             {companySize && (
               <motion.div
-                className="flex flex-col gap-2 items-center"
+                className="flex flex-col gap-1 sm:gap-2 items-center"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5 }}
               >
-                <span className="text-sm text-muted-foreground flex items-center gap-1.5">
+                <span className="text-xs sm:text-sm text-muted-foreground flex items-center gap-1.5">
                   <Users className="h-4 w-4 group-hover:animate-pulse transition-all duration-300" />
                   Company Size
                 </span>
                 <Badge
-                  className={`${companySize.color} w-fit hover:scale-110 transition-transform duration-200`}
+                  className={`${companySize.color} w-fit hover:scale-110 transition-transform duration-200 text-xs sm:text-sm`}
                   variant="outline"
                 >
                   {companySize.label}
                 </Badge>
               </motion.div>
             )}
-            {data.founded && (
-              <motion.div
-                className="flex flex-col gap-2 items-center"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5 }}
-              >
-                <span className="text-sm text-muted-foreground flex items-center gap-1.5">
-                  <Calendar className="h-4 w-4 group-hover:animate-pulse transition-all duration-300" />
-                  Founded
-                </span>
-                <span className="font-medium text-foreground">
-                  {data.founded}
-                </span>
-              </motion.div>
-            )}
             {data.averageYOE && (
               <motion.div
-                className="flex flex-col gap-2 items-center"
+                className="flex flex-col gap-1 sm:gap-2 items-center"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5 }}
               >
-                <span className="text-sm text-muted-foreground flex items-center gap-1.5">
+                <span className="text-xs sm:text-sm text-muted-foreground flex items-center gap-1.5">
                   <Trophy className="h-4 w-4 group-hover:animate-pulse transition-all duration-300" />
                   <span>Avg. Experience</span>
                   <TooltipProvider>
                     <Tooltip>
                       <TooltipTrigger asChild>
-                        <InfoIcon className="h-3.5 w-3.5 text-muted-foreground/70" />
+                        <InfoIcon className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-muted-foreground/70" />
                       </TooltipTrigger>
                       <TooltipContent>
                         Average years of professional experience across current
@@ -228,25 +236,25 @@ export default function CompanyOverview({ data }: props) {
                     </Tooltip>
                   </TooltipProvider>
                 </span>
-                <span className="font-medium text-foreground">
+                <span className="font-medium text-foreground text-sm sm:text-base">
                   {data.averageYOE} years
                 </span>
               </motion.div>
             )}
             {data.averageYOC && (
               <motion.div
-                className="flex flex-col gap-2 items-center"
+                className="flex flex-col gap-1 sm:gap-2 items-center"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5 }}
               >
-                <span className="text-sm text-muted-foreground flex items-center gap-1.5">
+                <span className="text-xs sm:text-sm text-muted-foreground flex items-center gap-1.5">
                   <Clock className="h-4 w-4 group-hover:animate-pulse transition-all duration-300" />
                   <span>Avg. Tenure</span>
                   <TooltipProvider>
                     <Tooltip>
                       <TooltipTrigger asChild>
-                        <InfoIcon className="h-3.5 w-3.5 text-muted-foreground/70" />
+                        <InfoIcon className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-muted-foreground/70" />
                       </TooltipTrigger>
                       <TooltipContent>
                         Average time employees have spent at the company
@@ -254,7 +262,7 @@ export default function CompanyOverview({ data }: props) {
                     </Tooltip>
                   </TooltipProvider>
                 </span>
-                <span className="font-medium text-foreground">
+                <span className="font-medium text-foreground text-sm sm:text-base">
                   {data.averageYOC}
                 </span>
               </motion.div>
@@ -268,7 +276,9 @@ export default function CompanyOverview({ data }: props) {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: 20 }}
+          transition={{ duration: 0.5 }}
           className="fixed bottom-8 right-8 z-50"
+          style={{ animation: "float 3s ease-in-out infinite" }}
         >
           <TooltipProvider>
             <Tooltip>
@@ -308,7 +318,7 @@ export default function CompanyOverview({ data }: props) {
                   </AnimatePresence>
                 </Button>
               </TooltipTrigger>
-              <TooltipContent side="left">
+              <TooltipContent side="left" className="animate-fade-in">
                 <p>Share company profile</p>
               </TooltipContent>
             </Tooltip>

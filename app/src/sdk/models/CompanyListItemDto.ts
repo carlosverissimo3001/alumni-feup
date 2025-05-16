@@ -56,7 +56,13 @@ export interface CompanyListItemDto {
      * @type {string}
      * @memberof CompanyListItemDto
      */
-    logo?: string | null;
+    logo?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof CompanyListItemDto
+     */
+    levelsFyiUrl?: string;
 }
 
 /**
@@ -85,6 +91,7 @@ export function CompanyListItemDtoFromJSONTyped(json: any, ignoreDiscriminator: 
         'count': json['count'],
         'trend': ((json['trend'] as Array<any>).map(DataPointDtoFromJSON)),
         'logo': json['logo'] == null ? undefined : json['logo'],
+        'levelsFyiUrl': json['levelsFyiUrl'] == null ? undefined : json['levelsFyiUrl'],
     };
 }
 
@@ -104,6 +111,7 @@ export function CompanyListItemDtoToJSONTyped(value?: CompanyListItemDto | null,
         'count': value['count'],
         'trend': ((value['trend'] as Array<any>).map(DataPointDtoToJSON)),
         'logo': value['logo'],
+        'levelsFyiUrl': value['levelsFyiUrl'],
     };
 }
 

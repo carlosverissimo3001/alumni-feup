@@ -117,6 +117,7 @@ class Company(Base):
     id = Column(String, primary_key=True, server_default="gen_random_uuid()")
     name = Column(String, nullable=False)
     linkedin_url = Column(String, nullable=True, unique=True)
+    levels_fyi_url = Column(String, nullable=True)
     industry_id = Column(
         String, ForeignKey("industry.id"), nullable=False, default=DEFAULT_INDUSTRY_ID
     )  # noqa: E501
@@ -125,8 +126,6 @@ class Company(Base):
 
     founded = Column(Integer, nullable=True)
     website = Column(String, nullable=True)
-    market_cap = Column(BigInteger, nullable=True)
-    ticker = Column(String, nullable=True)
     company_type = Column(Enum(CompanyType), nullable=True)
     company_size = Column(Enum(CompanySize), nullable=True)
 
