@@ -40,6 +40,12 @@ export class CompanyInsightsDto {
   linkedinUrl?: string | null;
 
   @ApiPropertyOptional({
+    description: 'The URL of the company on Levels.fyi',
+    type: String,
+  })
+  levelsFyiUrl?: string | null;
+
+  @ApiPropertyOptional({
     description: 'The headquarters of the company',
     type: LocationGeo,
   })

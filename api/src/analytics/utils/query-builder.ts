@@ -48,6 +48,14 @@ export const buildWhereClause = (
     });
   }
 
+  if (params.onlyCompaniesWithSalaryData) {
+    roleAndClauses.push({
+      Company: {
+        levelsFyiUrl: { not: null },
+      },
+    });
+  }
+
   // TODO: Right now, its a 1-1 mapping between role and job classification.
   // Later, we will have 2 classifications for each role: level 1 is the more general one,
   // and level 2 is the more specific one.

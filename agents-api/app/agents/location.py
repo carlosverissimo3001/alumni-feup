@@ -16,8 +16,8 @@ from app.schemas.location import LocationAgentState, LocationInput, LocationResu
 from app.services.location import location_service
 from app.utils.alumni_db import find_by_id, update_alumni
 from app.utils.company_db import get_company_by_id, update_company
-from app.utils.consts import RESOLVE_LOCATION_PROMPT, get_resolve_geo_prompt
 from app.utils.location_db import create_location, get_locations_by_country_code
+from app.utils.prompts import RESOLVE_LOCATION_PROMPT, get_resolve_geo_prompt
 from app.utils.role_db import get_role_by_id, update_role
 
 REMOTE_LOCATION_ID = "15045675-0782-458b-9bb7-02567ac246fd"
@@ -106,7 +106,7 @@ class LocationAgent:
 
         # *** Compile the graph ***
         compiled_graph = graph.compile()
-        #compiled_graph.get_graph().draw_mermaid_png(output_file_path="location_agent_graph.png")
+        # compiled_graph.get_graph().draw_mermaid_png(output_file_path="location_agent_graph.png")
         return compiled_graph
 
     def is_new_location(self, state: LocationAgentState) -> bool:
@@ -329,14 +329,14 @@ class LocationAgent:
         # We just need to update the domain with the location id
         if not state.get("location_result"):
             return state
-        
+
         get = (
             state["location_result"].get
             if isinstance(state["location_result"], dict)
             else lambda k: getattr(state["location_result"], k, None)
         )
         location_id = get("id")
-        
+
         if state["input"].type == LocationType.COMPANY:
             company = get_company_by_id(state["input"].company_id, db)
             company.hq_location_id = location_id

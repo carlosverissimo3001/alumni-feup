@@ -12,6 +12,8 @@ import { useCompanyList } from "@/hooks/analytics/useCompanyList";
 import { CompanyListItemDto } from "@/sdk";
 import {
   Building2,
+  DollarSign,
+  ExternalLink,
   Filter,
   LineChart,
   PieChart,
@@ -149,10 +151,7 @@ export default function CompanyDashboard({
                       (company: CompanyListItemDto, index: number) => {
                         const rowNumber = (page - 1) * itemsPerPage + index + 1;
                         return (
-                          <CustomTableRow
-                            index={index}
-                            key={company.id}
-                          >
+                          <CustomTableRow index={index} key={company.id}>
                             <TableCell className="w-[3%] py-1.5 pl-3 text-sm text-gray-500 font-medium align-middle">
                               {rowNumber}
                             </TableCell>
@@ -166,23 +165,42 @@ export default function CompanyDashboard({
                                   className="rounded-full object-contain w-full h-full"
                                 />
                               </div>
-                              <Button
-                                variant="link"
-                                className="text-sm font-medium text-[#000000] w-full text-left h-auto p-1 hover:text-[#8C2D19] transition-colors flex items-center"
-                                onClick={() => {
-                                  window.open(
-                                    `/company/${company.id}`,
-                                    "_blank"
-                                  );
-                                }}
+                              <div
+                                className="flex items-center gap-2 flex-1"
                               >
-                                <div
-                                  title={company.name}
-                                  className="text-ellipsis overflow-hidden w-full text-left"
+                                <Button
+                                  variant="link"
+                                  className="text-sm font-medium text-[#000000] text-left h-auto p-1 hover:text-[#8C2D19] transition-colors flex items-center group-hover:text-[#8C2D19]"
+                                  onClick={() => {
+                                    window.open(
+                                      `/company/${company.id}`,
+                                      "_blank"
+                                    );
+                                  }}
                                 >
-                                  {company.name}
-                                </div>
-                              </Button>
+                                  <div
+                                    title={`Go to ${company.name}'s profile`}
+                                    className="text-ellipsis overflow-hidden w-full text-left"
+                                  >
+                                    {company.name}
+                                  </div>
+                                </Button>
+                                {company.levelsFyiUrl && (
+                                  <div
+                                    title={`View Salary Insights on Levels.fyi for ${company.name}`}
+                                  >
+                                    <DollarSign
+                                      className="h-4 w-4 text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer hover:text-[#8C2D19]"
+                                      onClick={() => {
+                                      window.open(
+                                        company.levelsFyiUrl,
+                                        "_blank"
+                                      );
+                                    }}
+                                  />
+                                  </div>
+                                )}
+                              </div>
                             </TableCell>
                             <TableCell className="w-[12%] px-3 py-1 text-sm text-[#000000] align-middle hover:text-[#8C2D19] transition-colors relative">
                               <div className="flex items-center gap-0 justify-center">

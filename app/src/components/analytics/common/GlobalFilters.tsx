@@ -11,7 +11,6 @@ import {
   ListFilterIcon,
   Info,
   Building,
-  GraduationCap,
   MapPin,
   Briefcase,
   Users,
@@ -53,6 +52,7 @@ export type FilterState = {
   currentRolesOnly?: boolean;
   search?: string;
   excludeResearchAndHighEducation?: boolean;
+  onlyCompaniesWithSalaryData?: boolean;
   onlyInternational?: boolean;
   hideUnknownRoles?: boolean;
   companySize?: CompanySizeEnum[];
@@ -270,6 +270,7 @@ export default function GlobalFilters({
       search: undefined,
       excludeResearchAndHighEducation: false,
       onlyInternational: false,
+      onlyCompaniesWithSalaryData: false,
       companySize: [],
       companyType: [],
       classificationLevel: 1,
@@ -338,36 +339,34 @@ export default function GlobalFilters({
             onValueChange={setActiveTab}
             className="w-full"
           >
-            <TabsList className="grid grid-cols-4 mb-3 bg-gray-50 rounded-lg p-1">
+            <TabsList className="grid grid-cols-2 md:grid-cols-4 mb-3 bg-gray-50 rounded-lg p-1">
               <TabsTrigger
                 value="roles"
-                className="flex items-center gap-1.5 hover:bg-[#A13A23]/10 hover:scale-105 hover:shadow-md transition-all duration-200 rounded-md"
+                className="flex items-center gap-1.5 hover:bg-[#A13A23]/10 hover:scale-105 hover:shadow-md transition-all duration-200 rounded-md text-sm"
               >
                 <Briefcase className="h-4 w-4 text-[#8C2D19]" />
                 <span>Roles</span>
               </TabsTrigger>
               <TabsTrigger
                 value="organization"
-                className="flex items-center gap-1.5 hover:bg-[#A13A23]/10 hover:scale-105 hover:shadow-md transition-all duration-200 rounded-md"
+                className="flex items-center gap-1.5 hover:bg-[#A13A23]/10 hover:scale-105 hover:shadow-md transition-all duration-200 rounded-md text-sm"
               >
                 <Building className="h-4 w-4 text-[#8C2D19]" />
                 <span>Organization</span>
               </TabsTrigger>
               <TabsTrigger
                 value="location"
-                className="flex items-center gap-1.5 hover:bg-[#A13A23]/10 hover:scale-105 hover:shadow-md transition-all duration-200 rounded-md"
+                className="flex items-center gap-1.5 hover:bg-[#A13A23]/10 hover:scale-105 hover:shadow-md transition-all duration-200 rounded-md text-sm"
               >
                 <MapPin className="h-4 w-4 text-[#8C2D19]" />
                 <span>Location</span>
               </TabsTrigger>
               <TabsTrigger
                 value="education"
-                className="flex items-center gap-1.5 hover:bg-[#A13A23]/10 hover:scale-105 hover:shadow-md transition-all duration-200 rounded-md"
+                className="flex items-center gap-1.5 hover:bg-[#A13A23]/10 hover:scale-105 hover:shadow-md transition-all duration-200 rounded-md text-sm whitespace-nowrap"
               >
-                <Users className="h-4 w-4 text-[#8C2D19] mr-1" />
-                <span>Alumnus and</span>
-                <GraduationCap className="h-4 w-4 ml-1 text-[#8C2D19]" />
-                <span>Education</span>
+                <Users className="h-4 w-4 text-[#8C2D19]" />
+                <span>Alumni & Education</span>
               </TabsTrigger>
             </TabsList>
 
@@ -476,22 +475,7 @@ export default function GlobalFilters({
               Current roles only
             </Label>
           </div>
-          <div className="flex items-center space-x-2">
-            <Checkbox
-              id="excludeResearchAndHighEducation"
-              checked={filters.excludeResearchAndHighEducation}
-              onCheckedChange={(checked) =>
-                handleFilterChange("excludeResearchAndHighEducation", checked)
-              }
-              className="border-gray-300 data-[state=checked]:bg-[#8C2D19] data-[state=checked]:border-[#8C2D19] hover:scale-110 transition-transform duration-200"
-            />
-            <Label
-              htmlFor="excludeResearchAndHighEducation"
-              className="text-xs font-medium text-gray-700 peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-            >
-              Exclude education and research roles
-            </Label>
-          </div>
+
           <div className="flex items-center space-x-2">
             <Checkbox
               id="onlyInternational"
@@ -654,7 +638,7 @@ export default function GlobalFilters({
 
   function renderOrganizationTab() {
     return (
-      <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-5 gap-4">
         <div>
           <Label
             htmlFor="companySelect"
@@ -731,6 +715,41 @@ export default function GlobalFilters({
               placeholder="Select company type"
               allowSelectAll={true}
             />
+          </div>
+        </div>
+        <div className="grid grid-cols-1 gap-2 mt-5">
+          <div className="flex items-center space-x-2">
+            <Checkbox
+              id="excludeResearchAndHighEducation"
+              checked={filters.excludeResearchAndHighEducation}
+              onCheckedChange={(checked) =>
+                handleFilterChange("excludeResearchAndHighEducation", checked)
+              }
+              className="border-gray-300 data-[state=checked]:bg-[#8C2D19] data-[state=checked]:border-[#8C2D19] hover:scale-110 transition-transform duration-200"
+            />
+            <Label
+              htmlFor="excludeResearchAndHighEducation"
+              className="text-xs font-medium text-gray-700 peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+            >
+              Exclude education and research institutions
+            </Label>
+          </div>
+
+          <div className="flex items-center space-x-2">
+            <Checkbox
+              id="onlyCompaniesWithSalaryData"
+              checked={filters.onlyCompaniesWithSalaryData}
+              onCheckedChange={(checked) =>
+                handleFilterChange("onlyCompaniesWithSalaryData", checked)
+              }
+              className="border-gray-300 data-[state=checked]:bg-[#8C2D19] data-[state=checked]:border-[#8C2D19] hover:scale-110 transition-transform duration-200"
+            />
+            <Label
+              htmlFor="hideUnknownRoles"
+              className="text-xs font-medium text-gray-700 peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+            >
+              Only companies with salary data
+            </Label>
           </div>
         </div>
       </div>

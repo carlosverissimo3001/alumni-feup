@@ -11,8 +11,11 @@ export class CompanySummaryEntity {
 }
 
 export class CompanyAnalyticsEntity extends CompanySummaryEntity {
-  @ApiPropertyOptional({ type: String, nullable: true })
-  logo?: string | null;
+  @ApiPropertyOptional({ type: String })
+  logo?: string;
+
+  @ApiPropertyOptional({ type: String })
+  levelsFyiUrl?: string;
 
   @ApiProperty()
   industry: IndustryAnalyticsEntity;

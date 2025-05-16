@@ -72,6 +72,7 @@ export interface AlumniAnalyticsControllerGetAlumniListRequest {
     companyHQsCountryCodes?: Array<string>;
     companyHQsCityIds?: Array<string>;
     currentRolesOnly?: boolean;
+    onlyCompaniesWithSalaryData?: boolean;
     onlyInternational?: boolean;
     excludeResearchAndHighEducation?: boolean;
     companySearch?: string;
@@ -101,6 +102,7 @@ export interface CompanyAnalyticsControllerGetCompaniesWithAlumniCountRequest {
     companyHQsCountryCodes?: Array<string>;
     companyHQsCityIds?: Array<string>;
     currentRolesOnly?: boolean;
+    onlyCompaniesWithSalaryData?: boolean;
     onlyInternational?: boolean;
     excludeResearchAndHighEducation?: boolean;
     companySearch?: string;
@@ -138,6 +140,7 @@ export interface GeoAnalyticsControllerGetCitiesWithAlumniCountRequest {
     companyHQsCountryCodes?: Array<string>;
     companyHQsCityIds?: Array<string>;
     currentRolesOnly?: boolean;
+    onlyCompaniesWithSalaryData?: boolean;
     onlyInternational?: boolean;
     excludeResearchAndHighEducation?: boolean;
     companySearch?: string;
@@ -167,6 +170,7 @@ export interface GeoAnalyticsControllerGetCountriesWithAlumniCountRequest {
     companyHQsCountryCodes?: Array<string>;
     companyHQsCityIds?: Array<string>;
     currentRolesOnly?: boolean;
+    onlyCompaniesWithSalaryData?: boolean;
     onlyInternational?: boolean;
     excludeResearchAndHighEducation?: boolean;
     companySearch?: string;
@@ -196,6 +200,7 @@ export interface IndustryAnalyticsControllerGetIndustryWithCountsRequest {
     companyHQsCountryCodes?: Array<string>;
     companyHQsCityIds?: Array<string>;
     currentRolesOnly?: boolean;
+    onlyCompaniesWithSalaryData?: boolean;
     onlyInternational?: boolean;
     excludeResearchAndHighEducation?: boolean;
     companySearch?: string;
@@ -225,6 +230,7 @@ export interface RoleAnalyticsControllerGetRolesRequest {
     companyHQsCountryCodes?: Array<string>;
     companyHQsCityIds?: Array<string>;
     currentRolesOnly?: boolean;
+    onlyCompaniesWithSalaryData?: boolean;
     onlyInternational?: boolean;
     excludeResearchAndHighEducation?: boolean;
     companySearch?: string;
@@ -263,6 +269,7 @@ export interface AnalyticsApiInterface {
      * @param {Array<string>} [companyHQsCountryCodes] The company HQs country codes to filter by
      * @param {Array<string>} [companyHQsCityIds] The company HQs city ids to filter by
      * @param {boolean} [currentRolesOnly] Filter for current roles only
+     * @param {boolean} [onlyCompaniesWithSalaryData] Include only companies with salary data
      * @param {boolean} [onlyInternational] Whether to exclude roles in Portugal
      * @param {boolean} [excludeResearchAndHighEducation] Exclude research and high education roles
      * @param {string} [companySearch] Search query for companies
@@ -317,6 +324,7 @@ export interface AnalyticsApiInterface {
      * @param {Array<string>} [companyHQsCountryCodes] The company HQs country codes to filter by
      * @param {Array<string>} [companyHQsCityIds] The company HQs city ids to filter by
      * @param {boolean} [currentRolesOnly] Filter for current roles only
+     * @param {boolean} [onlyCompaniesWithSalaryData] Include only companies with salary data
      * @param {boolean} [onlyInternational] Whether to exclude roles in Portugal
      * @param {boolean} [excludeResearchAndHighEducation] Exclude research and high education roles
      * @param {string} [companySearch] Search query for companies
@@ -415,6 +423,7 @@ export interface AnalyticsApiInterface {
      * @param {Array<string>} [companyHQsCountryCodes] The company HQs country codes to filter by
      * @param {Array<string>} [companyHQsCityIds] The company HQs city ids to filter by
      * @param {boolean} [currentRolesOnly] Filter for current roles only
+     * @param {boolean} [onlyCompaniesWithSalaryData] Include only companies with salary data
      * @param {boolean} [onlyInternational] Whether to exclude roles in Portugal
      * @param {boolean} [excludeResearchAndHighEducation] Exclude research and high education roles
      * @param {string} [companySearch] Search query for companies
@@ -469,6 +478,7 @@ export interface AnalyticsApiInterface {
      * @param {Array<string>} [companyHQsCountryCodes] The company HQs country codes to filter by
      * @param {Array<string>} [companyHQsCityIds] The company HQs city ids to filter by
      * @param {boolean} [currentRolesOnly] Filter for current roles only
+     * @param {boolean} [onlyCompaniesWithSalaryData] Include only companies with salary data
      * @param {boolean} [onlyInternational] Whether to exclude roles in Portugal
      * @param {boolean} [excludeResearchAndHighEducation] Exclude research and high education roles
      * @param {string} [companySearch] Search query for companies
@@ -524,6 +534,7 @@ export interface AnalyticsApiInterface {
      * @param {Array<string>} [companyHQsCountryCodes] The company HQs country codes to filter by
      * @param {Array<string>} [companyHQsCityIds] The company HQs city ids to filter by
      * @param {boolean} [currentRolesOnly] Filter for current roles only
+     * @param {boolean} [onlyCompaniesWithSalaryData] Include only companies with salary data
      * @param {boolean} [onlyInternational] Whether to exclude roles in Portugal
      * @param {boolean} [excludeResearchAndHighEducation] Exclude research and high education roles
      * @param {string} [companySearch] Search query for companies
@@ -579,6 +590,7 @@ export interface AnalyticsApiInterface {
      * @param {Array<string>} [companyHQsCountryCodes] The company HQs country codes to filter by
      * @param {Array<string>} [companyHQsCityIds] The company HQs city ids to filter by
      * @param {boolean} [currentRolesOnly] Filter for current roles only
+     * @param {boolean} [onlyCompaniesWithSalaryData] Include only companies with salary data
      * @param {boolean} [onlyInternational] Whether to exclude roles in Portugal
      * @param {boolean} [excludeResearchAndHighEducation] Exclude research and high education roles
      * @param {string} [companySearch] Search query for companies
@@ -669,6 +681,10 @@ export class AnalyticsApi extends runtime.BaseAPI implements AnalyticsApiInterfa
 
         if (requestParameters['currentRolesOnly'] != null) {
             queryParameters['currentRolesOnly'] = requestParameters['currentRolesOnly'];
+        }
+
+        if (requestParameters['onlyCompaniesWithSalaryData'] != null) {
+            queryParameters['onlyCompaniesWithSalaryData'] = requestParameters['onlyCompaniesWithSalaryData'];
         }
 
         if (requestParameters['onlyInternational'] != null) {
@@ -832,6 +848,10 @@ export class AnalyticsApi extends runtime.BaseAPI implements AnalyticsApiInterfa
 
         if (requestParameters['currentRolesOnly'] != null) {
             queryParameters['currentRolesOnly'] = requestParameters['currentRolesOnly'];
+        }
+
+        if (requestParameters['onlyCompaniesWithSalaryData'] != null) {
+            queryParameters['onlyCompaniesWithSalaryData'] = requestParameters['onlyCompaniesWithSalaryData'];
         }
 
         if (requestParameters['onlyInternational'] != null) {
@@ -1085,6 +1105,10 @@ export class AnalyticsApi extends runtime.BaseAPI implements AnalyticsApiInterfa
             queryParameters['currentRolesOnly'] = requestParameters['currentRolesOnly'];
         }
 
+        if (requestParameters['onlyCompaniesWithSalaryData'] != null) {
+            queryParameters['onlyCompaniesWithSalaryData'] = requestParameters['onlyCompaniesWithSalaryData'];
+        }
+
         if (requestParameters['onlyInternational'] != null) {
             queryParameters['onlyInternational'] = requestParameters['onlyInternational'];
         }
@@ -1246,6 +1270,10 @@ export class AnalyticsApi extends runtime.BaseAPI implements AnalyticsApiInterfa
 
         if (requestParameters['currentRolesOnly'] != null) {
             queryParameters['currentRolesOnly'] = requestParameters['currentRolesOnly'];
+        }
+
+        if (requestParameters['onlyCompaniesWithSalaryData'] != null) {
+            queryParameters['onlyCompaniesWithSalaryData'] = requestParameters['onlyCompaniesWithSalaryData'];
         }
 
         if (requestParameters['onlyInternational'] != null) {
@@ -1413,6 +1441,10 @@ export class AnalyticsApi extends runtime.BaseAPI implements AnalyticsApiInterfa
             queryParameters['currentRolesOnly'] = requestParameters['currentRolesOnly'];
         }
 
+        if (requestParameters['onlyCompaniesWithSalaryData'] != null) {
+            queryParameters['onlyCompaniesWithSalaryData'] = requestParameters['onlyCompaniesWithSalaryData'];
+        }
+
         if (requestParameters['onlyInternational'] != null) {
             queryParameters['onlyInternational'] = requestParameters['onlyInternational'];
         }
@@ -1576,6 +1608,10 @@ export class AnalyticsApi extends runtime.BaseAPI implements AnalyticsApiInterfa
 
         if (requestParameters['currentRolesOnly'] != null) {
             queryParameters['currentRolesOnly'] = requestParameters['currentRolesOnly'];
+        }
+
+        if (requestParameters['onlyCompaniesWithSalaryData'] != null) {
+            queryParameters['onlyCompaniesWithSalaryData'] = requestParameters['onlyCompaniesWithSalaryData'];
         }
 
         if (requestParameters['onlyInternational'] != null) {

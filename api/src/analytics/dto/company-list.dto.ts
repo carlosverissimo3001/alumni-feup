@@ -26,8 +26,11 @@ export class CompanyListItemDto {
   })
   trend: DataPointDto[];
 
-  @ApiPropertyOptional({ type: String, nullable: true })
-  logo?: string | null;
+  @ApiPropertyOptional({ type: String })
+  logo?: string;
+
+  @ApiPropertyOptional({ type: String })
+  levelsFyiUrl?: string;
 }
 
 export class CompanyListItemExtendedDto extends CompanyListItemDto {
@@ -42,6 +45,12 @@ export class CompanyListItemExtendedDto extends CompanyListItemDto {
     type: String,
   })
   industryId: string;
+
+  @ApiPropertyOptional({
+    type: String,
+    description: 'The URL of the company on Levels.fyi',
+  })
+  levelsFyiUrl?: string;
 }
 
 export class CompanyListResponseDto {

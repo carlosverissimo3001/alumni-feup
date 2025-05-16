@@ -205,6 +205,16 @@ export class QueryParamsDto {
   currentRolesOnly?: boolean = false;
 
   @ApiPropertyOptional({
+    description: 'Include only companies with salary data',
+    type: 'boolean',
+    example: true,
+  })
+  @IsNotNullableOptional()
+  @IsBoolean()
+  @Transform(({ obj }) => toBoolean(obj.onlyCompaniesWithSalaryData))
+  onlyCompaniesWithSalaryData?: boolean = false;
+
+  @ApiPropertyOptional({
     description: 'Whether to exclude roles in Portugal',
     type: 'boolean',
     example: true,
