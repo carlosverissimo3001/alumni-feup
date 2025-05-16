@@ -15,6 +15,7 @@ import {
   MapPin,
   Tags,
   Briefcase,
+  Users,
 } from "lucide-react";
 import { useState, useMemo, useEffect } from "react";
 import {
@@ -37,6 +38,7 @@ import {
 } from "@/sdk";
 import { motion, AnimatePresence } from "framer-motion";
 import { useRoleOptions } from "@/hooks/analytics/useRoleOptions";
+import { useAlumniOptions } from "@/hooks/analytics/useAlumniOptions";
 
 export type FilterState = {
   dateRange?: DateRange | undefined;
@@ -57,6 +59,7 @@ export type FilterState = {
   companySize?: CompanySizeEnum[];
   companyType?: CompanyTypeEnum[];
   classificationLevel?: number;
+  alumniIds?: string[];
 };
 
 type GlobalFiltersProps = {
@@ -123,7 +126,6 @@ export default function GlobalFilters({
     countryCodes: filters.companyHQsCountryCodes,
   });
 
-
   const {
     data: roleOptions,
     isLoading: isRoleOptionsLoading,
@@ -136,9 +138,15 @@ export default function GlobalFilters({
     isFetching: isIndustryOptionsFetching,
   } = useIndustryOptions();
 
+  const {
+    data: alumniOptions,
+    isLoading: isAlumniOptionsLoading,
+    isFetching: isAlumniOptionsFetching,
+  } = useAlumniOptions();
+
   const { data: courseOptions, isLoading: isCourseOptionsLoading } =
     useListCourses({ enabled: true, params: {} });
-    useListCourses({ enabled: true, params: {} });
+  useListCourses({ enabled: true, params: {} });
 
   // React will run these hooks in parallel by default
   // The component will render once all data is available
@@ -179,6 +187,10 @@ export default function GlobalFilters({
         value: city.id,
         label: city.name,
       })),
+      alumni: (alumniOptions || []).map((alumni) => ({
+        value: alumni.id,
+        label: alumni.fullName,
+      })),
       graduationYears: Array.from(
         { length: new Date().getFullYear() - 1994 + 1 },
         (_, i) => {
@@ -215,6 +227,7 @@ export default function GlobalFilters({
       companyCityOptions,
       industryOptions,
       roleOptions,
+      alumniOptions,
       filters.classificationLevel,
     ]
   );
@@ -261,6 +274,7 @@ export default function GlobalFilters({
       companySize: [],
       companyType: [],
       classificationLevel: 1,
+      alumniIds: [],
     };
 
     onFiltersChange(emptyFilters);
@@ -274,14 +288,14 @@ export default function GlobalFilters({
       >
         <div className="flex items-center gap-2">
           <motion.button
-            className="p-1 hover:bg-gray-100 rounded-full transition-colors select-none relative"
+            className="p-1 hover:bg-gradient-to-r hover:from-[#A13A23]/10 hover:to-gray-100 rounded-full transition-colors select-none relative"
             whileTap={{ scale: 0.9 }}
             onClick={(e) => e.stopPropagation()}
           >
             <ListFilterIcon className="w-5 h-5 text-[#8C2D19]" />
             {Math.max(0, activeFilterCount) > 0 && (
               <span
-                className={`absolute -top-1 -right-1 bg-[#8C2D19] text-white text-xs rounded-full flex items-center justify-center ${
+                className={`absolute -top-1 -right-1 bg-[#8C2D19] text-white text-xs rounded-full flex items-center justify-center animate-pulse ${
                   activeFilterCount > 9 ? "h-5 w-5" : "h-4 w-4"
                 }`}
                 aria-label={`Active filters: ${activeFilterCount}`}
@@ -311,7 +325,7 @@ export default function GlobalFilters({
               e.stopPropagation();
               clearFilters();
             }}
-            className="text-[#8C2D19] border-[#8C2D19] hover:bg-[#8C2D19] hover:text-white transition-colors"
+            className="text-[#8C2D19] border-[#8C2D19] hover:bg-[#8C2D19] hover:text-white transition-colors animate-pulse"
           >
             Clear
           </Button>
@@ -325,34 +339,36 @@ export default function GlobalFilters({
             onValueChange={setActiveTab}
             className="w-full"
           >
-            <TabsList className="grid grid-cols-4 mb-3">
+            <TabsList className="grid grid-cols-4 mb-3 bg-gray-50 rounded-lg p-1">
               <TabsTrigger
-                value="location"
-                className="flex items-center gap-1.5"
+                value="roles"
+                className="flex items-center gap-1.5 hover:bg-[#A13A23]/10 hover:scale-105 hover:shadow-md transition-all duration-200 rounded-md"
               >
-                <MapPin className="h-4 w-4" />
-                <span>Location </span>
-                {/* {activeFilterCount > 0 && (
-                  <span className="text-sm text-gray-500">({activeFilterCount})</span>
-                )} */}
+                <Briefcase className="h-4 w-4 text-[#8C2D19]" />
+                <span>Roles</span>
               </TabsTrigger>
               <TabsTrigger
                 value="organization"
-                className="flex items-center gap-1.5"
+                className="flex items-center gap-1.5 hover:bg-[#A13A23]/10 hover:scale-105 hover:shadow-md transition-all duration-200 rounded-md"
               >
-                <Building className="h-4 w-4" />
+                <Building className="h-4 w-4 text-[#8C2D19]" />
                 <span>Organization</span>
               </TabsTrigger>
               <TabsTrigger
-                value="education"
-                className="flex items-center gap-1.5"
+                value="location"
+                className="flex items-center gap-1.5 hover:bg-[#A13A23]/10 hover:scale-105 hover:shadow-md transition-all duration-200 rounded-md"
               >
-                <GraduationCap className="h-4 w-4" />
-                <span>Education</span>
+                <MapPin className="h-4 w-4 text-[#8C2D19]" />
+                <span>Location</span>
               </TabsTrigger>
-              <TabsTrigger value="roles" className="flex items-center gap-1.5">
-                <Briefcase className="h-4 w-4" />
-                <span>Roles</span>
+              <TabsTrigger
+                value="education"
+                className="flex items-center gap-1.5 hover:bg-[#A13A23]/10 hover:scale-105 hover:shadow-md transition-all duration-200 rounded-md"
+              >
+                <Users className="h-4 w-4 text-[#8C2D19] mr-1" />
+                <span>Alumnus and</span>
+                <GraduationCap className="h-4 w-4 ml-1 text-[#8C2D19]" />
+                <span>Education</span>
               </TabsTrigger>
             </TabsList>
 
@@ -364,14 +380,12 @@ export default function GlobalFilters({
                   animate={{ opacity: 1, x: 0 }}
                   exit={{ opacity: 0, x: -20 }}
                   transition={{ duration: 0.2 }}
-                  className="w-full"
+                  className="w-full bg-gradient-to-br from-gray-50 to-white p-4 rounded-lg"
                 >
-                  {/* Render tab content based on activeTab */}
+                  {activeTab === "roles" && renderRolesTab()}
                   {activeTab === "location" && renderLocationTab()}
                   {activeTab === "organization" && renderOrganizationTab()}
                   {activeTab === "education" && renderEducationTab()}
-                  {activeTab === "roles" && renderRolesTab()}
-                  {/* {activeTab === "options" && renderOptionsTab()} */}
                 </motion.div>
               </AnimatePresence>
             </div>
@@ -381,35 +395,169 @@ export default function GlobalFilters({
     </div>
   );
 
-  // Helper functions to render each tab content
+  function renderRolesTab() {
+    return (
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-start">
+        <div>
+          <div className="flex items-center gap-1 mb-1">
+            <Label
+              htmlFor="dateRange"
+              className="text-xs font-medium text-gray-700"
+            >
+              Role Range
+            </Label>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Info className="w-3.5 h-3.5 text-gray-400 hover:text-gray-600 cursor-help hover:scale-110 transition-transform duration-200" />
+                </TooltipTrigger>
+                <TooltipContent
+                  side="right"
+                  className="bg-white p-2 border shadow-lg rounded-md text-gray-700 animate-fadeIn"
+                >
+                  <p className="text-sm">
+                    <strong className="text-[#8C2D19]">Role Range</strong> shows
+                    when people worked in roles:
+                    <br />
+                    • If you select a date range (e.g., 2020-2023), it shows
+                    roles active during that period
+                    <br />• If you leave the end date empty, it shows roles up
+                    to the present day
+                    <br />• Selecting{" "}
+                    <strong className="text-[#8C2D19]">
+                      current roles only
+                    </strong>{" "}
+                    will return only those that do not have an end date
+                  </p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          </div>
+          <DatePickerWithRange
+            value={filters.dateRange}
+            onChange={(date) => {
+              handleFilterChange("dateRange", date);
+            }}
+            className="w-full"
+          />
+        </div>
+
+        <div>
+          <Label
+            htmlFor="roleSelect"
+            className="text-xs font-medium text-gray-700 mb-1 block"
+          >
+            Roles
+          </Label>
+          <MultiSelect
+            id="roleSelect"
+            isLoading={isRoleOptionsLoading || isRoleOptionsFetching}
+            options={options.roles}
+            value={filters.escoCodes}
+            onValueChange={(value) => handleFilterChange("escoCodes", value)}
+            placeholder="Select roles"
+            maxCount={1}
+          />
+        </div>
+
+        <div className="grid grid-cols-2 gap-2 gap-x-4 mt-5">
+          <div className="flex items-center space-x-2">
+            <Checkbox
+              id="currentRoles"
+              checked={filters.currentRolesOnly}
+              onCheckedChange={(checked) =>
+                handleFilterChange("currentRolesOnly", checked)
+              }
+              className="border-gray-300 data-[state=checked]:bg-[#8C2D19] data-[state=checked]:border-[#8C2D19] hover:scale-110 transition-transform duration-200"
+            />
+            <Label
+              htmlFor="currentRoles"
+              className="text-xs font-medium text-gray-700 peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+            >
+              Current roles only
+            </Label>
+          </div>
+          <div className="flex items-center space-x-2">
+            <Checkbox
+              id="excludeResearchAndHighEducation"
+              checked={filters.excludeResearchAndHighEducation}
+              onCheckedChange={(checked) =>
+                handleFilterChange("excludeResearchAndHighEducation", checked)
+              }
+              className="border-gray-300 data-[state=checked]:bg-[#8C2D19] data-[state=checked]:border-[#8C2D19] hover:scale-110 transition-transform duration-200"
+            />
+            <Label
+              htmlFor="excludeResearchAndHighEducation"
+              className="text-xs font-medium text-gray-700 peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+            >
+              Exclude education and research roles
+            </Label>
+          </div>
+          <div className="flex items-center space-x-2">
+            <Checkbox
+              id="onlyInternational"
+              checked={filters.onlyInternational}
+              onCheckedChange={(checked) =>
+                handleFilterChange("onlyInternational", checked)
+              }
+              className="border-gray-300 data-[state=checked]:bg-[#8C2D19] data-[state=checked]:border-[#8C2D19] hover:scale-110 transition-transform duration-200"
+            />
+            <Label
+              htmlFor="onlyInternational"
+              className="text-xs font-medium text-gray-700 peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+            >
+              Only international roles
+            </Label>
+          </div>
+          <div className="flex items-center space-x-2">
+            <Checkbox
+              id="hideUnknownRoles"
+              checked={filters.hideUnknownRoles}
+              onCheckedChange={(checked) =>
+                handleFilterChange("hideUnknownRoles", checked)
+              }
+              className="border-gray-300 data-[state=checked]:bg-[#8C2D19] data-[state=checked]:border-[#8C2D19] hover:scale-110 transition-transform duration-200"
+            />
+            <Label
+              htmlFor="hideUnknownRoles"
+              className="text-xs font-medium text-gray-700 peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+            >
+              Hide remote/unlocated roles
+            </Label>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   function renderLocationTab() {
     return (
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {/* Company Location Section */}
         <div>
-          <div className="mb-0.5 flex items-center space-x-2">
-            <span className="font-semibold text-sm text-[#8C2D19]">
+          <div className="flex items-center space-x-1">
+            <span className="mb-1 font-semibold text-xs text-[#8C2D19]">
               Company Location
             </span>
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <Info className="h-4 w-4 text-gray-500" />
+                  <Info className="h-4 w-4 text-gray-500 mb-0.5 cursor-help" />
                 </TooltipTrigger>
-                <TooltipContent align="start">
-                  <p>The alumni worked for a company that is HQ&apos;ed in this country/city.</p>
+                <TooltipContent
+                  side="right"
+                  className="bg-white p-2 border shadow-lg rounded-md text-gray-700 animate-fadeIn"
+                >
+                  <p>
+                    The alumni worked for a company that is HQ&apos;ed in this
+                    country/city.
+                  </p>
                 </TooltipContent>
               </Tooltip>
             </TooltipProvider>
           </div>
-          <div className="mb-0.5 grid grid-cols-2 gap-2">
+          <div className="grid grid-cols-2 gap-2">
             <div>
-              <Label
-                htmlFor="companyCountrySelect"
-                className="text-xs font-medium text-gray-700 mb-1 block"
-              >
-                Countries
-              </Label>
               <MultiSelect
                 id="companyCountrySelect"
                 options={options.countries}
@@ -425,12 +573,6 @@ export default function GlobalFilters({
               />
             </div>
             <div>
-              <Label
-                htmlFor="companyCitySelect"
-                className="text-xs font-medium text-gray-700 mb-1 block"
-              >
-                Cities
-              </Label>
               <GroupedMultiSelect
                 id="companyCitySelect"
                 disabled={
@@ -444,7 +586,9 @@ export default function GlobalFilters({
                   handleFilterChange("companyHQsCityIds", value)
                 }
                 maxCount={6}
-                isLoading={isCompanyCityOptionsLoading || isCompanyCityOptionsFetching}
+                isLoading={
+                  isCompanyCityOptionsLoading || isCompanyCityOptionsFetching
+                }
               />
             </div>
           </div>
@@ -452,27 +596,26 @@ export default function GlobalFilters({
 
         {/* Role Location Section */}
         <div>
-          <div className="mb-0.5 flex items-center space-x-2">
-            <span className="font-semibold text-sm text-[#8C2D19]">Role Location</span>
+          <div className="flex items-center space-x-1">
+            <span className="mb-1 font-semibold text-xs text-[#8C2D19]">
+              Role Location
+            </span>
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <Info className="h-4 w-4 text-gray-500" />
+                  <Info className="h-4 w-4 text-gray-500 mb-0.5 cursor-help" />
                 </TooltipTrigger>
-              <TooltipContent align="start">
-                <p>The alumni exercised the roles from this country/city.</p>
+                <TooltipContent
+                  side="right"
+                  className="bg-white p-2 border shadow-lg rounded-md text-gray-700 animate-fadeIn"
+                >
+                  <p>The alumni exercised the role from this country/city.</p>
                 </TooltipContent>
               </Tooltip>
             </TooltipProvider>
           </div>
           <div className="grid grid-cols-2 gap-2">
             <div>
-              <Label
-                htmlFor="roleCountryCodeSelect"
-                className="text-xs font-medium text-gray-700 mb-1 block"
-              >
-                Countries
-              </Label>
               <MultiSelect
                 id="roleCountryCodeSelect"
                 isLoading={isRoleOptionsLoading || isRoleOptionsFetching}
@@ -486,12 +629,6 @@ export default function GlobalFilters({
               />
             </div>
             <div>
-              <Label
-                htmlFor="roleCityIdSelect"
-                className="text-xs font-medium text-gray-700 mb-1 block"
-              >
-                Cities
-              </Label>
               <GroupedMultiSelect
                 id="roleCityIdSelect"
                 disabled={
@@ -505,7 +642,9 @@ export default function GlobalFilters({
                   handleFilterChange("roleCityIds", value)
                 }
                 maxCount={6}
-                isLoading={isRoleCityOptionsLoading || isRoleCityOptionsFetching}
+                isLoading={
+                  isRoleCityOptionsLoading || isRoleCityOptionsFetching
+                }
               />
             </div>
           </div>
@@ -601,20 +740,40 @@ export default function GlobalFilters({
 
   function renderEducationTab() {
     return (
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div>
           <Label
-            htmlFor="courseSelect"
+            htmlFor="alumniSelect"
             className="text-xs font-medium text-gray-700 mb-1 block"
           >
-            Courses
+            Alumni
           </Label>
-          <CourseSelect
-            courses={courseOptions || []}
-            setCourseIds={(value) => handleFilterChange("courseIds", value)}
-            isLoadingCourses={isCourseOptionsLoading}
-            courseIds={filters.courseIds || []}
+          <MultiSelect
+            id="alumniSelect"
+            options={options.alumni}
+            value={filters.alumniIds}
+            onValueChange={(value) => handleFilterChange("alumniIds", value)}
+            placeholder="Search and select alumni"
+            isLoading={isAlumniOptionsLoading || isAlumniOptionsFetching}
+            maxCount={1}
           />
+        </div>
+
+        <div className="grid grid-cols-1 gap-4">
+          <div>
+            <Label
+              htmlFor="courseSelect"
+              className="text-xs font-medium text-gray-700 mb-1 block"
+            >
+              Graduated From
+            </Label>
+            <CourseSelect
+              courses={courseOptions || []}
+              setCourseIds={(value) => handleFilterChange("courseIds", value)}
+              isLoadingCourses={isCourseOptionsLoading}
+              courseIds={filters.courseIds || []}
+            />
+          </div>
         </div>
 
         <div>
@@ -622,7 +781,7 @@ export default function GlobalFilters({
             htmlFor="graduationYearsSelect"
             className="text-xs font-medium text-gray-700 mb-1 block"
           >
-            Graduation Years
+            Graduation In
           </Label>
           <MultiSelect
             id="graduationYearsSelect"
@@ -633,142 +792,8 @@ export default function GlobalFilters({
             }
             placeholder="Select graduation years"
             allowSelectAll={true}
+            className="border-gray-200 focus:ring-2 focus:ring-[#A13A23]/50 hover:border-[#A13A23] transition-all duration-200"
           />
-        </div>
-      </div>
-    );
-  }
-
-  function renderRolesTab() {
-    return (
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-start">
-        <div>
-          <div className="flex items-center gap-1 mb-1">
-            <Label
-              htmlFor="dateRange"
-              className="text-xs font-medium text-gray-700"
-            >
-              Role Range
-            </Label>
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Info className="w-3.5 h-3.5 text-gray-400 hover:text-gray-600 cursor-help" />
-                </TooltipTrigger>
-                <TooltipContent
-                  side="right"
-                  className="bg-white p-2 border shadow-lg rounded-md text-gray-700"
-                >
-                  <p className="text-sm">
-                    <strong className="text-[#8C2D19]">Role Range</strong> shows
-                    when people worked in roles:
-                    <br />
-                    • If you select a date range (e.g., 2020-2023), it shows
-                    roles active during that period
-                    <br />• If you leave the end date empty, it shows roles up
-                    to the present day
-                    <br />• Selecting{" "}
-                    <strong className="text-[#8C2D19]">
-                      current roles only
-                    </strong>{" "}
-                    will return only those that do not have an end date
-                  </p>
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
-          </div>
-          <DatePickerWithRange
-            value={filters.dateRange}
-            onChange={(date) => {
-              handleFilterChange("dateRange", date);
-            }}
-            className="w-full"
-          />
-        </div>
-  
-        <div>
-          <Label
-            htmlFor="roleSelect"
-            className="text-xs font-medium text-gray-700 mb-1 block"
-          >
-            Roles
-          </Label>
-          <MultiSelect
-            id="roleSelect"
-            isLoading={isRoleOptionsLoading || isRoleOptionsFetching}
-            options={options.roles}
-            value={filters.escoCodes}
-            onValueChange={(value) => handleFilterChange("escoCodes", value)}
-            placeholder="Select roles"
-            maxCount={1}
-          />
-        </div>
-  
-        <div className="grid grid-cols-2 gap-2 gap-x-4 mt-5">
-          <div className="flex items-center space-x-2">
-            <Checkbox
-              id="currentRoles"
-              checked={filters.currentRolesOnly}
-              onCheckedChange={(checked) =>
-                handleFilterChange("currentRolesOnly", checked)
-              }
-              className="border-gray-300 data-[state=checked]:bg-[#8C2D19] data-[state=checked]:border-[#8C2D19]"
-            />
-            <Label
-              htmlFor="currentRoles"
-              className="text-xs font-medium text-gray-700 peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-            >
-              Current roles only
-            </Label>
-          </div>
-          <div className="flex items-center space-x-2">
-            <Checkbox
-              id="excludeResearchAndHighEducation"
-              checked={filters.excludeResearchAndHighEducation}
-              onCheckedChange={(checked) =>
-                handleFilterChange("excludeResearchAndHighEducation", checked)
-              }
-              className="border-gray-300 data-[state=checked]:bg-[#8C2D19] data-[state=checked]:border-[#8C2D19]"
-            />
-            <Label
-              htmlFor="excludeResearchAndHighEducation"
-              className="text-xs font-medium text-gray-700 peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-            >
-              Exclude education and research roles
-            </Label>
-          </div>
-          <div className="flex items-center space-x-2">
-            <Checkbox
-              id="onlyInternational"
-              checked={filters.onlyInternational}
-              onCheckedChange={(checked) =>
-                handleFilterChange("onlyInternational", checked)
-              }
-              className="border-gray-300 data-[state=checked]:bg-[#8C2D19] data-[state=checked]:border-[#8C2D19]"
-            />
-            <Label
-              htmlFor="onlyInternational"
-              className="text-xs font-medium text-gray-700 peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-            >
-              Only international roles
-            </Label>
-          </div>
-          <div className="flex items-center space-x-2">
-            <Checkbox
-              id="hideUnknownRoles"
-              checked={filters.hideUnknownRoles}
-              onCheckedChange={(checked) =>
-                handleFilterChange("hideUnknownRoles", checked)
-              }
-              className="border-gray-300 data-[state=checked]:bg-[#8C2D19] data-[state=checked]:border-[#8C2D19]"
-            />
-            <Label
-              htmlFor="hideUnknownRoles"
-              className="text-xs font-medium text-gray-700 peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-            >
-              Hide remote/unlocated roles
-            </Label>
-          </div>
         </div>
       </div>
     );

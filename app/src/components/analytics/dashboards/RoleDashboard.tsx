@@ -5,7 +5,6 @@ import {
   Table,
   TableBody,
   TableCell,
-  TableRow,
   TableContainer,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
@@ -44,6 +43,7 @@ import TrendLineComponent from "../common/TrendLineComponent";
 import LoadingChart from "../common/LoadingChart";
 import { EntityType, TrendFrequency } from "@/types/entityTypes";
 import { TrendTooltip } from "../common/TrendTooltip";
+import CustomTableRow from "../common/CustomTableRow";
 
 type RoleDashboardProps = {
   onDataUpdate: (roleCount: number, roleFilteredCount: number) => void;
@@ -64,8 +64,9 @@ export default function RoleDashboard({
   const [sortOrder, setSortOrder] = useState<SortOrder>(SortOrder.DESC);
   const [view, setView] = useState<ViewType>(ViewType.TABLE);
   const [level, setLevel] = useState<number>(1);
-  const [trendFrequency, setTrendFrequency] = useState<TrendFrequency>(TrendFrequency.Y5);
-  
+  const [trendFrequency, setTrendFrequency] = useState<TrendFrequency>(
+    TrendFrequency.Y5
+  );
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [pageInput, setPageInput] = useState<string>(String(page));
@@ -130,7 +131,8 @@ export default function RoleDashboard({
                 onSort={handleSort}
                 showTrend={view === ViewType.TREND}
                 trendFrequency={trendFrequency}
-                customCountHeader="Roles"
+                customSecondHeader="Roles"
+                hoverMessage="The total of alumni roles classified with this title"
               />
 
               {isLoading || isFetching ? (
@@ -141,22 +143,20 @@ export default function RoleDashboard({
                     roles.map((role: RoleListItemDto, index: number) => {
                       const rowNumber = (page - 1) * itemsPerPage + index + 1;
                       return (
-                        <TableRow
+                        <CustomTableRow
                           key={role.code}
-                          className={`group ${
-                            index % 2 === 0 ? "bg-gray-50" : "bg-white"
-                          } hover:bg-[#A13A23] hover:bg-opacity-10 transition-colors duration-200 relative`}
+                          index={index}
                         >
                           <TableCell className="w-[3%] py-1.5 pl-3 text-sm text-gray-500 font-medium align-middle">
                             {rowNumber}
                           </TableCell>
                           <TableCell className="w-5/12 py-1.5 pl-3 text-sm font-medium text-[#000000] align-middle">
-                              <div
-                                title={role.name}
-                                className="text-ellipsis overflow-hidden whitespace-nowrap w-full text-left p-1"
-                              >
-                                {startCase(role.name)}
-                              </div>
+                            <div
+                              title={role.name}
+                              className="text-ellipsis overflow-hidden whitespace-nowrap w-full text-left p-1"
+                            >
+                              {startCase(role.name)}
+                            </div>
                           </TableCell>
                           <TableCell className="w-2/12 px-3 py-1 text-sm text-[#000000] align-middle hover:text-[#8C2D19] transition-colors relative">
                             <div className="flex items-center gap-0 justify-center">
@@ -196,7 +196,7 @@ export default function RoleDashboard({
                               </div>
                             </div>
                           </TableCell>
-                        </TableRow>
+                        </CustomTableRow>
                       );
                     })
                   ) : (
@@ -264,7 +264,10 @@ export default function RoleDashboard({
             icon={<Briefcase className="h-5 w-5 text-[#8C2D19]" />}
           />
           {view === ViewType.TREND && (
-            <TrendTooltip entityType={EntityType.ROLE} trendFrequency={trendFrequency} />
+            <TrendTooltip
+              entityType={EntityType.ROLE}
+              trendFrequency={trendFrequency}
+            />
           )}
         </div>
 

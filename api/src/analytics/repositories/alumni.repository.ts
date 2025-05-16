@@ -2,10 +2,9 @@ import { PrismaService } from '@/prisma/prisma.service';
 import { QueryParamsDto } from '../dto/query-params.dto';
 import { buildWhereClause } from '../utils/query-builder';
 import { Injectable, Logger } from '@nestjs/common';
-import { toAlumniAnalyticsEntity, toRoleAnalyticsEntity } from '../utils/alumni.mapper';
+import { toAlumniAnalyticsEntity } from '../utils/alumni.mapper';
 import { AlumniAnalyticsEntity } from '../entities/alumni.entity';
 import { roleSelect } from '../utils/selectors';
-import { RoleAnalyticsEntity } from '../entities/role.entity';
 
 @Injectable()
 export class AlumniAnalyticsRepository {
@@ -23,6 +22,9 @@ export class AlumniAnalyticsRepository {
       where: alumniWhere,
       select: {
         id: true,
+        fullName: true,
+        linkedinUrl: true,
+        profilePictureUrl: true,
         Roles: {
           where: roleWhere,
           select: roleSelect,
@@ -31,6 +33,19 @@ export class AlumniAnalyticsRepository {
     });
 
     return alumnus.map(toAlumniAnalyticsEntity);
+  }
+
+  async findAllAlumni() {
+    const alumni = await this.prisma.alumni.findMany({
+      select: {
+        id: true,
+        fullName: true,
+        linkedinUrl: true,
+        profilePictureUrl: true,
+      },
+    });
+
+    return alumni;
   }
 
   async findAllAlumniRoles(id: string) {

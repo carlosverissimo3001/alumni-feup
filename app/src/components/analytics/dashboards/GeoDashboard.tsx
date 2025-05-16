@@ -24,7 +24,6 @@ import {
   Table,
   TableBody,
   TableCell,
-  TableRow,
   TableContainer,
 } from "@/components/ui/table";
 import ImageWithFallback from "../../ui/image-with-fallback";
@@ -51,6 +50,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import CustomTableRow from "../common/CustomTableRow";
 
 type GeoDashboardProps = {
   onDataUpdate: (
@@ -189,6 +189,7 @@ export default function GeoDashboard({
                 onSort={handleSort}
                 showTrend={view === ViewType.TREND}
                 trendFrequency={trendFrequency}
+                hoverMessage="Alumni that have had at least a role in this location"
               />
 
               {isLoading ? (
@@ -202,11 +203,9 @@ export default function GeoDashboard({
                         ? `https://flagcdn.com/${row.code.toLowerCase()}.svg`
                         : "";
                       return (
-                        <TableRow
+                        <CustomTableRow
+                          index={index}
                           key={row.id}
-                          className={`group ${
-                            index % 2 === 0 ? "bg-gray-50" : "bg-white"
-                          } hover:bg-[#A13A23] hover:bg-opacity-10 transition-colors duration-200 relative`}
                         >
                           <TableCell className="w-1/12 py-1.5 pl-3 text-sm text-gray-500 font-medium align-middle">
                             {rowNumber}
@@ -347,7 +346,7 @@ export default function GeoDashboard({
                               </div>
                             </div>
                           </TableCell>
-                        </TableRow>
+                        </CustomTableRow>
                       );
                     })
                   ) : (

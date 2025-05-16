@@ -27,7 +27,7 @@ interface PaginationControlsProps {
   setItemsPerPage: (n: number) => void;
   totalItems: number;
   visible: boolean;
-  trendFrequency: TrendFrequency;
+  trendFrequency?: TrendFrequency;
   showTrendFrequency?: boolean;
   setTrendFrequency?: (trendFrequency: TrendFrequency) => void;
 }
