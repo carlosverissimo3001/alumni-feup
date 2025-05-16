@@ -34,6 +34,11 @@ export const buildWhereClause = (
     });
   }
 
+  if (params.alumniIds?.length) {
+    alumniAndClauses.push({
+      id: { in: params.alumniIds },
+    });
+  }
 
   if (params.onlyInternational) {
     roleAndClauses.push({

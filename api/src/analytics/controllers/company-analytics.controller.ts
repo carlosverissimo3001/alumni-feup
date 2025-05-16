@@ -63,11 +63,11 @@ export class CompanyAnalyticsController {
     return this.companyAnalyticsService.getCompanyInsights(id);
   }
 
-  @Get('/hot-companies')
+  /* @Get('/hot-companies')
   @ApiOperation({
     summary: 'Returns companies that have seen a spike in alumni employment.',
   })
   async getHotCompanies(@Query() query: QueryParamsDto) {
     // TODO: Implement this
-  }
+  } */
 }

@@ -11,7 +11,7 @@ model Alumni {
   id        String  @id @default(dbgenerated("gen_random_uuid()"))
   firstName String  @map("first_name")
   lastName  String  @map("last_name")
-  fullName  String? @map("full_name")
+  fullName  String  @map("full_name")
 
   // Data from LinkedIn
   linkedinUrl       String? @unique @map("linkedin_url")

@@ -8,6 +8,7 @@ import {
   Briefcase,
   MapPin,
   Flag,
+  ArrowUp,
 } from "lucide-react";
 import {
   CompanyDashboard,
@@ -15,12 +16,14 @@ import {
   GeoDashboard,
   RoleDashboard,
 } from "@/components/analytics/dashboards";
-import { useState, useCallback, useMemo } from "react";
+import { useState, useCallback, useMemo, useEffect } from "react";
 import OverallStats from "@/components/analytics/OverallStats";
 import GlobalFilters, {
   FilterState,
 } from "@/components/analytics/common/GlobalFilters";
 import { handleDateRange } from "@/utils/date";
+import AlumniTable from "@/components/analytics/dashboards/AlumniTable";
+import { Button } from "@/components/ui/button";
 
 export const initialFilters: FilterState = {
   dateRange: undefined,
@@ -40,6 +43,7 @@ export const initialFilters: FilterState = {
   classificationLevel: 1,
   companySize: [],
   escoCodes: [],
+  alumniIds: [],
 };
 
 export default function Analytics() {
@@ -62,6 +66,7 @@ export default function Analytics() {
 
   const [filters, setFilters] = useState<FilterState>(initialFilters);
 
+  const [showScrollButton, setShowScrollButton] = useState(false);
 
   const processedDateRange = useMemo(() => {
     if (filters.dateRange) {
@@ -158,7 +163,8 @@ export default function Analytics() {
     (geoId: string, type: "role" | "company") => {
       if (geoMode === "country") {
         setFilters((prev) => {
-          const key = type === "role" ? "roleCountryCodes" : "companyHQsCountryCodes";
+          const key =
+            type === "role" ? "roleCountryCodes" : "companyHQsCountryCodes";
           const current = prev[key] || [];
           if (!current.includes(geoId)) {
             const updated = [...current, geoId];
@@ -177,7 +183,7 @@ export default function Analytics() {
             };
           }
         });
-      // Note: We're currently not supporting city filtering, directly from the dashboard
+        // Note: We're currently not supporting city filtering, directly from the dashboard
       } else {
         setFilters((prev) => {
           const key = type === "role" ? "roleCityIds" : "companyHQsCityIds";
@@ -233,6 +239,10 @@ export default function Analytics() {
     });
   }, []);
 
+  const handleAddAlumniToFilters = useCallback((alumniId: string) => {
+    // TODO: Implement
+  }, []);
+
   const handleLevelChange = useCallback((level: number) => {
     setFilters((prev) => ({ ...prev, classificationLevel: level }));
   }, []);
@@ -273,8 +283,21 @@ export default function Analytics() {
     },
   ];
 
+  useEffect(() => {
+    const handleScroll = () => {
+      setShowScrollButton(window.scrollY > 700);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
   return (
-    <div className="p-6 space-y-3 bg-gray-100 min-h-screen">
+    <div className="p-6 space-y-3 bg-gray-100 min-h-screen relative">
       <div className="flex items-center gap-4">
         <ChartSpline className="h-8 w-8 text-[#8C2D19]" />
         <div>
@@ -295,8 +318,8 @@ export default function Analytics() {
           onDataUpdate={handleCompanyDataUpdate}
           filters={combinedFilters}
           onAddToFilters={handleAddCompanyToFilters}
-        /> 
-         <GeoDashboard
+        />
+        <GeoDashboard
           onDataUpdate={handleGeoDataUpdate}
           filters={combinedFilters}
           onAddToFilters={handleGeoAddToFilters}
@@ -314,7 +337,38 @@ export default function Analytics() {
           filters={combinedFilters}
           onAddToFilters={handleAddIndustryToFilters}
         />
+
+        {/* TODO: Add graduation dashboard & seniority dashboard, using this just to check the layout */}
+        <IndustryDashboard
+          onDataUpdate={handleIndustryDataUpdate}
+          filters={combinedFilters}
+          onAddToFilters={handleAddIndustryToFilters}
+        />
+        <IndustryDashboard
+          onDataUpdate={handleIndustryDataUpdate}
+          filters={combinedFilters}
+          onAddToFilters={handleAddIndustryToFilters}
+        />
       </div>
+
+      <AlumniTable
+        filters={filters}
+        onAddToFilters={handleAddAlumniToFilters}
+      />
+
+      <Button
+        onClick={scrollToTop}
+        className={`fixed bottom-24 z-20 right-8 bg-[#8C2D19] hover:bg-[#A13A23] text-white p-3 rounded-full shadow-lg transition-all duration-300 ${
+          showScrollButton
+            ? "opacity-100 translate-y-0"
+            : "opacity-0 translate-y-16"
+        } focus:outline-none focus:ring-2 focus:ring-[#8C2D19] focus:ring-opacity-50`}
+        aria-label="Scroll to top"
+        title="Scroll to top"
+        size="lg"
+      >
+        <ArrowUp className="h-12 w-12" />
+      </Button>
     </div>
   );
 }

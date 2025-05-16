@@ -19,6 +19,22 @@ import {
 import { COMPANY_SIZE, COMPANY_TYPE } from '@prisma/client';
 
 export class QueryParamsDto {
+  @ApiPropertyOptional({
+    description: 'The alumni IDs to filter by',
+    example: ['1', '2', '3'],
+  })
+  @IsOptional()
+  @TransformToArray()
+  @Transform(({ value }: { value: string | string[] }) => {
+    if (Array.isArray(value)) {
+      return value.filter((alumniId: string) => alumniId?.trim());
+    }
+    return value;
+  })
+  @IsArray()
+  @IsString({ each: true })
+  alumniIds?: string[];
+
   /**
    * *** ROLE PARAMS ***
    */

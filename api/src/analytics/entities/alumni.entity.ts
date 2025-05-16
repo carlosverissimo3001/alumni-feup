@@ -9,6 +9,26 @@ export class AlumniAnalyticsEntity {
   id: string;
 
   @ApiProperty({
+    description: 'The full name of the alumni',
+    type: String,
+  })
+  fullName: string;
+
+  @ApiProperty({
+    description: 'The linkedin url of the alumni',
+    type: String,
+    nullable: true,
+  })
+  linkedinUrl: string | null;
+
+  @ApiProperty({
+    description: 'The profile picture of the alumni',
+    type: String,
+    nullable: true,
+  })
+  profilePictureUrl: string | null;
+
+  @ApiProperty({
     description: 'The roles of the alumni',
     type: RoleAnalyticsEntity,
     isArray: true,

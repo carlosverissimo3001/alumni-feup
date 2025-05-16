@@ -5,7 +5,6 @@ import {
   Table,
   TableBody,
   TableCell,
-  TableRow,
   TableContainer,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
@@ -40,6 +39,7 @@ import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import LoadingChart from "../common/LoadingChart";
 import { TrendTooltip } from "../common/TrendTooltip";
 import { EntityType, TrendFrequency } from "@/types/entityTypes";
+import CustomTableRow from "../common/CustomTableRow";
 
 type CompanyDashboardProps = {
   onDataUpdate: (
@@ -63,7 +63,9 @@ export default function CompanyDashboard({
   const [sortField, setSortField] = useState<SortBy>(SortBy.COUNT);
   const [sortOrder, setSortOrder] = useState<SortOrder>(SortOrder.DESC);
   const [view, setView] = useState<ViewType>(ViewType.TABLE);
-  const [trendFrequency, setTrendFrequency] = useState<TrendFrequency>(TrendFrequency.Y5);
+  const [trendFrequency, setTrendFrequency] = useState<TrendFrequency>(
+    TrendFrequency.Y5
+  );
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [pageInput, setPageInput] = useState<string>(String(page));
@@ -91,7 +93,7 @@ export default function CompanyDashboard({
         alumniFilteredCount,
         companyFilteredCount,
       } = data;
-  
+
       if (
         alumniCount !== undefined &&
         companyCount !== undefined &&
@@ -99,7 +101,12 @@ export default function CompanyDashboard({
         companyFilteredCount !== undefined
       ) {
         setTotalItems(companyFilteredCount);
-        onDataUpdate(alumniCount, companyCount, alumniFilteredCount, companyFilteredCount);
+        onDataUpdate(
+          alumniCount,
+          companyCount,
+          alumniFilteredCount,
+          companyFilteredCount
+        );
       }
     }
   }, [data, onDataUpdate]);
@@ -142,11 +149,9 @@ export default function CompanyDashboard({
                       (company: CompanyListItemDto, index: number) => {
                         const rowNumber = (page - 1) * itemsPerPage + index + 1;
                         return (
-                          <TableRow
+                          <CustomTableRow
+                            index={index}
                             key={company.id}
-                            className={`group ${
-                              index % 2 === 0 ? "bg-gray-50" : "bg-white"
-                            } hover:bg-[#A13A23] hover:bg-opacity-10 transition-colors duration-200 relative items-center`}
                           >
                             <TableCell className="w-[3%] py-1.5 pl-3 text-sm text-gray-500 font-medium align-middle">
                               {rowNumber}
@@ -217,7 +222,7 @@ export default function CompanyDashboard({
                                 </div>
                               </div>
                             </TableCell>
-                          </TableRow>
+                          </CustomTableRow>
                         );
                       }
                     )
@@ -284,7 +289,10 @@ export default function CompanyDashboard({
           />
 
           {view === ViewType.TREND && (
-            <TrendTooltip entityType={EntityType.COMPANY} trendFrequency={trendFrequency} />
+            <TrendTooltip
+              entityType={EntityType.COMPANY}
+              trendFrequency={trendFrequency}
+            />
           )}
         </div>
 

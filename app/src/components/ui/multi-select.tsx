@@ -78,7 +78,7 @@ interface MultiSelectProps
 
   /** The default selected values when the component first mounts. */
   defaultValue?: string[];
-  
+
   /** The current selected values (controlled component). */
   value?: string[];
 
@@ -118,7 +118,7 @@ interface MultiSelectProps
    * Optional, can be used to add custom styles.
    */
   className?: string;
-  
+
   /**
    * Whether the component is disabled.
    * Optional, defaults to false.
@@ -138,7 +138,7 @@ interface MultiSelectProps
    * Optional, defaults to false.
    */
   lazyLoading?: boolean;
-  
+
   /**
    * Maximum number of options to display in the dropdown.
    * Optional, defaults to 50.
@@ -173,13 +173,13 @@ export const MultiSelect = React.forwardRef<
     ref
   ) => {
     // Internal state for selected values when uncontrolled
-    const [internalSelectedValues, setInternalSelectedValues] = 
+    const [internalSelectedValues, setInternalSelectedValues] =
       React.useState<string[]>(defaultValue);
-      
+
     const [searchValue, setSearchValue] = React.useState("");
     // Use the value prop if provided (controlled), otherwise use internal state
     const selectedValues = value !== undefined ? value : internalSelectedValues;
-    
+
     const [isPopoverOpen, setIsPopoverOpen] = React.useState(false);
     const [isAnimating, setIsAnimating] = React.useState(false);
 
@@ -242,13 +242,19 @@ export const MultiSelect = React.forwardRef<
       if (!searchValue.trim()) {
         return options;
       }
-      
-      const lowercasedSearch = searchValue.toLowerCase();
-      return options.filter((option) =>
-        option.label.toLowerCase().includes(lowercasedSearch)
-      );
-    }, [options, searchValue]);
 
+      const searchTerms = searchValue.toLowerCase().split(/\s+/).filter(Boolean);
+      
+      return options.filter((option) => {
+        const labelWords = option.label.toLowerCase().split(/\s+/);
+  
+        return searchTerms.every(searchTerm => 
+          labelWords.some(word => word.includes(searchTerm)) ||
+          labelWords.map(word => word[0]).join('').includes(searchTerm) ||
+          labelWords.join('').includes(searchTerm)
+        );
+      });
+    }, [options, searchValue]);
 
     const displayOptions = React.useMemo(() => {
       return filteredOptions.slice(0, maxDisplayCount);
@@ -360,7 +366,9 @@ export const MultiSelect = React.forwardRef<
         >
           <Command shouldFilter={false}>
             <CommandInput
-              placeholder={!lazyLoading ? "Search..." : "Type at least 3 characters..."}
+              placeholder={
+                !lazyLoading ? "Search..." : "Type at least 3 characters..."
+              }
               onKeyDown={handleInputKeyDown}
               disabled={disabled}
               onValueChange={handleSearchChange}
@@ -369,28 +377,28 @@ export const MultiSelect = React.forwardRef<
             />
             <CommandList>
               <CommandEmpty className="p-2">
-                {isLoading 
-                  ? "Loading..." 
-                  : filteredOptions.length === 0 
-                    ? "No matching options found." 
-                    : null}
+                {isLoading
+                  ? "Loading..."
+                  : filteredOptions.length === 0
+                  ? "No matching options found."
+                  : null}
               </CommandEmpty>
               <CommandGroup>
                 {allowSelectAll && !isLoading && options.length > 0 && (
-                   <CommandItem
-                   key="all"
-                   onSelect={toggleAll}
-                   className="cursor-pointer"
-                 >
-                   <div
-                     className={cn(
-                       "mr-2 flex h-4 w-4 items-center justify-center rounded-sm border border-primary",
-                       selectedValues.length === options.length
-                         ? "bg-primary text-primary-foreground"
-                         : "opacity-50 [&_svg]:invisible"
-                     )}
-                   >
-                     <CheckIcon className="h-4 w-4" />
+                  <CommandItem
+                    key="all"
+                    onSelect={toggleAll}
+                    className="cursor-pointer"
+                  >
+                    <div
+                      className={cn(
+                        "mr-2 flex h-4 w-4 items-center justify-center rounded-sm border border-primary",
+                        selectedValues.length === options.length
+                          ? "bg-primary text-primary-foreground"
+                          : "opacity-50 [&_svg]:invisible"
+                      )}
+                    >
+                      <CheckIcon className="h-4 w-4" />
                     </div>
                     <span>(Select All)</span>
                   </CommandItem>
@@ -401,7 +409,9 @@ export const MultiSelect = React.forwardRef<
                     <CommandItem
                       key={option.value}
                       onSelect={() => !disabled && toggleOption(option.value)}
-                      className={disabled ? "cursor-not-allowed" : "cursor-pointer"}
+                      className={
+                        disabled ? "cursor-not-allowed" : "cursor-pointer"
+                      }
                       disabled={disabled}
                     >
                       <div

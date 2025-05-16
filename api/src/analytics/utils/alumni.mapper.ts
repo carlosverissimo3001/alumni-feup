@@ -43,6 +43,9 @@ type RawRole = {
 
 type RawAlumni = {
   id: string;
+  fullName: string;
+  linkedinUrl: string | null;
+  profilePictureUrl: string | null;
   Roles: RawRole[];
 };
 
@@ -64,6 +67,9 @@ export function toAlumniAnalyticsEntity(
 ): AlumniAnalyticsEntity {
   return {
     id: alumni.id,
+    fullName: alumni.fullName,
+    linkedinUrl: alumni.linkedinUrl,
+    profilePictureUrl: alumni.profilePictureUrl,
     roles: alumni.Roles.map(mapRole),
   };
 }

@@ -11,9 +11,10 @@ type CustomTableHeaderProps = {
   onSort?: (field: SortBy) => void;
   hoverMessage?: string;
   customNameHeader?: string;
-  customCountHeader?: string;
+  customSecondHeader?: string;
   showTrend?: boolean;
   trendFrequency?: TrendFrequency;
+  allowCountSort?: boolean;
 };
 
 export default function CustomTableHeader({
@@ -22,9 +23,10 @@ export default function CustomTableHeader({
   onSort,
   hoverMessage,
   customNameHeader,
-  customCountHeader,
+  customSecondHeader,
   showTrend = false,
   trendFrequency = TrendFrequency.MAX,
+  allowCountSort = true,
 }: CustomTableHeaderProps) {
   const renderSortIcon = (field: SortBy) => {
     if (sortField !== field) {
@@ -38,7 +40,7 @@ export default function CustomTableHeader({
   };
 
   return (
-    <TableHeader className="bg-gray-100 sticky top-0 z-20 shadow-sm">
+    <TableHeader className="bg-gradient-to-r from-[#A13A23]/10 to-gray-100/80 sticky top-0 z-10 backdrop-blur-sm border-b border-gray-200/80 hover:bg-[#A13A23]/15 transition-all duration-300">
       <TableRow>
         <TableHead className="w-[8%] pl-3 py-1 text-left text-xs font-semibold text-[#8C2D19] uppercase tracking-wider">
           #
@@ -47,7 +49,7 @@ export default function CustomTableHeader({
           <div className="flex items-center">
             <Button
               variant="ghost"
-              className="h-8 p-0 font-semibold hover:bg-transparent hover:text-[#A13A23] flex items-center gap-0.5"
+              className="h-8 px-1 font-semibold hover:bg-[#A13A23]/10 hover:text-[#A13A23] flex items-center gap-1 rounded-md transition-all duration-200"
               onClick={() => onSort?.(SortBy.NAME)}
             >
               {customNameHeader || "Name"}
@@ -55,15 +57,19 @@ export default function CustomTableHeader({
             </Button>
           </div>
         </TableHead>
-        <TableHead className="w-[20%] pl-3 py-1 text-left text-xs font-semibold text-[#8C2D19] uppercase tracking-wider">
+        <TableHead className="w-[20%] pl-3 py-1 text-left text-xs font-semibold text-[#8C2D19] tracking-wider">
           <div className="flex flex-col items-start" title={hoverMessage}>
             <Button
               variant="ghost"
-              className="h-8 p-0 font-semibold hover:bg-transparent hover:text-[#A13A23] flex items-center gap-0.5"
-              onClick={() => onSort?.(SortBy.COUNT)}
+              className={`h-8 px-1 font-semibold flex items-center gap-1 rounded-md ${
+                allowCountSort
+                  ? "hover:text-[#A13A23] hover:bg-[#A13A23]/10 transition-all duration-200 cursor-pointer"
+                  : "hover:bg-transparent hover:text-[#8C2D19] cursor-default"
+              }`}
+              onClick={() => allowCountSort && onSort?.(SortBy.COUNT)}
             >
-              {customCountHeader || "Alumni"}
-              {renderSortIcon(SortBy.COUNT)}
+              {customSecondHeader || "Alumni"}
+              {allowCountSort && renderSortIcon(SortBy.COUNT)}
             </Button>
             {showTrend && (
               <span className="text-[10px] text-gray-400 mt-[-2px] inline-center">
@@ -92,8 +98,8 @@ const getDateRange = (trendFrequency: TrendFrequency) => {
     case TrendFrequency.YTD: {
       const now = new Date();
       const start = new Date(now.getFullYear(), 0, 1);
-      const startStr = format(start, 'MMM');
-      const endStr = format(now, 'MMM.yy');
+      const startStr = format(start, "MMM");
+      const endStr = format(now, "MMM.yy");
       return `${startStr} - ${endStr}`;
     }
   }

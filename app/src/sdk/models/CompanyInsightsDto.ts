@@ -144,12 +144,6 @@ export interface CompanyInsightsDto {
      */
     website?: string;
     /**
-     * The current location of the company
-     * @type {LocationGeo}
-     * @memberof CompanyInsightsDto
-     */
-    location?: LocationGeo;
-    /**
      * The industry of the company
      * @type {IndustryAnalyticsEntity}
      * @memberof CompanyInsightsDto
@@ -272,7 +266,6 @@ export function CompanyInsightsDtoFromJSONTyped(json: any, ignoreDiscriminator: 
         'foundedByAlumni': json['foundedByAlumni'],
         'founded': json['founded'] == null ? undefined : json['founded'],
         'website': json['website'] == null ? undefined : json['website'],
-        'location': json['location'] == null ? undefined : LocationGeoFromJSON(json['location']),
         'industry': json['industry'] == null ? undefined : IndustryAnalyticsEntityFromJSON(json['industry']),
         'similarCompanies': json['similarCompanies'] == null ? undefined : ((json['similarCompanies'] as Array<any>).map(BasicCompanyDtoFromJSON)),
         'averageYOE': json['averageYOE'],
@@ -310,7 +303,6 @@ export function CompanyInsightsDtoToJSONTyped(value?: CompanyInsightsDto | null,
         'foundedByAlumni': value['foundedByAlumni'],
         'founded': value['founded'],
         'website': value['website'],
-        'location': LocationGeoToJSON(value['location']),
         'industry': IndustryAnalyticsEntityToJSON(value['industry']),
         'similarCompanies': value['similarCompanies'] == null ? undefined : ((value['similarCompanies'] as Array<any>).map(BasicCompanyDtoToJSON)),
         'averageYOE': value['averageYOE'],

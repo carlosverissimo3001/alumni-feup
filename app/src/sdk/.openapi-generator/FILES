@@ -15,6 +15,9 @@ index.ts
 models/AddFacultyDto.ts
 models/Alumni.ts
 models/AlumniExtended.ts
+models/AlumniListItemDto.ts
+models/AlumniListResponseDto.ts
+models/AlumniOptionDto.ts
 models/BasicAlumniDto.ts
 models/BasicAlumniProfileDto.ts
 models/BasicCompanyDto.ts
