@@ -13,7 +13,6 @@ import {
   Building,
   GraduationCap,
   MapPin,
-  Tags,
   Briefcase,
   Users,
 } from "lucide-react";
@@ -670,7 +669,7 @@ export default function GlobalFilters({
             value={filters.companyIds}
             onValueChange={(value) => handleFilterChange("companyIds", value)}
             placeholder="Select companies"
-            maxCount={3}
+            maxCount={2}
           />
         </div>
 

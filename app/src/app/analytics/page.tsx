@@ -240,7 +240,7 @@ export default function Analytics() {
   }, []);
 
   const handleAddAlumniToFilters = useCallback((alumniId: string) => {
-    // TODO: Implement
+    setFilters((prev) => ({ ...prev, alumniIds: [...(prev.alumniIds || []), alumniId] }));
   }, []);
 
   const handleLevelChange = useCallback((level: number) => {
