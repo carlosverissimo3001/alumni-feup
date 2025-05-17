@@ -198,6 +198,7 @@ export default function IndustryDashboard({
         setItemsPerPage={setItemsPerPage}
         totalItems={totalItems}
         visible={industries.length > 0}
+        currentCount={industries.length}
         showTrendFrequency={view === ViewType.TREND}
         trendFrequency={trendFrequency}
         setTrendFrequency={setTrendFrequency}

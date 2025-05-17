@@ -69,6 +69,7 @@ type TooltipData = {
   color?: string;
   id?: string;
   year?: number;
+  isLegendItem?: boolean;
 };
 
 export default function ChartView({
@@ -437,6 +438,7 @@ export default function ChartView({
           id: d.id,
           year: d.year,
           acronym: d.acronym ?? undefined,
+          isLegendItem: true,
         });
       })
       .on("mousemove", function (event: MouseEvent) {
@@ -558,19 +560,121 @@ export default function ChartView({
   const renderTooltip = () => {
     if (!tooltip) return null;
 
-    const tooltipHeight = 100;
     const tooltipWidth = 180;
-    const shouldShowBelow = tooltip.y < tooltipHeight;
-    const shouldShowRight = tooltip.x < tooltipWidth / 2;
 
-    const chartWidth = chartRef.current?.clientWidth || 0;
-    const shouldShowLeft = tooltip.x > chartWidth - tooltipWidth / 2;
+    // Get chart dimensions
+    const chartRect = chartRef.current?.getBoundingClientRect();
+    const chartHeight = chartRect?.height || 0;
+    const chartWidth = chartRect?.width || 0;
 
     let translateX = "-50%";
-    if (shouldShowRight) translateX = "0";
-    if (shouldShowLeft) translateX = "-100%";
+    let translateY;
 
-    console.log(tooltip);
+    if (tooltip.isLegendItem) {
+      // For legend items, position tooltip to the left of the legend
+      translateX = "-100%"; // Always show to the left
+      translateY = "-50%"; // Center vertically
+
+      return (
+        <div
+          className="absolute z-50 bg-white p-2 rounded-md shadow-lg border border-gray-200 text-sm"
+          style={{
+            left: `${tooltip.x - 10}px`, // Add some spacing from the legend
+            top: `${tooltip.y}px`,
+            transform: `translate(${translateX}, ${translateY})`,
+            minWidth: "180px",
+            maxWidth: "280px",
+            pointerEvents: "none",
+            animation: "fadeIn 0.2s ease-out",
+          }}
+        >
+          <style jsx>{`
+            @keyframes fadeIn {
+              from {
+                opacity: 0;
+                transform: translate(calc(${translateX} + 10px), ${translateY});
+              }
+              to {
+                opacity: 1;
+                transform: translate(${translateX}, ${translateY});
+              }
+            }
+          `}</style>
+
+          {tooltip.color && (
+            <div
+              className="w-full h-2 mb-1 rounded-sm"
+              style={{ backgroundColor: tooltip.color }}
+            />
+          )}
+
+          {entityType === EntityType.YEAR ? (
+            <>
+              <div className="font-bold text-sm mb-1">
+                {tooltip.acronym || tooltip.name}
+                <span className="ml-2 text-[#8C2D19]">{tooltip.year}</span>
+              </div>
+              {tooltip.acronym && (
+                <div className="text-[12px] text-gray-600 mb-2 break-words">
+                  {tooltip.name}
+                </div>
+              )}
+            </>
+          ) : (
+            <>
+              <div className="font-bold text-sm truncate max-w-[200px] mb-1">
+                {tooltip.acronym || tooltip.name}
+              </div>
+              {tooltip.acronym && (
+                <div className="text-[12px] text-gray-600 mb-2 break-words">
+                  {tooltip.name}
+                </div>
+              )}
+            </>
+          )}
+
+          <div className="flex justify-between items-center mb-1">
+            <span className="text-gray-600">
+              {getDistributionKey(entityType)}
+            </span>
+            <span className="font-medium text-[#8C2D19]">
+              {tooltip.value.toLocaleString()}
+            </span>
+          </div>
+
+          {tooltip.percentage && (
+            <div className="flex justify-between items-center mr-0">
+              <span className="text-gray-600 mr-2">Percentage</span>
+              <div className="flex items-center">
+                <div
+                  className="w-[50px] h-3 rounded-sm mr-2 overflow-hidden"
+                  style={{ backgroundColor: "#eee" }}
+                >
+                  <div
+                    className="h-full"
+                    style={{
+                      width: `${Math.min(
+                        100,
+                        parseFloat(tooltip.percentage)
+                      )}%`,
+                      backgroundColor: tooltip.color || "#8C2D19",
+                    }}
+                  />
+                </div>
+                <span className="font-medium">{tooltip.percentage}%</span>
+              </div>
+            </div>
+          )}
+        </div>
+      );
+    }
+
+    // For pie chart sections
+    const isInUpperHalf = tooltip.y < chartHeight / 2;
+    const shouldShowBelow = isInUpperHalf;
+
+    if (tooltip.x < tooltipWidth / 2) translateX = "0";
+    if (tooltip.x > chartWidth - tooltipWidth / 2) translateX = "-100%";
 
     return (
       <div
@@ -582,6 +686,7 @@ export default function ChartView({
             shouldShowBelow ? "0" : "-100%"
           })`,
           minWidth: "180px",
+          maxWidth: "280px",
           pointerEvents: "none",
           animation: "fadeIn 0.2s ease-out",
         }}
@@ -614,15 +719,29 @@ export default function ChartView({
           />
         )}
 
-        <div className="font-bold text-sm truncate max-w-[200px] mb-1">
-          {tooltip.acronym ? tooltip.acronym : tooltip.name}
-        </div>
-
-        {/* TODO: Add the full name when we have the acronym */}
-        {tooltip.acronym && (
-          <div className="flex justify-between text-[12px] items-center mb-1">
-            <span className="text-gray-600">{tooltip.name}</span>
-          </div>
+        {entityType === EntityType.YEAR ? (
+          <>
+            <div className="font-bold text-sm mb-1">
+              {tooltip.acronym || tooltip.name}
+              <span className="ml-2 text-[#8C2D19]">{tooltip.year}</span>
+            </div>
+            {tooltip.acronym && (
+              <div className="text-[12px] text-gray-600 mb-2 break-words">
+                {tooltip.name}
+              </div>
+            )}
+          </>
+        ) : (
+          <>
+            <div className="font-bold text-sm truncate max-w-[200px] mb-1">
+              {tooltip.acronym || tooltip.name}
+            </div>
+            {tooltip.acronym && (
+              <div className="text-[12px] text-gray-600 mb-2 break-words">
+                {tooltip.name}
+              </div>
+            )}
+          </>
         )}
 
         <div className="flex justify-between items-center mb-1">
@@ -633,13 +752,6 @@ export default function ChartView({
             {tooltip.value.toLocaleString()}
           </span>
         </div>
-
-        {entityType === EntityType.YEAR && tooltip.year && (
-          <div className="flex justify-between items-center mb-1">
-            <span className="text-gray-600">Year</span>
-            <span className="font-medium text-[#8C2D19]">{tooltip.year}</span>
-          </div>
-        )}
 
         {tooltip.percentage && (
           <div className="flex justify-between items-center mr-0">

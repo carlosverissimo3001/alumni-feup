@@ -27,6 +27,7 @@ interface PaginationControlsProps {
   setItemsPerPage: (n: number) => void;
   totalItems: number;
   visible: boolean;
+  currentCount: number;
   trendFrequency?: TrendFrequency;
   showTrendFrequency?: boolean;
   setTrendFrequency?: (trendFrequency: TrendFrequency) => void;
@@ -39,6 +40,7 @@ export default function PaginationControls({
   setItemsPerPage,
   totalItems,
   visible,
+  currentCount,
   showTrendFrequency = false,
   setTrendFrequency,
   trendFrequency,
@@ -95,53 +97,98 @@ export default function PaginationControls({
     }
   };
 
-  return (
-    visible ? (
-      <div className="flex items-center justify-between flex-shrink-0 pt-2">
+  const PaginationDisplay = ({
+    page,
+    itemsPerPage,
+    totalItems,
+    currentCount,
+  }: {
+    page: number;
+    itemsPerPage: number;
+    totalItems: number;
+    currentCount: number;
+  }) => {
+    if (currentCount === 0) return "No alumni found";
+
+    console.log("page", page);
+    console.log("itemsPerPage", itemsPerPage);
+    console.log("totalItems", totalItems);
+    console.log("currentCount", currentCount);
+
+    const start = (page - 1) * itemsPerPage + 1;
+    const end = Math.min((page - 1) * itemsPerPage + currentCount, totalItems);
+
+    return (
+      <div className="text-gray-500">
+        <span className="font-bold">{start}-{end}</span>
+        <span className="mx-1">out of</span>
+        <span className="font-bold">{totalItems}</span>
+        <span className="ml-1">shown</span>
+      </div>
+    );
+  };
+
+
+return visible ? (
+  <div className="flex items-center justify-between flex-shrink-0 pt-2">
+    <div>
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button
+            variant="outline"
+            size="sm"
+            className="min-w-[90px] justify-start text-left font-medium text-[#000000] border-gray-200 rounded-lg shadow-sm hover:bg-gray-100 transition-colors"
+          >
+            {itemsPerPage} / page
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent className="shadow-md rounded-lg border-gray-200">
+          {ITEMS_PER_PAGE.map((item) => (
+            <DropdownMenuItem
+              key={item}
+              onClick={() => handleItemsPerPageChange(item)}
+              className="hover:bg-gray-100 transition-colors"
+            >
+              {item}
+              {item === itemsPerPage && (
+                <CheckIcon className="h-4 w-4 text-[#8C2D19]" />
+              )}
+            </DropdownMenuItem>
+          ))}
+        </DropdownMenuContent>
+      </DropdownMenu>
+    </div>
+
+    <div className="flex items-center space-x-4">
+      <div className="flex items-center space-x-1 text-[12.5px] text-[#000000]">
+        <PaginationDisplay
+          page={page}
+          itemsPerPage={itemsPerPage}
+          totalItems={totalItems}
+          currentCount={currentCount}
+        />
+      </div>
+    </div>
+
+    <div className="flex items-center space-x-4">
+      {showTrendFrequency && (
         <div>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button
                 variant="outline"
                 size="sm"
-                className="min-w-[90px] justify-start text-left font-medium text-[#000000] border-gray-200 rounded-lg"
-              >
-                {itemsPerPage} / page
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent>
-              {ITEMS_PER_PAGE.map((item) => (
-                <DropdownMenuItem
-                  key={item}
-                  onClick={() => handleItemsPerPageChange(item)}
-                >
-                  {item}
-                  {item === itemsPerPage && (
-                  <CheckIcon className="h-4 w-4 text-[#8C2D19]" />
-                )}
-                </DropdownMenuItem>
-              ))}
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </div>
-
-        {showTrendFrequency && (
-          <div>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button
-                variant="outline"
-                size="sm"
-                className="min-w-[90px] justify-start text-left font-medium text-[#000000] border-gray-200 rounded-lg"
+                className="min-w-[90px] justify-start text-left font-medium text-[#000000] border-gray-200 rounded-lg shadow-sm hover:bg-gray-100 transition-colors"
               >
                 {trendFrequency}
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent>
+            <DropdownMenuContent className="shadow-md rounded-lg border-gray-200">
               {Object.values(TrendFrequency).map((item) => (
                 <DropdownMenuItem
                   key={item}
                   onClick={() => setTrendFrequency?.(item)}
+                  className="hover:bg-gray-100 transition-colors"
                 >
                   {item}
                   {item === trendFrequency && (
@@ -151,52 +198,55 @@ export default function PaginationControls({
               ))}
             </DropdownMenuContent>
           </DropdownMenu>
-          </div>
-        )}
-
-        <div className="flex items-center space-x-4">
-          <div className="flex items-center space-x-1">
-            <Button
-              variant="ghost"
-              size="sm"
-              disabled={page === 1 || totalPages === 0}
-              onClick={() => handlePageChange(page - 1)}
-              className="rounded-full p-1 border-gray-200 hover:bg-[#A13A23] hover:bg-opacity-10"
-            >
-              <ArrowLeftIcon className="h-4 w-4 text-[#8C2D19]" />
-            </Button>
-
-            <div className="flex items-center text-xs text-[#000000] space-x-0.5">
-              <Input
-                type="number"
-                value={pageInput}
-                onChange={handlePageInputChange}
-                onKeyDown={handlePageInputKeyDown}
-                onBlur={handlePageInputBlur}
-                min={totalPages > 0 ? 1 : 0}
-                max={totalPages}
-                className={`h-8 p-1 text-center border border-gray-200 rounded-lg focus:border-[#8C2D19] focus:ring-[#8C2D19] hover:bg-gray-50 ${
-                  pageInput.length === 1 ? "w-9" : pageInput.length === 2 ? "w-12" : "w-16"
-                }`}
-                disabled={totalPages === 0}
-              />
-              <span>of {totalPages}</span>
-            </div>
-
-            <Button
-              variant="ghost"
-              size="sm"
-              disabled={page === totalPages || totalPages === 0}
-              onClick={() => handlePageChange(page + 1)}
-              className="rounded-full p-2 border-gray-200 hover:bg-[#A13A23] hover:bg-opacity-10"
-              aria-label="Go to next page"
-            >
-              <ArrowRightIcon className="h-4 w-4 text-[#8C2D19]" />
-            </Button>
-          </div>
         </div>
+      )}
+
+      <div className="flex items-center space-x-1">
+        <Button
+          variant="ghost"
+          size="sm"
+          disabled={page === 1 || totalPages === 0}
+          onClick={() => handlePageChange(page - 1)}
+          className="rounded-full p-1 border-gray-200 hover:bg-[#A13A23] hover:bg-opacity-10 hover:scale-110 transition-transform disabled:opacity-40"
+        >
+          <ArrowLeftIcon className="h-4 w-4 text-[#8C2D19]" />
+        </Button>
+
+        <div className="flex items-center text-xs text-[#000000] space-x-0.5">
+          <Input
+            type="number"
+            value={pageInput}
+            onChange={handlePageInputChange}
+            onKeyDown={handlePageInputKeyDown}
+            onBlur={handlePageInputBlur}
+            min={totalPages > 0 ? 1 : 0}
+            max={totalPages}
+            className={`h-8 p-1 text-center border border-gray-200 rounded-lg focus:border-[#8C2D19] focus:ring-[#8C2D19] hover:bg-gray-100 shadow-sm transition-colors ${
+              pageInput.length === 1
+                ? "w-9"
+                : pageInput.length === 2
+                ? "w-12"
+                : "w-16"
+            }`}
+            disabled={totalPages === 0}
+          />
+          <span>of {totalPages}</span>
+        </div>
+
+        <Button
+          variant="ghost"
+          size="sm"
+          disabled={page === totalPages || totalPages === 0}
+          onClick={() => handlePageChange(page + 1)}
+          className="rounded-full p-1 border-gray-200 hover:bg-[#A13A23] hover:bg-opacity-10 hover:scale-110 transition-transform disabled:opacity-40"
+          aria-label="Go to next page"
+        >
+          <ArrowRightIcon className="h-4 w-4 text-[#8C2D19]" />
+        </Button>
       </div>
-    ) :
-    <div className="flex min-h-[40px] items-center justify-between flex-shrink-0 pt-2" />
-  );
+    </div>
+  </div>
+) : (
+      <div className="flex min-h-[40px] items-center justify-between flex-shrink-0 pt-2" />
+    );
 }
