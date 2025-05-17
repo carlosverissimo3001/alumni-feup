@@ -1,6 +1,5 @@
 import { SearchX } from "lucide-react";
 import { TableCell, TableRow } from "@/components/ui/table";
-import { Button } from "@/components/ui/button";
 
 type NotFoundComponentProps = {
   message: string;

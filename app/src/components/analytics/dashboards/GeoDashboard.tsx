@@ -3,11 +3,7 @@
 import { useEffect, useState } from "react";
 
 import { Button } from "@/components/ui/button";
-import {
-  Filter,
-  Flag,
-  MapPin,
-} from "lucide-react";
+import { Filter, Flag, MapPin } from "lucide-react";
 import { DashboardSkeleton } from "../skeletons/DashboardSkeleton";
 import PaginationControls from "../common/PaginationControls";
 import TableTitle from "../common/TableTitle";
@@ -120,7 +116,7 @@ export default function GeoDashboard({
   const cities = cityData?.cities || [];
   const totalCities = cityData?.count || 0;
   const cityFilteredCount = cityData?.filteredCount || 0;
- 
+
   // Update parent only when total changes
   useEffect(() => {
     onDataUpdate(
@@ -155,18 +151,23 @@ export default function GeoDashboard({
   };
 
   const renderTable = () => {
-    const data = mode === "country" ? countries : cities;
+    const data = mode === GeoDrillType.COUNTRY ? countries : cities;
     const isLoading =
-      mode === "country"
+      mode === GeoDrillType.COUNTRY
         ? isCountryLoading || isCountryFetching
         : isCityLoading || isCityFetching;
 
-    const isRowInFilters = (row: DataRowProps) => {
-      if (mode === "country") {
+    const isRowInFilters = (row: DataRowProps, type?: "role" | "company") => {
+      if (type === "role") {
         return filters.roleCountryCodes?.includes(row.id);
-      } else {
-        return filters.roleCityIds?.includes(row.id);
+      } else if (type === "company") {
+        return filters.companyHQsCountryCodes?.includes(row.id);
       }
+
+      return (
+        filters.roleCountryCodes?.includes(row.id) ||
+        filters.companyHQsCountryCodes?.includes(row.id)
+      );
     };
 
     return (
@@ -194,10 +195,7 @@ export default function GeoDashboard({
                         ? `https://flagcdn.com/${row.code.toLowerCase()}.svg`
                         : "";
                       return (
-                        <CustomTableRow
-                          index={index}
-                          key={row.id}
-                        >
+                        <CustomTableRow index={index} key={row.id}>
                           <TableCell className="w-1/12 py-1.5 pl-3 text-sm text-gray-500 font-medium align-middle">
                             {rowNumber}
                           </TableCell>
@@ -251,7 +249,11 @@ export default function GeoDashboard({
                                 }`}
                               >
                                 {/*  Note that we have a bug when filtering citiesdirectly on the dashboard */}
-                                {mode === GeoDrillType.COUNTRY && (
+                                <div
+                                  className={`flex items-center gap-2 ${
+                                    mode === GeoDrillType.CITY && "invisible"
+                                  }`}
+                                >
                                   <Popover
                                     open={openPopoverId === row.id}
                                     onOpenChange={(open) =>
@@ -260,7 +262,8 @@ export default function GeoDashboard({
                                   >
                                     <PopoverTrigger asChild>
                                       <Button
-                                        aria-label="Add to filters"
+                                        aria-label="Add/Remove from filters"
+                                        disabled={mode === GeoDrillType.CITY}
                                         variant="ghost"
                                         size="sm"
                                         className={`p-1 h-6 w-6 rounded-full ${
@@ -283,7 +286,9 @@ export default function GeoDashboard({
                                     >
                                       <div className="px-4 py-2 border-b bg-gray-50 rounded-t-lg">
                                         <span className="font-semibold text-gray-700 text-sm">
-                                          Add Filter
+                                          {isRowInFilters(row)
+                                            ? "Update Filter"
+                                            : "Add Filter"}
                                         </span>
                                       </div>
                                       <button
@@ -306,7 +311,9 @@ export default function GeoDashboard({
                                             d="M12 11c0 1.104-.896 2-2 2s-2-.896-2-2 .896-2 2-2 2 .896 2 2zm0 0c0 1.104.896 2 2 2s2-.896 2-2-.896-2-2-2-2 .896-2 2zm-6 8v-2a4 4 0 014-4h4a4 4 0 014 4v2"
                                           />
                                         </svg>
-                                        Add as Role Filter
+                                        {isRowInFilters(row, "role")
+                                          ? "Remove as Role Filter"
+                                          : "Add as Role Filter"}
                                       </button>
                                       <div className="border-t mx-2" />
                                       <button
@@ -329,11 +336,13 @@ export default function GeoDashboard({
                                             d="M3 21V7a2 2 0 012-2h2a2 2 0 012 2v14M7 21V7m0 0V5a2 2 0 012-2h2a2 2 0 012 2v2m0 0v14m0-14h2a2 2 0 012 2v14"
                                           />
                                         </svg>
-                                        Add as Company Filter
+                                        {isRowInFilters(row, "company")
+                                          ? "Remove as Company Filter"
+                                          : "Add as Company Filter"}
                                       </button>
                                     </PopoverContent>
                                   </Popover>
-                                )}
+                                </div>
                               </div>
                             </div>
                           </TableCell>
@@ -361,6 +370,7 @@ export default function GeoDashboard({
             mode === "country" ? countryFilteredCount : cityFilteredCount
           }
           visible={data.length > 0}
+          currentCount={data.length}
           showTrendFrequency={view === ViewType.TREND}
           trendFrequency={trendFrequency}
           setTrendFrequency={setTrendFrequency}

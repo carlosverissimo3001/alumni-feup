@@ -58,7 +58,6 @@ export type FilterState = {
   hideUnknownRoles?: boolean;
   companySize?: CompanySizeEnum[];
   companyType?: CompanyTypeEnum[];
-  classificationLevel?: number;
   alumniIds?: string[];
 };
 
@@ -89,8 +88,6 @@ export default function GlobalFilters({
         return dateRange?.from || dateRange?.to;
       } else if (typeof value === "boolean") {
         return value;
-      } else if (key === "classificationLevel") {
-        return false;
       } else {
         return value && String(value).trim() !== "";
       }
@@ -216,11 +213,9 @@ export default function GlobalFilters({
         }))
         .sort((a, b) => a.label.localeCompare(b.label)),
       roles: (roleOptions || [])
-        .filter((role) => role.level === filters.classificationLevel)
         .map((role) => ({
           value: role.escoCode,
-          // label: `(${role.escoCode}) ${role.title} `,
-          label: role.title,
+          label: `(${role.level}) ${role.title} `,
         })),
     }),
     [
@@ -232,7 +227,6 @@ export default function GlobalFilters({
       industryOptions,
       roleOptions,
       alumniOptions,
-      filters.classificationLevel,
       facultyOptions,
     ]
   );
@@ -279,7 +273,6 @@ export default function GlobalFilters({
       onlyCompaniesWithSalaryData: false,
       companySize: [],
       companyType: [],
-      classificationLevel: 1,
       alumniIds: [],
     };
 

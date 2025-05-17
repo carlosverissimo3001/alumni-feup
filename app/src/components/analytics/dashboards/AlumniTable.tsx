@@ -50,14 +50,12 @@ const PaginationDisplay = ({
   const end = Math.min((page - 1) * itemsPerPage + currentCount, totalItems);
   
   return (
-    <>
-      <span className="font-bold">{start}</span>
-      {" - "}
-      <span className="font-bold">{end}</span>
-      <span className="mx-1">out of</span>
+    <div className="text-gray-500">
+      <span className="font-bold">{start}-{end}</span>
+      <span className="mx-1 italic">out of</span>
       <span className="font-bold">{totalItems}</span>
-      <span className="ml-1">shown</span>
-    </>
+      <span className="ml-1 italic">shown</span>
+    </div>
   );
 };
 
@@ -247,6 +245,7 @@ export default function AlumniTable({
           setItemsPerPage={setItemsPerPage}
           totalItems={totalItems}
           visible={alumnus?.length > 0}
+          currentCount={alumnus?.length}
         />
       </>
     );

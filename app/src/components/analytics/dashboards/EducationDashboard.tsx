@@ -150,8 +150,6 @@ export default function EducationDashboard({
       setSortField(field);
       setSortOrder(SortOrder.DESC);
     }
-    // Not sure if we should reset the page when sorting changes
-    // setPage(1);
   };
 
   const getDataByMode = () => {
@@ -318,6 +316,7 @@ export default function EducationDashboard({
                     <NotFoundComponent
                       message="No data available"
                       description="Try adjusting your filters to find data that match your criteria."
+                      colSpan={4}
                     />
                   )}
                 </TableBody>
@@ -333,6 +332,7 @@ export default function EducationDashboard({
           setItemsPerPage={setItemsPerPage}
           totalItems={getTotalItems()}
           visible={data.length > 0}
+          currentCount={data.length}
           showTrendFrequency={view === ViewType.TREND}
           trendFrequency={trendFrequency}
           setTrendFrequency={setTrendFrequency}
