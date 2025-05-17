@@ -7,6 +7,7 @@ export enum SortBy {
   COUNT = 'count',
   // General, could be either company, industry, country...
   NAME = 'name',
+  YEAR = 'year',
 }
 
 export enum SortOrder {
@@ -14,12 +15,9 @@ export enum SortOrder {
   DESC = 'desc',
 }
 
-const RESEARCH_SERVICES_INDUSTRY_ID = '5ef5c029-b671-4957-b33d-28a959e4dd9c';
-const HIGHER_EDUCATION_INDUSTRY_ID = 'b34884d6-fd6a-4931-9528-ed9330305beb';
+export enum ViewType {
+  TABLE = 'table',
+  CHART = 'chart',
+  TREND = 'trend',
+}
 
-export const EXCLUDED_INDUSTRIES = [
-  RESEARCH_SERVICES_INDUSTRY_ID,
-  HIGHER_EDUCATION_INDUSTRY_ID,
-];
-
-export const PORTUGAL_COUNTRY_CODE = 'PT';

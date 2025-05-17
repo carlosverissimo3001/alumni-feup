@@ -6,10 +6,9 @@ import * as d3 from "d3";
 import { Loader2 } from "lucide-react";
 import { EntityType } from "@/types/entityTypes";
 
-
 const getTitle = (entity: EntityType) => {
   let title = "Top 10 ";
-  
+
   switch (entity) {
     case EntityType.COMPANY:
       title += "Companies";
@@ -26,6 +25,15 @@ const getTitle = (entity: EntityType) => {
     case EntityType.CITY:
       title += "Cities";
       break;
+    case EntityType.FACULTY:
+      title += "Faculties";
+      break;
+    case EntityType.MAJOR:
+      title += "Majors";
+      break;
+    case EntityType.YEAR:
+      title += "Graduation Years";
+      break;
     default:
       title = "Top 10";
   }
@@ -41,6 +49,8 @@ type InputData = {
   id: string;
   name: string;
   count: number;
+  acronym?: string;
+  year?: number;
 };
 
 type ChartViewProps = {
@@ -113,11 +123,7 @@ export default function ChartView({
     setTooltip(null);
   }, [data, isLoading, dimensions, showNames]);
 
-  const drawPieChart = (
-    data: InputData[],
-    width: number,
-    height: number,
-  ) => {
+  const drawPieChart = (data: InputData[], width: number, height: number) => {
     // Raidus of the pie chart
     const radius = Math.min(width, height) / 2 - 55;
 
@@ -154,21 +160,21 @@ export default function ChartView({
     g.transition().duration(500).style("opacity", 1);
 
     const colorScheme = [
-      "#8C2D19",
-      "#D35400",
-      "#E67E22",
-      "#F39C12",
-      "#F1C40F",
-      "#27AE60",
-      "#2ECC71",
-      "#3498DB",
-      "#9B59B6",
-      "#34495E",
-      "#16A085",
-      "#2980B9",
-      "#8E44AD",
-      "#2C3E50",
-      "#F39C12",
+      "#8C2D19", // Deep red
+      "#2ECC71", // Green
+      "#3498DB", // Blue
+      "#9B59B6", // Purple
+      "#F1C40F", // Yellow
+      "#E67E22", // Orange
+      "#16A085", // Teal
+      "#8E44AD", // Deep Purple
+      "#2980B9", // Deep Blue
+      "#D35400", // Deep Orange
+      "#27AE60", // Deep Green
+      "#34495E", // Navy
+      "#C0392B", // Red
+      "#7F8C8D", // Gray
+      "#1ABC9C", // Light Teal
     ];
 
     const color = d3
@@ -246,10 +252,7 @@ export default function ChartView({
           .duration(200)
           .style("opacity", 0.7);
 
-        const percentage = (
-          (d.data.count / total) *
-          100
-        ).toFixed(1);
+        const percentage = ((d.data.count / total) * 100).toFixed(1);
 
         setTooltip({
           x: event.pageX,
@@ -299,10 +302,7 @@ export default function ChartView({
       .style("fill", "white")
       .style("pointer-events", "none")
       .text((d: d3.PieArcDatum<InputData>) => {
-        const percent = (
-          (d.data.count / total) *
-          100
-        ).toFixed(1);
+        const percent = ((d.data.count / total) * 100).toFixed(1);
         return parseFloat(percent) > 4 ? `${percent}%` : "";
       })
       .transition()
@@ -327,6 +327,19 @@ export default function ChartView({
       .style("fill", "white")
       .style("pointer-events", "none")
       .text((d: d3.PieArcDatum<InputData>) => {
+        if (
+          (entityType === EntityType.FACULTY ||
+            entityType === EntityType.MAJOR ||
+            entityType === EntityType.YEAR) &&
+          d.data.acronym
+        ) {
+          if (entityType === EntityType.YEAR) {
+            return `${d.data.acronym} ${d.data.year}`;
+          }
+          return `[${d.data.acronym}]`;
+        }
+
+        // For entities without acronyms or other types
         return d.data.name.length > 12
           ? d.data.name.substring(0, 12) + "..."
           : d.data.name;
@@ -343,10 +356,10 @@ export default function ChartView({
       .attr("transform", `translate(${width / 2 + 80}, 40)`);
 
     const legendPadding = 5;
-    const legendElementHeight = 22;
     const elements = data.length;
-
-    const legendContainerHeight = (legendPadding * 2) + (legendElementHeight * elements);
+    const legendElementHeight = 22;
+    const legendContainerHeight =
+      legendPadding * 2 + legendElementHeight * elements;
 
     legendWrapper
       .append("rect")
@@ -365,22 +378,20 @@ export default function ChartView({
       .append("g")
       .attr("transform", "translate(10, 10)");
 
-    legendG
+    const legendItems = legendG
       .selectAll(".legend-item")
       .data(data)
       .enter()
       .append("g")
       .attr("class", "legend-item")
-      .attr("transform", (_: unknown, i: number) => `translate(0, ${i * 22})`)
+      .attr(
+        "transform",
+        (_: unknown, i: number) => `translate(0, ${i * legendElementHeight})`
+      )
       .style("cursor", "pointer")
-      .style("opacity", 0)
-      .transition()
-      .duration(500)
-      .delay((_, i) => 300 + i * 30)
-      .style("opacity", 1);
+      .style("opacity", 0);
 
-    legendG
-      .selectAll(".legend-item")
+    legendItems
       .on("mouseenter", function (this: any, event: MouseEvent, d: any) {
         d3.selectAll(".arc path")
           .filter(function (datum: any) {
@@ -439,44 +450,63 @@ export default function ChartView({
         setTooltip(null);
       });
 
-    legendG
-      .selectAll(".legend-item")
+    legendItems
+      .transition()
+      .duration(500)
+      .delay((_, i) => 300 + i * 30)
+      .style("opacity", 1);
+
+    legendItems
       .append("rect")
       .attr("width", 12)
       .attr("height", 12)
       .attr("rx", 2)
+      .attr("y", 2)
       .attr("fill", (d: any) => color(d.name));
 
-    legendG
-      .selectAll(".legend-item")
+    legendItems
       .append("text")
       .attr("x", 20)
-      .attr("y", 10)
+      .attr("y", 12)
       .style("font-size", "11px")
+      .style("font-weight", "500")
       .style("fill", "#333")
       .text((d: any) => {
-        const displayName =
-          d.name.length > 27 ? d.name.substring(0, 25) + "..." : d.name;
-        return `${displayName}`;
+        if (
+          (entityType === EntityType.FACULTY ||
+            entityType === EntityType.MAJOR ||
+            entityType === EntityType.YEAR) &&
+          d.acronym
+        ) {
+          if (entityType === EntityType.YEAR) {
+            return `${d.acronym} ${d.year}`;
+          }
+          return `${d.acronym}`;
+        } else {
+          const displayName =
+            d.name.length > 27 ? d.name.substring(0, 25) + "..." : d.name;
+          return displayName;
+        }
       });
 
-    // Add checkbox control at the bottom of the legend
     const checkboxGroup = legendWrapper
       .append("g")
-      .attr("transform", `translate(10, ${10 + data.length * 22 + 10})`)
+      .attr(
+        "transform",
+        `translate(10, ${legendContainerHeight + legendPadding + 5})`
+      )
       .style("cursor", "pointer")
       .style("opacity", 0)
       .on("click", () => {
         setShowNames(!showNames);
       });
-      
+
     checkboxGroup
       .transition()
       .duration(500)
       .delay(300 + data.length * 30)
       .style("opacity", 1);
 
-    // Checkbox border
     checkboxGroup
       .append("rect")
       .attr("width", 12)

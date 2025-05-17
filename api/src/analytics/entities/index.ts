@@ -8,3 +8,6 @@ export { RoleAnalyticsEntity } from './role.entity';
 export { LocationAnalyticsEntity } from './location.entity';
 export { AlumniAnalyticsEntity } from './alumni.entity';
 export { JobClassificationAnalyticsEntity } from './job-classification.entity';
+export { GraduationAnalyticsEntity } from './graduation.entity';
+export { CourseAnalyticsEntity } from './course.entity';
+export { FacultyAnalyticsEntity } from './faculty.entity';

@@ -8,10 +8,10 @@ datasource db {
 }
 
 model Alumni {
-  id        String  @id @default(dbgenerated("gen_random_uuid()"))
-  firstName String  @map("first_name")
-  lastName  String  @map("last_name")
-  fullName  String  @map("full_name")
+  id        String @id @default(dbgenerated("gen_random_uuid()"))
+  firstName String @map("first_name")
+  lastName  String @map("last_name")
+  fullName  String @map("full_name")
 
   // Data from LinkedIn
   linkedinUrl       String? @unique @map("linkedin_url")
@@ -94,6 +94,9 @@ model Course {
   Graduation Graduation[]
   Faculty    Faculty      @relation(fields: [facultyId], references: [id])
 
+  @@index([facultyId])
+  @@index([status])
+  @@index([courseType])
   @@map("course")
 }
 
@@ -119,11 +122,16 @@ model Graduation {
   courseId       String   @map("course_id")
   conclusionYear Int      @map("conclusion_year")
   createdAt      DateTime @default(now()) @map("created_at") @db.Timestamp(6)
-  Alumni         Alumni   @relation(fields: [alumniId], references: [id])
-  Course         Course   @relation(fields: [courseId], references: [id])
 
+  Alumni Alumni @relation(fields: [alumniId], references: [id])
+  Course Course @relation(fields: [courseId], references: [id])
+
+  @@unique([alumniId, courseId, conclusionYear])
+  @@index([conclusionYear])
   @@index([alumniId])
   @@index([courseId])
+  @@index([courseId, conclusionYear])
+  @@index([alumniId, conclusionYear])
   @@map("graduation")
 }
 
@@ -267,7 +275,6 @@ model ReviewCompany {
 
   @@map("review_company")
 }
-
 
 model ReviewLocation {
   id          String   @id @default(dbgenerated("gen_random_uuid()"))

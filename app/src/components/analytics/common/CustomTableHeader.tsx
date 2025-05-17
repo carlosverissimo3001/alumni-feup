@@ -15,6 +15,7 @@ type CustomTableHeaderProps = {
   showTrend?: boolean;
   trendFrequency?: TrendFrequency;
   allowCountSort?: boolean;
+  extraHeaderName?: string;
 };
 
 export default function CustomTableHeader({
@@ -27,6 +28,7 @@ export default function CustomTableHeader({
   showTrend = false,
   trendFrequency = TrendFrequency.MAX,
   allowCountSort = true,
+  extraHeaderName,
 }: CustomTableHeaderProps) {
   const renderSortIcon = (field: SortBy) => {
     if (sortField !== field) {
@@ -42,10 +44,14 @@ export default function CustomTableHeader({
   return (
     <TableHeader className="bg-gradient-to-r from-[#A13A23]/10 to-gray-100/80 sticky top-0 z-10 backdrop-blur-sm border-b border-gray-200/80 hover:bg-[#A13A23]/15 transition-all duration-300">
       <TableRow>
-        <TableHead className="w-[8%] pl-3 py-1 text-left text-xs font-semibold text-[#8C2D19] uppercase tracking-wider">
+        <TableHead className="w-[5%] pl-3 py-1 text-left text-xs font-semibold text-[#8C2D19] uppercase tracking-wider">
           #
         </TableHead>
-        <TableHead className="w-[72%] pl-3 py-1 text-left text-xs font-semibold text-[#8C2D19] uppercase tracking-wider">
+        <TableHead
+          className={`w-[${
+            extraHeaderName ? "62" : "80"
+          }%] pl-3 py-1 text-left text-xs font-semibold text-[#8C2D19] tracking-wider`}
+        >
           <div className="flex items-center">
             <Button
               variant="ghost"
@@ -57,6 +63,20 @@ export default function CustomTableHeader({
             </Button>
           </div>
         </TableHead>
+        {extraHeaderName && (
+          <TableHead className="w-[12%] py-1 text-left text-xs font-semibold text-[#8C2D19] tracking-wider">
+            <div className="flex items-center">
+              <Button
+                variant="ghost"
+                className="h-8 px-1 font-semibold hover:bg-[#A13A23]/10 hover:text-[#A13A23] flex items-center gap-1 rounded-md transition-all duration-200"
+                onClick={() => onSort?.(SortBy.YEAR)}
+              >
+                {extraHeaderName}
+                {renderSortIcon(SortBy.YEAR)}
+              </Button>
+            </div>
+          </TableHead>
+        )}
         <TableHead className="w-[20%] pl-3 py-1 text-left text-xs font-semibold text-[#8C2D19] tracking-wider">
           <div className="flex flex-col items-start" title={hoverMessage}>
             <Button
