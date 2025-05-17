@@ -25,6 +25,7 @@ LEVELS_FYI_COMPANY_MAPPINGS: Dict[str, str] = {
     "Accenture Portugal": "accenture",
     "Accenture UK & Ireland": "accenture",
     "Fujitsu Portugal": "fujitsu",
+    "Claranet Portugal": "claranet",
     # Parent companies
     "Kuehne & Nagel": "kuehnenagel",
     "Bosch Portugal": "bosch-global",
@@ -68,6 +69,7 @@ LEVELS_FYI_COMPANY_MAPPINGS: Dict[str, str] = {
     "Inmarsat": "inmarsat-government",
     "ESL FACEIT Group - EFG": "faceit",
     "Palantir Technologies": "palantir",
+    "Amazon Web Services (AWS)": "amazon",
 }
 
 
