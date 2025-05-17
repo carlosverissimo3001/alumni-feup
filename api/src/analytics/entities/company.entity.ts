@@ -20,23 +20,21 @@ export class CompanyAnalyticsEntity extends CompanySummaryEntity {
   @ApiProperty()
   industry: IndustryAnalyticsEntity;
 
-  @ApiPropertyOptional({ type: LocationAnalyticsEntity, nullable: true })
-  location?: LocationAnalyticsEntity | null;
-}
+  @ApiPropertyOptional({ type: LocationAnalyticsEntity })
+  location?: LocationAnalyticsEntity;
 
-export class CompanyEntity extends CompanyAnalyticsEntity {
-  @ApiPropertyOptional({ type: String, nullable: true })
-  website?: string | null;
+  @ApiPropertyOptional({ type: String })
+  website?: string;
 
-  @ApiPropertyOptional({ type: Number, nullable: true })
-  founded?: number | null;
+  @ApiPropertyOptional({ type: Number })
+  founded?: number;
 
-  @ApiPropertyOptional({ type: String, nullable: true })
-  companySize?: COMPANY_SIZE | null;
+  @ApiPropertyOptional({ type: String })
+  companySize?: COMPANY_SIZE;
 
-  @ApiPropertyOptional({ type: String, nullable: true })
-  companyType?: COMPANY_TYPE | null;
+  @ApiPropertyOptional({ type: String })
+  companyType?: COMPANY_TYPE;
 
-  @ApiPropertyOptional({ type: String, nullable: true })
-  linkedinUrl?: string | null;
+  @ApiPropertyOptional({ type: String })
+  linkedinUrl?: string;
 }

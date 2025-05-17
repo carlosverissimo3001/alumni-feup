@@ -1,4 +1,4 @@
-import { COURSE_STATUS } from '@prisma/client';
+import { COMPANY_SIZE, COMPANY_TYPE, COURSE_STATUS } from '@prisma/client';
 import {
   AlumniAnalyticsEntity,
   CompanyAnalyticsEntity,
@@ -8,8 +8,8 @@ import {
   JobClassificationAnalyticsEntity,
   LocationAnalyticsEntity,
   RoleAnalyticsEntity,
+  GraduationAnalyticsEntity,
 } from '../entities';
-import { GraduationAnalyticsEntity } from '../entities/graduation.entity';
 
 type RawJobClassification = {
   title: string;
@@ -61,6 +61,8 @@ type RawCompany = {
   logo?: string | null;
   Industry: RawIndustry;
   Location?: RawLocation | null;
+  companySize?: COMPANY_SIZE | null;
+  companyType?: COMPANY_TYPE | null;
 };
 
 type RawIndustry = {
@@ -122,6 +124,8 @@ export function toCompanyAnalyticsEntity(
     id: company.id,
     name: company.name,
     logo: company.logo ?? undefined,
+    companySize: company.companySize ?? undefined,
+    companyType: company.companyType ?? undefined,
     levelsFyiUrl: company.levelsFyiUrl ?? undefined,
     industry: mapIndustryFromPrisma(company.Industry),
     location: mapLocationFromPrisma(company.Location),
@@ -138,6 +142,8 @@ export const mapCompanyFromPrisma = (
     levelsFyiUrl: company.levelsFyiUrl ?? undefined,
     industry: mapIndustryFromPrisma(company.Industry),
     location: mapLocationFromPrisma(company.Location),
+    companySize: company.companySize ?? undefined,
+    companyType: company.companyType ?? undefined,
   };
 };
 
@@ -164,8 +170,8 @@ const mapJobClassificationFromPrisma = (
 
 const mapLocationFromPrisma = (
   location?: RawLocation | null,
-): LocationAnalyticsEntity | null => {
-  if (!location) return null;
+): LocationAnalyticsEntity | undefined => {
+  if (!location) return undefined;
   return {
     id: location.id,
     country: location.country ?? '',
@@ -213,9 +219,7 @@ export const mapCourseFromPrisma = (
   };
 };
 
-const mapFacultyFromPrisma = (
-  faculty: RawFaculty,
-): FacultyAnalyticsEntity => {
+const mapFacultyFromPrisma = (faculty: RawFaculty): FacultyAnalyticsEntity => {
   return {
     id: faculty.id,
     name: faculty.name,
