@@ -51,8 +51,6 @@ export class CompanyRepository {
       throw new Error('Company not found');
     }
 
-    console.log(company);
-
     return mapCompanyFromPrisma(company);
   }
 }
