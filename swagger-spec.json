@@ -661,10 +661,10 @@
             }
           },
           {
-            "name": "classificationLevel",
+            "name": "escoClassificationLevel",
             "required": false,
             "in": "query",
-            "description": "The classification level to filter by",
+            "description": "The ESCO classification level to filter by",
             "schema": {
               "default": 1,
               "example": 1,
@@ -1096,10 +1096,10 @@
             }
           },
           {
-            "name": "classificationLevel",
+            "name": "escoClassificationLevel",
             "required": false,
             "in": "query",
-            "description": "The classification level to filter by",
+            "description": "The ESCO classification level to filter by",
             "schema": {
               "default": 1,
               "example": 1,
@@ -1457,10 +1457,10 @@
             }
           },
           {
-            "name": "classificationLevel",
+            "name": "escoClassificationLevel",
             "required": false,
             "in": "query",
-            "description": "The classification level to filter by",
+            "description": "The ESCO classification level to filter by",
             "schema": {
               "default": 1,
               "example": 1,
@@ -1883,10 +1883,10 @@
             }
           },
           {
-            "name": "classificationLevel",
+            "name": "escoClassificationLevel",
             "required": false,
             "in": "query",
-            "description": "The classification level to filter by",
+            "description": "The ESCO classification level to filter by",
             "schema": {
               "default": 1,
               "example": 1,
@@ -2271,10 +2271,10 @@
             }
           },
           {
-            "name": "classificationLevel",
+            "name": "escoClassificationLevel",
             "required": false,
             "in": "query",
-            "description": "The classification level to filter by",
+            "description": "The ESCO classification level to filter by",
             "schema": {
               "default": 1,
               "example": 1,
@@ -2632,10 +2632,10 @@
             }
           },
           {
-            "name": "classificationLevel",
+            "name": "escoClassificationLevel",
             "required": false,
             "in": "query",
-            "description": "The classification level to filter by",
+            "description": "The ESCO classification level to filter by",
             "schema": {
               "default": 1,
               "example": 1,
@@ -2993,10 +2993,10 @@
             }
           },
           {
-            "name": "classificationLevel",
+            "name": "escoClassificationLevel",
             "required": false,
             "in": "query",
-            "description": "The classification level to filter by",
+            "description": "The ESCO classification level to filter by",
             "schema": {
               "default": 1,
               "example": 1,
@@ -3354,10 +3354,10 @@
             }
           },
           {
-            "name": "classificationLevel",
+            "name": "escoClassificationLevel",
             "required": false,
             "in": "query",
-            "description": "The classification level to filter by",
+            "description": "The ESCO classification level to filter by",
             "schema": {
               "default": 1,
               "example": 1,
@@ -3742,10 +3742,10 @@
             }
           },
           {
-            "name": "classificationLevel",
+            "name": "escoClassificationLevel",
             "required": false,
             "in": "query",
-            "description": "The classification level to filter by",
+            "description": "The ESCO classification level to filter by",
             "schema": {
               "default": 1,
               "example": 1,

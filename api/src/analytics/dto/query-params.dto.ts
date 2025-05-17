@@ -6,6 +6,9 @@ import {
   IsString,
   IsNotEmpty,
   IsEnum,
+  Max,
+  IsInt,
+  Min,
 } from 'class-validator';
 
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
@@ -322,14 +325,17 @@ export class QueryParamsDto {
   escoCodes?: string[];
 
   @ApiPropertyOptional({
-    description: 'The classification level to filter by',
+    description: 'The ESCO classification level to filter by',
     example: 1,
     default: 1,
   })
   @IsOptional()
   @IsNumber()
+  @IsInt()
+  @Min(1)
+  @Max(8)
   @Type(() => Number)
-  classificationLevel?: number;
+  escoClassificationLevel?: number;
 
   @ApiPropertyOptional({
     description: 'The number of results to return',

@@ -259,6 +259,7 @@ export default function CompanyDashboard({
           setItemsPerPage={setItemsPerPage}
           totalItems={totalItems}
           visible={companies.length > 0}
+          currentCount={companies.length}
           showTrendFrequency={view === ViewType.TREND}
           trendFrequency={trendFrequency}
           setTrendFrequency={setTrendFrequency}

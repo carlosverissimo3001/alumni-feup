@@ -14,9 +14,6 @@ import {
   Filter,
   Info,
   ExternalLink,
-  TableIcon,
-  PieChart,
-  LineChart,
 } from "lucide-react";
 
 import { DashboardSkeleton } from "../skeletons/DashboardSkeleton";
@@ -37,7 +34,6 @@ import { startCase } from "lodash";
 import { Switch } from "@/components/ui/switch";
 import ChartView from "../common/ChartView";
 import { ViewType } from "@/types/view";
-import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import CountComponent from "../common/CountComponent";
 import TrendLineComponent from "../common/TrendLineComponent";
 import LoadingChart from "../common/LoadingChart";
@@ -219,6 +215,7 @@ export default function RoleDashboard({
           setItemsPerPage={setItemsPerPage}
           totalItems={totalItems}
           visible={roles.length > 0}
+          currentCount={roles.length}
           showTrendFrequency={view === ViewType.TREND}
           trendFrequency={trendFrequency}
           setTrendFrequency={setTrendFrequency}

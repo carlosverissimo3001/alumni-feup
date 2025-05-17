@@ -1,7 +1,11 @@
 import { RoleAnalyticsService } from '@/analytics/services';
 import { Controller, Get, Query } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { QueryParamsDto, RoleListResponseDto, RoleOptionDto } from '@/analytics/dto';
+import {
+  QueryParamsDto,
+  RoleListResponseDto,
+  RoleOptionDto,
+} from '@/analytics/dto';
 
 @ApiTags('V1', 'Analytics')
 @Controller('analytics/roles')
