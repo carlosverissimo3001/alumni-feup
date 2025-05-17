@@ -6,13 +6,7 @@ import { Button } from "@/components/ui/button";
 import {
   Filter,
   Flag,
-  Info,
   MapPin,
-  TrendingUp,
-  TrendingDown,
-  TableIcon,
-  PieChart,
-  LineChart,
 } from "lucide-react";
 import { DashboardSkeleton } from "../skeletons/DashboardSkeleton";
 import PaginationControls from "../common/PaginationControls";
@@ -33,7 +27,6 @@ import { NotFoundComponent } from "../common/NotFoundComponent";
 import { Switch } from "@/components/ui/switch";
 import ChartView from "../common/ChartView";
 import { ViewType } from "@/types/view";
-import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import CountComponent from "../common/CountComponent";
 import TrendLineComponent from "../common/TrendLineComponent";
 import LoadingChart from "../common/LoadingChart";
@@ -44,13 +37,10 @@ import {
   PopoverTrigger,
   PopoverContent,
 } from "@/components/ui/popover";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
 import CustomTableRow from "../common/CustomTableRow";
+import { GeoDrillType } from "@/types/drillType";
+import { TrendTooltip } from "../common/TrendTooltip";
+import ViewToggle from "../common/ViewToggle";
 
 type GeoDashboardProps = {
   onDataUpdate: (
@@ -61,8 +51,8 @@ type GeoDashboardProps = {
   ) => void;
   filters: FilterState;
   onAddToFilters?: (id: string, type: "role" | "company") => void;
-  mode: "country" | "city";
-  setMode: (mode: "country" | "city") => void;
+  mode: GeoDrillType;
+  setMode: (mode: GeoDrillType) => void;
 };
 
 type DataRowProps = {
@@ -130,6 +120,7 @@ export default function GeoDashboard({
   const cities = cityData?.cities || [];
   const totalCities = cityData?.count || 0;
   const cityFilteredCount = cityData?.filteredCount || 0;
+ 
   // Update parent only when total changes
   useEffect(() => {
     onDataUpdate(
@@ -193,7 +184,7 @@ export default function GeoDashboard({
               />
 
               {isLoading ? (
-                <DashboardSkeleton hasExtraColumn={true} />
+                <DashboardSkeleton />
               ) : (
                 <TableBody className="bg-white divide-y divide-gray-200">
                   {data.length > 0 ? (
@@ -260,7 +251,7 @@ export default function GeoDashboard({
                                 }`}
                               >
                                 {/*  Note that we have a bug when filtering citiesdirectly on the dashboard */}
-                                {mode === "country" && (
+                                {mode === GeoDrillType.COUNTRY && (
                                   <Popover
                                     open={openPopoverId === row.id}
                                     onOpenChange={(open) =>
@@ -353,7 +344,6 @@ export default function GeoDashboard({
                     <NotFoundComponent
                       message={`No ${mode} data available`}
                       description={`Try adjusting your filters to find ${mode}s that match your criteria.`}
-                      colSpan={4}
                     />
                   )}
                 </TableBody>
@@ -382,7 +372,7 @@ export default function GeoDashboard({
   const renderChartView = () => (
     <div className="flex-1 flex flex-col border-t border-b border-gray-200 overflow-hidden">
       <div className="flex-1 flex items-center justify-center">
-        {mode === "country" ? (
+        {mode === GeoDrillType.COUNTRY ? (
           isCountryLoading || isCountryFetching ? (
             <LoadingChart message="Loading chart data..." />
           ) : countries.length === 0 ? (
@@ -433,71 +423,27 @@ export default function GeoDashboard({
               )
             }
             className="pl-1"
+            tooltipMessage={
+              mode === "country"
+                ? "Distribution of alumni by the country of their role."
+                : "Distribution of alumni by the city of their role."
+            }
           />
 
           {view === ViewType.TREND && (
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Info className="h-5 w-5 text-[#8C2D19] ml-2" />
-                </TooltipTrigger>
-                <TooltipContent className="max-w-xs" align="start">
-                  <div className="space-y-2">
-                    <p>
-                      <strong>Trend View:</strong> Shows the change in {mode}{" "}
-                      presence over the past 5 years
-                    </p>
-                    <p>
-                      <TrendingUp className="h-3.5 w-3.5 inline text-green-500 mr-1" />{" "}
-                      Indicates growing{" "}
-                      {mode === "country" ? "countries" : "cities"}
-                    </p>
-                    <p>
-                      <TrendingDown className="h-3.5 w-3.5 inline text-red-500 mr-1" />{" "}
-                      Indicates declining{" "}
-                      {mode === "country" ? "countries" : "cities"}
-                    </p>
-                  </div>
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
+            <TrendTooltip
+              entityType={
+                mode === "country" ? EntityType.COUNTRY : EntityType.CITY
+              }
+              trendFrequency={trendFrequency}
+            />
           )}
         </div>
 
         <div className="border rounded-md overflow-hidden">
-          <ToggleGroup
-            type="single"
-            value={view}
-            onValueChange={(value: string) =>
-              value && setView(value as ViewType)
-            }
-            className="flex"
-          >
-            <ToggleGroupItem
-              value={ViewType.TABLE}
-              aria-label="Table View"
-              className="px-1.5 py-1"
-              title="Table View"
-            >
-              <TableIcon className="h-4 w-4" />
-            </ToggleGroupItem>
-            <ToggleGroupItem
-              value={ViewType.CHART}
-              aria-label="Chart View"
-              className="px-1.5 py-1 disabled:opacity-10"
-              title="Chart View"
-            >
-              <PieChart className="h-4 w-4" />
-            </ToggleGroupItem>
-            <ToggleGroupItem
-              value={ViewType.TREND}
-              aria-label="Trend View"
-              className="px-1.5 py-1"
-              title="Trend View"
-            >
-              <LineChart className="h-4 w-4" />
-            </ToggleGroupItem>
-          </ToggleGroup>
+          <div className="border rounded-md overflow-hidden">
+            <ViewToggle view={view} setView={setView} />
+          </div>
         </div>
 
         <div
@@ -506,24 +452,28 @@ export default function GeoDashboard({
         >
           <span
             className={`text-sm font-medium cursor-pointer ${
-              mode === "country"
+              mode === GeoDrillType.COUNTRY
                 ? "text-[#8C2D19] font-semibold"
                 : "text-gray-500"
             }`}
-            onClick={() => setMode("country")}
+            onClick={() => setMode(GeoDrillType.COUNTRY)}
           >
             Countries
           </span>
           <Switch
             id="mode-toggle"
-            checked={mode === "city"}
-            onCheckedChange={(checked) => setMode(checked ? "city" : "country")}
+            checked={mode === GeoDrillType.CITY}
+            onCheckedChange={(checked) =>
+              setMode(checked ? GeoDrillType.CITY : GeoDrillType.COUNTRY)
+            }
           />
           <span
             className={`text-sm font-medium cursor-pointer ${
-              mode === "city" ? "text-[#8C2D19] font-semibold" : "text-gray-500"
+              mode === GeoDrillType.CITY
+                ? "text-[#8C2D19] font-semibold"
+                : "text-gray-500"
             }`}
-            onClick={() => setMode("city")}
+            onClick={() => setMode(GeoDrillType.CITY)}
           >
             Cities
           </span>
@@ -533,7 +483,6 @@ export default function GeoDashboard({
       {/* Maybe fix this weird logic */}
       {view === ViewType.TABLE && renderTable()}
       {view === ViewType.TREND && renderTable()}
-
       {view === ViewType.CHART && renderChartView()}
     </div>
   );

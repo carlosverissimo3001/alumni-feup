@@ -1,7 +1,7 @@
 export enum SortBy {
   COUNT = 'count',
   NAME = 'name',
-  // ...
+  YEAR = 'year',
 }
 
 export enum Frequency {

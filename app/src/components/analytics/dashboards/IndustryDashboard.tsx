@@ -12,9 +12,6 @@ import { IndustryListItemDto } from "@/sdk";
 import {
   Factory,
   Filter,
-  PieChart,
-  LineChart,
-  Table as TableIcon,
   TrendingUp,
   TrendingDown,
   Info,
@@ -33,7 +30,6 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import TrendLineComponent from "../common/TrendLineComponent";
 import ChartView from "../common/ChartView";
 import { ViewType } from "@/types/view";
@@ -41,6 +37,7 @@ import CountComponent from "../common/CountComponent";
 import LoadingChart from "../common/LoadingChart";
 import { TrendFrequency, EntityType } from "@/types/entityTypes";
 import CustomTableRow from "../common/CustomTableRow";
+import ViewToggle from "../common/ViewToggle";
 type IndustryDashboardProps = {
   onDataUpdate: (industryCount: number, industryFilteredCount: number) => void;
   filters: FilterState;
@@ -116,7 +113,7 @@ export default function IndustryDashboard({
             />
 
             {isLoading || isFetching ? (
-              <DashboardSkeleton hasExtraColumn={true} />
+              <DashboardSkeleton />
             ) : (
               <TableBody className="bg-white divide-y divide-gray-200">
                 {industries.length > 0 ? (
@@ -186,7 +183,6 @@ export default function IndustryDashboard({
                   <NotFoundComponent
                     message="No industry data available"
                     description="Try adjusting your filters to find industries that match your criteria."
-                    colSpan={4}
                   />
                 )}
               </TableBody>
@@ -242,6 +238,7 @@ export default function IndustryDashboard({
             title="Industries"
             icon={<Factory className="h-5 w-5 text-[#8C2D19]" />}
             className="pl-1"
+            tooltipMessage="Distribution of alumni by the industry of their role."
           />
 
           {view === "trend" && (
@@ -272,39 +269,9 @@ export default function IndustryDashboard({
         </div>
 
         <div className="border rounded-md overflow-hidden">
-          <ToggleGroup
-            type="single"
-            value={view}
-            onValueChange={(value: string) =>
-              value && setView(value as ViewType)
-            }
-            className="flex"
-          >
-            <ToggleGroupItem
-              value={ViewType.TABLE}
-              aria-label="Table View"
-              className="px-1.5 py-1"
-              title="Table View"
-            >
-              <TableIcon className="h-4 w-4" />
-            </ToggleGroupItem>
-            <ToggleGroupItem
-              value={ViewType.CHART}
-              aria-label="Chart View"
-              className="px-1.5 py-1 disabled:opacity-10"
-              title="Chart View"
-            >
-              <PieChart className="h-4 w-4" />
-            </ToggleGroupItem>
-            <ToggleGroupItem
-              value={ViewType.TREND}
-              aria-label="Trend View"
-              className="px-1.5 py-1"
-              title="Trend View"
-            >
-              <LineChart className="h-4 w-4" />
-            </ToggleGroupItem>
-          </ToggleGroup>
+          <div className="border rounded-md overflow-hidden">
+            <ViewToggle view={view} setView={setView} />
+          </div>
         </div>
       </div>
 

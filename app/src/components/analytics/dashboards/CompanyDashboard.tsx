@@ -13,11 +13,7 @@ import { CompanyListItemDto } from "@/sdk";
 import {
   Building2,
   DollarSign,
-  ExternalLink,
   Filter,
-  LineChart,
-  PieChart,
-  TableIcon,
 } from "lucide-react";
 import ImageWithFallback from "../../ui/image-with-fallback";
 import PaginationControls from "../common/PaginationControls";
@@ -37,11 +33,11 @@ import ChartView from "../common/ChartView";
 import { ViewType } from "@/types/view";
 import CountComponent from "../common/CountComponent";
 import TrendLineComponent from "../common/TrendLineComponent";
-import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import LoadingChart from "../common/LoadingChart";
 import { TrendTooltip } from "../common/TrendTooltip";
 import { EntityType, TrendFrequency } from "@/types/entityTypes";
 import CustomTableRow from "../common/CustomTableRow";
+import ViewToggle from "../common/ViewToggle";
 
 type CompanyDashboardProps = {
   onDataUpdate: (
@@ -302,7 +298,9 @@ export default function CompanyDashboard({
           <TableTitle
             title="Companies"
             icon={<Building2 className="h-5 w-5 text-[#8C2D19]" />}
-            tooltipMessage="Companies that have hired alumni from our programs."
+            tooltipMessage={`Distribution of alumni by the company they ${
+              filters.currentRolesOnly ? "work for" : "have worked at"
+            }`}
             className="pl-1"
           />
 
@@ -315,39 +313,10 @@ export default function CompanyDashboard({
         </div>
 
         <div className="border rounded-md overflow-hidden">
-          <ToggleGroup
-            type="single"
-            value={view}
-            onValueChange={(value: string) =>
-              value && setView(value as ViewType)
-            }
-            className="flex"
-          >
-            <ToggleGroupItem
-              value={ViewType.TABLE}
-              aria-label="Table View"
-              className="px-1.5 py-1"
-              title="Table View"
-            >
-              <TableIcon className="h-4 w-4" />
-            </ToggleGroupItem>
-            <ToggleGroupItem
-              value={ViewType.CHART}
-              aria-label="Chart View"
-              className="px-1.5 py-1 disabled:opacity-10"
-              title="Chart View"
-            >
-              <PieChart className="h-4 w-4" />
-            </ToggleGroupItem>
-            <ToggleGroupItem
-              value={ViewType.TREND}
-              aria-label="Trend View"
-              className="px-1.5 py-1"
-              title="Trend View"
-            >
-              <LineChart className="h-4 w-4" />
-            </ToggleGroupItem>
-          </ToggleGroup>
+          <ViewToggle
+            view={view}
+            setView={setView}
+          />
         </div>
       </div>
 

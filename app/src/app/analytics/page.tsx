@@ -15,6 +15,8 @@ import {
   IndustryDashboard,
   GeoDashboard,
   RoleDashboard,
+  EducationDashboard,
+  AlumniTable,
 } from "@/components/analytics/dashboards";
 import { useState, useCallback, useMemo, useEffect } from "react";
 import OverallStats from "@/components/analytics/OverallStats";
@@ -22,14 +24,15 @@ import GlobalFilters, {
   FilterState,
 } from "@/components/analytics/common/GlobalFilters";
 import { handleDateRange } from "@/utils/date";
-import AlumniTable from "@/components/analytics/dashboards/AlumniTable";
 import { Button } from "@/components/ui/button";
 import { useSearchParams, useRouter } from "next/navigation";
 import { useCompanyOptions } from "@/hooks/analytics/useCompanyOptions";
+import { EducationDrillType, GeoDrillType } from "@/types/drillType";
 
 export const initialFilters: FilterState = {
   dateRange: undefined,
   courseIds: undefined,
+  facultyIds: undefined,
   graduationYears: undefined,
   companyIds: undefined,
   industryIds: undefined,
@@ -68,7 +71,10 @@ export default function Analytics() {
     roleFilteredCount: 0,
   });
 
-  const [geoMode, setGeoMode] = useState<"country" | "city">("country");
+  const [geoMode, setGeoMode] = useState<GeoDrillType>(GeoDrillType.COUNTRY);
+  const [educationMode, setEducationMode] = useState<EducationDrillType>(
+    EducationDrillType.MAJOR
+  );
 
   const initializeFiltersFromURL = useCallback(() => {
     const urlFilters: FilterState = { ...initialFilters };
@@ -248,7 +254,7 @@ export default function Analytics() {
           if (!current.includes(geoId)) {
             const updated = [...current, geoId];
             if (updated.length === 1) {
-              setTimeout(() => setGeoMode("city"), 0);
+              setTimeout(() => setGeoMode(GeoDrillType.CITY), 0);
             }
             return {
               ...prev,
@@ -322,6 +328,63 @@ export default function Analytics() {
       alumniIds: [...(prev.alumniIds || []), alumniId],
     }));
   }, []);
+
+  const handleAddEducationToFilters = useCallback((educationId: string) => {
+    if (educationMode === EducationDrillType.FACULTY) {
+      setFilters((prev) => {
+        const current = prev.facultyIds || [];
+        if (!current.includes(educationId)) {
+          const updated = [...current, educationId];
+          if (updated.length === 1) {
+            setTimeout(() => setEducationMode(EducationDrillType.MAJOR), 0);
+          }
+          return {
+            ...prev,
+            facultyIds: updated,
+          };
+        } else {
+          return {
+            ...prev,
+            facultyIds: current.filter((id) => id !== educationId)
+          };
+        }
+      });
+    } else if (educationMode === EducationDrillType.MAJOR) {
+      setFilters((prev) => {
+        const current = prev.courseIds || [];
+        if (!current.includes(educationId)) {
+          const updated = [...current, educationId];
+          if (updated.length === 1) {
+            setTimeout(() => setEducationMode(EducationDrillType.YEAR), 0);
+          }
+          return {
+            ...prev,
+            courseIds: updated,
+          };
+        } else {
+          return {
+            ...prev,
+            courseIds: current.filter((id) => id !== educationId),
+          };
+        }
+      });
+    } else if (educationMode === EducationDrillType.YEAR) {
+      setFilters((prev) => {
+        const current = prev.graduationYears || [];
+        if (!current.includes(educationId)) {
+          return {
+            ...prev,
+            graduationYears: [...current, educationId],
+          };
+        } else {
+          return {
+            ...prev,
+            graduationYears: current.filter((id) => id !== educationId),
+          };
+        }
+      });
+    }
+  }, [educationMode, setEducationMode]);
 
   const handleLevelChange = useCallback((level: number) => {
     setFilters((prev) => ({ ...prev, classificationLevel: level }));
@@ -423,10 +486,11 @@ export default function Analytics() {
           onAddToFilters={handleAddIndustryToFilters}
         />
 
-        <IndustryDashboard
-          onDataUpdate={handleIndustryDataUpdate}
+        <EducationDashboard
           filters={combinedFilters}
-          onAddToFilters={handleAddIndustryToFilters}
+          mode={educationMode}
+          setMode={setEducationMode}
+          onAddToFilters={handleAddEducationToFilters}
         />
         <IndustryDashboard
           onDataUpdate={handleIndustryDataUpdate}

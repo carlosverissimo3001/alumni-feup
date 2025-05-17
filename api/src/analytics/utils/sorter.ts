@@ -4,6 +4,8 @@ import {
   RoleListItemDto,
   CountryListItemDto,
   CityListItemDto,
+  MajorListItemDto,
+  FacultyListItemDto,
 } from '@/analytics/dto';
 import { SortBy } from './types';
 
@@ -12,7 +14,9 @@ type SortableData =
   | IndustryListItemDto
   | RoleListItemDto
   | CountryListItemDto
-  | CityListItemDto;
+  | CityListItemDto
+  | MajorListItemDto
+  | FacultyListItemDto;
 
 export const sortData = <T extends SortableData>(
   data: T[],

@@ -3,6 +3,7 @@ import { Injectable } from '@nestjs/common';
 import { CompanySummaryEntity, CompanyEntity } from '../entities';
 import { companySelect } from '../utils/selectors';
 import { Prisma } from '@prisma/client';
+import { mapCompanyFromPrisma } from '../utils/alumni.mapper';
 const extendedSelect = {
   ...companySelect,
   founded: true,
@@ -50,13 +51,6 @@ export class CompanyRepository {
       throw new Error('Company not found');
     }
 
-    // TODO: Move to a fromPrismaObject method, similar to what we do in alumni.mapper.ts
-    return {
-      ...company,
-      industry: company.Industry,
-      location: company.Location,
-      logo: company.logo ?? undefined,
-      levelsFyiUrl: company.levelsFyiUrl ?? undefined,
-    };
+    return mapCompanyFromPrisma(company);
   }
 }

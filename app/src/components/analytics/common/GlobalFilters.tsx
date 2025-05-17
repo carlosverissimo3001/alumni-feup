@@ -25,7 +25,6 @@ import {
 import { useCompanyOptions } from "@/hooks/analytics/useCompanyOptions";
 import { useCountryOptions } from "@/hooks/analytics/useCountryOptions";
 import { useListCourses } from "@/hooks/courses/useListCourses";
-import { CourseSelect } from "@/components/common/courseSelect";
 import { useCityOptions } from "@/hooks/analytics/useCityOptions";
 import { useIndustryOptions } from "@/hooks/analytics/useIndustryOptions";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -37,12 +36,14 @@ import {
 import { motion, AnimatePresence } from "framer-motion";
 import { useRoleOptions } from "@/hooks/analytics/useRoleOptions";
 import { useAlumniOptions } from "@/hooks/analytics/useAlumniOptions";
+import { useListFaculties } from "@/hooks/faculty/useListFaculties";
 
 export type FilterState = {
   dateRange?: DateRange | undefined;
   companyIds?: string[];
   courseIds?: string[];
   graduationYears?: string[];
+  facultyIds?: string[];
   industryIds?: string[];
   companyHQsCountryCodes?: string[];
   companyHQsCityIds?: string[];
@@ -100,19 +101,16 @@ export default function GlobalFilters({
   const {
     data: companyOptions,
     isLoading: isCompanyOptionsLoading,
-    isFetching: isCompanyOptionsFetching,
   } = useCompanyOptions();
 
   const {
     data: countryOptions,
     isLoading: isCountryOptionsLoading,
-    isFetching: isCountryOptionsFetching,
   } = useCountryOptions();
 
   const {
     data: roleCityOptions,
     isLoading: isRoleCityOptionsLoading,
-    isFetching: isRoleCityOptionsFetching,
   } = useCityOptions({
     countryCodes: filters.roleCountryCodes,
   });
@@ -120,7 +118,6 @@ export default function GlobalFilters({
   const {
     data: companyCityOptions,
     isLoading: isCompanyCityOptionsLoading,
-    isFetching: isCompanyCityOptionsFetching,
   } = useCityOptions({
     countryCodes: filters.companyHQsCountryCodes,
   });
@@ -128,24 +125,27 @@ export default function GlobalFilters({
   const {
     data: roleOptions,
     isLoading: isRoleOptionsLoading,
-    isFetching: isRoleOptionsFetching,
   } = useRoleOptions();
 
   const {
     data: industryOptions,
     isLoading: isIndustryOptionsLoading,
-    isFetching: isIndustryOptionsFetching,
   } = useIndustryOptions();
 
   const {
     data: alumniOptions,
     isLoading: isAlumniOptionsLoading,
-    isFetching: isAlumniOptionsFetching,
   } = useAlumniOptions();
 
-  const { data: courseOptions, isLoading: isCourseOptionsLoading } =
-    useListCourses({ enabled: true, params: {} });
-  useListCourses({ enabled: true, params: {} });
+  const { data: courseOptions, isLoading: isCourseOptionsLoading} =
+    useListCourses({
+      params: {
+        facultyIds: filters.facultyIds,
+      },
+    });
+
+  const { data: facultyOptions, isLoading: isFacultyOptionsLoading } =
+    useListFaculties();
 
   // React will run these hooks in parallel by default
   // The component will render once all data is available
@@ -164,9 +164,14 @@ export default function GlobalFilters({
         value: country.id,
         label: country.name,
       })),
-      courses: (courseOptions || []).map((course) => ({
-        value: course.id,
-        label: course.name,
+      coursesGrouped: (courseOptions || []).map((course) => ({
+        id: course.id,
+        name: course.name,
+        group: course.facultyAcronym,
+      })),
+      faculties: (facultyOptions || []).map((faculty) => ({
+        value: faculty.id,
+        label: faculty.name,
       })),
       roleCitiesGrouped: (roleCityOptions || []).map((city) => ({
         id: city.id,
@@ -228,6 +233,7 @@ export default function GlobalFilters({
       roleOptions,
       alumniOptions,
       filters.classificationLevel,
+      facultyOptions,
     ]
   );
 
@@ -449,7 +455,7 @@ export default function GlobalFilters({
           </Label>
           <MultiSelect
             id="roleSelect"
-            isLoading={isRoleOptionsLoading || isRoleOptionsFetching}
+            isLoading={isRoleOptionsLoading}
             options={options.roles}
             value={filters.escoCodes}
             onValueChange={(value) => handleFilterChange("escoCodes", value)}
@@ -549,8 +555,8 @@ export default function GlobalFilters({
                   handleFilterChange("companyHQsCountryCodes", value)
                 }
                 placeholder="Select countries"
-                isLoading={isCountryOptionsLoading || isCountryOptionsFetching}
-                disabled={isCountryOptionsLoading || isCountryOptionsFetching}
+                isLoading={isCountryOptionsLoading}
+                disabled={isCountryOptionsLoading}
                 allowSelectAll={true}
                 maxCount={6}
               />
@@ -569,9 +575,7 @@ export default function GlobalFilters({
                   handleFilterChange("companyHQsCityIds", value)
                 }
                 maxCount={6}
-                isLoading={
-                  isCompanyCityOptionsLoading || isCompanyCityOptionsFetching
-                }
+                isLoading={isCompanyCityOptionsLoading}
               />
             </div>
           </div>
@@ -601,7 +605,7 @@ export default function GlobalFilters({
             <div>
               <MultiSelect
                 id="roleCountryCodeSelect"
-                isLoading={isRoleOptionsLoading || isRoleOptionsFetching}
+                isLoading={isRoleOptionsLoading}
                 options={options.countries}
                 value={filters.roleCountryCodes}
                 onValueChange={(value) =>
@@ -625,9 +629,7 @@ export default function GlobalFilters({
                   handleFilterChange("roleCityIds", value)
                 }
                 maxCount={6}
-                isLoading={
-                  isRoleCityOptionsLoading || isRoleCityOptionsFetching
-                }
+                isLoading={isRoleCityOptionsLoading}
               />
             </div>
           </div>
@@ -648,7 +650,7 @@ export default function GlobalFilters({
           </Label>
           <MultiSelect
             id="companySelect"
-            isLoading={isCompanyOptionsLoading || isCompanyOptionsFetching}
+            isLoading={isCompanyOptionsLoading}
             options={options.companies}
             value={filters.companyIds}
             onValueChange={(value) => handleFilterChange("companyIds", value)}
@@ -671,7 +673,7 @@ export default function GlobalFilters({
             onValueChange={(value) => handleFilterChange("industryIds", value)}
             placeholder="Select industries"
             lazyLoading={true}
-            isLoading={isIndustryOptionsLoading || isIndustryOptionsFetching}
+            isLoading={isIndustryOptionsLoading}
           />
         </div>
 
@@ -758,7 +760,7 @@ export default function GlobalFilters({
 
   function renderEducationTab() {
     return (
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
         <div>
           <Label
             htmlFor="alumniSelect"
@@ -772,9 +774,30 @@ export default function GlobalFilters({
             value={filters.alumniIds}
             onValueChange={(value) => handleFilterChange("alumniIds", value)}
             placeholder="Search and select alumni"
-            isLoading={isAlumniOptionsLoading || isAlumniOptionsFetching}
+            isLoading={isAlumniOptionsLoading}
             maxCount={1}
           />
+        </div>
+
+        <div className="grid grid-cols-1 gap-4">
+          <div>
+            <Label
+              htmlFor="facultySelect"
+              className="text-xs font-medium text-gray-700 mb-1 block"
+            >
+              Faculty
+            </Label>
+            <MultiSelect
+              id="facultySelect"
+              options={options.faculties}
+              value={filters.facultyIds}
+              onValueChange={(value) => handleFilterChange("facultyIds", value)}
+              placeholder="Select faculties"
+              isLoading={isFacultyOptionsLoading}
+              allowSelectAll={true}
+              maxCount={1}
+            />
+          </div>
         </div>
 
         <div className="grid grid-cols-1 gap-4">
@@ -783,13 +806,16 @@ export default function GlobalFilters({
               htmlFor="courseSelect"
               className="text-xs font-medium text-gray-700 mb-1 block"
             >
-              Graduated From
+              Course
             </Label>
-            <CourseSelect
-              courses={courseOptions || []}
-              setCourseIds={(value) => handleFilterChange("courseIds", value)}
-              isLoadingCourses={isCourseOptionsLoading}
-              courseIds={filters.courseIds || []}
+            <GroupedMultiSelect
+              id="courseSelect"
+              options={options.coursesGrouped}
+              value={filters.courseIds}
+              onValueChange={(value) => handleFilterChange("courseIds", value)}
+              placeholder="Select courses"
+              isLoading={isCourseOptionsLoading}
+              maxCount={1}
             />
           </div>
         </div>
@@ -799,7 +825,7 @@ export default function GlobalFilters({
             htmlFor="graduationYearsSelect"
             className="text-xs font-medium text-gray-700 mb-1 block"
           >
-            Graduation In
+            Graduation Year
           </Label>
           <MultiSelect
             id="graduationYearsSelect"
