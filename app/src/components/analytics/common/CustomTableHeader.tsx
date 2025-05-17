@@ -44,7 +44,7 @@ export default function CustomTableHeader({
   return (
     <TableHeader className="bg-gradient-to-r from-[#A13A23]/10 to-gray-100/80 sticky top-0 z-10 backdrop-blur-sm border-b border-gray-200/80 hover:bg-[#A13A23]/15 transition-all duration-300">
       <TableRow>
-        <TableHead className="w-[5%] pl-3 py-1 text-left text-xs font-semibold text-[#8C2D19] uppercase tracking-wider">
+        <TableHead className="w-[7%] pl-3 py-1 text-left text-xs font-semibold text-[#8C2D19] uppercase tracking-wider">
           #
         </TableHead>
         <TableHead

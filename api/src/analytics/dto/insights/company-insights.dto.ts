@@ -55,17 +55,15 @@ export class CompanyInsightsDto {
     description: 'The size of the company',
     enum: COMPANY_SIZE,
     enumName: 'COMPANY_SIZE',
-    nullable: true,
   })
-  companySize?: COMPANY_SIZE | null;
+  companySize?: COMPANY_SIZE;
 
   @ApiPropertyOptional({
     description: 'The type of the company',
     enum: COMPANY_TYPE,
     enumName: 'COMPANY_TYPE',
-    nullable: true,
   })
-  companyType?: COMPANY_TYPE | null;
+  companyType?: COMPANY_TYPE;
 
   @ApiProperty({
     description: 'Was the company founded by an alumni',

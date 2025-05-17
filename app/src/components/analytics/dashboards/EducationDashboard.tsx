@@ -168,7 +168,7 @@ export default function EducationDashboard({
     if (mode === EducationDrillType.FACULTY) {
       return "Faculties";
     } else if (mode === EducationDrillType.MAJOR) {
-      return "Majors";
+      return "Courses";
     }
     return "Graduation Years";
   };
@@ -466,11 +466,11 @@ export default function EducationDashboard({
                   <TooltipTrigger asChild>
                     <div className="flex items-center">
                       <BookOpen className="h-4 w-4 mr-1 inline-block transition-transform duration-200" />
-                      <span>M</span>
+                      <span>C</span>
                     </div>
                   </TooltipTrigger>
                   <TooltipContent>
-                    <p>View distribution by Major</p>
+                    <p>View distribution by Course</p>
                   </TooltipContent>
                 </Tooltip>
               </TooltipProvider>
