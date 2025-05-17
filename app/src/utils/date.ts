@@ -1,9 +1,9 @@
 import { DateRange } from "react-day-picker";
-import { CompaniesAnalyticsControllerGetCompaniesWithAlumniCountRequest } from "@/sdk";
+import { CompanyAnalyticsControllerGetCompaniesWithAlumniCountRequest } from "@/sdk";
 
 export const handleDateRange = (
   dateRange: DateRange
-): Pick<CompaniesAnalyticsControllerGetCompaniesWithAlumniCountRequest, "startDate" | "endDate"> => ({
+): Pick<CompanyAnalyticsControllerGetCompaniesWithAlumniCountRequest, "startDate" | "endDate"> => ({
   startDate: dateRange.from?.toISOString(),
   endDate: dateRange.to?.toISOString()
 });
