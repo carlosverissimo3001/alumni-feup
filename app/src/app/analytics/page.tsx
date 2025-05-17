@@ -462,7 +462,7 @@ export default function Analytics() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3 gap-4">
-{/*         <CompanyDashboard
+        <CompanyDashboard
           onDataUpdate={handleCompanyDataUpdate}
           filters={combinedFilters}
           onAddToFilters={handleAddCompanyToFilters}
@@ -484,7 +484,7 @@ export default function Analytics() {
           onDataUpdate={handleIndustryDataUpdate}
           filters={combinedFilters}
           onAddToFilters={handleAddIndustryToFilters}
-        /> */}
+        />
 
         <EducationDashboard
           filters={combinedFilters}
@@ -492,11 +492,11 @@ export default function Analytics() {
           setMode={setEducationMode}
           onAddToFilters={handleAddEducationToFilters}
         />
-{/*         <IndustryDashboard
+        <IndustryDashboard
           onDataUpdate={handleIndustryDataUpdate}
           filters={combinedFilters}
           onAddToFilters={handleAddIndustryToFilters}
-        /> */}
+        />
       </div>
 
       <AlumniTable
