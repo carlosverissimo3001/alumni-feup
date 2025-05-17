@@ -124,13 +124,13 @@ export interface CompanyInsightsDto {
      * @type {COMPANYSIZE}
      * @memberof CompanyInsightsDto
      */
-    companySize?: COMPANYSIZE | null;
+    companySize?: COMPANYSIZE;
     /**
      * The type of the company
      * @type {COMPANYTYPE}
      * @memberof CompanyInsightsDto
      */
-    companyType?: COMPANYTYPE | null;
+    companyType?: COMPANYTYPE;
     /**
      * Was the company founded by an alumni
      * @type {boolean}

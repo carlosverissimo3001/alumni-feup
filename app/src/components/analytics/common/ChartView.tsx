@@ -7,7 +7,7 @@ import { Loader2 } from "lucide-react";
 import { EntityType } from "@/types/entityTypes";
 
 const getTitle = (entity: EntityType) => {
-  let title = "Top 10 ";
+  let title = `Top `;
 
   switch (entity) {
     case EntityType.COMPANY:
@@ -29,13 +29,13 @@ const getTitle = (entity: EntityType) => {
       title += "Faculties";
       break;
     case EntityType.MAJOR:
-      title += "Majors";
+      title += "Courses";
       break;
     case EntityType.YEAR:
       title += "Graduation Years";
       break;
     default:
-      title = "Top 10";
+      return title;
   }
 
   return title;
@@ -117,6 +117,8 @@ export default function ChartView({
     const topData = [...data]
       .sort((a, b) => (b.count ?? 0) - (a.count ?? 0))
       .slice(0, 10);
+
+    setTotalItems(topData.length);
 
     drawPieChart(topData, dimensions.width, dimensions.height);
 

@@ -216,10 +216,10 @@ export class CompanyAnalyticsService {
       foundedByAlumni: false,
       companySize: company.companySize
         ? COMPANY_SIZE[company.companySize]
-        : null,
+        : undefined,
       companyType: company.companyType
         ? COMPANY_TYPE[company.companyType]
-        : null,
+        : undefined,
       founded: company.founded,
       website: company.website,
       headquarters: company.location,
