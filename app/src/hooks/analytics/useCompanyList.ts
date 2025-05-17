@@ -7,6 +7,7 @@ export const useCompanyList = (params: CompanyAnalyticsControllerGetCompaniesWit
   // No need to send the boolean values if they are false
   const filteredParams = {
     ...filterApiRequestParams(params),
+    // this one we actually need to send
     includeTrend: params.includeTrend ?? false,
   };
 
@@ -14,7 +15,8 @@ export const useCompanyList = (params: CompanyAnalyticsControllerGetCompaniesWit
     queryKey: ['company-list', filteredParams],
     queryFn: () => NestAPI.companyAnalyticsControllerGetCompaniesWithAlumniCount(filteredParams),
     refetchOnWindowFocus: false,
-    staleTime: 5 * 60 * 1000, // 5 minutes
-    gcTime: 10 * 60 * 1000, // 10 minutes
+    staleTime: 5 * 60 * 1000,
+    gcTime: 10 * 60 * 1000,
+    placeholderData: (previousData) => previousData,
   });
 };

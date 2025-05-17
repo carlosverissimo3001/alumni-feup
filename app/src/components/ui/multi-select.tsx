@@ -243,24 +243,10 @@ export const MultiSelect = React.forwardRef<
         return options;
       }
 
-      const searchTerms = searchValue
-        .toLowerCase()
-        .split(/\s+/)
-        .filter(Boolean);
-
-      return options.filter((option) => {
-        const labelWords = option.label.toLowerCase().split(/\s+/);
-
-        return searchTerms.every(
-          (searchTerm) =>
-            labelWords.some((word) => word.includes(searchTerm)) ||
-            labelWords
-              .map((word) => word[0])
-              .join("")
-              .includes(searchTerm) ||
-            labelWords.join("").includes(searchTerm)
-        );
-      });
+      const lowercasedSearch = searchValue.toLowerCase();
+      return options.filter((option) =>
+        option.label.toLowerCase().includes(lowercasedSearch)
+      );
     }, [options, searchValue]);
 
     const displayOptions = React.useMemo(() => {
@@ -295,44 +281,36 @@ export const MultiSelect = React.forwardRef<
             {selectedValues.length > 0 ? (
               <div className="flex justify-between items-center w-full">
                 <div className="flex flex-wrap items-center">
-                  {selectedValues
-                    .sort()
-                    .slice(0, maxCount)
-                    .map((value) => {
-                      const option = options.find((o) => o.value === value);
-                      const IconComponent = option?.icon;
-                      return (
-                        <Badge
-                          key={value}
-                          className={cn(
-                            isAnimating
-                              ? "animate-bounce text-sm"
-                              : "text-[9px]",
-                            multiSelectVariants({ variant })
-                          )}
-                          style={{ animationDuration: `${animation}s` }}
-                        >
-                          {IconComponent && (
-                            <IconComponent className="h-4 w-4 mr-2" />
-                          )}
-                          {option?.label &&
-                            (option.label.length > 40
-                              ? option.label.substring(0, 40) + "..."
-                              : option.label)}
-                          <XCircle
-                            className="ml-2 h-4 w-4 cursor-pointer"
-                            onClick={(event) => {
-                              event.stopPropagation();
-                              if (!disabled) toggleOption(value);
-                            }}
-                          />
-                        </Badge>
-                      );
-                    })}
+                  {selectedValues.slice(0, maxCount).map((value) => {
+                    const option = options.find((o) => o.value === value);
+                    const IconComponent = option?.icon;
+                    return (
+                      <Badge
+                        key={value}
+                        className={cn(
+                          isAnimating ? "animate-bounce" : "",
+                          multiSelectVariants({ variant })
+                        )}
+                        style={{ animationDuration: `${animation}s` }}
+                      >
+                        {IconComponent && (
+                          <IconComponent className="h-4 w-4 mr-2" />
+                        )}
+                        {option?.label}
+                        <XCircle
+                          className="ml-2 h-4 w-4 cursor-pointer"
+                          onClick={(event) => {
+                            event.stopPropagation();
+                            if (!disabled) toggleOption(value);
+                          }}
+                        />
+                      </Badge>
+                    );
+                  })}
                   {selectedValues.length > maxCount && (
                     <Badge
                       className={cn(
-                        "bg-transparent text-foreground border-foreground/1 hover:bg-transparent text-[9px]",
+                        "bg-transparent text-foreground border-foreground/1 hover:bg-transparent",
                         isAnimating ? "animate-bounce" : "",
                         multiSelectVariants({ variant })
                       )}
