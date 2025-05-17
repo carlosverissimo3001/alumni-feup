@@ -118,8 +118,6 @@ export default function ChartView({
       .sort((a, b) => (b.count ?? 0) - (a.count ?? 0))
       .slice(0, 10);
 
-    setTotalItems(topData.length);
-
     drawPieChart(topData, dimensions.width, dimensions.height);
 
     setTooltip(null);
