@@ -10,7 +10,7 @@ export const locationSelect = {
   country: true,
   countryCode: true,
   city: true,
-};
+} satisfies Prisma.LocationSelect;
 
 export const companySelect = {
   id: true,
@@ -23,14 +23,14 @@ export const companySelect = {
   Location: {
     select: locationSelect,
   },
-};
+} satisfies Prisma.CompanySelect;
 
 export const jobClassificationSelect = {
   title: true,
   level: true,
   confidence: true,
   escoCode: true,
-};
+} satisfies Prisma.JobClassificationSelect;
 
 export const roleSelect = {
   id: true,
@@ -48,3 +48,30 @@ export const roleSelect = {
     select: jobClassificationSelect,
   },
 } satisfies Prisma.RoleSelect;
+
+export const facultySelect = {
+  id: true,
+  name: true,
+  nameInt: true,
+  acronym: true,
+} satisfies Prisma.FacultySelect;
+
+export const courseSelect = {
+  id: true,
+  name: true,
+  acronym: true,
+  status: true,
+  Faculty: {
+    select: facultySelect,
+  },
+} satisfies Prisma.CourseSelect;
+
+export const graduationSelect = {
+  id: true,
+  alumniId: true,
+  courseId: true,
+  Course: {
+    select: courseSelect,
+  },
+  conclusionYear: true,
+} satisfies Prisma.GraduationSelect;

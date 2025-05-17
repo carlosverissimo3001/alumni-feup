@@ -44,6 +44,7 @@ import LoadingChart from "../common/LoadingChart";
 import { EntityType, TrendFrequency } from "@/types/entityTypes";
 import { TrendTooltip } from "../common/TrendTooltip";
 import CustomTableRow from "../common/CustomTableRow";
+import ViewToggle from "../common/ViewToggle";
 
 type RoleDashboardProps = {
   onDataUpdate: (roleCount: number, roleFilteredCount: number) => void;
@@ -203,7 +204,6 @@ export default function RoleDashboard({
                     <NotFoundComponent
                       message="No role data available"
                       description="Try adjusting your filters to find roles that match your criteria."
-                      colSpan={4}
                     />
                   )}
                 </TableBody>
@@ -262,6 +262,7 @@ export default function RoleDashboard({
           <TableTitle
             title="Roles"
             icon={<Briefcase className="h-5 w-5 text-[#8C2D19]" />}
+            tooltipMessage="Distribution of alumni by the classification of their role."
           />
           {view === ViewType.TREND && (
             <TrendTooltip
@@ -272,39 +273,9 @@ export default function RoleDashboard({
         </div>
 
         <div className="border rounded-md overflow-hidden">
-          <ToggleGroup
-            type="single"
-            value={view}
-            onValueChange={(value: string) =>
-              value && setView(value as ViewType)
-            }
-            className="flex"
-          >
-            <ToggleGroupItem
-              value={ViewType.TABLE}
-              aria-label="Table View"
-              className="px-1.5 py-1"
-              title="Table View"
-            >
-              <TableIcon className="h-4 w-4" />
-            </ToggleGroupItem>
-            <ToggleGroupItem
-              value={ViewType.CHART}
-              aria-label="Chart View"
-              className="px-1.5 py-1 disabled:opacity-10"
-              title="Chart View"
-            >
-              <PieChart className="h-4 w-4" />
-            </ToggleGroupItem>
-            <ToggleGroupItem
-              value={ViewType.TREND}
-              aria-label="Trend View"
-              className="px-1.5 py-1"
-              title="Trend View"
-            >
-              <LineChart className="h-4 w-4" />
-            </ToggleGroupItem>
-          </ToggleGroup>
+          <div className="border rounded-md overflow-hidden">
+            <ViewToggle view={view} setView={setView} />
+          </div>
         </div>
 
         <div className="flex items-center space-x-2">

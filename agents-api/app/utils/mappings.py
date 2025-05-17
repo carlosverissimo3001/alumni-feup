@@ -3,41 +3,41 @@ from typing import Dict, Optional
 from app.db.models import Company, CompanyType
 
 LEVELS_FYI_COMPANY_MAPPINGS: Dict[str, str] = {
-    # Common abbreviations
-    "P&G": "procter-and-gamble",
-    "J&J": "johnson-and-johnson",
-    "A&M": "am",
-    "AT&T": "att",
-    "H&M": "hm",
-    
-    # Different naming conventions
-    "JP Morgan": "jpmorgan",
-    "JPMorgan Chase": "jpmorgan",
-    "JP Morgan Chase": "jpmorgan",
-    "J.P. Morgan": "jpmorgan",
-    
-    # Shortened names
-    "Meta": "facebook",
     "Alphabet": "google",
-    
-    # Special characters
     "T-Mobile": "tmobile",
-    "Procter & Gamble": "procter-and-gamble",
-    "Johnson & Johnson": "johnson-and-johnson",
-    
-    # Regional variations
-    "Microsoft India": "microsoft",
-    "Google Ireland": "google",
-    
-    # Acquisitions/Subsidiaries
     "LinkedIn": "microsoft",
-    "WhatsApp": "meta",
-    "Instagram": "meta",
+    # In levels.fyi, all link to facebook
+    "Meta": "facebook",
+    "WhatsApp": "facebook",
+    "Instagram": "facebook",
     "YouTube": "google",
-    
     # Location specific
     "PwC Portugal": "pwc",
     "PwC Luxembourg": "pwc",
+    "Ubisoft Paris Studio": "ubisoft",
+    "Ubisoft Montréal": "ubisoft",
+    "Ubisoft Annecy": "ubisoft",
+    "KPMG Portugal": "kpmg",
+    "NEC Laboratories America, Inc.": "nec",
+    "Natixis in Portugal": "natixis",
+    # Parent companies
+    "Kuehne & Nagel": "kuehnenagel",
+    "Bosch Portugal": "bosch-global",
+    "Deloitte Digitall": "deloitte",
+    "Ocado Technology": "ocado-group",
+    "Flutter UK & Ireland": "flutter",
+    "Flutter Entertainment": "flutter",
+    "Natixis Corporate & Investment Banking": "natixis",
+    # Other non standard names
+    "Just Eat Takeaway.com": "just-eat",
+    "P&G": "procter-and-gamble",
+    "JPMorganChase": "jpmorgan-chase",
+    "EY": "ernst-and-young",
+    "OLX": "olx-group",
+    "Hewlett Packard Enterprise": "hp",
+    "Funding Circle UK": "funding-circle",
+    "Mercedes-Benz AG": "mercedes-benz",
+    "Picnic Technologies":"picnic"
 }
 
 
@@ -62,6 +62,7 @@ def normalize_company_name(name: str) -> str:
         .replace(" ", "-")
         .replace("'", "")
         .replace(",", "")
+        .replace("+", "")
         .replace("(", "")
         .replace(")", "")
         .strip("-")

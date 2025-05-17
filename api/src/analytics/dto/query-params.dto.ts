@@ -60,6 +60,22 @@ export class QueryParamsDto {
    * *** EDUCATION PARAMS ***
    */
   @ApiPropertyOptional({
+    description: 'The faculty IDs to filter by',
+    example: ['1', '2', '3'],
+  })
+  @IsOptional()
+  @TransformToArray()
+  @Transform(({ value }: { value: string | string[] }) => {
+    if (Array.isArray(value)) {
+      return value.filter((course: string) => course?.trim());
+    }
+    return value;
+  })
+  @IsArray()
+  @IsString({ each: true })
+  facultyIds?: string[];
+
+  @ApiPropertyOptional({
     description: 'The course IDs to filter by',
     example: ['1', '2', '3'],
   })

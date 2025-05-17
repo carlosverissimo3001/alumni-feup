@@ -16,7 +16,7 @@ export default function TableTitle({ title, icon, tooltipMessage, className }: T
             <TooltipTrigger className="flex items-center">
               {icon}
             </TooltipTrigger>
-            <TooltipContent>
+            <TooltipContent align="start">
               {tooltipMessage}
             </TooltipContent>
           </Tooltip>

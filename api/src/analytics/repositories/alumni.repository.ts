@@ -1,23 +1,18 @@
 import { PrismaService } from '@/prisma/prisma.service';
 import { QueryParamsDto } from '../dto/query-params.dto';
 import { buildWhereClause } from '../utils/query-builder';
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { toAlumniAnalyticsEntity } from '../utils/alumni.mapper';
 import { AlumniAnalyticsEntity } from '../entities/alumni.entity';
-import { roleSelect } from '../utils/selectors';
+import { graduationSelect, roleSelect } from '../utils/selectors';
 
 @Injectable()
 export class AlumniAnalyticsRepository {
-  constructor(
-    private prisma: PrismaService,
-    private readonly logger: Logger,
-  ) {}
+  constructor(private prisma: PrismaService) {}
 
   async find(params: QueryParamsDto): Promise<AlumniAnalyticsEntity[]> {
-    // Build all the filters using your existing function
     const { alumniWhere, roleWhere } = buildWhereClause(params);
 
-    // Use the filters at the right levels
     const alumnus = await this.prisma.alumni.findMany({
       where: alumniWhere,
       select: {
@@ -28,6 +23,9 @@ export class AlumniAnalyticsRepository {
         Roles: {
           where: roleWhere,
           select: roleSelect,
+        },
+        Graduations: {
+          select: graduationSelect,
         },
       },
     });

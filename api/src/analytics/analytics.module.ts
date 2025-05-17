@@ -4,6 +4,7 @@ import {
   CompanyAnalyticsController,
   GeoAnalyticsController,
   IndustryAnalyticsController,
+  EducationAnalyticsController,
   RoleAnalyticsController,
 } from '@/analytics/controllers';
 import {
@@ -11,6 +12,7 @@ import {
   CompanyRepository,
   IndustryRepository,
   LocationRepository,
+  EducationRepository,
   RoleRepository,
 } from '@/analytics/repositories';
 import {
@@ -19,6 +21,7 @@ import {
   RoleAnalyticsService,
   TrendAnalyticsService,
   AlumniAnalyticsService,
+  EducationAnalyticsService,
 } from '@/analytics/services';
 import { AlumniAnalyticsController } from './controllers/alumni-analytics.controller';
 
@@ -27,18 +30,21 @@ import { AlumniAnalyticsController } from './controllers/alumni-analytics.contro
     CompanyAnalyticsController,
     GeoAnalyticsController,
     IndustryAnalyticsController,
+    EducationAnalyticsController,
     RoleAnalyticsController,
     AlumniAnalyticsController,
   ],
   providers: [
     CompanyAnalyticsService,
     RoleAnalyticsService,
+    EducationAnalyticsService,
     AlumniAnalyticsService,
     GeoAnalyticsService,
     PrismaService,
     AlumniAnalyticsRepository,
     LocationRepository,
     CompanyRepository,
+    EducationRepository,
     IndustryRepository,
     RoleRepository,
     Logger,

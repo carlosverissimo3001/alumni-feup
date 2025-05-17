@@ -45,12 +45,6 @@ export class CompanyListItemExtendedDto extends CompanyListItemDto {
     type: String,
   })
   industryId: string;
-
-  @ApiPropertyOptional({
-    type: String,
-    description: 'The URL of the company on Levels.fyi',
-  })
-  levelsFyiUrl?: string;
 }
 
 export class CompanyListResponseDto {

@@ -1,6 +1,38 @@
 import { AlumniAnalyticsEntity } from '../entities';
 import { QueryParamsDto } from '../dto';
 
+const shouldFilterAlumniWithoutRoles = (query: QueryParamsDto): boolean => {
+  type ExcludedKeys =
+    | 'alumniIds'
+    | 'courseIds'
+    | 'graduationYears'
+    | 'limit'
+    | 'offset'
+    | 'sortBy'
+    | 'sortOrder'
+    | 'includeTrend';
+
+  type FilterableQuery = Omit<QueryParamsDto, ExcludedKeys>;
+  const filterableQuery = query as FilterableQuery;
+
+  return Object.entries(filterableQuery).some((entry) => {
+    const value = entry[1];
+    if (Array.isArray(value)) {
+      return value.length > 0;
+    }
+    if (typeof value === 'string') {
+      return value.trim() !== '';
+    }
+    if (typeof value === 'number') {
+      return true;
+    }
+    if (typeof value === 'boolean') {
+      return value;
+    }
+    return false;
+  });
+};
+
 export const applyDateFilters = (
   data: AlumniAnalyticsEntity[],
   query: QueryParamsDto,
@@ -46,5 +78,7 @@ export const applyDateFilters = (
         roles: filteredRoles,
       };
     })
-    .filter((item) => item.roles.length > 0);
+    .filter((item) =>
+      shouldFilterAlumniWithoutRoles(query) ? item.roles.length > 0 : true,
+    );
 };

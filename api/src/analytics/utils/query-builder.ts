@@ -11,7 +11,11 @@ export const buildWhereClause = (
   const alumniAndClauses: Prisma.AlumniWhereInput[] = [];
   const roleAndClauses: Prisma.RoleWhereInput[] = [];
 
-  if (params.courseIds?.length || params.graduationYears?.length) {
+  if (
+    params.courseIds?.length ||
+    params.graduationYears?.length ||
+    params.facultyIds?.length
+  ) {
     alumniAndClauses.push({
       Graduations: {
         some: {
@@ -28,8 +32,11 @@ export const buildWhereClause = (
                   },
                 ]
               : []),
+            ...(params.facultyIds?.length
+              ? [{ Course: { facultyId: { in: params.facultyIds } } }]
+              : []),
           ],
-        },
+        } satisfies Prisma.GraduationWhereInput,
       },
     });
   }

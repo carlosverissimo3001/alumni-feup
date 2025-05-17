@@ -4,7 +4,9 @@ export enum EntityType {
   COUNTRY = 'country',
   CITY = 'city',
   ROLE = 'role',
-  COURSE = 'course',
+  FACULTY = 'faculty',
+  MAJOR = 'major',
+  YEAR = 'year',
   SENIORITY = 'seniority',
 }
 

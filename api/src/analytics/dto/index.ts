@@ -37,3 +37,13 @@ export { CompanyInsightsDto } from './insights/company-insights.dto';
 // Alumni
 export { AlumniOptionDto } from './alumni-option.dto';
 export { AlumniListResponseDto, AlumniListItemDto } from './alumni-list.dto';
+
+// Major
+export {
+  FacultyListDto,
+  FacultyListItemDto,
+  MajorListDto,
+  MajorListItemDto,
+  GraduationListDto,
+  GraduationListItemDto,
+} from './education-list.dto';

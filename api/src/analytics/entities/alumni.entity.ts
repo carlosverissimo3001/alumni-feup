@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { RoleAnalyticsEntity } from './role.entity';
+import { GraduationAnalyticsEntity } from './graduation.entity';
 
 export class AlumniAnalyticsEntity {
   @ApiProperty({
@@ -34,4 +35,11 @@ export class AlumniAnalyticsEntity {
     isArray: true,
   })
   roles: RoleAnalyticsEntity[];
+
+  @ApiProperty({
+    description: 'The graduations of the alumni',
+    type: GraduationAnalyticsEntity,
+    isArray: true,
+  })
+  graduations: GraduationAnalyticsEntity[];
 }
