@@ -59,6 +59,9 @@ type RawCompany = {
   name: string;
   levelsFyiUrl?: string | null;
   logo?: string | null;
+  linkedinUrl?: string | null;
+  website?: string | null;
+  founded?: number | null;
   Industry: RawIndustry;
   Location?: RawLocation | null;
   companySize?: COMPANY_SIZE | null;
@@ -117,21 +120,6 @@ export function toRoleAnalyticsEntity(
   };
 }
 
-export function toCompanyAnalyticsEntity(
-  company: RawCompany,
-): CompanyAnalyticsEntity {
-  return {
-    id: company.id,
-    name: company.name,
-    logo: company.logo ?? undefined,
-    companySize: company.companySize ?? undefined,
-    companyType: company.companyType ?? undefined,
-    levelsFyiUrl: company.levelsFyiUrl ?? undefined,
-    industry: mapIndustryFromPrisma(company.Industry),
-    location: mapLocationFromPrisma(company.Location),
-  };
-}
-
 export const mapCompanyFromPrisma = (
   company: RawCompany,
 ): CompanyAnalyticsEntity => {
@@ -139,11 +127,14 @@ export const mapCompanyFromPrisma = (
     id: company.id,
     name: company.name,
     logo: company.logo ?? undefined,
+    linkedinUrl: company.linkedinUrl ?? undefined,
+    founded: company.founded ?? undefined,
     levelsFyiUrl: company.levelsFyiUrl ?? undefined,
     industry: mapIndustryFromPrisma(company.Industry),
     location: mapLocationFromPrisma(company.Location),
     companySize: company.companySize ?? undefined,
     companyType: company.companyType ?? undefined,
+    website: company.website ?? undefined,
   };
 };
 
