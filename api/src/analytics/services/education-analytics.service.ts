@@ -144,7 +144,7 @@ export class EducationAnalyticsService {
 
     alumnus.forEach((alumnus) => {
       alumnus.graduations.forEach((graduation) => {
-        const key = `[${graduation.course.acronym}-${graduation.conclusionYear}`;
+        const key = `${graduation.course.acronym}-${graduation.conclusionYear}`;
         let grad = graduations.get(key);
 
         if (!grad) {

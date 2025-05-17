@@ -6,8 +6,8 @@ import * as d3 from "d3";
 import { Loader2 } from "lucide-react";
 import { EntityType } from "@/types/entityTypes";
 
-const getTitle = (entity: EntityType) => {
-  let title = `Top `;
+const getTitle = (entity: EntityType, items: number) => {
+  let title = `Top ${items} `;
 
   switch (entity) {
     case EntityType.COMPANY:
@@ -64,9 +64,11 @@ type TooltipData = {
   y: number;
   name: string;
   value: number;
+  acronym?: string;
   percentage?: string;
   color?: string;
   id?: string;
+  year?: number;
 };
 
 export default function ChartView({
@@ -79,7 +81,6 @@ export default function ChartView({
   const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
   const [showNames, setShowNames] = useState(false);
 
-  // Update dimensions when window is resized
   useEffect(() => {
     const updateDimensions = () => {
       if (chartRef.current) {
@@ -147,7 +148,7 @@ export default function ChartView({
       .style("font-weight", "bold")
       .style("fill", "#333")
       .style("opacity", 0)
-      .text(`${getTitle(entityType)}`);
+      .text(`${getTitle(entityType, data.length)}`);
 
     title.transition().duration(700).style("opacity", 1);
 
@@ -253,24 +254,33 @@ export default function ChartView({
           .style("opacity", 0.7);
 
         const percentage = ((d.data.count / total) * 100).toFixed(1);
+        const rect = chartRef.current?.getBoundingClientRect();
+        const x = event.clientX - (rect?.left || 0);
+        const y = event.clientY - (rect?.top || 0);
 
         setTooltip({
-          x: event.pageX,
-          y: event.pageY,
+          x,
+          y,
           name: d.data.name,
           value: d.data.count,
+          acronym: d.data.acronym ?? undefined,
           percentage,
           color: color(d.data.name),
           id: d.data.id,
+          year: d.data.year,
         });
       })
       .on("mousemove", function (event: MouseEvent) {
+        const rect = chartRef.current?.getBoundingClientRect();
+        const x = event.clientX - (rect?.left || 0);
+        const y = event.clientY - (rect?.top || 0);
+
         setTooltip((prev) =>
           prev
             ? {
                 ...prev,
-                x: event.pageX,
-                y: event.pageY,
+                x,
+                y,
               }
             : null
         );
@@ -336,7 +346,7 @@ export default function ChartView({
           if (entityType === EntityType.YEAR) {
             return `${d.data.acronym} ${d.data.year}`;
           }
-          return `[${d.data.acronym}]`;
+          return `${d.data.acronym}`;
         }
 
         // For entities without acronyms or other types
@@ -355,9 +365,9 @@ export default function ChartView({
       .attr("class", "legend-wrapper")
       .attr("transform", `translate(${width / 2 + 80}, 40)`);
 
-    const legendPadding = 5;
+    const legendPadding = 6;
     const elements = data.length;
-    const legendElementHeight = 22;
+    const legendElementHeight = 21.5;
     const legendContainerHeight =
       legendPadding * 2 + legendElementHeight * elements;
 
@@ -413,24 +423,33 @@ export default function ChartView({
         d3.select(this).transition().duration(200).style("font-weight", "bold");
 
         const percentage = ((d.count / total) * 100).toFixed(1);
+        const rect = chartRef.current?.getBoundingClientRect();
+        const x = event.clientX - (rect?.left || 0);
+        const y = event.clientY - (rect?.top || 0);
 
         setTooltip({
-          x: event.pageX,
-          y: event.pageY,
+          x,
+          y,
           name: d.name,
           value: d.count,
           percentage,
           color: color(d.name),
           id: d.id,
+          year: d.year,
+          acronym: d.acronym ?? undefined,
         });
       })
       .on("mousemove", function (event: MouseEvent) {
+        const rect = chartRef.current?.getBoundingClientRect();
+        const x = event.clientX - (rect?.left || 0);
+        const y = event.clientY - (rect?.top || 0);
+
         setTooltip((prev) =>
           prev
             ? {
                 ...prev,
-                x: event.pageX,
-                y: event.pageY,
+                x,
+                y,
               }
             : null
         );
@@ -539,13 +558,29 @@ export default function ChartView({
   const renderTooltip = () => {
     if (!tooltip) return null;
 
+    const tooltipHeight = 100;
+    const tooltipWidth = 180;
+    const shouldShowBelow = tooltip.y < tooltipHeight;
+    const shouldShowRight = tooltip.x < tooltipWidth / 2;
+
+    const chartWidth = chartRef.current?.clientWidth || 0;
+    const shouldShowLeft = tooltip.x > chartWidth - tooltipWidth / 2;
+
+    let translateX = "-50%";
+    if (shouldShowRight) translateX = "0";
+    if (shouldShowLeft) translateX = "-100%";
+
+    console.log(tooltip);
+
     return (
       <div
-        className="fixed z-50 bg-white p-2 rounded-md shadow-lg border border-gray-200 text-sm"
+        className="absolute z-50 bg-white p-2 rounded-md shadow-lg border border-gray-200 text-sm"
         style={{
           left: `${tooltip.x}px`,
-          top: `${tooltip.y - 10}px`,
-          transform: "translate(-50%, -100%)",
+          top: shouldShowBelow ? `${tooltip.y + 10}px` : `${tooltip.y - 10}px`,
+          transform: `translate(${translateX}, ${
+            shouldShowBelow ? "0" : "-100%"
+          })`,
           minWidth: "180px",
           pointerEvents: "none",
           animation: "fadeIn 0.2s ease-out",
@@ -555,25 +590,40 @@ export default function ChartView({
           @keyframes fadeIn {
             from {
               opacity: 0;
-              transform: translate(-50%, -90%);
+              transform: translate(
+                ${translateX},
+                ${shouldShowBelow ? "-10%" : "-90%"}
+              );
             }
             to {
               opacity: 1;
-              transform: translate(-50%, -100%);
+              transform: translate(
+                ${translateX},
+                ${shouldShowBelow ? "0" : "-100%"}
+              );
             }
           }
         `}</style>
 
         {tooltip.color && (
           <div
-            className="w-full h-2 mb-1 rounded-sm"
+            className={`w-full h-2 ${
+              shouldShowBelow ? "mt-1 mb-2" : "mb-1"
+            } rounded-sm`}
             style={{ backgroundColor: tooltip.color }}
           />
         )}
 
         <div className="font-bold text-sm truncate max-w-[200px] mb-1">
-          {tooltip.name}
+          {tooltip.acronym ? tooltip.acronym : tooltip.name}
         </div>
+
+        {/* TODO: Add the full name when we have the acronym */}
+        {tooltip.acronym && (
+          <div className="flex justify-between text-[12px] items-center mb-1">
+            <span className="text-gray-600">{tooltip.name}</span>
+          </div>
+        )}
 
         <div className="flex justify-between items-center mb-1">
           <span className="text-gray-600">
@@ -583,6 +633,13 @@ export default function ChartView({
             {tooltip.value.toLocaleString()}
           </span>
         </div>
+
+        {entityType === EntityType.YEAR && tooltip.year && (
+          <div className="flex justify-between items-center mb-1">
+            <span className="text-gray-600">Year</span>
+            <span className="font-medium text-[#8C2D19]">{tooltip.year}</span>
+          </div>
+        )}
 
         {tooltip.percentage && (
           <div className="flex justify-between items-center mr-0">
@@ -614,7 +671,7 @@ export default function ChartView({
         ref={chartRef}
         className="w-full h-full flex items-center justify-center relative"
         style={{ minHeight: "400px", overflow: "visible" }}
-      />
+      ></div>
       {isLoading && (
         <div className="absolute inset-0 flex items-center justify-center bg-white bg-opacity-70">
           <Loader2 className="w-8 h-8 text-[#8C2D19] animate-spin" />
