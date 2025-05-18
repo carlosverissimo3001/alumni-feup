@@ -66,10 +66,10 @@ type GlobalFiltersProps = {
   onFiltersChange: (filters: FilterState) => void;
 };
 
-export default function GlobalFilters({
+export const GlobalFilters = ({
   filters,
   onFiltersChange,
-}: GlobalFiltersProps) {
+}: GlobalFiltersProps) => {
   const [isCollapsed, setIsCollapsed] = useState(true);
   const [activeFilterCount, setActiveFilterCount] = useState(0);
   const [activeTab, setActiveTab] = useState("roles");

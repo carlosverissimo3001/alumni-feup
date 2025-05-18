@@ -2,7 +2,7 @@
 
 import { cn } from '@/lib/utils';
 import Navbar from "./navbar";
-import ProfileButton from "../profile/profileButton";
+import { ProfileButton } from "../profile/profileButton";
 import { useNavbar } from '@/contexts/NavbarContext';
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
@@ -10,7 +10,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
 
   return (
     <div className="h-screen relative">
-      <div className="absolute top-6 right-8 z-[60]">
+      <div className="absolute top-6 right-4 z-[60]">
         <ProfileButton />
       </div>
 

@@ -3,7 +3,7 @@ import { DataPointDto } from './data-point.dto';
 
 export class GraduationListItemDto {
   @ApiProperty({
-    description: 'Randomly generated ID for the graduation',
+    description: 'The course ID',
     type: String,
   })
   id: string;

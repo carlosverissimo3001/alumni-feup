@@ -5928,7 +5928,7 @@
         "properties": {
           "id": {
             "type": "string",
-            "description": "Randomly generated ID for the graduation"
+            "description": "The course ID"
           },
           "name": {
             "type": "string",

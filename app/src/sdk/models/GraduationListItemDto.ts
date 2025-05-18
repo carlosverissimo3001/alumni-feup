@@ -20,7 +20,7 @@ import { mapValues } from '../runtime';
  */
 export interface GraduationListItemDto {
     /**
-     * Randomly generated ID for the graduation
+     * The course ID
      * @type {string}
      * @memberof GraduationListItemDto
      */

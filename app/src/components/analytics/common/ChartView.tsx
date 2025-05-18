@@ -72,11 +72,11 @@ type TooltipData = {
   isLegendItem?: boolean;
 };
 
-export default function ChartView({
+export const ChartView = ({
   data,
   isLoading,
   entityType,
-}: ChartViewProps) {
+}: ChartViewProps) => {
   const chartRef = useRef<HTMLDivElement>(null);
   const [tooltip, setTooltip] = useState<TooltipData | null>(null);
   const [dimensions, setDimensions] = useState({ width: 0, height: 0 });

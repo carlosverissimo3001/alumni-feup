@@ -1,43 +1,41 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { Button } from "@/components/ui/button";
 import {
   Table,
   TableBody,
   TableCell,
   TableContainer,
 } from "@/components/ui/table";
-import { Button } from "@/components/ui/button";
-import { useCompanyList } from "@/hooks/analytics/useCompanyList";
-import { CompanyListItemDto } from "@/sdk";
-import {
-  Building2,
-  DollarSign,
-  Filter,
-} from "lucide-react";
-import ImageWithFallback from "../../ui/image-with-fallback";
-import PaginationControls from "../common/PaginationControls";
-import { DashboardSkeleton } from "../skeletons/DashboardSkeleton";
-import TableTitle from "../common/TableTitle";
-import CustomTableHeader from "../common/CustomTableHeader";
-import { SortBy, SortOrder, ITEMS_PER_PAGE, DASHBOARD_HEIGHT } from "@/consts";
-import { FilterState } from "../common/GlobalFilters";
-import { NotFoundComponent } from "../common/NotFoundComponent";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import ChartView from "../common/ChartView";
-import { ViewType } from "@/types/view";
-import CountComponent from "../common/CountComponent";
-import TrendLineComponent from "../common/TrendLineComponent";
-import LoadingChart from "../common/LoadingChart";
-import { TrendTooltip } from "../common/TrendTooltip";
+import { DASHBOARD_HEIGHT, ITEMS_PER_PAGE, SortBy, SortOrder } from "@/consts";
+import { useCompanyList } from "@/hooks/analytics/useCompanyList";
+import { CompanyListItemDto } from "@/sdk";
 import { EntityType, TrendFrequency } from "@/types/entityTypes";
-import CustomTableRow from "../common/CustomTableRow";
-import ViewToggle from "../common/ViewToggle";
+import { ViewType } from "@/types/view";
+import { Building2, Filter } from "lucide-react";
+import { useEffect, useState } from "react";
+import {
+  ChartView,
+  CountComponent,
+  CustomTableHeader,
+  CustomTableRow,
+  LoadingChart,
+  NotFoundComponent,
+  PaginationControls,
+  TableNameCell,
+  TableNumberCell,
+  TableTitle,
+  TrendLineComponent,
+  ViewToggle,
+} from "../common";
+import { FilterState } from "../common/GlobalFilters";
+import { DashboardSkeleton } from "../skeletons/DashboardSkeleton";
 
 type CompanyDashboardProps = {
   onDataUpdate: (
@@ -50,11 +48,11 @@ type CompanyDashboardProps = {
   onAddToFilters?: (companyId: string) => void;
 };
 
-export default function CompanyDashboard({
+export const CompanyDashboard = ({
   onDataUpdate,
   filters,
   onAddToFilters,
-}: CompanyDashboardProps) {
+}: CompanyDashboardProps) => {
   const [page, setPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(ITEMS_PER_PAGE[1]);
   const [totalItems, setTotalItems] = useState(0);
@@ -124,6 +122,10 @@ export default function CompanyDashboard({
     }
   };
 
+  const isRowInFilters = (row: CompanyListItemDto): boolean => {
+    return filters.companyIds?.includes(row.id) ?? false;
+  };
+
   const renderTableView = () => {
     return (
       <>
@@ -148,56 +150,15 @@ export default function CompanyDashboard({
                         const rowNumber = (page - 1) * itemsPerPage + index + 1;
                         return (
                           <CustomTableRow index={index} key={company.id}>
-                            <TableCell className="w-[3%] py-1.5 pl-3 text-sm text-gray-500 font-medium align-middle">
-                              {rowNumber}
-                            </TableCell>
-                            <TableCell className="w-[85%] py-1.5 pl-3 text-sm font-medium text-[#000000] flex items-center gap-1 align-middle">
-                              <div className="min-w-[24px] w-6 h-6 mr-1.5 rounded-full overflow-hidden flex items-center justify-center bg-gray-50">
-                                <ImageWithFallback
-                                  src={company.logo || ""}
-                                  alt={company.name}
-                                  width={24}
-                                  height={24}
-                                  className="rounded-full object-contain w-full h-full"
-                                />
-                              </div>
-                              <div
-                                className="flex items-center gap-2 flex-1"
-                              >
-                                <Button
-                                  variant="link"
-                                  className="text-sm font-medium text-[#000000] text-left h-auto p-1 hover:text-[#8C2D19] transition-colors flex items-center group-hover:text-[#8C2D19]"
-                                  onClick={() => {
-                                    window.open(
-                                      `/company/${company.id}`,
-                                      "_blank"
-                                    );
-                                  }}
-                                >
-                                  <div
-                                    title={`Go to ${company.name}'s profile`}
-                                    className="text-ellipsis overflow-hidden w-full text-left"
-                                  >
-                                    {company.name}
-                                  </div>
-                                </Button>
-                                {company.levelsFyiUrl && (
-                                  <div
-                                    title={`View Salary Insights on Levels.fyi for ${company.name}`}
-                                  >
-                                    <DollarSign
-                                      className="h-4 w-4 text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer hover:text-[#8C2D19]"
-                                      onClick={() => {
-                                      window.open(
-                                        company.levelsFyiUrl,
-                                        "_blank"
-                                      );
-                                    }}
-                                  />
-                                  </div>
-                                )}
-                              </div>
-                            </TableCell>
+                            <TableNumberCell rowNumber={rowNumber} />
+                            <TableNameCell
+                              name={company.name}
+                              isRowInFilters={!!isRowInFilters(company)}
+                              logo={company.logo}
+                              logoType="company"
+                              pageUrl={`/company/${company.id}`}
+                              salaryDataUrl={company.levelsFyiUrl}
+                            />
                             <TableCell className="w-[12%] px-3 py-1 text-sm text-[#000000] align-middle hover:text-[#8C2D19] transition-colors relative">
                               <div className="flex items-center gap-0 justify-center">
                                 {view === ViewType.TABLE ? (
@@ -304,20 +265,10 @@ export default function CompanyDashboard({
             }`}
             className="pl-1"
           />
-
-          {view === ViewType.TREND && (
-            <TrendTooltip
-              entityType={EntityType.COMPANY}
-              trendFrequency={trendFrequency}
-            />
-          )}
         </div>
 
         <div className="border rounded-md overflow-hidden">
-          <ViewToggle
-            view={view}
-            setView={setView}
-          />
+          <ViewToggle view={view} setView={setView} />
         </div>
       </div>
 

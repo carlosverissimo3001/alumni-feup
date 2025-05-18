@@ -11,7 +11,8 @@ export const NotFoundComponent = ({
   message,
   description,
   colSpan = 3,
-}: NotFoundComponentProps) => (
+}: NotFoundComponentProps) => {
+  return (
   <TableRow>
     <TableCell
       colSpan={colSpan}
@@ -26,4 +27,5 @@ export const NotFoundComponent = ({
       </div>
     </TableCell>
   </TableRow>
-);
+  );
+}
