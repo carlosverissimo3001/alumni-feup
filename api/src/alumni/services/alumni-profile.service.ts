@@ -9,6 +9,7 @@ import {
 import { NotFoundException, Injectable } from '@nestjs/common';
 import { LocationGeo, Role } from '@/entities';
 import { SENIORITY_LEVEL } from '@prisma/client';
+
 @Injectable()
 export class AlumniProfileService {
   constructor(private readonly prisma: PrismaService) {}
@@ -21,7 +22,11 @@ export class AlumniProfileService {
           include: {
             Location: true,
             Company: true,
-            JobClassification: true,
+            JobClassification: {
+              include: {
+                EscoClassification: true,
+              },
+            },
           },
         },
         Graduations: true,
@@ -99,6 +104,7 @@ export class AlumniProfileService {
         title: title,
         startDate: currentRole?.startDate,
         endDate: currentRole?.endDate,
+        confidence: currentRole?.JobClassification?.confidence,
         escoTitle: currentRole?.JobClassification?.EscoClassification.titleEn,
         escoCode: currentRole?.JobClassification?.EscoClassification.code,
         seniorityLevel: currentRole?.seniorityLevel as SENIORITY_LEVEL,
@@ -131,7 +137,9 @@ export class AlumniProfileService {
     return currentRole || sortedRoles[0];
   }
 
-  async getPastLocationsAndCompanies(id: string): Promise<AlumniPastLocationsAndCompaniesDto> {
+  async getPastLocationsAndCompanies(
+    id: string,
+  ): Promise<AlumniPastLocationsAndCompaniesDto> {
     const alumni = await this.prisma.alumni.findUniqueOrThrow({
       where: { id },
       include: {
@@ -146,16 +154,15 @@ export class AlumniProfileService {
         Location: true,
       },
     });
-  
-    let companies: CompanyDto[] = [];
-    let locations: LocationGeo[] = [];
- 
+
+    const companies: CompanyDto[] = [];
+    const locations: LocationGeo[] = [];
+
     const uniqueCompanyIds = new Set<string>();
     const uniqueLocationIds = new Set<string>();
 
-    alumni.Roles.forEach(async role => {
-
-      const company : ExtendedCompanyDto = {
+    alumni.Roles.forEach(async (role) => {
+      const company: ExtendedCompanyDto = {
         id: role.Company.id,
         name: role.Company.name,
         industry: '',
@@ -163,7 +170,7 @@ export class AlumniProfileService {
         linkedinUrl: role.Company.linkedinUrl,
         logo: role.Company.logo,
         location: role.Location,
-      }
+      };
 
       const location = role.Location || alumni.Location || null;
 
@@ -171,7 +178,7 @@ export class AlumniProfileService {
 
       if (!uniqueCompanyIds.has(combinedId)) {
         uniqueCompanyIds.add(combinedId);
-        companies.push(company); 
+        companies.push(company);
       }
 
       if (location && !uniqueLocationIds.has(location.id)) {
@@ -179,7 +186,7 @@ export class AlumniProfileService {
         locations.push(location);
       }
     });
-    
+
     return {
       Companies: companies,
       Locations: locations,
