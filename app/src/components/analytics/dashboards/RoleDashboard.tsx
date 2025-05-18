@@ -9,12 +9,7 @@ import {
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { RoleListItemDto } from "@/sdk";
-import {
-  Briefcase,
-  Filter,
-  Info,
-  ExternalLink,
-} from "lucide-react";
+import { Briefcase, Filter, Info, ExternalLink, CheckIcon } from "lucide-react";
 
 import { DashboardSkeleton } from "../skeletons/DashboardSkeleton";
 import PaginationControls from "../common/PaginationControls";
@@ -31,7 +26,6 @@ import {
 } from "@/components/ui/tooltip";
 import { useRoleList } from "@/hooks/analytics/useRoleList";
 import { startCase } from "lodash";
-import { Switch } from "@/components/ui/switch";
 import ChartView from "../common/ChartView";
 import { ViewType } from "@/types/view";
 import CountComponent from "../common/CountComponent";
@@ -41,39 +35,37 @@ import { EntityType, TrendFrequency } from "@/types/entityTypes";
 import { TrendTooltip } from "../common/TrendTooltip";
 import CustomTableRow from "../common/CustomTableRow";
 import ViewToggle from "../common/ViewToggle";
+import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
+import { DropdownMenuContent } from "@/components/ui/dropdown-menu";
+import { DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { DropdownMenu } from "@/components/ui/dropdown-menu";
+import { ClassificationLevel } from "@/types/roles";
+import { ESCO_INFO, ISCO_INFO } from "@/consts";
 
 type RoleDashboardProps = {
   onDataUpdate: (roleCount: number, roleFilteredCount: number) => void;
   filters: FilterState;
   onAddToFilters?: (roleId: string) => void;
-  onLevelChange: (level: number) => void;
 };
 
 export default function RoleDashboard({
   filters,
   onAddToFilters,
   onDataUpdate,
-  onLevelChange,
 }: RoleDashboardProps) {
   const [page, setPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(ITEMS_PER_PAGE[1]);
   const [sortField, setSortField] = useState<SortBy>(SortBy.COUNT);
   const [sortOrder, setSortOrder] = useState<SortOrder>(SortOrder.DESC);
   const [view, setView] = useState<ViewType>(ViewType.TABLE);
-  const [level, setLevel] = useState<number>(1);
   const [trendFrequency, setTrendFrequency] = useState<TrendFrequency>(
     TrendFrequency.Y5
   );
+  const [classificationLevel, setClassificationLevel] =
+    useState<ClassificationLevel>(ClassificationLevel.LEVEL_4);
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [pageInput, setPageInput] = useState<string>(String(page));
-
-  const onLevelUpdate = (checked: boolean) => {
-    const newLevel = checked ? 2 : 1;
-    setLevel(newLevel);
-    onLevelChange(newLevel);
-    onDataUpdate(totalRoles, totalRolesFiltered);
-  };
 
   // Reset page when filters change
   useEffect(() => {
@@ -87,6 +79,7 @@ export default function RoleDashboard({
     sortOrder: sortOrder,
     offset: (page - 1) * itemsPerPage,
     includeTrend: view === ViewType.TREND,
+    escoClassificationLevel: Number(classificationLevel.split(" ")[1]),
   });
 
   const roles = data?.roles || [];
@@ -94,12 +87,11 @@ export default function RoleDashboard({
   const totalRolesFiltered = data?.filteredCount || 0;
   const totalItems = data?.distinctCount || 0;
 
-  // Update parent only when total changes
   useEffect(() => {
-    if (data?.count !== undefined) {
-      onDataUpdate(data.count, data.filteredCount);
+    if (totalRoles !== undefined) {
+      onDataUpdate(totalRoles, totalRolesFiltered);
     }
-  }, [data?.count, data?.filteredCount, onDataUpdate]);
+  }, [totalRoles, totalRolesFiltered, onDataUpdate]);
 
   useEffect(() => {
     setPageInput(String(page));
@@ -114,6 +106,10 @@ export default function RoleDashboard({
       setSortField(field);
       setSortOrder(SortOrder.DESC);
     }
+  };
+
+  const isRowInFilters = (row: RoleListItemDto) => {
+    return filters.escoCodes?.includes(row.code);
   };
 
   const renderTable = () => {
@@ -140,14 +136,17 @@ export default function RoleDashboard({
                     roles.map((role: RoleListItemDto, index: number) => {
                       const rowNumber = (page - 1) * itemsPerPage + index + 1;
                       return (
-                        <CustomTableRow
-                          key={role.code}
-                          index={index}
-                        >
+                        <CustomTableRow key={role.code} index={index}>
                           <TableCell className="w-[3%] py-1.5 pl-3 text-sm text-gray-500 font-medium align-middle">
                             {rowNumber}
                           </TableCell>
-                          <TableCell className="w-5/12 py-1.5 pl-3 text-sm font-medium text-[#000000] align-middle">
+                          <TableCell
+                            className={`w-7/12 py-1.5 pl-3 text-sm ${
+                              isRowInFilters(role)
+                                ? "font-bold text-[#8C2D19]"
+                                : "font-medium text-[#000000]"
+                            } flex items-center gap-1 align-middle`}
+                          >
                             <div
                               title={role.name}
                               className="text-ellipsis overflow-hidden whitespace-nowrap w-full text-left p-1"
@@ -155,7 +154,13 @@ export default function RoleDashboard({
                               {startCase(role.name)}
                             </div>
                           </TableCell>
-                          <TableCell className="w-2/12 px-3 py-1 text-sm text-[#000000] align-middle hover:text-[#8C2D19] transition-colors relative">
+                          <TableCell
+                            className={`w-2/12 px-3 py-1 text-sm ${
+                              isRowInFilters(role)
+                                ? "font-bold text-[#8C2D19]"
+                                : "text-[#000000]"
+                            } align-middle hover:text-[#8C2D19] transition-colors relative`}
+                          >
                             <div className="flex items-center gap-0 justify-center">
                               {view === ViewType.TABLE ? (
                                 <CountComponent count={role.count} />
@@ -166,7 +171,11 @@ export default function RoleDashboard({
                                 />
                               )}
                               <div
-                                className={`opacity-0 group-hover:opacity-100 transition-opacity ${
+                                className={`${
+                                  isRowInFilters(role)
+                                    ? "opacity-100"
+                                    : "opacity-0 group-hover:opacity-100"
+                                } transition-opacity ${
                                   view === ViewType.TABLE ? "ml-2" : "ml-0"
                                 }`}
                               >
@@ -281,23 +290,32 @@ export default function RoleDashboard({
               <TooltipTrigger asChild>
                 <Info className="h-5 w-5 text-[#8C2D19]" />
               </TooltipTrigger>
-              <TooltipContent className="max-w-xs">
+              <TooltipContent className="max-w-xs" align="end">
                 <div className="space-y-2">
                   <p>
-                    <strong>Level 1:</strong> More general job classification,
-                    maps directly to level 4 of the ESCO taxonomy
+                    <strong>Levels 1-4:</strong> ISCO-08 classification
+                    hierarchy
                   </p>
                   <p>
-                    <strong>Level 2:</strong> More granular classification, maps
-                    to lower levels of the ESCO taxonomy (5-7)
+                    <strong>Level 5+:</strong> ESCO occupations that build upon
+                    and extend the ISCO structure
                   </p>
                   <a
-                    href="https://esco.ec.europa.eu/en/classification/occupation_main"
+                    href={ISCO_INFO}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center text-sm font-medium text-blue-500 hover:underline mt-1"
+                    className="flex items-center text-xs font-medium text-blue-500 hover:underline mt-1"
                   >
-                    View ESCO Classification
+                    Learn more about the ISCO Classification
+                    <ExternalLink className="h-3.5 w-3.5 ml-1" />
+                  </a>
+                  <a
+                    href={ESCO_INFO}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center text-xs font-medium text-blue-500 hover:underline mt-1"
+                  >
+                    Learn more about the ESCO Classification
                     <ExternalLink className="h-3.5 w-3.5 ml-1" />
                   </a>
                 </div>
@@ -305,30 +323,36 @@ export default function RoleDashboard({
             </Tooltip>
           </TooltipProvider>
           <div
-            className="flex items-center space-x-2 bg-gray-50 px-2 py-1 rounded-full"
+            className="flex items-center space-x-2px-2 py-1"
             title="Toggle view mode"
           >
-            <span
-              className={`text-sm font-medium cursor-pointer ${
-                level === 1 ? "text-[#8C2D19] font-semibold" : "text-gray-500"
-              }`}
-              onClick={() => onLevelUpdate(false)}
-            >
-              Level 1
-            </span>
-            <Switch
-              id="mode-toggle"
-              checked={level === 2}
-              onCheckedChange={onLevelUpdate}
-            />
-            <span
-              className={`text-sm font-medium cursor-pointer ${
-                level === 2 ? "text-[#8C2D19] font-semibold" : "text-gray-500"
-              }`}
-              onClick={() => onLevelUpdate(true)}
-            >
-              Level 2
-            </span>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="min-w-[90px] justify-start text-left font-medium text-[#000000] border-gray-200 rounded-lg shadow-sm hover:bg-gray-100 transition-colors"
+                >
+                  {classificationLevel}
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="shadow-md rounded-lg border-gray-200">
+                {Object.values(ClassificationLevel).map(
+                  (item: ClassificationLevel) => (
+                    <DropdownMenuItem
+                      key={item}
+                      onClick={() => setClassificationLevel(item)}
+                      className="hover:bg-gray-100 transition-colors"
+                    >
+                      {item}
+                      {item === classificationLevel && (
+                        <CheckIcon className="h-4 w-4 text-[#8C2D19]" />
+                      )}
+                    </DropdownMenuItem>
+                  )
+                )}
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
         </div>
       </div>

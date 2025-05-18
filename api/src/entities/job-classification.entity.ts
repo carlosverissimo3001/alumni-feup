@@ -1,51 +1,29 @@
 import { IsDate, IsNumber, IsString } from '@nestjs/class-validator';
 
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { ApiProperty } from '@nestjs/swagger';
+import { EscoClassification } from './esco-classification.entity';
 
 export class JobClassification {
-  @ApiPropertyOptional({
-    description: 'The esco code of the job classification',
-    type: String,
-  })
-  escoCode?: string | null;
-
-  @ApiProperty({ description: 'The title of the job classification' })
-  @IsString()
-  title: string;
-
-  @ApiProperty({ description: 'The level of the job classification' })
-  @IsNumber()
-  level: number;
-
-  constructor(data: JobClassification) {
-    this.escoCode = data.escoCode;
-    this.title = data.title;
-    this.level = data.level;
-  }
-}
-
-export class JobClassificationExtended extends JobClassification {
-  @ApiProperty({ description: 'The id of the job classification' })
-  @IsString()
+  @ApiProperty()
   id: string;
 
-  @ApiProperty({ description: 'The confidence of the job classification' })
-  @IsNumber()
-  confidence: number;
+  @ApiProperty()
+  roleId: string;
 
-  @ApiProperty({ description: 'The role id of the job classification' })
-  @IsString()
-  role_id: string;
+  @ApiProperty()
+  escoClassificationId: string;
 
-  @ApiProperty({ description: 'The creation date of the job classification' })
-  @IsDate()
-  created_at: Date;
+  @ApiProperty({ nullable: true })
+  confidence: number | null;
 
-  constructor(data: JobClassificationExtended) {
-    super(data);
+  @ApiProperty()
+  EscoClassification: EscoClassification;
+
+  constructor(data: JobClassification) {
     this.id = data.id;
+    this.roleId = data.roleId;
+    this.escoClassificationId = data.escoClassificationId;
     this.confidence = data.confidence;
-    this.role_id = data.role_id;
-    this.created_at = data.created_at;
+    this.EscoClassification = data.EscoClassification;
   }
 }

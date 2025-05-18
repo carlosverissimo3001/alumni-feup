@@ -1,5 +1,3 @@
-import { companySelect } from '@/analytics/consts/company-select';
-import { ReviewCompany } from '@/entities/reviewCompany.entity';
 import { Prisma } from '@prisma/client';
 
 export const locationSelect = {
@@ -20,6 +18,24 @@ export const graduationSelect = {
   },
 } satisfies Prisma.GraduationSelect;
 
+export const escoClassificationSelect = {
+  id: true,
+  titleEn: true,
+  code: true,
+  isLeaf: true,
+  level: true,
+} satisfies Prisma.EscoClassificationSelect;
+
+export const jobClassificationSelect = {
+  id: true,
+  roleId: true,
+  escoClassificationId: true,
+  confidence: true,
+  EscoClassification: {
+    select: escoClassificationSelect,
+  },
+} satisfies Prisma.JobClassificationSelect;
+
 export const roleSelect = {
   id: true,
   startDate: true,
@@ -36,11 +52,7 @@ export const roleSelect = {
     select: locationSelect,
   },
   JobClassification: {
-    select: {
-      title: true,
-      escoCode: true,
-      level: true,
-    },
+    select: jobClassificationSelect,
   },
 } satisfies Prisma.RoleSelect;
 

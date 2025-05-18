@@ -110,11 +110,6 @@ export default function PaginationControls({
   }) => {
     if (currentCount === 0) return "No alumni found";
 
-    console.log("page", page);
-    console.log("itemsPerPage", itemsPerPage);
-    console.log("totalItems", totalItems);
-    console.log("currentCount", currentCount);
-
     const start = (page - 1) * itemsPerPage + 1;
     const end = Math.min((page - 1) * itemsPerPage + currentCount, totalItems);
 

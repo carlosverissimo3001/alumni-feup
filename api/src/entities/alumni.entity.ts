@@ -101,12 +101,6 @@ export class Alumni {
 
 export class AlumniExtended extends Alumni {
   @ApiPropertyOptional({
-    description: 'Whether the alumni is in a group',
-    type: Boolean,
-  })
-  isInGroup?: boolean | null;
-
-  @ApiPropertyOptional({
     description: 'Whether the alumni has a sigarra match',
     type: Boolean,
   })
@@ -132,7 +126,6 @@ export class AlumniExtended extends Alumni {
 
   constructor(data: AlumniExtended) {
     super(data);
-    this.isInGroup = data.isInGroup;
     this.hasSigarraMatch = data.hasSigarraMatch;
     this.wasReviewed = data.wasReviewed;
     this.createdAt = data.createdAt;

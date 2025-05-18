@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState  } from "react";
+import { useEffect, useState } from "react";
 import {
   Table,
   TableBody,
@@ -80,43 +80,52 @@ export default function EducationDashboard({
     data: facultyData,
     isLoading: isFacultyLoading,
     isFetching: isFacultyFetching,
-  } = useFacultyList({
-    ...filters,
-    limit: itemsPerPage,
-    sortBy: sortField,
-    sortOrder: sortOrder,
-    offset: (page - 1) * itemsPerPage,
-    includeTrend: view === ViewType.TREND,
-    // Let's not overwhelm the server with requests
-  }, mode === EducationDrillType.FACULTY);
+  } = useFacultyList(
+    {
+      ...filters,
+      limit: itemsPerPage,
+      sortBy: sortField,
+      sortOrder: sortOrder,
+      offset: (page - 1) * itemsPerPage,
+      includeTrend: view === ViewType.TREND,
+      // Let's not overwhelm the server with requests
+    },
+    mode === EducationDrillType.FACULTY
+  );
 
   const {
     data: majorsData,
     isLoading: isMajorsLoading,
     isFetching: isMajorsFetching,
-  } = useMajorsList({
-    ...filters,
-    limit: itemsPerPage,
-    sortBy: sortField,
-    sortOrder: sortOrder,
-    offset: (page - 1) * itemsPerPage,
-    includeTrend: view === ViewType.TREND,
-    // Let's not overwhelm the server with requests
-  }, mode === EducationDrillType.MAJOR);
+  } = useMajorsList(
+    {
+      ...filters,
+      limit: itemsPerPage,
+      sortBy: sortField,
+      sortOrder: sortOrder,
+      offset: (page - 1) * itemsPerPage,
+      includeTrend: view === ViewType.TREND,
+      // Let's not overwhelm the server with requests
+    },
+    mode === EducationDrillType.MAJOR
+  );
 
   const {
     data: graduationsData,
     isLoading: isGraduationsLoading,
     isFetching: isGraduationsFetching,
-  } = useGraduationList({
-    ...filters,
-    limit: itemsPerPage,
-    sortBy: sortField,
-    sortOrder: sortOrder,
-    offset: (page - 1) * itemsPerPage,
-    includeTrend: view === ViewType.TREND,
-    // Let's not overwhelm the server with requests
-  }, mode === EducationDrillType.YEAR);
+  } = useGraduationList(
+    {
+      ...filters,
+      limit: itemsPerPage,
+      sortBy: sortField,
+      sortOrder: sortOrder,
+      offset: (page - 1) * itemsPerPage,
+      includeTrend: view === ViewType.TREND,
+      // Let's not overwhelm the server with requests
+    },
+    mode === EducationDrillType.YEAR
+  );
 
   /* Faculty */
   const faculties = facultyData?.faculties || [];
@@ -135,7 +144,6 @@ export default function EducationDashboard({
   // useful if we add this info in the stats
   //const graduationCount = graduationsData?.count || 0;
   const graduationFilteredCount = graduationsData?.filteredCount || 0;
-  
 
   useEffect(() => {
     setPageInput(String(page));
@@ -157,11 +165,10 @@ export default function EducationDashboard({
       return faculties;
     } else if (mode === EducationDrillType.MAJOR) {
       return majors;
-    } 
+    }
     return graduations;
   };
 
-  
   const getTableTitle = () => {
     if (mode === EducationDrillType.FACULTY) {
       return "Faculties";
@@ -196,7 +203,7 @@ export default function EducationDashboard({
       return isMajorsLoading || isMajorsFetching;
     }
     return isGraduationsLoading || isGraduationsFetching;
-  }
+  };
 
   const getTotalItems = () => {
     if (mode === EducationDrillType.FACULTY) {
@@ -205,7 +212,7 @@ export default function EducationDashboard({
       return majorFilteredCount;
     }
     return graduationFilteredCount;
-  }
+  };
 
   const renderTableView = () => {
     const data = getDataByMode();
@@ -225,6 +232,7 @@ export default function EducationDashboard({
                 extraHeaderName={
                   mode === EducationDrillType.YEAR ? "Year" : undefined
                 }
+                //customSecondHeader="Graduations"
               />
 
               {isLoading ? (
@@ -238,10 +246,10 @@ export default function EducationDashboard({
                       const rowNumber = (page - 1) * itemsPerPage + index + 1;
                       return (
                         <CustomTableRow index={index} key={item.id}>
-                          <TableCell className="w-[3%] py-1.5 pl-3 text-sm text-gray-500 font-medium align-middle">
+                          <TableCell className="w-[5%] py-1.5 pl-3 text-sm text-gray-500 font-medium align-middle">
                             {rowNumber}
                           </TableCell>
-                          <TableCell className="w-[85%] py-1.5 pl-4 text-sm font-medium text-[#000000] flex items-center gap-1 align-middle">
+                          <TableCell className="w-[75%] py-1.5 pl-4 text-sm font-medium text-[#000000] flex items-center gap-1 align-middle">
                             <div className="text-ellipsis overflow-hidden w-full text-left">
                               <div className="text-ellipsis overflow-hidden w-full text-left">
                                 <span className="font-semibold">
@@ -253,7 +261,7 @@ export default function EducationDashboard({
                             </div>
                           </TableCell>
                           {mode === EducationDrillType.YEAR && (
-                            <TableCell className="w-[6%] px-3 py-1-5 text-sm text-[#000000] align-middle hover:text-[#8C2D19] transition-colors relative">
+                            <TableCell className="w-[10%] px-3 py-1-5 text-sm text-[#000000] align-middle hover:text-[#8C2D19] transition-colors relative">
                               <div className="flex items-center gap-0 justify-center">
                                 {view === ViewType.TABLE ? (
                                   <CountComponent count={item.year ?? 0} />
@@ -271,7 +279,7 @@ export default function EducationDashboard({
                               </div>
                             </TableCell>
                           )}
-                          <TableCell className="w-[6%] px-3 py-1-5 text-sm text-[#000000] align-middle hover:text-[#8C2D19] transition-colors relative">
+                          <TableCell className="w-[10%] px-3 py-1-5 text-sm text-[#000000] align-middle hover:text-[#8C2D19] transition-colors relative">
                             <div className="flex items-center gap-0 justify-center">
                               {view === ViewType.TABLE ? (
                                 <CountComponent count={item.count} />
@@ -316,7 +324,7 @@ export default function EducationDashboard({
                     <NotFoundComponent
                       message="No data available"
                       description="Try adjusting your filters to find data that match your criteria."
-                      colSpan={4}
+                      colSpan={mode === EducationDrillType.YEAR ? 4 : 3}
                     />
                   )}
                 </TableBody>

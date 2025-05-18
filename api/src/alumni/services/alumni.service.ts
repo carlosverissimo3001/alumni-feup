@@ -95,7 +95,10 @@ export class AlumniService {
 
     let alumniCompareYear: Alumni[] = [];
     if (query.compareYear && query.compareYear !== query.selectedYear) {
-      alumniCompareYear = this.filterAlumniByStartDate(alumni, query.compareYear);
+      alumniCompareYear = this.filterAlumniByStartDate(
+        alumni,
+        query.compareYear,
+      );
     }
 
     alumni = this.filterAlumniByStartDate(alumni, query.selectedYear);
@@ -104,7 +107,11 @@ export class AlumniService {
     let alumniByGroup: AlumniByCountry | AlumniByCity;
 
     if (groupBy === GROUP_BY.COUNTRIES) {
-      if (query.compareYear && query.selectedYear && query.compareYear !== query.selectedYear) {
+      if (
+        query.compareYear &&
+        query.selectedYear &&
+        query.compareYear !== query.selectedYear
+      ) {
         alumniByGroup = await this.groupAlumniByCountryWithRoleAndCompareYear(
           alumni,
           alumniCompareYear,
@@ -120,9 +127,9 @@ export class AlumniService {
           alumni,
           alumniCompareYear,
         );
-      }else if (query.selectedYear) {
+      } else if (query.selectedYear) {
         alumniByGroup = await this.groupAlumniByCityWithRole(alumni);
-      }else{
+      } else {
         alumniByGroup = this.groupAlumniByCity(alumni);
       }
     }
@@ -248,7 +255,7 @@ export class AlumniService {
     selectedYear?: number,
     compareYear?: number,
   ): Alumni[] {
-    let filteredAlumni: Alumni[] = [];
+    const filteredAlumni: Alumni[] = [];
     if (selectedYear && compareYear) {
       alumni.forEach((alumnus) => {
         if (alumnus.Roles) {
@@ -260,7 +267,7 @@ export class AlumniService {
             (role) =>
               role.startDate > new Date(compareYear, 0, 1) &&
               role.startDate < new Date(selectedYear, 11, 31) &&
-              role.Location
+              role.Location,
           );
           if (roleFound) {
             const alumniToAdd = JSON.parse(JSON.stringify(alumnus));
@@ -367,7 +374,7 @@ export class AlumniService {
             course_acronym: grad.Course.acronym,
             conclusion_year: grad.conclusionYear || null,
           })) || [],
-        jobTitle: alumnus.Roles?.[0]?.JobClassification?.title || null,
+        jobTitle: alumnus.Roles?.[0]?.JobClassification?.EscoClassification.titleEn || null,
         companyName: alumnus.Roles?.[0]?.Company?.name || null,
       });
     }
@@ -418,7 +425,9 @@ export class AlumniService {
             course_acronym: grad.Course.acronym,
             conclusion_year: grad.conclusionYear || null,
           })) || [],
-        jobTitle: alumnus.Roles?.[0]?.JobClassification?.title || null,
+        jobTitle:
+          alumnus.Roles?.[0]?.JobClassification?.EscoClassification.titleEn ||
+          null,
         companyName: alumnus.Roles?.[0]?.Company?.name || null,
       });
     }
@@ -490,7 +499,9 @@ export class AlumniService {
             course_acronym: grad.Course.acronym,
             conclusion_year: grad.conclusionYear || null,
           })) || [],
-        jobTitle: alumnus.Roles?.[0]?.JobClassification?.title || null,
+        jobTitle:
+          alumnus.Roles?.[0]?.JobClassification?.EscoClassification.titleEn ||
+          null,
         companyName: alumnus.Roles?.[0]?.Company?.name || null,
       });
     }
@@ -552,7 +563,9 @@ export class AlumniService {
             course_acronym: grad.Course.acronym,
             conclusion_year: grad.conclusionYear || null,
           })) || [],
-        jobTitle: alumnus.Roles?.[0]?.JobClassification?.title || null,
+        jobTitle:
+          alumnus.Roles?.[0]?.JobClassification?.EscoClassification.titleEn ||
+          null,
         companyName: alumnus.Roles?.[0]?.Company?.name || null,
       });
       return acc;
@@ -578,7 +591,10 @@ export class AlumniService {
 
       if (!acc[city]) {
         acc[city] = {
-          coordinates: [alumnus.Roles![0].Location.longitude, alumnus.Roles![0].Location.latitude],
+          coordinates: [
+            alumnus.Roles![0].Location.longitude,
+            alumnus.Roles![0].Location.latitude,
+          ],
           compareYearStudents: 0,
           alumni: [],
         };
@@ -614,7 +630,9 @@ export class AlumniService {
             course_acronym: grad.Course.acronym,
             conclusion_year: grad.conclusionYear || null,
           })) || [],
-        jobTitle: alumnus.Roles?.[0]?.JobClassification?.title || null,
+        jobTitle:
+          alumnus.Roles?.[0]?.JobClassification?.EscoClassification.titleEn ||
+          null,
         companyName: alumnus.Roles?.[0]?.Company?.name || null,
       });
     }
@@ -630,7 +648,10 @@ export class AlumniService {
 
         if (!acc[city]) {
           acc[city] = {
-            coordinates: [alumnusCompareYear.Roles![0].Location.longitude, alumnusCompareYear.Roles![0].Location.latitude],
+            coordinates: [
+              alumnusCompareYear.Roles![0].Location.longitude,
+              alumnusCompareYear.Roles![0].Location.latitude,
+            ],
             compareYearStudents: 0,
             alumni: [],
           };
@@ -643,9 +664,7 @@ export class AlumniService {
     return acc;
   }
 
-  async groupAlumniByCityWithRole(
-    alumni: Alumni[],
-  ): Promise<AlumniByCity> {
+  async groupAlumniByCityWithRole(alumni: Alumni[]): Promise<AlumniByCity> {
     const acc: AlumniByCity = {};
 
     for (const alumnus of alumni) {
@@ -661,7 +680,10 @@ export class AlumniService {
 
       if (!acc[city]) {
         acc[city] = {
-          coordinates: [alumnus.Roles![0].Location.longitude, alumnus.Roles![0].Location.latitude],
+          coordinates: [
+            alumnus.Roles![0].Location.longitude,
+            alumnus.Roles![0].Location.latitude,
+          ],
           compareYearStudents: undefined,
           alumni: [],
         };
@@ -676,7 +698,9 @@ export class AlumniService {
             course_acronym: grad.Course.acronym,
             conclusion_year: grad.conclusionYear || null,
           })) || [],
-        jobTitle: alumnus.Roles?.[0]?.JobClassification?.title || null,
+        jobTitle:
+          alumnus.Roles?.[0]?.JobClassification?.EscoClassification.titleEn ||
+          null,
         companyName: alumnus.Roles?.[0]?.Company?.name || null,
       });
     }

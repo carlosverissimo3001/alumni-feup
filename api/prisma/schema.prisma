@@ -145,25 +145,47 @@ model Industry {
 }
 
 model JobClassification {
-  id         String @id @default(dbgenerated("gen_random_uuid()"))
-  title      String
-  level      Int    @db.SmallInt
-  escoCode   String @map("esco_code")
-  roleId     String @unique @map("role_id")
-  confidence Float?
+  id                   String @id @default(dbgenerated("gen_random_uuid()"))
+  escoClassificationId String @map("esco_classification_id")
+  roleId               String @unique @map("role_id")
 
-  modelUsed String? @map("model_used")
+  confidence Float?
+  modelUsed  String? @map("model_used")
+  metadata   Json?   @map("metadata")
 
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamp(6)
   updatedAt DateTime @default(now()) @map("updated_at") @db.Timestamp(6)
 
-  metadata Json? @map("metadata")
-
-  Role Role @relation(fields: [roleId], references: [id])
+  Role               Role               @relation(fields: [roleId], references: [id])
+  EscoClassification EscoClassification @relation(fields: [escoClassificationId], references: [id])
 
   @@index([roleId])
-  @@index([title])
+  @@index([escoClassificationId])
   @@map("job_classification")
+}
+
+model EscoClassification {
+  id    String @id @default(dbgenerated("gen_random_uuid()"))
+  level Int    @db.SmallInt
+  code  String
+
+  // Defines if this classification has no children
+  isLeaf              Boolean                @default(false) @map("is_leaf")
+  titleEn             String                 @map("title_en")
+  definition          String                 @map("definition")
+  tasksInclude        String?                @map("tasks_include")
+  includedOccupations String?                @map("included_occupations")
+  excludedOccupations String?                @map("excluded_occupations")
+  notes               String?                @map("notes")
+  escoUrl             String?                @map("esco_url")
+  embedding           Unsupported("vector")?
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamp(6)
+  updatedAt DateTime @default(now()) @map("updated_at") @db.Timestamp(6)
+
+  JobClassification JobClassification[]
+
+  @@map("esco_classification")
 }
 
 model Location {
@@ -234,27 +256,6 @@ model RoleRaw {
 
   @@index([roleId])
   @@map("role_raw")
-}
-
-model EscoClassification {
-  id    String @id @default(dbgenerated("gen_random_uuid()"))
-  level Int    @db.SmallInt
-  code  String
-
-  // Defines if this classification has no children
-  isLeaf              Boolean                @default(false) @map("is_leaf")
-  titleEn             String                 @map("title_en")
-  definition          String                 @map("definition")
-  tasksInclude        String?                @map("tasks_include")
-  includedOccupations String?                @map("included_occupations")
-  excludedOccupations String?                @map("excluded_occupations")
-  notes               String?                @map("notes")
-  embedding           Unsupported("vector")?
-
-  createdAt DateTime @default(now()) @map("created_at") @db.Timestamp(6)
-  updatedAt DateTime @default(now()) @map("updated_at") @db.Timestamp(6)
-
-  @@map("esco_classification")
 }
 
 model ReviewCompany {

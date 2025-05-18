@@ -127,12 +127,11 @@ export class AlumniRepository {
       where: {
         OR: [
           { ReviewsCompany: { some: {} } },
-          { ReviewsLocation: { some: {} } }
-        ]
+          { ReviewsLocation: { some: {} } },
+        ],
       },
-      select: alumniSelect
-    })
+      select: alumniSelect,
+    });
     return alumni;
   }
-
 }

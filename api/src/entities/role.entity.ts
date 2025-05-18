@@ -23,7 +23,7 @@ export class Role {
   @ApiProperty({ description: 'The Company' })
   Company: Company;
 
-  @ApiPropertyOptional({ description: 'The job classifications' })
+  @ApiPropertyOptional({ description: 'The job classification' })
   JobClassification?: JobClassification | null;
 
   @ApiPropertyOptional({ description: 'The location of the role' })

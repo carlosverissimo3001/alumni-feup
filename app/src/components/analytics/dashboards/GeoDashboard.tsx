@@ -37,6 +37,12 @@ import CustomTableRow from "../common/CustomTableRow";
 import { GeoDrillType } from "@/types/drillType";
 import { TrendTooltip } from "../common/TrendTooltip";
 import ViewToggle from "../common/ViewToggle";
+import {
+  Tooltip,
+  TooltipProvider,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 type GeoDashboardProps = {
   onDataUpdate: (
@@ -253,95 +259,115 @@ export default function GeoDashboard({
                                   className={`flex items-center gap-2 ${
                                     mode === GeoDrillType.CITY && "invisible"
                                   }`}
+                                  title={`Filter on ${row.name}`}
                                 >
-                                  <Popover
-                                    open={openPopoverId === row.id}
-                                    onOpenChange={(open) =>
-                                      setOpenPopoverId(open ? row.id : null)
-                                    }
-                                  >
-                                    <PopoverTrigger asChild>
-                                      <Button
-                                        aria-label="Add/Remove from filters"
-                                        disabled={mode === GeoDrillType.CITY}
-                                        variant="ghost"
-                                        size="sm"
-                                        className={`p-1 h-6 w-6 rounded-full ${
-                                          isRowInFilters(row)
-                                            ? "bg-[#8C2D19] bg-opacity-20 hover:bg-[#8C2D19] hover:bg-opacity-30"
-                                            : "bg-gray-100 hover:bg-gray-200"
-                                        }`}
-                                        onClick={(e) => {
-                                          e.stopPropagation();
-                                          setOpenPopoverId(row.id);
-                                        }}
-                                      >
-                                        <Filter className="h-4 w-4 text-[#8C2D19]" />
-                                      </Button>
-                                    </PopoverTrigger>
-                                    <PopoverContent
-                                      className="w-56 p-0 rounded-lg shadow-xl border bg-white"
-                                      align="end"
-                                      sideOffset={8}
-                                    >
-                                      <div className="px-4 py-2 border-b bg-gray-50 rounded-t-lg">
-                                        <span className="font-semibold text-gray-700 text-sm">
-                                          {isRowInFilters(row)
-                                            ? "Update Filter"
-                                            : "Add Filter"}
-                                        </span>
-                                      </div>
-                                      <button
-                                        className="flex items-center gap-2 w-full text-left px-4 py-2 hover:bg-[#F7E7E3] active:bg-[#F2D3C7] transition-colors text-[#8C2D19] text-sm font-medium"
-                                        onClick={() => {
-                                          onAddToFilters?.(row.id, "role");
-                                          setOpenPopoverId(null);
-                                        }}
-                                      >
-                                        <svg
-                                          className="w-4 h-4 text-[#8C2D19]"
-                                          fill="none"
-                                          stroke="currentColor"
-                                          strokeWidth="2"
-                                          viewBox="0 0 24 24"
+                                  <TooltipProvider>
+                                    <Tooltip>
+                                      <TooltipTrigger asChild>
+                                        <Popover
+                                          open={openPopoverId === row.id}
+                                          onOpenChange={(open) =>
+                                            setOpenPopoverId(
+                                              open ? row.id : null
+                                            )
+                                          }
                                         >
-                                          <path
-                                            strokeLinecap="round"
-                                            strokeLinejoin="round"
-                                            d="M12 11c0 1.104-.896 2-2 2s-2-.896-2-2 .896-2 2-2 2 .896 2 2zm0 0c0 1.104.896 2 2 2s2-.896 2-2-.896-2-2-2-2 .896-2 2zm-6 8v-2a4 4 0 014-4h4a4 4 0 014 4v2"
-                                          />
-                                        </svg>
-                                        {isRowInFilters(row, "role")
-                                          ? "Remove as Role Filter"
-                                          : "Add as Role Filter"}
-                                      </button>
-                                      <div className="border-t mx-2" />
-                                      <button
-                                        className="flex items-center gap-2 w-full text-left px-4 py-2 hover:bg-[#F7E7E3] active:bg-[#F2D3C7] transition-colors text-[#8C2D19] text-sm font-medium rounded-b-lg"
-                                        onClick={() => {
-                                          onAddToFilters?.(row.id, "company");
-                                          setOpenPopoverId(null);
-                                        }}
-                                      >
-                                        <svg
-                                          className="w-4 h-4 text-[#8C2D19]"
-                                          fill="none"
-                                          stroke="currentColor"
-                                          strokeWidth="2"
-                                          viewBox="0 0 24 24"
-                                        >
-                                          <path
-                                            strokeLinecap="round"
-                                            strokeLinejoin="round"
-                                            d="M3 21V7a2 2 0 012-2h2a2 2 0 012 2v14M7 21V7m0 0V5a2 2 0 012-2h2a2 2 0 012 2v2m0 0v14m0-14h2a2 2 0 012 2v14"
-                                          />
-                                        </svg>
-                                        {isRowInFilters(row, "company")
-                                          ? "Remove as Company Filter"
-                                          : "Add as Company Filter"}
-                                      </button>
-                                    </PopoverContent>
-                                  </Popover>
+                                          <PopoverTrigger asChild>
+                                            <Button
+                                              aria-label="Add/Remove from filters"
+                                              disabled={
+                                                mode === GeoDrillType.CITY
+                                              }
+                                              variant="ghost"
+                                              size="sm"
+                                              className={`p-1 h-6 w-6 rounded-full ${
+                                                isRowInFilters(row)
+                                                  ? "bg-[#8C2D19] bg-opacity-20 hover:bg-[#8C2D19] hover:bg-opacity-30"
+                                                  : "bg-gray-100 hover:bg-gray-200"
+                                              }`}
+                                              onClick={(e) => {
+                                                e.stopPropagation();
+                                                setOpenPopoverId(row.id);
+                                              }}
+                                            >
+                                              <Filter className="h-4 w-4 text-[#8C2D19]" />
+                                            </Button>
+                                          </PopoverTrigger>
+                                          <PopoverContent
+                                            className="w-56 p-0 rounded-lg shadow-xl border bg-white"
+                                            align="end"
+                                            sideOffset={8}
+                                          >
+                                            <div className="px-4 py-2 border-b bg-gray-50 rounded-t-lg">
+                                              <span className="font-semibold text-gray-700 text-sm">
+                                                {isRowInFilters(row)
+                                                  ? "Update Filter"
+                                                  : "Add Filter"}
+                                              </span>
+                                            </div>
+                                            <button
+                                              className="flex items-center gap-2 w-full text-left px-4 py-2 hover:bg-[#F7E7E3] active:bg-[#F2D3C7] transition-colors text-[#8C2D19] text-sm font-medium"
+                                              onClick={() => {
+                                                onAddToFilters?.(
+                                                  row.id,
+                                                  "role"
+                                                );
+                                                setOpenPopoverId(null);
+                                              }}
+                                            >
+                                              <svg
+                                                className="w-4 h-4 text-[#8C2D19]"
+                                                fill="none"
+                                                stroke="currentColor"
+                                                strokeWidth="2"
+                                                viewBox="0 0 24 24"
+                                              >
+                                                <path
+                                                  strokeLinecap="round"
+                                                  strokeLinejoin="round"
+                                                  d="M12 11c0 1.104-.896 2-2 2s-2-.896-2-2 .896-2 2-2 2 .896 2 2zm0 0c0 1.104.896 2 2 2s2-.896 2-2-.896-2-2-2-2 .896-2 2zm-6 8v-2a4 4 0 014-4h4a4 4 0 014 4v2"
+                                                />
+                                              </svg>
+                                              {isRowInFilters(row, "role")
+                                                ? "Remove as Role Filter"
+                                                : "Add as Role Filter"}
+                                            </button>
+                                            <div className="border-t mx-2" />
+                                            <button
+                                              className="flex items-center gap-2 w-full text-left px-4 py-2 hover:bg-[#F7E7E3] active:bg-[#F2D3C7] transition-colors text-[#8C2D19] text-sm font-medium rounded-b-lg"
+                                              onClick={() => {
+                                                onAddToFilters?.(
+                                                  row.id,
+                                                  "company"
+                                                );
+                                                setOpenPopoverId(null);
+                                              }}
+                                            >
+                                              <svg
+                                                className="w-4 h-4 text-[#8C2D19]"
+                                                fill="none"
+                                                stroke="currentColor"
+                                                strokeWidth="2"
+                                                viewBox="0 0 24 24"
+                                              >
+                                                <path
+                                                  strokeLinecap="round"
+                                                  strokeLinejoin="round"
+                                                  d="M3 21V7a2 2 0 012-2h2a2 2 0 012 2v14M7 21V7m0 0V5a2 2 0 012-2h2a2 2 0 012 2v2m0 0v14m0-14h2a2 2 0 012 2v14"
+                                                />
+                                              </svg>
+                                              {isRowInFilters(row, "company")
+                                                ? "Remove as Company Filter"
+                                                : "Add as Company Filter"}
+                                            </button>
+                                          </PopoverContent>
+                                        </Popover>
+                                      </TooltipTrigger>
+                                      <TooltipContent>
+                                        <p>Filter on {row.name}</p>
+                                      </TooltipContent>
+                                    </Tooltip>
+                                  </TooltipProvider>
                                 </div>
                               </div>
                             </div>

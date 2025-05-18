@@ -27,7 +27,6 @@ export class RoleAnalyticsEntity {
 
   @ApiPropertyOptional({
     type: JobClassificationAnalyticsEntity,
-    nullable: true,
   })
-  jobClassification?: JobClassificationAnalyticsEntity | null;
+  jobClassification?: JobClassificationAnalyticsEntity;
 }
