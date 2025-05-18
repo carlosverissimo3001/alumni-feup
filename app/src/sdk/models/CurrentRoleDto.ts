@@ -33,6 +33,12 @@ export interface CurrentRoleDto {
     escoTitle?: string;
     /**
      * 
+     * @type {number}
+     * @memberof CurrentRoleDto
+     */
+    confidence?: number;
+    /**
+     * 
      * @type {string}
      * @memberof CurrentRoleDto
      */
@@ -93,6 +99,7 @@ export function CurrentRoleDtoFromJSONTyped(json: any, ignoreDiscriminator: bool
         
         'title': json['title'],
         'escoTitle': json['escoTitle'] == null ? undefined : json['escoTitle'],
+        'confidence': json['confidence'] == null ? undefined : json['confidence'],
         'escoCode': json['escoCode'] == null ? undefined : json['escoCode'],
         'seniorityLevel': json['seniorityLevel'] == null ? undefined : json['seniorityLevel'],
         'startDate': json['startDate'] == null ? undefined : (new Date(json['startDate'])),
@@ -113,6 +120,7 @@ export function CurrentRoleDtoToJSONTyped(value?: CurrentRoleDto | null, ignoreD
         
         'title': value['title'],
         'escoTitle': value['escoTitle'],
+        'confidence': value['confidence'],
         'escoCode': value['escoCode'],
         'seniorityLevel': value['seniorityLevel'],
         'startDate': value['startDate'] == null ? undefined : ((value['startDate']).toISOString()),

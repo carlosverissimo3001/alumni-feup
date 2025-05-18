@@ -59,6 +59,11 @@ export class CurrentRoleDto {
   escoTitle?: string | null;
 
   @ApiPropertyOptional({
+    type: Number,
+  })
+  confidence?: number | null;
+
+  @ApiPropertyOptional({
     type: String,
   })
   escoCode?: string | null;
