@@ -125,9 +125,9 @@ const TrendLineComponent = (props: TrendLineComponentProps) => {
   const svgRef = (node: SVGSVGElement) => {
     if (!node) return;
 
-    const width = 65;
-    const height = 30;
-    const padding = 2;
+    // TODO: Find a way to not have this statically sized
+    const width = 67;
+    const height = 28;
 
     while (node.firstChild) {
       node.removeChild(node.firstChild);
@@ -138,12 +138,12 @@ const TrendLineComponent = (props: TrendLineComponentProps) => {
     const xScale = d3
       .scaleLinear()
       .domain([0, data.length - 1])
-      .range([padding, width - padding]);
+      .range([0, width]);
 
     const yScale = d3
       .scaleLinear()
       .domain([(d3.min(data) ?? 0) * 0.9, (d3.max(data) ?? 0) * 1.1])
-      .range([height - padding, padding]);
+      .range([height, 0]);
 
     const line = d3
       .line<number>()

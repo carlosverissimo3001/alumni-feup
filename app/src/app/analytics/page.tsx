@@ -326,62 +326,86 @@ export default function Analytics() {
     }));
   }, []);
 
-  const handleAddEducationToFilters = useCallback((educationId: string) => {
-    if (educationMode === EducationDrillType.FACULTY) {
-      setFilters((prev) => {
-        const current = prev.facultyIds || [];
-        if (!current.includes(educationId)) {
-          const updated = [...current, educationId];
-          if (updated.length === 1) {
-            setTimeout(() => setEducationMode(EducationDrillType.MAJOR), 0);
+  const handleAddEducationToFilters = useCallback(
+    (id: string, year?: number) => {
+      if (educationMode === EducationDrillType.FACULTY) {
+        setFilters((prev) => {
+          const current = prev.facultyIds || [];
+          if (!current.includes(id)) {
+            const updated = [...current, id];
+            if (updated.length === 1) {
+              setTimeout(() => setEducationMode(EducationDrillType.MAJOR), 0);
+            }
+            return {
+              ...prev,
+              facultyIds: updated,
+            };
+          } else {
+            return {
+              ...prev,
+              facultyIds: current.filter((id) => id !== id),
+            };
           }
-          return {
-            ...prev,
-            facultyIds: updated,
-          };
-        } else {
-          return {
-            ...prev,
-            facultyIds: current.filter((id) => id !== educationId)
-          };
-        }
-      });
-    } else if (educationMode === EducationDrillType.MAJOR) {
-      setFilters((prev) => {
-        const current = prev.courseIds || [];
-        if (!current.includes(educationId)) {
-          const updated = [...current, educationId];
-          if (updated.length === 1) {
-            setTimeout(() => setEducationMode(EducationDrillType.YEAR), 0);
+        });
+      } else if (educationMode === EducationDrillType.MAJOR) {
+        setFilters((prev) => {
+          const current = prev.courseIds || [];
+          if (!current.includes(id)) {
+            const updated = [...current, id];
+            if (updated.length === 1) {
+              setTimeout(() => setEducationMode(EducationDrillType.YEAR), 0);
+            }
+            return {
+              ...prev,
+              courseIds: updated,
+            };
+          } else {
+            return {
+              ...prev,
+              courseIds: current.filter((id) => id !== id),
+            };
           }
-          return {
-            ...prev,
-            courseIds: updated,
-          };
-        } else {
-          return {
-            ...prev,
-            courseIds: current.filter((id) => id !== educationId),
-          };
-        }
-      });
-    } else if (educationMode === EducationDrillType.YEAR) {
-      setFilters((prev) => {
-        const current = prev.graduationYears || [];
-        if (!current.includes(educationId)) {
-          return {
-            ...prev,
-            graduationYears: [...current, educationId],
-          };
-        } else {
-          return {
-            ...prev,
-            graduationYears: current.filter((id) => id !== educationId),
-          };
-        }
-      });
-    }
-  }, [educationMode, setEducationMode]);
+        });
+      } else if (educationMode === EducationDrillType.YEAR) {
+        setFilters((prev) => {
+          const currentYears = prev.graduationYears || [];
+          const currentCourses = prev.courseIds || [];
+          const yearString = year?.toString() || "";
+
+          // Year not in filters, we add, alognside the course, if not already present
+          if (!currentYears.includes(yearString)) {
+            return {
+              ...prev,
+              courseIds: currentCourses.includes(id)
+                ? currentCourses
+                : [...currentCourses, id],
+              graduationYears: [...currentYears, yearString],
+            };
+          }
+          // If the year is in filters, only remove the year and course if it's the last instance
+          else {
+            const updatedYears = currentYears.filter(
+              (gradYear) => gradYear !== yearString
+            );
+
+            // Only remove the course if we're removing its last associated year
+            const shouldRemoveCourse = !currentYears.some(
+              (y) => y !== yearString && currentCourses.includes(id)
+            );
+
+            return {
+              ...prev,
+              courseIds: shouldRemoveCourse
+                ? currentCourses.filter((courseId) => courseId !== id)
+                : currentCourses,
+              graduationYears: updatedYears,
+            };
+          }
+        });
+      }
+    },
+    [educationMode, setEducationMode]
+  );
 
   const statsConfig = [
     {

@@ -43,7 +43,7 @@ import { EducationDrillType } from "@/types/drillType";
 
 type EducationDashboardProps = {
   filters: FilterState;
-  onAddToFilters?: (companyId: string) => void;
+  onAddToFilters?: (educationId: string, year?: number) => void;
   mode: EducationDrillType;
   setMode: (mode: EducationDrillType) => void;
 };
@@ -91,7 +91,6 @@ export const EducationDashboard = ({
       sortOrder: sortOrder,
       offset: (page - 1) * itemsPerPage,
       includeTrend: view === ViewType.TREND,
-      // Let's not overwhelm the server with requests
     },
     mode === EducationDrillType.FACULTY
   );
@@ -108,7 +107,6 @@ export const EducationDashboard = ({
       sortOrder: sortOrder,
       offset: (page - 1) * itemsPerPage,
       includeTrend: view === ViewType.TREND,
-      // Let's not overwhelm the server with requests
     },
     mode === EducationDrillType.MAJOR
   );
@@ -125,7 +123,6 @@ export const EducationDashboard = ({
       sortOrder: sortOrder,
       offset: (page - 1) * itemsPerPage,
       includeTrend: view === ViewType.TREND,
-      // Let's not overwhelm the server with requests
     },
     mode === EducationDrillType.YEAR
   );
@@ -225,7 +222,21 @@ export const EducationDashboard = ({
     } else if (mode === EducationDrillType.MAJOR) {
       return filters.courseIds?.includes(row.id) ?? false;
     }
-    return filters.graduationYears?.includes(String(row.year ?? 0)) ?? false;
+    return (
+      (filters.graduationYears?.includes(String(row.year ?? 0)) &&
+        filters.courseIds?.includes(row.id)) ??
+      false
+    );
+  };
+
+  const handleLocalAddToFilters = (row: DataRowProps) => {
+    if (mode === EducationDrillType.YEAR) {
+      // For year, we add both the yeaer and course id
+      onAddToFilters?.(row.id, row.year);
+    } else {
+      // Faculty or Course, we add the id directly
+      onAddToFilters?.(row.id);
+    }
   };
 
   const renderTableView = () => {
@@ -274,7 +285,13 @@ export const EducationDashboard = ({
                             isRowInFilters={!!isRowInFilters(item)}
                           />
                           {mode === EducationDrillType.YEAR && (
-                            <TableCell className="w-[15%] px-3 py-1.5 text-sm text-[#000000] align-middle text-center">
+                            <TableCell
+                              className={`w-[15%] px-3 py-1.5 text-sm text-[#000000] align-middle text-center ${
+                                isRowInFilters(item)
+                                  ? "font-bold text-[#8C2D19]"
+                                  : "text-[#000000]"
+                              }`}
+                            >
                               {view === ViewType.TABLE ? (
                                 <CountComponent count={item.year ?? 0} />
                               ) : (
@@ -285,42 +302,59 @@ export const EducationDashboard = ({
                               )}
                             </TableCell>
                           )}
-                          <TableCell className="w-[15%] px-3 py-1-5 text-sm text-[#000000] align-middle hover:text-[#8C2D19] transition-colors relative">
+                          <TableCell
+                            className={`w-[12%] px-4 ${
+                              view === ViewType.TABLE ? "py-1" : "py-3"
+                            } text-sm ${
+                              isRowInFilters(item)
+                                ? "font-bold text-[#8C2D19]"
+                                : "text-[#000000]"
+                            } align-middle hover:text-[#8C2D19] transition-colors relative`}
+                          >
                             <div className="flex items-center gap-0 justify-center">
                               {view === ViewType.TABLE ? (
-                                <CountComponent count={item.count} />
+                                <>
+                                  <CountComponent count={item.count} />
+                                  <div
+                                    className={`opacity-0 group-hover:opacity-100 transition-opacity ${
+                                      view === ViewType.TABLE ? "ml-2" : "ml-0"
+                                    }`}
+                                  >
+                                    <TooltipProvider>
+                                      <Tooltip>
+                                        <TooltipTrigger asChild>
+                                          <Button
+                                            aria-label="Add to filters"
+                                            variant="ghost"
+                                            size="sm"
+                                            className="p-1 h-6 w-6 rounded-full bg-gray-100 hover:bg-gray-200"
+                                            onClick={() =>
+                                              handleLocalAddToFilters(item)
+                                            }
+                                          >
+                                            <Filter className="h-4 w-4 text-[#8C2D19]" />
+                                          </Button>
+                                        </TooltipTrigger>
+                                        <TooltipContent>
+                                          {mode === EducationDrillType.YEAR ? (
+                                            <p>
+                                              Filter on {item.acronym} -{" "}
+                                              {item.year}
+                                            </p>
+                                          ) : (
+                                            <p>Filter on {item.acronym}</p>
+                                          )}
+                                        </TooltipContent>
+                                      </Tooltip>
+                                    </TooltipProvider>
+                                  </div>
+                                </>
                               ) : (
                                 <TrendLineComponent
                                   dataPoints={item.trend || []}
                                   trendFrequency={trendFrequency}
                                 />
                               )}
-                              <div
-                                className={`opacity-0 group-hover:opacity-100 transition-opacity ${
-                                  view === ViewType.TABLE ? "ml-2" : "ml-0"
-                                }`}
-                              >
-                                <TooltipProvider>
-                                  <Tooltip>
-                                    <TooltipTrigger asChild>
-                                      <Button
-                                        aria-label="Add to filters"
-                                        variant="ghost"
-                                        size="sm"
-                                        className="p-1 h-6 w-6 rounded-full bg-gray-100 hover:bg-gray-200"
-                                        onClick={() =>
-                                          onAddToFilters?.(item.id)
-                                        }
-                                      >
-                                        <Filter className="h-4 w-4 text-[#8C2D19]" />
-                                      </Button>
-                                    </TooltipTrigger>
-                                    <TooltipContent>
-                                      <p>Filter on {item.name}</p>
-                                    </TooltipContent>
-                                  </Tooltip>
-                                </TooltipProvider>
-                              </div>
                             </div>
                           </TableCell>
                         </CustomTableRow>
@@ -517,4 +551,4 @@ export const EducationDashboard = ({
       {view === ViewType.CHART && renderChartView()}
     </div>
   );
-}
+};

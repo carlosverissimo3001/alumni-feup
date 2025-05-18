@@ -132,42 +132,52 @@ export const IndustryDashboard = ({
                             name={industry.name}
                             isRowInFilters={!!isRowInFilters(industry)}
                           />
-                          <TableCell className="w-[12%] px-3 py-1 text-sm text-[#000000] align-middle hover:text-[#8C2D19] transition-colors relative">
+                          <TableCell
+                            className={`w-[12%] px-4 ${
+                              view === ViewType.TABLE ? "py-1" : ""
+                            } text-sm ${
+                              isRowInFilters(industry)
+                                ? "font-bold text-[#8C2D19]"
+                                : "text-[#000000]"
+                            } align-middle hover:text-[#8C2D19] transition-colors relative`}
+                          >
                             <div className="flex items-center gap-0 justify-center">
                               {view === ViewType.TABLE ? (
-                                <CountComponent count={industry.count} />
+                                <>
+                                  <CountComponent count={industry.count} />
+                                  <div
+                                    className={`opacity-0 group-hover:opacity-100 transition-opacity ${
+                                      view === ViewType.TABLE ? "ml-2" : "ml-0"
+                                    }`}
+                                  >
+                                    <TooltipProvider>
+                                      <Tooltip>
+                                        <TooltipTrigger asChild>
+                                          <Button
+                                            aria-label="Add to filters"
+                                            variant="ghost"
+                                            size="sm"
+                                            className="p-1 h-6 w-6 rounded-full bg-gray-100 hover:bg-gray-200"
+                                            onClick={() =>
+                                              onAddToFilters?.(industry.id)
+                                            }
+                                          >
+                                            <Filter className="h-4 w-4 text-[#8C2D19]" />
+                                          </Button>
+                                        </TooltipTrigger>
+                                        <TooltipContent>
+                                          <p>Filter on {industry.name}</p>
+                                        </TooltipContent>
+                                      </Tooltip>
+                                    </TooltipProvider>
+                                  </div>
+                                </>
                               ) : (
                                 <TrendLineComponent
                                   dataPoints={industry.trend}
                                   trendFrequency={trendFrequency}
                                 />
                               )}
-                              <div
-                                className={`opacity-0 group-hover:opacity-100 transition-opacity ${
-                                  view === ViewType.TABLE ? "ml-2" : "ml-0"
-                                }`}
-                              >
-                                <TooltipProvider>
-                                  <Tooltip>
-                                    <TooltipTrigger asChild>
-                                      <Button
-                                        aria-label="Add to filters"
-                                        variant="ghost"
-                                        size="sm"
-                                        className="p-1 h-6 w-6 rounded-full bg-gray-100 hover:bg-gray-200"
-                                        onClick={() =>
-                                          onAddToFilters?.(industry.id)
-                                        }
-                                      >
-                                        <Filter className="h-4 w-4 text-[#8C2D19]" />
-                                      </Button>
-                                    </TooltipTrigger>
-                                    <TooltipContent>
-                                      <p>Filter on {industry.name}</p>
-                                    </TooltipContent>
-                                  </Tooltip>
-                                </TooltipProvider>
-                              </div>
                             </div>
                           </TableCell>
                         </CustomTableRow>
@@ -277,4 +287,4 @@ export const IndustryDashboard = ({
       {view === ViewType.CHART && renderChartView()}
     </div>
   );
-}
+};
