@@ -27,11 +27,20 @@ export const companySelect = {
   },
 } satisfies Prisma.CompanySelect;
 
-export const jobClassificationSelect = {
-  title: true,
+export const escoClassificationSelect = {
+  titleEn: true,
+  code: true,
+  isLeaf: true,
   level: true,
+} satisfies Prisma.EscoClassificationSelect;
+
+export const jobClassificationSelect = {
+  roleId: true,
+  escoClassificationId: true,
   confidence: true,
-  escoCode: true,
+  EscoClassification: {
+    select: escoClassificationSelect,
+  },
 } satisfies Prisma.JobClassificationSelect;
 
 export const roleSelect = {

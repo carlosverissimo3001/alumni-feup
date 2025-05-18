@@ -10,19 +10,20 @@ import {
   RoleAnalyticsEntity,
   GraduationAnalyticsEntity,
 } from '../entities';
+import { EscoClassificationAnalyticsEntity } from '../entities/esco-classification.entity';
 
-type RawJobClassification = {
-  title: string;
-  escoCode: string;
+type RawEscoClassification = {
+  titleEn: string;
+  code: string;
+  isLeaf: boolean;
   level: number;
-  confidence?: number | null;
 };
 
-type RawLocation = {
-  id: string;
-  country?: string | null;
-  countryCode?: string | null;
-  city?: string | null;
+type RawJobClassification = {
+  roleId: string;
+  escoClassificationId: string;
+  confidence?: number | null;
+  EscoClassification: RawEscoClassification;
 };
 
 type RawRole = {
@@ -33,16 +34,14 @@ type RawRole = {
   endDate?: Date | null;
   Location?: RawLocation | null;
   JobClassification?: RawJobClassification | null;
-  Company: {
-    id: string;
-    name: string;
-    logo?: string | null;
-    Industry: {
-      id: string;
-      name: string;
-    };
-    Location?: RawLocation | null;
-  };
+  Company: RawCompany;
+};
+
+type RawLocation = {
+  id: string;
+  country?: string | null;
+  countryCode?: string | null;
+  city?: string | null;
 };
 
 type RawAlumni = {
@@ -147,15 +146,29 @@ const mapIndustryFromPrisma = (
   };
 };
 
+const mapEscoClassificationFromPrisma = (
+  escoClassification: RawEscoClassification,
+): EscoClassificationAnalyticsEntity => {
+  return {
+    titleEn: escoClassification.titleEn,
+    code: escoClassification.code,
+    level: escoClassification.level,
+    isLeaf: escoClassification.isLeaf,
+  };
+};
+
 const mapJobClassificationFromPrisma = (
   jobClassification?: RawJobClassification | null,
-): JobClassificationAnalyticsEntity | null => {
-  if (!jobClassification) return null;
+): JobClassificationAnalyticsEntity | undefined => {
+  if (!jobClassification || !jobClassification.EscoClassification)
+    return undefined;
   return {
-    escoCode: jobClassification.escoCode,
-    name: jobClassification.title,
-    level: jobClassification.level,
+    escoClassificationId: jobClassification.escoClassificationId,
+    roleId: jobClassification.roleId,
     confidence: jobClassification.confidence,
+    escoClassification: mapEscoClassificationFromPrisma(
+      jobClassification.EscoClassification,
+    ),
   };
 };
 

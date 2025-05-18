@@ -33,35 +33,36 @@ export class RoleAnalyticsService {
     const alumnus = applyDateFilters(alumnusUnfiltered, query);
 
     const roleMap = new Map<string, RoleListItemDto>();
-    // We'll probably get this from the query
-    const level = 1;
+    const escoLevel = query.escoClassificationLevel;
 
-    // Flatten all alumni roles and their job classifications
     alumnus
       .flatMap((alumni) => alumni.roles || [])
       .filter((role) => role.jobClassification)
       .forEach((role) => {
-        const classification = role.jobClassification;
+        const jobClassification = role.jobClassification;
 
         // We filtered above, this is to make the linter happy
-        if (!classification) {
+        if (!jobClassification) {
           return;
         }
 
-        const { escoCode, name } = classification;
+        const escoClassification = jobClassification.escoClassification;
 
-        if (roleMap.has(escoCode)) {
-          roleMap.get(escoCode)!.count++;
+        const { code, titleEn, isLeaf, level } = escoClassification;
+
+        if (roleMap.has(code)) {
+          roleMap.get(code)!.count++;
         } else {
-          roleMap.set(escoCode, {
-            name,
-            code: escoCode,
-            level,
+          roleMap.set(code, {
+            name: titleEn,
+            code: code,
+            isLeaf: isLeaf,
+            level: escoLevel || level,
             count: 1,
             trend: query.includeTrend
               ? this.trendAnalyticsService.getRoleTrend({
                   data: alumnusUnfiltered,
-                  entityId: escoCode,
+                  entityId: code,
                 })
               : [],
           });

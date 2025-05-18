@@ -112,7 +112,9 @@ export class TrendAnalyticsService {
     const roles = data
       .map((alumni) => alumni.roles)
       .flat()
-      .filter((role) => role.jobClassification?.escoCode === entityId)
+      .filter(
+        (role) => role.jobClassification?.escoClassification.code === entityId,
+      )
       .filter((role) => {
         const startDate = new Date(role.startDate);
         const endDate = role.endDate ? new Date(role.endDate) : null;

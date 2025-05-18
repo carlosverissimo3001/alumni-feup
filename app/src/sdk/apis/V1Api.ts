@@ -164,7 +164,7 @@ export interface AlumniAnalyticsControllerGetAlumniListRequest {
     companySize?: Array<AlumniAnalyticsControllerGetAlumniListCompanySizeEnum>;
     companyType?: Array<AlumniAnalyticsControllerGetAlumniListCompanyTypeEnum>;
     escoCodes?: Array<string>;
-    classificationLevel?: number;
+    escoClassificationLevel?: number;
     limit?: number;
     offset?: number;
     search?: string;
@@ -223,7 +223,7 @@ export interface CompanyAnalyticsControllerGetCompaniesWithAlumniCountRequest {
     companySize?: Array<CompanyAnalyticsControllerGetCompaniesWithAlumniCountCompanySizeEnum>;
     companyType?: Array<CompanyAnalyticsControllerGetCompaniesWithAlumniCountCompanyTypeEnum>;
     escoCodes?: Array<string>;
-    classificationLevel?: number;
+    escoClassificationLevel?: number;
     limit?: number;
     offset?: number;
     search?: string;
@@ -275,7 +275,7 @@ export interface EducationAnalyticsControllerGetFacultiesRequest {
     companySize?: Array<EducationAnalyticsControllerGetFacultiesCompanySizeEnum>;
     companyType?: Array<EducationAnalyticsControllerGetFacultiesCompanyTypeEnum>;
     escoCodes?: Array<string>;
-    classificationLevel?: number;
+    escoClassificationLevel?: number;
     limit?: number;
     offset?: number;
     search?: string;
@@ -306,7 +306,7 @@ export interface EducationAnalyticsControllerGetGraduationsRequest {
     companySize?: Array<EducationAnalyticsControllerGetGraduationsCompanySizeEnum>;
     companyType?: Array<EducationAnalyticsControllerGetGraduationsCompanyTypeEnum>;
     escoCodes?: Array<string>;
-    classificationLevel?: number;
+    escoClassificationLevel?: number;
     limit?: number;
     offset?: number;
     search?: string;
@@ -337,7 +337,7 @@ export interface EducationAnalyticsControllerGetMajorsRequest {
     companySize?: Array<EducationAnalyticsControllerGetMajorsCompanySizeEnum>;
     companyType?: Array<EducationAnalyticsControllerGetMajorsCompanyTypeEnum>;
     escoCodes?: Array<string>;
-    classificationLevel?: number;
+    escoClassificationLevel?: number;
     limit?: number;
     offset?: number;
     search?: string;
@@ -384,7 +384,7 @@ export interface GeoAnalyticsControllerGetCitiesWithAlumniCountRequest {
     companySize?: Array<GeoAnalyticsControllerGetCitiesWithAlumniCountCompanySizeEnum>;
     companyType?: Array<GeoAnalyticsControllerGetCitiesWithAlumniCountCompanyTypeEnum>;
     escoCodes?: Array<string>;
-    classificationLevel?: number;
+    escoClassificationLevel?: number;
     limit?: number;
     offset?: number;
     search?: string;
@@ -415,7 +415,7 @@ export interface GeoAnalyticsControllerGetCountriesWithAlumniCountRequest {
     companySize?: Array<GeoAnalyticsControllerGetCountriesWithAlumniCountCompanySizeEnum>;
     companyType?: Array<GeoAnalyticsControllerGetCountriesWithAlumniCountCompanyTypeEnum>;
     escoCodes?: Array<string>;
-    classificationLevel?: number;
+    escoClassificationLevel?: number;
     limit?: number;
     offset?: number;
     search?: string;
@@ -446,7 +446,7 @@ export interface IndustryAnalyticsControllerGetIndustryWithCountsRequest {
     companySize?: Array<IndustryAnalyticsControllerGetIndustryWithCountsCompanySizeEnum>;
     companyType?: Array<IndustryAnalyticsControllerGetIndustryWithCountsCompanyTypeEnum>;
     escoCodes?: Array<string>;
-    classificationLevel?: number;
+    escoClassificationLevel?: number;
     limit?: number;
     offset?: number;
     search?: string;
@@ -486,7 +486,7 @@ export interface RoleAnalyticsControllerGetRolesRequest {
     companySize?: Array<RoleAnalyticsControllerGetRolesCompanySizeEnum>;
     companyType?: Array<RoleAnalyticsControllerGetRolesCompanyTypeEnum>;
     escoCodes?: Array<string>;
-    classificationLevel?: number;
+    escoClassificationLevel?: number;
     limit?: number;
     offset?: number;
     search?: string;
@@ -604,7 +604,7 @@ export interface V1ApiInterface {
      * @param {Array<'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G' | 'H' | 'I'>} [companySize] The company sizes to filter by
      * @param {Array<'EDUCATIONAL' | 'GOVERNMENT_AGENCY' | 'NON_PROFIT' | 'PARTNERSHIP' | 'PRIVATELY_HELD' | 'PUBLIC_COMPANY' | 'SELF_EMPLOYED' | 'SELF_OWNED'>} [companyType] The company types to filter by
      * @param {Array<string>} [escoCodes] The ESCO codes to filter by
-     * @param {number} [classificationLevel] The classification level to filter by
+     * @param {number} [escoClassificationLevel] The ESCO classification level to filter by
      * @param {number} [limit] The number of results to return
      * @param {number} [offset] The offset of the query
      * @param {string} [search] Broad search query
@@ -782,7 +782,7 @@ export interface V1ApiInterface {
      * @param {Array<'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G' | 'H' | 'I'>} [companySize] The company sizes to filter by
      * @param {Array<'EDUCATIONAL' | 'GOVERNMENT_AGENCY' | 'NON_PROFIT' | 'PARTNERSHIP' | 'PRIVATELY_HELD' | 'PUBLIC_COMPANY' | 'SELF_EMPLOYED' | 'SELF_OWNED'>} [companyType] The company types to filter by
      * @param {Array<string>} [escoCodes] The ESCO codes to filter by
-     * @param {number} [classificationLevel] The classification level to filter by
+     * @param {number} [escoClassificationLevel] The ESCO classification level to filter by
      * @param {number} [limit] The number of results to return
      * @param {number} [offset] The offset of the query
      * @param {string} [search] Broad search query
@@ -942,7 +942,7 @@ export interface V1ApiInterface {
      * @param {Array<'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G' | 'H' | 'I'>} [companySize] The company sizes to filter by
      * @param {Array<'EDUCATIONAL' | 'GOVERNMENT_AGENCY' | 'NON_PROFIT' | 'PARTNERSHIP' | 'PRIVATELY_HELD' | 'PUBLIC_COMPANY' | 'SELF_EMPLOYED' | 'SELF_OWNED'>} [companyType] The company types to filter by
      * @param {Array<string>} [escoCodes] The ESCO codes to filter by
-     * @param {number} [classificationLevel] The classification level to filter by
+     * @param {number} [escoClassificationLevel] The ESCO classification level to filter by
      * @param {number} [limit] The number of results to return
      * @param {number} [offset] The offset of the query
      * @param {string} [search] Broad search query
@@ -984,7 +984,7 @@ export interface V1ApiInterface {
      * @param {Array<'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G' | 'H' | 'I'>} [companySize] The company sizes to filter by
      * @param {Array<'EDUCATIONAL' | 'GOVERNMENT_AGENCY' | 'NON_PROFIT' | 'PARTNERSHIP' | 'PRIVATELY_HELD' | 'PUBLIC_COMPANY' | 'SELF_EMPLOYED' | 'SELF_OWNED'>} [companyType] The company types to filter by
      * @param {Array<string>} [escoCodes] The ESCO codes to filter by
-     * @param {number} [classificationLevel] The classification level to filter by
+     * @param {number} [escoClassificationLevel] The ESCO classification level to filter by
      * @param {number} [limit] The number of results to return
      * @param {number} [offset] The offset of the query
      * @param {string} [search] Broad search query
@@ -1026,7 +1026,7 @@ export interface V1ApiInterface {
      * @param {Array<'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G' | 'H' | 'I'>} [companySize] The company sizes to filter by
      * @param {Array<'EDUCATIONAL' | 'GOVERNMENT_AGENCY' | 'NON_PROFIT' | 'PARTNERSHIP' | 'PRIVATELY_HELD' | 'PUBLIC_COMPANY' | 'SELF_EMPLOYED' | 'SELF_OWNED'>} [companyType] The company types to filter by
      * @param {Array<string>} [escoCodes] The ESCO codes to filter by
-     * @param {number} [classificationLevel] The classification level to filter by
+     * @param {number} [escoClassificationLevel] The ESCO classification level to filter by
      * @param {number} [limit] The number of results to return
      * @param {number} [offset] The offset of the query
      * @param {string} [search] Broad search query
@@ -1170,7 +1170,7 @@ export interface V1ApiInterface {
      * @param {Array<'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G' | 'H' | 'I'>} [companySize] The company sizes to filter by
      * @param {Array<'EDUCATIONAL' | 'GOVERNMENT_AGENCY' | 'NON_PROFIT' | 'PARTNERSHIP' | 'PRIVATELY_HELD' | 'PUBLIC_COMPANY' | 'SELF_EMPLOYED' | 'SELF_OWNED'>} [companyType] The company types to filter by
      * @param {Array<string>} [escoCodes] The ESCO codes to filter by
-     * @param {number} [classificationLevel] The classification level to filter by
+     * @param {number} [escoClassificationLevel] The ESCO classification level to filter by
      * @param {number} [limit] The number of results to return
      * @param {number} [offset] The offset of the query
      * @param {string} [search] Broad search query
@@ -1226,7 +1226,7 @@ export interface V1ApiInterface {
      * @param {Array<'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G' | 'H' | 'I'>} [companySize] The company sizes to filter by
      * @param {Array<'EDUCATIONAL' | 'GOVERNMENT_AGENCY' | 'NON_PROFIT' | 'PARTNERSHIP' | 'PRIVATELY_HELD' | 'PUBLIC_COMPANY' | 'SELF_EMPLOYED' | 'SELF_OWNED'>} [companyType] The company types to filter by
      * @param {Array<string>} [escoCodes] The ESCO codes to filter by
-     * @param {number} [classificationLevel] The classification level to filter by
+     * @param {number} [escoClassificationLevel] The ESCO classification level to filter by
      * @param {number} [limit] The number of results to return
      * @param {number} [offset] The offset of the query
      * @param {string} [search] Broad search query
@@ -1283,7 +1283,7 @@ export interface V1ApiInterface {
      * @param {Array<'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G' | 'H' | 'I'>} [companySize] The company sizes to filter by
      * @param {Array<'EDUCATIONAL' | 'GOVERNMENT_AGENCY' | 'NON_PROFIT' | 'PARTNERSHIP' | 'PRIVATELY_HELD' | 'PUBLIC_COMPANY' | 'SELF_EMPLOYED' | 'SELF_OWNED'>} [companyType] The company types to filter by
      * @param {Array<string>} [escoCodes] The ESCO codes to filter by
-     * @param {number} [classificationLevel] The classification level to filter by
+     * @param {number} [escoClassificationLevel] The ESCO classification level to filter by
      * @param {number} [limit] The number of results to return
      * @param {number} [offset] The offset of the query
      * @param {string} [search] Broad search query
@@ -1371,7 +1371,7 @@ export interface V1ApiInterface {
      * @param {Array<'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G' | 'H' | 'I'>} [companySize] The company sizes to filter by
      * @param {Array<'EDUCATIONAL' | 'GOVERNMENT_AGENCY' | 'NON_PROFIT' | 'PARTNERSHIP' | 'PRIVATELY_HELD' | 'PUBLIC_COMPANY' | 'SELF_EMPLOYED' | 'SELF_OWNED'>} [companyType] The company types to filter by
      * @param {Array<string>} [escoCodes] The ESCO codes to filter by
-     * @param {number} [classificationLevel] The classification level to filter by
+     * @param {number} [escoClassificationLevel] The ESCO classification level to filter by
      * @param {number} [limit] The number of results to return
      * @param {number} [offset] The offset of the query
      * @param {string} [search] Broad search query
@@ -1697,8 +1697,8 @@ export class V1Api extends runtime.BaseAPI implements V1ApiInterface {
             queryParameters['escoCodes'] = requestParameters['escoCodes'];
         }
 
-        if (requestParameters['classificationLevel'] != null) {
-            queryParameters['classificationLevel'] = requestParameters['classificationLevel'];
+        if (requestParameters['escoClassificationLevel'] != null) {
+            queryParameters['escoClassificationLevel'] = requestParameters['escoClassificationLevel'];
         }
 
         if (requestParameters['limit'] != null) {
@@ -2144,8 +2144,8 @@ export class V1Api extends runtime.BaseAPI implements V1ApiInterface {
             queryParameters['escoCodes'] = requestParameters['escoCodes'];
         }
 
-        if (requestParameters['classificationLevel'] != null) {
-            queryParameters['classificationLevel'] = requestParameters['classificationLevel'];
+        if (requestParameters['escoClassificationLevel'] != null) {
+            queryParameters['escoClassificationLevel'] = requestParameters['escoClassificationLevel'];
         }
 
         if (requestParameters['limit'] != null) {
@@ -2533,8 +2533,8 @@ export class V1Api extends runtime.BaseAPI implements V1ApiInterface {
             queryParameters['escoCodes'] = requestParameters['escoCodes'];
         }
 
-        if (requestParameters['classificationLevel'] != null) {
-            queryParameters['classificationLevel'] = requestParameters['classificationLevel'];
+        if (requestParameters['escoClassificationLevel'] != null) {
+            queryParameters['escoClassificationLevel'] = requestParameters['escoClassificationLevel'];
         }
 
         if (requestParameters['limit'] != null) {
@@ -2678,8 +2678,8 @@ export class V1Api extends runtime.BaseAPI implements V1ApiInterface {
             queryParameters['escoCodes'] = requestParameters['escoCodes'];
         }
 
-        if (requestParameters['classificationLevel'] != null) {
-            queryParameters['classificationLevel'] = requestParameters['classificationLevel'];
+        if (requestParameters['escoClassificationLevel'] != null) {
+            queryParameters['escoClassificationLevel'] = requestParameters['escoClassificationLevel'];
         }
 
         if (requestParameters['limit'] != null) {
@@ -2823,8 +2823,8 @@ export class V1Api extends runtime.BaseAPI implements V1ApiInterface {
             queryParameters['escoCodes'] = requestParameters['escoCodes'];
         }
 
-        if (requestParameters['classificationLevel'] != null) {
-            queryParameters['classificationLevel'] = requestParameters['classificationLevel'];
+        if (requestParameters['escoClassificationLevel'] != null) {
+            queryParameters['escoClassificationLevel'] = requestParameters['escoClassificationLevel'];
         }
 
         if (requestParameters['limit'] != null) {
@@ -3187,8 +3187,8 @@ export class V1Api extends runtime.BaseAPI implements V1ApiInterface {
             queryParameters['escoCodes'] = requestParameters['escoCodes'];
         }
 
-        if (requestParameters['classificationLevel'] != null) {
-            queryParameters['classificationLevel'] = requestParameters['classificationLevel'];
+        if (requestParameters['escoClassificationLevel'] != null) {
+            queryParameters['escoClassificationLevel'] = requestParameters['escoClassificationLevel'];
         }
 
         if (requestParameters['limit'] != null) {
@@ -3358,8 +3358,8 @@ export class V1Api extends runtime.BaseAPI implements V1ApiInterface {
             queryParameters['escoCodes'] = requestParameters['escoCodes'];
         }
 
-        if (requestParameters['classificationLevel'] != null) {
-            queryParameters['classificationLevel'] = requestParameters['classificationLevel'];
+        if (requestParameters['escoClassificationLevel'] != null) {
+            queryParameters['escoClassificationLevel'] = requestParameters['escoClassificationLevel'];
         }
 
         if (requestParameters['limit'] != null) {
@@ -3531,8 +3531,8 @@ export class V1Api extends runtime.BaseAPI implements V1ApiInterface {
             queryParameters['escoCodes'] = requestParameters['escoCodes'];
         }
 
-        if (requestParameters['classificationLevel'] != null) {
-            queryParameters['classificationLevel'] = requestParameters['classificationLevel'];
+        if (requestParameters['escoClassificationLevel'] != null) {
+            queryParameters['escoClassificationLevel'] = requestParameters['escoClassificationLevel'];
         }
 
         if (requestParameters['limit'] != null) {
@@ -3780,8 +3780,8 @@ export class V1Api extends runtime.BaseAPI implements V1ApiInterface {
             queryParameters['escoCodes'] = requestParameters['escoCodes'];
         }
 
-        if (requestParameters['classificationLevel'] != null) {
-            queryParameters['classificationLevel'] = requestParameters['classificationLevel'];
+        if (requestParameters['escoClassificationLevel'] != null) {
+            queryParameters['escoClassificationLevel'] = requestParameters['escoClassificationLevel'];
         }
 
         if (requestParameters['limit'] != null) {
