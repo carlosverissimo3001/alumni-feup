@@ -58,7 +58,7 @@ export const CustomTableHeader = ({
         <TableHead
           className={`${
             extraHeaderName ? "w-[45%]" : "w-[65%]"
-          } py-1 text-left text-xs font-semibold text-[#8C2D19] tracking-wider`}
+          }  text-xs font-semibold text-[#8C2D19] tracking-wider`}
         >
           <div className="flex items-center">
             <Button
