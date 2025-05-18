@@ -37,7 +37,7 @@ export class RoleAnalyticsService {
     const escoLevel = query.escoClassificationLevel;
 
     // Keeps a map of the hierarchy of the esco classifications
-    const isDifferentLevel = escoLevel && escoLevel !== 4;
+    const isDifferentLevel = escoLevel !== 4;
     const hierarchyMap = new Map<string, EscoClassificationAnalyticsEntity>();
 
     const allRoles = alumnus.flatMap((alumni) => alumni.roles || []);
@@ -89,6 +89,7 @@ export class RoleAnalyticsService {
             ? this.trendAnalyticsService.getRoleTrend({
                 data: alumnusUnfiltered,
                 entityId: code,
+                isDifferentClassificationLevel: isDifferentLevel,
               })
             : [],
         });

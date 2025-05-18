@@ -10,6 +10,7 @@ type getTrendParams = {
   data: AlumniAnalyticsEntity[];
   entityId: string;
   type?: TrendType;
+  isDifferentClassificationLevel?: boolean;
 };
 
 const THIRTY_YEARS_AGO = subYears(new Date(), 30);
@@ -106,15 +107,24 @@ export class TrendAnalyticsService {
   }
 
   getRoleTrend(params: getTrendParams): DataPointDto[] {
-    const { data, entityId } = params;
+    const { data, entityId, isDifferentClassificationLevel } = params;
 
     // Gets all the roles whose title matches the entityId
     const roles = data
       .map((alumni) => alumni.roles)
       .flat()
-      .filter(
-        (role) => role.jobClassification?.escoClassification.code === entityId,
-      )
+      .filter((role) => {
+        const jobClassification = role.jobClassification;
+        const escoClassification = jobClassification?.escoClassification;
+
+        // We classify against level 5 (e.g. 2512.1), but, if we're grouping
+        // at level 3, we check for all roles starting with 251
+        if (isDifferentClassificationLevel) {
+          return escoClassification?.code.startsWith(entityId);
+        }
+
+        return escoClassification?.code === entityId;
+      })
       .filter((role) => {
         const startDate = new Date(role.startDate);
         const endDate = role.endDate ? new Date(role.endDate) : null;
