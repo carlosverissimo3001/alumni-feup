@@ -16,7 +16,7 @@ import {
   RefreshCw,
   Trash2,
   TagIcon,
-  Gauge
+  Gauge,
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -54,39 +54,25 @@ export default function Profile() {
   const escoUrl = ESCO_BASE_URL ? ESCO_BASE_URL + profile?.role?.escoCode : "#";
 
   // For placeholder purposes, simulate confidence if not provided
-  const confidenceValue = 0.65;
+  const confidenceValue = profile?.role?.confidence || 0.65;
 
   // State for selected ESCO classifications
-  const [selectedEscoL1, setSelectedEscoL1] = useState<string | null>(null);
-  const [selectedEscoL2, setSelectedEscoL2] = useState<string | null>(null);
+  const [selectedEsco, setSelectedEsco] = useState<string | null>(null);
   const [escoDialogOpen, setEscoDialogOpen] = useState(false);
 
-  const { data: escoL1 } = useListEscoClassifications({
+  const { data } = useListEscoClassifications({
     level: 1,
     enabled: escoDialogOpen,
   });
-  const { data: escoL2 } = useListEscoClassifications({
-    level: 2,
-    enabled: escoDialogOpen,
-  });
 
-  const escoL1Options = escoL1?.map((item) => ({
-    label: item.title,
-    value: item.escoCode,
-  })) || [];
+  const escoOptions =
+    data?.map((item) => ({
+      label: item.title,
+      value: item.escoCode,
+    })) || [];
 
-  const escoL2Options = escoL2?.map((item) => ({
-    label: item.title,
-    value: item.escoCode,
-  })) || [];
-  
-  // Placeholder function for updating ESCO classifications
   const handleUpdateEsco = () => {
-    console.log("Updating ESCO classifications:", {
-      level1: selectedEscoL1,
-      level2: selectedEscoL2,
-    });
-    // Here you would call your API to update the classifications
+    // Here we will call the API to update the ESCO classification
     setEscoDialogOpen(false);
   };
 
@@ -127,7 +113,7 @@ export default function Profile() {
   const jobTitle = profile?.role?.title;
 
   return (
-    <div className="max-w-4xl mx-auto py-12 px-4">
+    <div className="max-w-6xl mx-auto py-12 px-4">
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center gap-6 mb-10">
         <Avatar className="h-24 w-24 border-2 border-primary shadow-md">
@@ -180,7 +166,7 @@ export default function Profile() {
           </CardTitle>
         </CardHeader>
         <CardContent className="pt-3">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div className="space-y-2">
               <div className="text-lg font-semibold">
                 {jobTitle || "No role specified"}
@@ -211,10 +197,11 @@ export default function Profile() {
                   <Link
                     href={escoUrl}
                     className="text-xs hover:text-primary transition-colors group flex items-center gap-1 mt-2"
+                    target="_blank"
                   >
                     In ESCO as{" "}
                     <span className="font-bold underline">
-                      {profile?.role?.title}
+                      {profile?.role?.escoTitle}
                     </span>
                     <ArrowUpRight className="w-3.5 h-3.5 group-hover:text-primary transition-colors" />
                   </Link>
@@ -249,15 +236,18 @@ export default function Profile() {
                   {profile.company.industry}
                 </div>
               )}
-              <div className="mt-3 flex items-center gap-3">
+              <div className="mt-3 flex flex-col gap-2">
                 {profile?.company?.website && (
                   <Link
                     href={profile.company.website}
                     target="_blank"
-                    className="flex items-center text-primary hover:text-primary/80 transition-colors"
+                    className="flex items-center text-primary hover:text-primary/80 transition-color"
                     title="Visit Website"
                   >
-                    <Globe className="w-4 h-4" />
+                    <div className="flex items-center gap-1 text-sm">
+                      <Globe className="w-4 h-4" />
+                      Website
+                    </div>
                   </Link>
                 )}
                 {profile?.company?.linkedinUrl && (
@@ -267,12 +257,15 @@ export default function Profile() {
                     className="flex items-center text-primary hover:text-primary/80 transition-colors"
                     title="View on LinkedIn"
                   >
-                    <Image
-                      src="/logos/linkedin-icon.svg"
-                      alt="LinkedIn"
-                      width={16}
-                      height={16}
-                    />
+                    <div className="flex items-center gap-1 text-sm">
+                      <Image
+                        src="/logos/linkedin-icon.svg"
+                        alt="LinkedIn"
+                        width={16}
+                        height={16}
+                      />
+                      LinkedIn
+                    </div>
                   </Link>
                 )}
               </div>
@@ -385,7 +378,7 @@ export default function Profile() {
                         </DialogDescription>
                       </DialogHeader>
 
-                      <div className="mt-4 space-y-6">
+                      <div className="space-y-4">
                         <div className="space-y-1">
                           <div className="flex items-center justify-between">
                             <div className="flex items-center gap-2">
@@ -394,6 +387,11 @@ export default function Profile() {
                                 Current Classification
                               </p>
                             </div>
+                          </div>
+                          <div className="flex items-center justify-between py-2">
+                            <p className="font-semibold">
+                              {profile?.role?.title || "Unknown"}
+                            </p>
                             <Badge
                               variant="outline"
                               className="bg-amber-50 text-amber-800 hover:bg-amber-100 border-amber-200"
@@ -401,18 +399,10 @@ export default function Profile() {
                               {profile?.role?.escoCode || "Not Classified"}
                             </Badge>
                           </div>
-                          <p className="text-sm text-muted-foreground mb-4">
-                            Currently classified as{" "}
-                            <span className="font-semibold">
-                              {profile?.role?.title || "Unknown"}
-                            </span>
-                          </p>
 
                           <div className="space-y-4">
                             <div className="flex items-center justify-between">
-                              <p className="text-sm font-medium">
-                                Confidence
-                              </p>
+                              <p className="text-sm font-medium">Confidence</p>
                               <span className="text-xs font-medium">
                                 {Math.round(confidenceValue * 100)}%
                               </span>
@@ -453,60 +443,27 @@ export default function Profile() {
                             </div>
                           </div>
                         </div>
-
-                        <Tabs defaultValue="level1" className="w-full">
-                          <TabsList className="grid w-full grid-cols-2">
-                            <TabsTrigger
-                              value="level1"
-                              className="data-[state=active]:bg-amber-100 data-[state=active]:text-amber-900"
-                            >
-                              Level 1 (General)
-                            </TabsTrigger>
-                            <TabsTrigger
-                              value="level2"
-                              className="data-[state=active]:bg-amber-100 data-[state=active]:text-amber-900"
-                            >
-                              Level 2 (Specific)
-                            </TabsTrigger>
-                          </TabsList>
-                          <TabsContent value="level1" className="mt-4">
-                            <p className="text-sm text-muted-foreground mb-2">
-                              Select the general job classification that best
-                              represents your role:
-                            </p>
-                            <Combobox
-                              options={escoL1Options}
-                              value={selectedEscoL1}
-                              onChange={setSelectedEscoL1}
-                              placeholder="Select classification..."
-                              searchPlaceholder="Search classifications..."
-                              emptyMessage="No classifications found."
-                              className="border-amber-200 focus-within:border-amber-500"
-                              maxDisplayCount={30}
-                              isLoading={!escoL1Options.length && escoDialogOpen}
-                            />
-                          </TabsContent>
-                          <TabsContent value="level2" className="mt-4">
-                            <p className="text-sm text-muted-foreground mb-2">
-                              Select the specific job classification that best
-                              represents your role:
-                            </p>
-                            <Combobox
-                              options={escoL2Options}
-                              value={selectedEscoL2}
-                              onChange={setSelectedEscoL2}
-                              placeholder="Select classification..."
-                              searchPlaceholder="Search classifications..."
-                              emptyMessage="No classifications found."
-                              className="border-amber-200 focus-within:border-amber-500"
-                              maxDisplayCount={30}
-                              isLoading={!escoL2Options.length && escoDialogOpen}
-                            />
-                          </TabsContent>
-                        </Tabs>
+                        
+                        <div className="space-y-2">
+                          <p className="text-sm text-muted-foreground">
+                            Select the specific job classification that best
+                            represents your role:
+                          </p>
+                          <Combobox
+                            options={escoOptions}
+                            value={selectedEsco}
+                            onChange={setSelectedEsco}
+                            placeholder="Select classification..."
+                            searchPlaceholder="Search classifications..."
+                            emptyMessage="No classifications found."
+                            className="border-amber-200 focus-within:border-amber-500"
+                            maxDisplayCount={30}
+                            isLoading={!escoOptions.length && escoDialogOpen}
+                          />
+                        </div>
                       </div>
 
-                      <DialogFooter className="mt-6">
+                      <DialogFooter>
                         <Button
                           variant="ghost"
                           onClick={() => setEscoDialogOpen(false)}
@@ -517,9 +474,7 @@ export default function Profile() {
                           variant="default"
                           className="bg-amber-500 hover:bg-amber-600 text-white"
                           onClick={handleUpdateEsco}
-                          disabled={
-                            !selectedEscoL1 || !selectedEscoL2
-                          }
+                          disabled={!selectedEsco}
                         >
                           Update Classification
                         </Button>

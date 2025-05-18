@@ -5025,6 +5025,9 @@
           "escoTitle": {
             "type": "string"
           },
+          "confidence": {
+            "type": "number"
+          },
           "escoCode": {
             "type": "string"
           },
