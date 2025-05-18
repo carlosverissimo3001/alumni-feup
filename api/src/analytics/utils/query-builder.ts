@@ -69,16 +69,12 @@ export const buildWhereClause = (
   if (params.escoCodes?.length) {
     roleAndClauses.push({
       JobClassification: {
-        escoCode: { in: params.escoCodes },
+        EscoClassification: {
+          code: { in: params.escoCodes },
+        },
       },
     });
   }
-
-  /* roleAndClauses.push({
-    JobClassification: {
-      level: { equals: params.classificationLevel ?? 1 },
-    },
-  }); */
 
   if (params.roleCountryCodes?.length) {
     roleAndClauses.push({

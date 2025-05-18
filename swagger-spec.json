@@ -4549,7 +4549,7 @@
           },
           "JobClassification": {
             "type": "object",
-            "description": "The job classifications"
+            "description": "The job classification"
           },
           "Location": {
             "type": "object",
@@ -4927,10 +4927,6 @@
             "items": {
               "$ref": "#/components/schemas/Graduation"
             }
-          },
-          "isInGroup": {
-            "type": "boolean",
-            "description": "Whether the alumni is in a group"
           },
           "hasSigarraMatch": {
             "type": "boolean",
@@ -5993,7 +5989,11 @@
           },
           "level": {
             "type": "number",
-            "description": "The level of classification of the role, 1 being a more general role and 2 being a more specific role"
+            "description": "The level of classification of the role, 1-4 being ISCO-08 and 5+ being ESCO"
+          },
+          "isLeaf": {
+            "type": "boolean",
+            "description": "Whether the role is a leaf node in the classification tree"
           },
           "code": {
             "type": "string",
@@ -6014,6 +6014,7 @@
         "required": [
           "name",
           "level",
+          "isLeaf",
           "code",
           "count",
           "trend"

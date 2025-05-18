@@ -1,15 +1,16 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { EscoClassificationAnalyticsEntity } from './esco-classification.entity';
 
 export class JobClassificationAnalyticsEntity {
   @ApiProperty()
-  name: string;
+  escoClassificationId: string;
 
   @ApiProperty()
-  escoCode: string;
-
-  @ApiProperty()
-  level: number;
+  roleId: string;
 
   @ApiPropertyOptional()
   confidence?: number | null;
+
+  @ApiProperty()
+  escoClassification: EscoClassificationAnalyticsEntity;
 }

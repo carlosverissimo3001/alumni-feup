@@ -9,10 +9,16 @@ export class RoleListItemDto {
 
   @ApiProperty({
     description:
-      'The level of classification of the role, 1 being a more general role and 2 being a more specific role',
+      'The level of classification of the role, 1-4 being ISCO-08 and 5+ being ESCO',
     type: Number,
   })
   level: number;
+
+  @ApiProperty({
+    description: 'Whether the role is a leaf node in the classification tree',
+    type: Boolean,
+  })
+  isLeaf: boolean;
 
   @ApiProperty({
     description: 'The ESCO code of the role',

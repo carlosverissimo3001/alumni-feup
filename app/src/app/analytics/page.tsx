@@ -45,7 +45,6 @@ export const initialFilters: FilterState = {
   excludeResearchAndHighEducation: false,
   search: undefined,
   hideUnknownRoles: false,
-  classificationLevel: 1,
   companySize: [],
   escoCodes: [],
   alumniIds: [],
@@ -386,10 +385,6 @@ export default function Analytics() {
     }
   }, [educationMode, setEducationMode]);
 
-  const handleLevelChange = useCallback((level: number) => {
-    setFilters((prev) => ({ ...prev, classificationLevel: level }));
-  }, []);
-
   const statsConfig = [
     {
       name: "FEUP EI Alumni",
@@ -478,7 +473,6 @@ export default function Analytics() {
           onDataUpdate={handleRoleDataUpdate}
           filters={combinedFilters}
           onAddToFilters={handleAddRoleToFilters}
-          onLevelChange={handleLevelChange}
         />
         <IndustryDashboard
           onDataUpdate={handleIndustryDataUpdate}

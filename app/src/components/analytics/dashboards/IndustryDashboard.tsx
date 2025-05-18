@@ -129,7 +129,6 @@ export default function IndustryDashboard({
                             {rowNumber}
                           </TableCell>
                           <TableCell className="w-5/12 py-1.5 pl-3 text-sm font-medium text-[#000000] align-middle">
-                          
                               <div
                                 title={industry.name}
                                 className="truncate max-w-full w-full text-left flex items-center p-1"
