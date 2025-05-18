@@ -1,6 +1,6 @@
-export { default as CompanyDashboard } from "./CompanyDashboard";
-export { default as IndustryDashboard } from "./IndustryDashboard";
-export { default as GeoDashboard } from "./GeoDashboard";
-export { default as RoleDashboard } from "./RoleDashboard";
-export { default as EducationDashboard } from "./EducationDashboard";
-export { default as AlumniTable } from "./AlumniTable"
+export { CompanyDashboard } from "./CompanyDashboard";
+export { IndustryDashboard } from "./IndustryDashboard";
+export { GeoDashboard } from "./GeoDashboard";
+export { RoleDashboard } from "./RoleDashboard";
+export { EducationDashboard } from "./EducationDashboard";
+export { AlumniTable } from "./AlumniTable";

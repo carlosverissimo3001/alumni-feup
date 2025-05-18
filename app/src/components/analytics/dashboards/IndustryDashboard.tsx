@@ -9,52 +9,53 @@ import {
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { IndustryListItemDto } from "@/sdk";
-import {
-  Factory,
-  Filter,
-  TrendingUp,
-  TrendingDown,
-  Info,
-} from "lucide-react";
+import { Factory, Filter, TrendingUp, TrendingDown, Info } from "lucide-react";
 import { DashboardSkeleton } from "../skeletons/DashboardSkeleton";
 import { useIndustryList } from "@/hooks/analytics/useIndustryList";
-import PaginationControls from "../common/PaginationControls";
-import TableTitle from "../common/TableTitle";
-import CustomTableHeader from "../common/CustomTableHeader";
+import {
+  PaginationControls,
+  TableTitle,
+  CustomTableHeader,
+  NotFoundComponent,
+  TrendLineComponent,
+  ChartView,
+  CountComponent,
+  LoadingChart,
+  CustomTableRow,
+  TableNameCell,
+  TableNumberCell,
+  ViewToggle,
+} from "../common";
 import { SortBy, SortOrder, ITEMS_PER_PAGE, DASHBOARD_HEIGHT } from "@/consts";
 import { FilterState } from "../common/GlobalFilters";
-import { NotFoundComponent } from "../common/NotFoundComponent";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import TrendLineComponent from "../common/TrendLineComponent";
-import ChartView from "../common/ChartView";
 import { ViewType } from "@/types/view";
-import CountComponent from "../common/CountComponent";
-import LoadingChart from "../common/LoadingChart";
 import { TrendFrequency, EntityType } from "@/types/entityTypes";
-import CustomTableRow from "../common/CustomTableRow";
-import ViewToggle from "../common/ViewToggle";
+
 type IndustryDashboardProps = {
   onDataUpdate: (industryCount: number, industryFilteredCount: number) => void;
   filters: FilterState;
   onAddToFilters?: (industryId: string) => void;
 };
 
-export default function IndustryDashboard({
+export const IndustryDashboard = ({
   onDataUpdate,
   filters,
   onAddToFilters,
-}: IndustryDashboardProps) {
+}: IndustryDashboardProps) => {
   const [page, setPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(ITEMS_PER_PAGE[1]);
   const [sortField, setSortField] = useState<SortBy>(SortBy.COUNT);
   const [sortOrder, setSortOrder] = useState<SortOrder>(SortOrder.DESC);
   const [view, setView] = useState<ViewType>(ViewType.TABLE);
-  const [trendFrequency, setTrendFrequency] = useState<TrendFrequency>(TrendFrequency.Y5);
+  const [trendFrequency, setTrendFrequency] = useState<TrendFrequency>(
+    TrendFrequency.Y5
+  );
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [pageInput, setPageInput] = useState<string>(String(page));
@@ -98,6 +99,10 @@ export default function IndustryDashboard({
     }
   };
 
+  const isRowInFilters = (row: IndustryListItemDto): boolean => {
+    return filters.industryIds?.includes(row.id) ?? false;
+  };
+
   // Table View Component
   const renderTableView = () => (
     <>
@@ -121,22 +126,13 @@ export default function IndustryDashboard({
                     (industry: IndustryListItemDto, index: number) => {
                       const rowNumber = (page - 1) * itemsPerPage + index + 1;
                       return (
-                        <CustomTableRow
-                          key={industry.id}
-                          index={index}
-                        >
-                          <TableCell className="w-[3%] py-1.5 pl-3 text-sm text-gray-500 font-medium align-middle">
-                            {rowNumber}
-                          </TableCell>
-                          <TableCell className="w-5/12 py-1.5 pl-3 text-sm font-medium text-[#000000] align-middle">
-                              <div
-                                title={industry.name}
-                                className="truncate max-w-full w-full text-left flex items-center p-1"
-                              >
-                                {industry.name}
-                              </div>
-                          </TableCell>
-                          <TableCell className="w-2/12 px-3 py-1 text-sm text-[#000000] align-middle hover:text-[#8C2D19] transition-colors relative">
+                        <CustomTableRow key={industry.id} index={index}>
+                          <TableNumberCell rowNumber={rowNumber} />
+                          <TableNameCell
+                            name={industry.name}
+                            isRowInFilters={!!isRowInFilters(industry)}
+                          />
+                          <TableCell className="w-[12%] px-3 py-1 text-sm text-[#000000] align-middle hover:text-[#8C2D19] transition-colors relative">
                             <div className="flex items-center gap-0 justify-center">
                               {view === ViewType.TABLE ? (
                                 <CountComponent count={industry.count} />
@@ -220,7 +216,7 @@ export default function IndustryDashboard({
         ) : (
           <ChartView
             data={industries}
-            isLoading={isLoading || isFetching} 
+            isLoading={isLoading || isFetching}
             entityType={EntityType.INDUSTRY}
           />
         )}

@@ -10,33 +10,36 @@ import {
 import { Button } from "@/components/ui/button";
 import { DataPointDto } from "@/sdk";
 import { BookOpen, Building2, Filter, GraduationCap } from "lucide-react";
-import PaginationControls from "../common/PaginationControls";
 import { DashboardSkeleton } from "../skeletons/DashboardSkeleton";
 import TableTitle from "../common/TableTitle";
-import CustomTableHeader from "../common/CustomTableHeader";
 import { SortBy, SortOrder, ITEMS_PER_PAGE, DASHBOARD_HEIGHT } from "@/consts";
 import { FilterState } from "../common/GlobalFilters";
-import { NotFoundComponent } from "../common/NotFoundComponent";
+import {
+  NotFoundComponent,
+  TrendLineComponent,
+  TableNameCell,
+  TableNumberCell,
+  ViewToggle,
+  CountComponent,
+  LoadingChart,
+  CustomTableRow,
+  ChartView,
+  CustomTableHeader,
+  PaginationControls,
+} from "../common/";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import ChartView from "../common/ChartView";
 import { ViewType } from "@/types/view";
-import CountComponent from "../common/CountComponent";
-import TrendLineComponent from "../common/TrendLineComponent";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
-import LoadingChart from "../common/LoadingChart";
-import { TrendTooltip } from "../common/TrendTooltip";
 import { EntityType, TrendFrequency } from "@/types/entityTypes";
-import CustomTableRow from "../common/CustomTableRow";
 import { useFacultyList } from "@/hooks/analytics/useFacultyList";
 import { useMajorsList } from "@/hooks/analytics/useMajorsList";
 import { useGraduationList } from "@/hooks/analytics/useGraduationList";
 import { EducationDrillType } from "@/types/drillType";
-import ViewToggle from "../common/ViewToggle";
 
 type EducationDashboardProps = {
   filters: FilterState;
@@ -54,12 +57,12 @@ type DataRowProps = {
   trend?: DataPointDto[];
 };
 
-export default function EducationDashboard({
+export const EducationDashboard = ({
   filters,
   onAddToFilters,
   mode,
   setMode,
-}: EducationDashboardProps) {
+}: EducationDashboardProps) => {
   const [page, setPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(ITEMS_PER_PAGE[1]);
   const [sortField, setSortField] = useState<SortBy>(SortBy.COUNT);
@@ -214,6 +217,17 @@ export default function EducationDashboard({
     return graduationFilteredCount;
   };
 
+  const isRowInFilters = (row: DataRowProps): boolean => {
+    if (mode === EducationDrillType.FACULTY) {
+      console.log(filters.facultyIds);
+      console.log(row.id);
+      return filters.facultyIds?.includes(row.id) ?? false;
+    } else if (mode === EducationDrillType.MAJOR) {
+      return filters.courseIds?.includes(row.id) ?? false;
+    }
+    return filters.graduationYears?.includes(String(row.year ?? 0)) ?? false;
+  };
+
   const renderTableView = () => {
     const data = getDataByMode();
     const isLoading = isDomainLoading();
@@ -232,7 +246,7 @@ export default function EducationDashboard({
                 extraHeaderName={
                   mode === EducationDrillType.YEAR ? "Year" : undefined
                 }
-                //customSecondHeader="Graduations"
+                customAlumniHeader="Graduates"
               />
 
               {isLoading ? (
@@ -245,41 +259,33 @@ export default function EducationDashboard({
                     data.map((item: DataRowProps, index: number) => {
                       const rowNumber = (page - 1) * itemsPerPage + index + 1;
                       return (
-                        <CustomTableRow index={index} key={item.id}>
-                          <TableCell className="w-[5%] py-1.5 pl-3 text-sm text-gray-500 font-medium align-middle">
-                            {rowNumber}
-                          </TableCell>
-                          <TableCell className="w-[75%] py-1.5 pl-4 text-sm font-medium text-[#000000] flex items-center gap-1 align-middle">
-                            <div className="text-ellipsis overflow-hidden w-full text-left">
-                              <div className="text-ellipsis overflow-hidden w-full text-left">
-                                <span className="font-semibold">
-                                  {item.acronym}
-                                </span>
-                                {" - "}
-                                <span className="font-normal">{item.name}</span>
-                              </div>
-                            </div>
-                          </TableCell>
+                        <CustomTableRow
+                          index={index}
+                          key={
+                            mode === EducationDrillType.YEAR
+                              ? `${item.id}-${item.year}`
+                              : item.id
+                          }
+                        >
+                          <TableNumberCell rowNumber={rowNumber} />
+                          <TableNameCell
+                            name={item.name}
+                            acronym={item.acronym}
+                            isRowInFilters={!!isRowInFilters(item)}
+                          />
                           {mode === EducationDrillType.YEAR && (
-                            <TableCell className="w-[10%] px-3 py-1-5 text-sm text-[#000000] align-middle hover:text-[#8C2D19] transition-colors relative">
-                              <div className="flex items-center gap-0 justify-center">
-                                {view === ViewType.TABLE ? (
-                                  <CountComponent count={item.year ?? 0} />
-                                ) : (
-                                  <TrendLineComponent
-                                    dataPoints={item.trend || []}
-                                    trendFrequency={trendFrequency}
-                                  />
-                                )}
-                                <div
-                                  className={`opacity-0 group-hover:opacity-100 transition-opacity ${
-                                    view === ViewType.TABLE ? "ml-2" : "ml-0"
-                                  }`}
-                                ></div>
-                              </div>
+                            <TableCell className="w-[15%] px-3 py-1.5 text-sm text-[#000000] align-middle text-center">
+                              {view === ViewType.TABLE ? (
+                                <CountComponent count={item.year ?? 0} />
+                              ) : (
+                                <TrendLineComponent
+                                  dataPoints={item.trend || []}
+                                  trendFrequency={trendFrequency}
+                                />
+                              )}
                             </TableCell>
                           )}
-                          <TableCell className="w-[10%] px-3 py-1-5 text-sm text-[#000000] align-middle hover:text-[#8C2D19] transition-colors relative">
+                          <TableCell className="w-[15%] px-3 py-1-5 text-sm text-[#000000] align-middle hover:text-[#8C2D19] transition-colors relative">
                             <div className="flex items-center gap-0 justify-center">
                               {view === ViewType.TABLE ? (
                                 <CountComponent count={item.count} />
@@ -415,51 +421,35 @@ export default function EducationDashboard({
             tooltipMessage={getTooltipMessage()}
             className="pl-1"
           />
-
-          {view === ViewType.TREND && (
-            <TrendTooltip
-              entityType={
-                mode === EducationDrillType.FACULTY
-                  ? EntityType.FACULTY
-                  : EntityType.MAJOR
-              }
-              trendFrequency={trendFrequency}
-            />
-          )}
         </div>
-
-        <div className="border rounded-md overflow-hidden">
-          <ViewToggle
-            view={view}
-            setView={setView}
-            disabled={mode === EducationDrillType.YEAR}
-          />
-        </div>
-
-        <div className="flex items-center space-x-2  px-2 ">
+        <div className="flex items-center space-x-2">
           <ToggleGroup
             type="single"
             value={mode}
             onValueChange={(value: string) =>
               value && setMode(value as EducationDrillType)
             }
-            className="flex gap-1 group"
+            className="flex gap-1 group bg-gray-50 p-0.5 rounded-lg"
           >
             <ToggleGroupItem
               value={EducationDrillType.FACULTY}
               aria-label="Faculty View"
-              className="px-2 py-1 text-sm data-[state=on]:bg-gradient-to-r data-[state=on]:from-[#8C2D19] data-[state=on]:to-[#A13A28] data-[state=on]:text-white data-[state=on]:shadow-md hover:scale-105 transition-all duration-200 ease-in-out data-[state=off]:bg-gray-100 data-[state=off]:border data-[state=off]:border-gray-300"
+              className="px-2 py-1 text-sm data-[state=on]:bg-gradient-to-r data-[state=on]:from-[#8C2D19] data-[state=on]:to-[#A13A28] data-[state=on]:text-white data-[state=on]:shadow-[0_0_8px_rgba(140,45,25,0.5)] hover:scale-105 transition-all duration-200 ease-in-out data-[state=off]:bg-white data-[state=off]:border data-[state=off]:border-gray-200 hover:data-[state=off]:bg-gray-100"
             >
               <TooltipProvider>
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <div className="flex items-center">
-                      <Building2 className="h-4 w-4 mr-1 inline-block transition-transform duration-200" />
+                      <Building2 className="h-4 w-4 mr-1 inline-block transition-transform duration-200 hover:rotate-12" />
                       <span>F</span>
                     </div>
                   </TooltipTrigger>
                   <TooltipContent>
-                    <p>View distribution by Faculty</p>
+                    <p>
+                      {mode === EducationDrillType.FACULTY
+                        ? "Distribution by Faculty"
+                        : "Change to Faculty view"}
+                    </p>
                   </TooltipContent>
                 </Tooltip>
               </TooltipProvider>
@@ -467,42 +457,58 @@ export default function EducationDashboard({
             <ToggleGroupItem
               value={EducationDrillType.MAJOR}
               aria-label="Major View"
-              className="px-2 py-1 text-sm data-[state=on]:bg-gradient-to-r data-[state=on]:from-[#8C2D19] data-[state=on]:to-[#A13A28] data-[state=on]:text-white data-[state=on]:shadow-md hover:scale-105 transition-all duration-200 ease-in-out data-[state=off]:bg-gray-100 data-[state=off]:border data-[state=off]:border-gray-300"
+              className="px-2 py-1 text-sm data-[state=on]:bg-gradient-to-r data-[state=on]:from-[#8C2D19] data-[state=on]:to-[#A13A28] data-[state=on]:text-white data-[state=on]:shadow-[0_0_8px_rgba(140,45,25,0.5)] hover:scale-105 transition-all duration-200 ease-in-out data-[state=off]:bg-white data-[state=off]:border data-[state=off]:border-gray-200 hover:data-[state=off]:bg-gray-100 disabled:opacity-50"
             >
               <TooltipProvider>
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <div className="flex items-center">
-                      <BookOpen className="h-4 w-4 mr-1 inline-block transition-transform duration-200" />
+                      <BookOpen className="h-4 w-4 mr-1 inline-block transition-transform duration-200 hover:bounce" />
                       <span>C</span>
                     </div>
                   </TooltipTrigger>
                   <TooltipContent>
-                    <p>View distribution by Course</p>
+                    <p>
+                      {mode === EducationDrillType.MAJOR
+                        ? "Distribution by Course"
+                        : "Change to Course view"}
+                    </p>
                   </TooltipContent>
                 </Tooltip>
               </TooltipProvider>
             </ToggleGroupItem>
             <ToggleGroupItem
               value={EducationDrillType.YEAR}
+              disabled={view === ViewType.TREND}
               aria-label="Year View"
-              className="px-2 py-1 text-sm data-[state=on]:bg-gradient-to-r data-[state=on]:from-[#8C2D19] data-[state=on]:to-[#A13A28] data-[state=on]:text-white data-[state=on]:shadow-md hover:scale-105 transition-all duration-200 ease-in-out data-[state=off]:bg-gray-100 data-[state=off]:border data-[state=off]:border-gray-300"
+              className="px-2 py-1 text-sm data-[state=on]:bg-gradient-to-r data-[state=on]:from-[#8C2D19] data-[state=on]:to-[#A13A28] data-[state=on]:text-white data-[state=on]:shadow-[0_0_8px_rgba(140,45,25,0.5)] hover:scale-105 transition-all duration-200 ease-in-out data-[state=off]:bg-white data-[state=off]:border data-[state=off]:border-gray-200 hover:data-[state=off]:bg-gray-100 disabled:opacity-50"
             >
               <TooltipProvider>
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <div className="flex items-center">
-                      <GraduationCap className="h-4 w-4 mr-1 inline-block transition-transform duration-200" />
+                      <GraduationCap className="h-4 w-4 mr-1 inline-block transition-transform duration-200 hover:bounce" />
                       <span>Y</span>
                     </div>
                   </TooltipTrigger>
                   <TooltipContent>
-                    <p>View distribution by Graduation Year</p>
+                    <p>
+                      {mode === EducationDrillType.YEAR
+                        ? "Distribution by Graduation Year"
+                        : "Change to Graduation Year view"}
+                    </p>
                   </TooltipContent>
                 </Tooltip>
               </TooltipProvider>
             </ToggleGroupItem>
           </ToggleGroup>
+        </div>
+        <div className="border rounded-md overflow-hidden">
+          <ViewToggle
+            view={view}
+            setView={setView}
+            isTrendViewDisabled={mode === EducationDrillType.YEAR}
+          />
         </div>
       </div>
 

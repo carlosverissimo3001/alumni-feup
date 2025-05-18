@@ -13,14 +13,14 @@ import { LineChart, PieChart, TableIcon } from "lucide-react";
 type ViewToggleProps = {
   view: ViewType;
   setView: (view: ViewType) => void;
-  disabled?: boolean;
+  isTrendViewDisabled?: boolean;
 };
 
-export default function ViewToggle({
+export const ViewToggle = ({
   view,
   setView,
-  disabled,
-}: ViewToggleProps) {
+  isTrendViewDisabled,
+}: ViewToggleProps) => {
   return (
     <ToggleGroup
       type="single"
@@ -35,43 +35,61 @@ export default function ViewToggle({
               <ToggleGroupItem
                 value={ViewType.TABLE}
                 aria-label="Table View"
-                className="px-1.5 py-1"
+                className="px-1 py-0.5 sm:px-1.5 sm:py-1"
               >
-                <TableIcon className="h-4 w-4" />
+                <TableIcon className="h-3 w-3 sm:h-4 sm:w-4" />
               </ToggleGroupItem>
             </div>
           </TooltipTrigger>
-          <TooltipContent>View table</TooltipContent>
+          <TooltipContent>
+            {view === ViewType.TABLE
+              ? "Table view"
+              : "Change to table view"}
+          </TooltipContent>
         </Tooltip>
       </TooltipProvider>
-      <ToggleGroupItem
-        value={ViewType.CHART}
-        aria-label="Chart View"
-        className="px-1.5 py-1 disabled:opacity-10"
-        title="Chart View"
-      >
-        <PieChart className="h-4 w-4" />
-      </ToggleGroupItem>
       <TooltipProvider>
         <Tooltip>
           <TooltipTrigger asChild>
             <div>
               <ToggleGroupItem
-                disabled={disabled}
-                value={ViewType.TREND}
-                aria-label="Trend View"
-                className={`px-1.5 py-1 ${
-                  disabled ? "disabled:opacity-10" : ""
-                }`}
+                value={ViewType.CHART}
+                aria-label="Chart View"
+                className="px-1 py-0.5 sm:px-1.5 sm:py-1"
               >
-                <LineChart className="h-4 w-4" />
+                <PieChart className="h-3 w-3 sm:h-4 sm:w-4" />
               </ToggleGroupItem>
             </div>
           </TooltipTrigger>
           <TooltipContent>
-            {disabled
-              ? "Trends are not available for this view"
-              : "View trend over time"}
+            {view === ViewType.CHART
+              ? "Chart view"
+              : "Change to chart view"}
+          </TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
+      <TooltipProvider>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <div>
+              <ToggleGroupItem
+                disabled={isTrendViewDisabled}
+                value={ViewType.TREND}
+                aria-label="Trend View"
+                className={`px-1 py-0.5 sm:px-1.5 sm:py-1 ${
+                  isTrendViewDisabled ? "disabled:opacity-10" : ""
+                }`}
+              >
+                <LineChart className="h-3 w-3 sm:h-4 sm:w-4" />
+              </ToggleGroupItem>
+            </div>
+          </TooltipTrigger>
+          <TooltipContent>
+            {isTrendViewDisabled
+              ? "Trends are not available for this domain"
+              : view === ViewType.TREND
+                ? "Trend view"
+                : "Change to trend view"}
           </TooltipContent>
         </Tooltip>
       </TooltipProvider>

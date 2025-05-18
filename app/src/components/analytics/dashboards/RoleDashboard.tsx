@@ -12,12 +12,22 @@ import { RoleListItemDto } from "@/sdk";
 import { Briefcase, Filter, Info, ExternalLink, CheckIcon } from "lucide-react";
 
 import { DashboardSkeleton } from "../skeletons/DashboardSkeleton";
-import PaginationControls from "../common/PaginationControls";
 import TableTitle from "../common/TableTitle";
-import CustomTableHeader from "../common/CustomTableHeader";
 import { SortBy, SortOrder, ITEMS_PER_PAGE, DASHBOARD_HEIGHT } from "@/consts";
-import { FilterState } from "../common/GlobalFilters";
-import { NotFoundComponent } from "../common/NotFoundComponent";
+import {
+  NotFoundComponent,
+  TableNameCell,
+  TableNumberCell,
+  ViewToggle,
+  CountComponent,
+  LoadingChart,
+  CustomTableRow,
+  ChartView,
+  FilterState,
+  TrendLineComponent,
+  CustomTableHeader,
+  PaginationControls,
+} from "../common/";
 import {
   Tooltip,
   TooltipContent,
@@ -25,16 +35,8 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { useRoleList } from "@/hooks/analytics/useRoleList";
-import { startCase } from "lodash";
-import ChartView from "../common/ChartView";
 import { ViewType } from "@/types/view";
-import CountComponent from "../common/CountComponent";
-import TrendLineComponent from "../common/TrendLineComponent";
-import LoadingChart from "../common/LoadingChart";
 import { EntityType, TrendFrequency } from "@/types/entityTypes";
-import { TrendTooltip } from "../common/TrendTooltip";
-import CustomTableRow from "../common/CustomTableRow";
-import ViewToggle from "../common/ViewToggle";
 import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
 import { DropdownMenuContent } from "@/components/ui/dropdown-menu";
 import { DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
@@ -48,11 +50,11 @@ type RoleDashboardProps = {
   onAddToFilters?: (roleId: string) => void;
 };
 
-export default function RoleDashboard({
+export const RoleDashboard = ({
   filters,
   onAddToFilters,
   onDataUpdate,
-}: RoleDashboardProps) {
+}: RoleDashboardProps) => {
   const [page, setPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(ITEMS_PER_PAGE[1]);
   const [sortField, setSortField] = useState<SortBy>(SortBy.COUNT);
@@ -108,8 +110,8 @@ export default function RoleDashboard({
     }
   };
 
-  const isRowInFilters = (row: RoleListItemDto) => {
-    return filters.escoCodes?.includes(row.code);
+  const isRowInFilters = (row: RoleListItemDto): boolean => {
+    return filters.escoCodes?.includes(row.code) ?? false;
   };
 
   const renderTable = () => {
@@ -124,7 +126,7 @@ export default function RoleDashboard({
                 onSort={handleSort}
                 showTrend={view === ViewType.TREND}
                 trendFrequency={trendFrequency}
-                customSecondHeader="Roles"
+                customAlumniHeader="Roles"
                 hoverMessage="The total of alumni roles classified with this title"
               />
 
@@ -137,25 +139,13 @@ export default function RoleDashboard({
                       const rowNumber = (page - 1) * itemsPerPage + index + 1;
                       return (
                         <CustomTableRow key={role.code} index={index}>
-                          <TableCell className="w-[3%] py-1.5 pl-3 text-sm text-gray-500 font-medium align-middle">
-                            {rowNumber}
-                          </TableCell>
+                          <TableNumberCell rowNumber={rowNumber} />
+                          <TableNameCell
+                            name={role.name}
+                            isRowInFilters={!!isRowInFilters(role)}
+                          />
                           <TableCell
-                            className={`w-7/12 py-1.5 pl-3 text-sm ${
-                              isRowInFilters(role)
-                                ? "font-bold text-[#8C2D19]"
-                                : "font-medium text-[#000000]"
-                            } flex items-center gap-1 align-middle`}
-                          >
-                            <div
-                              title={role.name}
-                              className="text-ellipsis overflow-hidden whitespace-nowrap w-full text-left p-1"
-                            >
-                              {startCase(role.name)}
-                            </div>
-                          </TableCell>
-                          <TableCell
-                            className={`w-2/12 px-3 py-1 text-sm ${
+                            className={`w-[32%] px-3 py-1 text-sm ${
                               isRowInFilters(role)
                                 ? "font-bold text-[#8C2D19]"
                                 : "text-[#000000]"
@@ -270,21 +260,49 @@ export default function RoleDashboard({
             icon={<Briefcase className="h-5 w-5 text-[#8C2D19]" />}
             tooltipMessage="Distribution of alumni by the classification of their role."
           />
-          {view === ViewType.TREND && (
-            <TrendTooltip
-              entityType={EntityType.ROLE}
-              trendFrequency={trendFrequency}
-            />
-          )}
-        </div>
-
-        <div className="border rounded-md overflow-hidden">
-          <div className="border rounded-md overflow-hidden">
-            <ViewToggle view={view} setView={setView} />
-          </div>
         </div>
 
         <div className="flex items-center space-x-2">
+          <div className="flex items-center space-x-2px-2 py-1">
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <div>
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="min-w-[90px] justify-start text-left font-medium text-[#000000] border-gray-200 rounded-lg shadow-sm hover:bg-gray-100 transition-colors"
+                        >
+                          {classificationLevel}
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent className="shadow-md rounded-lg border-gray-200">
+                        {Object.values(ClassificationLevel).map(
+                          (item: ClassificationLevel) => (
+                            <DropdownMenuItem
+                              key={item}
+                              onClick={() => setClassificationLevel(item)}
+                              className="hover:bg-gray-100 transition-colors"
+                            >
+                              {item}
+                              {item === classificationLevel && (
+                                <CheckIcon className="h-4 w-4 text-[#8C2D19]" />
+                              )}
+                            </DropdownMenuItem>
+                          )
+                        )}
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </div>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Select ESCO classification grouping</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          </div>
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger asChild>
@@ -322,37 +340,11 @@ export default function RoleDashboard({
               </TooltipContent>
             </Tooltip>
           </TooltipProvider>
-          <div
-            className="flex items-center space-x-2px-2 py-1"
-            title="Toggle view mode"
-          >
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="min-w-[90px] justify-start text-left font-medium text-[#000000] border-gray-200 rounded-lg shadow-sm hover:bg-gray-100 transition-colors"
-                >
-                  {classificationLevel}
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent className="shadow-md rounded-lg border-gray-200">
-                {Object.values(ClassificationLevel).map(
-                  (item: ClassificationLevel) => (
-                    <DropdownMenuItem
-                      key={item}
-                      onClick={() => setClassificationLevel(item)}
-                      className="hover:bg-gray-100 transition-colors"
-                    >
-                      {item}
-                      {item === classificationLevel && (
-                        <CheckIcon className="h-4 w-4 text-[#8C2D19]" />
-                      )}
-                    </DropdownMenuItem>
-                  )
-                )}
-              </DropdownMenuContent>
-            </DropdownMenu>
+        </div>
+
+        <div className="border rounded-md overflow-hidden">
+          <div className="border rounded-md overflow-hidden">
+            <ViewToggle view={view} setView={setView} />
           </div>
         </div>
       </div>

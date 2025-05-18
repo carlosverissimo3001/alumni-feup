@@ -149,7 +149,7 @@ export class EducationAnalyticsService {
 
         if (!grad) {
           graduations.set(key, {
-            id: key,
+            id: graduation.courseId,
             name: graduation.course.name,
             acronym: `[${graduation.course.faculty.acronym}] ${graduation.course.acronym}`,
             year: graduation.conclusionYear,

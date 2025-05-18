@@ -4,6 +4,12 @@ import { Button } from "@/components/ui/button";
 import { SortBy, SortOrder } from "@/consts";
 import { TrendFrequency } from "@/types/entityTypes";
 import { format } from "date-fns";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 type CustomTableHeaderProps = {
   sortField?: SortBy;
@@ -11,25 +17,25 @@ type CustomTableHeaderProps = {
   onSort?: (field: SortBy) => void;
   hoverMessage?: string;
   customNameHeader?: string;
-  customSecondHeader?: string;
+  customAlumniHeader?: string;
   showTrend?: boolean;
   trendFrequency?: TrendFrequency;
   allowCountSort?: boolean;
   extraHeaderName?: string;
 };
 
-export default function CustomTableHeader({
+export const CustomTableHeader = ({
   sortField,
   sortOrder,
   onSort,
   hoverMessage,
   customNameHeader,
-  customSecondHeader,
+  customAlumniHeader,
   showTrend = false,
   trendFrequency = TrendFrequency.MAX,
   allowCountSort = true,
   extraHeaderName,
-}: CustomTableHeaderProps) {
+}: CustomTableHeaderProps) => {
   const renderSortIcon = (field: SortBy) => {
     if (sortField !== field) {
       return;
@@ -44,13 +50,15 @@ export default function CustomTableHeader({
   return (
     <TableHeader className="bg-gradient-to-r from-[#A13A23]/10 to-gray-100/80 sticky top-0 z-10 backdrop-blur-sm border-b border-gray-200/80 hover:bg-[#A13A23]/15 transition-all duration-300">
       <TableRow>
-        <TableHead className="w-[7%] pl-3 py-1 text-left text-xs font-semibold text-[#8C2D19] uppercase tracking-wider">
+        {/* The number column */}
+        <TableHead className="w-[5%] pl-3 py-1 text-left text-xs font-semibold text-[#8C2D19] uppercase tracking-wider">
           #
         </TableHead>
+        {/* The name(company, city, etc.) column */}
         <TableHead
-          className={`w-[${
-            extraHeaderName ? "62" : "80"
-          }%] pl-3 py-1 text-left text-xs font-semibold text-[#8C2D19] tracking-wider`}
+          className={`${
+            extraHeaderName ? "w-[45%]" : "w-[65%]"
+          } py-1 text-left text-xs font-semibold text-[#8C2D19] tracking-wider`}
         >
           <div className="flex items-center">
             <Button
@@ -58,14 +66,15 @@ export default function CustomTableHeader({
               className="h-8 px-1 font-semibold hover:bg-[#A13A23]/10 hover:text-[#A13A23] flex items-center gap-1 rounded-md transition-all duration-200"
               onClick={() => onSort?.(SortBy.NAME)}
             >
-              {customNameHeader || "Name"}
+              <span className="truncate">{customNameHeader || "Name"}</span>
               {renderSortIcon(SortBy.NAME)}
             </Button>
           </div>
         </TableHead>
+        {/* Extra headers (year, etc...) */}
         {extraHeaderName && (
-          <TableHead className="w-[12%] py-1 text-left text-xs font-semibold text-[#8C2D19] tracking-wider">
-            <div className="flex items-center">
+          <TableHead className="w-[10%] py-1 text-left text-xs font-semibold text-[#8C2D19] tracking-wider">
+            <div className="flex items-center justify-center">
               <Button
                 variant="ghost"
                 className="h-8 px-1 font-semibold hover:bg-[#A13A23]/10 hover:text-[#A13A23] flex items-center gap-1 rounded-md transition-all duration-200"
@@ -77,31 +86,40 @@ export default function CustomTableHeader({
             </div>
           </TableHead>
         )}
-        <TableHead className="w-[20%] pl-3 py-1 text-left text-xs font-semibold text-[#8C2D19] tracking-wider">
-          <div className="flex flex-col items-start" title={hoverMessage}>
-            <Button
-              variant="ghost"
-              className={`h-8 px-1 font-semibold flex items-center gap-1 rounded-md ${
-                allowCountSort
-                  ? "hover:text-[#A13A23] hover:bg-[#A13A23]/10 transition-all duration-200 cursor-pointer"
-                  : "hover:bg-transparent hover:text-[#8C2D19] cursor-default"
-              }`}
-              onClick={() => allowCountSort && onSort?.(SortBy.COUNT)}
-            >
-              {customSecondHeader || "Alumni"}
-              {allowCountSort && renderSortIcon(SortBy.COUNT)}
-            </Button>
-            {showTrend && (
-              <span className="text-[10px] text-gray-400 mt-[-2px] inline-center">
-                {getDateRange(trendFrequency)}
-              </span>
-            )}
-          </div>
+        <TableHead className="w-[20%] py-1 text-xs font-semibold text-[#8C2D19] tracking-wider">
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <div className="flex flex-col items-center justify-center w-full">
+                  <Button
+                    variant="ghost"
+                    className={`h-8 px-1 font-semibold flex items-center gap-1 rounded-md ${
+                      allowCountSort
+                        ? "hover:text-[#A13A23] hover:bg-[#A13A23]/10 transition-all duration-200 cursor-pointer"
+                        : "hover:bg-transparent hover:text-[#8C2D19] cursor-default"
+                    }`}
+                    onClick={() => allowCountSort && onSort?.(SortBy.COUNT)}
+                  >
+                    {customAlumniHeader || "Alumni"}
+                    {allowCountSort && renderSortIcon(SortBy.COUNT)}
+                  </Button>
+                  {showTrend && (
+                    <span className="text-[10px] text-gray-400 flex justify-center w-full">
+                      {getDateRange(trendFrequency)}
+                    </span>
+                  )}
+                </div>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>{hoverMessage}</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
         </TableHead>
       </TableRow>
     </TableHeader>
   );
-}
+};
 
 const getDateRange = (trendFrequency: TrendFrequency) => {
   switch (trendFrequency) {
