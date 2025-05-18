@@ -8,10 +8,13 @@ import {
   TableContainer,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { FilterState } from "../common/GlobalFilters";
+import {
+  FilterState,
+  PaginationControls,
+  CustomTableHeader,
+  CustomTableRow,
+} from "../common/";
 import ImageWithFallback from "../../ui/image-with-fallback";
-import PaginationControls from "../common/PaginationControls";
-import CustomTableHeader from "../common/CustomTableHeader";
 import { SortBy, SortOrder, ITEMS_PER_PAGE } from "@/consts";
 import { ExternalLink, Filter, Users } from "lucide-react";
 import TableTitle from "../common/TableTitle";
@@ -24,34 +27,35 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import CustomTableRow from "../common/CustomTableRow";
 import AlumniTableSkeleton from "../skeletons/AlumniTableSkeleton";
-
+import { useAuth } from "@/contexts/AuthContext";
 
 type AlumniTableProps = {
   filters: FilterState;
   onAddToFilters?: (alumniId: string) => void;
 };
 
-const PaginationDisplay = ({ 
-  page, 
-  itemsPerPage, 
-  totalItems, 
-  currentCount 
-}: { 
-  page: number; 
-  itemsPerPage: number; 
+const PaginationDisplay = ({
+  page,
+  itemsPerPage,
+  totalItems,
+  currentCount,
+}: {
+  page: number;
+  itemsPerPage: number;
   totalItems: number;
   currentCount: number;
 }) => {
   if (currentCount === 0) return "No alumni found";
-  
+
   const start = (page - 1) * itemsPerPage + 1;
   const end = Math.min((page - 1) * itemsPerPage + currentCount, totalItems);
-  
+
   return (
     <div className="text-gray-500">
-      <span className="font-bold">{start}-{end}</span>
+      <span className="font-bold">
+        {start}-{end}
+      </span>
       <span className="mx-1 italic">out of</span>
       <span className="font-bold">{totalItems}</span>
       <span className="ml-1 italic">shown</span>
@@ -59,10 +63,10 @@ const PaginationDisplay = ({
   );
 };
 
-export default function AlumniTable({
-  filters,
-  onAddToFilters,
-}: AlumniTableProps) {
+export const AlumniTable = ({ filters, onAddToFilters }: AlumniTableProps) => {
+  const { user } = useAuth();
+  const userId = user?.id;
+
   const [page, setPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(ITEMS_PER_PAGE[2]);
   const [sortField, setSortField] = useState<SortBy>(SortBy.NAME);
@@ -134,7 +138,7 @@ export default function AlumniTable({
                 onSort={handleSort}
                 showTrend={false}
                 allowCountSort={false}
-                customSecondHeader="LinkedIn"
+                customAlumniHeader="LinkedIn"
               />
 
               {isLoading || isFetching ? (
@@ -143,8 +147,17 @@ export default function AlumniTable({
                 <TableBody className="bg-white divide-y divide-gray-200">
                   {alumnus.map((alumni: AlumniListItemDto, index: number) => {
                     const rowNumber = (page - 1) * itemsPerPage + index + 1;
+                    const isLoggedUser = alumni.id === user?.id;
                     return (
-                      <CustomTableRow key={alumni.id} index={index}>
+                      <CustomTableRow
+                        key={alumni.id}
+                        index={index}
+                        className={
+                          isLoggedUser
+                            ? "!bg-[#FFF3F0] !hover:bg-[#FFE6E0] border-l-[6px] !border-[#A13A23] !border-b-2 !border-t-2 border-r-[6px]"
+                            : ""
+                        }
+                      >
                         <TableCell className="w-[6%] py-2.5 pl-4 text-sm text-gray-500 font-medium align-middle">
                           <div className="flex items-center gap-2">
                             <span>{rowNumber}</span>
@@ -182,10 +195,7 @@ export default function AlumniTable({
                               className="rounded-full object-cover w-full h-full"
                             />
                           </div>
-                          <div
-                            className="flex items-center gap-2 flex-1"
-                            title="Go to Alumni Profile"
-                          >
+                          <div className="flex items-center gap-2 flex-1">
                             <Button
                               variant="link"
                               className="text-sm font-medium text-[#000000] text-left h-auto p-1 hover:text-[#8C2D19] transition-colors flex items-center group-hover:text-[#8C2D19]"
@@ -193,19 +203,50 @@ export default function AlumniTable({
                                 window.open(`/profile/${alumni.id}`, "_blank");
                               }}
                             >
-                              <div
-                                title={alumni.fullName}
-                                className="text-ellipsis overflow-hidden text-left"
-                              >
-                                {alumni.fullName}
+                              <div className="text-ellipsis overflow-hidden text-left">
+                                <TooltipProvider>
+                                  <Tooltip>
+                                    <TooltipTrigger asChild>
+                                      <span>{alumni.fullName}</span>
+                                    </TooltipTrigger>
+                                    <TooltipContent>
+                                      {isLoggedUser ? (
+                                        <p>Go to your profile</p>
+                                      ) : (
+                                        <p>{alumni.fullName}</p>
+                                      )}
+                                    </TooltipContent>
+                                  </Tooltip>
+                                </TooltipProvider>
                               </div>
                             </Button>
-                            <ExternalLink
-                              className="h-4 w-4 text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer hover:text-[#8C2D19]"
-                              onClick={() => {
-                                window.open(`/profile/${alumni.id}`, "_blank");
-                              }}
-                            />
+                            <TooltipProvider>
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <ExternalLink
+                                    className="h-4 w-4 text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer hover:text-[#8C2D19]"
+                                    onClick={() => {
+                                      window.open(
+                                        `/profile/${alumni.id}`,
+                                        "_blank"
+                                      );
+                                    }}
+                                  />
+                                </TooltipTrigger>
+                                <TooltipContent>
+                                  {isLoggedUser ? (
+                                    <p>Go to your profile</p>
+                                  ) : (
+                                    <p>Go to {alumni.fullName.split(" ")[0]}&apos;s profile</p>
+                                  )}
+                                </TooltipContent>
+                              </Tooltip>
+                            </TooltipProvider>
+                            {alumni.id === userId && (
+                              <div className="px-2 py-0.5 text-xs font-medium bg-[#A13A23]/10 text-[#A13A23] rounded-full">
+                                You
+                              </div>
+                            )}
                           </div>
                         </TableCell>
                         <TableCell className="w-[12%] py-2.5 text-sm text-[#000000]">
@@ -277,4 +318,4 @@ export default function AlumniTable({
       {renderTable()}
     </div>
   );
-}
+};

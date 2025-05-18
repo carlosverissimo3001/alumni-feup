@@ -128,12 +128,6 @@ export interface AlumniExtended {
      */
     graduations?: Array<Graduation>;
     /**
-     * Whether the alumni is in a group
-     * @type {boolean}
-     * @memberof AlumniExtended
-     */
-    isInGroup?: boolean;
-    /**
      * Whether the alumni has a sigarra match
      * @type {boolean}
      * @memberof AlumniExtended
@@ -203,7 +197,6 @@ export function AlumniExtendedFromJSONTyped(json: any, ignoreDiscriminator: bool
         'reviewsLocation': json['ReviewsLocation'] == null ? undefined : ((json['ReviewsLocation'] as Array<any>).map(ReviewLocationFromJSON)),
         'location': json['Location'] == null ? undefined : LocationGeoFromJSON(json['Location']),
         'graduations': json['Graduations'] == null ? undefined : ((json['Graduations'] as Array<any>).map(GraduationFromJSON)),
-        'isInGroup': json['isInGroup'] == null ? undefined : json['isInGroup'],
         'hasSigarraMatch': json['hasSigarraMatch'] == null ? undefined : json['hasSigarraMatch'],
         'wasReviewed': json['wasReviewed'] == null ? undefined : json['wasReviewed'],
         'createdAt': json['createdAt'] == null ? undefined : (new Date(json['createdAt'])),
@@ -234,7 +227,6 @@ export function AlumniExtendedToJSONTyped(value?: AlumniExtended | null, ignoreD
         'ReviewsLocation': value['reviewsLocation'] == null ? undefined : ((value['reviewsLocation'] as Array<any>).map(ReviewLocationToJSON)),
         'Location': LocationGeoToJSON(value['location']),
         'Graduations': value['graduations'] == null ? undefined : ((value['graduations'] as Array<any>).map(GraduationToJSON)),
-        'isInGroup': value['isInGroup'],
         'hasSigarraMatch': value['hasSigarraMatch'],
         'wasReviewed': value['wasReviewed'],
         'createdAt': value['createdAt'] == null ? undefined : ((value['createdAt']).toISOString()),

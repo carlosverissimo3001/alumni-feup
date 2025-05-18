@@ -34,11 +34,17 @@ export interface RoleListItemDto {
      */
     name: string;
     /**
-     * The level of classification of the role, 1 being a more general role and 2 being a more specific role
+     * The level of classification of the role, 1-4 being ISCO-08 and 5+ being ESCO
      * @type {number}
      * @memberof RoleListItemDto
      */
     level: number;
+    /**
+     * Whether the role is a leaf node in the classification tree
+     * @type {boolean}
+     * @memberof RoleListItemDto
+     */
+    isLeaf: boolean;
     /**
      * The ESCO code of the role
      * @type {string}
@@ -65,6 +71,7 @@ export interface RoleListItemDto {
 export function instanceOfRoleListItemDto(value: object): value is RoleListItemDto {
     if (!('name' in value) || value['name'] === undefined) return false;
     if (!('level' in value) || value['level'] === undefined) return false;
+    if (!('isLeaf' in value) || value['isLeaf'] === undefined) return false;
     if (!('code' in value) || value['code'] === undefined) return false;
     if (!('count' in value) || value['count'] === undefined) return false;
     if (!('trend' in value) || value['trend'] === undefined) return false;
@@ -83,6 +90,7 @@ export function RoleListItemDtoFromJSONTyped(json: any, ignoreDiscriminator: boo
         
         'name': json['name'],
         'level': json['level'],
+        'isLeaf': json['isLeaf'],
         'code': json['code'],
         'count': json['count'],
         'trend': ((json['trend'] as Array<any>).map(DataPointDtoFromJSON)),
@@ -102,6 +110,7 @@ export function RoleListItemDtoToJSONTyped(value?: RoleListItemDto | null, ignor
         
         'name': value['name'],
         'level': value['level'],
+        'isLeaf': value['isLeaf'],
         'code': value['code'],
         'count': value['count'],
         'trend': ((value['trend'] as Array<any>).map(DataPointDtoToJSON)),

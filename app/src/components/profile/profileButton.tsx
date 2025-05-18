@@ -19,9 +19,9 @@ interface ProfileButtonProps {
   variant?: "default" | "floating";
 }
 
-export default function ProfileButton({
+export const ProfileButton = ({
   variant = "default",
-}: ProfileButtonProps) {
+}: ProfileButtonProps) => {
   const pathname = usePathname();
   const { isAuthenticated, logout, user } = useAuth();
 

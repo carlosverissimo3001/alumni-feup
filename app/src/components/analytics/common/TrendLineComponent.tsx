@@ -119,8 +119,6 @@ const TrendLineComponent = (props: TrendLineComponentProps) => {
   const raw = spliceData(props.dataPoints, props.trendFrequency);
   const data = raw.map((point) => point.value);
 
-  console.log(raw);
-
   const trend = getTrend(data);
   const trendColor = getTrendColor(trend);
 

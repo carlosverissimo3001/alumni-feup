@@ -20,9 +20,7 @@ import {
 } from "@/components/analytics/dashboards";
 import { useState, useCallback, useMemo, useEffect } from "react";
 import OverallStats from "@/components/analytics/OverallStats";
-import GlobalFilters, {
-  FilterState,
-} from "@/components/analytics/common/GlobalFilters";
+import { GlobalFilters, FilterState } from "@/components/analytics/common";
 import { handleDateRange } from "@/utils/date";
 import { Button } from "@/components/ui/button";
 import { useSearchParams, useRouter } from "next/navigation";
@@ -485,11 +483,6 @@ export default function Analytics() {
           mode={educationMode}
           setMode={setEducationMode}
           onAddToFilters={handleAddEducationToFilters}
-        />
-        <IndustryDashboard
-          onDataUpdate={handleIndustryDataUpdate}
-          filters={combinedFilters}
-          onAddToFilters={handleAddIndustryToFilters}
         />
       </div>
 

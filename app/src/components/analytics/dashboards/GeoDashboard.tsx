@@ -3,46 +3,48 @@
 import { useEffect, useState } from "react";
 
 import { Button } from "@/components/ui/button";
-import { Filter, Flag, MapPin } from "lucide-react";
-import { DashboardSkeleton } from "../skeletons/DashboardSkeleton";
-import PaginationControls from "../common/PaginationControls";
-import TableTitle from "../common/TableTitle";
-import { useCountryList } from "@/hooks/analytics/useCountryList";
-import { useCityList } from "@/hooks/analytics/useCityList";
-import CustomTableHeader from "../common/CustomTableHeader";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { Switch } from "@/components/ui/switch";
 import {
   Table,
   TableBody,
   TableCell,
   TableContainer,
 } from "@/components/ui/table";
-import ImageWithFallback from "../../ui/image-with-fallback";
-import { SortBy, SortOrder, ITEMS_PER_PAGE, DASHBOARD_HEIGHT } from "@/consts";
-import { FilterState } from "../common/GlobalFilters";
-import { NotFoundComponent } from "../common/NotFoundComponent";
-import { Switch } from "@/components/ui/switch";
-import ChartView from "../common/ChartView";
-import { ViewType } from "@/types/view";
-import CountComponent from "../common/CountComponent";
-import TrendLineComponent from "../common/TrendLineComponent";
-import LoadingChart from "../common/LoadingChart";
-import { TrendFrequency, EntityType } from "@/types/entityTypes";
-import { DataPointDto } from "@/sdk";
-import {
-  Popover,
-  PopoverTrigger,
-  PopoverContent,
-} from "@/components/ui/popover";
-import CustomTableRow from "../common/CustomTableRow";
-import { GeoDrillType } from "@/types/drillType";
-import { TrendTooltip } from "../common/TrendTooltip";
-import ViewToggle from "../common/ViewToggle";
 import {
   Tooltip,
-  TooltipProvider,
   TooltipContent,
+  TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { DASHBOARD_HEIGHT, ITEMS_PER_PAGE, SortBy, SortOrder } from "@/consts";
+import { useCityList } from "@/hooks/analytics/useCityList";
+import { useCountryList } from "@/hooks/analytics/useCountryList";
+import { DataPointDto } from "@/sdk";
+import { GeoDrillType } from "@/types/drillType";
+import { EntityType, TrendFrequency } from "@/types/entityTypes";
+import { ViewType } from "@/types/view";
+import { Filter, Flag, MapPin } from "lucide-react";
+import {
+  ChartView,
+  CountComponent,
+  CustomTableHeader,
+  PaginationControls,
+  CustomTableRow,
+  LoadingChart,
+  NotFoundComponent,
+  TableNameCell,
+  TableNumberCell,
+  ViewToggle,
+} from "../common/";
+import { FilterState } from "../common/GlobalFilters";
+import TableTitle from "../common/TableTitle";
+import TrendLineComponent from "../common/TrendLineComponent";
+import { DashboardSkeleton } from "../skeletons/DashboardSkeleton";
 
 type GeoDashboardProps = {
   onDataUpdate: (
@@ -65,13 +67,13 @@ type DataRowProps = {
   trend: DataPointDto[];
 };
 
-export default function GeoDashboard({
+export const GeoDashboard = ({
   onDataUpdate,
   filters,
   onAddToFilters,
   mode,
   setMode,
-}: GeoDashboardProps) {
+}: GeoDashboardProps) => {
   const [page, setPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(ITEMS_PER_PAGE[1]);
   const [sortField, setSortField] = useState<SortBy>(SortBy.COUNT);
@@ -202,33 +204,13 @@ export default function GeoDashboard({
                         : "";
                       return (
                         <CustomTableRow index={index} key={row.id}>
-                          <TableCell className="w-1/12 py-1.5 pl-3 text-sm text-gray-500 font-medium align-middle">
-                            {rowNumber}
-                          </TableCell>
-                          <TableCell
-                            className={`w-7/12 py-1.5 pl-3 text-sm ${
-                              isRowInFilters(row)
-                                ? "font-bold text-[#8C2D19]"
-                                : "font-medium text-[#000000]"
-                            } flex items-center gap-1 align-middle`}
-                          >
-                            <div className="min-w-[24px] w-6 h-6 mr-1.5 rounded-full overflow-hidden flex items-center justify-center bg-gray-50">
-                              <ImageWithFallback
-                                src={flagUrl}
-                                fallbackSrc="/images/no-location.png"
-                                alt={`${row.name} flag`}
-                                width={24}
-                                height={24}
-                                className="rounded-full object-contain w-full h-full"
-                              />
-                            </div>
-                            <div
-                              title={row.name}
-                              className="text-ellipsis overflow-hidden text-left p-1"
-                            >
-                              {row.name}
-                            </div>
-                          </TableCell>
+                          <TableNumberCell rowNumber={rowNumber} />
+                          <TableNameCell
+                            name={row.name}
+                            isRowInFilters={!!isRowInFilters(row)}
+                            logo={flagUrl}
+                            logoType="location"
+                          />
                           <TableCell
                             className={`w-2/12 px-3 py-1 text-sm ${
                               isRowInFilters(row)
@@ -465,37 +447,29 @@ export default function GeoDashboard({
                 : "Distribution of alumni by the city of their role."
             }
           />
-
-          {view === ViewType.TREND && (
-            <TrendTooltip
-              entityType={
-                mode === "country" ? EntityType.COUNTRY : EntityType.CITY
-              }
-              trendFrequency={trendFrequency}
-            />
-          )}
         </div>
 
-        <div className="border rounded-md overflow-hidden">
-          <div className="border rounded-md overflow-hidden">
-            <ViewToggle view={view} setView={setView} />
-          </div>
-        </div>
+        <div className="flex items-center space-x-2 bg-gray-50 px-2 py-1 rounded-full">
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <span
+                  className={`text-sm font-medium cursor-pointer ${
+                    mode === GeoDrillType.COUNTRY
+                      ? "text-[#8C2D19] font-semibold"
+                      : "text-gray-500"
+                  }`}
+                  onClick={() => setMode(GeoDrillType.COUNTRY)}
+                >
+                  Countries
+                </span>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>View distribution by countries</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
 
-        <div
-          className="flex items-center space-x-2 bg-gray-50 px-2 py-1 rounded-full"
-          title="Toggle view mode"
-        >
-          <span
-            className={`text-sm font-medium cursor-pointer ${
-              mode === GeoDrillType.COUNTRY
-                ? "text-[#8C2D19] font-semibold"
-                : "text-gray-500"
-            }`}
-            onClick={() => setMode(GeoDrillType.COUNTRY)}
-          >
-            Countries
-          </span>
           <Switch
             id="mode-toggle"
             checked={mode === GeoDrillType.CITY}
@@ -503,16 +477,32 @@ export default function GeoDashboard({
               setMode(checked ? GeoDrillType.CITY : GeoDrillType.COUNTRY)
             }
           />
-          <span
-            className={`text-sm font-medium cursor-pointer ${
-              mode === GeoDrillType.CITY
-                ? "text-[#8C2D19] font-semibold"
-                : "text-gray-500"
-            }`}
-            onClick={() => setMode(GeoDrillType.CITY)}
-          >
-            Cities
-          </span>
+
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <span
+                  className={`text-sm font-medium cursor-pointer ${
+                    mode === GeoDrillType.CITY
+                      ? "text-[#8C2D19] font-semibold"
+                      : "text-gray-500"
+                  }`}
+                  onClick={() => setMode(GeoDrillType.CITY)}
+                >
+                  Cities
+                </span>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>View distribution by cities</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+        </div>
+
+        <div className="border rounded-md overflow-hidden">
+          <div className="border rounded-md overflow-hidden">
+            <ViewToggle view={view} setView={setView} />
+          </div>
         </div>
       </div>
 

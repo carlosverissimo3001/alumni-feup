@@ -58,7 +58,7 @@ export interface Role {
      */
     company: Company;
     /**
-     * The job classifications
+     * The job classification
      * @type {object}
      * @memberof Role
      */

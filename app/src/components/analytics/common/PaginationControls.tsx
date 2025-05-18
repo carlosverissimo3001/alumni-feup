@@ -17,8 +17,7 @@ import {
 import { TrendFrequency } from "@/types/entityTypes";
 import { ArrowLeftIcon, ArrowRightIcon, CheckIcon } from "lucide-react";
 import { Input } from "@/components/ui/input";
-
-const ITEMS_PER_PAGE = [5, 10, 25, 50, 100];
+import { ITEMS_PER_PAGE } from "@/consts";
 
 interface PaginationControlsProps {
   page: number;
@@ -33,7 +32,7 @@ interface PaginationControlsProps {
   setTrendFrequency?: (trendFrequency: TrendFrequency) => void;
 }
 
-export default function PaginationControls({
+export const PaginationControls = ({
   page,
   setPage,
   itemsPerPage,
@@ -44,7 +43,7 @@ export default function PaginationControls({
   showTrendFrequency = false,
   setTrendFrequency,
   trendFrequency,
-}: PaginationControlsProps) {
+}: PaginationControlsProps) => {
   const totalPages = Math.ceil(totalItems / itemsPerPage);
   const [pageInput, setPageInput] = useState<string>(String(page));
 
@@ -115,7 +114,9 @@ export default function PaginationControls({
 
     return (
       <div className="text-gray-500">
-        <span className="font-bold">{start}-{end}</span>
+        <span className="font-bold">
+          {start}-{end}
+        </span>
         <span className="mx-1">out of</span>
         <span className="font-bold">{totalItems}</span>
         <span className="ml-1">shown</span>
@@ -123,51 +124,36 @@ export default function PaginationControls({
     );
   };
 
-
-return visible ? (
-  <div className="flex items-center justify-between flex-shrink-0 pt-2">
-    <div>
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button
-            variant="outline"
-            size="sm"
-            className="min-w-[90px] justify-start text-left font-medium text-[#000000] border-gray-200 rounded-lg shadow-sm hover:bg-gray-100 transition-colors"
-          >
-            {itemsPerPage} / page
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent className="shadow-md rounded-lg border-gray-200">
-          {ITEMS_PER_PAGE.map((item) => (
-            <DropdownMenuItem
-              key={item}
-              onClick={() => handleItemsPerPageChange(item)}
-              className="hover:bg-gray-100 transition-colors"
+  return visible ? (
+    <div className="flex flex-wrap items-center justify-between gap-2 flex-shrink-0 pt-2">
+      <div className="flex items-center gap-2 flex-shrink-0">
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button
+              variant="outline"
+              size="sm"
+              className="min-w-[90px] justify-start text-left font-medium text-[#000000] border-gray-200 rounded-lg shadow-sm hover:bg-gray-100 transition-colors"
             >
-              {item}
-              {item === itemsPerPage && (
-                <CheckIcon className="h-4 w-4 text-[#8C2D19]" />
-              )}
-            </DropdownMenuItem>
-          ))}
-        </DropdownMenuContent>
-      </DropdownMenu>
-    </div>
+              {itemsPerPage} / page
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent className="shadow-md rounded-lg border-gray-200">
+            {ITEMS_PER_PAGE.map((item) => (
+              <DropdownMenuItem
+                key={item}
+                onClick={() => handleItemsPerPageChange(item)}
+                className="hover:bg-gray-100 transition-colors"
+              >
+                {item}
+                {item === itemsPerPage && (
+                  <CheckIcon className="h-4 w-4 text-[#8C2D19]" />
+                )}
+              </DropdownMenuItem>
+            ))}
+          </DropdownMenuContent>
+        </DropdownMenu>
 
-    <div className="flex items-center space-x-4">
-      <div className="flex items-center space-x-1 text-[12.5px] text-[#000000]">
-        <PaginationDisplay
-          page={page}
-          itemsPerPage={itemsPerPage}
-          totalItems={totalItems}
-          currentCount={currentCount}
-        />
-      </div>
-    </div>
-
-    <div className="flex items-center space-x-4">
-      {showTrendFrequency && (
-        <div>
+        {showTrendFrequency && (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button
@@ -193,10 +179,19 @@ return visible ? (
               ))}
             </DropdownMenuContent>
           </DropdownMenu>
-        </div>
-      )}
+        )}
+      </div>
 
-      <div className="flex items-center space-x-1">
+      <div className="flex-1 flex justify-center text-[12.5px] text-[#000000]">
+        <PaginationDisplay
+          page={page}
+          itemsPerPage={itemsPerPage}
+          totalItems={totalItems}
+          currentCount={currentCount}
+        />
+      </div>
+
+      <div className="flex items-center gap-1 flex-shrink-0">
         <Button
           variant="ghost"
           size="sm"
@@ -207,7 +202,7 @@ return visible ? (
           <ArrowLeftIcon className="h-4 w-4 text-[#8C2D19]" />
         </Button>
 
-        <div className="flex items-center text-xs text-[#000000] space-x-0.5">
+        <div className="flex items-center text-xs text-[#000000] gap-1">
           <Input
             type="number"
             value={pageInput}
@@ -225,7 +220,7 @@ return visible ? (
             }`}
             disabled={totalPages === 0}
           />
-          <span>of {totalPages}</span>
+          <span className="whitespace-nowrap">of {totalPages}</span>
         </div>
 
         <Button
@@ -240,8 +235,7 @@ return visible ? (
         </Button>
       </div>
     </div>
-  </div>
-) : (
-      <div className="flex min-h-[40px] items-center justify-between flex-shrink-0 pt-2" />
-    );
-}
+  ) : (
+    <div className="flex min-h-[40px] items-center justify-between flex-shrink-0 pt-2" />
+  );
+};
