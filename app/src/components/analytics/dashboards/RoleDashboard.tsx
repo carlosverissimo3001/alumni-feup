@@ -145,7 +145,9 @@ export const RoleDashboard = ({
                             isRowInFilters={!!isRowInFilters(role)}
                           />
                           <TableCell
-                            className={`w-[32%] px-3 py-1 text-sm ${
+                            className={`w-[12%] px-4 ${
+                              view === ViewType.TABLE ? "py-1" : "py-3"
+                            } text-sm ${
                               isRowInFilters(role)
                                 ? "font-bold text-[#8C2D19]"
                                 : "text-[#000000]"
@@ -153,43 +155,45 @@ export const RoleDashboard = ({
                           >
                             <div className="flex items-center gap-0 justify-center">
                               {view === ViewType.TABLE ? (
-                                <CountComponent count={role.count} />
+                                <>
+                                  <CountComponent count={role.count} />
+                                  <div
+                                    className={`${
+                                      isRowInFilters(role)
+                                        ? "opacity-100"
+                                        : "opacity-0 group-hover:opacity-100"
+                                    } transition-opacity ${
+                                      view === ViewType.TABLE ? "ml-2" : "ml-0"
+                                    }`}
+                                  >
+                                    <TooltipProvider>
+                                      <Tooltip>
+                                        <TooltipTrigger asChild>
+                                          <Button
+                                            aria-label="Add to filters"
+                                            variant="ghost"
+                                            size="sm"
+                                            className="p-1 h-6 w-6 rounded-full bg-gray-100 hover:bg-gray-200"
+                                            onClick={() =>
+                                              onAddToFilters?.(role.code)
+                                            }
+                                          >
+                                            <Filter className="h-4 w-4 text-[#8C2D19]" />
+                                          </Button>
+                                        </TooltipTrigger>
+                                        <TooltipContent>
+                                          <p>Filter on {role.name}</p>
+                                        </TooltipContent>
+                                      </Tooltip>
+                                    </TooltipProvider>
+                                  </div>
+                                </>
                               ) : (
                                 <TrendLineComponent
                                   dataPoints={role.trend}
                                   trendFrequency={trendFrequency}
                                 />
                               )}
-                              <div
-                                className={`${
-                                  isRowInFilters(role)
-                                    ? "opacity-100"
-                                    : "opacity-0 group-hover:opacity-100"
-                                } transition-opacity ${
-                                  view === ViewType.TABLE ? "ml-2" : "ml-0"
-                                }`}
-                              >
-                                <TooltipProvider>
-                                  <Tooltip>
-                                    <TooltipTrigger asChild>
-                                      <Button
-                                        aria-label="Add to filters"
-                                        variant="ghost"
-                                        size="sm"
-                                        className="p-1 h-6 w-6 rounded-full bg-gray-100 hover:bg-gray-200"
-                                        onClick={() =>
-                                          onAddToFilters?.(role.code)
-                                        }
-                                      >
-                                        <Filter className="h-4 w-4 text-[#8C2D19]" />
-                                      </Button>
-                                    </TooltipTrigger>
-                                    <TooltipContent>
-                                      <p>Filter on {role.name}</p>
-                                    </TooltipContent>
-                                  </Tooltip>
-                                </TooltipProvider>
-                              </div>
                             </div>
                           </TableCell>
                         </CustomTableRow>
@@ -354,4 +358,4 @@ export const RoleDashboard = ({
       {view === ViewType.CHART && renderChartView()}
     </div>
   );
-}
+};

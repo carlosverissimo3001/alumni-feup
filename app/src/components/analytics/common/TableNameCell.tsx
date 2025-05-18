@@ -110,15 +110,15 @@ export const TableNameCell = ({
   pageUrl,
   salaryDataUrl,
 }: TableNameCellProps) => {
-  const baseClassName = `py-1.5 w-full text-sm flex items-center gap-1 align-middle`;
+  const baseClassName = `w-full text-sm flex items-center`;
 
   if (!logo) {
     return (
-      <TableCell className={baseClassName}>
-        <div className="w-full">
+      <TableCell className="py-2.5 align-middle">
+        <div className={baseClassName}>
           <NameWithTooltip name={name} acronym={acronym}>
             <div
-              className={`text-ellipsis overflow-hidden whitespace-nowrap w-full text-left p-1 ${
+              className={`text-ellipsis overflow-hidden whitespace-nowrap w-full text-left ${
                 isRowInFilters ? "font-bold" : "font-medium"
               }`}
             >
@@ -135,48 +135,50 @@ export const TableNameCell = ({
   }
 
   return (
-    <TableCell className={baseClassName}>
-      <LogoSection logo={logo} name={name} logoType={logoType} />
-      <div className="flex flex-1 min-w-0 overflow-hidden">
-        <div className="flex items-center flex-1 min-w-0">
-          <NameWithTooltip name={name} acronym={acronym}>
-            <Button
-              variant="link"
-              className={`text-sm h-auto p-1 hover:text-[#8C2D19] transition-colors group-hover:text-[#8C2D19] min-w-0 flex-1 justify-start ${
-                isRowInFilters ? "text-[#8C2D19]" : ""
-              }`}
-              onClick={() => window.open(pageUrl, "_blank")}
-            >
-              <div
-                className={`truncate text-left ${
-                  isRowInFilters ? "font-bold" : "font-medium"
+    <TableCell className="py-1.5 align-middle">
+      <div className={`${baseClassName} gap-1.5`}>
+        <LogoSection logo={logo} name={name} logoType={logoType} />
+        <div className="flex flex-1 min-w-0">
+          <div className="flex items-center flex-1 min-w-0">
+            <NameWithTooltip name={name} acronym={acronym}>
+              <Button
+                variant="link"
+                className={`text-sm h-auto p-1 hover:text-[#8C2D19] transition-colors group-hover:text-[#8C2D19] min-w-0 flex-1 justify-start ${
+                  isRowInFilters ? "text-[#8C2D19]" : ""
                 }`}
+                onClick={() => window.open(pageUrl, "_blank")}
               >
-                <NameContent
-                  name={name}
-                  acronym={acronym}
-                  isRowInFilters={isRowInFilters}
-                />
-              </div>
-            </Button>
-          </NameWithTooltip>
-          {salaryDataUrl && (
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <div
-                    className="h-4 w-4 ml-1 text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer hover:text-[#8C2D19] shrink-0"
-                    onClick={() => window.open(salaryDataUrl, "_blank")}
-                  >
-                    <DollarSign className="h-4 w-4 animate-pulse  bg-clip-text bg-gradient-to-r from-green-400 to-yellow-400" />{" "}
-                  </div>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>View Salary Insights on Levels.fyi for {name}</p>
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
-          )}
+                <div
+                  className={`truncate text-left ${
+                    isRowInFilters ? "font-bold" : "font-medium"
+                  }`}
+                >
+                  <NameContent
+                    name={name}
+                    acronym={acronym}
+                    isRowInFilters={isRowInFilters}
+                  />
+                </div>
+              </Button>
+            </NameWithTooltip>
+            {salaryDataUrl && (
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <div
+                      className="h-4 w-4 ml-1 text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer hover:text-[#8C2D19] shrink-0"
+                      onClick={() => window.open(salaryDataUrl, "_blank")}
+                    >
+                      <DollarSign className="h-4 w-4 animate-pulse  bg-clip-text bg-gradient-to-r from-green-400 to-yellow-400" />{" "}
+                    </div>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>View Salary Insights on Levels.fyi for {name}</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            )}
+          </div>
         </div>
       </div>
     </TableCell>
