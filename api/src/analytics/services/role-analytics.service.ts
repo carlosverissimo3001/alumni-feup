@@ -18,6 +18,7 @@ import { DEFAULT_QUERY_SORT_ORDER } from '../utils/consts';
 import { sortData } from '../utils';
 import { TrendAnalyticsService } from './trend-analytics.service';
 import { applyDateFilters } from '../utils/filters';
+import { EscoClassificationAnalyticsEntity } from '../entities/esco-classification.entity';
 @Injectable()
 export class RoleAnalyticsService {
   constructor(
@@ -35,39 +36,64 @@ export class RoleAnalyticsService {
     const roleMap = new Map<string, RoleListItemDto>();
     const escoLevel = query.escoClassificationLevel;
 
-    alumnus
-      .flatMap((alumni) => alumni.roles || [])
-      .filter((role) => role.jobClassification)
-      .forEach((role) => {
-        const jobClassification = role.jobClassification;
+    // Keeps a map of the hierarchy of the esco classifications
+    const isDifferentLevel = escoLevel && escoLevel !== 4;
+    const hierarchyMap = new Map<string, EscoClassificationAnalyticsEntity>();
 
-        // We filtered above, this is to make the linter happy
-        if (!jobClassification) {
-          return;
+    const allRoles = alumnus.flatMap((alumni) => alumni.roles || []);
+    for (const role of allRoles) {
+      if (!role.jobClassification) continue;
+
+      const jobClassification = role.jobClassification;
+      const escoClassification = jobClassification.escoClassification;
+
+      let code = escoClassification.code;
+      let titleEn = escoClassification.titleEn;
+      let isLeaf = escoClassification.isLeaf;
+      let level = escoClassification.level;
+
+      if (isDifferentLevel) {
+        code = code.slice(0, escoLevel);
+        // First, let's see if we already have the hierarchy
+        const hierarchy = hierarchyMap.get(code);
+        if (!hierarchy) {
+          const newHierarchy =
+            await this.roleRepository.getClassification(code);
+          if (newHierarchy) {
+            hierarchyMap.set(code, newHierarchy);
+            code = newHierarchy.code;
+            titleEn = newHierarchy.titleEn;
+            isLeaf = newHierarchy.isLeaf;
+            level = newHierarchy.level;
+          } else {
+            // If we don't have the hierarchy, we can't add the role
+            // Note, this should not happen
+            continue;
+          }
         }
+      }
 
-        const escoClassification = jobClassification.escoClassification;
-
-        const { code, titleEn, isLeaf, level } = escoClassification;
-
-        if (roleMap.has(code)) {
-          roleMap.get(code)!.count++;
-        } else {
-          roleMap.set(code, {
-            name: titleEn,
-            code: code,
-            isLeaf: isLeaf,
-            level: escoLevel || level,
-            count: 1,
-            trend: query.includeTrend
-              ? this.trendAnalyticsService.getRoleTrend({
-                  data: alumnusUnfiltered,
-                  entityId: code,
-                })
-              : [],
-          });
+      if (roleMap.has(code)) {
+        const existingRole = roleMap.get(code);
+        if (existingRole) {
+          existingRole.count++;
         }
-      });
+      } else {
+        roleMap.set(code, {
+          name: titleEn,
+          code: code,
+          isLeaf: isLeaf,
+          level: escoLevel || level,
+          count: 1,
+          trend: query.includeTrend
+            ? this.trendAnalyticsService.getRoleTrend({
+                data: alumnusUnfiltered,
+                entityId: code,
+              })
+            : [],
+        });
+      }
+    }
 
     const roles = Array.from(roleMap.values());
 

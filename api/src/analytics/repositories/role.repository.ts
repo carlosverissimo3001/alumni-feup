@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '@/prisma/prisma.service';
 import { RoleOptionDto } from '@/analytics/dto/role-option.dto';
+import { EscoClassificationAnalyticsEntity } from '../entities/esco-classification.entity';
 
 @Injectable()
 export class RoleRepository {
@@ -19,7 +20,7 @@ export class RoleRepository {
         level: true,
       },
       where: {
-        isLeaf: true,
+        level: { gte: 5 },
       },
     });
 
@@ -28,5 +29,29 @@ export class RoleRepository {
       title: classification.titleEn,
       level: classification.level,
     }));
+  }
+
+  /**
+   * Get a classification by its code
+   * @param code - The code of the classification
+   * @returns The classification
+   */
+  async getClassification(
+    code: string,
+  ): Promise<EscoClassificationAnalyticsEntity | undefined> {
+    const classification = await this.prisma.escoClassification.findFirst({
+      where: { code },
+    });
+
+    if (!classification) {
+      return undefined;
+    }
+
+    return {
+      titleEn: classification.titleEn,
+      code: classification.code,
+      isLeaf: classification.isLeaf,
+      level: classification.level,
+    };
   }
 }

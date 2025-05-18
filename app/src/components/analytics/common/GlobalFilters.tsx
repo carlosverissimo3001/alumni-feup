@@ -144,9 +144,6 @@ export default function GlobalFilters({
   const { data: facultyOptions, isLoading: isFacultyOptionsLoading } =
     useListFaculties();
 
-  // React will run these hooks in parallel by default
-  // The component will render once all data is available
-
   const options = useMemo(
     () => ({
       companies: (companyOptions || []).map((company) => ({
@@ -215,7 +212,7 @@ export default function GlobalFilters({
       roles: (roleOptions || [])
         .map((role) => ({
           value: role.escoCode,
-          label: `(${role.level}) ${role.title} `,
+          label: `${role.title} `,
         })),
     }),
     [
