@@ -121,7 +121,7 @@ export default function CompanyOverview({ data }: props) {
                           className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm text-muted-foreground hover:text-foreground hover:bg-gradient-to-r from-[#8C2D19]/10 to-gray-100 hover:scale-105 transition-all duration-200 rounded-md"
                         >
                           <Image
-                            src="/images/levels-fyi-logo.png"
+                            src="/logos/levels-fyi-logo.png"
                             alt="Levels.fyi"
                             width={20}
                             height={20}
