@@ -1,12 +1,16 @@
-// Note: For brevity, we're only supporting trend analysis for the past 15 years
-import { AlumniAnalyticsEntity, RoleAnalyticsEntity } from '../entities';
+// Note: For brevity, we're only supporting trend analysis for the past 30 years
+import {
+  AlumniAnalyticsEntity,
+  RoleAnalyticsEntity,
+  GraduationAnalyticsEntity,
+} from '../entities';
 import { Frequency, TrendType } from '../utils/';
 import { Injectable } from '@nestjs/common';
 import { subYears } from 'date-fns';
 import { DataPointDto } from '../dto';
 import { getLabelForDate } from '../utils/date';
 
-type getTrendParams = {
+type TrendParams = {
   data: AlumniAnalyticsEntity[];
   entityId: string;
   type?: TrendType;
@@ -19,7 +23,7 @@ const THIRTY_YEARS_AGO = subYears(new Date(), 30);
 export class TrendAnalyticsService {
   constructor() {}
 
-  getCompanyTrend(params: getTrendParams): DataPointDto[] {
+  getCompanyTrend(params: TrendParams): DataPointDto[] {
     const { data, entityId } = params;
 
     // Gets all the roles for the company that were active at any point in the last 30 years
@@ -66,7 +70,7 @@ export class TrendAnalyticsService {
     return dataPoints;
   }
 
-  getCountryTrend(params: getTrendParams): DataPointDto[] {
+  getCountryTrend(params: TrendParams): DataPointDto[] {
     const { data, entityId } = params;
 
     // Gets all the roles whose location was the country
@@ -86,7 +90,7 @@ export class TrendAnalyticsService {
     return this.aggregateActiveRoles(roles);
   }
 
-  getCityTrend(params: getTrendParams): DataPointDto[] {
+  getCityTrend(params: TrendParams): DataPointDto[] {
     const { data, entityId } = params;
 
     // Gets all the roles whose location was the city
@@ -106,7 +110,7 @@ export class TrendAnalyticsService {
     return this.aggregateActiveRoles(roles);
   }
 
-  getRoleTrend(params: getTrendParams): DataPointDto[] {
+  getRoleTrend(params: TrendParams): DataPointDto[] {
     const { data, entityId, isDifferentClassificationLevel } = params;
 
     // Gets all the roles whose title matches the entityId
@@ -137,7 +141,7 @@ export class TrendAnalyticsService {
     return this.aggregateActiveRoles(roles);
   }
 
-  getIndustryTrend(params: getTrendParams): DataPointDto[] {
+  getIndustryTrend(params: TrendParams): DataPointDto[] {
     const { data, entityId } = params;
 
     // Gets all the roles whose industry matches the entityId
@@ -155,6 +159,44 @@ export class TrendAnalyticsService {
       });
 
     return this.aggregateActiveRoles(roles);
+  }
+
+  getFacultyTrend(params: TrendParams): DataPointDto[] {
+    const { data, entityId } = params;
+
+    // Here, we get all the graduations from the faculty (the entity)
+    const graduations = data
+      .map((alumni) => alumni.graduations)
+      .flat()
+      .filter((graduation) => graduation.course.facultyId === entityId)
+      .filter((graduation) => {
+        const conclusionYearDate = new Date(graduation.conclusionYear, 0, 1);
+        return (
+          conclusionYearDate >= THIRTY_YEARS_AGO &&
+          conclusionYearDate <= new Date()
+        );
+      });
+
+    return this.aggregateActiveGraduations(graduations);
+  }
+
+  getMajorTrend(params: TrendParams): DataPointDto[] {
+    const { data, entityId } = params;
+
+    // Here, we get all the graduations from the major (the entity)
+    const graduations = data
+      .map((alumni) => alumni.graduations)
+      .flat()
+      .filter((graduation) => graduation.courseId === entityId)
+      .filter((graduation) => {
+        const conclusionYearDate = new Date(graduation.conclusionYear, 0, 1);
+        return (
+          conclusionYearDate >= THIRTY_YEARS_AGO &&
+          conclusionYearDate <= new Date()
+        );
+      });
+
+    return this.aggregateActiveGraduations(graduations);
   }
 
   aggregateActiveRoles(roles: RoleAnalyticsEntity[]): DataPointDto[] {
@@ -216,6 +258,33 @@ export class TrendAnalyticsService {
         currentDate.getMonth() + 1,
         1,
       );
+    }
+
+    return dataPoints;
+  }
+
+  // Note: Naming is a bit weird, but essentially, here we aggregate the graduations
+  // from a given faculty/course, per year, for the last 30 years
+  aggregateActiveGraduations(
+    graduations: GraduationAnalyticsEntity[],
+  ): DataPointDto[] {
+    const dataPoints: DataPointDto[] = [];
+    const now = new Date();
+    let currentDate = new Date(THIRTY_YEARS_AGO);
+
+    while (currentDate <= now) {
+      // Count graduations that happened in this specific year
+      const activeGraduations = graduations.filter((graduation) => {
+        return graduation.conclusionYear === currentDate.getFullYear();
+      });
+
+      dataPoints.push({
+        label: getLabelForDate(currentDate, Frequency.YEARLY),
+        value: activeGraduations.length,
+      });
+
+      // Move to next year
+      currentDate = new Date(currentDate.getFullYear() + 1, 0, 1);
     }
 
     return dataPoints;
