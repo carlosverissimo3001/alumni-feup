@@ -30,7 +30,6 @@ const spliceData = (
   const now = new Date();
   let cutoffDate: Date;
 
-  // Determine the cutoff date based on the trend frequency
   switch (trendFrequency) {
     case TrendFrequency.MAX:
       cutoffDate = new Date(now.getFullYear() - 30, now.getMonth(), 1);
@@ -54,7 +53,6 @@ const spliceData = (
       return data;
   }
 
-  // Filter data points within the date range
   const filteredData = sortedData.filter((point) => {
     const pointDate = new Date(point.label);
     return pointDate >= cutoffDate && pointDate <= now;
@@ -127,7 +125,7 @@ const TrendLineComponent = (props: TrendLineComponentProps) => {
 
     // TODO: Find a way to not have this statically sized
     const width = 67;
-    const height = 28;
+    const height = 26;
 
     while (node.firstChild) {
       node.removeChild(node.firstChild);

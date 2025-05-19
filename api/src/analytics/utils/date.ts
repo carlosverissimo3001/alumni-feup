@@ -4,6 +4,8 @@ export const getLabelForDate = (date: Date, freq?: Frequency): string => {
   const frequency = freq || Frequency.QUARTERLY;
 
   switch (frequency) {
+    case Frequency.YEARLY:
+      return date.getFullYear().toString();
     case Frequency.MONTHLY:
       return date.toISOString().slice(0, 7);
     case Frequency.QUARTERLY: {
