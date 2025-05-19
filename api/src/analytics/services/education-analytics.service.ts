@@ -53,8 +53,8 @@ export class EducationAnalyticsService {
             id: facultyId,
             name: graduation.course.faculty.name,
             acronym: graduation.course.faculty.acronym,
-            // TODO: Add trend if needed
-            trend: query.includeTrend ? [] : [],
+            // We'll set the trend in the outer loop
+            trend: [],
             count: 0,
           });
           faculty = faculties.get(facultyId)!;
@@ -65,7 +65,23 @@ export class EducationAnalyticsService {
     });
 
     // hey man, this is awful, please, for your own sanity, find a better approach
-    const facultiesArray = Array.from(faculties.values());
+    const facultiesArray = Array.from(faculties.entries()).map(
+      ([facultyId, data]) => {
+        return {
+          id: facultyId,
+          name: data.name,
+          acronym: data.acronym,
+          trend: query.includeTrend
+            ? this.trendAnalyticsService.getFacultyTrend({
+                data: alumnusUnfiltered,
+                entityId: facultyId,
+              })
+            : [],
+          count: data.count,
+        };
+      },
+    );
+
     const sortedFaculties = sortData(facultiesArray, {
       sortBy: query.sortBy ?? DEFAULT_QUERY_SORT_BY,
       direction: query.sortOrder ?? DEFAULT_QUERY_SORT_ORDER,
@@ -105,7 +121,7 @@ export class EducationAnalyticsService {
             acronym: `[${graduation.course.faculty.acronym}] ${graduation.course.acronym}`,
             facultyAcronym: graduation.course.faculty.acronym,
             count: 0,
-            trend: query.includeTrend ? [] : [],
+            trend: [],
           });
           course = courses.get(courseId)!;
         }
@@ -114,7 +130,24 @@ export class EducationAnalyticsService {
       });
     });
 
-    const coursesArray = Array.from(courses.values());
+    const coursesArray = Array.from(courses.entries()).map(
+      ([courseId, data]) => {
+        return {
+          id: courseId,
+          name: data.name,
+          acronym: data.acronym,
+          facultyAcronym: data.facultyAcronym,
+          trend: query.includeTrend
+            ? this.trendAnalyticsService.getMajorTrend({
+                data: alumnusUnfiltered,
+                entityId: courseId,
+              })
+            : [],
+          count: data.count,
+        };
+      },
+    );
+
     const sortedCourses = sortData(coursesArray, {
       sortBy: query.sortBy ?? DEFAULT_QUERY_SORT_BY,
       direction: query.sortOrder ?? DEFAULT_QUERY_SORT_ORDER,
