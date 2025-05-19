@@ -1,8 +1,5 @@
 import { CourseAnalyticsEntity as Course, Faculty } from "@/sdk";
-import {
-  CourseAnalyticsEntityStatusEnum as CourseStatusEnum,
-  CourseAnalyticsEntityTypeEnum as CourseTypeEnum,
-} from "@/sdk";
+import { CourseAnalyticsEntityStatusEnum as CourseStatusEnum } from "@/sdk";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { SelectContent, SelectItem, SelectValue } from "../ui/select";
 import { SelectTrigger } from "../ui/select";
