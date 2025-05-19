@@ -8,6 +8,8 @@ import {
   ChartSpline,
   MessageCircleCode,
   BrainIcon,
+  FormInputIcon,
+  InfoIcon,
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -60,7 +62,7 @@ const Navbar = () => {
     };
   }, [isCollapsed, toggleCollapse]);
 
-  const routes = [
+  const topRoutes = [
     {
       label: "World",
       icon: <GlobeIcon size={20} />,
@@ -71,17 +73,20 @@ const Navbar = () => {
       icon: <ChartSpline size={20} />,
       href: "/analytics",
     },
-    {
+    /* {
       label: "Insights",
-      icon: <BrainIcon   size={20} />,
+      icon: <BrainIcon size={20} />,
       href: "/insights",
-    },
+    }, */
     {
       label: "Reviews",
       icon: <MessageCircleCode size={20} />,
       href: "/reviews",
       disabled: !isAuthenticated,
     },
+  ];
+
+  const bottomRoutes = [
     {
       label: "My Profile",
       icon: <UserIcon size={20} />,
@@ -89,8 +94,13 @@ const Navbar = () => {
       disabled: !isAuthenticated,
     },
     {
+      label: "About",
+      icon: <InfoIcon size={20} />,
+      href: "/about",
+    },
+    {
       label: "Feedback",
-      icon: <BadgeHelpIcon size={20} />,
+      icon: <FormInputIcon size={20} />,
       href: "/feedback",
     },
   ];
@@ -143,9 +153,51 @@ const Navbar = () => {
           </Link>
         </div>
 
-        {/* Routes - World, Dashboard, Profile, Leave Feedback */}
         <div className="space-y-1 px-1">
-          {routes
+          {topRoutes
+            .filter((route) => !route.disabled)
+            .map((route) => (
+              <Link
+                key={`${route.label}-${route.href}`}
+                href={route.href}
+                className={cn(
+                  "text-sm group flex p-3 w-full justify-start font-medium cursor-pointer hover:text-white hover:bg-gradient-to-r hover:from-[#8C2D19]/20 hover:to-zinc-800 rounded-lg transition-all duration-200",
+                  pathname === route.href
+                    ? "text-white bg-gradient-to-r from-[#8C2D19]/20 to-zinc-800"
+                    : "text-zinc-400",
+                  isCollapsed && "justify-center"
+                )}
+              >
+                <div
+                  className={cn(
+                    "flex items-center flex-1",
+                    isCollapsed && "justify-center"
+                  )}
+                >
+                  <motion.div
+                    whileHover={{ scale: 1.2, rotate: 15 }}
+                    transition={{ duration: 0.3 }}
+                  >
+                    {route.icon}
+                  </motion.div>
+                  <span
+                    className={cn(
+                      "ml-3 whitespace-nowrap",
+                      isCollapsed && "hidden"
+                    )}
+                  >
+                    {route.label}
+                  </span>
+                </div>
+              </Link>
+            ))}
+        </div>
+      </div>
+
+      {/* Bottom Routes */}
+      <div className="mt-auto px-3 py-2">
+        <div className="space-y-1 px-1">
+          {bottomRoutes
             .filter((route) => !route.disabled)
             .map((route) => (
               <Link
