@@ -1,4 +1,9 @@
-import { COMPANY_SIZE, COMPANY_TYPE, COURSE_STATUS } from '@prisma/client';
+import {
+  COMPANY_SIZE,
+  COMPANY_TYPE,
+  COURSE_STATUS,
+  COURSE_TYPE,
+} from '@prisma/client';
 import {
   AlumniAnalyticsEntity,
   CompanyAnalyticsEntity,
@@ -85,6 +90,9 @@ type RawCourse = {
   acronym: string;
   Faculty: RawFaculty;
   status: COURSE_STATUS;
+  courseType: COURSE_TYPE;
+  startYear: number;
+  endYear?: number | null;
 };
 
 type RawGraduation = {
@@ -220,6 +228,9 @@ export const mapCourseFromPrisma = (
     facultyId: course.Faculty.id,
     faculty: mapFacultyFromPrisma(course.Faculty),
     facultyAcronym: course.Faculty.acronym,
+    courseType: course.courseType,
+    startYear: course.startYear,
+    endYear: course.endYear ?? undefined,
   };
 };
 

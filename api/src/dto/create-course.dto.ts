@@ -68,6 +68,14 @@ export class CreateCourseDto {
   startYear: number;
 
   @ApiPropertyOptional({
+    description: 'The end year of the course',
+    example: 2024,
+  })
+  @IsOptional()
+  @IsInt()
+  endYear?: number;
+
+  @ApiPropertyOptional({
     description: 'If the course is INACTIVE, the end year of the course',
     example: 2024,
   })

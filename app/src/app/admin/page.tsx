@@ -1,8 +1,21 @@
 "use client";
 
 import Link from "next/link";
-import { Card, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { BookOpenIcon, CreditCardIcon, FileSpreadsheetIcon, MapPin, Building2Icon, ShieldAlert, UsersIcon } from "lucide-react";
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from "@/components/ui/card";
+import {
+  BookOpenIcon,
+  CreditCardIcon,
+  FileSpreadsheetIcon,
+  MapPin,
+  Building2Icon,
+  ShieldAlert,
+  UsersIcon,
+} from "lucide-react";
 
 const AdminDashboard = () => {
   const operations = [
@@ -18,31 +31,31 @@ const AdminDashboard = () => {
       icon: <UsersIcon className="h-6 w-6" />,
       href: "/admin/review-alumni",
     },
-    {
+    /*     {
       title: "Company Management",
       description: "Manage companies",
       icon: <Building2Icon className="h-6 w-6" />,
       href: "/admin/company-management",
       disabled: true,
-    },
+    }, */
     {
       title: "API Usage",
       description: "View API usage and balance",
       icon: <CreditCardIcon className="h-6 w-6" />,
       href: "/admin/api-usage",
     },
-    {
+    /*     {
       title: "Location Tooling",
       description: "Review locations with no coordinates, merge similar locations, and more",
       icon: <MapPin className="h-6 w-6" />,
       href: "/admin/location-tooling",
-    },
-    {
+    }, */
+    /*     {
       title: "LinkedIn Validation",
       description: "Validate flagged LinkedIn profiles",
       icon: <ShieldAlert className="h-6 w-6" />,
       href: "/admin/linkedin-validation",
-    },
+    }, */
     {
       title: "Faculty and Course Management",
       description: "Manage faculties and courses",
@@ -54,7 +67,7 @@ const AdminDashboard = () => {
   return (
     <div className="container mx-auto py-8 min-h-screen bg-white">
       <h1 className="text-3xl font-bold mb-8 text-black">Admin Panel</h1>
-      
+
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
         {operations.map((op) => (
           <Link key={op.href} href={op.href} className="block">
@@ -65,8 +78,12 @@ const AdminDashboard = () => {
                     {op.icon}
                   </div>
                   <div className="self-center">
-                    <CardTitle className="text-xl mb-1 text-black">{op.title}</CardTitle>
-                    <CardDescription className="text-gray-600">{op.description}</CardDescription>
+                    <CardTitle className="text-xl mb-1 text-black">
+                      {op.title}
+                    </CardTitle>
+                    <CardDescription className="text-gray-600">
+                      {op.description}
+                    </CardDescription>
                   </div>
                 </div>
               </CardHeader>

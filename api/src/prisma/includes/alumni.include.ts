@@ -14,6 +14,8 @@ export const graduationSelect = {
       id: true,
       name: true,
       acronym: true,
+      courseType: true,
+      startYear: true,
     },
   },
 } satisfies Prisma.GraduationSelect;
