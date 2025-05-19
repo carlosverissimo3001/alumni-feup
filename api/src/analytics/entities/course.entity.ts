@@ -1,5 +1,5 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { COURSE_STATUS } from '@prisma/client';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { COURSE_STATUS, COURSE_TYPE } from '@prisma/client';
 import { FacultyAnalyticsEntity } from './faculty.entity';
 
 export class CourseAnalyticsEntity {
@@ -28,11 +28,28 @@ export class CourseAnalyticsEntity {
   status: COURSE_STATUS;
 
   @ApiProperty({
+    description: 'The course type of the course',
+    enum: COURSE_TYPE,
+  })
+  courseType: COURSE_TYPE;
+
+  @ApiProperty({
     description: 'The faculty acronym of the course',
     type: String,
   })
   facultyAcronym: string;
 
+  @ApiProperty({
+    description: 'The start year of the course',
+    type: Number,
+  })
+  startYear: number;
+
+  @ApiPropertyOptional({
+    description: 'The year in which the course ceased to exist',
+    type: Number,
+  })
+  endYear?: number;
 
   @ApiProperty({
     description: 'The faculty id of the course',

@@ -22,7 +22,6 @@ import {
 } from "@/components/ui/select";
 import {
   Faculty,
-  CourseExtended,
   CreateCourseDtoCourseTypeEnum,
   CreateCourseDtoStatusEnum,
 } from "@/sdk";
@@ -54,6 +53,7 @@ export default function FacultyAndCourseManagement() {
   const [courseAcronym, setCourseAcronym] = useState("");
   const [courseInternationalName, setCourseInternationalName] = useState("");
   const [startYear, setStartYear] = useState<number>(new Date().getFullYear());
+  const [endYear, setEndYear] = useState<number | null>(null);
   const [selectedFacultyId, setSelectedFacultyId] = useState("");
   const [courseType, setCourseType] = useState<CreateCourseDtoCourseTypeEnum>(
     CreateCourseDtoCourseTypeEnum.Bachelors
@@ -69,10 +69,12 @@ export default function FacultyAndCourseManagement() {
     isLoading: isLoadingCourses,
     refetch: refetchCourses,
   } = useListCourses({
-    facultyIds:
-      filterFacultyId && filterFacultyId !== "all"
-        ? [filterFacultyId]
-        : undefined,
+    params: {
+      facultyIds:
+        filterFacultyId && filterFacultyId !== "all"
+          ? [filterFacultyId]
+          : undefined,
+    },
   });
 
   // Tab state
@@ -118,6 +120,7 @@ export default function FacultyAndCourseManagement() {
           acronym: courseAcronym,
           nameInt: courseInternationalName,
           startYear,
+          endYear: endYear ?? undefined,
           facultyId: selectedFacultyId,
           courseType,
           status,
@@ -186,8 +189,8 @@ export default function FacultyAndCourseManagement() {
           <button
             onClick={() => setActiveTab("faculty")}
             className={`py-2 px-4 font-medium transition-all duration-200 ${
-              activeTab === "faculty" 
-                ? "border-b-2 border-[#8C2D19] text-[#8C2D19]" 
+              activeTab === "faculty"
+                ? "border-b-2 border-[#8C2D19] text-[#8C2D19]"
                 : "text-gray-500 hover:text-[#A13A23]"
             }`}
           >
@@ -196,8 +199,8 @@ export default function FacultyAndCourseManagement() {
           <button
             onClick={() => setActiveTab("courses")}
             className={`py-2 px-4 font-medium transition-all duration-200 ${
-              activeTab === "courses" 
-                ? "border-b-2 border-[#8C2D19] text-[#8C2D19]" 
+              activeTab === "courses"
+                ? "border-b-2 border-[#8C2D19] text-[#8C2D19]"
                 : "text-gray-500 hover:text-[#A13A23]"
             }`}
           >
@@ -468,8 +471,14 @@ export default function FacultyAndCourseManagement() {
                       <Input
                         id="startYear"
                         type="number"
-                        value={startYear}
-                        onChange={(e) => setStartYear(parseInt(e.target.value))}
+                        value={startYear || ""}
+                        onChange={(e) =>
+                          setStartYear(
+                            e.target.value
+                              ? parseInt(e.target.value)
+                              : new Date().getFullYear()
+                          )
+                        }
                         required
                         className="mt-1 border-gray-300 focus:border-[#A13A23] focus:ring focus:ring-[#A13A23]/20 transition-all duration-200"
                         min={1950}
@@ -480,19 +489,23 @@ export default function FacultyAndCourseManagement() {
                       <div>
                         <Label
                           htmlFor="endYear"
-                        className="text-[#8C2D19] font-medium"
-                      >
-                        Start Year
-                      </Label>
-                      <Input
-                        id="startYear"
-                        type="number"
-                        value={startYear}
-                        onChange={(e) => setStartYear(parseInt(e.target.value))}
-                        required
-                        className="mt-1 border-gray-300 focus:border-[#A13A23] focus:ring focus:ring-[#A13A23]/20 transition-all duration-200"
-                        min={1950}
-                        max={new Date().getFullYear()}
+                          className="text-[#8C2D19] font-medium"
+                        >
+                          End Year
+                        </Label>
+                        <Input
+                          id="endYear"
+                          type="number"
+                          value={endYear || ""}
+                          onChange={(e) =>
+                            setEndYear(
+                              e.target.value ? parseInt(e.target.value) : null
+                            )
+                          }
+                          required
+                          className="mt-1 border-gray-300 focus:border-[#A13A23] focus:ring focus:ring-[#A13A23]/20 transition-all duration-200"
+                          min={1950}
+                          max={new Date().getFullYear()}
                         />
                       </div>
                     )}

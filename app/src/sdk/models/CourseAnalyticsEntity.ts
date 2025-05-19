@@ -52,11 +52,29 @@ export interface CourseAnalyticsEntity {
      */
     status: CourseAnalyticsEntityStatusEnum;
     /**
+     * The course type of the course
+     * @type {string}
+     * @memberof CourseAnalyticsEntity
+     */
+    courseType: CourseAnalyticsEntityCourseTypeEnum;
+    /**
      * The faculty acronym of the course
      * @type {string}
      * @memberof CourseAnalyticsEntity
      */
     facultyAcronym: string;
+    /**
+     * The start year of the course
+     * @type {number}
+     * @memberof CourseAnalyticsEntity
+     */
+    startYear: number;
+    /**
+     * The year in which the course ceased to exist
+     * @type {number}
+     * @memberof CourseAnalyticsEntity
+     */
+    endYear?: number;
     /**
      * The faculty id of the course
      * @type {string}
@@ -81,6 +99,17 @@ export const CourseAnalyticsEntityStatusEnum = {
 } as const;
 export type CourseAnalyticsEntityStatusEnum = typeof CourseAnalyticsEntityStatusEnum[keyof typeof CourseAnalyticsEntityStatusEnum];
 
+/**
+ * @export
+ */
+export const CourseAnalyticsEntityCourseTypeEnum = {
+    IntegratedMasters: 'INTEGRATED_MASTERS',
+    Bachelors: 'BACHELORS',
+    Masters: 'MASTERS',
+    Doctorate: 'DOCTORATE'
+} as const;
+export type CourseAnalyticsEntityCourseTypeEnum = typeof CourseAnalyticsEntityCourseTypeEnum[keyof typeof CourseAnalyticsEntityCourseTypeEnum];
+
 
 /**
  * Check if a given object implements the CourseAnalyticsEntity interface.
@@ -90,7 +119,9 @@ export function instanceOfCourseAnalyticsEntity(value: object): value is CourseA
     if (!('name' in value) || value['name'] === undefined) return false;
     if (!('acronym' in value) || value['acronym'] === undefined) return false;
     if (!('status' in value) || value['status'] === undefined) return false;
+    if (!('courseType' in value) || value['courseType'] === undefined) return false;
     if (!('facultyAcronym' in value) || value['facultyAcronym'] === undefined) return false;
+    if (!('startYear' in value) || value['startYear'] === undefined) return false;
     if (!('facultyId' in value) || value['facultyId'] === undefined) return false;
     if (!('faculty' in value) || value['faculty'] === undefined) return false;
     return true;
@@ -110,7 +141,10 @@ export function CourseAnalyticsEntityFromJSONTyped(json: any, ignoreDiscriminato
         'name': json['name'],
         'acronym': json['acronym'],
         'status': json['status'],
+        'courseType': json['courseType'],
         'facultyAcronym': json['facultyAcronym'],
+        'startYear': json['startYear'],
+        'endYear': json['endYear'] == null ? undefined : json['endYear'],
         'facultyId': json['facultyId'],
         'faculty': FacultyAnalyticsEntityFromJSON(json['faculty']),
     };
@@ -131,7 +165,10 @@ export function CourseAnalyticsEntityToJSONTyped(value?: CourseAnalyticsEntity |
         'name': value['name'],
         'acronym': value['acronym'],
         'status': value['status'],
+        'courseType': value['courseType'],
         'facultyAcronym': value['facultyAcronym'],
+        'startYear': value['startYear'],
+        'endYear': value['endYear'],
         'facultyId': value['facultyId'],
         'faculty': FacultyAnalyticsEntityToJSON(value['faculty']),
     };

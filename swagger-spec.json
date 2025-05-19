@@ -6196,9 +6196,27 @@
               "INACTIVE"
             ]
           },
+          "courseType": {
+            "type": "string",
+            "description": "The course type of the course",
+            "enum": [
+              "INTEGRATED_MASTERS",
+              "BACHELORS",
+              "MASTERS",
+              "DOCTORATE"
+            ]
+          },
           "facultyAcronym": {
             "type": "string",
             "description": "The faculty acronym of the course"
+          },
+          "startYear": {
+            "type": "number",
+            "description": "The start year of the course"
+          },
+          "endYear": {
+            "type": "number",
+            "description": "The year in which the course ceased to exist"
           },
           "facultyId": {
             "type": "string",
@@ -6218,7 +6236,9 @@
           "name",
           "acronym",
           "status",
+          "courseType",
           "facultyAcronym",
+          "startYear",
           "facultyId",
           "faculty"
         ]

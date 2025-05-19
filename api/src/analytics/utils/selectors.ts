@@ -72,6 +72,9 @@ export const courseSelect = {
   name: true,
   acronym: true,
   status: true,
+  startYear: true,
+  endYear: true,
+  courseType: true,
   Faculty: {
     select: facultySelect,
   },
