@@ -4,10 +4,29 @@ import {
   IsEnum,
   IsOptional,
   IsInt,
+  ValidateIf,
+  Min,
+  Validate,
+  ValidationArguments,
+  ValidatorConstraint,
+  ValidatorConstraintInterface,
 } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { COURSE_STATUS, COURSE_TYPE } from '@prisma/client';
-import { ValidateIf } from '@nestjs/class-validator';
+
+@ValidatorConstraint({ name: 'isGreaterThanStartYear', async: false })
+export class IsGreaterThanStartYearConstraint
+  implements ValidatorConstraintInterface
+{
+  validate(value: number, args: ValidationArguments) {
+    const object = args.object as CreateCourseDto;
+    return value > object.startYear;
+  }
+
+  defaultMessage() {
+    return 'End year must be greater than start year';
+  }
+}
 
 export class CreateCourseDto {
   @ApiProperty({
@@ -68,14 +87,6 @@ export class CreateCourseDto {
   startYear: number;
 
   @ApiPropertyOptional({
-    description: 'The end year of the course',
-    example: 2024,
-  })
-  @IsOptional()
-  @IsInt()
-  endYear?: number;
-
-  @ApiPropertyOptional({
     description: 'If the course is INACTIVE, the end year of the course',
     example: 2024,
   })
@@ -84,6 +95,12 @@ export class CreateCourseDto {
   )
   @IsOptional()
   @IsInt()
+  @Min(1950, { message: 'End year must be at least 1950' })
+  @ValidateIf(
+    (object: CreateCourseDto) =>
+      object.endYear !== undefined && object.startYear !== undefined,
+  )
+  @Validate(IsGreaterThanStartYearConstraint)
   endYear?: number;
 
   @ApiPropertyOptional({
