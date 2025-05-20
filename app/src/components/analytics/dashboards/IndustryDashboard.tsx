@@ -115,6 +115,7 @@ export const IndustryDashboard = ({
               onSort={handleSort}
               showTrend={view === ViewType.TREND}
               trendFrequency={trendFrequency}
+              hoverMessage="Alumni who have worked in this industry"
             />
 
             {isLoading || isFetching ? (

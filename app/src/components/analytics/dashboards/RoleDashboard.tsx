@@ -322,6 +322,8 @@ export const RoleDashboard = ({
                     <strong>Level 5+:</strong> ESCO occupations that build upon
                     and extend the ISCO structure
                   </p>
+                </div>
+                <div className="space-y-1">
                   <a
                     href={ISCO_INFO}
                     target="_blank"
