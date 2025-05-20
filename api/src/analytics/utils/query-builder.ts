@@ -2,6 +2,10 @@ import { QueryParamsDto } from '../dto';
 import { Prisma } from '@prisma/client';
 import { EXCLUDED_INDUSTRIES, PORTUGAL_COUNTRY_CODE } from './consts';
 
+const normalizeText = (text: string) => {
+  return text.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+};
+
 export const buildWhereClause = (
   params: QueryParamsDto,
 ): {
@@ -150,19 +154,25 @@ export const buildWhereClause = (
   }
 
   if (params.alumniSearch?.trim()) {
+    const searchTerm = normalizeText(params.alumniSearch.trim());
     roleAndClauses.push({
       Alumni: {
-        fullName: { contains: params.alumniSearch, mode: 'insensitive' },
+        fullName: { contains: searchTerm, mode: 'insensitive' },
       },
     });
   }
 
   // Broader search
   if (params.search?.trim()) {
-    const searchTerm = params.search.trim();
+    const searchTerm = normalizeText(params.search.trim());
     alumniAndClauses.push({
       OR: [
-        { fullName: { contains: searchTerm, mode: 'insensitive' } },
+        {
+          fullName: {
+            contains: searchTerm,
+            mode: 'insensitive',
+          },
+        },
         {
           Roles: {
             some: {
