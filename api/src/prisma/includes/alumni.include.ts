@@ -76,6 +76,9 @@ export const reviewCompanySelect = {
   Company: {
     select: companySelectWithRoles,
   },
+  Location: {
+    select: locationSelect,
+  },
 } satisfies Prisma.ReviewCompanySelect;
 
 export const reviewLocationSelect = {
@@ -112,6 +115,38 @@ export const alumniSelect = {
   },
   ReviewsCompany: {
     select: reviewCompanySelect,
+  },
+  ReviewsLocation: {
+    select: reviewLocationSelect,
+  },
+} satisfies Prisma.AlumniSelect;
+
+export const alumniSelectOnlyCompany = {
+  ...alumniBasic,
+  Location: {
+    select: locationSelect,
+  },
+  Graduations: {
+    select: graduationSelect,
+  },
+  Roles: {
+    select: roleSelect,
+  },
+  ReviewsCompany: {
+    select: reviewCompanySelect,
+  }
+} satisfies Prisma.AlumniSelect;
+
+export const alumniSelectOnlyLocation = {
+  ...alumniBasic,
+  Location: {
+    select: locationSelect,
+  },
+  Graduations: {
+    select: graduationSelect,
+  },
+  Roles: {
+    select: roleSelect,
   },
   ReviewsLocation: {
     select: reviewLocationSelect,

@@ -17,6 +17,7 @@ import * as runtime from '../runtime';
 import type {
   Alumni,
   AlumniExtended,
+  AlumniPastLocationsAndCompaniesDto,
   BasicAlumniProfileDto,
   CreateAlumniDto,
   GeoJSONFeatureCollection,
@@ -27,6 +28,8 @@ import {
     AlumniToJSON,
     AlumniExtendedFromJSON,
     AlumniExtendedToJSON,
+    AlumniPastLocationsAndCompaniesDtoFromJSON,
+    AlumniPastLocationsAndCompaniesDtoToJSON,
     BasicAlumniProfileDtoFromJSON,
     BasicAlumniProfileDtoToJSON,
     CreateAlumniDtoFromJSON,
@@ -172,12 +175,12 @@ export interface AlumniApiInterface {
      * @throws {RequiredError}
      * @memberof AlumniApiInterface
      */
-    alumniControllerGetPastLocationsAndCompaniesRaw(requestParameters: AlumniControllerGetPastLocationsAndCompaniesRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<object>>;
+    alumniControllerGetPastLocationsAndCompaniesRaw(requestParameters: AlumniControllerGetPastLocationsAndCompaniesRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<AlumniPastLocationsAndCompaniesDto>>;
 
     /**
      * Get the past locations and companies of an alumni
      */
-    alumniControllerGetPastLocationsAndCompanies(requestParameters: AlumniControllerGetPastLocationsAndCompaniesRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<object>;
+    alumniControllerGetPastLocationsAndCompanies(requestParameters: AlumniControllerGetPastLocationsAndCompaniesRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<AlumniPastLocationsAndCompaniesDto>;
 
     /**
      * 
@@ -411,7 +414,7 @@ export class AlumniApi extends runtime.BaseAPI implements AlumniApiInterface {
     /**
      * Get the past locations and companies of an alumni
      */
-    async alumniControllerGetPastLocationsAndCompaniesRaw(requestParameters: AlumniControllerGetPastLocationsAndCompaniesRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<object>> {
+    async alumniControllerGetPastLocationsAndCompaniesRaw(requestParameters: AlumniControllerGetPastLocationsAndCompaniesRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<AlumniPastLocationsAndCompaniesDto>> {
         if (requestParameters['id'] == null) {
             throw new runtime.RequiredError(
                 'id',
@@ -430,13 +433,13 @@ export class AlumniApi extends runtime.BaseAPI implements AlumniApiInterface {
             query: queryParameters,
         }, initOverrides);
 
-        return new runtime.JSONApiResponse<any>(response);
+        return new runtime.JSONApiResponse(response, (jsonValue) => AlumniPastLocationsAndCompaniesDtoFromJSON(jsonValue));
     }
 
     /**
      * Get the past locations and companies of an alumni
      */
-    async alumniControllerGetPastLocationsAndCompanies(requestParameters: AlumniControllerGetPastLocationsAndCompaniesRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<object> {
+    async alumniControllerGetPastLocationsAndCompanies(requestParameters: AlumniControllerGetPastLocationsAndCompaniesRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<AlumniPastLocationsAndCompaniesDto> {
         const response = await this.alumniControllerGetPastLocationsAndCompaniesRaw(requestParameters, initOverrides);
         return await response.value();
     }

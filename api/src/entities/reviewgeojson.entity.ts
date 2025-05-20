@@ -19,6 +19,7 @@ export interface CustomProperties {
     companyNames: { [key: string]: string };
     timeSincePosted: { [key: string]: number };
     timeSincePostedType: { [key: string]: string };
+    createdAt: { [key: string]: Date | null };
 }
 
 export class ReviewGeoJSONFeature implements Feature<Point, CustomProperties> {
@@ -50,6 +51,7 @@ export class ReviewGeoJSONFeature implements Feature<Point, CustomProperties> {
         companyNames: {},
         timeSincePosted: {},
         timeSincePostedType: {},
+        createdAt: {},
     };
   }
 }

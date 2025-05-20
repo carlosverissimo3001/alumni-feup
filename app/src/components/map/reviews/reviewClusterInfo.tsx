@@ -15,6 +15,9 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Avatar } from "@/components/ui/avatar";
 import { AvatarImage } from "@radix-ui/react-avatar";
 import { ReviewType } from "../utils/reviewhelper";
+import { useChangeReviewScore } from "@/hooks/reviews/useChangeReviewScore";
+import { ChangeReviewScoreDto } from "@/sdk/models";
+import { useAuth } from '@/contexts/AuthContext';
 
 type props = {
   hoveredCluster: boolean;
@@ -23,6 +26,8 @@ type props = {
   listPlaceName: string[];
   hoveredMouseCoords: number[];
   reviewData: ReviewData[];
+  scoreFetch: boolean;
+  setScoreFetch: (scoreFetch: boolean) => void;
 };
 
 const ReviewClusterInfo = ({
@@ -33,6 +38,8 @@ const ReviewClusterInfo = ({
   //reviews,
   hoveredMouseCoords,
   reviewData,
+  scoreFetch,
+  setScoreFetch
 }: props) => {
   const nAlumniToShow = 10; // Defines the nº of alumnis to show when a hoover is preformed
   const [startPosition, setStartPosition] = useState(0); // Position in the array to start to read from
@@ -40,6 +47,9 @@ const ReviewClusterInfo = ({
   const [showPrev, setShowPrev] = useState(false); // Defines if it is to show the "...Prev"
   const [showMore, setShowMore] = useState(false); // Defines if it is to show the "More..."
   const [showCompare, setShowCompare] = useState(false);
+  const [reviewScore, setReviewScore] = useState<ChangeReviewScoreDto | null>(null);
+
+  const { user, isAuthenticated } = useAuth();
 
   useEffect(() => {
     if (!hoveredCluster) {
@@ -101,20 +111,42 @@ const ReviewClusterInfo = ({
       ))
   }
 
-  const handleHelpful = (review: number, isHelpful: boolean) => {
-    // setReviews(
-    //   reviews.map((review) => {
-    //     if (review.id === reviewId) {
-    //       return {
-    //         ...review,
-    //         helpfulCount: isHelpful ? review.helpfulCount + 1 : review.helpfulCount,
-    //         notHelpfulCount: !isHelpful ? review.notHelpfulCount + 1 : review.notHelpfulCount,
-    //       }
-    //     }
-    //     return review
-    //   }),
-    // )
+  function handleHelpful(review: ReviewData, isHelpful: boolean) {
+    if(user?.id && isAuthenticated) {
+      const reviewScore: ChangeReviewScoreDto = {
+        alumniId: user?.id,
+        reviewId: review.id,
+        upvote: isHelpful,
+      };
+      setReviewScore(reviewScore);
+      sendChangeReviewScore();
+      setScoreFetch(true);
+      handleRealTimeScoreChange(review, isHelpful);
+    }
   }
+
+  function handleRealTimeScoreChange(review: ReviewData, isHelpful: boolean) {
+    if(review.upvotes?.includes(user?.id!)) {
+      review.upvotes = review.upvotes.filter((id) => id !== user?.id!);
+      if(!isHelpful) {
+        review.downvotes!.push(user?.id!);
+      }
+    }else if(review.downvotes?.includes(user?.id!)) {
+      review.downvotes = review.downvotes.filter((id) => id !== user?.id!);
+      if(isHelpful) {
+        review.upvotes!.push(user?.id!);
+      }
+    }
+    else if(isHelpful) {
+      review.upvotes!.push(user?.id!);
+    }else if(!isHelpful) {
+      review.downvotes!.push(user?.id!);
+    }
+  }
+
+  const { mutate: sendChangeReviewScore } = useChangeReviewScore({
+    data: reviewScore!,
+  });
 
   const getReviewTypeIcon = (type: string) => {
     return type === ReviewType.Company ? <Building2 className="h-3.5 w-3.5" /> : <MapPin className="h-3.5 w-3.5" />
@@ -180,20 +212,20 @@ const ReviewClusterInfo = ({
                                     <Button
                                         variant="outline"
                                         size="sm"
-                                        className="h-8 gap-1"
-                                        onClick={() => handleHelpful(index, true)}
+                                        className={`h-8 gap-1 ${review.upvotes?.includes(user?.id!) ? "text-white bg-zinc-900" : ""}`}
+                                        onClick={() => handleHelpful(review, true)}
                                     >
                                         <ThumbsUp className="h-3.5 w-3.5" />
-                                        <span>{review.upvotes}</span>
+                                        <span>{review.upvotes?.length}</span>
                                     </Button>
                                     <Button
                                         variant="outline"
                                         size="sm"
-                                        className="h-8 gap-1"
-                                        onClick={() => handleHelpful(index, false)}
+                                        className={`h-8 gap-1 ${review.downvotes?.includes(user?.id!)  ? "text-white bg-zinc-900" : ""}`}
+                                        onClick={() => handleHelpful(review, false)}
                                     >
                                         <ThumbsDown className="h-3.5 w-3.5" />
-                                        <span>{review.downvotes}</span>
+                                        <span>{review.downvotes?.length}</span>
                                     </Button>
                                     </div>
                                 </div>

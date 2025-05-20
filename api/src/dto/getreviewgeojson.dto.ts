@@ -1,5 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { IsNumber, IsArray, IsOptional, IsUUID, IsEnum } from 'class-validator';
+import { IsNumber, IsArray, IsOptional, IsUUID, IsEnum, IsInt, Min, Max, IsString, IsDate } from 'class-validator';
 import { Transform } from 'class-transformer';
 import { GROUP_BY } from '@/consts';
 
@@ -13,10 +13,38 @@ export class GetReviewGeoJSONDto {
   groupBy: GROUP_BY;
 
   @ApiPropertyOptional({
-    description: 'The review type',
-    example: '',
+    description: 'Type of review',
+    example: 'Company',
   })
   @IsOptional()
   @Transform(({ value }) => (value ? String(value) : undefined))
   reviewType?: string;
+
+  @ApiPropertyOptional({ description: 'The review rating' })
+  @IsOptional()
+  @IsNumber()
+  @IsInt()
+  @Min(1)
+  @Max(5)
+  @Transform(({ value }) => (value ? Number(value) : undefined))
+  rating?: number;
+
+  @ApiPropertyOptional({ description: 'Date range to filter' })
+  @IsOptional()
+  @IsDate()
+  @Transform(({ value }) => (value ? new Date(value) : undefined))
+  dateFrom?: Date;
+
+  @ApiPropertyOptional({ description: 'Date range to filter' })
+  @IsOptional()
+  @IsDate()
+  @Transform(({ value }) => (value ? new Date(value) : undefined))
+  dateTo?: Date;
+
+  // @ApiPropertyOptional({
+  //   description: 'Sort by most voted, least voted',
+  //   example: 'most',
+  // })
+  // @IsString()
+  // sortBy?: string;
 }

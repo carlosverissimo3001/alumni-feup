@@ -148,7 +148,7 @@ const MapView = ({
           jobTitles,
           companyNames,
         } = await extractFeatureFields(feature as unknown as Feature<Geometry, GeoJSONProperties>);
-
+        
         const mapUserCoursesYears = await extractCoursesYears(
           coursesYearConclusionByUser
         );
@@ -161,6 +161,7 @@ const MapView = ({
           jobTitles,
           companyNames,
         );
+        
         const parsedFlattenedPlaceNames = parsePlaceNames(listPlaceName);
 
         updateState(
