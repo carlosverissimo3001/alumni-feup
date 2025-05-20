@@ -8,9 +8,10 @@ import { useRouter } from "next/navigation";
 
 
 import ReviewMapView from '@/components/map/reviews/reviewMapView';
-import ReviewMapFilters from '@/components/map/reviews/reviewMapFilters';
 import ReviewButton from './review-button';
 import { useAuth } from '@/contexts/AuthContext';
+import { ReviewData } from '@/types/review';
+import ReviewMapFilters from '@/components/map/reviews/reviewMapFilters';
 
 // Type definitions
 interface Coordinates {
@@ -41,6 +42,12 @@ const ReviewMapComponent = () => {
   const { isCollapsed } = useNavbar();
   const [loading, setLoading] = useState(false);
 
+  const [reviewData, setReviewData] = useState<ReviewData[]>([]);
+
+  const [sortBy, setSortBy] = useState<'most' | 'least' | null>(null)
+
+  const [scoreFetch, setScoreFetch] = useState<boolean>(false);
+
   const handleSelectReviews = (id: string, coordinates: number[]): void => {
     setSelectedReviews({ 
       id, 
@@ -70,10 +77,14 @@ const ReviewMapComponent = () => {
         isCollapsed ? "left-24" : "left-64"
       )}>
         <div className="bg-[#EDEDEC] rounded-md p-2.5 flex flex-col">
-          <ReviewMapFilters 
+          <ReviewMapFilters
             handleLoading={handleLoading}
             onSelectReview={handleSelectReviews} 
             onSelectGeoJSON={handleSelectGeoJSON}
+            sortBy={sortBy}
+            setSortBy={setSortBy}
+            scoreFetch={scoreFetch}
+            setScoreFetch={setScoreFetch}
           />
         </div>
       </div>
@@ -83,6 +94,11 @@ const ReviewMapComponent = () => {
         selectedReviews={selectedReviews}
         handleSelectReviews={handleSelectReviews}
         handleSelectGeoJSON={handleSelectGeoJSON}
+        reviewData={reviewData}
+        setReviewData={setReviewData}
+        sortBy={sortBy}
+        setScoreFetch={setScoreFetch}
+        scoreFetch={scoreFetch}
       />
       <ReviewButton />
     </>

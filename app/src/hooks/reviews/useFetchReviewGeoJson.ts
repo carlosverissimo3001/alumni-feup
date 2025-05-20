@@ -6,6 +6,9 @@ import NestAPI from "@/api";
 type Props = {
   groupBy: AlumniControllerFindAllGeoJSONGroupByEnum;
   reviewType?: string;
+  rating?: number;
+  dateFrom?: Date;
+  dateTo?: Date;
 };
 
 /**
@@ -14,13 +17,16 @@ type Props = {
  * @param conclusionYears - The conclusion year(s)
  * @returns The GeoJSON data
  */
-export const useFetchReviewGeoJson = ({ groupBy, reviewType }: Props) => {
+export const useFetchReviewGeoJson = ({ groupBy, reviewType, rating, dateFrom, dateTo }: Props) => {
   const query = useQuery({
-    queryKey: ["geoJson", {groupBy, reviewType}],
+    queryKey: ["geoJson", {groupBy, reviewType, rating, dateFrom, dateTo}],
     queryFn: () =>
       NestAPI.reviewControllerFindAllGeoJSON({
         groupBy,
-        reviewType: reviewType || ''
+        reviewType,
+        rating,
+        dateFrom,
+        dateTo
       }),
     staleTime: 1000 * 60 * 60 * 24, // Fresh for 24 hours
     gcTime: 1000 * 60 * 60 * 24 * 7, // Cache for 7 days

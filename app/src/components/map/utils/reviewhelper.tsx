@@ -1,6 +1,6 @@
 import { ReviewData, ReviewGeoJSONProperties } from "@/types/review";
 import { Feature, Geometry } from "geojson";
-
+import { GeoJSONFeature, GeoJSONFeatureCollection } from "@/sdk";
 import { extractJSONObjects } from "./helper";
 
 export enum ReviewType {
@@ -22,12 +22,13 @@ export function buildReviewData(
     profilePics: { [key: string]: string },
     descriptions: { [key: string]: string },
     ratings: { [key: string]: number },
-    upvotes: { [key: string]: number },
-    downvotes: { [key: string]: number },
+    upvotes: { [key: string]: string[] },
+    downvotes: { [key: string]: string[] },
     reviewTypes: { [key: string]: string },
     companyNames: { [key: string]: string },
     timeSincePosted: { [key: string]: number },
     timeSincePostedType: { [key: string]: string },
+    createdAt: { [key: string]: Date | null },
   ): ReviewData[] {
 
     return listReviewIds.map((reviewId, index) => {
@@ -44,6 +45,7 @@ export function buildReviewData(
         timeSincePostedType: timeSincePostedType[reviewId],
         reviewType: reviewTypes[reviewId],
         companyName: companyNames[reviewId],
+        createdAt: createdAt[reviewId],
       };
     });
   }
@@ -53,7 +55,8 @@ export function buildReviewData(
  * @param feature - The feature to extract the fields from
  * @returns The extracted fields
  */
-export async function extractReviewFeatureFields(
+export async function 
+extractReviewFeatureFields(
     feature: Feature<Geometry, ReviewGeoJSONProperties>
   ) {
     const listPlaceName = feature.properties.name;
@@ -103,6 +106,10 @@ export async function extractReviewFeatureFields(
     const companyNames = typeof feature.properties.companyNames === 'string'
       ? (await extractJSONObjects(feature.properties.companyNames))[0]
       : feature.properties.companyNames;
+    const createdAt =
+      typeof feature.properties.createdAt === "string"
+        ? (await extractJSONObjects(feature.properties.createdAt))[0]
+        : feature.properties.createdAt;
   
     return {
         listPlaceName,
@@ -118,6 +125,20 @@ export async function extractReviewFeatureFields(
         reviewTypes,
         timeSincePosted,
         timeSincePostedType,
-        companyNames
+        companyNames,
+        createdAt,
     };
+  }
+
+
+  export function sortReviewData(
+    reviewData: ReviewData[],
+    sortBy: 'most' | 'least' | null
+  ): ReviewData[] {
+    return reviewData
+        .sort((a, b) => {
+            if (sortBy === "most") return b.upvotes?.length! - a.upvotes?.length!
+            if (sortBy === "least") return b.downvotes?.length! - a.downvotes?.length!
+            return 0 
+        })
   }

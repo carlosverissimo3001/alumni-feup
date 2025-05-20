@@ -13,12 +13,14 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { Feature, Point } from 'geojson';
 import { GROUP_BY } from '@/consts';
 import { GeolocationService } from 'src/geolocation/geolocation.service';
-/* import { ReviewRepository } from '../repositories/review.repository';
-import { ReviewDTO } from '@/dto/review.dto'; */
 import { AlumniRepository } from '@/alumni/repositories/alumni.repository';
 import { GetReviewGeoJSONDto } from '@/dto/getreviewgeojson.dto';
 import { ReviewType } from '@/entities/reviewgeojson.entity';
 import { CreateReviewDto } from '@/dto/create-review.dto';
+import { ChangeReviewScoreDto } from '@/dto/change-review-score.dto';
+import { ReviewCompany } from '@/entities/reviewCompany.entity';
+import { ReviewLocation } from '@/entities/reviewLocation.entity';
+import { ReviewRepository } from '../repositories/review.repository';
 
 type ReviewsGrouped = {
   coordinates: [number, number];
@@ -35,6 +37,7 @@ type ReviewsGrouped = {
     companyName: string;
     timeSincePosted: number;
     timeSincePostedType: string;
+    createdAt: Date | null;
   }>;
 };
 
@@ -52,13 +55,13 @@ export class ReviewService {
     private readonly prisma: PrismaService,
     private readonly geolocationService: GeolocationService,
     private readonly alumniRepository: AlumniRepository,
-    //private readonly reviewRepository: ReviewRepository,
+    private readonly reviewRepository: ReviewRepository,
   ) {}
 
   async findAllGeoJSON(
     query: GetReviewGeoJSONDto,
   ): Promise<ReviewGeoJSONFeatureCollection> {
-    const alumni = await this.alumniRepository.findAllWithReviews();
+    let alumni = await this.alumniRepository.findAllWithReviews(query);
 
     const groupBy = query.groupBy;
     let reviewsByGroup: ReviewsByCountry | ReviewsByCity;
@@ -178,6 +181,15 @@ export class ReviewService {
             },
             {} as { [key: string]: string },
           ),
+          createdAt: data.reviews.reduce(
+            (acc, curr) => {
+              if (curr.createdAt) {
+                acc[curr.reviewId] = curr.createdAt;
+              }
+              return acc;
+            },
+            {} as { [key: string]: Date | null },
+          ),
         },
       }));
 
@@ -235,13 +247,13 @@ export class ReviewService {
             companyName: '',
             timeSincePosted: time.timeSincePosted,
             timeSincePostedType: time.timeSincePostedType,
+            createdAt: review.createdAt || null,
           });
         }
       }
       if (alumnus.ReviewsCompany) {
         for (const review of alumnus.ReviewsCompany) {
-          const location = review.Company.roles![0].Location;
-
+          const location = review.Location;
           if (
             !location ||
             !location.country ||
@@ -283,6 +295,7 @@ export class ReviewService {
             companyName: review.Company.name || '',
             timeSincePosted: time.timeSincePosted,
             timeSincePostedType: time.timeSincePostedType,
+            createdAt: review.createdAt || null
           });
         }
       }
@@ -318,7 +331,7 @@ export class ReviewService {
 
     for (const alumnus of alumni) {
       for (const review of alumnus.ReviewsCompany!) {
-        const location = review.Company.roles![0].Location;
+        const location = review.Location;
         if (
           !location ||
           !location.country ||
@@ -356,6 +369,7 @@ export class ReviewService {
           companyName: review.Company.name || '',
           timeSincePosted: time.timeSincePosted,
           timeSincePostedType: time.timeSincePostedType,
+          createdAt: review.createdAt || null,
         });
       }
     }
@@ -364,6 +378,7 @@ export class ReviewService {
   }
 
   async create(body: CreateReviewDto): Promise<void> {
+    console.log('Create review', body);
     if (body.reviewType === ReviewType.COMPANY.toString()) {
       if (body.companyId === undefined || body.locationId === undefined) {
         throw new HttpException(
@@ -400,30 +415,53 @@ export class ReviewService {
     return;
   }
 
-  // async changeReviewScoring(reviewId: string, upvote: boolean) {
-  //   const data = this.buildData(upvote);
-  //   let reviewCompany = await this.reviewRepository.updateReviewCompany(reviewId, data);
-  //   if (!reviewCompany) {
-  //     const reviewLocation =  this.reviewRepository.updateReviewLocation(reviewId, data);
-  //     if (!reviewLocation) {
-  //       throw new NotFoundException('Review not found');
-  //     }
-  //   }
-  // }
+  async changeReviewScoring(changeReviewScore: ChangeReviewScoreDto): Promise<void> {
+    let review: ReviewCompany | ReviewLocation | null;
+    if(changeReviewScore.alumniId && changeReviewScore.reviewId) {
+      review = await this.reviewRepository.findReviewCompany(changeReviewScore.reviewId);
+      if(!review) {
+        review = await this.reviewRepository.findReviewLocation(changeReviewScore.reviewId);
+        if (!review) {
+          throw new NotFoundException('Review not found');
+        }
+        const [newUpvotes, newDownvotes] = this.buildNewData(changeReviewScore, review!);
+        await this.reviewRepository.updateReviewLocation(
+          changeReviewScore.reviewId, 
+          newUpvotes, 
+          newDownvotes);
+      }else{
+        const [newUpvotes, newDownvotes] = this.buildNewData(changeReviewScore, review!);
+        await this.reviewRepository.updateReviewCompany(
+          changeReviewScore.reviewId, 
+          newUpvotes, 
+          newDownvotes);
+      }
+    }
+  }
 
-  // private buildData(upvote: boolean): Prisma.ReviewCompanyUpdateInput {
-  //   if (upvote) {
-  //     return {
-  //       upvotes: {
-  //         increment: 1,
-  //       },
-  //     };
-  //   } else {
-  //     return {
-  //       downvotes: {
-  //         increment: 1,
-  //       },
-  //     };
-  //   }
-  // }
+  private buildNewData(
+    changeReviewScore: ChangeReviewScoreDto, 
+    review: ReviewCompany | ReviewLocation): 
+    [string[], string[]]{
+      let newUpvotes: string[] = [];
+      let newDownvotes: string[] = [];
+      if(changeReviewScore.upvote) {
+        const exists = review.upvotes.includes(changeReviewScore.alumniId);
+        if (exists) {
+          newUpvotes.filter(id => id !== changeReviewScore.alumniId);
+        } else {
+          newUpvotes = [...review.upvotes, changeReviewScore.alumniId];
+        }     
+        newDownvotes = review.downvotes.filter(id => id !== changeReviewScore.alumniId);
+      }else {
+        const exists = review.downvotes.includes(changeReviewScore.alumniId);
+        if (exists) {
+          newDownvotes.filter(id => id !== changeReviewScore.alumniId);
+        } else {
+          newDownvotes = [...review.downvotes, changeReviewScore.alumniId];
+        }   
+        newUpvotes = review.upvotes.filter(id => id !== changeReviewScore.alumniId);
+      }
+      return [newUpvotes, newDownvotes];
+  }
 }

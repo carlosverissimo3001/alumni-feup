@@ -23,7 +23,7 @@ export class ReviewCompany {
     downvotes: string[];
 
     @ApiPropertyOptional({ description: 'The location of the review' })
-    Location?: LocationGeo;
+    Location: LocationGeo | null;
 
     @ApiProperty({ description: 'The Company' })
     Company: Company;

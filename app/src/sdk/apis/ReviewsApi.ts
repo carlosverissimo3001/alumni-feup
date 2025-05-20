@@ -15,15 +15,22 @@
 
 import * as runtime from '../runtime';
 import type {
+  ChangeReviewScoreDto,
   CreateReviewDto,
   ReviewGeoJSONFeatureCollection,
 } from '../models/index';
 import {
+    ChangeReviewScoreDtoFromJSON,
+    ChangeReviewScoreDtoToJSON,
     CreateReviewDtoFromJSON,
     CreateReviewDtoToJSON,
     ReviewGeoJSONFeatureCollectionFromJSON,
     ReviewGeoJSONFeatureCollectionToJSON,
 } from '../models/index';
+
+export interface ReviewControllerChangeScoreRequest {
+    changeReviewScoreDto: ChangeReviewScoreDto;
+}
 
 export interface ReviewControllerCreateRequest {
     createReviewDto: CreateReviewDto;
@@ -32,6 +39,9 @@ export interface ReviewControllerCreateRequest {
 export interface ReviewControllerFindAllGeoJSONRequest {
     groupBy: ReviewControllerFindAllGeoJSONGroupByEnum;
     reviewType?: string;
+    rating?: number;
+    dateFrom?: Date;
+    dateTo?: Date;
 }
 
 /**
@@ -41,6 +51,21 @@ export interface ReviewControllerFindAllGeoJSONRequest {
  * @interface ReviewsApiInterface
  */
 export interface ReviewsApiInterface {
+    /**
+     * 
+     * @summary Update a review score
+     * @param {ChangeReviewScoreDto} changeReviewScoreDto 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ReviewsApiInterface
+     */
+    reviewControllerChangeScoreRaw(requestParameters: ReviewControllerChangeScoreRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>>;
+
+    /**
+     * Update a review score
+     */
+    reviewControllerChangeScore(requestParameters: ReviewControllerChangeScoreRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void>;
+
     /**
      * 
      * @summary Create a new review
@@ -60,7 +85,10 @@ export interface ReviewsApiInterface {
      * 
      * @summary Get all the review to be displayed on the map
      * @param {'countries' | 'cities'} groupBy How to group the data
-     * @param {string} [reviewType] The review type
+     * @param {string} [reviewType] Type of review
+     * @param {number} [rating] The review rating
+     * @param {Date} [dateFrom] Date range to filter
+     * @param {Date} [dateTo] Date range to filter
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof ReviewsApiInterface
@@ -78,6 +106,41 @@ export interface ReviewsApiInterface {
  * 
  */
 export class ReviewsApi extends runtime.BaseAPI implements ReviewsApiInterface {
+
+    /**
+     * Update a review score
+     */
+    async reviewControllerChangeScoreRaw(requestParameters: ReviewControllerChangeScoreRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+        if (requestParameters['changeReviewScoreDto'] == null) {
+            throw new runtime.RequiredError(
+                'changeReviewScoreDto',
+                'Required parameter "changeReviewScoreDto" was null or undefined when calling reviewControllerChangeScore().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
+
+        const response = await this.request({
+            path: `/api/reviews/changeScore`,
+            method: 'POST',
+            headers: headerParameters,
+            query: queryParameters,
+            body: ChangeReviewScoreDtoToJSON(requestParameters['changeReviewScoreDto']),
+        }, initOverrides);
+
+        return new runtime.VoidApiResponse(response);
+    }
+
+    /**
+     * Update a review score
+     */
+    async reviewControllerChangeScore(requestParameters: ReviewControllerChangeScoreRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+        await this.reviewControllerChangeScoreRaw(requestParameters, initOverrides);
+    }
 
     /**
      * Create a new review
@@ -133,6 +196,18 @@ export class ReviewsApi extends runtime.BaseAPI implements ReviewsApiInterface {
 
         if (requestParameters['reviewType'] != null) {
             queryParameters['reviewType'] = requestParameters['reviewType'];
+        }
+
+        if (requestParameters['rating'] != null) {
+            queryParameters['rating'] = requestParameters['rating'];
+        }
+
+        if (requestParameters['dateFrom'] != null) {
+            queryParameters['dateFrom'] = (requestParameters['dateFrom'] as any).toISOString();
+        }
+
+        if (requestParameters['dateTo'] != null) {
+            queryParameters['dateTo'] = (requestParameters['dateTo'] as any).toISOString();
         }
 
         const headerParameters: runtime.HTTPHeaders = {};

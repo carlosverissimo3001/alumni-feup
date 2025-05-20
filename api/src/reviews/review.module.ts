@@ -7,12 +7,14 @@ import { OtpService } from '../otp/otp.service';
 import { ReviewService } from './services/review.service';
 import { ReviewController } from './controllers/review.controller';
 import { AlumniRepository } from '@/alumni/repositories/alumni.repository';
+import { ReviewRepository } from './repositories/review.repository';
 @Module({
   controllers: [ReviewController],
   providers: [
     ReviewService,
     PrismaService,
     AlumniRepository,
+    ReviewRepository,
     Logger,
     GeolocationService,
     AgentsApiService,

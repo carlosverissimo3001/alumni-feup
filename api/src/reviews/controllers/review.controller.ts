@@ -13,7 +13,8 @@ import {
     import { GetGeoJSONDto } from '@/dto';
     import { ReviewService } from '../services/review.service';
     import { GetReviewGeoJSONDto } from '@/dto/getreviewgeojson.dto';
-import { CreateReviewDto } from '@/dto/create-review.dto';
+    import { CreateReviewDto } from '@/dto/create-review.dto';
+    import { ChangeReviewScoreDto } from '@/dto/change-review-score.dto';
   
     @ApiTags('V1', 'Reviews')
     @Controller('reviews')
@@ -40,12 +41,23 @@ import { CreateReviewDto } from '@/dto/create-review.dto';
         @ApiOperation({ summary: 'Create a new review' })
         @ApiResponse({
           description: 'Returns the created review',
-          
         })
         async create(
           @Body() createReviewDto: CreateReviewDto,
         ): Promise<void> {
           return this.reviewService.create(createReviewDto);
+        }
+
+        @Post('changeScore')
+        @HttpCode(HttpStatus.OK)
+        @ApiOperation({ summary: 'Update a review score' })
+        @ApiResponse({
+          description: 'Returns the created alumni',
+        })
+        async changeScore(
+          @Body() changeReviewScoreDto: ChangeReviewScoreDto,
+        ): Promise<void> {
+          return this.reviewService.changeReviewScoring(changeReviewScoreDto);
         }
 }
   

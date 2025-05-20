@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { ChevronLeft, ChevronDown } from "lucide-react";
+import { ChevronLeft, ChevronDown, CalendarIcon, Star } from "lucide-react";
+import { Calendar } from "@/components/ui/calendar"
+import { Badge } from "@/components/ui/badge"
 import { useNavbar } from "@/contexts/NavbarContext";
 import { cn } from "@/lib/utils";
 import { useListCourses } from "@/hooks/courses/useListCourses";
@@ -9,16 +11,23 @@ import { Feature, Point } from 'geojson';
 import { AlumniControllerFindAllGeoJSONGroupByEnum as GROUP_BY } from "@/sdk";
 import { useFetchReviewGeoJson } from "@/hooks/reviews/useFetchReviewGeoJson";
 import { Select } from "@/components/ui/select";
-import { ReviewGeoJSONProperties } from "@/types/review";
+import { ReviewData, ReviewGeoJSONProperties } from "@/types/review";
 import { Button } from "@/components/ui/button";
 import { MultiSelect } from "@/components/ui/multi-select";
+import { format } from "date-fns"
+import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { each } from "lodash";
 
 
 type props = {
   handleLoading: (loading: boolean) => void;
   onSelectGeoJSON: (geoJson: GeoJSONFeatureCollection) => void;
   onSelectReview: (id: string, coordinates: number[]) => void;
-  yearUrl?: string;
+  sortBy: 'most' | 'least' | null;
+  setSortBy: (sortBy: 'most' | 'least' | null) => void;
+  scoreFetch: boolean;
+  setScoreFetch: (upvoteFetch: boolean) => void;
 };
 
 export type AlumniInfo = {
@@ -31,6 +40,8 @@ const ReviewMapFilters = ({
   handleLoading,
   onSelectGeoJSON,
   onSelectReview,
+  scoreFetch,
+  setScoreFetch,
 }: props) => {
   // Global navbar state
   const { isCollapsed } = useNavbar();
@@ -38,8 +49,17 @@ const ReviewMapFilters = ({
   // Panel state
   const [isVisible, setIsVisible] = useState(true);
 
-
-  const reviewTypes = ['Company', 'Location'];
+  // Filter states
+  const [reviewType, setReviewType] = useState<string | null>(null)
+  const [rating, setRating] = useState<number | null>(null)
+  const [dateRange, setDateRange] = useState<{
+    from: Date | undefined
+    to: Date | undefined
+  }>({
+    from: undefined,
+    to: undefined,
+  })
+  const [sortBy, setSortBy] = useState<'most' | 'least' | null>(null)
   
   /** Selectors & Filters **/
   // Search input
@@ -50,14 +70,12 @@ const ReviewMapFilters = ({
   // Group by
   const [groupBy, setGroupBy] = useState<GROUP_BY>(GROUP_BY.Countries);
 
-  const [reviewType, setReviewType] = useState<string>('');
-
-  const [reviewTypesTemp, setReviewTypesTemp] = useState<string[]>([]);
-  
   const { data: geoJson, refetch: refetchGeoJson, isLoading: isLoadingGeoJson } = useFetchReviewGeoJson({
     groupBy,
-    //reviewType
-    //reviewType[0],
+    reviewType: reviewType ?? undefined,
+    rating: rating ?? undefined,
+    dateFrom: dateRange.from ?? undefined,
+    dateTo: dateRange.to ?? undefined,
   });
 
   // State variables
@@ -71,6 +89,13 @@ const ReviewMapFilters = ({
     handleLoading(isLoadingGeoJson);
   }, [isLoadingGeoJson, handleLoading]);
 
+  useEffect(() => {
+    if(scoreFetch) {
+      refetchGeoJson();
+      setScoreFetch(false);
+    }
+  }, [scoreFetch]);
+
   // Panel state
   const [filteredAlumniNamesCoord, setFilteredAlumniNamesCoord] = useState<AlumniInfo[]>([]);
   const [listAlumniNamesWithCoordinates, setListAlumniNamesWithCoordinates] =
@@ -83,55 +108,11 @@ const ReviewMapFilters = ({
       onSelectGeoJSON(geoJson);
     }
   }, [geoJson, onSelectGeoJSON]);
-
-  // sets the variables to be used: nº of alumnis and an array with the info to be printed on the screen
-  useEffect(() => {
-    const fetchData = async () => {
-      if (geoJson) {
-        try {
-          // Get the names with their LinkedIn links
-          const namesLinkedinLinks = (geoJson.features as Feature<Point, ReviewGeoJSONProperties>[]).flatMap(
-            (feature) => {
-              const coordinates = feature.geometry.coordinates;
-              return Object.entries(feature.properties.alumniNames)
-                .map(([reviewId, name]) => ({
-                  name,
-                  reviewId,
-                  coordinates,
-                }));
-            }
-          );
-
-          const alumniNamesWithCoords = namesLinkedinLinks.map((alumniInfo) => {
-            return {
-              name: alumniInfo.name,
-              coordinates: alumniInfo.coordinates,
-              reviewId: alumniInfo.reviewId,
-            };
-          });
-
-          // Sort the alumni names alphabetically
-          alumniNamesWithCoords.sort((a, b) => a.name.localeCompare(b.name));
-          
-          setListAlumniNamesWithCoordinates(alumniNamesWithCoords);
-          setAlumniLength(alumniNamesWithCoords.length);
-          
-        } catch (error) {
-          console.log("Attention! ", error);
-        }
-      } else {
-        console.log("GeoJson not created");
-      }
-    };
-    fetchData();
-  }, [geoJson]);
-
  
   const onClickClean = () => {
     // Reset the filters
     setGroupBy(GROUP_BY.Countries);
     setSearchInput("");
-    setReviewType('');
     
     // Reset alumni selection
     onSelectReview("", [-9.142685, 38.736946]);
@@ -152,19 +133,13 @@ const ReviewMapFilters = ({
 
   const toggleVisibility = () => setIsVisible(!isVisible);
 
-//   useEffect(() => {
-//     // Button is enabled if any filter has a value
-//     const hasFilters = 
-//       searchInput.trim() !== '' ||
-//       reviewType !== undefined ||
-
-//     setCleanButtonEnabled(hasFilters);
-//   }, [groupBy, searchInput, reviewType]);
-
-// const setReviewTypesTemp = (value: string[]) => {
-//     setReviewType(value[0]);
-// }
-
+  // Clear all filters
+  const clearFilters = () => {
+    setReviewType(null)
+    setRating(null)
+    setDateRange({ from: undefined, to: undefined })
+    setSortBy(null)
+  }
 
   return (
     <div
@@ -207,7 +182,7 @@ const ReviewMapFilters = ({
             : "opacity-0 -translate-y-2 pointer-events-none"
         )}
       >
-        <div className="p-6 border-b">
+        <div className="p-4 border-b">
           <h2 className="text-lg font-semibold text-gray-800">Group By</h2>
         </div>
 
@@ -237,53 +212,160 @@ const ReviewMapFilters = ({
           </div>
         </div>
 
-        {/* Search Section */}
-        <div className="p-6 border-b">
-          <h3 className="text-lg font-semibold text-gray-800 mb-2">Search</h3>
-          <input
-            type="text"
-            value={searchInput}
-            onChange={handleSearchInputChange}
-            placeholder="By alumni name"
-            className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-md"
-          />
+        <div className="container mx-auto py-8 px-4">
+
+
+      {/* Filters section */}
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4">
+          {/* Review Type Filter */}
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" className="w-full justify-between">
+                {reviewType || "Review Type"}
+                <ChevronDown className="h-4 w-4 opacity-50" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="w-52 ml-10">
+              <DropdownMenuLabel>Filter by type</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuGroup>
+                <DropdownMenuItem onClick={() => setReviewType("Company")}>Company</DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setReviewType("Location")}>Location</DropdownMenuItem>
+              </DropdownMenuGroup>
+            </DropdownMenuContent>
+          </DropdownMenu>
+
+          {/* Rating Filter */}
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" className="w-full justify-between">
+                {rating !== null ? `${rating} Star${rating !== 1 ? "s" : ""}` : "Rating"}
+                <ChevronDown className="h-4 w-4 opacity-50" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="w-52 ml-10">
+              <DropdownMenuLabel>Filter by rating</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuGroup>
+                {[5, 4, 3, 2, 1].map((rating) => (
+                  <DropdownMenuItem key={rating} onClick={() => setRating(rating)}>
+                    <div className="flex items-center">
+                      {Array(rating)
+                        .fill(0)
+                        .map((_, i) => (
+                          <Star key={i} className="h-4 w-4 fill-primary text-primary mr-0.5" />
+                        ))}
+                      {Array(5 - rating)
+                        .fill(0)
+                        .map((_, i) => (
+                          <Star key={i} className="h-4 w-4 text-muted-foreground mr-0.5" />
+                        ))}
+                    </div>
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuGroup>
+            </DropdownMenuContent>
+          </DropdownMenu>
+
+          {/* Date Range Filter */}
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button variant="outline" className="w-full justify-between">
+                {dateRange.from ? (
+                  dateRange.to ? (
+                    <>
+                      {format(dateRange.from, "dd LLL")} - {format(dateRange.to, "dd LLL")}
+                    </>
+                  ) : (
+                    format(dateRange.from, "dd LLL, y")
+                  )
+                ) : (
+                  "Date Range"
+                )}
+                <CalendarIcon className="ml-2 h-4 w-4 opacity-50" />
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-auto p-0" align="start">
+              <Calendar
+                mode="range"
+                selected={dateRange}
+                onSelect={(range) => setDateRange({ from: range?.from, to: range?.to })}
+                initialFocus
+              />
+            </PopoverContent>
+          </Popover>
+
+          {/* Sort by votes */}
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" className="w-full justify-between">
+              {sortBy === "most" ? "Most Voted" 
+              : sortBy === "least" ? "Least Voted" : "Sort by Votes"}
+                <ChevronDown className="h-4 w-4 opacity-50" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="w-52 ml-10">
+              <DropdownMenuLabel>Sort by votes</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuGroup>
+                <DropdownMenuItem onClick={() => setSortBy("most")}>Most Voted</DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setSortBy("least")}>Least Voted</DropdownMenuItem>
+              </DropdownMenuGroup>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
 
-        {/* Filter Section */}
-        <div className="p-6">
-          <h3 className="text-lg font-semibold text-gray-800 mb-4">Filter</h3>
-
-          {/* Year Dropdown
-          <div className="mb-4">
-                <Select
-                onValueChange={(value) => setReviewType(value)}
-                defaultValue={reviewTypes[0]}
-                name="type"
-            />
-          </div> */}
-
-          {/* Year Dropdown */}
-          <div className="mb-4">
-            <MultiSelect
-              options={reviewTypes.map((review) => ({
-                label: review,
-                value: review,
-              }))}
-              onValueChange={(values) => setReviewTypesTemp(values)}
-              value={reviewTypesTemp.map(String)}
-              placeholder="Select conclusion year"
-              variant="inverted"
-              maxCount={4}
-            />
+        {/* Active filters */}
+        {(reviewType || rating !== null || dateRange.from || sortBy !== null) && (
+          <div className="flex flex-wrap gap-2 mt-4">
+            {reviewType && (
+              <Badge variant="secondary" className="flex items-center gap-1">
+                Type: {reviewType}
+                <button className="ml-1 hover:bg-muted rounded-full" onClick={() => setReviewType(null)}>
+                  <span className="sr-only">Remove type filter</span>×
+                </button>
+              </Badge>
+            )}
+            {rating !== null && (
+              <Badge variant="secondary" className="flex items-center gap-1">
+                Rating: {rating} Star{rating !== 1 ? "s" : ""}
+                <button className="ml-1 hover:bg-muted rounded-full" onClick={() => setRating(null)}>
+                  <span className="sr-only">Remove rating filter</span>×
+                </button>
+              </Badge>
+            )}
+            {dateRange.from && (
+              <Badge variant="secondary" className="flex items-center gap-1">
+                Date: {format(dateRange.from, "LLL dd, y")}
+                {dateRange.to && ` - ${format(dateRange.to, "LLL dd, y")}`}
+                <button
+                  className="ml-1 hover:bg-muted rounded-full"
+                  onClick={() => setDateRange({ from: undefined, to: undefined })}
+                >
+                  <span className="sr-only">Remove date filter</span>×
+                </button>
+              </Badge>
+            )}
+            {sortBy !== null && (
+              <Badge variant="secondary" className="flex items-center gap-1">
+                Sort: {sortBy === "most" ? "Most" : "Least"} Voted
+                <button className="ml-1 hover:bg-muted rounded-full" onClick={() => setSortBy(null)}>
+                  <span className="sr-only">Remove sort filter</span>×
+                </button>
+              </Badge>
+            )}
           </div>
+        )}
 
-          {/* Action Buttons */}
-          <div className="flex gap-2">
+      </div>
+      
+          <div className="flex translate-x-1/2 left-1/2 gap-2 w-1/2 mb-2 mt-5">
             <Button
               onClick={onClickClean}
               disabled={!cleanButtonEnabled}
               className={cn(
-                "flex-1 px-4 py-2 rounded-md text-white",
+                "flex-1 px-4 py-2 rounded-md text-white place-items-center",
                 !cleanButtonEnabled
                   ? "bg-gray-400 cursor-not-allowed"
                   : "bg-gray-600 hover:bg-gray-700"
@@ -292,8 +374,7 @@ const ReviewMapFilters = ({
               Clear
             </Button>
           </div>
-        </div>
-
+        
         {/* Stats Footer */}
         <div className="px-6 py-4 bg-gray-50 border-t">
           <p className="text-xl text-gray-600 font-bold">

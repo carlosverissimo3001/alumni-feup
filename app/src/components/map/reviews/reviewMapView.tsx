@@ -12,7 +12,7 @@ import { GeoJSONFeatureCollection } from "@/sdk";
 import 'mapbox-gl/dist/mapbox-gl.css';
 import { AlumniData } from "@/types/alumni";
 import { ReviewData, ReviewGeoJSONProperties } from "@/types/review";
-import { buildReviewData, extractReviewFeatureFields } from "../utils/reviewhelper";
+import { buildReviewData, extractReviewFeatureFields, sortReviewData } from "../utils/reviewhelper";
 import ReviewClusterInfo from "./reviewClusterInfo";
 import ReviewMapGLSource from "./reviewMapGlSource";
 import { set } from "date-fns";
@@ -29,12 +29,22 @@ type MapViewProps = {
   } | null;
   handleSelectReviews: (id: string, coordinates: number[]) => void;
   handleSelectGeoJSON: (geoData: GeoJSONFeatureCollection) => void;
+  reviewData: ReviewData[];
+  setReviewData: (reviewData: ReviewData[]) => void;
+  sortBy: 'most' | 'least' | null;
+  scoreFetch: boolean;
+  setScoreFetch: (scoreFetch: boolean) => void;
 };
 
 const ReviewMapView = ({
   loading,
   reviewGeoJSON,
   selectedReviews,
+  reviewData,
+  setReviewData,
+  sortBy,
+  scoreFetch,
+  setScoreFetch
 }: MapViewProps) => {
   const [hoveredMouseCoords, setHoveredMouseCoords] = useState<
     [number, number] | null
@@ -43,7 +53,7 @@ const ReviewMapView = ({
   const [listAlumniNames, setListAlumniNames] = useState<string[]>([]);
   const [listLinkedinLinks, setListLinkedinLinks] = useState<string[]>([]);
   const [reviews, setReviews] = useState<number>(0);
-  const [reviewData, setReviewData] = useState<ReviewData[]>([]);
+  
   const [hoveredCluster, setHoveredCluster] = useState(false);
 
   const mapRef = useRef<any>(null);
@@ -117,9 +127,10 @@ const ReviewMapView = ({
             timeSincePosted,
             timeSincePostedType,
             companyNames,
+            createdAt
         } = await extractReviewFeatureFields(feature as unknown as Feature<Geometry, ReviewGeoJSONProperties>);
 
-        const reviewData = buildReviewData(
+        let reviewData = buildReviewData(
             listReviewIds,
             listAlumniNames,
             linkedInLinks,
@@ -132,8 +143,14 @@ const ReviewMapView = ({
             companyNames,
             timeSincePosted,
             timeSincePostedType,
+            createdAt
         );
 
+        reviewData = sortReviewData(
+            reviewData,
+            sortBy
+        )
+        
         const parsedFlattenedPlaceNames = parsePlaceNames(listPlaceName);
 
         updateState(
@@ -151,6 +168,8 @@ const ReviewMapView = ({
       updateState([], [], [], []);
     }
   };
+
+
 
   const TOKEN =
     "pk.eyJ1IjoiamVuaWZlcjEyMyIsImEiOiJjbHJndXUyNnAwamF1MmptamwwMjNqZm0xIn0.vUNEIrEka3ibQKmb8jzgFQ";
@@ -190,9 +209,10 @@ const ReviewMapView = ({
           listAlumniNames={listAlumniNames}
           listLinkedinLinks={listLinkedinLinks}
           listPlaceName={listPlaceName}
-          //reviews={reviews}
           hoveredMouseCoords={hoveredMouseCoords || [0, 0]}
           reviewData={reviewData}
+          scoreFetch={scoreFetch}
+          setScoreFetch={setScoreFetch}
         />
       </MapGL>
       {loading && (

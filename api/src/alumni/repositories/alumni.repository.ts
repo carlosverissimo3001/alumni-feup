@@ -1,9 +1,11 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { Alumni, AlumniExtended } from 'src/entities/alumni.entity';
-import { alumniSelect } from 'src/prisma/includes/alumni.include';
+import { alumniSelect, alumniSelectOnlyCompany, alumniSelectOnlyLocation } from 'src/prisma/includes/alumni.include';
 import { GetGeoJSONDto } from 'src/dto/getgeojson.dto';
 import { Prisma } from '@prisma/client';
+import { GetReviewGeoJSONDto } from '@/dto/getreviewgeojson.dto';
+import { ReviewType } from '@/entities/reviewgeojson.entity';
 
 @Injectable()
 export class AlumniRepository {
@@ -122,16 +124,79 @@ export class AlumniRepository {
     });
   }
 
-  async findAllWithReviews(): Promise<AlumniExtended[]> {
-    const alumni = await this.prisma.alumni.findMany({
-      where: {
-        OR: [
-          { ReviewsCompany: { some: {} } },
-          { ReviewsLocation: { some: {} } },
-        ],
-      },
-      select: alumniSelect,
-    });
-    return alumni;
+  async findAllWithReviews(query: GetReviewGeoJSONDto): Promise<AlumniExtended[]> {
+
+      const { rating, dateFrom, dateTo } = query;
+      const dateFilter =
+      dateFrom || dateTo
+          ? {
+              createdAt: {
+                ...(dateFrom ? { gte: dateFrom } : {}),
+                ...(dateTo ? { lte: dateTo } : {}),
+              },
+            }
+          : {};
+      const ratingFilter =
+      rating != undefined
+          ? { rating: rating }
+          : {};
+    if(query.reviewType === ReviewType.COMPANY.toString() ) {
+
+      const alumni = await this.prisma.alumni.findMany({
+        include: {
+          ReviewsCompany: {
+            include: { 
+              Company: true,
+              Location: true
+            },
+            where: {
+              ...ratingFilter,
+              ...dateFilter,
+            },
+          },
+        },
+      });
+      return alumni;
+    }else if(query.reviewType === ReviewType.LOCATION.toString()) {
+      const alumni = await this.prisma.alumni.findMany({
+        include: {
+          ReviewsLocation: {
+            include: { 
+              Location: true
+            },
+            where: {
+              ...ratingFilter,
+              ...dateFilter,
+            },
+          },
+        },
+      });
+      return alumni;
+    }else{
+      const alumni = await this.prisma.alumni.findMany({
+        include: {
+          ReviewsCompany: {
+            include: { 
+              Company: true,
+              Location: true
+             },
+            where: {
+              ...ratingFilter,
+              ...dateFilter,
+            },
+          },
+          ReviewsLocation: {
+            include: {
+              Location: true
+             },
+            where: {
+              ...ratingFilter,
+              ...dateFilter,
+            },
+          },
+        },
+      });
+      return alumni;
+    }
   }
 }
