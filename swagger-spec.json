@@ -576,20 +576,10 @@
             }
           },
           {
-            "name": "companySearch",
+            "name": "alumniSearch",
             "required": false,
             "in": "query",
             "description": "Search query for companies",
-            "schema": {
-              "example": "search query",
-              "type": "string"
-            }
-          },
-          {
-            "name": "industrySearch",
-            "required": false,
-            "in": "query",
-            "description": "Search query for industries",
             "schema": {
               "example": "search query",
               "type": "string"
@@ -1011,20 +1001,10 @@
             }
           },
           {
-            "name": "companySearch",
+            "name": "alumniSearch",
             "required": false,
             "in": "query",
             "description": "Search query for companies",
-            "schema": {
-              "example": "search query",
-              "type": "string"
-            }
-          },
-          {
-            "name": "industrySearch",
-            "required": false,
-            "in": "query",
-            "description": "Search query for industries",
             "schema": {
               "example": "search query",
               "type": "string"
@@ -1372,20 +1352,10 @@
             }
           },
           {
-            "name": "companySearch",
+            "name": "alumniSearch",
             "required": false,
             "in": "query",
             "description": "Search query for companies",
-            "schema": {
-              "example": "search query",
-              "type": "string"
-            }
-          },
-          {
-            "name": "industrySearch",
-            "required": false,
-            "in": "query",
-            "description": "Search query for industries",
             "schema": {
               "example": "search query",
               "type": "string"
@@ -1798,20 +1768,10 @@
             }
           },
           {
-            "name": "companySearch",
+            "name": "alumniSearch",
             "required": false,
             "in": "query",
             "description": "Search query for companies",
-            "schema": {
-              "example": "search query",
-              "type": "string"
-            }
-          },
-          {
-            "name": "industrySearch",
-            "required": false,
-            "in": "query",
-            "description": "Search query for industries",
             "schema": {
               "example": "search query",
               "type": "string"
@@ -2186,20 +2146,10 @@
             }
           },
           {
-            "name": "companySearch",
+            "name": "alumniSearch",
             "required": false,
             "in": "query",
             "description": "Search query for companies",
-            "schema": {
-              "example": "search query",
-              "type": "string"
-            }
-          },
-          {
-            "name": "industrySearch",
-            "required": false,
-            "in": "query",
-            "description": "Search query for industries",
             "schema": {
               "example": "search query",
               "type": "string"
@@ -2547,20 +2497,10 @@
             }
           },
           {
-            "name": "companySearch",
+            "name": "alumniSearch",
             "required": false,
             "in": "query",
             "description": "Search query for companies",
-            "schema": {
-              "example": "search query",
-              "type": "string"
-            }
-          },
-          {
-            "name": "industrySearch",
-            "required": false,
-            "in": "query",
-            "description": "Search query for industries",
             "schema": {
               "example": "search query",
               "type": "string"
@@ -2908,20 +2848,10 @@
             }
           },
           {
-            "name": "companySearch",
+            "name": "alumniSearch",
             "required": false,
             "in": "query",
             "description": "Search query for companies",
-            "schema": {
-              "example": "search query",
-              "type": "string"
-            }
-          },
-          {
-            "name": "industrySearch",
-            "required": false,
-            "in": "query",
-            "description": "Search query for industries",
             "schema": {
               "example": "search query",
               "type": "string"
@@ -3269,20 +3199,10 @@
             }
           },
           {
-            "name": "companySearch",
+            "name": "alumniSearch",
             "required": false,
             "in": "query",
             "description": "Search query for companies",
-            "schema": {
-              "example": "search query",
-              "type": "string"
-            }
-          },
-          {
-            "name": "industrySearch",
-            "required": false,
-            "in": "query",
-            "description": "Search query for industries",
             "schema": {
               "example": "search query",
               "type": "string"
@@ -3657,20 +3577,10 @@
             }
           },
           {
-            "name": "companySearch",
+            "name": "alumniSearch",
             "required": false,
             "in": "query",
             "description": "Search query for companies",
-            "schema": {
-              "example": "search query",
-              "type": "string"
-            }
-          },
-          {
-            "name": "industrySearch",
-            "required": false,
-            "in": "query",
-            "description": "Search query for industries",
             "schema": {
               "example": "search query",
               "type": "string"
