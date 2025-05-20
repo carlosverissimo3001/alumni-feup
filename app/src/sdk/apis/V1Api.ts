@@ -159,8 +159,7 @@ export interface AlumniAnalyticsControllerGetAlumniListRequest {
     onlyCompaniesWithSalaryData?: boolean;
     onlyInternational?: boolean;
     excludeResearchAndHighEducation?: boolean;
-    companySearch?: string;
-    industrySearch?: string;
+    alumniSearch?: string;
     companySize?: Array<AlumniAnalyticsControllerGetAlumniListCompanySizeEnum>;
     companyType?: Array<AlumniAnalyticsControllerGetAlumniListCompanyTypeEnum>;
     escoCodes?: Array<string>;
@@ -218,8 +217,7 @@ export interface CompanyAnalyticsControllerGetCompaniesWithAlumniCountRequest {
     onlyCompaniesWithSalaryData?: boolean;
     onlyInternational?: boolean;
     excludeResearchAndHighEducation?: boolean;
-    companySearch?: string;
-    industrySearch?: string;
+    alumniSearch?: string;
     companySize?: Array<CompanyAnalyticsControllerGetCompaniesWithAlumniCountCompanySizeEnum>;
     companyType?: Array<CompanyAnalyticsControllerGetCompaniesWithAlumniCountCompanyTypeEnum>;
     escoCodes?: Array<string>;
@@ -270,8 +268,7 @@ export interface EducationAnalyticsControllerGetFacultiesRequest {
     onlyCompaniesWithSalaryData?: boolean;
     onlyInternational?: boolean;
     excludeResearchAndHighEducation?: boolean;
-    companySearch?: string;
-    industrySearch?: string;
+    alumniSearch?: string;
     companySize?: Array<EducationAnalyticsControllerGetFacultiesCompanySizeEnum>;
     companyType?: Array<EducationAnalyticsControllerGetFacultiesCompanyTypeEnum>;
     escoCodes?: Array<string>;
@@ -301,8 +298,7 @@ export interface EducationAnalyticsControllerGetGraduationsRequest {
     onlyCompaniesWithSalaryData?: boolean;
     onlyInternational?: boolean;
     excludeResearchAndHighEducation?: boolean;
-    companySearch?: string;
-    industrySearch?: string;
+    alumniSearch?: string;
     companySize?: Array<EducationAnalyticsControllerGetGraduationsCompanySizeEnum>;
     companyType?: Array<EducationAnalyticsControllerGetGraduationsCompanyTypeEnum>;
     escoCodes?: Array<string>;
@@ -332,8 +328,7 @@ export interface EducationAnalyticsControllerGetMajorsRequest {
     onlyCompaniesWithSalaryData?: boolean;
     onlyInternational?: boolean;
     excludeResearchAndHighEducation?: boolean;
-    companySearch?: string;
-    industrySearch?: string;
+    alumniSearch?: string;
     companySize?: Array<EducationAnalyticsControllerGetMajorsCompanySizeEnum>;
     companyType?: Array<EducationAnalyticsControllerGetMajorsCompanyTypeEnum>;
     escoCodes?: Array<string>;
@@ -379,8 +374,7 @@ export interface GeoAnalyticsControllerGetCitiesWithAlumniCountRequest {
     onlyCompaniesWithSalaryData?: boolean;
     onlyInternational?: boolean;
     excludeResearchAndHighEducation?: boolean;
-    companySearch?: string;
-    industrySearch?: string;
+    alumniSearch?: string;
     companySize?: Array<GeoAnalyticsControllerGetCitiesWithAlumniCountCompanySizeEnum>;
     companyType?: Array<GeoAnalyticsControllerGetCitiesWithAlumniCountCompanyTypeEnum>;
     escoCodes?: Array<string>;
@@ -410,8 +404,7 @@ export interface GeoAnalyticsControllerGetCountriesWithAlumniCountRequest {
     onlyCompaniesWithSalaryData?: boolean;
     onlyInternational?: boolean;
     excludeResearchAndHighEducation?: boolean;
-    companySearch?: string;
-    industrySearch?: string;
+    alumniSearch?: string;
     companySize?: Array<GeoAnalyticsControllerGetCountriesWithAlumniCountCompanySizeEnum>;
     companyType?: Array<GeoAnalyticsControllerGetCountriesWithAlumniCountCompanyTypeEnum>;
     escoCodes?: Array<string>;
@@ -441,8 +434,7 @@ export interface IndustryAnalyticsControllerGetIndustryWithCountsRequest {
     onlyCompaniesWithSalaryData?: boolean;
     onlyInternational?: boolean;
     excludeResearchAndHighEducation?: boolean;
-    companySearch?: string;
-    industrySearch?: string;
+    alumniSearch?: string;
     companySize?: Array<IndustryAnalyticsControllerGetIndustryWithCountsCompanySizeEnum>;
     companyType?: Array<IndustryAnalyticsControllerGetIndustryWithCountsCompanyTypeEnum>;
     escoCodes?: Array<string>;
@@ -481,8 +473,7 @@ export interface RoleAnalyticsControllerGetRolesRequest {
     onlyCompaniesWithSalaryData?: boolean;
     onlyInternational?: boolean;
     excludeResearchAndHighEducation?: boolean;
-    companySearch?: string;
-    industrySearch?: string;
+    alumniSearch?: string;
     companySize?: Array<RoleAnalyticsControllerGetRolesCompanySizeEnum>;
     companyType?: Array<RoleAnalyticsControllerGetRolesCompanyTypeEnum>;
     escoCodes?: Array<string>;
@@ -599,8 +590,7 @@ export interface V1ApiInterface {
      * @param {boolean} [onlyCompaniesWithSalaryData] Include only companies with salary data
      * @param {boolean} [onlyInternational] Whether to exclude roles in Portugal
      * @param {boolean} [excludeResearchAndHighEducation] Exclude research and high education roles
-     * @param {string} [companySearch] Search query for companies
-     * @param {string} [industrySearch] Search query for industries
+     * @param {string} [alumniSearch] Search query for companies
      * @param {Array<'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G' | 'H' | 'I'>} [companySize] The company sizes to filter by
      * @param {Array<'EDUCATIONAL' | 'GOVERNMENT_AGENCY' | 'NON_PROFIT' | 'PARTNERSHIP' | 'PRIVATELY_HELD' | 'PUBLIC_COMPANY' | 'SELF_EMPLOYED' | 'SELF_OWNED'>} [companyType] The company types to filter by
      * @param {Array<string>} [escoCodes] The ESCO codes to filter by
@@ -777,8 +767,7 @@ export interface V1ApiInterface {
      * @param {boolean} [onlyCompaniesWithSalaryData] Include only companies with salary data
      * @param {boolean} [onlyInternational] Whether to exclude roles in Portugal
      * @param {boolean} [excludeResearchAndHighEducation] Exclude research and high education roles
-     * @param {string} [companySearch] Search query for companies
-     * @param {string} [industrySearch] Search query for industries
+     * @param {string} [alumniSearch] Search query for companies
      * @param {Array<'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G' | 'H' | 'I'>} [companySize] The company sizes to filter by
      * @param {Array<'EDUCATIONAL' | 'GOVERNMENT_AGENCY' | 'NON_PROFIT' | 'PARTNERSHIP' | 'PRIVATELY_HELD' | 'PUBLIC_COMPANY' | 'SELF_EMPLOYED' | 'SELF_OWNED'>} [companyType] The company types to filter by
      * @param {Array<string>} [escoCodes] The ESCO codes to filter by
@@ -937,8 +926,7 @@ export interface V1ApiInterface {
      * @param {boolean} [onlyCompaniesWithSalaryData] Include only companies with salary data
      * @param {boolean} [onlyInternational] Whether to exclude roles in Portugal
      * @param {boolean} [excludeResearchAndHighEducation] Exclude research and high education roles
-     * @param {string} [companySearch] Search query for companies
-     * @param {string} [industrySearch] Search query for industries
+     * @param {string} [alumniSearch] Search query for companies
      * @param {Array<'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G' | 'H' | 'I'>} [companySize] The company sizes to filter by
      * @param {Array<'EDUCATIONAL' | 'GOVERNMENT_AGENCY' | 'NON_PROFIT' | 'PARTNERSHIP' | 'PRIVATELY_HELD' | 'PUBLIC_COMPANY' | 'SELF_EMPLOYED' | 'SELF_OWNED'>} [companyType] The company types to filter by
      * @param {Array<string>} [escoCodes] The ESCO codes to filter by
@@ -979,8 +967,7 @@ export interface V1ApiInterface {
      * @param {boolean} [onlyCompaniesWithSalaryData] Include only companies with salary data
      * @param {boolean} [onlyInternational] Whether to exclude roles in Portugal
      * @param {boolean} [excludeResearchAndHighEducation] Exclude research and high education roles
-     * @param {string} [companySearch] Search query for companies
-     * @param {string} [industrySearch] Search query for industries
+     * @param {string} [alumniSearch] Search query for companies
      * @param {Array<'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G' | 'H' | 'I'>} [companySize] The company sizes to filter by
      * @param {Array<'EDUCATIONAL' | 'GOVERNMENT_AGENCY' | 'NON_PROFIT' | 'PARTNERSHIP' | 'PRIVATELY_HELD' | 'PUBLIC_COMPANY' | 'SELF_EMPLOYED' | 'SELF_OWNED'>} [companyType] The company types to filter by
      * @param {Array<string>} [escoCodes] The ESCO codes to filter by
@@ -1021,8 +1008,7 @@ export interface V1ApiInterface {
      * @param {boolean} [onlyCompaniesWithSalaryData] Include only companies with salary data
      * @param {boolean} [onlyInternational] Whether to exclude roles in Portugal
      * @param {boolean} [excludeResearchAndHighEducation] Exclude research and high education roles
-     * @param {string} [companySearch] Search query for companies
-     * @param {string} [industrySearch] Search query for industries
+     * @param {string} [alumniSearch] Search query for companies
      * @param {Array<'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G' | 'H' | 'I'>} [companySize] The company sizes to filter by
      * @param {Array<'EDUCATIONAL' | 'GOVERNMENT_AGENCY' | 'NON_PROFIT' | 'PARTNERSHIP' | 'PRIVATELY_HELD' | 'PUBLIC_COMPANY' | 'SELF_EMPLOYED' | 'SELF_OWNED'>} [companyType] The company types to filter by
      * @param {Array<string>} [escoCodes] The ESCO codes to filter by
@@ -1165,8 +1151,7 @@ export interface V1ApiInterface {
      * @param {boolean} [onlyCompaniesWithSalaryData] Include only companies with salary data
      * @param {boolean} [onlyInternational] Whether to exclude roles in Portugal
      * @param {boolean} [excludeResearchAndHighEducation] Exclude research and high education roles
-     * @param {string} [companySearch] Search query for companies
-     * @param {string} [industrySearch] Search query for industries
+     * @param {string} [alumniSearch] Search query for companies
      * @param {Array<'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G' | 'H' | 'I'>} [companySize] The company sizes to filter by
      * @param {Array<'EDUCATIONAL' | 'GOVERNMENT_AGENCY' | 'NON_PROFIT' | 'PARTNERSHIP' | 'PRIVATELY_HELD' | 'PUBLIC_COMPANY' | 'SELF_EMPLOYED' | 'SELF_OWNED'>} [companyType] The company types to filter by
      * @param {Array<string>} [escoCodes] The ESCO codes to filter by
@@ -1221,8 +1206,7 @@ export interface V1ApiInterface {
      * @param {boolean} [onlyCompaniesWithSalaryData] Include only companies with salary data
      * @param {boolean} [onlyInternational] Whether to exclude roles in Portugal
      * @param {boolean} [excludeResearchAndHighEducation] Exclude research and high education roles
-     * @param {string} [companySearch] Search query for companies
-     * @param {string} [industrySearch] Search query for industries
+     * @param {string} [alumniSearch] Search query for companies
      * @param {Array<'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G' | 'H' | 'I'>} [companySize] The company sizes to filter by
      * @param {Array<'EDUCATIONAL' | 'GOVERNMENT_AGENCY' | 'NON_PROFIT' | 'PARTNERSHIP' | 'PRIVATELY_HELD' | 'PUBLIC_COMPANY' | 'SELF_EMPLOYED' | 'SELF_OWNED'>} [companyType] The company types to filter by
      * @param {Array<string>} [escoCodes] The ESCO codes to filter by
@@ -1278,8 +1262,7 @@ export interface V1ApiInterface {
      * @param {boolean} [onlyCompaniesWithSalaryData] Include only companies with salary data
      * @param {boolean} [onlyInternational] Whether to exclude roles in Portugal
      * @param {boolean} [excludeResearchAndHighEducation] Exclude research and high education roles
-     * @param {string} [companySearch] Search query for companies
-     * @param {string} [industrySearch] Search query for industries
+     * @param {string} [alumniSearch] Search query for companies
      * @param {Array<'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G' | 'H' | 'I'>} [companySize] The company sizes to filter by
      * @param {Array<'EDUCATIONAL' | 'GOVERNMENT_AGENCY' | 'NON_PROFIT' | 'PARTNERSHIP' | 'PRIVATELY_HELD' | 'PUBLIC_COMPANY' | 'SELF_EMPLOYED' | 'SELF_OWNED'>} [companyType] The company types to filter by
      * @param {Array<string>} [escoCodes] The ESCO codes to filter by
@@ -1366,8 +1349,7 @@ export interface V1ApiInterface {
      * @param {boolean} [onlyCompaniesWithSalaryData] Include only companies with salary data
      * @param {boolean} [onlyInternational] Whether to exclude roles in Portugal
      * @param {boolean} [excludeResearchAndHighEducation] Exclude research and high education roles
-     * @param {string} [companySearch] Search query for companies
-     * @param {string} [industrySearch] Search query for industries
+     * @param {string} [alumniSearch] Search query for companies
      * @param {Array<'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G' | 'H' | 'I'>} [companySize] The company sizes to filter by
      * @param {Array<'EDUCATIONAL' | 'GOVERNMENT_AGENCY' | 'NON_PROFIT' | 'PARTNERSHIP' | 'PRIVATELY_HELD' | 'PUBLIC_COMPANY' | 'SELF_EMPLOYED' | 'SELF_OWNED'>} [companyType] The company types to filter by
      * @param {Array<string>} [escoCodes] The ESCO codes to filter by
@@ -1677,12 +1659,8 @@ export class V1Api extends runtime.BaseAPI implements V1ApiInterface {
             queryParameters['excludeResearchAndHighEducation'] = requestParameters['excludeResearchAndHighEducation'];
         }
 
-        if (requestParameters['companySearch'] != null) {
-            queryParameters['companySearch'] = requestParameters['companySearch'];
-        }
-
-        if (requestParameters['industrySearch'] != null) {
-            queryParameters['industrySearch'] = requestParameters['industrySearch'];
+        if (requestParameters['alumniSearch'] != null) {
+            queryParameters['alumniSearch'] = requestParameters['alumniSearch'];
         }
 
         if (requestParameters['companySize'] != null) {
@@ -2124,12 +2102,8 @@ export class V1Api extends runtime.BaseAPI implements V1ApiInterface {
             queryParameters['excludeResearchAndHighEducation'] = requestParameters['excludeResearchAndHighEducation'];
         }
 
-        if (requestParameters['companySearch'] != null) {
-            queryParameters['companySearch'] = requestParameters['companySearch'];
-        }
-
-        if (requestParameters['industrySearch'] != null) {
-            queryParameters['industrySearch'] = requestParameters['industrySearch'];
+        if (requestParameters['alumniSearch'] != null) {
+            queryParameters['alumniSearch'] = requestParameters['alumniSearch'];
         }
 
         if (requestParameters['companySize'] != null) {
@@ -2513,12 +2487,8 @@ export class V1Api extends runtime.BaseAPI implements V1ApiInterface {
             queryParameters['excludeResearchAndHighEducation'] = requestParameters['excludeResearchAndHighEducation'];
         }
 
-        if (requestParameters['companySearch'] != null) {
-            queryParameters['companySearch'] = requestParameters['companySearch'];
-        }
-
-        if (requestParameters['industrySearch'] != null) {
-            queryParameters['industrySearch'] = requestParameters['industrySearch'];
+        if (requestParameters['alumniSearch'] != null) {
+            queryParameters['alumniSearch'] = requestParameters['alumniSearch'];
         }
 
         if (requestParameters['companySize'] != null) {
@@ -2658,12 +2628,8 @@ export class V1Api extends runtime.BaseAPI implements V1ApiInterface {
             queryParameters['excludeResearchAndHighEducation'] = requestParameters['excludeResearchAndHighEducation'];
         }
 
-        if (requestParameters['companySearch'] != null) {
-            queryParameters['companySearch'] = requestParameters['companySearch'];
-        }
-
-        if (requestParameters['industrySearch'] != null) {
-            queryParameters['industrySearch'] = requestParameters['industrySearch'];
+        if (requestParameters['alumniSearch'] != null) {
+            queryParameters['alumniSearch'] = requestParameters['alumniSearch'];
         }
 
         if (requestParameters['companySize'] != null) {
@@ -2803,12 +2769,8 @@ export class V1Api extends runtime.BaseAPI implements V1ApiInterface {
             queryParameters['excludeResearchAndHighEducation'] = requestParameters['excludeResearchAndHighEducation'];
         }
 
-        if (requestParameters['companySearch'] != null) {
-            queryParameters['companySearch'] = requestParameters['companySearch'];
-        }
-
-        if (requestParameters['industrySearch'] != null) {
-            queryParameters['industrySearch'] = requestParameters['industrySearch'];
+        if (requestParameters['alumniSearch'] != null) {
+            queryParameters['alumniSearch'] = requestParameters['alumniSearch'];
         }
 
         if (requestParameters['companySize'] != null) {
@@ -3167,12 +3129,8 @@ export class V1Api extends runtime.BaseAPI implements V1ApiInterface {
             queryParameters['excludeResearchAndHighEducation'] = requestParameters['excludeResearchAndHighEducation'];
         }
 
-        if (requestParameters['companySearch'] != null) {
-            queryParameters['companySearch'] = requestParameters['companySearch'];
-        }
-
-        if (requestParameters['industrySearch'] != null) {
-            queryParameters['industrySearch'] = requestParameters['industrySearch'];
+        if (requestParameters['alumniSearch'] != null) {
+            queryParameters['alumniSearch'] = requestParameters['alumniSearch'];
         }
 
         if (requestParameters['companySize'] != null) {
@@ -3338,12 +3296,8 @@ export class V1Api extends runtime.BaseAPI implements V1ApiInterface {
             queryParameters['excludeResearchAndHighEducation'] = requestParameters['excludeResearchAndHighEducation'];
         }
 
-        if (requestParameters['companySearch'] != null) {
-            queryParameters['companySearch'] = requestParameters['companySearch'];
-        }
-
-        if (requestParameters['industrySearch'] != null) {
-            queryParameters['industrySearch'] = requestParameters['industrySearch'];
+        if (requestParameters['alumniSearch'] != null) {
+            queryParameters['alumniSearch'] = requestParameters['alumniSearch'];
         }
 
         if (requestParameters['companySize'] != null) {
@@ -3511,12 +3465,8 @@ export class V1Api extends runtime.BaseAPI implements V1ApiInterface {
             queryParameters['excludeResearchAndHighEducation'] = requestParameters['excludeResearchAndHighEducation'];
         }
 
-        if (requestParameters['companySearch'] != null) {
-            queryParameters['companySearch'] = requestParameters['companySearch'];
-        }
-
-        if (requestParameters['industrySearch'] != null) {
-            queryParameters['industrySearch'] = requestParameters['industrySearch'];
+        if (requestParameters['alumniSearch'] != null) {
+            queryParameters['alumniSearch'] = requestParameters['alumniSearch'];
         }
 
         if (requestParameters['companySize'] != null) {
@@ -3760,12 +3710,8 @@ export class V1Api extends runtime.BaseAPI implements V1ApiInterface {
             queryParameters['excludeResearchAndHighEducation'] = requestParameters['excludeResearchAndHighEducation'];
         }
 
-        if (requestParameters['companySearch'] != null) {
-            queryParameters['companySearch'] = requestParameters['companySearch'];
-        }
-
-        if (requestParameters['industrySearch'] != null) {
-            queryParameters['industrySearch'] = requestParameters['industrySearch'];
+        if (requestParameters['alumniSearch'] != null) {
+            queryParameters['alumniSearch'] = requestParameters['alumniSearch'];
         }
 
         if (requestParameters['companySize'] != null) {
