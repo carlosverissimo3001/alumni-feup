@@ -7,7 +7,7 @@ import {
   GraduationDto,
 } from '../dto/basic-alumni-profile.dto';
 import { NotFoundException, Injectable } from '@nestjs/common';
-import { LocationGeo, Role } from '@/entities';
+import { LocationGeo, Role, Location } from '@/entities';
 import { SENIORITY_LEVEL } from '@prisma/client';
 
 @Injectable()
@@ -154,15 +154,17 @@ export class AlumniProfileService {
         Location: true,
       },
     });
-
-    const companies: CompanyDto[] = [];
-    const locations: LocationGeo[] = [];
-
+  
+    let companies: CompanyDto[] = [];
+    let locations: Location[] = [];
+ 
     const uniqueCompanyIds = new Set<string>();
     const uniqueLocationIds = new Set<string>();
 
-    alumni.Roles.forEach(async (role) => {
-      const company: ExtendedCompanyDto = {
+    alumni.Roles.forEach(async role => {
+
+      if (role.Location) {
+      const company : ExtendedCompanyDto = {
         id: role.Company.id,
         name: role.Company.name,
         industry: '',
@@ -185,6 +187,7 @@ export class AlumniProfileService {
         uniqueLocationIds.add(location.id);
         locations.push(location);
       }
+    }
     });
 
     return {

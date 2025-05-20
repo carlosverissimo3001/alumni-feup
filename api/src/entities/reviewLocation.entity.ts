@@ -22,7 +22,7 @@ export class ReviewLocation {
     downvotes: string[];
 
     @ApiPropertyOptional({ description: 'The location of the review' })
-    Location?: LocationGeo | null;
+    Location: LocationGeo | null;
 
     @ApiPropertyOptional({
     description: 'The date and time when the review was created',

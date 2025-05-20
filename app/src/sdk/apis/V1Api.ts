@@ -20,7 +20,9 @@ import type {
   AlumniExtended,
   AlumniListResponseDto,
   AlumniOptionDto,
+  AlumniPastLocationsAndCompaniesDto,
   BasicAlumniProfileDto,
+  ChangeReviewScoreDto,
   CheckPermissionDto,
   CityListResponseDto,
   CityOptionDto,
@@ -65,8 +67,12 @@ import {
     AlumniListResponseDtoToJSON,
     AlumniOptionDtoFromJSON,
     AlumniOptionDtoToJSON,
+    AlumniPastLocationsAndCompaniesDtoFromJSON,
+    AlumniPastLocationsAndCompaniesDtoToJSON,
     BasicAlumniProfileDtoFromJSON,
     BasicAlumniProfileDtoToJSON,
+    ChangeReviewScoreDtoFromJSON,
+    ChangeReviewScoreDtoToJSON,
     CheckPermissionDtoFromJSON,
     CheckPermissionDtoToJSON,
     CityListResponseDtoFromJSON,
@@ -446,6 +452,10 @@ export interface IndustryAnalyticsControllerGetIndustryWithCountsRequest {
     sortOrder?: string;
 }
 
+export interface ReviewControllerChangeScoreRequest {
+    changeReviewScoreDto: ChangeReviewScoreDto;
+}
+
 export interface ReviewControllerCreateRequest {
     createReviewDto: CreateReviewDto;
 }
@@ -453,6 +463,9 @@ export interface ReviewControllerCreateRequest {
 export interface ReviewControllerFindAllGeoJSONRequest {
     groupBy: ReviewControllerFindAllGeoJSONGroupByEnum;
     reviewType?: string;
+    rating?: number;
+    dateFrom?: Date;
+    dateTo?: Date;
 }
 
 export interface RoleAnalyticsControllerGetRolesRequest {
@@ -725,12 +738,12 @@ export interface V1ApiInterface {
      * @throws {RequiredError}
      * @memberof V1ApiInterface
      */
-    alumniControllerGetPastLocationsAndCompaniesRaw(requestParameters: AlumniControllerGetPastLocationsAndCompaniesRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<object>>;
+    alumniControllerGetPastLocationsAndCompaniesRaw(requestParameters: AlumniControllerGetPastLocationsAndCompaniesRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<AlumniPastLocationsAndCompaniesDto>>;
 
     /**
      * Get the past locations and companies of an alumni
      */
-    alumniControllerGetPastLocationsAndCompanies(requestParameters: AlumniControllerGetPastLocationsAndCompaniesRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<object>;
+    alumniControllerGetPastLocationsAndCompanies(requestParameters: AlumniControllerGetPastLocationsAndCompaniesRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<AlumniPastLocationsAndCompaniesDto>;
 
     /**
      * 
@@ -1285,6 +1298,21 @@ export interface V1ApiInterface {
 
     /**
      * 
+     * @summary Update a review score
+     * @param {ChangeReviewScoreDto} changeReviewScoreDto 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof V1ApiInterface
+     */
+    reviewControllerChangeScoreRaw(requestParameters: ReviewControllerChangeScoreRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>>;
+
+    /**
+     * Update a review score
+     */
+    reviewControllerChangeScore(requestParameters: ReviewControllerChangeScoreRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void>;
+
+    /**
+     * 
      * @summary Create a new review
      * @param {CreateReviewDto} createReviewDto 
      * @param {*} [options] Override http request option.
@@ -1302,7 +1330,10 @@ export interface V1ApiInterface {
      * 
      * @summary Get all the review to be displayed on the map
      * @param {'countries' | 'cities'} groupBy How to group the data
-     * @param {string} [reviewType] The review type
+     * @param {string} [reviewType] Type of review
+     * @param {number} [rating] The review rating
+     * @param {Date} [dateFrom] Date range to filter
+     * @param {Date} [dateTo] Date range to filter
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof V1ApiInterface
@@ -1959,7 +1990,7 @@ export class V1Api extends runtime.BaseAPI implements V1ApiInterface {
     /**
      * Get the past locations and companies of an alumni
      */
-    async alumniControllerGetPastLocationsAndCompaniesRaw(requestParameters: AlumniControllerGetPastLocationsAndCompaniesRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<object>> {
+    async alumniControllerGetPastLocationsAndCompaniesRaw(requestParameters: AlumniControllerGetPastLocationsAndCompaniesRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<AlumniPastLocationsAndCompaniesDto>> {
         if (requestParameters['id'] == null) {
             throw new runtime.RequiredError(
                 'id',
@@ -1978,13 +2009,13 @@ export class V1Api extends runtime.BaseAPI implements V1ApiInterface {
             query: queryParameters,
         }, initOverrides);
 
-        return new runtime.JSONApiResponse<any>(response);
+        return new runtime.JSONApiResponse(response, (jsonValue) => AlumniPastLocationsAndCompaniesDtoFromJSON(jsonValue));
     }
 
     /**
      * Get the past locations and companies of an alumni
      */
-    async alumniControllerGetPastLocationsAndCompanies(requestParameters: AlumniControllerGetPastLocationsAndCompaniesRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<object> {
+    async alumniControllerGetPastLocationsAndCompanies(requestParameters: AlumniControllerGetPastLocationsAndCompaniesRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<AlumniPastLocationsAndCompaniesDto> {
         const response = await this.alumniControllerGetPastLocationsAndCompaniesRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -3530,6 +3561,41 @@ export class V1Api extends runtime.BaseAPI implements V1ApiInterface {
     }
 
     /**
+     * Update a review score
+     */
+    async reviewControllerChangeScoreRaw(requestParameters: ReviewControllerChangeScoreRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+        if (requestParameters['changeReviewScoreDto'] == null) {
+            throw new runtime.RequiredError(
+                'changeReviewScoreDto',
+                'Required parameter "changeReviewScoreDto" was null or undefined when calling reviewControllerChangeScore().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
+
+        const response = await this.request({
+            path: `/api/reviews/changeScore`,
+            method: 'POST',
+            headers: headerParameters,
+            query: queryParameters,
+            body: ChangeReviewScoreDtoToJSON(requestParameters['changeReviewScoreDto']),
+        }, initOverrides);
+
+        return new runtime.VoidApiResponse(response);
+    }
+
+    /**
+     * Update a review score
+     */
+    async reviewControllerChangeScore(requestParameters: ReviewControllerChangeScoreRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+        await this.reviewControllerChangeScoreRaw(requestParameters, initOverrides);
+    }
+
+    /**
      * Create a new review
      */
     async reviewControllerCreateRaw(requestParameters: ReviewControllerCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
@@ -3583,6 +3649,18 @@ export class V1Api extends runtime.BaseAPI implements V1ApiInterface {
 
         if (requestParameters['reviewType'] != null) {
             queryParameters['reviewType'] = requestParameters['reviewType'];
+        }
+
+        if (requestParameters['rating'] != null) {
+            queryParameters['rating'] = requestParameters['rating'];
+        }
+
+        if (requestParameters['dateFrom'] != null) {
+            queryParameters['dateFrom'] = (requestParameters['dateFrom'] as any).toISOString();
+        }
+
+        if (requestParameters['dateTo'] != null) {
+            queryParameters['dateTo'] = (requestParameters['dateTo'] as any).toISOString();
         }
 
         const headerParameters: runtime.HTTPHeaders = {};

@@ -57,8 +57,8 @@ const SubmitReview = () => {
     const { user, isAuthenticated } = useAuth();
     const isOwnProfile = user?.id === id;
 
-    const companies = transformData(pastLocationsAndCompanies?.Companies);
-    const locations = pastLocationsAndCompanies?.Locations;
+    const companies = transformData(pastLocationsAndCompanies?.companies);
+    const locations = pastLocationsAndCompanies?.locations;
     
     const [hoveredRating, setHoveredRating] = useState(0);
     // Form state

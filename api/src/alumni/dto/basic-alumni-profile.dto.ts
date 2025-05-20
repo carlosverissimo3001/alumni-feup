@@ -1,6 +1,6 @@
 /* Defines what non-authenticated users see on someone else's profile */
 
-import { LocationGeo } from '@/entities';
+import { LocationGeo, Location } from '@/entities';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { SENIORITY_LEVEL } from '@prisma/client';
 
@@ -33,9 +33,9 @@ export class CompanyDto {
 export class ExtendedCompanyDto extends CompanyDto {
   @ApiPropertyOptional({
     description: 'The current location of the alumni',
-    type: LocationGeo,
+    type: Location,
   })
-  location?: LocationGeo | null;
+  location?: Location | null;
 }
 
 export class GraduationDto {
@@ -85,7 +85,6 @@ export class CurrentRoleDto {
 }
 
 export class ReviewCompanyDto {
-
 
 }
 
@@ -139,7 +138,17 @@ export class BasicAlumniProfileDto {
 
 
 export class AlumniPastLocationsAndCompaniesDto {
+  @ApiPropertyOptional({
+    description: 'The Company of the review',
+    type: ExtendedCompanyDto,
+    isArray: true,
+  })
   Companies?: ExtendedCompanyDto[];
 
-  Locations?: LocationGeo[];
+  @ApiPropertyOptional({
+    description: 'The Location of the review',
+    type: Location,
+    isArray: true,
+  })
+  Locations?: Location[];
 }

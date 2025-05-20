@@ -8,7 +8,7 @@ import { useListCourses } from "@/hooks/courses/useListCourses";
 import { MultiSelect } from "../ui/multi-select";
 import { useFetchGeoJson } from "@/hooks/alumni/useFetchGeoJson";
 import { GeoJSONFeatureCollection } from "@/sdk";
-import { Feature, Point } from 'geojson';
+import { Feature, Point, Position } from 'geojson';
 import { AlumniControllerFindAllGeoJSONGroupByEnum as GROUP_BY } from "@/sdk";
 import { Checkbox } from "../ui/checkbox";
 import { Label } from "../ui/label";
@@ -136,6 +136,11 @@ const MapFilters = ({
       onSelectGeoJSON(geoJson);
     }
   }, [geoJson, onSelectGeoJSON]);
+
+  // Handles the filtering of a selected alumni
+  const handleAlumniSelection = (name: string, coordinates: Position) => {
+    onSelectAlumni(name, coordinates);
+  };
 
   // sets the variables to be used: nº of alumnis and an array with the info to be printed on the screen
   useEffect(() => {
@@ -367,6 +372,15 @@ const MapFilters = ({
             placeholder="By alumni name"
             className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-md"
           />
+          {filteredAlumniNamesCoord.length > 0 && (
+                <div className={`search-results ${filteredAlumniNamesCoord.length > 5 ? 'scrollable' : ''}`}>
+                {filteredAlumniNamesCoord.map((alumniData, index) => (
+                    <div  className='dropdown-search-names' key={index} onClick={() => handleAlumniSelection(alumniData.name, alumniData.coordinates)}>
+                        {alumniData.name}
+                    </div>
+                ))}
+                </div>
+            )}
         </div>
 
         {/* Filter Section */}

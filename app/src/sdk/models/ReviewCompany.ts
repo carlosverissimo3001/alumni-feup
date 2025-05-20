@@ -20,13 +20,6 @@ import {
     CompanyToJSON,
     CompanyToJSONTyped,
 } from './Company';
-import type { LocationGeo } from './LocationGeo';
-import {
-    LocationGeoFromJSON,
-    LocationGeoFromJSONTyped,
-    LocationGeoToJSON,
-    LocationGeoToJSONTyped,
-} from './LocationGeo';
 
 /**
  * 
@@ -66,10 +59,10 @@ export interface ReviewCompany {
     downvotes: Array<string>;
     /**
      * The location of the review
-     * @type {LocationGeo}
+     * @type {object}
      * @memberof ReviewCompany
      */
-    location?: LocationGeo;
+    location?: object;
     /**
      * The Company
      * @type {Company}
@@ -112,7 +105,7 @@ export function ReviewCompanyFromJSONTyped(json: any, ignoreDiscriminator: boole
         'rating': json['rating'],
         'upvotes': json['upvotes'],
         'downvotes': json['downvotes'],
-        'location': json['Location'] == null ? undefined : LocationGeoFromJSON(json['Location']),
+        'location': json['Location'] == null ? undefined : json['Location'],
         'company': CompanyFromJSON(json['Company']),
         'createdAt': json['createdAt'] == null ? undefined : (new Date(json['createdAt'])),
     };
@@ -134,7 +127,7 @@ export function ReviewCompanyToJSONTyped(value?: ReviewCompany | null, ignoreDis
         'rating': value['rating'],
         'upvotes': value['upvotes'],
         'downvotes': value['downvotes'],
-        'Location': LocationGeoToJSON(value['location']),
+        'Location': value['location'],
         'Company': CompanyToJSON(value['company']),
         'createdAt': value['createdAt'] == null ? undefined : ((value['createdAt']).toISOString()),
     };
