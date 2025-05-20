@@ -260,17 +260,7 @@ export class QueryParamsDto {
   @IsOptional()
   @IsString()
   @IsNotEmpty()
-  companySearch?: string;
-
-  @ApiPropertyOptional({
-    description: 'Search query for industries',
-    example: 'search query',
-    type: 'string',
-  })
-  @IsOptional()
-  @IsString()
-  @IsNotEmpty()
-  industrySearch?: string;
+  alumniSearch?: string;
 
   @ApiPropertyOptional({
     description: 'The company sizes to filter by',

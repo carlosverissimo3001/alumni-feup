@@ -208,8 +208,8 @@ export const GeoDashboard = ({
                           <TableNameCell
                             name={row.name}
                             isRowInFilters={!!isRowInFilters(row)}
-                            logo={flagUrl}
-                            logoType="location"
+                            image={flagUrl}
+                            imageType="location"
                           />
                           <TableCell
                             className={`w-[12%] px-4 ${view === ViewType.TABLE ? "py-1" : "py-3"} text-sm ${

@@ -14,7 +14,10 @@ import {
   MapPin,
   Briefcase,
   Users,
+  Search,
+  X,
 } from "lucide-react";
+import { Input } from "@/components/ui/input";
 import { useState, useMemo, useEffect } from "react";
 import {
   Tooltip,
@@ -95,46 +98,32 @@ export const GlobalFilters = ({
     setActiveFilterCount(activeFilters.length);
   }, [filters]);
 
-  const {
-    data: companyOptions,
-    isLoading: isCompanyOptionsLoading,
-  } = useCompanyOptions();
+  const { data: companyOptions, isLoading: isCompanyOptionsLoading } =
+    useCompanyOptions();
 
-  const {
-    data: countryOptions,
-    isLoading: isCountryOptionsLoading,
-  } = useCountryOptions();
+  const { data: countryOptions, isLoading: isCountryOptionsLoading } =
+    useCountryOptions();
 
-  const {
-    data: roleCityOptions,
-    isLoading: isRoleCityOptionsLoading,
-  } = useCityOptions({
-    countryCodes: filters.roleCountryCodes,
-  });
+  const { data: roleCityOptions, isLoading: isRoleCityOptionsLoading } =
+    useCityOptions({
+      countryCodes: filters.roleCountryCodes,
+    });
 
-  const {
-    data: companyCityOptions,
-    isLoading: isCompanyCityOptionsLoading,
-  } = useCityOptions({
-    countryCodes: filters.companyHQsCountryCodes,
-  });
+  const { data: companyCityOptions, isLoading: isCompanyCityOptionsLoading } =
+    useCityOptions({
+      countryCodes: filters.companyHQsCountryCodes,
+    });
 
-  const {
-    data: roleOptions,
-    isLoading: isRoleOptionsLoading,
-  } = useRoleOptions();
+  const { data: roleOptions, isLoading: isRoleOptionsLoading } =
+    useRoleOptions();
 
-  const {
-    data: industryOptions,
-    isLoading: isIndustryOptionsLoading,
-  } = useIndustryOptions();
+  const { data: industryOptions, isLoading: isIndustryOptionsLoading } =
+    useIndustryOptions();
 
-  const {
-    data: alumniOptions,
-    isLoading: isAlumniOptionsLoading,
-  } = useAlumniOptions();
+  const { data: alumniOptions, isLoading: isAlumniOptionsLoading } =
+    useAlumniOptions();
 
-  const { data: courseOptions, isLoading: isCourseOptionsLoading} =
+  const { data: courseOptions, isLoading: isCourseOptionsLoading } =
     useListCourses({
       params: {
         facultyIds: filters.facultyIds,
@@ -209,11 +198,10 @@ export const GlobalFilters = ({
           label: COMPANY_TYPE[key as keyof typeof COMPANY_TYPE],
         }))
         .sort((a, b) => a.label.localeCompare(b.label)),
-      roles: (roleOptions || [])
-        .map((role) => ({
-          value: role.escoCode,
-          label: `${role.title} `,
-        })),
+      roles: (roleOptions || []).map((role) => ({
+        value: role.escoCode,
+        label: `${role.title} `,
+      })),
     }),
     [
       companyOptions,
@@ -276,6 +264,15 @@ export const GlobalFilters = ({
     onFiltersChange(emptyFilters);
   };
 
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value.trim() === "" ? undefined : e.target.value;
+    handleFilterChange("search", value);
+  };
+
+  const handleClearSearch = () => {
+    handleFilterChange("search", undefined);
+  };
+
   return (
     <div className="bg-white rounded-lg shadow-sm border border-gray-100">
       <motion.div
@@ -311,6 +308,34 @@ export const GlobalFilters = ({
             )}
           </motion.button>
           <h2 className="text-lg font-bold text-[#8C2D19]">Filters</h2>
+        </div>
+
+        <div
+          className="relative flex-1 mx-8 max-w-md"
+          onClick={(e) => e.stopPropagation()}
+        >
+          <div className="relative group">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400 transition-all duration-200 group-hover:text-[#8C2D19] group-hover:scale-110 group-focus-within:text-[#8C2D19] group-focus-within:scale-110" />
+            <Input
+              type="text"
+              placeholder="Search company or alumni..."
+              value={filters.search || ""}
+              onChange={handleSearchChange}
+              className="pl-10 pr-12 py-2 w-full bg-gradient-to-r from-gray-50 to-white border-gray-200 shadow-sm transition-all duration-200
+                       hover:border-[#8C2D19]/50 hover:shadow-md focus-visible:border-[#8C2D19]/70 focus-visible:ring-2 focus-visible:ring-[#8C2D19]/30
+                       placeholder:text-gray-400 placeholder:text-sm placeholder:italic rounded-lg"
+            />
+            {filters.search && (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={handleClearSearch}
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 h-6 w-6 text-gray-400 hover:text-[#8C2D19] transition-colors"
+              >
+                <X className="h-4 w-4" />
+              </Button>
+            )}
+          </div>
         </div>
 
         {activeFilterCount > 0 && (
@@ -832,4 +857,4 @@ export const GlobalFilters = ({
       </div>
     );
   }
-}
+};

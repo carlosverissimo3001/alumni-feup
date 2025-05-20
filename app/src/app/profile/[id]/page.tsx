@@ -122,7 +122,12 @@ export default function Profile() {
             alt="Profile"
           />
           <AvatarFallback className="text-xl font-semibold bg-primary/10">
-            {profile?.name?.charAt(0)}
+            {profile?.name
+              ?.split(" ")
+              .map((word) => word[0])
+              .join("")
+              .slice(0, 2)
+              .toUpperCase()}
           </AvatarFallback>
         </Avatar>
         <div>
