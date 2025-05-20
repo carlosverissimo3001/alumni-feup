@@ -138,6 +138,7 @@ export const CompanyDashboard = ({
                 onSort={handleSort}
                 showTrend={view === ViewType.TREND}
                 trendFrequency={trendFrequency}
+                hoverMessage="Alumni who have worked at this company"
               />
 
               {isLoading || isFetching ? (
@@ -154,8 +155,8 @@ export const CompanyDashboard = ({
                             <TableNameCell
                               name={company.name}
                               isRowInFilters={!!isRowInFilters(company)}
-                              logo={company.logo}
-                              logoType="company"
+                              image={company.logo}
+                              imageType="company"
                               pageUrl={`/company/${company.id}`}
                               salaryDataUrl={company.levelsFyiUrl}
                             />

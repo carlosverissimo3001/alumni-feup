@@ -149,21 +149,31 @@ export const buildWhereClause = (
     });
   }
 
-  if (params.companySearch?.trim()) {
+  if (params.alumniSearch?.trim()) {
     roleAndClauses.push({
-      Company: {
-        name: { contains: params.companySearch, mode: 'insensitive' },
+      Alumni: {
+        fullName: { contains: params.alumniSearch, mode: 'insensitive' },
       },
     });
   }
 
-  if (params.industrySearch?.trim()) {
-    roleAndClauses.push({
-      Company: {
-        Industry: {
-          name: { contains: params.industrySearch, mode: 'insensitive' },
+  // Broader search
+  if (params.search?.trim()) {
+    const searchTerm = params.search.trim();
+    alumniAndClauses.push({
+      OR: [
+        { fullName: { contains: searchTerm, mode: 'insensitive' } },
+        {
+          Roles: {
+            some: {
+              Company: {
+                name: { contains: searchTerm, mode: 'insensitive' },
+              },
+              isCurrent: true,
+            },
+          },
         },
-      },
+      ],
     });
   }
 

@@ -13,10 +13,11 @@ import {
   PaginationControls,
   CustomTableHeader,
   CustomTableRow,
+  TableNumberCell,
 } from "../common/";
 import ImageWithFallback from "../../ui/image-with-fallback";
 import { SortBy, SortOrder, ITEMS_PER_PAGE } from "@/consts";
-import { ExternalLink, Filter, Users } from "lucide-react";
+import { ExternalLink, Filter, Users, Search, X } from "lucide-react";
 import TableTitle from "../common/TableTitle";
 import Image from "next/image";
 import { useAlumniList } from "@/hooks/analytics/useAlumniList";
@@ -29,6 +30,7 @@ import {
 } from "@/components/ui/tooltip";
 import AlumniTableSkeleton from "../skeletons/AlumniTableSkeleton";
 import { useAuth } from "@/contexts/AuthContext";
+import { Input } from "@/components/ui/input";
 
 type AlumniTableProps = {
   filters: FilterState;
@@ -40,24 +42,34 @@ const PaginationDisplay = ({
   itemsPerPage,
   totalItems,
   currentCount,
+  isLoading,
 }: {
   page: number;
   itemsPerPage: number;
   totalItems: number;
   currentCount: number;
+  isLoading: boolean;
 }) => {
+  if (isLoading) {
+    return (
+      <div className="text-gray-500 animate-pulse">
+        <div className="h-4 w-32 bg-gray-200 rounded"></div>
+      </div>
+    );
+  }
+
   if (currentCount === 0) return "No alumni found";
 
   const start = (page - 1) * itemsPerPage + 1;
   const end = Math.min((page - 1) * itemsPerPage + currentCount, totalItems);
 
   return (
-    <div className="text-gray-500">
-      <span className="font-bold">
+    <div className="text-gray-700 bg-gray-100 px-3 py-1 rounded-full shadow-sm">
+      <span className="font-semibold">
         {start}-{end}
       </span>
       <span className="mx-1 italic">out of</span>
-      <span className="font-bold">{totalItems}</span>
+      <span className="font-semibold">{totalItems}</span>
       <span className="ml-1 italic">shown</span>
     </div>
   );
@@ -71,8 +83,8 @@ export const AlumniTable = ({ filters, onAddToFilters }: AlumniTableProps) => {
   const [itemsPerPage, setItemsPerPage] = useState(ITEMS_PER_PAGE[2]);
   const [sortField, setSortField] = useState<SortBy>(SortBy.NAME);
   const [sortOrder, setSortOrder] = useState<SortOrder>(SortOrder.ASC);
+  const [searchQuery, setSearchQuery] = useState<string>("");
 
-  // Calculate dynamic height
   const calculateTableHeight = (itemCount: number) => {
     const rowHeight = 56;
     const headerHeight = 100;
@@ -100,17 +112,16 @@ export const AlumniTable = ({ filters, onAddToFilters }: AlumniTableProps) => {
     sortOrder: sortOrder,
     offset: (page - 1) * itemsPerPage,
     includeTrend: false,
+    alumniSearch: searchQuery || undefined,
   });
 
   const alumnus = data?.alumni || [];
   const totalItems = data?.filteredCount || 0;
 
-  // Reset page when filters change
   useEffect(() => {
     setPage(1);
   }, [filters]);
 
-  // Update page input when page changes
   useEffect(() => {
     setPageInput(String(page));
   }, [page]);
@@ -124,6 +135,18 @@ export const AlumniTable = ({ filters, onAddToFilters }: AlumniTableProps) => {
       setSortField(field);
       setSortOrder(SortOrder.DESC);
     }
+  };
+
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(e.target.value);
+  };
+
+  const handleClearSearch = () => {
+    setSearchQuery("");
+  };
+
+  const isRowInFilters = (alumni: AlumniListItemDto) => {
+    return filters.alumniIds?.includes(alumni.id) ?? false;
   };
 
   const renderTable = () => {
@@ -152,53 +175,43 @@ export const AlumniTable = ({ filters, onAddToFilters }: AlumniTableProps) => {
                       <CustomTableRow
                         key={alumni.id}
                         index={index}
-                        className={
-                          isLoggedUser
-                            ? "!bg-[#FFF3F0] !hover:bg-[#FFE6E0] border-l-[6px] !border-[#A13A23] !border-b-2 !border-t-2 border-r-[6px]"
-                            : ""
-                        }
+                        isLoggedUser={isLoggedUser}
+                        className={`transition-all duration-200 hover:bg-gradient-to-r hover:from-gray-50 hover:to-gray-100 ${
+                          index % 2 === 0 ? "bg-gray-50" : "bg-white"
+                        }`}
                       >
-                        <TableCell className="w-[6%] py-2.5 pl-4 text-sm text-gray-500 font-medium align-middle">
-                          <div className="flex items-center gap-2">
-                            <span>{rowNumber}</span>
-                            <div className="opacity-0 group-hover:opacity-100 transition-opacity ml-2">
-                              <TooltipProvider>
-                                <Tooltip>
-                                  <TooltipTrigger asChild>
-                                    <Button
-                                      aria-label="Add to filters"
-                                      variant="ghost"
-                                      size="sm"
-                                      className="p-1 h-6 w-6 rounded-full bg-gray-100 hover:bg-gray-200"
-                                      onClick={() =>
-                                        onAddToFilters?.(alumni.id)
-                                      }
-                                    >
-                                      <Filter className="h-4 w-4 text-[#8C2D19]" />
-                                    </Button>
-                                  </TooltipTrigger>
-                                  <TooltipContent align="start">
-                                    <p>Filter on {alumni.fullName}</p>
-                                  </TooltipContent>
-                                </Tooltip>
-                              </TooltipProvider>
-                            </div>
-                          </div>
-                        </TableCell>
-                        <TableCell className="w-[82%] py-2.5 pl-4 text-sm font-medium text-[#000000] flex items-center gap-2 align-middle">
-                          <div className="min-w-[32px] w-8 h-8 mr-2 rounded-full overflow-hidden flex items-center justify-center bg-gray-50 ring-2 ring-gray-100 hover:ring-[#A13A23] hover:ring-4 transition-all duration-300">
-                            <ImageWithFallback
-                              src={alumni.profilePictureUrl || ""}
-                              alt={alumni.fullName}
-                              width={32}
-                              height={32}
-                              className="rounded-full object-cover w-full h-full"
-                            />
+                        <TableNumberCell rowNumber={rowNumber} />
+                        <TableCell
+                          className={`w-[74%] py-2.5 pl-4 text-sm font-medium text-gray-800 flex items-center gap-2 align-middle ${
+                            isRowInFilters(alumni)
+                              ? "font-bold text-[#8C2D19]"
+                              : ""
+                          }`}
+                        >
+                          <div className="min-w-[32px] w-8 h-8 mr-2 rounded-full overflow-hidden flex items-center justify-center bg-gray-50 ring-2 ring-gray-100 hover:ring-4 hover:ring-gradient-to-r hover:from-[#8C2D19] hover:to-[#A13A23] transition-all duration-300">
+                            {alumni.profilePictureUrl ? (
+                              <ImageWithFallback
+                                src={alumni.profilePictureUrl}
+                                alt={alumni.fullName}
+                                width={32}
+                                height={32}
+                                className="rounded-full object-cover w-full h-full group-hover:scale-105 transition-transform duration-300"
+                              />
+                            ) : (
+                              <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-gray-100 to-gray-200 text-gray-500 text-sm font-semibold">
+                                {alumni.fullName
+                                  .split(" ")
+                                  .map((word) => word[0])
+                                  .join("")
+                                  .slice(0, 2)
+                                  .toUpperCase()}
+                              </div>
+                            )}
                           </div>
                           <div className="flex items-center gap-2 flex-1">
                             <Button
                               variant="link"
-                              className="text-sm font-medium text-[#000000] text-left h-auto p-1 hover:text-[#8C2D19] transition-colors flex items-center group-hover:text-[#8C2D19]"
+                              className="text-sm font-medium text-gray-800 text-left h-auto p-1 hover:text-[#8C2D19] transition-colors flex items-center group-hover:text-[#8C2D19]"
                               onClick={() => {
                                 window.open(`/profile/${alumni.id}`, "_blank");
                               }}
@@ -237,38 +250,71 @@ export const AlumniTable = ({ filters, onAddToFilters }: AlumniTableProps) => {
                                   {isLoggedUser ? (
                                     <p>Go to your profile</p>
                                   ) : (
-                                    <p>Go to {alumni.fullName.split(" ")[0]}&apos;s profile</p>
+                                    <p>
+                                      Go to {alumni.fullName.split(" ")[0]}
+                                      &apos;s profile
+                                    </p>
                                   )}
                                 </TooltipContent>
                               </Tooltip>
                             </TooltipProvider>
                             {alumni.id === userId && (
-                              <div className="px-2 py-0.5 text-xs font-medium bg-[#A13A23]/10 text-[#A13A23] rounded-full">
+                              <div className="px-2 py-0.5 text-xs font-medium bg-gradient-to-r from-[#8C2D19]/10 to-[#A13A23]/10 text-[#8C2D19] rounded-full">
                                 You
                               </div>
                             )}
                           </div>
                         </TableCell>
-                        <TableCell className="w-[12%] py-2.5 text-sm text-[#000000]">
-                          {alumni.linkedinUrl && (
-                            <Button
-                              variant="ghost"
-                              title="Go to LinkedIn Profile"
-                              size="sm"
-                              className="p-1.5 h-8 w-8 rounded-full hover:bg-[#A13A23]/10 group/linkedin transition-all duration-200 flex items-center justify-center"
-                              onClick={() =>
-                                window.open(alumni.linkedinUrl!, "_blank")
-                              }
-                            >
-                              <Image
-                                src="/logos/linkedin-icon.svg"
-                                alt="LinkedIn"
-                                width={20}
-                                height={20}
-                                className="group-hover/linkedin:scale-110 transition-transform duration-200"
-                              />
-                            </Button>
-                          )}
+                        <TableCell
+                          className={`w-[12%] py-2.5 text-sm text-[#000000] ${
+                            isRowInFilters(alumni)
+                              ? "font-bold text-[#8C2D19]"
+                              : "text-[#000000]"
+                          }`}
+                        >
+                          <div className="flex items-center gap-0 justify-center">
+                            {alumni.linkedinUrl && (
+                              <Button
+                                variant="ghost"
+                                title="Go to LinkedIn Profile"
+                                size="sm"
+                                className="p-1.5 h-8 w-8 rounded-full hover:bg-gradient-to-r hover:from-[#8C2D19]/10 hover:to-[#A13A23]/10 group/linkedin transition-all duration-200"
+                                onClick={() =>
+                                  window.open(alumni.linkedinUrl!, "_blank")
+                                }
+                              >
+                                <Image
+                                  src="/logos/linkedin-icon.svg"
+                                  alt="LinkedIn"
+                                  width={20}
+                                  height={20}
+                                  className="group-hover/linkedin:scale-110 group-hover/linkedin:brightness-110 transition-transform duration-200"
+                                />
+                              </Button>
+                            )}
+                            <div className="opacity-0 group-hover:opacity-100 transition-opacity ml-2">
+                              <TooltipProvider>
+                                <Tooltip>
+                                  <TooltipTrigger asChild>
+                                    <Button
+                                      aria-label="Add to filters"
+                                      variant="ghost"
+                                      size="sm"
+                                      className="p-1 h-6 w-6 rounded-full bg-gray-100 hover:bg-gray-200"
+                                      onClick={() =>
+                                        onAddToFilters?.(alumni.id)
+                                      }
+                                    >
+                                      <Filter className="h-4 w-4 text-[#8C2D19]" />
+                                    </Button>
+                                  </TooltipTrigger>
+                                  <TooltipContent align="start">
+                                    <p>Filter on {alumni.fullName}</p>
+                                  </TooltipContent>
+                                </Tooltip>
+                              </TooltipProvider>
+                            </div>
+                          </div>
                         </TableCell>
                       </CustomTableRow>
                     );
@@ -294,26 +340,56 @@ export const AlumniTable = ({ filters, onAddToFilters }: AlumniTableProps) => {
 
   return (
     <div
-      className={`w-full flex flex-col border rounded-xl shadow-lg p-3 box-border bg-white`}
+      className="w-full flex flex-col border rounded-xl shadow-xl p-3 box-border bg-gradient-to-br from-white via-gray-50 to-[#8C2D19]/5"
       style={{ height: `${calculateTableHeight(alumnus?.length || 0)}px` }}
     >
-      <div className="flex items-center justify-between mb-4 px-2">
+      <div className="flex items-center justify-between mb-4 mt-2 px-2">
         <TableTitle
           title="Alumni"
           icon={<Users className="h-5 w-5 text-[#8C2D19]" />}
           tooltipMessage="Alumni from our programs"
-          className="pl-1"
-        />
-        {!isLoading && !isFetching && (
-          <div className="text-sm text-gray-500 font-medium">
-            <PaginationDisplay
-              page={page}
-              itemsPerPage={itemsPerPage}
-              totalItems={totalItems}
-              currentCount={alumnus.length}
+          className="pl-1 relative group font-bold text-gray-800 text-lg"
+        >
+          <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-[#8C2D19] to-[#A13A23] transition-all duration-300 group-hover:w-full" />
+        </TableTitle>
+        <div className="relative flex-1 mx-8 max-w-md">
+          <div className="relative group">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400 transition-all duration-200 group-hover:text-[#8C2D19] group-hover:scale-110 group-focus-within:text-[#8C2D19] group-focus-within:scale-110" />
+            <Input
+              type="text"
+              placeholder="Search alumni..."
+              value={searchQuery}
+              onChange={handleSearchChange}
+              className="pl-10 pr-12 py-2 w-full bg-gradient-to-r from-gray-50 to-white border-gray-200 shadow-sm transition-all duration-200
+                       hover:border-[#8C2D19]/50 hover:shadow-md focus-visible:border-[#8C2D19]/70 focus-visible:ring-2 focus-visible:ring-[#8C2D19]/30
+                       placeholder:text-gray-400 placeholder:text-sm placeholder:italic rounded-lg"
             />
+            {searchQuery && (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={handleClearSearch}
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 h-6 w-6 text-gray-400 hover:text-[#8C2D19] transition-colors"
+              >
+                <X className="h-4 w-4" />
+              </Button>
+            )}
+            {isLoading && searchQuery && (
+              <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
+                <div className="animate-spin rounded-full h-4 w-4 border-2 border-gradient-to-r from-[#8C2D19]/20 to-[#A13A23]/20 border-t-[#8C2D19]"></div>
+              </div>
+            )}
           </div>
-        )}
+        </div>
+        <div className="text-sm text-gray-500 font-medium min-w-[150px] text-right">
+          <PaginationDisplay
+            page={page}
+            itemsPerPage={itemsPerPage}
+            totalItems={totalItems}
+            currentCount={alumnus.length}
+            isLoading={isLoading || isFetching}
+          />
+        </div>
       </div>
       {renderTable()}
     </div>

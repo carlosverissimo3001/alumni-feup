@@ -320,10 +320,20 @@ export default function Analytics() {
   }, []);
 
   const handleAddAlumniToFilters = useCallback((alumniId: string) => {
-    setFilters((prev) => ({
-      ...prev,
-      alumniIds: [...(prev.alumniIds || []), alumniId],
-    }));
+    setFilters((prev) => {
+      const currentAlumniIds = prev.alumniIds || [];
+      if (!currentAlumniIds.includes(alumniId)) {
+        return {
+          ...prev,
+          alumniIds: [...currentAlumniIds, alumniId],
+        };
+      } else {
+        return {
+          ...prev,
+          alumniIds: currentAlumniIds.filter((id) => id !== alumniId),
+        };
+      }
+    });
   }, []);
 
   const handleAddEducationToFilters = useCallback(

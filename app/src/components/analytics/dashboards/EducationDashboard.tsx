@@ -239,6 +239,15 @@ export const EducationDashboard = ({
     }
   };
 
+  const getHoverMessage = () => {
+    if (mode === EducationDrillType.FACULTY) {
+      return "Alumni who have graduated from this faculty";
+    } else if (mode === EducationDrillType.MAJOR) {
+      return "Alumni who have graduated from this course";
+    }
+    return "Alumni who have graduated in this year";
+  };
+
   const renderTableView = () => {
     const data = getDataByMode();
     const isLoading = isDomainLoading();
@@ -258,6 +267,7 @@ export const EducationDashboard = ({
                   mode === EducationDrillType.YEAR ? "Year" : undefined
                 }
                 customAlumniHeader="Graduates"
+                hoverMessage={getHoverMessage()}
               />
 
               {isLoading ? (
