@@ -1,11 +1,4 @@
-import {
-  Controller,
-  Post,
-  Body,
-  HttpCode,
-  HttpStatus,
-  Get,
-} from '@nestjs/common';
+import { Controller, Post, Body, HttpCode, HttpStatus } from '@nestjs/common';
 import { ApiOperation, ApiTags, ApiResponse } from '@nestjs/swagger';
 import { UserService } from './user.service';
 import {
@@ -14,7 +7,9 @@ import {
   VerifyEmailDto,
   VerifyEmailTokenDto,
   CheckPermissionDto,
+  CheckPermissionResponse,
 } from '@/dto';
+import { DeleteUserDto } from '@/dto/delete-user.dto';
 
 @ApiTags('V1', 'User')
 @Controller('user')
@@ -82,9 +77,22 @@ export class UserController {
   @ApiResponse({
     status: HttpStatus.OK,
     description: 'User has the permission',
-    type: Boolean,
+    type: CheckPermissionResponse,
   })
-  async checkPermission(@Body() body: CheckPermissionDto): Promise<boolean> {
+  async checkPermission(
+    @Body() body: CheckPermissionDto,
+  ): Promise<CheckPermissionResponse> {
     return this.userService.checkPermission(body);
+  }
+
+  @Post('delete-user')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Delete a user' })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'User deleted successfully',
+  })
+  async deleteUser(@Body() body: DeleteUserDto): Promise<void> {
+    return this.userService.deleteUser(body);
   }
 }

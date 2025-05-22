@@ -4,16 +4,24 @@ import { PrismaService } from '@/prisma/prisma.service';
 import { ENROLLMENT_HEADERS } from '@/consts/types';
 import { readCSV } from './utils';
 import * as fs from 'fs';
+import { AlumniService } from '@/alumni/services/alumni.service';
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024;
 const MIN_CONCLUSION_YEAR = 1950;
 const MAX_CONCLUSION_YEAR = 2099;
+const CREATED_BY = 'file-upload';
 
 @Injectable()
 export class FileUploadService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly alumniService: AlumniService,
+  ) {}
 
-  async handleFileUpload(data: UploadExtractionDto, file: Express.Multer.File) {
+  async handleFileUpload(
+    dto: UploadExtractionDto,
+    file: Express.Multer.File,
+  ): Promise<number> {
     if (!file) {
       throw new BadRequestException('no file uploaded');
     }
@@ -32,26 +40,38 @@ export class FileUploadService {
     }
 
     // Parse and delete file if successful
-    await this.parseFile(file.path, data);
+    const createdAlumni = await this.parseFile(file.path, dto);
     fs.unlinkSync(file.path);
 
-    // Let the data-infra app know that we have a new extraction
-    await fetch(`${process.env.DATA_INFRA_APP_URL}/map-extractions`, {
-      method: 'POST',
-    });
+    for (const alumniId of createdAlumni) {
+      void this.alumniService
+        .requestProfileExtraction(alumniId)
+        .catch((error) => {
+          console.error(
+            `Failed to request profile extraction for alumni ${alumniId}:`,
+            error,
+          );
+        });
+    }
+
+    return createdAlumni.length;
   }
 
-  async parseFile(filePath: string, extractionData: UploadExtractionDto) {
+  async parseFile(
+    filePath: string,
+    dto: UploadExtractionDto,
+  ): Promise<string[]> {
     const { headers, data } = await readCSV(filePath);
-
-    return this.parse_enrollment_upload(headers, data, extractionData);
+    return this.parse_enrollment_upload(headers, data, dto);
   }
 
-  private parse_enrollment_upload(
+  private async parse_enrollment_upload(
     headers: string[],
     data: string[][],
-    extractionData: UploadExtractionDto,
-  ) {
+    dto: UploadExtractionDto,
+  ): Promise<string[]> {
+    const createdAlumni: string[] = [];
+
     const missingHeaders = ENROLLMENT_HEADERS.filter(
       (header) => !headers.includes(header),
     );
@@ -66,57 +86,59 @@ export class FileUploadService {
       const row = data[i];
       const rowNumber = i + 1;
       const fullName = row[headers.indexOf('full_name')];
-      const conclusionYear = row[headers.indexOf('conclusion_year')];
-      const linkedinUrl = row[headers.indexOf('linkedin_url')];
+      const conclusionYearRaw = row[headers.indexOf('conclusion_year')];
 
-      if (!fullName || !conclusionYear || !linkedinUrl) {
+      if (!fullName || !conclusionYearRaw) {
         throw new BadRequestException(
           `Invalid enrollment data at row ${rowNumber}: All fields are required`,
         );
       }
     }
 
-    const enrollmentData = data.map((row, index) => {
+    for (let i = 0; i < data.length; i++) {
+      const row = data[i];
       const fullName = row[headers.indexOf('full_name')];
       const conclusionYearRaw = row[headers.indexOf('conclusion_year')];
       const linkedinUrl = row[headers.indexOf('linkedin_url')];
 
-      // Note: Conclusion year can be either just the year, or also something like 2018/2019 for the academic year
-      const conclusionYear = parseInt(conclusionYearRaw.split('/')[0]);
-      this.validate_conclusion_year(conclusionYear);
-
-      try {
-        /* return {
-          id: uuidv4(),
-          course_id: extractionData.course_id,
-          faculty_id: extractionData.faculty_id,
-          student_id,
-          full_name,
-          conclusion_year,
-        } as Prisma.CourseExtractionCreateManyInput; */
-        // NOTE: Here, we will probably upload this to an intermedia table, before creating the Alumni entity
-      } catch (_) {
+      const yearMatch = conclusionYearRaw.match(/\d{4}/);
+      if (!yearMatch) {
         throw new BadRequestException(
-          `Error processing row ${index + 1}: Graduation status format is invalid. Expected: STATUS(YEAR/YEAR)`,
+          `Invalid conclusion year format at row ${i + 1}: ${conclusionYearRaw}. Expected format: YYYY or YYYY/YYYY or <XYZ> (YYYY/YYYY)`,
         );
       }
-    });
+      const conclusionYear = parseInt(yearMatch[0]);
+      this.validate_conclusion_year(conclusionYear, i + 1);
 
-    /* await this.prisma.courseExtraction.createMany({
-      data: enrollmentData,
-    }); */
+      const newAlumni = await this.alumniService.create(
+        {
+          fullName,
+          linkedinUrl,
+          courses: [
+            {
+              courseId: dto.courseId,
+              conclusionYear,
+            },
+          ],
+          facultyId: dto.facultyId,
+          createdBy: CREATED_BY,
+        },
+        true,
+      );
+      createdAlumni.push(newAlumni.id);
+    }
 
-    return { headers, data: enrollmentData };
+    return createdAlumni;
   }
 
-  private validate_conclusion_year(conclusionYear: number) {
+  private validate_conclusion_year(conclusionYear: number, rowNumber: number) {
     if (
       isNaN(conclusionYear) ||
       conclusionYear < MIN_CONCLUSION_YEAR ||
       conclusionYear > MAX_CONCLUSION_YEAR
     ) {
       throw new BadRequestException(
-        `Invalid conclusion year: ${conclusionYear}`,
+        `Invalid conclusion year: ${conclusionYear} at row ${rowNumber}`,
       );
     }
   }

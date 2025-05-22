@@ -16,6 +16,7 @@ import { UploadExtractionDto } from '@/dto/upload-extraction.dto';
 @Controller('files')
 export class FileUploadController {
   constructor(private readonly fileUploadService: FileUploadService) {}
+
   @UseInterceptors(FileInterceptor('file'))
   @Post()
   @HttpCode(HttpStatus.ACCEPTED)

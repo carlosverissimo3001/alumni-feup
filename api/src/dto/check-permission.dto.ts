@@ -1,6 +1,15 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsString, IsNotEmpty } from 'class-validator';
 
+export class CheckPermissionResponse {
+  @ApiProperty({
+    description: 'Whether the user has permission',
+    example: true,
+    type: Boolean,
+  })
+  hasPermission: boolean;
+}
+
 export class CheckPermissionDto {
   @ApiProperty({
     description: 'The ID of the user to check permission for',

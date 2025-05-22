@@ -19,11 +19,12 @@ class EscoClassificationInfo(TypedDict):
     excluded_occupations: str
     notes: str
 
+
 @tool
 def get_detailed_esco_classification(code: str) -> EscoClassificationInfo:
     """
     Use this tool to get a detailed ESCO classification from the database
-    
+
     Args:
         code: The code of the ESCO classification to get
 
@@ -40,7 +41,7 @@ def get_detailed_esco_classification(code: str) -> EscoClassificationInfo:
     esco_classification = get_classification_by_code(code)
     if esco_classification is None:
         raise Exception(f"ESCO classification with code {code} not found")
-    
+
     return {
         "code": esco_classification.code,
         "title_en": esco_classification.title_en,
@@ -51,6 +52,7 @@ def get_detailed_esco_classification(code: str) -> EscoClassificationInfo:
         "notes": esco_classification.notes,
     }
 
+
 def search_esco_classifications(query: str, top_k: int = 5) -> List[EscoResult]:
     """
     Search ESCO classifications using vector similarity in PostgreSQL
@@ -60,7 +62,11 @@ def search_esco_classifications(query: str, top_k: int = 5) -> List[EscoResult]:
         top_k: Number of similar classifications to return (default: 5)
 
     Returns:
-        List[EscoResult]: A list of matching ESCO classifications with confidence scores
+        List[EscoResult]: A list of matching ESCO classifications with confidence scores that reflect both
+        absolute similarity and relative ranking. Confidence scores are between 0 and 1, where:
+        - Scores > 0.8 indicate very strong matches
+        - Scores 0.6-0.8 indicate good matches
+        - Scores < 0.6 indicate weaker matches that should be reviewed carefully
     """
     try:
         # Generate embedding for the query
@@ -74,7 +80,12 @@ def search_esco_classifications(query: str, top_k: int = 5) -> List[EscoResult]:
         )
 
         search_query = (
-            select(EscoClassification.code, EscoClassification.title_en, computed_col)
+            select(
+                EscoClassification.id,
+                EscoClassification.code,
+                EscoClassification.title_en,
+                computed_col,
+            )
             .where(EscoClassification.embedding.is_not(None))
             .order_by(computed_col)
             .limit(top_k)
@@ -82,17 +93,30 @@ def search_esco_classifications(query: str, top_k: int = 5) -> List[EscoResult]:
 
         results = db.execute(search_query).fetchall()
 
+        if not results:
+            return []
+
+        # Find the best similarity score (lowest distance)
+        best_score = min(float(row.similarity_score) for row in results)
+
+        # Convert to confidence scores that balance absolute and relative similarity
+        # - Uses absolute similarity to ensure high confidence only for genuinely good matches
+        # - Also considers relative similarity to preserve ranking
+        # - Applies a scaling factor to ensure reasonable confidence distribution
         return [
             EscoResult(
+                id=row.id,
                 code=row.code,
                 title=row.title_en,
-                # Note: We want a two-tier classification system, so we're hardcoding the level to 1 for now
-                # Level 1 -> more general classification -> e.g. Software Developer
-                # Level 2 -> more specific classification -> e.g. Backend Software Engineer
-                level=1,
-                # similarity_score of 0 (identical) -> confidence = 1
-                # similarity_score of 2 (opposite) -> confidence = 0
-                confidence=round((2.0 - float(row.similarity_score)) / 2.0, 2),
+                # Base confidence from absolute similarity (0 to 1)
+                confidence=round(
+                    # Start with absolute similarity (0 to 1)
+                    ((2.0 - float(row.similarity_score)) / 2.0)
+                    *
+                    # Multiply by relative similarity factor (penalizes matches much worse than best)
+                    ((2.0 - float(row.similarity_score)) / (2.0 - best_score)),
+                    2,
+                ),
             )
             for row in results
         ]

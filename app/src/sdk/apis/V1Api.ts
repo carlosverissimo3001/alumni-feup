@@ -24,6 +24,7 @@ import type {
   BasicAlumniProfileDto,
   ChangeReviewScoreDto,
   CheckPermissionDto,
+  CheckPermissionResponse,
   CityListResponseDto,
   CityOptionDto,
   CompanyInsightsDto,
@@ -35,6 +36,7 @@ import type {
   CreateAlumniDto,
   CreateCourseDto,
   CreateReviewDto,
+  DeleteUserDto,
   EscoClassificationDto,
   Faculty,
   FacultyListDto,
@@ -75,6 +77,8 @@ import {
     ChangeReviewScoreDtoToJSON,
     CheckPermissionDtoFromJSON,
     CheckPermissionDtoToJSON,
+    CheckPermissionResponseFromJSON,
+    CheckPermissionResponseToJSON,
     CityListResponseDtoFromJSON,
     CityListResponseDtoToJSON,
     CityOptionDtoFromJSON,
@@ -97,6 +101,8 @@ import {
     CreateCourseDtoToJSON,
     CreateReviewDtoFromJSON,
     CreateReviewDtoToJSON,
+    DeleteUserDtoFromJSON,
+    DeleteUserDtoToJSON,
     EscoClassificationDtoFromJSON,
     EscoClassificationDtoToJSON,
     FacultyFromJSON,
@@ -500,6 +506,10 @@ export interface RoleAnalyticsControllerGetRolesRequest {
 
 export interface UserControllerCheckPermissionRequest {
     checkPermissionDto: CheckPermissionDto;
+}
+
+export interface UserControllerDeleteUserRequest {
+    deleteUserDto: DeleteUserDto;
 }
 
 export interface UserControllerLinkedinAuthRequest {
@@ -1409,12 +1419,27 @@ export interface V1ApiInterface {
      * @throws {RequiredError}
      * @memberof V1ApiInterface
      */
-    userControllerCheckPermissionRaw(requestParameters: UserControllerCheckPermissionRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<boolean>>;
+    userControllerCheckPermissionRaw(requestParameters: UserControllerCheckPermissionRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<CheckPermissionResponse>>;
 
     /**
      * Check if a user has a permission
      */
-    userControllerCheckPermission(requestParameters: UserControllerCheckPermissionRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<boolean>;
+    userControllerCheckPermission(requestParameters: UserControllerCheckPermissionRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<CheckPermissionResponse>;
+
+    /**
+     * 
+     * @summary Delete a user
+     * @param {DeleteUserDto} deleteUserDto 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof V1ApiInterface
+     */
+    userControllerDeleteUserRaw(requestParameters: UserControllerDeleteUserRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>>;
+
+    /**
+     * Delete a user
+     */
+    userControllerDeleteUser(requestParameters: UserControllerDeleteUserRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void>;
 
     /**
      * 
@@ -3855,7 +3880,7 @@ export class V1Api extends runtime.BaseAPI implements V1ApiInterface {
     /**
      * Check if a user has a permission
      */
-    async userControllerCheckPermissionRaw(requestParameters: UserControllerCheckPermissionRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<boolean>> {
+    async userControllerCheckPermissionRaw(requestParameters: UserControllerCheckPermissionRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<CheckPermissionResponse>> {
         if (requestParameters['checkPermissionDto'] == null) {
             throw new runtime.RequiredError(
                 'checkPermissionDto',
@@ -3877,19 +3902,50 @@ export class V1Api extends runtime.BaseAPI implements V1ApiInterface {
             body: CheckPermissionDtoToJSON(requestParameters['checkPermissionDto']),
         }, initOverrides);
 
-        if (this.isJsonMime(response.headers.get('content-type'))) {
-            return new runtime.JSONApiResponse<boolean>(response);
-        } else {
-            return new runtime.TextApiResponse(response) as any;
-        }
+        return new runtime.JSONApiResponse(response, (jsonValue) => CheckPermissionResponseFromJSON(jsonValue));
     }
 
     /**
      * Check if a user has a permission
      */
-    async userControllerCheckPermission(requestParameters: UserControllerCheckPermissionRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<boolean> {
+    async userControllerCheckPermission(requestParameters: UserControllerCheckPermissionRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<CheckPermissionResponse> {
         const response = await this.userControllerCheckPermissionRaw(requestParameters, initOverrides);
         return await response.value();
+    }
+
+    /**
+     * Delete a user
+     */
+    async userControllerDeleteUserRaw(requestParameters: UserControllerDeleteUserRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+        if (requestParameters['deleteUserDto'] == null) {
+            throw new runtime.RequiredError(
+                'deleteUserDto',
+                'Required parameter "deleteUserDto" was null or undefined when calling userControllerDeleteUser().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
+
+        const response = await this.request({
+            path: `/api/user/delete-user`,
+            method: 'POST',
+            headers: headerParameters,
+            query: queryParameters,
+            body: DeleteUserDtoToJSON(requestParameters['deleteUserDto']),
+        }, initOverrides);
+
+        return new runtime.VoidApiResponse(response);
+    }
+
+    /**
+     * Delete a user
+     */
+    async userControllerDeleteUser(requestParameters: UserControllerDeleteUserRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+        await this.userControllerDeleteUserRaw(requestParameters, initOverrides);
     }
 
     /**

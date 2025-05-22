@@ -37,7 +37,7 @@ def delete_existing_classifications(db: Session, role_id: str):
     db.query(JobClassification).filter(JobClassification.role_id == role_id).delete()
 
 
-def update_role_with_classifications(db: Session, state: JobClassificationAgentState, level: int):
+def update_role_with_classifications(db: Session, state: JobClassificationAgentState):
     # 1. Delete existing classifications
     delete_existing_classifications(db, state["role"].role_id)
 
@@ -47,7 +47,7 @@ def update_role_with_classifications(db: Session, state: JobClassificationAgentS
     if isinstance(results_from_agent, str):
         try:
             parsed_results = json.loads(results_from_agent)
-            results = [EscoResult(**result, level=level) for result in parsed_results]
+            results = [EscoResult(**result) for result in parsed_results]
         except json.JSONDecodeError as e:
             print(f"Error parsing JSON: {e}")
             return
@@ -64,10 +64,8 @@ def update_role_with_classifications(db: Session, state: JobClassificationAgentS
     
     
     classification = JobClassification(
-        title=best_result.title,
-        level=level,
-        esco_code=best_result.code,
         role_id=state["role"].role_id,
+        esco_classification_id=best_result.id,
         confidence=best_result.confidence,
         model_used=model_used,
         metadata_=metadata_json,

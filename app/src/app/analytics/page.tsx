@@ -26,6 +26,12 @@ import { Button } from "@/components/ui/button";
 import { useSearchParams, useRouter } from "next/navigation";
 import { useCompanyOptions } from "@/hooks/analytics/useCompanyOptions";
 import { EducationDrillType, GeoDrillType } from "@/types/drillType";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 export const initialFilters: FilterState = {
   dateRange: undefined,
@@ -525,19 +531,25 @@ export default function Analytics() {
         onAddToFilters={handleAddAlumniToFilters}
       />
 
-      <Button
-        onClick={scrollToTop}
-        className={`fixed bottom-24 z-20 right-8 bg-[#8C2D19] hover:bg-[#A13A23] text-white p-3 rounded-full shadow-lg transition-all duration-300 ${
-          showScrollButton
-            ? "opacity-100 translate-y-0"
-            : "opacity-0 translate-y-16"
-        } focus:outline-none focus:ring-2 focus:ring-[#8C2D19] focus:ring-opacity-50`}
-        aria-label="Scroll to top"
-        title="Scroll to top"
-        size="lg"
-      >
-        <ArrowUp className="h-12 w-12" />
-      </Button>
+      <TooltipProvider>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button
+              onClick={scrollToTop}
+              className={`fixed bottom-24 z-20 right-8 bg-[#8C2D19] hover:bg-[#A13A23] text-white p-3 rounded-full shadow-lg transition-all duration-300 ${
+                showScrollButton
+                  ? "opacity-100 translate-y-0"
+                  : "opacity-0 translate-y-16"
+              } focus:outline-none focus:ring-2 focus:ring-[#8C2D19] focus:ring-opacity-50`}
+              aria-label="Scroll to top"
+              size="lg"
+            >
+              <ArrowUp className="h-12 w-12" />
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent align="end">Scroll to top</TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
     </div>
   );
 }

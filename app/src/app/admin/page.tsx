@@ -1,5 +1,3 @@
-"use client";
-
 import Link from "next/link";
 import {
   Card,
@@ -11,9 +9,6 @@ import {
   BookOpenIcon,
   CreditCardIcon,
   FileSpreadsheetIcon,
-  MapPin,
-  Building2Icon,
-  ShieldAlert,
   UsersIcon,
 } from "lucide-react";
 
@@ -31,31 +26,20 @@ const AdminDashboard = () => {
       icon: <UsersIcon className="h-6 w-6" />,
       href: "/admin/review-alumni",
     },
-    /*     {
-      title: "Company Management",
-      description: "Manage companies",
-      icon: <Building2Icon className="h-6 w-6" />,
-      href: "/admin/company-management",
+    {
+      title: "Alumni Management",
+      description:
+        "Consult alumni with no LinkedIn profile, delete user data, and more",
+      icon: <UsersIcon className="h-6 w-6" />,
+      href: "/admin/alumni-management",
       disabled: true,
-    }, */
+    },
     {
       title: "API Usage",
       description: "View API usage and balance",
       icon: <CreditCardIcon className="h-6 w-6" />,
       href: "/admin/api-usage",
     },
-    /*     {
-      title: "Location Tooling",
-      description: "Review locations with no coordinates, merge similar locations, and more",
-      icon: <MapPin className="h-6 w-6" />,
-      href: "/admin/location-tooling",
-    }, */
-    /*     {
-      title: "LinkedIn Validation",
-      description: "Validate flagged LinkedIn profiles",
-      icon: <ShieldAlert className="h-6 w-6" />,
-      href: "/admin/linkedin-validation",
-    }, */
     {
       title: "Faculty and Course Management",
       description: "Manage faculties and courses",

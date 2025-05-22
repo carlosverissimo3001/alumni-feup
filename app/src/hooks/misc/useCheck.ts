@@ -5,14 +5,13 @@ import { UserControllerCheckPermissionRequest } from '@/sdk';
 export const useCheck = (
   params: UserControllerCheckPermissionRequest | null,
 ) => {
-  const { data: rawData, isLoading, isError, isSuccess, isFetching, refetch } =
+  const { data, isLoading, isError, isSuccess, isFetching, refetch } =
     useQuery({
       queryKey: ['check-permission', params],
       queryFn: async () => {
         if (!params) return undefined;
         const response = await NestAPI.userControllerCheckPermission(params);
-        // Explicitly convert response to boolean to ensure consistent type
-        return Boolean(response);
+        return response.hasPermission;
       },
       refetchOnWindowFocus: false,
       staleTime: 5 * 60 * 1000, 
@@ -20,10 +19,6 @@ export const useCheck = (
       placeholderData: (previousData) => previousData,
       enabled: !!params,
     });
-
-  // Ensure we always return a boolean or undefined
-  // Maybe the BE should take care of this
-  const data = typeof rawData !== 'undefined' ? Boolean(rawData) : undefined;
 
   return {
     data,

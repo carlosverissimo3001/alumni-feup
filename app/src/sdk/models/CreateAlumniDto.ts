@@ -34,6 +34,12 @@ export interface CreateAlumniDto {
      */
     fullName: string;
     /**
+     * The created by user
+     * @type {string}
+     * @memberof CreateAlumniDto
+     */
+    createdBy?: string;
+    /**
      * The personal email of the user
      * @type {string}
      * @memberof CreateAlumniDto
@@ -81,6 +87,7 @@ export function CreateAlumniDtoFromJSONTyped(json: any, ignoreDiscriminator: boo
     return {
         
         'fullName': json['fullName'],
+        'createdBy': json['createdBy'] == null ? undefined : json['createdBy'],
         'personalEmail': json['personalEmail'] == null ? undefined : json['personalEmail'],
         'linkedinUrl': json['linkedinUrl'],
         'courses': ((json['courses'] as Array<any>).map(CourseCompletionFromJSON)),
@@ -100,6 +107,7 @@ export function CreateAlumniDtoToJSONTyped(value?: CreateAlumniDto | null, ignor
     return {
         
         'fullName': value['fullName'],
+        'createdBy': value['createdBy'],
         'personalEmail': value['personalEmail'],
         'linkedinUrl': value['linkedinUrl'],
         'courses': ((value['courses'] as Array<any>).map(CourseCompletionToJSON)),

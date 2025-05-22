@@ -32,33 +32,33 @@ const CSVUpload = () => {
     uploadFile,
   } = useCSVUpload();
 
-  const [faculty, setFaculty] = useState<string | undefined>(undefined);
-  const [course, setCourse] = useState<string | undefined>(undefined);
+  const [facultyId, setFacultyId] = useState<string | undefined>(undefined);
+  const [courseId, setCourseId] = useState<string | undefined>(undefined);
   const [showInfo, setShowInfo] = useState(false);
 
   const { data: faculties, isLoading: isLoadingFaculties } = useListFaculties();
 
   const { data: courses, isLoading: isLoadingCourses } = useListCourses({
     params: {
-      facultyIds: faculty ? [faculty] : undefined,
+      facultyIds: facultyId ? [facultyId] : undefined,
     },
-    enabled: !!faculty,
+    enabled: !!facultyId,
   });
 
   const isLoading = isLoadingFaculties || isLoadingCourses;
 
   const handleClearSelection = () => {
-    setFaculty(undefined);
-    setCourse(undefined);
+    setFacultyId(undefined);
+    setCourseId(undefined);
     clearFile();
   };
 
   const handleUpload = async () => {
-    if (!faculty || !course) return;
+    if (!facultyId || !courseId) return;
 
     const success = await uploadFile({
-      faculty: faculty,
-      course: course,
+      facultyId,
+      courseId,
     });
 
     if (success) {
@@ -102,9 +102,9 @@ const CSVUpload = () => {
                 Faculty
               </Label>
               <Select
-                onValueChange={setFaculty}
+                onValueChange={setFacultyId}
                 disabled={isLoading}
-                value={faculty || ""}
+                value={facultyId || ""}
               >
                 <SelectTrigger
                   id="faculty"
@@ -127,9 +127,9 @@ const CSVUpload = () => {
                 Course
               </Label>
               <Select
-                onValueChange={setCourse}
-                disabled={isLoading || !faculty}
-                value={course || ""}
+                onValueChange={setCourseId}
+                disabled={isLoading || !facultyId}
+                value={courseId || ""}
               >
                 <SelectTrigger
                   id="course"
@@ -137,7 +137,7 @@ const CSVUpload = () => {
                 >
                   <SelectValue
                     placeholder={
-                      faculty ? "Choose a course" : "Select a faculty first"
+                      facultyId ? "Choose a course" : "Select a faculty first"
                     }
                   />
                 </SelectTrigger>
@@ -219,7 +219,7 @@ const CSVUpload = () => {
               variant="outline"
               size="sm"
               onClick={handleClearSelection}
-              disabled={!file && !faculty && !course}
+              disabled={!file && !facultyId && !courseId}
               className="text-slate-600 hover:text-slate-900"
             >
               Clear Selection
@@ -228,7 +228,7 @@ const CSVUpload = () => {
 
           <LoadingButton
             onClick={handleUpload}
-            disabled={!file || !faculty || !course || isUploading}
+            disabled={!file || !facultyId || !courseId || isUploading}
             className="w-full h-11"
           >
             {isUploading ? "Uploading..." : "Upload CSV"}

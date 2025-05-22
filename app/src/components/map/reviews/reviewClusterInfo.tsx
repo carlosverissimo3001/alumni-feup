@@ -194,7 +194,7 @@ const ReviewClusterInfo = ({
                             <div className="flex items-start gap-4">
                                 <Avatar className="h-10 w-10 border">
                                 <ImageWithFallback
-                                    src={review.profile_pic_url || null}
+                                    src={review.profile_pic_url ?? ""}
                                     alt={review.name}
                                     />
                                 </Avatar>
