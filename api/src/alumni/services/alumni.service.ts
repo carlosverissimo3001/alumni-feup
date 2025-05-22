@@ -53,6 +53,9 @@ type AlumniByCity = {
   [city: string]: AlumniGrouped;
 };
 
+let totalAlumni = 0;
+let totalAlumniPrev = 0;
+
 @Injectable()
 export class AlumniService {
   constructor(
@@ -146,6 +149,8 @@ export class AlumniService {
       properties: {
         name: [group],
         students: data.alumni.length || 0,
+        totalAlumni: totalAlumni,
+        totalAlumniPrev: totalAlumni - totalAlumniPrev,
         compareYearStudents: data.compareYearStudents,
         listLinkedinLinksByUser: data.alumni.reduce(
           (acc, curr) => {
@@ -203,7 +208,8 @@ export class AlumniService {
         ),
       },
     }));
-
+    totalAlumni = 0;
+    totalAlumniPrev = 0;
     return {
       type: 'FeatureCollection',
       features,
@@ -377,6 +383,7 @@ export class AlumniService {
         jobTitle: alumnus.Roles?.[0]?.JobClassification?.EscoClassification.titleEn || null,
         companyName: alumnus.Roles?.[0]?.Company?.name || null,
       });
+      totalAlumni += 1;
     }
 
     return acc;
@@ -430,6 +437,7 @@ export class AlumniService {
           null,
         companyName: alumnus.Roles?.[0]?.Company?.name || null,
       });
+      totalAlumni += 1;
     }
 
     return acc;
@@ -480,14 +488,17 @@ export class AlumniService {
             alumnusCY.Roles![0].Location.country
         ) {
           acc[country].compareYearStudents! += 1;
+          totalAlumniPrev += 1;
         } else if (
           alumnus.Roles![0].Location.country ==
           alumnusCY.Roles![0].Location.country
         ) {
           acc[country].compareYearStudents! += 1;
+          totalAlumniPrev += 1;
         }
       } else {
         acc[country].compareYearStudents! += 1;
+        totalAlumniPrev += 1;
       }
 
       acc[country].alumni.push({
@@ -504,6 +515,7 @@ export class AlumniService {
           null,
         companyName: alumnus.Roles?.[0]?.Company?.name || null,
       });
+      totalAlumni += 1;
     }
 
     for (const alumnusCompareYear of alumniCompareYear) {
@@ -529,6 +541,7 @@ export class AlumniService {
         }
 
         acc[country].compareYearStudents! -= 1;
+        totalAlumniPrev -= 1;
       }
     }
 
@@ -568,6 +581,7 @@ export class AlumniService {
           null,
         companyName: alumnus.Roles?.[0]?.Company?.name || null,
       });
+      totalAlumni += 1;
       return acc;
     }, {});
   }
@@ -611,14 +625,17 @@ export class AlumniService {
             alumnusCY.Roles![0].Location.country
         ) {
           acc[city].compareYearStudents! += 1;
+          totalAlumniPrev += 1;
         } else if (
           alumnus.Roles![0].Location.country ==
           alumnusCY.Roles![0].Location.country
         ) {
           acc[city].compareYearStudents! += 1;
+          totalAlumniPrev += 1;
         }
       } else {
         acc[city].compareYearStudents! += 1;
+        totalAlumniPrev += 1;
       }
 
       acc[city].alumni.push({
@@ -635,6 +652,7 @@ export class AlumniService {
           null,
         companyName: alumnus.Roles?.[0]?.Company?.name || null,
       });
+      totalAlumni += 1;
     }
 
     for (const alumnusCompareYear of alumniCompareYear) {
@@ -658,6 +676,7 @@ export class AlumniService {
         }
 
         acc[city].compareYearStudents! -= 1;
+        totalAlumniPrev -= 1;
       }
     }
 
@@ -703,6 +722,7 @@ export class AlumniService {
           null,
         companyName: alumnus.Roles?.[0]?.Company?.name || null,
       });
+      totalAlumni += 1;
     }
 
     return acc;

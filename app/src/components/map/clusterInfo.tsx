@@ -9,7 +9,8 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Hash, Percent } from "lucide-react";
+import { ToggleGroup, ToggleGroupItem } from "../ui/toggle-group";
 
 type props = {
   hoveredCluster: boolean;
@@ -18,6 +19,8 @@ type props = {
   listPlaceName: string[];
   compareYearStudents: number | undefined;
   students: number;
+  totalAlumni: number;
+  totalAlumniPrev: number;
   hoveredMouseCoords: number[];
   alumniData: AlumniData[];
   selectedYear: number | undefined;
@@ -30,6 +33,8 @@ const ClusterInfo = ({
   listPlaceName,
   compareYearStudents,
   students,
+  totalAlumni,
+  totalAlumniPrev,
   hoveredMouseCoords,
   alumniData,
   selectedYear,
@@ -41,6 +46,7 @@ const ClusterInfo = ({
   const [showPrev, setShowPrev] = useState(false); // Defines if it is to show the "...Prev"
   const [showMore, setShowMore] = useState(false); // Defines if it is to show the "More..."
   const [showCompare, setShowCompare] = useState(false);
+  const [displayMode, setDisplayMode] = useState<"numbers" | "percentages">("numbers")
 
   useEffect(() => {
     if (!hoveredCluster) {
@@ -203,6 +209,7 @@ const ClusterInfo = ({
           </div>
           ) : (
             <div className="w-full max-w-md mx-auto">
+            <div className="flex items-center justify-between">
             <div>
                 {listPlaceName.map((place, index) => (
                   <Badge key={index} variant="secondary" className="text-xl">
@@ -210,12 +217,33 @@ const ClusterInfo = ({
                   </Badge>
                 ))}
             </div>
+              <ToggleGroup
+                type="single"
+                value={displayMode}
+                onValueChange={(value) => value && setDisplayMode(value as "numbers" | "percentages")}
+              >
+                <ToggleGroupItem value="numbers" aria-label="Show raw numbers" 
+                className="bg-gray-700
+                  hover:bg-gray-900
+                  data-[state=on]:bg-gray-700
+                  data-[state=on]:hover:bg-gray-900">
+                  <Hash className="h-4 w-4 text-white" />
+                </ToggleGroupItem>
+                <ToggleGroupItem value="percentages" aria-label="Show percentages" 
+                className="bg-gray-700
+                  hover:bg-gray-900
+                  data-[state=on]:bg-gray-700
+                  data-[state=on]:hover:bg-gray-900">
+                  <Percent className="h-4 w-4 text-white" />
+                </ToggleGroupItem>
+              </ToggleGroup>
+            </div>
+            {displayMode === "numbers" ? (
             <div className="space-y-2">
               <div className="flex items-center justify-center gap-4 py-6">
                 <div className="text-center">
-                  
                   <p className="text-xl font-medium text-muted-foreground mb-1">{selectedYear! < compareYear! ? selectedYear : compareYear}</p>
-                  <p className="text-5xl font-bold">{students - compareYearStudents}</p>
+                  <p className="text-5xl font-bold">{(students - compareYearStudents)}</p>
                 </div>
 
                 <ArrowRight className="text-muted-foreground h-8 w-10 mt-10" />
@@ -234,9 +262,34 @@ const ClusterInfo = ({
                   </p>
                 </div>
               </div>
-      
+            </div>) : (
+              <div className="space-y-2">
+              <div className="flex items-center justify-center gap-4 py-6">
+                <div className="text-center">
+                  <p className="text-xl font-medium text-muted-foreground mb-1">{selectedYear! < compareYear! ? selectedYear : compareYear}</p>
+                  {((students - compareYearStudents) / totalAlumniPrev) === 1 ?
+                  <p className="text-5xl font-bold">100%</p>
+                  :  <p className="text-5xl font-bold">{((students - compareYearStudents) / totalAlumniPrev * 100).toFixed(1)}%</p>}
+                </div>
 
+                <ArrowRight className="text-muted-foreground h-8 w-10 mt-10" />
+      
+                <div className="text-center">
+                  <p className="text-xl font-medium text-muted-foreground mb-1">{selectedYear! > compareYear! ? selectedYear : compareYear}</p>
+                  <p className="text-5xl font-bold">{(students / totalAlumni * 100).toFixed(1)}%</p>
+                </div>
+      
+                <div
+                  className={`text-center px-3 py-1 rounded-full ${((students - compareYearStudents)/totalAlumniPrev) < (students / totalAlumni) ? "bg-green-100 text-green-800" : (((students - compareYearStudents)/totalAlumniPrev) != (students / totalAlumni) ? "bg-red-100 text-red-800" : "bg-yellow-100 text-yellow-800")}`}
+                >
+                  <p className="text-lg font-medium">
+                    {(((students - compareYearStudents) / totalAlumniPrev) < (students / totalAlumni)) ? "+" : (((students - compareYearStudents) / totalAlumniPrev) == (students / totalAlumni) ? "" : "-")}
+                    {Math.abs(((((students - compareYearStudents) / totalAlumniPrev) - students / totalAlumni) * 100)).toFixed(2)}%
+                  </p>
+                </div>
+              </div>
             </div>
+            )}
           </div>
         )}
 

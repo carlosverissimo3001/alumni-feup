@@ -4,6 +4,8 @@ import { Feature, FeatureCollection, Point } from 'geojson';
 export interface CustomProperties {
   name: string[];
   students: number;
+  totalAlumni: number;
+  totalAlumniPrev: number;
   compareYearStudents: number | undefined;
   listLinkedinLinksByUser: { [key: string]: string };
   coursesYearConclusionByUser: { [key: string]: { [key: string]: string } };
@@ -31,6 +33,8 @@ export class GeoJSONFeature implements Feature<Point, CustomProperties> {
     this.properties = {
       name: [],
       students: 0,
+      totalAlumni: 0,
+      totalAlumniPrev: 0,
       compareYearStudents: undefined,
       listLinkedinLinksByUser: {},
       coursesYearConclusionByUser: {},

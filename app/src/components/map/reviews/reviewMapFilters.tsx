@@ -42,6 +42,8 @@ const ReviewMapFilters = ({
   onSelectReview,
   scoreFetch,
   setScoreFetch,
+  sortBy,
+  setSortBy
 }: props) => {
   // Global navbar state
   const { isCollapsed } = useNavbar();
@@ -59,14 +61,18 @@ const ReviewMapFilters = ({
     from: undefined,
     to: undefined,
   })
-  const [sortBy, setSortBy] = useState<'most' | 'least' | null>(null)
   
-  /** Selectors & Filters **/
   // Search input
   const [searchInput, setSearchInput] = useState<string>("");
   const handleSearchInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchInput(e.target.value);
   };
+
+  // Handles the filtering of a selected alumni
+  const handleAlumniSelection = (name: string) => {
+    //onSelectAlumni(name, coordinates);
+  };
+
   // Group by
   const [groupBy, setGroupBy] = useState<GROUP_BY>(GROUP_BY.Countries);
 
@@ -101,6 +107,28 @@ const ReviewMapFilters = ({
   const [listAlumniNamesWithCoordinates, setListAlumniNamesWithCoordinates] =
     useState<AlumniInfo[]>([]);
   const [alumniLength, setAlumniLength] = useState(0);
+
+  useEffect(() => {
+    const normalizeString = (str: string) => {
+      return str
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .replace(/[^\w\s]/gi, "");
+    };
+
+    if (listAlumniNamesWithCoordinates && searchInput.trim() !== "") {
+      const normalizedSearchInput = normalizeString(searchInput.toLowerCase());
+      const filteredNamesCoord = listAlumniNamesWithCoordinates.filter(
+        (alumni) =>
+          normalizeString(alumni.name.toLowerCase()).includes(
+            normalizedSearchInput
+          )
+      );
+      setFilteredAlumniNamesCoord(filteredNamesCoord);
+    } else {
+      setFilteredAlumniNamesCoord([]);
+    }
+  }, [listAlumniNamesWithCoordinates, searchInput]);
 
   // Use the data when it changes
   useEffect(() => {
@@ -215,7 +243,27 @@ const ReviewMapFilters = ({
         <div className="container mx-auto py-8 px-4">
 
 
-      {/* Filters section */}
+
+            {/* Search Section
+        <div className="p-6 border-b">
+          <h3 className="text-lg font-semibold text-gray-800 mb-2">Search</h3>
+          <input
+            type="text"
+            value={searchInput}
+            onChange={handleSearchInputChange}
+            placeholder="By alumni name"
+            className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-md"
+          />
+          {filteredAlumniNamesCoord.length > 0 && (
+                <div className={`search-results ${filteredAlumniNamesCoord.length > 5 ? 'scrollable' : ''}`}>
+                {filteredAlumniNamesCoord.map((alumniData, index) => (
+                    <div  className='dropdown-search-names' key={index} onClick={() => handleAlumniSelection(alumniData.name)}>
+                        {alumniData.name}
+                    </div>
+                ))}
+                </div>
+            )}
+        </div> */}
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4">
           {/* Review Type Filter */}
