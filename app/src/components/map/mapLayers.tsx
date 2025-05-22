@@ -51,7 +51,14 @@ export const statsLayer: LayerProps = {
   source: SOURCE_ID,
   filter: ['!=', ['get', 'compareYearStudents'], null],
   layout: {
-      'icon-image': 'arrowicon',
+      'icon-image': [
+      'case',
+      ['<', ['get', 'compareYearStudents'], 0],
+      'arrowicon',
+      ['>', ['get', 'compareYearStudents'], 0],
+      'arrowicon',
+      'equalsicon' 
+    ],
       'icon-size': //0.1,
       [
         'interpolate',
@@ -66,30 +73,19 @@ export const statsLayer: LayerProps = {
       'icon-rotate': [
           'case',
           ['<', ['get', 'compareYearStudents'], 0],
-          180, 
+          90, 
+          ['>', ['get', 'compareYearStudents'], 0],
+          -90,
           0 
       ]
-      //'icon-allow-overlap': true,
-      //'icon-anchor': 'bottom-right',
-      // 'icon-offset': //[0, 0]
-      // [
-      //   'interpolate',
-      //   ['linear'],
-      //   ['get', 'students'],
-      //   0, [0, 0],
-      //   1, [500, 0],
-      //   50, [5000, 0], 
-      //   100, [10000, 0], 
-      //   500, [20000, 0]
-      // ]
   },
   paint: {
       'icon-color': [
         'case',
-        ['>', ['get', 'compareYearStudents'], 0],
-        'green', 
-        'red' 
-    ]
+        ['>', ['get', 'compareYearStudents'], 0], 'green',
+        ['<', ['get', 'compareYearStudents'], 0], 'red',
+        'yellow'
+      ]
   }
 };
 

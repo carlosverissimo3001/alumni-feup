@@ -97,6 +97,7 @@ const ReviewMapComponent = () => {
         reviewData={reviewData}
         setReviewData={setReviewData}
         sortBy={sortBy}
+        setSortBy={setSortBy}
         setScoreFetch={setScoreFetch}
         scoreFetch={scoreFetch}
       />
