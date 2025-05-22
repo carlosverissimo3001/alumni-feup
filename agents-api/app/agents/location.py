@@ -355,7 +355,7 @@ class LocationAgent:
     # This is the actual "Agent" code
     async def process_location(self, location_input: LocationInput):
         """
-        Async function that processes a single location and finds its ESCO classification
+        Async function that processes a location input into a structured location object
         """
         # Initialize the state with all required fields
         state = LocationAgentState(

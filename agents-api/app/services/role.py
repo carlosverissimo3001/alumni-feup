@@ -24,7 +24,7 @@ class RoleService:
         Resolves the location of the roles
         """
         role_ids = params.role_ids
-        logger.info(f"Requesting role location resolution for {role_ids}")
+        #logger.info(f"Requesting role location resolution for {role_ids}")
 
         roles: list[Role] = []
 
@@ -38,14 +38,14 @@ class RoleService:
         # and newsflash, that user is me :))
         roles = list(set(roles))
 
-        logger.info(f"Going to update {len(roles)} roles")
+        #logger.info(f"Going to update {len(roles)} roles")
 
         batch_size = 30
         for i in range(0, len(roles), batch_size):
             batch = roles[i : i + batch_size]
-            logger.info(
-                f"Processing batch {i // batch_size + 1} of {(len(roles) + batch_size - 1) // batch_size} ({len(batch)} roles)"
-            )
+            #logger.info(
+            #    f"Processing batch {i // batch_size + 1} of {(len(roles) + batch_size - 1) // batch_size} ({len(batch)} roles)"
+            #)
 
             tasks = []
             for role in batch:
@@ -97,7 +97,7 @@ class RoleService:
         Returns:
             Role object ready to be inserted in the database
         """
-        logger.info(f"Parsing role {role.title} of {alumni_id}")
+        #logger.info(f"Parsing role {role.title} of {alumni_id}")
 
         # Convert LinkedIn date format to timestamps
         start_date = linkedin_date_to_timestamp(role.starts_at)

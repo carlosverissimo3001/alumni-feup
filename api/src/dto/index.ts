@@ -8,7 +8,10 @@ export { GetGeoJSONDto } from './getgeojson.dto';
 export { LinkedinAuthDto } from './linkedin-auth.dto';
 export { VerifyEmailDto, VerifyEmailTokenDto } from './verify-email.dto';
 export { UserAuthResponse } from './user.dto';
-export { CheckPermissionDto } from './check-permission.dto';
+export {
+  CheckPermissionDto,
+  CheckPermissionResponse,
+} from './check-permission.dto';
 
 // Alumni
 export { CreateAlumniDto } from './create-alumni.dto';

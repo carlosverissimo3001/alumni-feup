@@ -7,6 +7,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { OtpService } from '../otp/otp.service';
 import { EmailService } from '@/email/services/email.service';
+import { UserRepository } from './user.repository';
 @Module({
   imports: [
     JwtModule.registerAsync({
@@ -19,6 +20,13 @@ import { EmailService } from '@/email/services/email.service';
     }),
   ],
   controllers: [UserController],
-  providers: [UserService, PrismaService, Logger, OtpService, EmailService],
+  providers: [
+    UserService,
+    PrismaService,
+    Logger,
+    OtpService,
+    EmailService,
+    UserRepository,
+  ],
 })
 export class UserModule {}

@@ -119,7 +119,6 @@ const LogoSection = ({
           alt={name}
           width={24}
           height={24}
-          fallbackSrc={getPlaceholderImage(imageType)}
         />
       ) : (
         <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-gray-100 to-gray-200 text-gray-500 text-[10px] font-semibold border border-gray-200">

@@ -7,23 +7,26 @@ from app.core.config import settings
 from app.db import get_db
 from app.db.models import Alumni, Company
 from app.schemas.linkedin import (
-    AlumniData,
     LinkedInProfileResponse,
     convert_to_linkedin_profile_response,
 )
 from app.schemas.location import AlumniLocationInput, LocationType
-from app.schemas.role import RoleAlumniResolveLocationParams
 from app.services.company import company_service
 from app.services.image_storage import image_storage_service
 from app.services.job_classification import job_classification_service
 from app.services.role import role_service
-from app.utils.alumni_db import delete_profile_data, find_all, update_alumni
+from app.utils.alumni_db import (
+    delete_profile_data,
+    find_all,
+    find_by_id,
+    update_alumni,
+)
 from app.utils.company_db import get_company_by_linkedin_url, insert_company
 from app.utils.consts import NULL_ISLAND_ID
 from app.utils.http_client import HTTPClient
 from app.utils.location_db import get_location
 from app.utils.misc.string import sanitize_linkedin_url
-from app.utils.role_db import create_role, create_role_raw, get_roles_by_alumni_id
+from app.utils.role_db import create_role, create_role_raw
 
 logger = logging.getLogger(__name__)
 
@@ -47,7 +50,6 @@ class LinkedInService:
 
     async def extract_profile_data(
         self,
-        profile_url: str,
         alumni_id: str,
     ):
         """
@@ -58,7 +60,15 @@ class LinkedInService:
             alumni_id: ID of the alumni for linking data
 
         """
-        logger.info(f"Extracting LinkedIn data for {profile_url}")
+        #logger.info(f"Extracting LinkedIn data for {alumni_id}")
+
+        # Get the alumni from the database
+        alumni = find_by_id(alumni_id, db)
+        if not alumni or not alumni.linkedin_url:
+            #logger.error(f"Alumni with id {alumni_id} not found or has no LinkedIn URL")
+            return
+
+        profile_url = alumni.linkedin_url
 
         try:
             self.client.set_headers(
@@ -87,7 +97,7 @@ class LinkedInService:
         profile_data: LinkedInProfileResponse,
         alumni_id: str,
     ) -> None:
-        logger.info(f"Processing profile data for alumni with id {alumni_id}")
+        #logger.info(f"Processing profile data for alumni with id {alumni_id}")
 
         # First, let's parse the roles, to understand if we need to extract company data
         for role in profile_data.experiences:
@@ -98,10 +108,10 @@ class LinkedInService:
                 db_company = get_company_by_linkedin_url(sanitized_url, db)
                 # All good, no need to call the API
                 if db_company:
-                    logger.info(f"Company {sanitized_url} found in the database")
+                    #logger.info(f"Company {sanitized_url} found in the database")
                     company_id = db_company.id
                 else:
-                    logger.info(f"Company {sanitized_url} not found in the database")
+                    #logger.info(f"Company {sanitized_url} not found in the database")
                     # We insert the company before we call the API, so that we can link the role to the company # noqa: E501
                     db_company = insert_company(
                         Company(
@@ -151,8 +161,8 @@ class LinkedInService:
                     country=country,
                     country_code=country_code,
                 )
-                asyncio.create_task(location_agent.run(input))
-            
+                asyncio.create_task(location_agent.process_location(input))
+
             else:
                 location_id = location.id
         # Let's upload their picture to cloudinary
@@ -176,37 +186,32 @@ class LinkedInService:
         # Note that we do NOT wait for this to finish, as it can take a while
         asyncio.create_task(job_classification_service.classify_roles_for_alumni(alumni_id))
 
-        # We'll also use the location agent to update the alumni roles
+        # We'll also use the location agent to update the alumni location
         asyncio.create_task(role_service.resolve_role_location_for_alumni(alumni_id))
 
     async def update_profile_data(
         self,
-        data: Optional[List[AlumniData]] = None,
+        alumni_ids: Optional[List[str]] = None,
     ):
         """
-        Update the profile data for a list of alumni.
+        Update the profile data for specified alumni or all alumni if none specified.
 
         Args:
-            data: List of alumni data to update
+            alumni_ids: Optional list of alumni IDs to update. If None, updates all alumni.
         """
-        alumni = data
+        # Get alumni from database based on whether specific IDs were provided
+        ids = alumni_ids if alumni_ids else [alumni.id for alumni in find_all(db)]
 
-        # If no data is provided, we update all alumni
-        if not alumni:
-            alumni_db = find_all(db)
-            alumni = [
-                AlumniData(alumni_id=alumni.id, profile_url=alumni.linkedin_url)
-                for alumni in alumni_db
-            ]
+        for alumni_id in ids:
+            # Delete existing data before extraction
+            logger.info(f"Deleting existing data for {alumni_id}")
+            delete_profile_data(alumni_id, db)
 
-        for alumni_data in alumni:
-            # 1. Delete existing data
-            logger.info(f"Deleting existing data for {alumni_data.profile_url}")
-            delete_profile_data(alumni_data.alumni_id, db)
-
-            # 2. Extract new data
-            logger.info(f"Extracting LinkedIn data for {alumni_data.profile_url}")
-            await self.extract_profile_data(alumni_data.profile_url, alumni_data.alumni_id)
+            # Extract new data
+            logger.info(f"Extracting LinkedIn data for {alumni_id}")
+            await self.extract_profile_data(
+                alumni_id
+            )
 
 
 linkedin_service = LinkedInService()

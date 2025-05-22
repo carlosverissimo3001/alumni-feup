@@ -15,34 +15,24 @@ class AlumniData(BaseModel):
 class LinkedInExtractProfileRequest(BaseModel):
     """Schema for requesting LinkedIn profile data extraction."""
 
-    data: List[AlumniData] = Field(..., description="List of alumni data to extract")
+    alumni_ids: List[str] = Field(..., description="List of alumni IDs to extract")
 
     class Config:
         json_schema_extra = {
             "example": {
-                "data": [
-                    {
-                        "profile_url": "https://linkedin.com/in/johndoe/",
-                        "alumni_id": "12345"
-                    }
-                ]
+                "alumni_ids": ["12345", "67890"]
             }
         }
 
 class LinkedInUpdateProfileRequest(BaseModel):
     """Schema for requesting LinkedIn profile data extraction."""
 
-    data: List[AlumniData] | None = Field(None, description="List of alumni data to update")
+    alumni_ids: List[str] = Field(..., description="List of alumni IDs to update")
 
     class Config:
         json_schema_extra = {
             "example": {
-                "data": [
-                    {
-                        "profile_url": "https://linkedin.com/in/johndoe/",
-                        "alumni_id": "12345"
-                    }
-                ]
+                "alumni_ids": ["12345", "67890"]
             }
         }
 
@@ -57,7 +47,7 @@ class ExperienceBase(BaseModel):
     """Base schema for work experience."""
 
     company: str
-    company_linkedin_profile_url: str
+    company_linkedin_profile_url: Optional[str] = None
     description: Optional[str] = None
     ends_at: Optional[ExperienceDate] = None
     location: Optional[str] = None
@@ -67,12 +57,12 @@ class ExperienceBase(BaseModel):
 class LinkedInProfileResponse(BaseModel):
     """Schema for LinkedIn profile data extraction response."""
 
-    profile_pic_url: str
+    profile_pic_url: Optional[str] = None
     # The user's country of residence depicted by a 2-letter country code (ISO 3166-1 alpha-2).
-    country: str
+    country: Optional[str] = None
     # The user's country of residence, in English words.
-    country_full_name: str
-    city: str
+    country_full_name: Optional[str] = None
+    city: Optional[str] = None
     experiences: List[ExperienceBase]
 
     class Config:
@@ -100,6 +90,10 @@ class LinkedInCompanyResponse(BaseModel):
 def convert_to_linkedin_profile_response(json_data: dict) -> LinkedInProfileResponse:
     experiences = []
     for exp in json_data.get('experiences', []):
+        # No start date?
+        if not exp.get('starts_at'):
+            continue
+        
         starts_at = ExperienceDate(**exp['starts_at'])
         ends_at = ExperienceDate(**exp['ends_at']) if exp.get('ends_at') else None
                 

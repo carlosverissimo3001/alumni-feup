@@ -44,10 +44,8 @@ class JobClassificationInput(BaseModel):
 
 class EscoResult(BaseModel):
     """Schema for ESCO classification result."""
-
-    code: str = Field(..., description="ESCO classification code")
+    id: str = Field(..., description="ESCO classification ID")
     title: str = Field(..., description="ESCO classification title")
-    level: int = Field(..., description="ESCO classification level")
     confidence: float = Field(..., description="Confidence score of the classification")
 
 
@@ -58,3 +56,5 @@ class JobClassificationAgentState(TypedDict):
     esco_results_from_agent: List[EscoResult]
     processing_time: float
     model_used: str
+    retry_count: int
+    error: Optional[str]

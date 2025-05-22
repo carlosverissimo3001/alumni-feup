@@ -3,6 +3,7 @@ import logging
 from time import sleep
 from typing import Optional
 
+from app.agents.location import location_agent
 from app.core.config import settings
 from app.db import get_db
 from app.db.models import Company
@@ -81,7 +82,7 @@ class CompanyService:
         If not, it will update all companies.
         """
         company_ids = params.company_ids
-        logger.info(f"Requesting company update for {company_ids}")
+        # logger.info(f"Requesting company update for {company_ids}")
 
         companies: list[Company] = []
 
@@ -95,15 +96,15 @@ class CompanyService:
         # and newsflash, that user is me :))
         companies = list(set(companies))
 
-        logger.info(f"Going to update {len(companies)} companies")
+        #logger.info(f"Going to update {len(companies)} companies")
 
         # Process in batches of 10 to avoid overwhelming the system
         batch_size = 10
         for i in range(0, len(companies), batch_size):
             batch = companies[i : i + batch_size]
-            logger.info(
-                f"Processing batch {i // batch_size + 1} of {(len(companies) + batch_size - 1) // batch_size} ({len(batch)} companies)"
-            )
+            # logger.info(
+            #    f"Processing batch {i // batch_size + 1} of {(len(companies) + batch_size - 1) // batch_size} ({len(batch)} companies)"
+            # )
 
             # Create and track tasks for this batch
             tasks = []
@@ -132,7 +133,7 @@ class CompanyService:
             company_url: URL of the LinkedIn company
             company_id: ID of the company in our database
         """
-        logger.info(f"Extracting company data for {company_url} with BrightData")
+        #logger.info(f"Extracting company data for {company_url} with BrightData")
 
         params = {
             "dataset_id": settings.BRIGHTDATA_COMPANY_DATASET_ID,
@@ -204,7 +205,7 @@ class CompanyService:
             company_response: LinkedIn company data from the API
             company_id: ID of the company in our database
         """
-        logger.info(f"Processing company data for {company_linkedin_url}")
+        # logger.info(f"Processing company data for {company_linkedin_url}")
 
         # *** Logo ***
         company_logo = None
@@ -246,14 +247,13 @@ class CompanyService:
 
         try:
             # Update the company
-            logger.info(f"Updating company {company_id}")
+            #logger.info(f"Updating company {company_id}")
             update_company(company, db)
 
             # Now that the company is updated, trigger location processing
             if company_response.headquarters and company_response.country_code:
-                pass
                 # Execute location agent after company is saved to database
-                # await location_agent.process_location(input)
+                await location_agent.process_location(input)
         except Exception as e:
             logger.error(f"Error updating company {company_id}: {str(e)}")
             raise

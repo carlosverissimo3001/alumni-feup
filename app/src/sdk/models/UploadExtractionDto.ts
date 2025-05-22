@@ -52,8 +52,8 @@ export function UploadExtractionDtoFromJSONTyped(json: any, ignoreDiscriminator:
     }
     return {
         
-        'facultyId': json['faculty_id'],
-        'courseId': json['course_id'],
+        'facultyId': json['facultyId'],
+        'courseId': json['courseId'],
     };
 }
 
@@ -68,8 +68,8 @@ export function UploadExtractionDtoToJSONTyped(value?: UploadExtractionDto | nul
 
     return {
         
-        'faculty_id': value['facultyId'],
-        'course_id': value['courseId'],
+        'facultyId': value['facultyId'],
+        'courseId': value['courseId'],
     };
 }
 

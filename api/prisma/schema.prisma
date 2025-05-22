@@ -39,11 +39,11 @@ model Alumni {
   personalEmail String? @map("personal_email")
 
   Location        Location?        @relation(fields: [currentLocationId], references: [id])
-  Graduations     Graduation[]
-  Roles           Role[]
-  ReviewsCompany  ReviewCompany[]
-  ReviewsLocation ReviewLocation[]
-  Permissions     Permission[]
+  Graduations     Graduation[]     @relation("AlumniGraduations")
+  Roles           Role[]           @relation("AlumniRoles")
+  ReviewsCompany  ReviewCompany[]  @relation("AlumniReviewsCompany")
+  ReviewsLocation ReviewLocation[] @relation("AlumniReviewsLocation")
+  Permissions     Permission[]     @relation("AlumniPermissions")
 
   @@index([currentLocationId])
   @@index([firstName, lastName])
@@ -123,7 +123,8 @@ model Graduation {
   conclusionYear Int      @map("conclusion_year")
   createdAt      DateTime @default(now()) @map("created_at") @db.Timestamp(6)
 
-  Alumni Alumni @relation(fields: [alumniId], references: [id])
+  // Delete the graduation if the alumni is deleted
+  Alumni Alumni @relation("AlumniGraduations", fields: [alumniId], references: [id], onDelete: Cascade)
   Course Course @relation(fields: [courseId], references: [id])
 
   @@unique([alumniId, courseId, conclusionYear])
@@ -156,7 +157,8 @@ model JobClassification {
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamp(6)
   updatedAt DateTime @default(now()) @map("updated_at") @db.Timestamp(6)
 
-  Role               Role               @relation(fields: [roleId], references: [id])
+  // We delete the job classification if the role is deleted
+  Role               Role               @relation(fields: [roleId], references: [id], onDelete: Cascade)
   EscoClassification EscoClassification @relation(fields: [escoClassificationId], references: [id])
 
   @@index([roleId])
@@ -229,7 +231,8 @@ model Role {
   isPromotion Boolean @default(false) @map("is_promotion")
 
   JobClassification JobClassification?
-  Alumni            Alumni             @relation(fields: [alumniId], references: [id])
+  // We're deleting all alumni roles if the alumni is deleted
+  Alumni            Alumni             @relation("AlumniRoles", fields: [alumniId], references: [id], onDelete: Cascade)
   Company           Company            @relation(fields: [companyId], references: [id])
   Location          Location?          @relation(fields: [locationId], references: [id])
   RoleRaw           RoleRaw?
@@ -252,7 +255,8 @@ model RoleRaw {
   updatedAt DateTime @default(now()) @map("updated_at") @db.Timestamp(6)
   roleId    String   @unique @map("role_id")
 
-  Role Role @relation(fields: [roleId], references: [id])
+  // We're deleting the role raw if the role is deleted
+  Role Role @relation(fields: [roleId], references: [id], onDelete: Cascade)
 
   @@index([roleId])
   @@map("role_raw")
@@ -270,7 +274,8 @@ model ReviewCompany {
   createdAt   DateTime @default(now()) @map("created_at") @db.Timestamp(6)
   updatedAt   DateTime @default(now()) @map("updated_at") @db.Timestamp(6)
 
-  Alumni   Alumni    @relation(fields: [alumniId], references: [id])
+  // We're deleting all the reviews the alumni has written if the alumni is deleted
+  Alumni   Alumni    @relation("AlumniReviewsCompany", fields: [alumniId], references: [id], onDelete: Cascade)
   Company  Company   @relation(fields: [companyId], references: [id])
   Location Location? @relation(fields: [locationId], references: [id])
 
@@ -288,7 +293,8 @@ model ReviewLocation {
   createdAt   DateTime @default(now()) @map("created_at") @db.Timestamp(6)
   updatedAt   DateTime @default(now()) @map("updated_at") @db.Timestamp(6)
 
-  Alumni   Alumni   @relation(fields: [alumniId], references: [id])
+  // We're deleting all the reviews the alumni has written if the alumni is deleted
+  Alumni   Alumni   @relation("AlumniReviewsLocation", fields: [alumniId], references: [id], onDelete: Cascade)
   Location Location @relation(fields: [locationId], references: [id])
 
   @@map("review_location")
@@ -300,7 +306,8 @@ model Permission {
   resource String
   actions  String[]
 
-  Alumni Alumni @relation(fields: [userId], references: [id])
+  // We're deleting all permissions if the alumni is deleted
+  Alumni Alumni @relation("AlumniPermissions", fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("permission")
 }

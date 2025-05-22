@@ -75,7 +75,7 @@ export const ProfileButton = ({
         )}
       >
         <AvatarImage
-          src={user?.profilePictureUrl || "/placeholder-avatar.png"}
+          src={user?.profilePictureUrl}
           alt="Profile"
         />
         <AvatarFallback>
@@ -102,7 +102,7 @@ export const ProfileButton = ({
         <div className="flex items-center gap-3 px-4 py-3 border-b border-zinc-100 dark:border-zinc-800 mb-1">
           <Avatar className="h-10 w-10">
             <AvatarImage
-              src={user.profilePictureUrl || "/placeholder-avatar.png"}
+              src={user.profilePictureUrl}
               alt="Profile"
             />
             <AvatarFallback>

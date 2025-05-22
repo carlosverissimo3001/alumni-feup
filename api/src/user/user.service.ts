@@ -1,6 +1,7 @@
 import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
 import {
   CheckPermissionDto,
+  CheckPermissionResponse,
   LinkedinAuthDto,
   UserAuthResponse,
   VerifyEmailDto,
@@ -14,6 +15,8 @@ import { UserStatus } from '@/dto/user.dto';
 import { sanitizeLinkedinUrl } from '@/alumni/utils';
 import { Permission } from '@prisma/client';
 import { EmailService } from '@/email/services/email.service';
+import { DeleteUserDto } from '@/dto/delete-user.dto';
+import { UserRepository } from './user.repository';
 @Injectable()
 export class UserService {
   constructor(
@@ -23,6 +26,7 @@ export class UserService {
     private readonly configService: ConfigService,
     private readonly otpService: OtpService,
     private readonly emailService: EmailService,
+    private readonly userRepository: UserRepository,
   ) {}
 
   async linkedinAuth(body: LinkedinAuthDto): Promise<UserAuthResponse> {
@@ -189,7 +193,9 @@ export class UserService {
     };
   }
 
-  async checkPermission(body: CheckPermissionDto): Promise<boolean> {
+  async checkPermission(
+    body: CheckPermissionDto,
+  ): Promise<CheckPermissionResponse> {
     const { userId, resource, action } = body;
 
     const user = await this.prisma.alumni.findUnique({
@@ -207,6 +213,10 @@ export class UserService {
       (p: Permission) => p.resource === resource && p.actions.includes(action),
     );
 
-    return hasPermission;
+    return { hasPermission };
+  }
+
+  async deleteUser(body: DeleteUserDto): Promise<void> {
+    await this.userRepository.deleteUser(body.id);
   }
 }

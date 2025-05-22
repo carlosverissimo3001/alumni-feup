@@ -1,5 +1,5 @@
 import { PrismaService } from '@/prisma/prisma.service';
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { HttpException } from '@nestjs/common';
 import axios, { AxiosError } from 'axios';
 import { ConfigService } from '@nestjs/config';
@@ -26,30 +26,11 @@ export class AgentsApiService {
     operation: LinkedInOperation,
     alumniIds: string[],
   ): Promise<void> {
-    const data: { alumni_id: string; profile_url: string }[] = [];
-
-    for (const alumniId of alumniIds) {
-      const alumni = await this.prisma.alumni.findUnique({
-        where: { id: alumniId },
-      });
-
-      if (!alumni || !alumni.linkedinUrl) {
-        throw new NotFoundException(
-          'Alumni not found or LinkedIn URL not available',
-        );
-      }
-
-      data.push({
-        alumni_id: alumniId,
-        profile_url: alumni.linkedinUrl,
-      });
-    }
-
     try {
       await axios.post(
         `${this.agentsApiUrl}/api/linkedin/${operation}`,
         {
-          data,
+          alumni_ids: alumniIds,
         },
         {
           headers: {

@@ -48,7 +48,6 @@ export class CompanyAnalyticsService {
 
     // This contains the actual data
     const alumnus = applyDateFilters(alumnusUnfiltered, query);
-
     const companiesWithAlumniCount = this.getCompanyMap(alumnus);
 
     // Count without filters

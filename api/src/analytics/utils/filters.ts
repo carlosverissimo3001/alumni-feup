@@ -2,21 +2,23 @@ import { AlumniAnalyticsEntity } from '../entities';
 import { QueryParamsDto } from '../dto';
 
 const shouldFilterAlumniWithoutRoles = (query: QueryParamsDto): boolean => {
-  type ExcludedKeys =
-    | 'alumniIds'
-    | 'courseIds'
-    | 'graduationYears'
-    | 'limit'
-    | 'offset'
-    | 'sortBy'
-    | 'sortOrder'
-    | 'includeTrend';
+  const excludedKeys = [
+    'alumniIds',
+    'courseIds',
+    'graduationYears',
+    'limit',
+    'offset',
+    'sortBy',
+    'sortOrder',
+    'includeTrend',
+  ];
 
-  type FilterableQuery = Omit<QueryParamsDto, ExcludedKeys>;
-  const filterableQuery = query as FilterableQuery;
+  // Create a new object without the excluded keys
+  const filterableQuery = Object.fromEntries(
+    Object.entries(query).filter(([key]) => !excludedKeys.includes(key)),
+  );
 
-  return Object.entries(filterableQuery).some((entry) => {
-    const value = entry[1];
+  return Object.entries(filterableQuery).some(([, value]) => {
     if (Array.isArray(value)) {
       return value.length > 0;
     }
@@ -36,7 +38,7 @@ const shouldFilterAlumniWithoutRoles = (query: QueryParamsDto): boolean => {
 export const applyDateFilters = (
   data: AlumniAnalyticsEntity[],
   query: QueryParamsDto,
-) => {
+): AlumniAnalyticsEntity[] => {
   const { startDate, endDate, currentRolesOnly } = query;
 
   return data
