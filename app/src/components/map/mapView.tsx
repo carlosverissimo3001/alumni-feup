@@ -20,6 +20,7 @@ import { GeoJSONFeatureCollection } from "@/sdk";
 import 'mapbox-gl/dist/mapbox-gl.css';
 import { GeoJSONProperties } from "./mapFilters";
 import { AlumniData } from "@/types/alumni";
+import { set } from "lodash";
 
 type MapViewProps = {
   loading: boolean;
@@ -46,6 +47,8 @@ const MapView = ({
   >(null);
   const [listPlaceName, setListPlaceName] = useState<string[]>([]);
   const [students, setStudents] = useState<number>(0);
+  const [totalAlumni, setTotalAlumni] = useState<number>(0);
+  const [totalAlumniPrev, setTotalAlumniPrev] = useState<number>(0);
   const [compareYearStudents, setCompareYearStudents] = useState<number | undefined>(undefined);
   const [listAlumniNames, setListAlumniNames] = useState<string[]>([]);
   const [listLinkedinLinks, setListLinkedinLinks] = useState<string[]>([]);
@@ -61,7 +64,7 @@ const MapView = ({
   const onMapLoad = useCallback(() => {
     console.log('Map loaded1');
     mapRef.current.loadImage(
-      'https://i.imgur.com/NrBAtcA.png',
+      'logos/arrow.png',
       (error: Error | null, image: HTMLImageElement | undefined) => {
         if (error) throw error;
         if (image) {
@@ -70,7 +73,16 @@ const MapView = ({
           console.log('Image not found');
         }
       });
-      console.log('Map loaded2');
+      mapRef.current.loadImage(
+        'logos/equals.png',
+        (error: Error | null, image: HTMLImageElement | undefined) => {
+          if (error) throw error;
+          if (image) {
+            mapRef.current.addImage('equalsicon', image, { 'sdf': true });
+          }else{
+            console.log('Image not found');
+          }
+        });
     setMapLoaded(true);
   }, []);
 
@@ -98,7 +110,9 @@ const MapView = ({
     listLinkedinLinks: string[],
     alumniData: AlumniData[],
     compareYearStudents: number | undefined,
-    students: number
+    students: number,
+    totalAlumni: number,
+    totalAlumniPrev: number
   ) => {
     //if (
       //listAlumniNames.length > 0 //&&
@@ -112,6 +126,8 @@ const MapView = ({
       setHoveredCluster(true);
       setCompareYearStudents(compareYearStudents);
       setStudents(students);
+      setTotalAlumni(totalAlumni);
+      setTotalAlumniPrev(totalAlumniPrev);
     // } else {
     //   setListPlaceName([]);
     //   setListAlumniNames([]);
@@ -126,7 +142,7 @@ const MapView = ({
   const showClusterContent = async (event: MapMouseEvent) => {
     try {
       if (!event || !event.features) {
-        updateState([], [], [], [], undefined, 0);
+        updateState([], [], [], [], undefined, 0, 0, 0);
         return;
       }
 
@@ -140,6 +156,8 @@ const MapView = ({
         const {
           listPlaceName,
           students,
+          totalAlumni,
+          totalAlumniPrev,
           compareYearStudents,
           listLinkedinLinks,
           listAlumniNames,
@@ -148,11 +166,11 @@ const MapView = ({
           jobTitles,
           companyNames,
         } = await extractFeatureFields(feature as unknown as Feature<Geometry, GeoJSONProperties>);
-        
+        console.log("listPlaceName", totalAlumniPrev);
         const mapUserCoursesYears = await extractCoursesYears(
           coursesYearConclusionByUser
         );
-        
+
         const alumniData = buildAlumniData(
           listLinkedinLinks,
           listAlumniNames,
@@ -170,14 +188,16 @@ const MapView = ({
           listLinkedinLinks,
           alumniData,
           compareYearStudents,
-          students
+          students,
+          totalAlumni,
+          totalAlumniPrev
         );
       } else {
-        updateState([], [], [], [], undefined, 0);
+        updateState([], [], [], [], undefined, 0, 0, 0);
       }
     } catch (error) {
       console.error("Error in showClusterContent:", error);
-      updateState([], [], [], [], undefined, 0);
+      updateState([], [], [], [], undefined, 0, 0, 0);
     }
   };
 
@@ -220,6 +240,8 @@ const MapView = ({
           listLinkedinLinks={listLinkedinLinks}
           listPlaceName={listPlaceName}
           students={students}
+          totalAlumni={totalAlumni}
+          totalAlumniPrev={totalAlumniPrev}
           compareYearStudents={compareYearStudents}
           hoveredMouseCoords={hoveredMouseCoords || [0, 0]}
           alumniData={alumniData}

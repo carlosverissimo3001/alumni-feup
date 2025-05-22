@@ -32,6 +32,7 @@ type MapViewProps = {
   reviewData: ReviewData[];
   setReviewData: (reviewData: ReviewData[]) => void;
   sortBy: 'most' | 'least' | null;
+  setSortBy: (sortBy: 'most' | 'least' | null) => void;
   scoreFetch: boolean;
   setScoreFetch: (scoreFetch: boolean) => void;
 };
@@ -43,6 +44,7 @@ const ReviewMapView = ({
   reviewData,
   setReviewData,
   sortBy,
+  setSortBy,
   scoreFetch,
   setScoreFetch
 }: MapViewProps) => {
@@ -158,7 +160,6 @@ const ReviewMapView = ({
             listAlumniNames,
             listLinkedinLinks,
             reviewData,
-            //reviews
         );
       } else {
         updateState([], [], [], []);

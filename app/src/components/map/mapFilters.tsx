@@ -17,6 +17,8 @@ import SwitchFilter from "../ui/switchFilter";
 export interface GeoJSONProperties {
   name: string[];
   students: number;
+  totalAlumni: number;
+  totalAlumniPrev: number;
   compareYearStudents: number | undefined;
   listLinkedinLinksByUser: { [key: string]: string };
   coursesYearConclusionByUser: { [key: string]: { [key: string]: string } };

@@ -112,6 +112,8 @@ export async function extractFeatureFields(
 ) {
   const listPlaceName = feature.properties.name;
   const students = feature.properties.students;
+  const totalAlumni = feature.properties.totalAlumni;
+  const totalAlumniPrev = feature.properties.totalAlumniPrev;
   const linkUsersString = feature.properties.listLinkedinLinksByUser;
   const compareYearStudents = feature.properties.compareYearStudents;
   const coursesYearConclusionByUser =
@@ -136,6 +138,8 @@ export async function extractFeatureFields(
   return {
     listPlaceName,
     students,
+    totalAlumni,
+    totalAlumniPrev,
     compareYearStudents,
     listLinkedinLinks,
     listAlumniNames,
