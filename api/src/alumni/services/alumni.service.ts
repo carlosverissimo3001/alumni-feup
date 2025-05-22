@@ -3,6 +3,7 @@ import {
   NotFoundException,
   HttpException,
   HttpStatus,
+  Logger,
 } from '@nestjs/common';
 import {
   Alumni,
@@ -21,6 +22,9 @@ import { AgentsApiService } from 'src/agents-api/agents-api.service';
 import { parseNameParts, sanitizeLinkedinUrl } from '../utils';
 import { OtpService } from '@/otp/otp.service';
 import { AlumniExtended } from '@/entities/alumni.entity';
+import { Source } from '@prisma/client';
+
+const DEFAULT_CREATED_BY = 'api';
 
 type GraduationWithCourse = Graduation & {
   Course: {
@@ -62,6 +66,7 @@ export class AlumniService {
     private readonly prisma: PrismaService,
     private readonly geolocationService: GeolocationService,
     private readonly alumniRepository: AlumniRepository,
+    private readonly logger: Logger,
     private readonly agentsApiService: AgentsApiService,
     private readonly otpService: OtpService,
   ) {}
@@ -295,13 +300,25 @@ export class AlumniService {
     return alumni;
   }
 
-  async create(body: CreateAlumniDto): Promise<Alumni> {
-    const linkedinUrl = sanitizeLinkedinUrl(body.linkedinUrl);
+  async create(
+    body: CreateAlumniDto,
+    fromUpload: boolean = false,
+  ): Promise<Alumni> {
+    const linkedinUrl = body.linkedinUrl
+      ? sanitizeLinkedinUrl(body.linkedinUrl)
+      : undefined;
+    const uniqueParam = linkedinUrl
+      ? { linkedinUrl }
+      : { fullName: body.fullName };
 
-    const alumni = await this.alumniRepository.find({ linkedinUrl });
+    const alumni = await this.alumniRepository.find(uniqueParam);
     if (alumni) {
+      this.logger.error(
+        `Alumni with ${linkedinUrl ? 'linkedinUrl' : 'fullName'} "${linkedinUrl || body.fullName}" already exists`,
+      );
       throw new HttpException(
-        'Oops! Seems like you are already in our system. If this is not the case, double-check your LinkedIn URL',
+        `Oops! Seems like we already have your data in our system. If this is not the case, ` +
+          `${linkedinUrl ? 'double-check your LinkedIn URL' : 'verify your full name'}`,
         HttpStatus.CONFLICT,
       );
     }
@@ -315,8 +332,11 @@ export class AlumniService {
         fullName: body.fullName,
         linkedinUrl,
         // If the alumni had to manually add their data, they 99.99% don't have a sigarra match
-        hasSigarraMatch: false,
-        wasReviewed: false,
+        hasSigarraMatch: fromUpload ? true : false,
+        // If the admin uploaded the data, we should trust it
+        wasReviewed: fromUpload ? true : false,
+        createdBy: body.createdBy ?? DEFAULT_CREATED_BY,
+        source: fromUpload ? Source.ADMIN_IMPORT : Source.FORM_SUBMISSION ,
       },
     });
 
@@ -330,13 +350,14 @@ export class AlumniService {
       });
     }
 
-    // Call the agents-api to extract the profile data
+    return newAlumni;
+  }
+
+  async requestProfileExtraction(alumniId: string) {
     await this.agentsApiService.triggerLinkedinOperation(
       LinkedInOperation.EXTRACT,
-      [newAlumni.id],
+      [alumniId],
     );
-
-    return newAlumni;
   }
 
   async groupAlumniByCountry(alumni: Alumni[]): Promise<AlumniByCountry> {
@@ -380,7 +401,9 @@ export class AlumniService {
             course_acronym: grad.Course.acronym,
             conclusion_year: grad.conclusionYear || null,
           })) || [],
-        jobTitle: alumnus.Roles?.[0]?.JobClassification?.EscoClassification.titleEn || null,
+        jobTitle:
+          alumnus.Roles?.[0]?.JobClassification?.EscoClassification.titleEn ||
+          null,
         companyName: alumnus.Roles?.[0]?.Company?.name || null,
       });
       totalAlumni += 1;

@@ -216,8 +216,6 @@ export const EducationDashboard = ({
 
   const isRowInFilters = (row: DataRowProps): boolean => {
     if (mode === EducationDrillType.FACULTY) {
-      console.log(filters.facultyIds);
-      console.log(row.id);
       return filters.facultyIds?.includes(row.id) ?? false;
     } else if (mode === EducationDrillType.MAJOR) {
       return filters.courseIds?.includes(row.id) ?? false;

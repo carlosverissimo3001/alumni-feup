@@ -21,13 +21,13 @@ async def extract_linkedin_profiles(
     Triggers the extraction of Linkedin Profiles.
     """
     try:
-        for alumni_data in profile_data.data:
-            logger.info(f"Extracting LinkedIn profile data from: {alumni_data.profile_url}")
+        logger.info(f"Received request to extract LinkedIn profile data for {len(profile_data.alumni_ids)} alumni")
+        for alumni_id in profile_data.alumni_ids:
+            logger.info(f"Extracting LinkedIn profile data from: {alumni_id}")
             
             background_tasks.add_task(
                 linkedin_service.extract_profile_data,
-                profile_url=str(alumni_data.profile_url),
-                alumni_id=alumni_data.alumni_id,
+                alumni_id=alumni_id,
             )
         
         # Return immediately, let the background task handle the rest
@@ -53,14 +53,11 @@ async def update_linkedin_profiles(
     If no data is provided, all LinkedIn profiles in the database will be updated.
     """
     try:
-        if profile_data.data:
-            logger.info(f"Received request to update LinkedIn profile data for {len(profile_data.data)} alumni")
-        else:
-            logger.info("Received request to update all LinkedIn profiles")
+        logger.info(f"Received request to update LinkedIn profile data for {len(profile_data.alumni_ids)} alumni")
             
         background_tasks.add_task(
             linkedin_service.update_profile_data,
-            data=profile_data.data,
+            alumni_ids=profile_data.alumni_ids,
         )
         
         # Return immediately, let the background task handle the rest

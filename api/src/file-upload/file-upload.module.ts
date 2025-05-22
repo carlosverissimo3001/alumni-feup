@@ -4,18 +4,20 @@ import { FileUploadController } from './file-upload.controller';
 import { MulterModule } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { PrismaService } from '@/prisma/prisma.service';
+import { AlumniModule } from '@/alumni/alumni.module';
 
 @Module({
   imports: [
     MulterModule.register({
       storage: diskStorage({
         destination: './uploads',
-        filename: (req, file, cb) => {
+        filename: (_, file, cb) => {
           const filename = `${Date.now()}-${file.originalname}`;
           cb(null, filename);
         },
       }),
     }),
+    AlumniModule,
   ],
   controllers: [FileUploadController],
   providers: [FileUploadService, PrismaService],

@@ -118,7 +118,7 @@ export default function Profile() {
       <div className="flex flex-col md:flex-row md:items-center gap-6 mb-10">
         <Avatar className="h-24 w-24 border-2 border-primary shadow-md">
           <AvatarImage
-            src={profile?.profilePictureUrl || "/placeholder-avatar.png"}
+            src={profile?.profilePictureUrl}
             alt="Profile"
           />
           <AvatarFallback className="text-xl font-semibold bg-primary/10">

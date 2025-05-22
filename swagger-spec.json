@@ -4234,13 +4234,39 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "boolean"
+                  "$ref": "#/components/schemas/CheckPermissionResponse"
                 }
               }
             }
           }
         },
         "summary": "Check if a user has a permission",
+        "tags": [
+          "V1",
+          "User"
+        ]
+      }
+    },
+    "/api/user/delete-user": {
+      "post": {
+        "operationId": "UserController_deleteUser",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeleteUserDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "User deleted successfully"
+          }
+        },
+        "summary": "Delete a user",
         "tags": [
           "V1",
           "User"
@@ -4898,6 +4924,10 @@
           "fullName": {
             "type": "string",
             "description": "The full name of the user"
+          },
+          "createdBy": {
+            "type": "string",
+            "description": "The created by user"
           },
           "personalEmail": {
             "type": "string",
@@ -6334,16 +6364,16 @@
       "UploadExtractionDto": {
         "type": "object",
         "properties": {
-          "faculty_id": {
+          "facultyId": {
             "type": "string"
           },
-          "course_id": {
+          "courseId": {
             "type": "string"
           }
         },
         "required": [
-          "faculty_id",
-          "course_id"
+          "facultyId",
+          "courseId"
         ]
       },
       "LinkedinAuthDto": {
@@ -6493,6 +6523,31 @@
           "userId",
           "resource",
           "action"
+        ]
+      },
+      "CheckPermissionResponse": {
+        "type": "object",
+        "properties": {
+          "hasPermission": {
+            "type": "boolean",
+            "description": "Whether the user has permission",
+            "example": true
+          }
+        },
+        "required": [
+          "hasPermission"
+        ]
+      },
+      "DeleteUserDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The id of the user to delete"
+          }
+        },
+        "required": [
+          "id"
         ]
       },
       "ReviewGeoJSONFeature": {

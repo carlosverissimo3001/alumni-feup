@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/tooltip";
 import { Filter } from "lucide-react";
 import { NotFoundComponent } from "./NotFoundComponent";
-import PaginationControls from "./PaginationControls";
+import { PaginationControls } from "./PaginationControls";
 import { SortBy, SortOrder } from "@/consts";
 import { TrendFrequency } from "@/types/entityTypes";
 

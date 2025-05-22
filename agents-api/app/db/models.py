@@ -13,9 +13,9 @@ from sqlalchemy import (
     SmallInteger,
     String,
 )
-from sqlalchemy.orm import relationship
-from sqlalchemy.types import BigInteger
 from sqlalchemy.dialects.postgresql import JSONB
+from sqlalchemy.orm import relationship
+
 from app.db.session import Base
 from app.utils.consts import DEFAULT_INDUSTRY_ID
 
@@ -104,13 +104,6 @@ class Alumni(Base):
     roles = relationship("Role", back_populates="alumni")
 
 
-class AlumniRaw(Base):
-    __tablename__ = "alumni_raw"
-
-    id = Column(String, primary_key=True)
-    created_at = Column(DateTime, nullable=False, server_default="now()")
-
-
 class Company(Base):
     __tablename__ = "company"
 
@@ -191,9 +184,7 @@ class JobClassification(Base):
     __tablename__ = "job_classification"
 
     id = Column(String, primary_key=True, server_default="gen_random_uuid()")
-    title = Column(String, nullable=False)
-    level = Column(SmallInteger, nullable=False)
-    esco_code = Column(String)
+    esco_classification_id = Column(String, ForeignKey("esco_classification.id"), nullable=True)
     role_id = Column(String, ForeignKey("role.id"), nullable=False, unique=True)
     confidence = Column(Float, nullable=True)
     created_at = Column(DateTime, nullable=False, server_default="now()")
@@ -205,6 +196,7 @@ class JobClassification(Base):
 
     # Each job classification belongs to a single role (one-to-one)
     role = relationship("Role", back_populates="job_classification", uselist=False)
+    esco_classification = relationship("EscoClassification", back_populates="job_classification")
 
 class Location(Base):
     __tablename__ = "location"
@@ -290,5 +282,10 @@ class EscoClassification(Base):
     included_occupations = Column(String, nullable=False)
     excluded_occupations = Column(String, nullable=False)
     notes = Column(String, nullable=True)
+    esco_url = Column(String, nullable=False)
+    is_leaf = Column(Boolean, nullable=False, server_default="false", default=False)
     # Using 3072 dimensions for OpenAI's text-embedding-3-large model
     embedding = Column(Vector(3072), nullable=True)
+    
+    job_classification = relationship("JobClassification", back_populates="esco_classification")
+

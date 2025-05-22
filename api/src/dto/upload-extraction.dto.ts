@@ -1,12 +1,14 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty } from 'class-validator';
+import { IsNotEmpty, IsString } from 'class-validator';
 
 export class UploadExtractionDto {
   @ApiProperty({ type: 'string' })
   @IsNotEmpty()
-  faculty_id: string;
+  @IsString()
+  facultyId: string;
 
   @ApiProperty({ type: 'string' })
   @IsNotEmpty()
-  course_id: string;
+  @IsString()
+  courseId: string;
 }

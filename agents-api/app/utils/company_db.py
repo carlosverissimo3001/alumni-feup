@@ -9,6 +9,10 @@ logger = logging.getLogger(__name__)
 
 
 def get_company_by_linkedin_url(linkedin_url: str, db: Session) -> Company | None:
+    # Hardcoding a fix for feup that can be linkedin.com/company/feup or linkedin.com/school/feup
+    if "/school/feup" in linkedin_url:
+        linkedin_url = linkedin_url.replace("/school/feup", "/company/feup")
+
     return db.query(Company).filter(Company.linkedin_url == linkedin_url).first()
 
 

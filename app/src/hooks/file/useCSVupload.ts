@@ -1,12 +1,10 @@
 import { useState } from "react";
 import { MAX_FILE_SIZE } from "@/consts";
-import  NestApi from "@/api";
-import { UploadExtractionDto } from "@/sdk/api";
 
 type UploadParams = {
-  faculty: string;
-  course: string;
-}
+  facultyId: string;
+  courseId: string;
+};
 
 export const useCSVUpload = () => {
   const [file, setFile] = useState<File | null>(null);
@@ -50,55 +48,54 @@ export const useCSVUpload = () => {
     setUploadSuccess(false);
   };
 
-  const uploadFile = async ({ faculty, course }: UploadParams) => {
+  const uploadFile = async ({ facultyId, courseId }: UploadParams) => {
     if (!file) {
       setError("No file selected.");
       return false;
     }
-  
+
     setIsUploading(true);
     setError(null);
     setUploadSuccess(false);
-  
+
     try {
       const formData = new FormData();
-      formData.append("file", file); // File data
-      formData.append("faculty_id", faculty);
-      formData.append("course_id", course);
+      formData.append("file", file);
+      formData.append("facultyId", facultyId);
+      formData.append("courseId", courseId);
 
-      await NestApi.fileUploadControllerCreate(
-        formData as unknown as UploadExtractionDto,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        },
-      );
-  
+      // TODO: Change this to use the SDK
+      const response = await fetch("http://localhost:3000/api/files", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Upload failed");
+      }
+
       setUploadSuccess(true);
       return true;
-    } catch (error: any) {
-      if (error.response?.data) {
-        const errorData = error.response.data;
-        setError(
-          errorData.message || 
-          `Upload failed: ${errorData.code || 'Unknown error'}`
-        );
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        setError(error.message);
       } else {
-        setError(error instanceof Error ? error.message : "Upload failed");
+        setError("Upload failed");
       }
+      return false;
     } finally {
       setIsUploading(false);
     }
   };
 
-  return { 
-    file, 
-    error, 
-    isUploading, 
+  return {
+    file,
+    error,
+    isUploading,
     uploadSuccess,
-    handleFileChange, 
+    handleFileChange,
     clearFile,
-    uploadFile
+    uploadFile,
   };
 };

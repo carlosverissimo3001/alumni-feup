@@ -28,6 +28,11 @@ export class CreateAlumniDto {
   @IsString()
   fullName: string;
 
+  @ApiPropertyOptional({ description: 'The created by user' })
+  @IsOptional()
+  @IsString()
+  createdBy?: string;
+
   @ApiPropertyOptional({ description: 'The personal email of the user' })
   @IsOptional()
   @IsEmail()

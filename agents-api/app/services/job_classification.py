@@ -1,9 +1,12 @@
 import asyncio
+import json
 import logging
 import time
+import uuid
 from typing import Dict, List
 
 from langchain_core.messages import HumanMessage, SystemMessage
+from langchain_core.runnables.config import RunnableConfig
 from langchain_ollama import ChatOllama
 from langgraph.graph import END, START, StateGraph
 from langgraph.prebuilt import ToolNode, tools_condition
@@ -26,6 +29,7 @@ from app.utils.prompts import VALIDATE_ESCO_RESULTS_PROMPT
 from app.utils.role_db import get_extended_roles_by_alumni_id
 
 logger = logging.getLogger(__name__)
+config = RunnableConfig(recursion_limit=5)
 
 # Get a database session for the service
 db = next(get_db())
@@ -54,12 +58,48 @@ tool_node = ToolNode(
 )
 
 
-# Create the prompt template for job classification
+def validate_esco_result_format(result_str: str) -> tuple[bool, str]:
+    """Validates that the ESCO result string matches the required format"""
+    try:
+        results = json.loads(result_str)
+
+        # 1. It must be a list
+        if not isinstance(results, list):
+            return False, "Result must be a list"
+
+        # 2. Each result must have all required fields
+        for result in results:
+            required_fields = {"id", "title", "confidence"}
+            if not all(field in result for field in required_fields):
+                return False, f"Each result must contain fields: {required_fields}"
+
+            if not isinstance(result["id"], str):
+                return False, "id must be a string"
+            try:
+                uuid.UUID(result["id"])
+            except ValueError:
+                return False, f"id must be a valid UUID, got: {result['id']}"
+
+            if not isinstance(result["title"], str):
+                return False, "title must be a string"
+            if not isinstance(result["confidence"], (int, float)):
+                return False, "confidence must be a number"
+            if not 0 <= result["confidence"] <= 1:
+                return False, f"confidence must be between 0 and 1, got: {result['confidence']}"
+
+        return True, ""
+    except json.JSONDecodeError:
+        return False, "Invalid JSON format"
+    except Exception as e:
+        return False, str(e)
+
+
 class JobClassificationService:
     def __init__(self):
         # Simple in-memory cache for ESCO classifications
         self._esco_cache: Dict[str, List] = {}
-    
+        self.MAX_RETRIES = 3
+
     def create_graph(self) -> StateGraph:
         graph = StateGraph(JobClassificationAgentState)
 
@@ -67,27 +107,88 @@ class JobClassificationService:
         graph.add_node("get_best_esco_matches_db", self.get_best_esco_matches_db)
         graph.add_node("validate_esco_results", self.validate_esco_results)
         graph.add_node("validate_esco_results_tool_calls", tool_node)
+        graph.add_node("check_esco_format", self.check_esco_format)
         graph.add_node("insert_classification_into_db", self.insert_classification_into_db)
 
         # *** Edges ***
         graph.add_edge(START, "get_best_esco_matches_db")
         graph.add_edge("get_best_esco_matches_db", "validate_esco_results")
         graph.add_edge("validate_esco_results_tool_calls", "validate_esco_results")
+        graph.add_edge("validate_esco_results", "check_esco_format")
 
-        # If tools are needed, we go to the tool node, otherwise we go directly to the next node
+        graph.add_conditional_edges(
+            "check_esco_format",
+            self.format_condition,
+            {
+                "valid": "insert_classification_into_db",
+                "retry": "validate_esco_results",
+                "error": "__end__",
+            },
+        )
+
+        # If tools are needed during validation, go to tool node
         graph.add_conditional_edges(
             "validate_esco_results",
             tools_condition,
             {
                 "tools": "validate_esco_results_tool_calls",
-                END: "insert_classification_into_db",
+                END: "check_esco_format",
             },
         )
+
         graph.add_edge("insert_classification_into_db", END)
 
         compiled_graph = graph.compile()
         # compiled_graph.get_graph().draw_mermaid_png(output_file_path="job_classification_graph.png")
         return compiled_graph
+
+    def format_condition(self, state: JobClassificationAgentState) -> str:
+        """Determines the next step based on ESCO result format validation"""
+        is_valid, error_msg = validate_esco_result_format(state["esco_results_from_agent"])
+
+        if is_valid:
+            return "valid"
+
+        state["error"] = error_msg
+        state["retry_count"] += 1
+
+        # If we haven't exceeded max retries, try again
+        if state["retry_count"] < self.MAX_RETRIES:
+            error_context = f"""
+                Your previous response was invalid: {error_msg}
+
+                You provided:
+                {state["esco_results_from_agent"]}
+
+                CRITICAL REQUIREMENTS:
+                1. Each result MUST have exactly these fields: id, title, confidence
+                2. The 'id' MUST be a UUID from the provided matches (e.g., "4a46173a-d37f-46f4-b6c3-0f68a886b678")
+                3. DO NOT use the ESCO code as the id field
+
+                Example of CORRECT format:
+                [
+                    {{
+                        "id": "4a46173a-d37f-46f4-b6c3-0f68a886b678",
+                        "title": "Software Developers",
+                        "confidence": 0.62
+                    }}
+                ]
+
+                Please fix these issues and respond with properly formatted JSON.
+                """
+            state["messages"].append(SystemMessage(content=error_context))
+            return "retry"
+
+        logger.error(
+            f"Failed to get valid ESCO format after {self.MAX_RETRIES} attempts. Last error: {error_msg}"
+        )
+        return "error"
+
+    def check_esco_format(self, state: JobClassificationAgentState) -> JobClassificationAgentState:
+        """Node that validates the ESCO result format"""
+        # The actual validation happens in format_condition
+        # This node exists to maintain proper graph structure
+        return state
 
     def get_best_esco_matches_db(
         self,
@@ -102,19 +203,19 @@ class JobClassificationService:
         query = state["role"].title
         if state["role"].description:
             query += f" {state['role'].description}"
-            
+
         # Check cache first to avoid redundant embedding searches
         if query in self._esco_cache:
             state["esco_results_from_embeddings"] = self._esco_cache[query]
             return state
 
         start_time = time.time()
-        esco_results = search_esco_classifications(query, 5)
+        esco_results = search_esco_classifications(query, top_k=5)
         if len(esco_results) > 0:
             state["esco_results_from_embeddings"] = esco_results
             # Cache for future use
             self._esco_cache[query] = esco_results
-            
+
         state["processing_time"] = time.time() - start_time
         return state
 
@@ -122,9 +223,14 @@ class JobClassificationService:
         """
         Here we'll validate the ESCO results with the help of the Agent
         """
+        # Add retry count to the prompt if we're retrying
+        retry_context = ""
+        if state.get("retry_count", 0) > 0:
+            retry_context = f"\n\nThis is retry attempt {state['retry_count']} of {self.MAX_RETRIES}. Previous attempts failed validation."
+
         response = llm_with_tools.invoke(
             [
-                SystemMessage(content=VALIDATE_ESCO_RESULTS_PROMPT),
+                SystemMessage(content=VALIDATE_ESCO_RESULTS_PROMPT + retry_context),
                 SystemMessage(
                     content=f"Here are the list of results from the vector search: {state['esco_results_from_embeddings']}"
                 ),
@@ -133,6 +239,7 @@ class JobClassificationService:
                 HumanMessage(
                     content="""Please validate the results, and provide the classification(s) that you think best describes the role.
                     Remember: please only answer with the JSON format provided in the prompt, DO NOT include any other text or comments.
+                    CRITICAL: The 'id' field MUST be a UUID from the provided matches, NOT the ESCO code.
                     """
                 ),
             ]
@@ -148,7 +255,7 @@ class JobClassificationService:
         """
         Insert the classification into the database
         """
-        update_role_with_classifications(db, state, 1)
+        update_role_with_classifications(db, state)
         return state
 
     # This is the actual "Agent" code
@@ -163,14 +270,15 @@ class JobClassificationService:
             esco_results_from_embeddings=[],
             esco_results_from_agent=[],
             processing_time=0.0,
-            model_used="mistral:7b",
+            model_used="granite3.2:8b",
+            retry_count=0,
+            error=None,
         )
 
         graph = self.create_graph()
-        events = graph.stream(state, stream_mode="values")
+        events = graph.stream(state, stream_mode="values", config=config)
 
         # Consume all events from the stream
-        # This ensures the graph execution completes
         [event for event in events]
 
     async def classify_roles_for_alumni(self, alumni_id: str):
@@ -184,18 +292,17 @@ class JobClassificationService:
         try:
             # Get the roles of the alumni
             input_data = get_extended_roles_by_alumni_id(alumni_id, db)
-            
+
             if not input_data.roles:
-                logger.info(f"No roles to classify for alumni {alumni_id}")
                 return
 
             # Process all roles concurrently with parallelism limit to avoid overwhelming resources
             tasks = [self._process_role(role) for role in input_data.roles]
-            
+
             # Process in smaller chunks if there are many roles
             max_concurrent = 5  # Process up to 5 roles concurrently
             for i in range(0, len(tasks), max_concurrent):
-                batch = tasks[i:i+max_concurrent]
+                batch = tasks[i : i + max_concurrent]
                 await asyncio.gather(*batch)
 
         except Exception as e:
@@ -207,8 +314,6 @@ class JobClassificationService:
         Request the classification of the roles of the alumni
         """
         alumni_ids = params.alumni_ids
-        logger.info(f"Requesting alumni role classification for {alumni_ids}")
-
         alumni: list[Alumni] = []
 
         if alumni_ids:
@@ -241,7 +346,7 @@ class JobClassificationService:
 
             # Small delay between batches to prevent rate limiting
             if i + batch_size < len(alumni):
-                await asyncio.sleep(0.5) 
+                await asyncio.sleep(0.5)
 
 
 job_classification_service = JobClassificationService()

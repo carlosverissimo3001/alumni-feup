@@ -95,8 +95,8 @@ const ApiUsagePage = () => {
                 <Alert variant="destructive" className="mt-4 py-2">
                   <AlertTitle className="text-sm font-medium">Low balance</AlertTitle>
                   <AlertDescription className="text-xs">
-                    You have less than 2$ USD remaining. Please add more
-                    credits.
+                    You have less than 2$ USD remaining. Please top up your
+                    balance.
                   </AlertDescription>
                 </Alert>
               )}
@@ -135,8 +135,8 @@ const ApiUsagePage = () => {
                 <Alert variant="destructive" className="mt-4 py-2">
                   <AlertTitle className="text-sm font-medium">Low balance</AlertTitle>
                   <AlertDescription className="text-xs">
-                    You have less than 10 credits remaining. Please add more
-                    credits.
+                    You have less than 10 credits remaining. Please top up your
+                    account.
                   </AlertDescription>
                 </Alert>
               )}
