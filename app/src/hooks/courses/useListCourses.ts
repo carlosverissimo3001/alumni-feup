@@ -5,7 +5,7 @@ import { CourseControllerFindRequest } from "@/sdk";
 
 type UseListCoursesProps = {
   enabled?: boolean;
-  params: CourseControllerFindRequest;
+  params?: CourseControllerFindRequest;
 };
 
 export const useListCourses = ({

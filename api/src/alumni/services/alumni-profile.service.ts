@@ -154,40 +154,39 @@ export class AlumniProfileService {
         Location: true,
       },
     });
-  
-    let companies: CompanyDto[] = [];
-    let locations: Location[] = [];
- 
+
+    const companies: CompanyDto[] = [];
+    const locations: Location[] = [];
+
     const uniqueCompanyIds = new Set<string>();
     const uniqueLocationIds = new Set<string>();
 
-    alumni.Roles.forEach(async role => {
-
+    alumni.Roles.forEach((role) => {
       if (role.Location) {
-      const company : ExtendedCompanyDto = {
-        id: role.Company.id,
-        name: role.Company.name,
-        industry: '',
-        website: role.Company.website,
-        linkedinUrl: role.Company.linkedinUrl,
-        logo: role.Company.logo,
-        location: role.Location,
-      };
+        const company: ExtendedCompanyDto = {
+          id: role.Company.id,
+          name: role.Company.name,
+          industry: '',
+          website: role.Company.website,
+          linkedinUrl: role.Company.linkedinUrl,
+          logo: role.Company.logo,
+          location: role.Location,
+        };
 
-      const location = role.Location || alumni.Location || null;
+        const location = role.Location || alumni.Location || null;
 
-      const combinedId = role.Company.id + location?.id;
+        const combinedId = role.Company.id + location?.id;
 
-      if (!uniqueCompanyIds.has(combinedId)) {
-        uniqueCompanyIds.add(combinedId);
-        companies.push(company);
+        if (!uniqueCompanyIds.has(combinedId)) {
+          uniqueCompanyIds.add(combinedId);
+          companies.push(company);
+        }
+
+        if (location && !uniqueLocationIds.has(location.id)) {
+          uniqueLocationIds.add(location.id);
+          locations.push(location);
+        }
       }
-
-      if (location && !uniqueLocationIds.has(location.id)) {
-        uniqueLocationIds.add(location.id);
-        locations.push(location);
-      }
-    }
     });
 
     return {

@@ -1,20 +1,24 @@
+import { Alumni, GeoJSONFeatureCollection } from '@/entities';
+import { AlumniExtended } from '@/entities/alumni.entity';
 import {
+  Body,
   Controller,
   Get,
   HttpCode,
   HttpStatus,
-  Post,
   Param,
-  Body,
+  Post,
   Query,
 } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { AlumniService } from '../services/alumni.service';
-import { Alumni, GeoJSONFeatureCollection } from '@/entities';
-import { CreateAlumniDto, GetGeoJSONDto, MarkAsReviewedDto } from '@/dto';
-import { AlumniExtended } from '@/entities/alumni.entity';
+import { CreateAlumniDto, GetGeoJSONDto, MarkAsReviewedDto } from '../dto';
+import {
+  AlumniPastLocationsAndCompaniesDto,
+  BasicAlumniProfileDto,
+} from '../dto/basic-alumni-profile.dto';
 import { AlumniProfileService } from '../services/alumni-profile.service';
-import { AlumniPastLocationsAndCompaniesDto, BasicAlumniProfileDto } from '../dto/basic-alumni-profile.dto';
+import { AlumniService } from '../services/alumni.service';
+
 @ApiTags('V1', 'Alumni')
 @Controller('alumni')
 export class AlumniController {
@@ -119,7 +123,9 @@ export class AlumniController {
 
   @Get('past-locations-companies/:id')
   @HttpCode(HttpStatus.OK)
-  @ApiOperation({ summary: 'Get the past locations and companies of an alumni' })
+  @ApiOperation({
+    summary: 'Get the past locations and companies of an alumni',
+  })
   @ApiResponse({
     description: 'Returns the past locations and companies of an alumni',
     type: AlumniPastLocationsAndCompaniesDto,

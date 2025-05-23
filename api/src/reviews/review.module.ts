@@ -1,24 +1,20 @@
-import { Module } from '@nestjs/common';
+import { Module, Logger } from '@nestjs/common';
+import { GeolocationService } from '../geolocation/services/geolocation.service';
 import { PrismaService } from '../prisma/prisma.service';
-import { Logger } from '@nestjs/common';
-import { GeolocationService } from '../geolocation/geolocation.service';
-import { AgentsApiService } from '../agents-api/agents-api.service';
-import { OtpService } from '../otp/otp.service';
-import { ReviewService } from './services/review.service';
 import { ReviewController } from './controllers/review.controller';
-import { AlumniRepository } from '@/alumni/repositories/alumni.repository';
 import { ReviewRepository } from './repositories/review.repository';
+import { ReviewService } from './services/review.service';
+import { AlumniModule } from '@/alumni/alumni.module';
+
 @Module({
+  imports: [AlumniModule],
   controllers: [ReviewController],
   providers: [
     ReviewService,
     PrismaService,
-    AlumniRepository,
     ReviewRepository,
-    Logger,
     GeolocationService,
-    AgentsApiService,
-    OtpService,
+    Logger,
   ],
 })
 export class ReviewModule {}

@@ -1,0 +1,174 @@
+city,country,latitude,longitude,country_code,is_country_only
+Other,Remote,0.01,0.01,,True
+Other - Afghanistan,Afghanistan,33.9391,67.71,AF,True
+Other - Albania,Albania,41.1533,20.1683,AL,True
+Other - Algeria,Algeria,28.0339,1.6596,DZ,True
+Other - Andorra,Andorra,42.5063,1.5218,AD,True
+Other - Angola,Angola,-12.5,17.5,AO,True
+Other - Anguilla,Anguilla,18.22723,-63.048988,AI,True
+Other - Argentina,Argentina,-38.4161,-63.6167,AR,True
+Other - Armenia,Armenia,40.0691,45.0382,AM,True
+Other - Australia,Australia,-25.0,134.0,AU,True
+Other - Austria,Austria,47.5162,14.5501,AT,True
+Other - Azerbaijan,Azerbaijan,40.1431,47.5769,AZ,True
+Other - Bahamas,Bahamas,25.0343,-77.3963,BS,True
+Other - Bahrain,Bahrain,26.053072,50.544266,BH,True
+Other - Bangladesh,Bangladesh,23.685,90.3563,BD,True
+Other - Barbados,Barbados,13.1939,-59.5432,BB,True
+Other - Belarus,Belarus,53.7098,27.9534,BY,True
+Other - Belgium,Belgium,50.8503,4.3517,BE,True
+Other - Belize,Belize,17.1899,-88.4976,BZ,True
+Other - Bermuda,Bermuda,32.3078,-64.7505,BM,True
+Other - Bhutan,Bhutan,27.5142,90.4336,BT,True
+Other - Bolivia,Bolivia,-16.2902,-63.5887,BO,True
+Other - Bosnia and Herzegovina,Bosnia and Herzegovina,43.9159,17.6791,BA,True
+Other - Botswana,Botswana,-22.3285,24.6849,BW,True
+Other - Brazil,Brazil,-14.235,-51.9253,BR,True
+Other - Brunei,Brunei,4.5353,114.7277,BN,True
+Other - Bulgaria,Bulgaria,42.7339,25.4858,BG,True
+Other - Burkina Faso,Burkina Faso,12.2383,-1.5616,BF,True
+Other - Burundi,Burundi,-3.3731,29.9189,BI,True
+Other - Cambodia,Cambodia,12.5657,104.991,KH,True
+Other - Cameroon,Cameroon,7.3697,12.3547,CM,True
+Other - Canada,Canada,61.0668,-107.9917,CA,True
+Other - Cape Verde,Cape Verde,15.1201,-23.6052,CV,True
+Other - Chile,Chile,-35.675,-71.543,CL,True
+Other - China,China,35.8617,104.1954,CN,True
+Other - Colombia,Colombia,4.5709,-74.2973,CO,True
+Other - Costa Rica,Costa Rica,9.7489,-83.7534,CR,True
+Other - Croatia,Croatia,45.1,15.2,HR,True
+Other - Cyprus,Cyprus,35.1264,33.4299,CY,True
+Other - Czechia,Czechia,49.8175,15.473,CZ,True
+Other - Côte d'Ivoire,Côte d'Ivoire,7.54,-5.5471,CI,True
+Other - Denmark,Denmark,56.2639,9.5018,DK,True
+Other - Dominican Republic,Dominican Republic,18.7357,-70.1627,DO,True
+Other - Ecuador,Ecuador,-1.8312,-78.1834,EC,True
+Other - Egypt,Egypt,26.8206,30.8025,EG,True
+Other - El Salvador,El Salvador,13.7942,-88.8965,SV,True
+Other - Estonia,Estonia,58.7,25.5,EE,True
+Other - Eswatini,Eswatini,-26.5225,31.4659,SZ,True
+Other - Ethiopia,Ethiopia,9.145,40.4897,ET,True
+Other - Fiji,Fiji,-17.7134,178.065,FJ,True
+Other - Finland,Finland,61.9241,25.7482,FI,True
+Other - France,France,46.6034,1.8883,FR,True
+Other - Gabon,Gabon,-0.8037,11.6094,GA,True
+Other - Gambia,Gambia,13.4432,-15.3101,GM,True
+Other - Georgia,Georgia,42.3154,43.3569,GE,True
+Other - Germany,Germany,51.1657,10.4515,DE,True
+Other - Ghana,Ghana,7.9465,-1.0232,GH,True
+Other - Gibraltar,Gibraltar,36.1408,-5.3536,GI,True
+Other - Greece,Greece,39.0742,21.8243,GR,True
+Other - Grenada,Grenada,12.1165,-61.679,GD,True
+Other - Guatemala,Guatemala,15.7835,-90.2308,GT,True
+Other - Guinea,Guinea,9.9456,-9.6966,GN,True
+Other - Guyana,Guyana,4.8604,-58.9302,GY,True
+Other - Haiti,Haiti,18.9712,-72.2852,HT,True
+Other - Honduras,Honduras,15.1991,-86.2419,HN,True
+Other - Hungary,Hungary,47.1625,19.5033,HU,True
+Other - Iceland,Iceland,64.9631,-19.0208,IS,True
+Other - India,India,20.5937,78.9629,IN,True
+Other - Indonesia,Indonesia,-0.7893,113.9213,ID,True
+Other - Iran,Iran,32.4279,53.688,IR,True
+Other - Iraq,Iraq,33.2232,43.6793,IQ,True
+Other - Ireland,Ireland,53.1424,-7.6921,IE,True
+Other - Israel,Israel,31.0461,34.8516,IL,True
+Other - Italy,Italy,41.8719,12.5674,IT,True
+Other - Jamaica,Jamaica,18.1096,-77.2975,JM,True
+Other - Japan,Japan,36.2048,138.2529,JP,True
+Other - Jordan,Jordan,30.5852,36.2384,JO,True
+Other - Kazakhstan,Kazakhstan,48.0196,66.9237,KZ,True
+Other - Kenya,Kenya,-0.0236,37.9062,KE,True
+Other - Kosovo,Kosovo,42.6026,20.903,XK,True
+Other - Kuwait,Kuwait,29.3759,47.9774,KW,True
+Other - Kyrgyzstan,Kyrgyzstan,41.2044,74.7661,KG,True
+Other - Laos,Laos,19.8563,102.4955,LA,True
+Other - Latvia,Latvia,56.8796,24.6032,LV,True
+Other - Lebanon,Lebanon,33.8547,35.8623,LB,True
+Other - Lesotho,Lesotho,-29.6099,28.2336,LS,True
+Other - Liberia,Liberia,6.4281,-9.4295,LR,True
+Other - Libya,Libya,26.3351,17.2283,LY,True
+Other - Liechtenstein,Liechtenstein,47.166,9.5554,LI,True
+Other - Lithuania,Lithuania,55.1694,23.8813,LT,True
+Other - Luxembourg,Luxembourg,49.6112768,6.129799,LU,True
+Other - Luxembourg,Luxembourg,49.8153,6.1296,LU,True
+Other - Madagascar,Madagascar,-18.7669,46.8691,MG,True
+Other - Malawi,Malawi,-13.2543,34.3015,MW,True
+Other - Malaysia,Malaysia,4.2105,101.9758,MY,True
+Other - Maldives,Maldives,3.2028,73.2207,MV,True
+Other - Mali,Mali,17.5707,-3.9962,ML,True
+Other - Malta,Malta,35.895,14.446,MT,True
+Other - Mauritius,Mauritius,-20.290149,57.582364,MU,True
+Other - Mexico,Mexico,23.6345,-102.5528,MX,True
+Other - Moldova,Moldova,47.4116,28.3699,MD,True
+Other - Monaco,Monaco,43.7384,7.4246,MC,True
+Other - Mongolia,Mongolia,46.8625,103.8467,MN,True
+Other - Montenegro,Montenegro,42.7087,19.3744,ME,True
+Other - Morocco,Morocco,31.7917,-7.0926,MA,True
+Other - Mozambique,Mozambique,-18.6657,35.5296,MZ,True
+Other - Myanmar,Myanmar,21.9162,95.956,MM,True
+Other - Namibia,Namibia,-22.9576,18.4904,NA,True
+Other - Nepal,Nepal,28.3949,84.124,NP,True
+Other - Netherlands,Netherlands,52.213,5.2794,NL,True
+Other - New Zealand,New Zealand,-40.9006,174.886,NZ,True
+Other - Nicaragua,Nicaragua,12.8654,-85.2072,NI,True
+Other - Niger,Niger,17.6078,8.0817,NE,True
+Other - Nigeria,Nigeria,9.082,8.6753,NG,True
+Other - North Macedonia,North Macedonia,41.6086,21.7453,MK,True
+Other - Norway,Norway,64.5732,16.4162,NO,True
+Other - Oman,Oman,21.4735,55.9754,OM,True
+Other - Pakistan,Pakistan,30.3753,69.3451,PK,True
+Other - Panama,Panama,8.5,-80.0,PA,True
+Other - Papua New Guinea,Papua New Guinea,-6.315,143.9555,PG,True
+Other - Paraguay,Paraguay,-23.4425,-58.4438,PY,True
+Other - Peru,Peru,-9.19,-75.0152,PE,True
+Other - Philippines,Philippines,12.8797,121.774,PH,True
+Other - Poland,Poland,52.2159,19.1344,PL,True
+Other - Portugal,Portugal,39.5572,-8.379,PT,True
+Other - Qatar,Qatar,25.3548,51.1839,QA,True
+Other - Romania,Romania,45.9432,24.9668,RO,True
+Other - Russia,Russia,61.524,105.3188,RU,True
+Other - Rwanda,Rwanda,-1.9403,29.8739,RW,True
+Other - San Marino,San Marino,43.9424,12.4578,SM,True
+Other - Saudi Arabia,Saudi Arabia,23.8859,45.0792,SA,True
+Other - Senegal,Senegal,14.4974,-14.4524,SN,True
+Other - Serbia,Serbia,44.0165,21.0059,RS,True
+Other - Seychelles,Seychelles,-4.6796,55.492,SC,True
+Other - Sierra Leone,Sierra Leone,8.4606,-11.7799,SL,True
+Other - Singapore,Singapore,1.3521,103.8198,SG,True
+Other - Slovakia,Slovakia,48.669,19.699,SK,True
+Other - Slovenia,Slovenia,46.1512,14.9955,SI,True
+Other - Somalia,Somalia,5.1521,46.1996,SO,True
+Other - South Africa,South Africa,-30.5595,22.9375,ZA,True
+Other - South Korea,South Korea,35.9078,127.7669,KR,True
+Other - South Sudan,South Sudan,6.877,31.307,SS,True
+Other - Spain,Spain,40.4637,-3.7492,ES,True
+Other - Sri Lanka,Sri Lanka,7.8731,80.7718,LK,True
+Other - Sudan,Sudan,12.8628,30.2176,SD,True
+Other - Suriname,Suriname,3.9193,-56.0278,SR,True
+Other - Sweden,Sweden,62.1987,17.551,SE,True
+Other - Switzerland,Switzerland,46.8182,8.2275,CH,True
+Other - Taiwan,Taiwan,23.5937,120.9447,TW,True
+Other - Tajikistan,Tajikistan,38.861,71.2761,TJ,True
+Other - Tanzania,Tanzania,-6.369,34.8888,TZ,True
+Other - Thailand,Thailand,15.87,100.9925,TH,True
+Other - Timor-Leste,Timor-Leste,-8.8742,125.7275,TL,True
+Other - Togo,Togo,8.6195,0.8248,TG,True
+Other - Tonga,Tonga,-21.179,-175.1982,TO,True
+Other - Trinidad and Tobago,Trinidad and Tobago,10.6918,-61.2225,TT,True
+Other - Tunisia,Tunisia,33.8869,9.5375,TN,True
+Other - Turkey,Turkey,38.9637,35.2433,TR,True
+Other - Turkmenistan,Turkmenistan,38.9697,59.5563,TM,True
+Other - Uganda,Uganda,1.3733,32.2903,UG,True
+Other - Ukraine,Ukraine,48.3794,31.1656,UA,True
+Other - United Arab Emirates,United Arab Emirates,23.4241,53.8478,AE,True
+Other - United Kingdom,United Kingdom,54.7024,-3.2766,GB,True
+Other - United States,United States,39.8283,-98.5795,US,True
+Other - Uruguay,Uruguay,-32.5228,-55.7658,UY,True
+Other - Uzbekistan,Uzbekistan,41.3775,64.5853,UZ,True
+Other - Vanuatu,Vanuatu,-15.3767,166.9592,VU,True
+Other - Vatican City,Vatican City,41.9029,12.4534,VA,True
+Other - Venezuela,Venezuela,6.4238,-66.5897,VE,True
+Other - Vietnam,Vietnam,14.0583,108.2772,VN,True
+Other - Yemen,Yemen,15.5527,48.5164,YE,True
+Other - Zambia,Zambia,-13.1339,27.8493,ZM,True
+Other - Zimbabwe,Zimbabwe,-19.0154,29.1549,ZW,True

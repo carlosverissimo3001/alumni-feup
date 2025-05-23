@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { SendFeedbackDto } from '@/dto/send-feedback.dto';
+import { SendFeedbackDto } from '@/feeback/dto/send-feedback.dto';
 import { FeedbackRepository } from '../repositories/feedback.repository';
 import { EmailService } from '@/email/services/email.service';
 

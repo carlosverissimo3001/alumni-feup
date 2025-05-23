@@ -19,9 +19,9 @@ import {
   DEFAULT_QUERY_LIMIT,
   DEFAULT_QUERY_SORT_BY,
   DEFAULT_QUERY_SORT_ORDER,
-  sortData,
-  SortBy,
-} from '../utils';
+  SORT_BY,
+} from '../consts';
+import { sortData } from '../utils';
 
 @Injectable()
 export class EducationAnalyticsService {
@@ -32,209 +32,176 @@ export class EducationAnalyticsService {
   ) {}
 
   async getFaculties(query: QueryParamsDto): Promise<FacultyListDto> {
-    const alumnusUnfiltered = await this.alumniRepository.find(query);
+    const [alumnusUnfiltered, totalFaculties] = await Promise.all([
+      this.alumniRepository.find(query),
+      this.educationRepository.countFaculties(),
+    ]);
+
     const alumnus = applyDateFilters(alumnusUnfiltered, query);
+    const graduations = alumnus.flatMap((a) => a.graduations || []);
 
-    const totalFaculties = await this.educationRepository.countFaculties();
+    const faculties = graduations.reduce((map, graduation) => {
+      const facultyId = graduation.course.facultyId;
+      const faculty = map.get(facultyId) || {
+        id: facultyId,
+        name: graduation.course.faculty.name,
+        acronym: graduation.course.faculty.acronym,
+        trend: [],
+        count: 0,
+      };
 
-    // Grouping is done at faculty level
-    const faculties = new Map<string, FacultyListItemDto>();
+      faculty.count += 1;
+      map.set(facultyId, faculty);
+      return map;
+    }, new Map<string, FacultyListItemDto>());
 
-    // outer loop -> for every alumni
-    alumnus.forEach((alumnus) => {
-      // inner loop -> for every graduation of the alumni
-      alumnus.graduations.forEach((graduation) => {
-        const facultyId = graduation.course.facultyId;
-        let faculty = faculties.get(facultyId);
-
-        // Is this a new faculty? (Note: For now, we just have FEUP)
-        if (!faculty) {
-          faculties.set(facultyId, {
-            id: facultyId,
-            name: graduation.course.faculty.name,
-            acronym: graduation.course.faculty.acronym,
-            // We'll set the trend in the outer loop
-            trend: [],
-            count: 0,
-          });
-          faculty = faculties.get(facultyId)!;
-        }
-
-        faculty.count += 1;
+    const facultiesArray = Array.from(faculties.values());
+    if (query.includeTrend) {
+      const trends = await Promise.all(
+        facultiesArray.map((faculty) =>
+          this.trendAnalyticsService.getFacultyTrend({
+            data: alumnusUnfiltered,
+            entityId: faculty.id,
+          }),
+        ),
+      );
+      facultiesArray.forEach((faculty, index) => {
+        faculty.trend = trends[index];
       });
-    });
+    }
 
-    // hey man, this is awful, please, for your own sanity, find a better approach
-    const facultiesArray = Array.from(faculties.entries()).map(
-      ([facultyId, data]) => {
-        return {
-          id: facultyId,
-          name: data.name,
-          acronym: data.acronym,
-          trend: query.includeTrend
-            ? this.trendAnalyticsService.getFacultyTrend({
-                data: alumnusUnfiltered,
-                entityId: facultyId,
-              })
-            : [],
-          count: data.count,
-        };
-      },
-    );
+    // Sort and paginate
+    const offset = query.offset || DEFAULT_QUERY_OFFSET;
+    const limit = query.limit || DEFAULT_QUERY_LIMIT;
 
     const sortedFaculties = sortData(facultiesArray, {
       sortBy: query.sortBy ?? DEFAULT_QUERY_SORT_BY,
       direction: query.sortOrder ?? DEFAULT_QUERY_SORT_ORDER,
     });
 
-    const paginatedFaculties = sortedFaculties.slice(
-      query.offset || DEFAULT_QUERY_OFFSET,
-      (query.offset || DEFAULT_QUERY_OFFSET) +
-        (query.limit || DEFAULT_QUERY_LIMIT),
-    );
-
     return {
-      faculties: paginatedFaculties,
+      faculties: sortedFaculties.slice(offset, offset + limit),
       count: totalFaculties,
       filteredCount: faculties.size,
     };
   }
 
   async getMajors(query: QueryParamsDto): Promise<MajorListDto> {
-    const alumnusUnfiltered = await this.alumniRepository.find(query);
+    const [alumnusUnfiltered, totalMajors] = await Promise.all([
+      this.alumniRepository.find(query),
+      this.educationRepository.countCourses(),
+    ]);
+
     const alumnus = applyDateFilters(alumnusUnfiltered, query);
 
-    const totalMajors = await this.educationRepository.countCourses();
+    const graduations = alumnus.flatMap((a) => a.graduations || []);
 
-    // Grouping is done at course level
-    const courses = new Map<string, MajorListItemDto>();
+    const courses = graduations.reduce((map, graduation) => {
+      const courseId = graduation.courseId;
+      const course = map.get(courseId) || {
+        id: courseId,
+        name: graduation.course.name,
+        acronym: `[${graduation.course.faculty.acronym}] ${graduation.course.acronym}`,
+        facultyAcronym: graduation.course.faculty.acronym,
+        count: 0,
+        trend: [],
+      };
 
-    alumnus.forEach((alumnus) => {
-      alumnus.graduations.forEach((graduation) => {
-        const courseId = graduation.courseId;
-        let course = courses.get(courseId);
+      course.count += 1;
+      map.set(courseId, course);
+      return map;
+    }, new Map<string, MajorListItemDto>());
 
-        if (!course) {
-          courses.set(courseId, {
-            id: courseId,
-            name: graduation.course.name,
-            acronym: `[${graduation.course.faculty.acronym}] ${graduation.course.acronym}`,
-            facultyAcronym: graduation.course.faculty.acronym,
-            count: 0,
-            trend: [],
-          });
-          course = courses.get(courseId)!;
-        }
-
-        course.count += 1;
+    const coursesArray = Array.from(courses.values());
+    if (query.includeTrend) {
+      const trends = await Promise.all(
+        coursesArray.map((course) =>
+          this.trendAnalyticsService.getMajorTrend({
+            data: alumnusUnfiltered,
+            entityId: course.id,
+          }),
+        ),
+      );
+      coursesArray.forEach((course, index) => {
+        course.trend = trends[index];
       });
-    });
+    }
 
-    const coursesArray = Array.from(courses.entries()).map(
-      ([courseId, data]) => {
-        return {
-          id: courseId,
-          name: data.name,
-          acronym: data.acronym,
-          facultyAcronym: data.facultyAcronym,
-          trend: query.includeTrend
-            ? this.trendAnalyticsService.getMajorTrend({
-                data: alumnusUnfiltered,
-                entityId: courseId,
-              })
-            : [],
-          count: data.count,
-        };
-      },
-    );
+    const offset = query.offset || DEFAULT_QUERY_OFFSET;
+    const limit = query.limit || DEFAULT_QUERY_LIMIT;
 
     const sortedCourses = sortData(coursesArray, {
       sortBy: query.sortBy ?? DEFAULT_QUERY_SORT_BY,
       direction: query.sortOrder ?? DEFAULT_QUERY_SORT_ORDER,
     });
 
-    const paginatedCourses = sortedCourses.slice(
-      query.offset || DEFAULT_QUERY_OFFSET,
-      (query.offset || DEFAULT_QUERY_OFFSET) +
-        (query.limit || DEFAULT_QUERY_LIMIT),
-    );
-
     return {
-      majors: paginatedCourses,
+      majors: sortedCourses.slice(offset, offset + limit),
       count: totalMajors,
       filteredCount: courses.size,
     };
   }
 
   async getGraduations(query: QueryParamsDto): Promise<GraduationListDto> {
-    const totalGraduations = await this.educationRepository.countGraduations();
+    const [alumnusUnfiltered, totalGraduations] = await Promise.all([
+      this.alumniRepository.find(query),
+      this.educationRepository.countGraduations(),
+    ]);
 
-    // Grouping is done at graduation level
-    const graduations = new Map<string, GraduationListItemDto>();
-
-    const alumnusUnfiltered = await this.alumniRepository.find(query);
     const alumnus = applyDateFilters(alumnusUnfiltered, query);
 
-    alumnus.forEach((alumnus) => {
-      alumnus.graduations.forEach((graduation) => {
-        const key = `${graduation.course.acronym}-${graduation.conclusionYear}`;
-        let grad = graduations.get(key);
+    const graduations = alumnus.flatMap((a) => a.graduations || []);
 
-        if (!grad) {
-          graduations.set(key, {
-            id: graduation.courseId,
-            name: graduation.course.name,
-            acronym: `[${graduation.course.faculty.acronym}] ${graduation.course.acronym}`,
-            year: graduation.conclusionYear,
-            count: 0,
-          });
-          grad = graduations.get(key)!;
-        }
+    const graduationMap = graduations.reduce((map, graduation) => {
+      const key = `${graduation.course.acronym}-${graduation.conclusionYear}`;
+      const grad = map.get(key) || {
+        id: graduation.courseId,
+        name: graduation.course.name,
+        acronym: `[${graduation.course.faculty.acronym}] ${graduation.course.acronym}`,
+        year: graduation.conclusionYear,
+        count: 0,
+      };
 
-        grad.count += 1;
-      });
-    });
+      grad.count += 1;
+      map.set(key, grad);
+      return map;
+    }, new Map<string, GraduationListItemDto>());
 
-    const graduationsArray = Array.from(graduations.values());
+    const offset = query.offset || DEFAULT_QUERY_OFFSET;
+    const limit = query.limit || DEFAULT_QUERY_LIMIT;
+
+    const graduationsArray = Array.from(graduationMap.values());
     const sortedGraduations = this.sortGraduations(
       query.sortBy ?? DEFAULT_QUERY_SORT_BY,
       query.sortOrder ?? DEFAULT_QUERY_SORT_ORDER,
       graduationsArray,
     );
 
-    const paginatedGraduations = sortedGraduations.slice(
-      query.offset || DEFAULT_QUERY_OFFSET,
-      (query.offset || DEFAULT_QUERY_OFFSET) +
-        (query.limit || DEFAULT_QUERY_LIMIT),
-    );
-
     return {
-      graduations: paginatedGraduations,
+      graduations: sortedGraduations.slice(offset, offset + limit),
       count: totalGraduations,
-      filteredCount: graduations.size,
+      filteredCount: graduationMap.size,
     };
   }
 
-  sortGraduations<T extends { name: string; count: number; year?: number }>(
-    sortBy: SortBy,
-    direction: 'asc' | 'desc',
-    data: T[],
-  ): T[] {
+  private sortGraduations<
+    T extends { name: string; count: number; year?: number },
+  >(sortBy: SORT_BY, direction: 'asc' | 'desc', data: T[]): T[] {
     return [...data].sort((a, b) => {
       let comparison = 0;
 
       switch (sortBy) {
-        case SortBy.NAME:
+        case SORT_BY.NAME:
           comparison = a.name.localeCompare(b.name);
           break;
-        case SortBy.COUNT:
+        case SORT_BY.COUNT:
           comparison = a.count - b.count;
           break;
-        case SortBy.YEAR:
+        case SORT_BY.YEAR:
           comparison = (a.year ?? 0) - (b.year ?? 0);
           break;
         default:
-          break;
+          comparison = a.name.localeCompare(b.name);
       }
 
       return direction === 'asc' ? comparison : -comparison;

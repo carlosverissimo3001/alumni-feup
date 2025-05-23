@@ -1,5 +1,5 @@
 import { Module, Logger } from '@nestjs/common';
-import { GeolocationService } from './geolocation.service';
+import { GeolocationService } from './services/geolocation.service';
 import { PrismaService } from 'src/prisma/prisma.service';
 
 @Module({

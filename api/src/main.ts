@@ -5,7 +5,7 @@ import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import * as fs from 'fs';
 import * as path from 'path';
-import { VALIDATION_CONFIG } from './utils/validation';
+import { VALIDATION_CONFIG } from './validators';
 declare const module: any;
 
 async function bootstrap() {

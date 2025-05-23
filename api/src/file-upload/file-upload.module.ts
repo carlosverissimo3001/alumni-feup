@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
-import { FileUploadService } from './file-upload.service';
-import { FileUploadController } from './file-upload.controller';
+import { FileUploadService } from './services/file-upload.service';
+import { FileUploadController } from './controllers/file-upload.controller';
 import { MulterModule } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { PrismaService } from '@/prisma/prisma.service';

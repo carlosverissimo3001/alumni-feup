@@ -1,11 +1,6 @@
 import * as React from "react";
 import { cva, type VariantProps } from "class-variance-authority";
-import {
-  CheckIcon,
-  XCircle,
-  ChevronDown,
-  XIcon,
-} from "lucide-react";
+import { CheckIcon, XCircle, ChevronDown, XIcon } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import { Separator } from "@/components/ui/separator";
@@ -48,7 +43,7 @@ const multiSelectVariants = cva(
 
 export interface GroupedOption {
   id: string;
-  name: string;
+  value: string;
   group: string;
 }
 
@@ -89,27 +84,27 @@ export const GroupedMultiSelect = React.forwardRef<
     ref
   ) => {
     // Internal state for selected values
-    const [internalSelectedValues, setInternalSelectedValues] = 
+    const [internalSelectedValues, setInternalSelectedValues] =
       React.useState<string[]>(defaultValue);
-      
+
     const [searchValue, setSearchValue] = React.useState("");
-    
+
     // Use the value prop if provided (controlled), otherwise use internal state
     const selectedValues = value !== undefined ? value : internalSelectedValues;
-    
+
     const [isPopoverOpen, setIsPopoverOpen] = React.useState(false);
 
     // Group options by their group property
     const groupedOptions = React.useMemo(() => {
       const groups: Record<string, GroupedOption[]> = {};
-      
-      options.forEach(option => {
+
+      options.forEach((option) => {
         if (!groups[option.group]) {
           groups[option.group] = [];
         }
         groups[option.group].push(option);
       });
-      
+
       return groups;
     }, [options]);
 
@@ -119,12 +114,11 @@ export const GroupedMultiSelect = React.forwardRef<
       }
     }, [value]);
 
-
     const toggleOption = (optionId: string) => {
       const newSelectedValues = selectedValues.includes(optionId)
         ? selectedValues.filter((id) => id !== optionId)
         : [...selectedValues, optionId];
-      
+
       setInternalSelectedValues(newSelectedValues);
       onValueChange(newSelectedValues);
     };
@@ -142,52 +136,62 @@ export const GroupedMultiSelect = React.forwardRef<
 
     const toggleGroup = (group: string) => {
       const groupOptionIds = options
-        .filter(option => option.group === group)
-        .map(option => option.id);
-      
-      const allSelected = groupOptionIds.every(id => selectedValues.includes(id));
-      
+        .filter((option) => option.group === group)
+        .map((option) => option.id);
+
+      const allSelected = groupOptionIds.every((id) =>
+        selectedValues.includes(id)
+      );
+
       let newSelectedValues: string[];
-      
+
       if (allSelected) {
         // If all are selected, unselect all from this group
         newSelectedValues = selectedValues.filter(
-          id => !groupOptionIds.includes(id)
+          (id) => !groupOptionIds.includes(id)
         );
       } else {
         // Otherwise, select all from this group
         const valuesToAdd = groupOptionIds.filter(
-          id => !selectedValues.includes(id)
+          (id) => !selectedValues.includes(id)
         );
         newSelectedValues = [...selectedValues, ...valuesToAdd];
       }
-      
+
       setInternalSelectedValues(newSelectedValues);
       onValueChange(newSelectedValues);
     };
 
     // Find option by ID
     const getOptionById = (id: string) => {
-      return options.find(option => option.id === id);
+      return options.find((option) => option.id === id);
     };
 
     // Filter options based on search
     const filteredGroups = React.useMemo(() => {
       if (!searchValue) return groupedOptions;
-      
+
+      const searchTerms = searchValue
+        .toLowerCase()
+        .split(/\s+/)
+        .filter(Boolean);
       const filtered: Record<string, GroupedOption[]> = {};
-      
+
       Object.entries(groupedOptions).forEach(([group, groupOptions]) => {
-        const filteredOptions = groupOptions.filter(option => 
-          option.name.toLowerCase().includes(searchValue.toLowerCase()) ||
-          group.toLowerCase().includes(searchValue.toLowerCase())
-        );
-        
+        const filteredOptions = groupOptions.filter((option) => {
+          const optionText = option.value.toLowerCase();
+          const groupText = group.toLowerCase();
+
+          return searchTerms.every(
+            (term) => optionText.includes(term) || groupText.includes(term)
+          );
+        });
+
         if (filteredOptions.length > 0) {
           filtered[group] = filteredOptions;
         }
       });
-      
+
       return filtered;
     }, [groupedOptions, searchValue]);
 
@@ -217,11 +221,14 @@ export const GroupedMultiSelect = React.forwardRef<
                     return option ? (
                       <Badge
                         key={id}
-                        className={cn(multiSelectVariants({ variant }))}
+                        className={cn(
+                          multiSelectVariants({ variant }),
+                          "max-w-[200px] flex items-center"
+                        )}
                       >
-                        {option.name}
+                        <span className="truncate">{option.value}</span>
                         <XCircle
-                          className="ml-2 h-4 w-4 cursor-pointer"
+                          className="ml-2 h-4 w-4 cursor-pointer flex-shrink-0"
                           onClick={(event) => {
                             event.stopPropagation();
                             if (!disabled) toggleOption(id);
@@ -284,60 +291,70 @@ export const GroupedMultiSelect = React.forwardRef<
               </CommandEmpty>
               {Object.entries(filteredGroups).map(([group, groupOptions]) => {
                 // Determine if we have more than one country group
-                const hasMultipleGroups = Object.keys(filteredGroups).length > 1;
-                
+                const hasMultipleGroups =
+                  Object.keys(filteredGroups).length > 1;
+
                 return (
-                <CommandGroup 
-                  key={group} 
-                  className="px-1 py-0.5"
-                  heading={hasMultipleGroups ? 
-                    <div className="flex items-center gap-4 justify-start w-full pr-2 py-1">
-                      <span className="text-sm text-foreground">{group}</span>
-                      <div
-                        className={cn(
-                          "mr-2 flex h-4 w-4 items-center justify-center rounded-sm border border-primary transition-colors",
-                          groupOptions.every(option => 
-                            selectedValues.includes(option.id)
-                          )
-                            ? "bg-primary text-primary-foreground"
-                            : "opacity-70 hover:opacity-100 [&_svg]:invisible hover:bg-primary/10"
-                        )}
-                        onClick={(e) => {
-                          e.preventDefault();
-                          e.stopPropagation();
-                          toggleGroup(group);
-                        }}
-                        title={`Select all ${group} cities`}
-                      >
-                        <CheckIcon className="h-4 w-4" />
-                      </div>
-                    </div>
-                  : undefined}
-                >
-                  {groupOptions.sort((a, b) => a.name.localeCompare(b.name)).map((option) => (
-                    <CommandItem
-                      key={option.id}
-                      onSelect={() => toggleOption(option.id)}
-                      className={cn(
-                        "cursor-pointer py-1.5 text-sm",
-                        hasMultipleGroups ? "pl-6" : "pl-2"
-                      )}
-                    >
-                      <div
-                        className={cn(
-                          "mr-2 flex h-4 w-4 items-center justify-center rounded-sm border border-primary transition-colors",
-                          selectedValues.includes(option.id)
-                            ? "bg-primary text-primary-foreground"
-                            : "opacity-70 hover:opacity-100 hover:bg-primary/10 [&_svg]:invisible"
-                        )}
-                      >
-                        <CheckIcon className="h-4 w-4" />
-                      </div>
-                      <span className="text-foreground">{option.name}</span>
-                    </CommandItem>
-                  ))}
-                </CommandGroup>
-              )})}
+                  <CommandGroup
+                    key={group}
+                    className="px-1 py-0.5"
+                    heading={
+                      hasMultipleGroups ? (
+                        <div className="flex items-center gap-4 justify-start w-full pr-2 py-1">
+                          <span className="text-sm text-foreground truncate flex-1">
+                            {group}
+                          </span>
+                          <div
+                            className={cn(
+                              "mr-2 flex h-4 w-4 items-center justify-center rounded-sm border border-primary transition-colors flex-shrink-0",
+                              groupOptions.every((option) =>
+                                selectedValues.includes(option.id)
+                              )
+                                ? "bg-primary text-primary-foreground"
+                                : "opacity-70 hover:opacity-100 [&_svg]:invisible hover:bg-primary/10"
+                            )}
+                            onClick={(e) => {
+                              e.preventDefault();
+                              e.stopPropagation();
+                              toggleGroup(group);
+                            }}
+                            title={`Select all ${group} cities`}
+                          >
+                            <CheckIcon className="h-4 w-4" />
+                          </div>
+                        </div>
+                      ) : undefined
+                    }
+                  >
+                    {groupOptions
+                      .sort((a, b) => a.value.localeCompare(b.value))
+                      .map((option) => (
+                        <CommandItem
+                          key={option.id}
+                          onSelect={() => toggleOption(option.id)}
+                          className={cn(
+                            "cursor-pointer py-1.5 text-sm",
+                            hasMultipleGroups ? "pl-6" : "pl-2"
+                          )}
+                        >
+                          <div
+                            className={cn(
+                              "mr-2 flex h-4 w-4 items-center justify-center rounded-sm border border-primary transition-colors flex-shrink-0",
+                              selectedValues.includes(option.id)
+                                ? "bg-primary text-primary-foreground"
+                                : "opacity-70 hover:opacity-100 hover:bg-primary/10 [&_svg]:invisible"
+                            )}
+                          >
+                            <CheckIcon className="h-4 w-4" />
+                          </div>
+                          <span className="text-foreground truncate flex-1">
+                            {option.value}
+                          </span>
+                        </CommandItem>
+                      ))}
+                  </CommandGroup>
+                );
+              })}
               <CommandSeparator />
               <CommandGroup>
                 <div className="flex items-center justify-between">
@@ -360,4 +377,4 @@ export const GroupedMultiSelect = React.forwardRef<
   }
 );
 
-GroupedMultiSelect.displayName = "GroupedMultiSelect"; 
+GroupedMultiSelect.displayName = "GroupedMultiSelect";

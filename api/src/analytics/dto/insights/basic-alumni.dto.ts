@@ -1,5 +1,5 @@
+import { SENIORITY_LEVEL } from '@/analytics/consts/enum';
 import { ApiProperty } from '@nestjs/swagger';
-import { SENIORITY_LEVEL } from '@/consts';
 
 export class BasicAlumniDto {
   @ApiProperty({ description: 'The id of the alumni', type: String })

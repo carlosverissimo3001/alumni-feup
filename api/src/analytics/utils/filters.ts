@@ -13,7 +13,6 @@ const shouldFilterAlumniWithoutRoles = (query: QueryParamsDto): boolean => {
     'includeTrend',
   ];
 
-  // Create a new object without the excluded keys
   const filterableQuery = Object.fromEntries(
     Object.entries(query).filter(([key]) => !excludedKeys.includes(key)),
   );
@@ -46,7 +45,7 @@ export const applyDateFilters = (
       const filteredRoles = item.roles.filter((role) => {
         // If currentRolesOnly is true, only include roles that have no end date
         if (currentRolesOnly) {
-          return role.endDate === null;
+          return !role.endDate;
         }
 
         // If both dates are provided, filter roles that fall within the date range

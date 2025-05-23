@@ -698,7 +698,13 @@
             "in": "query",
             "description": "How to sort the results",
             "schema": {
-              "$ref": "#/components/schemas/SortBy"
+              "default": "count",
+              "type": "string",
+              "enum": [
+                "count",
+                "name",
+                "year"
+              ]
             }
           },
           {
@@ -1123,7 +1129,13 @@
             "in": "query",
             "description": "How to sort the results",
             "schema": {
-              "$ref": "#/components/schemas/SortBy"
+              "default": "count",
+              "type": "string",
+              "enum": [
+                "count",
+                "name",
+                "year"
+              ]
             }
           },
           {
@@ -1474,7 +1486,13 @@
             "in": "query",
             "description": "How to sort the results",
             "schema": {
-              "$ref": "#/components/schemas/SortBy"
+              "default": "count",
+              "type": "string",
+              "enum": [
+                "count",
+                "name",
+                "year"
+              ]
             }
           },
           {
@@ -1890,7 +1908,13 @@
             "in": "query",
             "description": "How to sort the results",
             "schema": {
-              "$ref": "#/components/schemas/SortBy"
+              "default": "count",
+              "type": "string",
+              "enum": [
+                "count",
+                "name",
+                "year"
+              ]
             }
           },
           {
@@ -2268,7 +2292,13 @@
             "in": "query",
             "description": "How to sort the results",
             "schema": {
-              "$ref": "#/components/schemas/SortBy"
+              "default": "count",
+              "type": "string",
+              "enum": [
+                "count",
+                "name",
+                "year"
+              ]
             }
           },
           {
@@ -2619,7 +2649,13 @@
             "in": "query",
             "description": "How to sort the results",
             "schema": {
-              "$ref": "#/components/schemas/SortBy"
+              "default": "count",
+              "type": "string",
+              "enum": [
+                "count",
+                "name",
+                "year"
+              ]
             }
           },
           {
@@ -2970,7 +3006,13 @@
             "in": "query",
             "description": "How to sort the results",
             "schema": {
-              "$ref": "#/components/schemas/SortBy"
+              "default": "count",
+              "type": "string",
+              "enum": [
+                "count",
+                "name",
+                "year"
+              ]
             }
           },
           {
@@ -3321,7 +3363,13 @@
             "in": "query",
             "description": "How to sort the results",
             "schema": {
-              "$ref": "#/components/schemas/SortBy"
+              "default": "count",
+              "type": "string",
+              "enum": [
+                "count",
+                "name",
+                "year"
+              ]
             }
           },
           {
@@ -3699,7 +3747,13 @@
             "in": "query",
             "description": "How to sort the results",
             "schema": {
-              "$ref": "#/components/schemas/SortBy"
+              "default": "count",
+              "type": "string",
+              "enum": [
+                "count",
+                "name",
+                "year"
+              ]
             }
           },
           {
@@ -4009,7 +4063,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/AddFacultyDto"
+                "$ref": "#/components/schemas/CreateFacultyDto"
               }
             }
           }
@@ -4295,9 +4349,38 @@
             "name": "reviewType",
             "required": false,
             "in": "query",
-            "description": "The review type",
+            "description": "Type of review",
             "schema": {
-              "example": "",
+              "example": "Company",
+              "type": "string"
+            }
+          },
+          {
+            "name": "rating",
+            "required": false,
+            "in": "query",
+            "description": "The review rating",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "dateFrom",
+            "required": false,
+            "in": "query",
+            "description": "Date range to filter",
+            "schema": {
+              "format": "date-time",
+              "type": "string"
+            }
+          },
+          {
+            "name": "dateTo",
+            "required": false,
+            "in": "query",
+            "description": "Date range to filter",
+            "schema": {
+              "format": "date-time",
               "type": "string"
             }
           }
@@ -4341,6 +4424,32 @@
           }
         },
         "summary": "Create a new review",
+        "tags": [
+          "V1",
+          "Reviews"
+        ]
+      }
+    },
+    "/api/reviews/changeScore": {
+      "post": {
+        "operationId": "ReviewController_changeScore",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChangeReviewScoreDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "default": {
+            "description": "Returns the created alumni"
+          }
+        },
+        "summary": "Update a review score",
         "tags": [
           "V1",
           "Reviews"
@@ -4499,31 +4608,6 @@
           "Company"
         ]
       },
-      "LocationGeo": {
-        "type": "object",
-        "properties": {
-          "city": {
-            "type": "string",
-            "description": "The city of the location"
-          },
-          "country": {
-            "type": "string",
-            "description": "The country of the location"
-          },
-          "countryCode": {
-            "type": "string",
-            "description": "The country code of the location"
-          },
-          "latitude": {
-            "type": "number",
-            "description": "The latitude of the location"
-          },
-          "longitude": {
-            "type": "number",
-            "description": "The longitude of the location"
-          }
-        }
-      },
       "ReviewCompany": {
         "type": "object",
         "properties": {
@@ -4554,12 +4638,8 @@
             }
           },
           "Location": {
-            "description": "The location of the review",
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/LocationGeo"
-              }
-            ]
+            "type": "object",
+            "description": "The location of the review"
           },
           "Company": {
             "description": "The Company",
@@ -4630,6 +4710,31 @@
           "upvotes",
           "downvotes"
         ]
+      },
+      "LocationGeo": {
+        "type": "object",
+        "properties": {
+          "city": {
+            "type": "string",
+            "description": "The city of the location"
+          },
+          "country": {
+            "type": "string",
+            "description": "The country of the location"
+          },
+          "countryCode": {
+            "type": "string",
+            "description": "The country code of the location"
+          },
+          "latitude": {
+            "type": "number",
+            "description": "The latitude of the location"
+          },
+          "longitude": {
+            "type": "number",
+            "description": "The longitude of the location"
+          }
+        }
       },
       "Course": {
         "type": "object",
@@ -5095,12 +5200,104 @@
           "name"
         ]
       },
+      "Location": {
+        "type": "object",
+        "properties": {
+          "city": {
+            "type": "string",
+            "description": "The city of the location"
+          },
+          "country": {
+            "type": "string",
+            "description": "The country of the location"
+          },
+          "countryCode": {
+            "type": "string",
+            "description": "The country code of the location"
+          },
+          "latitude": {
+            "type": "number",
+            "description": "The latitude of the location"
+          },
+          "longitude": {
+            "type": "number",
+            "description": "The longitude of the location"
+          },
+          "id": {
+            "type": "string",
+            "description": "The id of the location"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string",
+            "description": "The created at date of the location"
+          },
+          "updatedAt": {
+            "format": "date-time",
+            "type": "string",
+            "description": "The updated at date of the location"
+          }
+        },
+        "required": [
+          "id",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "ExtendedCompanyDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "industry": {
+            "type": "string"
+          },
+          "website": {
+            "type": "string"
+          },
+          "linkedinUrl": {
+            "type": "string"
+          },
+          "logo": {
+            "type": "string"
+          },
+          "location": {
+            "description": "The current location of the alumni",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Location"
+              }
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "industry"
+        ]
+      },
       "AlumniPastLocationsAndCompaniesDto": {
         "type": "object",
-        "properties": {}
-      },
-      "SortBy": {
-        "type": "string"
+        "properties": {
+          "Companies": {
+            "description": "The Company of the review",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ExtendedCompanyDto"
+            }
+          },
+          "Locations": {
+            "description": "The Location of the review",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Location"
+            }
+          }
+        }
       },
       "DataPointDto": {
         "type": "object",
@@ -6017,6 +6214,37 @@
           "level"
         ]
       },
+      "LocationAnalyticsEntity": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "country": {
+            "type": "object",
+            "nullable": true
+          },
+          "countryCode": {
+            "type": "object",
+            "nullable": true
+          },
+          "city": {
+            "type": "object",
+            "nullable": true
+          },
+          "latitude": {
+            "type": "object",
+            "nullable": true
+          },
+          "longitude": {
+            "type": "object",
+            "nullable": true
+          }
+        },
+        "required": [
+          "id"
+        ]
+      },
       "AlumniListItemDto": {
         "type": "object",
         "properties": {
@@ -6030,13 +6258,19 @@
           },
           "linkedinUrl": {
             "type": "string",
-            "description": "The linkedin url of the alumni",
-            "nullable": true
+            "description": "The linkedin url of the alumni"
           },
           "profilePictureUrl": {
             "type": "string",
-            "description": "The profile picture of the alumni",
-            "nullable": true
+            "description": "The profile picture of the alumni"
+          },
+          "currentRoleLocation": {
+            "description": "The location of the alumni`s current role",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/LocationAnalyticsEntity"
+              }
+            ]
           }
         },
         "required": [
@@ -6299,7 +6533,7 @@
           "acronym"
         ]
       },
-      "AddFacultyDto": {
+      "CreateFacultyDto": {
         "type": "object",
         "properties": {
           "name": {
@@ -6457,8 +6691,8 @@
             "type": "string",
             "description": "The status of the user",
             "enum": [
-              "matched",
-              "unmatched"
+              "MATCHED",
+              "UNMATCHED"
             ]
           },
           "personId": {
@@ -6623,6 +6857,28 @@
           "reviewType",
           "companyId",
           "locationId"
+        ]
+      },
+      "ChangeReviewScoreDto": {
+        "type": "object",
+        "properties": {
+          "alumniId": {
+            "type": "string",
+            "description": "The id of the alumni"
+          },
+          "reviewId": {
+            "type": "string",
+            "description": "The id of the review"
+          },
+          "upvote": {
+            "type": "boolean",
+            "description": "The review rating"
+          }
+        },
+        "required": [
+          "alumniId",
+          "reviewId",
+          "upvote"
         ]
       }
     }

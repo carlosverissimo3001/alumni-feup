@@ -14,13 +14,13 @@ export class RoleAnalyticsEntity {
   startDate: Date;
 
   @ApiPropertyOptional()
-  endDate?: Date | null;
+  endDate?: Date;
 
   @ApiProperty()
   isCurrent: boolean;
 
-  @ApiPropertyOptional({ type: LocationAnalyticsEntity, nullable: true })
-  location?: LocationAnalyticsEntity | null;
+  @ApiPropertyOptional({ type: LocationAnalyticsEntity })
+  location?: LocationAnalyticsEntity;
 
   @ApiProperty()
   company: CompanyAnalyticsEntity;

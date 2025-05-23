@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-return */
 import {
   IsArray,
   IsBoolean,
@@ -13,12 +15,12 @@ import {
 
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Transform, Type } from 'class-transformer';
-import { SortBy } from '../utils/types';
+import { SORT_BY } from '../consts';
 import {
   IsNotNullableOptional,
   toBoolean,
   TransformToArray,
-} from '@/utils/validation';
+} from '@/validators';
 import { COMPANY_SIZE, COMPANY_TYPE } from '@prisma/client';
 
 export class QueryParamsDto {
@@ -359,13 +361,13 @@ export class QueryParamsDto {
 
   @ApiPropertyOptional({
     description: 'How to sort the results',
-    default: SortBy.COUNT,
-    type: SortBy,
-    enumName: 'SortBy',
+    default: SORT_BY.COUNT,
+    type: 'string',
+    enum: SORT_BY,
   })
   @IsOptional()
-  @IsEnum(SortBy)
-  sortBy?: SortBy;
+  @IsEnum(SORT_BY)
+  sortBy?: SORT_BY;
 
   @ApiPropertyOptional({
     description: 'The order of the results',

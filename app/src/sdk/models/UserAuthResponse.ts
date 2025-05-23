@@ -58,8 +58,8 @@ export interface UserAuthResponse {
  * @export
  */
 export const UserAuthResponseStatusEnum = {
-    Matched: 'matched',
-    Unmatched: 'unmatched'
+    Matched: 'MATCHED',
+    Unmatched: 'UNMATCHED'
 } as const;
 export type UserAuthResponseStatusEnum = typeof UserAuthResponseStatusEnum[keyof typeof UserAuthResponseStatusEnum];
 

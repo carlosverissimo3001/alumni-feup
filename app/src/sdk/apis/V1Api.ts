@@ -15,7 +15,6 @@
 
 import * as runtime from '../runtime';
 import type {
-  AddFacultyDto,
   Alumni,
   AlumniExtended,
   AlumniListResponseDto,
@@ -35,6 +34,7 @@ import type {
   CourseAnalyticsEntity,
   CreateAlumniDto,
   CreateCourseDto,
+  CreateFacultyDto,
   CreateReviewDto,
   DeleteUserDto,
   EscoClassificationDto,
@@ -59,8 +59,6 @@ import type {
   VerifyEmailTokenDto,
 } from '../models/index';
 import {
-    AddFacultyDtoFromJSON,
-    AddFacultyDtoToJSON,
     AlumniFromJSON,
     AlumniToJSON,
     AlumniExtendedFromJSON,
@@ -99,6 +97,8 @@ import {
     CreateAlumniDtoToJSON,
     CreateCourseDtoFromJSON,
     CreateCourseDtoToJSON,
+    CreateFacultyDtoFromJSON,
+    CreateFacultyDtoToJSON,
     CreateReviewDtoFromJSON,
     CreateReviewDtoToJSON,
     DeleteUserDtoFromJSON,
@@ -179,7 +179,7 @@ export interface AlumniAnalyticsControllerGetAlumniListRequest {
     limit?: number;
     offset?: number;
     search?: string;
-    sortBy?: string;
+    sortBy?: AlumniAnalyticsControllerGetAlumniListSortByEnum;
     sortOrder?: string;
 }
 
@@ -237,7 +237,7 @@ export interface CompanyAnalyticsControllerGetCompaniesWithAlumniCountRequest {
     limit?: number;
     offset?: number;
     search?: string;
-    sortBy?: string;
+    sortBy?: CompanyAnalyticsControllerGetCompaniesWithAlumniCountSortByEnum;
     sortOrder?: string;
 }
 
@@ -288,7 +288,7 @@ export interface EducationAnalyticsControllerGetFacultiesRequest {
     limit?: number;
     offset?: number;
     search?: string;
-    sortBy?: string;
+    sortBy?: EducationAnalyticsControllerGetFacultiesSortByEnum;
     sortOrder?: string;
 }
 
@@ -318,7 +318,7 @@ export interface EducationAnalyticsControllerGetGraduationsRequest {
     limit?: number;
     offset?: number;
     search?: string;
-    sortBy?: string;
+    sortBy?: EducationAnalyticsControllerGetGraduationsSortByEnum;
     sortOrder?: string;
 }
 
@@ -348,12 +348,12 @@ export interface EducationAnalyticsControllerGetMajorsRequest {
     limit?: number;
     offset?: number;
     search?: string;
-    sortBy?: string;
+    sortBy?: EducationAnalyticsControllerGetMajorsSortByEnum;
     sortOrder?: string;
 }
 
 export interface FacultyControllerCreateRequest {
-    addFacultyDto: AddFacultyDto;
+    createFacultyDto: CreateFacultyDto;
 }
 
 export interface FeedbackControllerCreateRequest {
@@ -394,7 +394,7 @@ export interface GeoAnalyticsControllerGetCitiesWithAlumniCountRequest {
     limit?: number;
     offset?: number;
     search?: string;
-    sortBy?: string;
+    sortBy?: GeoAnalyticsControllerGetCitiesWithAlumniCountSortByEnum;
     sortOrder?: string;
 }
 
@@ -424,7 +424,7 @@ export interface GeoAnalyticsControllerGetCountriesWithAlumniCountRequest {
     limit?: number;
     offset?: number;
     search?: string;
-    sortBy?: string;
+    sortBy?: GeoAnalyticsControllerGetCountriesWithAlumniCountSortByEnum;
     sortOrder?: string;
 }
 
@@ -454,7 +454,7 @@ export interface IndustryAnalyticsControllerGetIndustryWithCountsRequest {
     limit?: number;
     offset?: number;
     search?: string;
-    sortBy?: string;
+    sortBy?: IndustryAnalyticsControllerGetIndustryWithCountsSortByEnum;
     sortOrder?: string;
 }
 
@@ -500,7 +500,7 @@ export interface RoleAnalyticsControllerGetRolesRequest {
     limit?: number;
     offset?: number;
     search?: string;
-    sortBy?: string;
+    sortBy?: RoleAnalyticsControllerGetRolesSortByEnum;
     sortOrder?: string;
 }
 
@@ -621,7 +621,7 @@ export interface V1ApiInterface {
      * @param {number} [limit] The number of results to return
      * @param {number} [offset] The offset of the query
      * @param {string} [search] Broad search query
-     * @param {string} [sortBy] How to sort the results
+     * @param {'count' | 'name' | 'year'} [sortBy] How to sort the results
      * @param {string} [sortOrder] The order of the results
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -798,7 +798,7 @@ export interface V1ApiInterface {
      * @param {number} [limit] The number of results to return
      * @param {number} [offset] The offset of the query
      * @param {string} [search] Broad search query
-     * @param {string} [sortBy] How to sort the results
+     * @param {'count' | 'name' | 'year'} [sortBy] How to sort the results
      * @param {string} [sortOrder] The order of the results
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -957,7 +957,7 @@ export interface V1ApiInterface {
      * @param {number} [limit] The number of results to return
      * @param {number} [offset] The offset of the query
      * @param {string} [search] Broad search query
-     * @param {string} [sortBy] How to sort the results
+     * @param {'count' | 'name' | 'year'} [sortBy] How to sort the results
      * @param {string} [sortOrder] The order of the results
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -998,7 +998,7 @@ export interface V1ApiInterface {
      * @param {number} [limit] The number of results to return
      * @param {number} [offset] The offset of the query
      * @param {string} [search] Broad search query
-     * @param {string} [sortBy] How to sort the results
+     * @param {'count' | 'name' | 'year'} [sortBy] How to sort the results
      * @param {string} [sortOrder] The order of the results
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -1039,7 +1039,7 @@ export interface V1ApiInterface {
      * @param {number} [limit] The number of results to return
      * @param {number} [offset] The offset of the query
      * @param {string} [search] Broad search query
-     * @param {string} [sortBy] How to sort the results
+     * @param {'count' | 'name' | 'year'} [sortBy] How to sort the results
      * @param {string} [sortOrder] The order of the results
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -1083,7 +1083,7 @@ export interface V1ApiInterface {
     /**
      * 
      * @summary Create a faculty
-     * @param {AddFacultyDto} addFacultyDto 
+     * @param {CreateFacultyDto} createFacultyDto 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof V1ApiInterface
@@ -1182,7 +1182,7 @@ export interface V1ApiInterface {
      * @param {number} [limit] The number of results to return
      * @param {number} [offset] The offset of the query
      * @param {string} [search] Broad search query
-     * @param {string} [sortBy] How to sort the results
+     * @param {'count' | 'name' | 'year'} [sortBy] How to sort the results
      * @param {string} [sortOrder] The order of the results
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -1237,7 +1237,7 @@ export interface V1ApiInterface {
      * @param {number} [limit] The number of results to return
      * @param {number} [offset] The offset of the query
      * @param {string} [search] Broad search query
-     * @param {string} [sortBy] How to sort the results
+     * @param {'count' | 'name' | 'year'} [sortBy] How to sort the results
      * @param {string} [sortOrder] The order of the results
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -1293,7 +1293,7 @@ export interface V1ApiInterface {
      * @param {number} [limit] The number of results to return
      * @param {number} [offset] The offset of the query
      * @param {string} [search] Broad search query
-     * @param {string} [sortBy] How to sort the results
+     * @param {'count' | 'name' | 'year'} [sortBy] How to sort the results
      * @param {string} [sortOrder] The order of the results
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -1398,7 +1398,7 @@ export interface V1ApiInterface {
      * @param {number} [limit] The number of results to return
      * @param {number} [offset] The offset of the query
      * @param {string} [search] Broad search query
-     * @param {string} [sortBy] How to sort the results
+     * @param {'count' | 'name' | 'year'} [sortBy] How to sort the results
      * @param {string} [sortOrder] The order of the results
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -2945,10 +2945,10 @@ export class V1Api extends runtime.BaseAPI implements V1ApiInterface {
      * Create a faculty
      */
     async facultyControllerCreateRaw(requestParameters: FacultyControllerCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Faculty>> {
-        if (requestParameters['addFacultyDto'] == null) {
+        if (requestParameters['createFacultyDto'] == null) {
             throw new runtime.RequiredError(
-                'addFacultyDto',
-                'Required parameter "addFacultyDto" was null or undefined when calling facultyControllerCreate().'
+                'createFacultyDto',
+                'Required parameter "createFacultyDto" was null or undefined when calling facultyControllerCreate().'
             );
         }
 
@@ -2963,7 +2963,7 @@ export class V1Api extends runtime.BaseAPI implements V1ApiInterface {
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: AddFacultyDtoToJSON(requestParameters['addFacultyDto']),
+            body: CreateFacultyDtoToJSON(requestParameters['createFacultyDto']),
         }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => FacultyFromJSON(jsonValue));
@@ -4124,6 +4124,15 @@ export type AlumniAnalyticsControllerGetAlumniListCompanyTypeEnum = typeof Alumn
 /**
  * @export
  */
+export const AlumniAnalyticsControllerGetAlumniListSortByEnum = {
+    Count: 'count',
+    Name: 'name',
+    Year: 'year'
+} as const;
+export type AlumniAnalyticsControllerGetAlumniListSortByEnum = typeof AlumniAnalyticsControllerGetAlumniListSortByEnum[keyof typeof AlumniAnalyticsControllerGetAlumniListSortByEnum];
+/**
+ * @export
+ */
 export const AlumniControllerFindAllGeoJSONGroupByEnum = {
     Countries: 'countries',
     Cities: 'cities'
@@ -4161,6 +4170,15 @@ export type CompanyAnalyticsControllerGetCompaniesWithAlumniCountCompanyTypeEnum
 /**
  * @export
  */
+export const CompanyAnalyticsControllerGetCompaniesWithAlumniCountSortByEnum = {
+    Count: 'count',
+    Name: 'name',
+    Year: 'year'
+} as const;
+export type CompanyAnalyticsControllerGetCompaniesWithAlumniCountSortByEnum = typeof CompanyAnalyticsControllerGetCompaniesWithAlumniCountSortByEnum[keyof typeof CompanyAnalyticsControllerGetCompaniesWithAlumniCountSortByEnum];
+/**
+ * @export
+ */
 export const EducationAnalyticsControllerGetFacultiesCompanySizeEnum = {
     A: 'A',
     B: 'B',
@@ -4187,6 +4205,15 @@ export const EducationAnalyticsControllerGetFacultiesCompanyTypeEnum = {
     SelfOwned: 'SELF_OWNED'
 } as const;
 export type EducationAnalyticsControllerGetFacultiesCompanyTypeEnum = typeof EducationAnalyticsControllerGetFacultiesCompanyTypeEnum[keyof typeof EducationAnalyticsControllerGetFacultiesCompanyTypeEnum];
+/**
+ * @export
+ */
+export const EducationAnalyticsControllerGetFacultiesSortByEnum = {
+    Count: 'count',
+    Name: 'name',
+    Year: 'year'
+} as const;
+export type EducationAnalyticsControllerGetFacultiesSortByEnum = typeof EducationAnalyticsControllerGetFacultiesSortByEnum[keyof typeof EducationAnalyticsControllerGetFacultiesSortByEnum];
 /**
  * @export
  */
@@ -4219,6 +4246,15 @@ export type EducationAnalyticsControllerGetGraduationsCompanyTypeEnum = typeof E
 /**
  * @export
  */
+export const EducationAnalyticsControllerGetGraduationsSortByEnum = {
+    Count: 'count',
+    Name: 'name',
+    Year: 'year'
+} as const;
+export type EducationAnalyticsControllerGetGraduationsSortByEnum = typeof EducationAnalyticsControllerGetGraduationsSortByEnum[keyof typeof EducationAnalyticsControllerGetGraduationsSortByEnum];
+/**
+ * @export
+ */
 export const EducationAnalyticsControllerGetMajorsCompanySizeEnum = {
     A: 'A',
     B: 'B',
@@ -4245,6 +4281,15 @@ export const EducationAnalyticsControllerGetMajorsCompanyTypeEnum = {
     SelfOwned: 'SELF_OWNED'
 } as const;
 export type EducationAnalyticsControllerGetMajorsCompanyTypeEnum = typeof EducationAnalyticsControllerGetMajorsCompanyTypeEnum[keyof typeof EducationAnalyticsControllerGetMajorsCompanyTypeEnum];
+/**
+ * @export
+ */
+export const EducationAnalyticsControllerGetMajorsSortByEnum = {
+    Count: 'count',
+    Name: 'name',
+    Year: 'year'
+} as const;
+export type EducationAnalyticsControllerGetMajorsSortByEnum = typeof EducationAnalyticsControllerGetMajorsSortByEnum[keyof typeof EducationAnalyticsControllerGetMajorsSortByEnum];
 /**
  * @export
  */
@@ -4277,6 +4322,15 @@ export type GeoAnalyticsControllerGetCitiesWithAlumniCountCompanyTypeEnum = type
 /**
  * @export
  */
+export const GeoAnalyticsControllerGetCitiesWithAlumniCountSortByEnum = {
+    Count: 'count',
+    Name: 'name',
+    Year: 'year'
+} as const;
+export type GeoAnalyticsControllerGetCitiesWithAlumniCountSortByEnum = typeof GeoAnalyticsControllerGetCitiesWithAlumniCountSortByEnum[keyof typeof GeoAnalyticsControllerGetCitiesWithAlumniCountSortByEnum];
+/**
+ * @export
+ */
 export const GeoAnalyticsControllerGetCountriesWithAlumniCountCompanySizeEnum = {
     A: 'A',
     B: 'B',
@@ -4306,6 +4360,15 @@ export type GeoAnalyticsControllerGetCountriesWithAlumniCountCompanyTypeEnum = t
 /**
  * @export
  */
+export const GeoAnalyticsControllerGetCountriesWithAlumniCountSortByEnum = {
+    Count: 'count',
+    Name: 'name',
+    Year: 'year'
+} as const;
+export type GeoAnalyticsControllerGetCountriesWithAlumniCountSortByEnum = typeof GeoAnalyticsControllerGetCountriesWithAlumniCountSortByEnum[keyof typeof GeoAnalyticsControllerGetCountriesWithAlumniCountSortByEnum];
+/**
+ * @export
+ */
 export const IndustryAnalyticsControllerGetIndustryWithCountsCompanySizeEnum = {
     A: 'A',
     B: 'B',
@@ -4332,6 +4395,15 @@ export const IndustryAnalyticsControllerGetIndustryWithCountsCompanyTypeEnum = {
     SelfOwned: 'SELF_OWNED'
 } as const;
 export type IndustryAnalyticsControllerGetIndustryWithCountsCompanyTypeEnum = typeof IndustryAnalyticsControllerGetIndustryWithCountsCompanyTypeEnum[keyof typeof IndustryAnalyticsControllerGetIndustryWithCountsCompanyTypeEnum];
+/**
+ * @export
+ */
+export const IndustryAnalyticsControllerGetIndustryWithCountsSortByEnum = {
+    Count: 'count',
+    Name: 'name',
+    Year: 'year'
+} as const;
+export type IndustryAnalyticsControllerGetIndustryWithCountsSortByEnum = typeof IndustryAnalyticsControllerGetIndustryWithCountsSortByEnum[keyof typeof IndustryAnalyticsControllerGetIndustryWithCountsSortByEnum];
 /**
  * @export
  */
@@ -4369,3 +4441,12 @@ export const RoleAnalyticsControllerGetRolesCompanyTypeEnum = {
     SelfOwned: 'SELF_OWNED'
 } as const;
 export type RoleAnalyticsControllerGetRolesCompanyTypeEnum = typeof RoleAnalyticsControllerGetRolesCompanyTypeEnum[keyof typeof RoleAnalyticsControllerGetRolesCompanyTypeEnum];
+/**
+ * @export
+ */
+export const RoleAnalyticsControllerGetRolesSortByEnum = {
+    Count: 'count',
+    Name: 'name',
+    Year: 'year'
+} as const;
+export type RoleAnalyticsControllerGetRolesSortByEnum = typeof RoleAnalyticsControllerGetRolesSortByEnum[keyof typeof RoleAnalyticsControllerGetRolesSortByEnum];
