@@ -1,4 +1,4 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { RoleAnalyticsEntity } from './role.entity';
 import { GraduationAnalyticsEntity } from './graduation.entity';
 
@@ -15,19 +15,17 @@ export class AlumniAnalyticsEntity {
   })
   fullName: string;
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     description: 'The linkedin url of the alumni',
     type: String,
-    nullable: true,
   })
-  linkedinUrl: string | null;
+  linkedinUrl?: string;
 
   @ApiProperty({
     description: 'The profile picture of the alumni',
     type: String,
-    nullable: true,
   })
-  profilePictureUrl: string | null;
+  profilePictureUrl?: string;
 
   @ApiProperty({
     description: 'The roles of the alumni',

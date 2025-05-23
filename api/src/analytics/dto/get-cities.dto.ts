@@ -1,7 +1,7 @@
 import { IsOptional, IsString, IsArray } from 'class-validator';
 import { Transform } from 'class-transformer';
 import { ApiPropertyOptional } from '@nestjs/swagger';
-import { TransformToArray } from '@/utils/validation';
+import { TransformToArray } from '@/validators';
 
 export class GetCitiesDto {
   @ApiPropertyOptional({

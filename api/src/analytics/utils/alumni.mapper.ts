@@ -47,6 +47,8 @@ type RawLocation = {
   country?: string | null;
   countryCode?: string | null;
   city?: string | null;
+  latitude?: number | null;
+  longitude?: number | null;
 };
 
 type RawAlumni = {
@@ -103,26 +105,13 @@ type RawGraduation = {
   Course: RawCourse;
 };
 
-export function toAlumniAnalyticsEntity(
-  alumni: RawAlumni,
-): AlumniAnalyticsEntity {
-  return {
-    id: alumni.id,
-    fullName: alumni.fullName,
-    linkedinUrl: alumni.linkedinUrl,
-    profilePictureUrl: alumni.profilePictureUrl,
-    roles: alumni.Roles.map(mapRoleFromPrisma),
-    graduations: alumni.Graduations.map(mapGraduationFromPrisma),
-  };
-}
-
 export function toRoleAnalyticsEntity(
   role: Pick<RawRole, 'id' | 'startDate' | 'endDate' | 'alumniId'>,
 ): Partial<RoleAnalyticsEntity> {
   return {
     id: role.id,
     startDate: role.startDate,
-    endDate: role.endDate,
+    endDate: role.endDate ?? undefined,
     alumniId: role.alumniId,
   };
 }
@@ -189,6 +178,8 @@ const mapLocationFromPrisma = (
     country: location.country ?? '',
     countryCode: location.countryCode ?? '',
     city: location.city ?? '',
+    latitude: location.latitude ?? undefined,
+    longitude: location.longitude ?? undefined,
   };
 };
 
@@ -197,7 +188,7 @@ const mapRoleFromPrisma = (role: RawRole): RoleAnalyticsEntity => {
     id: role.id,
     alumniId: role.alumniId,
     startDate: role.startDate,
-    endDate: role.endDate,
+    endDate: role.endDate ?? undefined,
     isCurrent: role.isCurrent,
     jobClassification: mapJobClassificationFromPrisma(role.JobClassification),
     company: mapCompanyFromPrisma(role.Company),
@@ -240,5 +231,18 @@ const mapFacultyFromPrisma = (faculty: RawFaculty): FacultyAnalyticsEntity => {
     name: faculty.name,
     nameInt: faculty.nameInt,
     acronym: faculty.acronym,
+  };
+};
+
+export const mapAlumniFromPrisma = (
+  alumni: RawAlumni,
+): AlumniAnalyticsEntity => {
+  return {
+    id: alumni.id,
+    fullName: alumni.fullName,
+    linkedinUrl: alumni.linkedinUrl ?? undefined,
+    profilePictureUrl: alumni.profilePictureUrl ?? undefined,
+    roles: alumni.Roles.map(mapRoleFromPrisma),
+    graduations: alumni.Graduations.map(mapGraduationFromPrisma),
   };
 };

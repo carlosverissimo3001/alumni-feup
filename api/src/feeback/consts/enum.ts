@@ -1,0 +1,5 @@
+export enum FEEDBACK_TYPE {
+  BUG = 'BUG',
+  FEATURE_REQUEST = 'FEATURE_REQUEST',
+  OTHER = 'OTHER',
+}

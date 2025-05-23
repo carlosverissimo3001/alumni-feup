@@ -17,7 +17,7 @@ import {
 } from "../common/";
 import ImageWithFallback from "../../ui/image-with-fallback";
 import { SortBy, SortOrder, ITEMS_PER_PAGE } from "@/consts";
-import { ExternalLink, Filter, Users, Search, X } from "lucide-react";
+import { ExternalLink, Filter, Users, Search, X, Earth } from "lucide-react";
 import TableTitle from "../common/TableTitle";
 import Image from "next/image";
 import { useAlumniList } from "@/hooks/analytics/useAlumniList";
@@ -89,10 +89,14 @@ export const AlumniTable = ({ filters, onAddToFilters }: AlumniTableProps) => {
     const rowHeight = 56;
     const headerHeight = 100;
     const paginationHeight = 60;
-    const calculatedHeight =
-      headerHeight + itemCount * rowHeight + paginationHeight;
+    const minVisibleRows = 5;
 
-    const minHeight = 200;
+    const calculatedHeight =
+      headerHeight +
+      Math.max(itemCount, minVisibleRows) * rowHeight +
+      paginationHeight;
+
+    const minHeight = 440;
     const maxHeight = 800;
 
     return Math.max(minHeight, Math.min(calculatedHeight, maxHeight));
@@ -237,7 +241,7 @@ export const AlumniTable = ({ filters, onAddToFilters }: AlumniTableProps) => {
                               <Tooltip>
                                 <TooltipTrigger asChild>
                                   <ExternalLink
-                                    className="h-4 w-4 text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer hover:text-[#8C2D19]"
+                                    className="h-4 w-4 text-gray-400 transition-opacity cursor-pointer hover:text-[#8C2D19]"
                                     onClick={() => {
                                       window.open(
                                         `/profile/${alumni.id}`,
@@ -258,6 +262,52 @@ export const AlumniTable = ({ filters, onAddToFilters }: AlumniTableProps) => {
                                 </TooltipContent>
                               </Tooltip>
                             </TooltipProvider>
+                            {alumni.currentRoleLocation &&
+                              alumni.currentRoleLocation.latitude &&
+                              alumni.currentRoleLocation.longitude && (
+                                <TooltipProvider>
+                                  <Tooltip>
+                                    <TooltipTrigger asChild>
+                                      <Earth
+                                        className="h-4 w-4 text-gray-400 transition-opacity cursor-pointer hover:text-[#8C2D19]"
+                                        onClick={() => {
+                                          const params = new URLSearchParams();
+                                          if (
+                                            alumni.currentRoleLocation
+                                              ?.latitude != null &&
+                                            alumni.currentRoleLocation
+                                              ?.longitude != null
+                                          ) {
+                                            params.set(
+                                              "lat",
+                                              alumni.currentRoleLocation.latitude.toString()
+                                            );
+                                            params.set(
+                                              "lng",
+                                              alumni.currentRoleLocation.longitude.toString()
+                                            );
+
+                                          }
+                                          window.open(
+                                            `/?${params.toString()}`,
+                                            "_blank"
+                                          );
+                                        }}
+                                      />
+                                    </TooltipTrigger>
+                                    <TooltipContent>
+                                      {isLoggedUser ? (
+                                        <p>View your location on map</p>
+                                      ) : (
+                                        <p>
+                                          View {alumni.fullName.split(" ")[0]}{" "}
+                                          on map
+                                        </p>
+                                      )}
+                                    </TooltipContent>
+                                  </Tooltip>
+                                </TooltipProvider>
+                              )}
                             {alumni.id === userId && (
                               <div className="px-2 py-0.5 text-xs font-medium bg-gradient-to-r from-[#8C2D19]/10 to-[#A13A23]/10 text-[#8C2D19] rounded-full">
                                 You

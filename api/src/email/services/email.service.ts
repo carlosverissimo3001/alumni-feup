@@ -2,10 +2,10 @@
 import { Injectable } from '@nestjs/common';
 import * as nodemailer from 'nodemailer';
 import { ConfigService } from '@nestjs/config';
-import { EMAIL_SERVICE, ADMINISTRATOR_EMAILS } from '@/consts';
+import { ADMINISTRATOR_EMAILS, EMAIL_SERVICE } from '../consts';
 import * as fs from 'fs';
 import * as path from 'path';
-import { SendFeedbackDto } from '@/dto/send-feedback.dto';
+import { SendFeedbackDto } from '@/feeback/dto/send-feedback.dto';
 
 const TEMPLATES_PATH = path.join(process.cwd(), 'src', 'templates');
 

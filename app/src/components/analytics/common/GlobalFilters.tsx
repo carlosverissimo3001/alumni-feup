@@ -18,7 +18,7 @@ import {
   X,
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect, useCallback } from "react";
 import {
   Tooltip,
   TooltipContent,
@@ -40,6 +40,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useRoleOptions } from "@/hooks/analytics/useRoleOptions";
 import { useAlumniOptions } from "@/hooks/analytics/useAlumniOptions";
 import { useListFaculties } from "@/hooks/faculty/useListFaculties";
+import Link from "next/link";
 
 export type FilterState = {
   dateRange?: DateRange | undefined;
@@ -149,16 +150,16 @@ export const GlobalFilters = ({
       })),
       coursesGrouped: (courseOptions || []).map((course) => ({
         id: course.id,
-        name: course.name,
+        value: `(${course.acronym}) ${course.name}`,
         group: course.facultyAcronym,
       })),
       faculties: (facultyOptions || []).map((faculty) => ({
         value: faculty.id,
-        label: faculty.name,
+        label: `(${faculty.acronym}) ${faculty.name} `,
       })),
       roleCitiesGrouped: (roleCityOptions || []).map((city) => ({
         id: city.id,
-        name: city.name,
+        value: city.name,
         group: city.country,
       })),
       roleCities: (roleCityOptions || []).map((city) => ({
@@ -167,7 +168,7 @@ export const GlobalFilters = ({
       })),
       companyCitiesGrouped: (companyCityOptions || []).map((city) => ({
         id: city.id,
-        name: city.name,
+        value: city.name,
         group: city.country,
       })),
       companyCities: (companyCityOptions || []).map((city) => ({
@@ -273,144 +274,220 @@ export const GlobalFilters = ({
     handleFilterChange("search", undefined);
   };
 
+  const buildMapUrl = useCallback(() => {
+    const params = new URLSearchParams();
+    if (filters.graduationYears?.length) {
+      params.set("conclusion_year", filters.graduationYears.join(","));
+    }
+
+    if (filters.courseIds?.length && courseOptions) {
+      const courseAcronyms = filters.courseIds
+        .map((id) => courseOptions.find((c) => c.id === id)?.acronym)
+        .filter((acronym): acronym is string => !!acronym)
+        .map((acronym) => acronym.toLowerCase().replace(/\./g, "_"));
+
+      if (courseAcronyms.length) {
+        params.set("course", courseAcronyms.join(","));
+      }
+    }
+
+    return `/${params.toString() ? "?" + params.toString() : ""}`;
+  }, [filters.graduationYears, filters.courseIds, courseOptions]);
+
   return (
-    <div className="bg-white rounded-lg shadow-sm border border-gray-100">
-      <motion.div
-        className="flex items-center justify-between p-4 cursor-pointer select-none"
-        onClick={() => setIsCollapsed(!isCollapsed)}
-      >
-        <div className="flex items-center gap-2">
-          <motion.button
-            className="p-1 hover:bg-gradient-to-r hover:from-[#A13A23]/10 hover:to-gray-100 rounded-full transition-colors select-none relative"
-            whileTap={{ scale: 0.9 }}
+    <div className="space-y-4">
+      <div className="bg-white rounded-lg shadow-sm border border-gray-100">
+        <motion.div
+          className="flex items-center justify-between p-4 cursor-pointer select-none"
+          onClick={() => setIsCollapsed(!isCollapsed)}
+        >
+          <div className="flex items-center gap-2">
+            <motion.button
+              className="p-1 hover:bg-gradient-to-r hover:from-[#A13A23]/10 hover:to-gray-100 rounded-full transition-colors select-none relative"
+              whileTap={{ scale: 0.9 }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <ListFilterIcon className="w-5 h-5 text-[#8C2D19]" />
+              {Math.max(0, activeFilterCount) > 0 && (
+                <span
+                  className={`absolute -top-1 -right-1 bg-[#8C2D19] text-white text-xs rounded-full flex items-center justify-center animate-pulse ${
+                    activeFilterCount > 9 ? "h-5 w-5" : "h-4 w-4"
+                  }`}
+                  aria-label={`Active filters: ${activeFilterCount}`}
+                >
+                  {activeFilterCount}
+                </span>
+              )}
+              {Math.max(0, activeFilterCount) > 0 && (
+                <span
+                  className={`absolute -top-1 -right-1 bg-[#8C2D19] text-white text-xs rounded-full flex items-center justify-center ${
+                    activeFilterCount > 9 ? "h-5 w-5" : "h-4 w-4"
+                  }`}
+                  aria-label={`Active filters: ${activeFilterCount}`}
+                >
+                  {activeFilterCount}
+                </span>
+              )}
+            </motion.button>
+            <h2 className="text-lg font-bold text-[#8C2D19]">Filters</h2>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Link
+                    href={buildMapUrl()}
+                    target="_blank"
+                    className="group relative flex items-center gap-1.5 ml-1 text-sm bg-gradient-to-r from-red-50 via-white to-red-50/50 
+                        px-3 py-1.5 rounded-full border border-red-200/50 shadow-sm
+                        hover:shadow-md hover:border-red-300/70 hover:from-red-100 hover:via-white hover:to-red-50
+                        transition-all duration-300 ease-in-out transform hover:scale-105"
+                  >
+                    <div className="relative">
+                      <MapPin className="w-4 h-4 text-red-700 transition-transform duration-300 group-hover:scale-110" />
+                      <motion.div
+                        className="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full ring-2 ring-red-500/20"
+                        animate={{
+                          scale: [1, 1.5, 1],
+                          opacity: [1, 0.5, 1],
+                        }}
+                        transition={{
+                          duration: 2,
+                          repeat: Infinity,
+                          ease: "easeInOut",
+                        }}
+                      />
+                    </div>
+                    <span className="font-medium bg-gradient-to-r from-red-800 to-red-600 bg-clip-text text-transparent whitespace-nowrap">
+                      View on map
+                    </span>
+                  </Link>
+                </TooltipTrigger>
+                <TooltipContent
+                  side="bottom"
+                  className="bg-white/95 backdrop-blur-sm border-red-100 shadow-lg p-0"
+                >
+                  <div className="p-3 max-w-[280px]">
+                    <p className="text-sm text-gray-700">
+                      <span className="font-semibold text-red-700">
+                        Interactive Map View
+                      </span>
+                      <br />
+                      See alumni distribution across the globe with your current
+                      filters
+                    </p>
+                    <div className="mt-2.5 pt-2 border-t border-red-100/50 flex items-start gap-2 text-xs text-gray-600">
+                      <Info className="w-3.5 h-3.5 mt-0.5 flex-shrink-0" />
+                      <span>
+                        Supported filters on the map: Course & Conclusion Year
+                      </span>
+                    </div>
+                  </div>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          </div>
+
+          <div
+            className="relative flex-1 mx-8 max-w-md"
             onClick={(e) => e.stopPropagation()}
           >
-            <ListFilterIcon className="w-5 h-5 text-[#8C2D19]" />
-            {Math.max(0, activeFilterCount) > 0 && (
-              <span
-                className={`absolute -top-1 -right-1 bg-[#8C2D19] text-white text-xs rounded-full flex items-center justify-center animate-pulse ${
-                  activeFilterCount > 9 ? "h-5 w-5" : "h-4 w-4"
-                }`}
-                aria-label={`Active filters: ${activeFilterCount}`}
-              >
-                {activeFilterCount}
-              </span>
-            )}
-            {Math.max(0, activeFilterCount) > 0 && (
-              <span
-                className={`absolute -top-1 -right-1 bg-[#8C2D19] text-white text-xs rounded-full flex items-center justify-center ${
-                  activeFilterCount > 9 ? "h-5 w-5" : "h-4 w-4"
-                }`}
-                aria-label={`Active filters: ${activeFilterCount}`}
-              >
-                {activeFilterCount}
-              </span>
-            )}
-          </motion.button>
-          <h2 className="text-lg font-bold text-[#8C2D19]">Filters</h2>
-        </div>
-
-        <div
-          className="relative flex-1 mx-8 max-w-md"
-          onClick={(e) => e.stopPropagation()}
-        >
-          <div className="relative group">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400 transition-all duration-200 group-hover:text-[#8C2D19] group-hover:scale-110 group-focus-within:text-[#8C2D19] group-focus-within:scale-110" />
-            <Input
-              type="text"
-              placeholder="Search company or alumni..."
-              value={filters.search || ""}
-              onChange={handleSearchChange}
-              className="pl-10 pr-12 py-2 w-full bg-gradient-to-r from-gray-50 to-white border-gray-200 shadow-sm transition-all duration-200
-                       hover:border-[#8C2D19]/50 hover:shadow-md focus-visible:border-[#8C2D19]/70 focus-visible:ring-2 focus-visible:ring-[#8C2D19]/30
-                       placeholder:text-gray-400 placeholder:text-sm placeholder:italic rounded-lg"
-            />
-            {filters.search && (
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={handleClearSearch}
-                className="absolute right-3 top-1/2 transform -translate-y-1/2 h-6 w-6 text-gray-400 hover:text-[#8C2D19] transition-colors"
-              >
-                <X className="h-4 w-4" />
-              </Button>
-            )}
-          </div>
-        </div>
-
-        {activeFilterCount > 0 && (
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={(e) => {
-              e.stopPropagation();
-              clearFilters();
-            }}
-            className="text-[#8C2D19] border-[#8C2D19] hover:bg-[#8C2D19] hover:text-white transition-colors animate-pulse"
-          >
-            Clear
-          </Button>
-        )}
-      </motion.div>
-
-      {!isCollapsed && (
-        <div className="px-4 pb-4">
-          <Tabs
-            value={activeTab}
-            onValueChange={setActiveTab}
-            className="w-full"
-          >
-            <TabsList className="grid grid-cols-2 md:grid-cols-4 mb-3 bg-gray-50 rounded-lg p-1">
-              <TabsTrigger
-                value="roles"
-                className="flex items-center gap-1.5 hover:bg-[#A13A23]/10 hover:scale-105 hover:shadow-md transition-all duration-200 rounded-md text-sm"
-              >
-                <Briefcase className="h-4 w-4 text-[#8C2D19]" />
-                <span>Roles</span>
-              </TabsTrigger>
-              <TabsTrigger
-                value="organization"
-                className="flex items-center gap-1.5 hover:bg-[#A13A23]/10 hover:scale-105 hover:shadow-md transition-all duration-200 rounded-md text-sm"
-              >
-                <Building className="h-4 w-4 text-[#8C2D19]" />
-                <span>Organization</span>
-              </TabsTrigger>
-              <TabsTrigger
-                value="location"
-                className="flex items-center gap-1.5 hover:bg-[#A13A23]/10 hover:scale-105 hover:shadow-md transition-all duration-200 rounded-md text-sm"
-              >
-                <MapPin className="h-4 w-4 text-[#8C2D19]" />
-                <span>Location</span>
-              </TabsTrigger>
-              <TabsTrigger
-                value="education"
-                className="flex items-center gap-1.5 hover:bg-[#A13A23]/10 hover:scale-105 hover:shadow-md transition-all duration-200 rounded-md text-sm whitespace-nowrap"
-              >
-                <Users className="h-4 w-4 text-[#8C2D19]" />
-                <span>Alumni & Education</span>
-              </TabsTrigger>
-            </TabsList>
-
-            <div className="relative">
-              <AnimatePresence mode="wait">
-                <motion.div
-                  key={activeTab}
-                  initial={{ opacity: 0, x: 20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: -20 }}
-                  transition={{ duration: 0.2 }}
-                  className="w-full bg-gradient-to-br from-gray-50 to-white p-4 rounded-lg"
+            <div className="relative group">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400 transition-all duration-200 group-hover:text-[#8C2D19] group-hover:scale-110 group-focus-within:text-[#8C2D19] group-focus-within:scale-110" />
+              <Input
+                type="text"
+                placeholder="Search company or alumni..."
+                value={filters.search || ""}
+                onChange={handleSearchChange}
+                className="pl-10 pr-12 py-2 w-full bg-gradient-to-r from-gray-50 to-white border-gray-200 shadow-sm transition-all duration-200
+                         hover:border-[#8C2D19]/50 hover:shadow-md focus-visible:border-[#8C2D19]/70 focus-visible:ring-2 focus-visible:ring-[#8C2D19]/30
+                         placeholder:text-gray-400 placeholder:text-sm placeholder:italic rounded-lg"
+              />
+              {filters.search && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={handleClearSearch}
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 h-6 w-6 text-gray-400 hover:text-[#8C2D19] transition-colors"
                 >
-                  {activeTab === "roles" && renderRolesTab()}
-                  {activeTab === "location" && renderLocationTab()}
-                  {activeTab === "organization" && renderOrganizationTab()}
-                  {activeTab === "education" && renderEducationTab()}
-                </motion.div>
-              </AnimatePresence>
+                  <X className="h-4 w-4" />
+                </Button>
+              )}
             </div>
-          </Tabs>
-        </div>
-      )}
+          </div>
+
+          {activeFilterCount > 0 && (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={(e) => {
+                e.stopPropagation();
+                clearFilters();
+              }}
+              className="text-[#8C2D19] border-[#8C2D19] hover:bg-[#8C2D19] hover:text-white transition-colors animate-pulse"
+            >
+              Clear
+            </Button>
+          )}
+        </motion.div>
+
+        {!isCollapsed && (
+          <div className="px-4 pb-4">
+            <Tabs
+              value={activeTab}
+              onValueChange={setActiveTab}
+              className="w-full"
+            >
+              <TabsList className="grid grid-cols-2 md:grid-cols-4 mb-3 bg-gray-50 rounded-lg p-1">
+                <TabsTrigger
+                  value="roles"
+                  className="flex items-center gap-1.5 hover:bg-[#A13A23]/10 hover:scale-105 hover:shadow-md transition-all duration-200 rounded-md text-sm"
+                >
+                  <Briefcase className="h-4 w-4 text-[#8C2D19]" />
+                  <span>Roles</span>
+                </TabsTrigger>
+                <TabsTrigger
+                  value="organization"
+                  className="flex items-center gap-1.5 hover:bg-[#A13A23]/10 hover:scale-105 hover:shadow-md transition-all duration-200 rounded-md text-sm"
+                >
+                  <Building className="h-4 w-4 text-[#8C2D19]" />
+                  <span>Organization</span>
+                </TabsTrigger>
+                <TabsTrigger
+                  value="location"
+                  className="flex items-center gap-1.5 hover:bg-[#A13A23]/10 hover:scale-105 hover:shadow-md transition-all duration-200 rounded-md text-sm"
+                >
+                  <MapPin className="h-4 w-4 text-[#8C2D19]" />
+                  <span>Location</span>
+                </TabsTrigger>
+                <TabsTrigger
+                  value="education"
+                  className="flex items-center gap-1.5 hover:bg-[#A13A23]/10 hover:scale-105 hover:shadow-md transition-all duration-200 rounded-md text-sm whitespace-nowrap"
+                >
+                  <Users className="h-4 w-4 text-[#8C2D19]" />
+                  <span>Alumni & Education</span>
+                </TabsTrigger>
+              </TabsList>
+
+              <div className="relative">
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    key={activeTab}
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: -20 }}
+                    transition={{ duration: 0.2 }}
+                    className="w-full bg-gradient-to-br from-gray-50 to-white p-4 rounded-lg"
+                  >
+                    {activeTab === "roles" && renderRolesTab()}
+                    {activeTab === "location" && renderLocationTab()}
+                    {activeTab === "organization" && renderOrganizationTab()}
+                    {activeTab === "education" && renderEducationTab()}
+                  </motion.div>
+                </AnimatePresence>
+              </div>
+            </Tabs>
+          </div>
+        )}
+      </div>
     </div>
   );
 
@@ -809,7 +886,6 @@ export const GlobalFilters = ({
               onValueChange={(value) => handleFilterChange("facultyIds", value)}
               placeholder="Select faculties"
               isLoading={isFacultyOptionsLoading}
-              allowSelectAll={true}
               maxCount={1}
             />
           </div>

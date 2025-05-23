@@ -1,12 +1,13 @@
 import { Logger, Module } from '@nestjs/common';
-import { AgentsApiService } from '../agents-api/agents-api.service';
-import { GeolocationService } from '../geolocation/geolocation.service';
+import { AgentsApiService } from '@/agents-api/services/agents-api.service';
+import { GeolocationService } from '../geolocation/services/geolocation.service';
 import { OtpService } from '../otp/otp.service';
 import { PrismaService } from '../prisma/prisma.service';
 import { AlumniController } from './controllers/alumni.controller';
 import { AlumniRepository } from './repositories/alumni.repository';
 import { AlumniProfileService } from './services/alumni-profile.service';
 import { AlumniService } from './services/alumni.service';
+
 @Module({
   controllers: [AlumniController],
   providers: [
@@ -20,6 +21,6 @@ import { AlumniService } from './services/alumni.service';
     AgentsApiService,
     OtpService,
   ],
-  exports: [AlumniService],
+  exports: [AlumniService, AlumniRepository],
 })
 export class AlumniModule {}

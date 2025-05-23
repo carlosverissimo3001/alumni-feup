@@ -1,3 +1,8 @@
+// might as well write this in javascript
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
 import {
   Injectable,
   NotFoundException,
@@ -12,13 +17,13 @@ import {
   GeoJSONProperties,
 } from 'src/entities/';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { CreateAlumniDto } from '@/dto';
+import { CreateAlumniDto } from '../dto/create-alumni.dto';
 import { AlumniRepository } from '../repositories/alumni.repository';
-import { GetGeoJSONDto } from 'src/dto/getgeojson.dto';
+import { GetGeoJSONDto } from '@/dto/get-geojson.dto';
 import { Feature, Point } from 'geojson';
-import { GROUP_BY, LinkedInOperation } from '@/consts';
-import { GeolocationService } from 'src/geolocation/geolocation.service';
-import { AgentsApiService } from 'src/agents-api/agents-api.service';
+import { GROUP_BY, LINKEDIN_OPERATION } from '@/consts';
+import { GeolocationService } from '@/geolocation/services/geolocation.service';
+import { AgentsApiService } from '@/agents-api/services/agents-api.service';
 import { parseNameParts, sanitizeLinkedinUrl } from '../utils';
 import { OtpService } from '@/otp/otp.service';
 import { AlumniExtended } from '@/entities/alumni.entity';
@@ -131,12 +136,12 @@ export class AlumniService {
       }
     } else {
       if (query.compareYear && query.selectedYear) {
-        alumniByGroup = await this.groupAlumniByCityWithRoleAndCompareYear(
+        alumniByGroup = this.groupAlumniByCityWithRoleAndCompareYear(
           alumni,
           alumniCompareYear,
         );
       } else if (query.selectedYear) {
-        alumniByGroup = await this.groupAlumniByCityWithRole(alumni);
+        alumniByGroup = this.groupAlumniByCityWithRole(alumni);
       } else {
         alumniByGroup = this.groupAlumniByCity(alumni);
       }
@@ -336,7 +341,7 @@ export class AlumniService {
         // If the admin uploaded the data, we should trust it
         wasReviewed: fromUpload ? true : false,
         createdBy: body.createdBy ?? DEFAULT_CREATED_BY,
-        source: fromUpload ? Source.ADMIN_IMPORT : Source.FORM_SUBMISSION ,
+        source: fromUpload ? Source.ADMIN_IMPORT : Source.FORM_SUBMISSION,
       },
     });
 
@@ -355,7 +360,7 @@ export class AlumniService {
 
   async requestProfileExtraction(alumniId: string) {
     await this.agentsApiService.triggerLinkedinOperation(
-      LinkedInOperation.EXTRACT,
+      LINKEDIN_OPERATION.EXTRACT,
       [alumniId],
     );
   }
@@ -609,10 +614,10 @@ export class AlumniService {
     }, {});
   }
 
-  async groupAlumniByCityWithRoleAndCompareYear(
+  groupAlumniByCityWithRoleAndCompareYear(
     alumni: Alumni[],
     alumniCompareYear: Alumni[],
-  ): Promise<AlumniByCity> {
+  ): AlumniByCity {
     const acc: AlumniByCity = {};
 
     for (const alumnus of alumni) {
@@ -706,7 +711,7 @@ export class AlumniService {
     return acc;
   }
 
-  async groupAlumniByCityWithRole(alumni: Alumni[]): Promise<AlumniByCity> {
+  groupAlumniByCityWithRole(alumni: Alumni[]): AlumniByCity {
     const acc: AlumniByCity = {};
 
     for (const alumnus of alumni) {

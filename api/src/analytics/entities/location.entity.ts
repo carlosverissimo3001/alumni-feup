@@ -12,4 +12,10 @@ export class LocationAnalyticsEntity {
 
   @ApiPropertyOptional({ nullable: true })
   city?: string | null;
+
+  @ApiPropertyOptional({ nullable: true })
+  latitude?: number | null;
+
+  @ApiPropertyOptional({ nullable: true })
+  longitude?: number | null;
 }

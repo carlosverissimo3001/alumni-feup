@@ -1,4 +1,4 @@
-import { COMPANY_SIZE, COMPANY_TYPE } from '@/consts';
+import { COMPANY_SIZE, COMPANY_TYPE } from '@/analytics/consts/enum';
 import { LocationGeo } from '@/entities';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { IndustryAnalyticsEntity as Industry } from '@/analytics/entities/industry.entity';

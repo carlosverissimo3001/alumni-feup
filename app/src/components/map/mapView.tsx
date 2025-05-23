@@ -17,10 +17,11 @@ import {
   extractFeatureFields,
 } from "./utils/helper";
 import { GeoJSONFeatureCollection } from "@/sdk";
-import 'mapbox-gl/dist/mapbox-gl.css';
+import "mapbox-gl/dist/mapbox-gl.css";
 import { GeoJSONProperties } from "./mapFilters";
 import { AlumniData } from "@/types/alumni";
 import { set } from "lodash";
+import { useSearchParams } from "next/navigation";
 
 type MapViewProps = {
   loading: boolean;
@@ -32,7 +33,7 @@ type MapViewProps = {
   handleSelectAlumni: (name: string, coordinates: number[]) => void;
   handleSelectGeoJSON: (geoData: GeoJSONFeatureCollection) => void;
   selectedYear?: number | undefined;
-  compareYear?: number |  undefined;
+  compareYear?: number | undefined;
 };
 
 const MapView = ({
@@ -40,7 +41,7 @@ const MapView = ({
   alumniGeoJSON,
   selectedAlumni,
   selectedYear,
-  compareYear
+  compareYear,
 }: MapViewProps) => {
   const [hoveredMouseCoords, setHoveredMouseCoords] = useState<
     [number, number] | null
@@ -49,7 +50,9 @@ const MapView = ({
   const [students, setStudents] = useState<number>(0);
   const [totalAlumni, setTotalAlumni] = useState<number>(0);
   const [totalAlumniPrev, setTotalAlumniPrev] = useState<number>(0);
-  const [compareYearStudents, setCompareYearStudents] = useState<number | undefined>(undefined);
+  const [compareYearStudents, setCompareYearStudents] = useState<
+    number | undefined
+  >(undefined);
   const [listAlumniNames, setListAlumniNames] = useState<string[]>([]);
   const [listLinkedinLinks, setListLinkedinLinks] = useState<string[]>([]);
   const [alumniData, setAlumniData] = useState<AlumniData[]>([]);
@@ -61,32 +64,53 @@ const MapView = ({
 
   const { isCollapsed } = useNavbar();
 
+  const searchParams = useSearchParams();
+
   const onMapLoad = useCallback(() => {
-    console.log('Map loaded1');
+    console.log("Map loaded1");
     mapRef.current.loadImage(
-      'logos/arrow.png',
+      "logos/arrow.png",
       (error: Error | null, image: HTMLImageElement | undefined) => {
         if (error) throw error;
         if (image) {
-          mapRef.current.addImage('arrowicon', image, { 'sdf': true });
-        }else{
-          console.log('Image not found');
+          mapRef.current.addImage("arrowicon", image, { sdf: true });
+        } else {
+          console.log("Image not found");
         }
-      });
-      mapRef.current.loadImage(
-        'logos/equals.png',
-        (error: Error | null, image: HTMLImageElement | undefined) => {
-          if (error) throw error;
-          if (image) {
-            mapRef.current.addImage('equalsicon', image, { 'sdf': true });
-          }else{
-            console.log('Image not found');
-          }
-        });
+      }
+    );
+    mapRef.current.loadImage(
+      "logos/equals.png",
+      (error: Error | null, image: HTMLImageElement | undefined) => {
+        if (error) throw error;
+        if (image) {
+          mapRef.current.addImage("equalsicon", image, { sdf: true });
+        } else {
+        }
+      }
+    );
     setMapLoaded(true);
   }, []);
 
-  // Zooms to the selected alumni
+  useEffect(() => {
+    if (mapLoaded && mapRef.current) {
+      const lat = searchParams.get("lat");
+      const lng = searchParams.get("lng");
+
+      if (lat && lng) {
+        const coordinates = { lat: parseFloat(lat), lng: parseFloat(lng) };
+        const map = mapRef.current.getMap();
+        if (map) {
+          map.flyTo({
+            center: [coordinates.lng, coordinates.lat],
+            zoom: 12,
+            duration: 2000,
+          });
+        }
+      }
+    }
+  }, [mapLoaded, searchParams]);
+
   useEffect(() => {
     if (selectedAlumni && mapLoaded && mapRef.current) {
       const { name, coordinates } = selectedAlumni;
@@ -114,11 +138,6 @@ const MapView = ({
     totalAlumni: number,
     totalAlumniPrev: number
   ) => {
-    //if (
-      //listAlumniNames.length > 0 //&&
-      // listLinkedinLinks.length > 0 &&
-      // listPlaceName.length > 0
-    //) {
       setListPlaceName(listPlaceName);
       setListAlumniNames(listAlumniNames);
       setListLinkedinLinks(listLinkedinLinks);
@@ -128,14 +147,6 @@ const MapView = ({
       setStudents(students);
       setTotalAlumni(totalAlumni);
       setTotalAlumniPrev(totalAlumniPrev);
-    // } else {
-    //   setListPlaceName([]);
-    //   setListAlumniNames([]);
-    //   setListLinkedinLinks([]);
-    //   setAlumniData([]);
-    //   setHoveredCluster(false);
-    //   setHoveredMouseCoords(null);
-    // }
   };
 
   // Clusters content
@@ -166,7 +177,6 @@ const MapView = ({
           jobTitles,
           companyNames,
         } = await extractFeatureFields(feature as unknown as Feature<Geometry, GeoJSONProperties>);
-        console.log("listPlaceName", totalAlumniPrev);
         const mapUserCoursesYears = await extractCoursesYears(
           coursesYearConclusionByUser
         );
@@ -179,7 +189,7 @@ const MapView = ({
           jobTitles,
           companyNames,
         );
-        
+
         const parsedFlattenedPlaceNames = parsePlaceNames(listPlaceName);
 
         updateState(
@@ -217,7 +227,7 @@ const MapView = ({
         initialViewState={{
           latitude: 38.736946,
           longitude: -9.142685,
-          zoom: 3
+          zoom: 3,
         }}
         mapStyle="mapbox://styles/mapbox/dark-v11"
         mapboxAccessToken={TOKEN}

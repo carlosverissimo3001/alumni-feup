@@ -1,4 +1,4 @@
-import { SendFeedbackDto } from '@/dto/send-feedback.dto';
+import { SendFeedbackDto } from '@/feeback/dto/send-feedback.dto';
 import { Controller, HttpCode, HttpStatus, Post, Body } from '@nestjs/common';
 import { FeedbackService } from '../services/feeback.service';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
