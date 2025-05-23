@@ -1,6 +1,5 @@
 /* tslint:disable */
 /* eslint-disable */
-export * from './AddFacultyDto';
 export * from './Alumni';
 export * from './AlumniExtended';
 export * from './AlumniListItemDto';
@@ -34,6 +33,7 @@ export * from './CourseAnalyticsEntity';
 export * from './CourseCompletion';
 export * from './CreateAlumniDto';
 export * from './CreateCourseDto';
+export * from './CreateFacultyDto';
 export * from './CreateReviewDto';
 export * from './CurrentRoleDto';
 export * from './DataPointDto';
@@ -56,6 +56,7 @@ export * from './IndustryListResponseDto';
 export * from './IndustryOptionDto';
 export * from './LinkedinAuthDto';
 export * from './Location';
+export * from './LocationAnalyticsEntity';
 export * from './LocationGeo';
 export * from './MajorListDto';
 export * from './MajorListItemDto';

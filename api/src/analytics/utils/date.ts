@@ -1,14 +1,14 @@
-import { Frequency } from './types';
+import { FREQUENCY } from '../consts';
 
-export const getLabelForDate = (date: Date, freq?: Frequency): string => {
-  const frequency = freq || Frequency.QUARTERLY;
+export const getLabelForDate = (date: Date, freq?: FREQUENCY): string => {
+  const frequency = freq || FREQUENCY.QUARTERLY;
 
   switch (frequency) {
-    case Frequency.YEARLY:
+    case FREQUENCY.YEARLY:
       return date.getFullYear().toString();
-    case Frequency.MONTHLY:
+    case FREQUENCY.MONTHLY:
       return date.toISOString().slice(0, 7);
-    case Frequency.QUARTERLY: {
+    case FREQUENCY.QUARTERLY: {
       const quarter = Math.floor(date.getMonth() / 3) + 1;
       const year = date.getFullYear();
       return `${year}-Q${quarter}`;

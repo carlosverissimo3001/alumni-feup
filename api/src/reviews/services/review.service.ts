@@ -12,12 +12,12 @@ import {
 import { PrismaService } from 'src/prisma/prisma.service';
 import { Feature, Point } from 'geojson';
 import { GROUP_BY } from '@/consts';
-import { GeolocationService } from 'src/geolocation/geolocation.service';
+import { GeolocationService } from '@/geolocation/services/geolocation.service';
 import { AlumniRepository } from '@/alumni/repositories/alumni.repository';
-import { GetReviewGeoJSONDto } from '@/dto/getreviewgeojson.dto';
+import { GetReviewGeoJSONDto } from '@/reviews/dto/get-review-geojson.dto';
 import { ReviewType } from '@/entities/reviewgeojson.entity';
-import { CreateReviewDto } from '@/dto/create-review.dto';
-import { ChangeReviewScoreDto } from '@/dto/change-review-score.dto';
+import { CreateReviewDto } from '@/reviews/dto/create-review.dto';
+import { ChangeReviewScoreDto } from '@/reviews/dto/change-review-score.dto';
 import { ReviewCompany } from '@/entities/reviewCompany.entity';
 import { ReviewLocation } from '@/entities/reviewLocation.entity';
 import { ReviewRepository } from '../repositories/review.repository';
@@ -61,7 +61,7 @@ export class ReviewService {
   async findAllGeoJSON(
     query: GetReviewGeoJSONDto,
   ): Promise<ReviewGeoJSONFeatureCollection> {
-    let alumni = await this.alumniRepository.findAllWithReviews(query);
+    const alumni = await this.alumniRepository.findAllWithReviews(query);
 
     const groupBy = query.groupBy;
     let reviewsByGroup: ReviewsByCountry | ReviewsByCity;
@@ -295,7 +295,7 @@ export class ReviewService {
             companyName: review.Company.name || '',
             timeSincePosted: time.timeSincePosted,
             timeSincePostedType: time.timeSincePostedType,
-            createdAt: review.createdAt || null
+            createdAt: review.createdAt || null,
           });
         }
       }
@@ -415,53 +415,71 @@ export class ReviewService {
     return;
   }
 
-  async changeReviewScoring(changeReviewScore: ChangeReviewScoreDto): Promise<void> {
+  async changeReviewScoring(
+    changeReviewScore: ChangeReviewScoreDto,
+  ): Promise<void> {
     let review: ReviewCompany | ReviewLocation | null;
-    if(changeReviewScore.alumniId && changeReviewScore.reviewId) {
-      review = await this.reviewRepository.findReviewCompany(changeReviewScore.reviewId);
-      if(!review) {
-        review = await this.reviewRepository.findReviewLocation(changeReviewScore.reviewId);
+    if (changeReviewScore.alumniId && changeReviewScore.reviewId) {
+      review = await this.reviewRepository.findReviewCompany(
+        changeReviewScore.reviewId,
+      );
+      if (!review) {
+        review = await this.reviewRepository.findReviewLocation(
+          changeReviewScore.reviewId,
+        );
         if (!review) {
           throw new NotFoundException('Review not found');
         }
-        const [newUpvotes, newDownvotes] = this.buildNewData(changeReviewScore, review!);
+        const [newUpvotes, newDownvotes] = this.buildNewData(
+          changeReviewScore,
+          review,
+        );
         await this.reviewRepository.updateReviewLocation(
-          changeReviewScore.reviewId, 
-          newUpvotes, 
-          newDownvotes);
-      }else{
-        const [newUpvotes, newDownvotes] = this.buildNewData(changeReviewScore, review!);
+          changeReviewScore.reviewId,
+          newUpvotes,
+          newDownvotes,
+        );
+      } else {
+        const [newUpvotes, newDownvotes] = this.buildNewData(
+          changeReviewScore,
+          review,
+        );
         await this.reviewRepository.updateReviewCompany(
-          changeReviewScore.reviewId, 
-          newUpvotes, 
-          newDownvotes);
+          changeReviewScore.reviewId,
+          newUpvotes,
+          newDownvotes,
+        );
       }
     }
   }
 
   private buildNewData(
-    changeReviewScore: ChangeReviewScoreDto, 
-    review: ReviewCompany | ReviewLocation): 
-    [string[], string[]]{
-      let newUpvotes: string[] = [];
-      let newDownvotes: string[] = [];
-      if(changeReviewScore.upvote) {
-        const exists = review.upvotes.includes(changeReviewScore.alumniId);
-        if (exists) {
-          newUpvotes.filter(id => id !== changeReviewScore.alumniId);
-        } else {
-          newUpvotes = [...review.upvotes, changeReviewScore.alumniId];
-        }     
-        newDownvotes = review.downvotes.filter(id => id !== changeReviewScore.alumniId);
-      }else {
-        const exists = review.downvotes.includes(changeReviewScore.alumniId);
-        if (exists) {
-          newDownvotes.filter(id => id !== changeReviewScore.alumniId);
-        } else {
-          newDownvotes = [...review.downvotes, changeReviewScore.alumniId];
-        }   
-        newUpvotes = review.upvotes.filter(id => id !== changeReviewScore.alumniId);
+    changeReviewScore: ChangeReviewScoreDto,
+    review: ReviewCompany | ReviewLocation,
+  ): [string[], string[]] {
+    let newUpvotes: string[] = [];
+    let newDownvotes: string[] = [];
+    if (changeReviewScore.upvote) {
+      const exists = review.upvotes.includes(changeReviewScore.alumniId);
+      if (exists) {
+        newUpvotes.filter((id) => id !== changeReviewScore.alumniId);
+      } else {
+        newUpvotes = [...review.upvotes, changeReviewScore.alumniId];
       }
-      return [newUpvotes, newDownvotes];
+      newDownvotes = review.downvotes.filter(
+        (id) => id !== changeReviewScore.alumniId,
+      );
+    } else {
+      const exists = review.downvotes.includes(changeReviewScore.alumniId);
+      if (exists) {
+        newDownvotes.filter((id) => id !== changeReviewScore.alumniId);
+      } else {
+        newDownvotes = [...review.downvotes, changeReviewScore.alumniId];
+      }
+      newUpvotes = review.upvotes.filter(
+        (id) => id !== changeReviewScore.alumniId,
+      );
+    }
+    return [newUpvotes, newDownvotes];
   }
 }

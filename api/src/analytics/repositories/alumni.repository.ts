@@ -2,7 +2,7 @@ import { PrismaService } from '@/prisma/prisma.service';
 import { QueryParamsDto } from '../dto/query-params.dto';
 import { buildWhereClause } from '../utils/query-builder';
 import { Injectable } from '@nestjs/common';
-import { toAlumniAnalyticsEntity } from '../utils/alumni.mapper';
+import { mapAlumniFromPrisma } from '../utils/alumni.mapper';
 import { AlumniAnalyticsEntity } from '../entities/alumni.entity';
 import { graduationSelect, roleSelect } from '../utils/selectors';
 
@@ -30,7 +30,7 @@ export class AlumniAnalyticsRepository {
       },
     });
 
-    return alumnus.map(toAlumniAnalyticsEntity);
+    return alumnus.map(mapAlumniFromPrisma);
   }
 
   async findAllAlumni() {

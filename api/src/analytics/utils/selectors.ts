@@ -10,6 +10,8 @@ export const locationSelect = {
   country: true,
   countryCode: true,
   city: true,
+  latitude: true,
+  longitude: true,
 } satisfies Prisma.LocationSelect;
 
 export const companySelect = {

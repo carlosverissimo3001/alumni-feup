@@ -4,7 +4,7 @@ import {
   RoleAnalyticsEntity,
   GraduationAnalyticsEntity,
 } from '../entities';
-import { Frequency, TrendType } from '../utils/';
+import { FREQUENCY, TREND_TYPE } from '../consts';
 import { Injectable } from '@nestjs/common';
 import { subYears } from 'date-fns';
 import { DataPointDto } from '../dto';
@@ -13,7 +13,7 @@ import { getLabelForDate } from '../utils/date';
 type TrendParams = {
   data: AlumniAnalyticsEntity[];
   entityId: string;
-  type?: TrendType;
+  type?: TREND_TYPE;
   isDifferentClassificationLevel?: boolean;
 };
 
@@ -28,9 +28,8 @@ export class TrendAnalyticsService {
 
     // Gets all the roles for the company that were active at any point in the last 30 years
     const roles = data
-      .map((alumni) => alumni.roles)
-      .flat()
-      .filter((role) => role.company.id === entityId)
+      .flatMap((alumni) => alumni.roles || [])
+      .filter((role) => role?.company.id === entityId)
       .filter((role) => {
         const startDate = new Date(role.startDate);
         const endDate = role.endDate ? new Date(role.endDate) : null;
@@ -55,7 +54,7 @@ export class TrendAnalyticsService {
 
       dataPoints.push({
         // YYYY-QX
-        label: getLabelForDate(currentDate, Frequency.MONTHLY),
+        label: getLabelForDate(currentDate, FREQUENCY.MONTHLY),
         value: activeRoles.length,
       });
 
@@ -75,9 +74,8 @@ export class TrendAnalyticsService {
 
     // Gets all the roles whose location was the country
     const roles = data
-      .map((alumni) => alumni.roles)
-      .flat()
-      .filter((role) => role.location?.countryCode === entityId)
+      .flatMap((alumni) => alumni.roles || [])
+      .filter((role) => role?.location?.countryCode === entityId)
       .filter((role) => {
         const startDate = new Date(role.startDate);
         const endDate = role.endDate ? new Date(role.endDate) : null;
@@ -95,9 +93,8 @@ export class TrendAnalyticsService {
 
     // Gets all the roles whose location was the city
     const roles = data
-      .map((alumni) => alumni.roles)
-      .flat()
-      .filter((role) => role.location?.id === entityId)
+      .flatMap((alumni) => alumni.roles || [])
+      .filter((role) => role?.location?.id === entityId)
       .filter((role) => {
         const startDate = new Date(role.startDate);
         const endDate = role.endDate ? new Date(role.endDate) : null;
@@ -115,10 +112,9 @@ export class TrendAnalyticsService {
 
     // Gets all the roles whose title matches the entityId
     const roles = data
-      .map((alumni) => alumni.roles)
-      .flat()
+      .flatMap((alumni) => alumni.roles || [])
       .filter((role) => {
-        const jobClassification = role.jobClassification;
+        const jobClassification = role?.jobClassification;
         const escoClassification = jobClassification?.escoClassification;
 
         // We classify against level 5 (e.g. 2512.1), but, if we're grouping
@@ -146,9 +142,8 @@ export class TrendAnalyticsService {
 
     // Gets all the roles whose industry matches the entityId
     const roles = data
-      .map((alumni) => alumni.roles)
-      .flat()
-      .filter((role) => role.company.industry.id === entityId)
+      .flatMap((alumni) => alumni.roles || [])
+      .filter((role) => role?.company.industry.id === entityId)
       .filter((role) => {
         const startDate = new Date(role.startDate);
         const endDate = role.endDate ? new Date(role.endDate) : null;
@@ -166,9 +161,8 @@ export class TrendAnalyticsService {
 
     // Here, we get all the graduations from the faculty (the entity)
     const graduations = data
-      .map((alumni) => alumni.graduations)
-      .flat()
-      .filter((graduation) => graduation.course.facultyId === entityId)
+      .flatMap((alumni) => alumni.graduations || [])
+      .filter((graduation) => graduation?.course.facultyId === entityId)
       .filter((graduation) => {
         const conclusionYearDate = new Date(graduation.conclusionYear, 0, 1);
         return (
@@ -185,9 +179,8 @@ export class TrendAnalyticsService {
 
     // Here, we get all the graduations from the major (the entity)
     const graduations = data
-      .map((alumni) => alumni.graduations)
-      .flat()
-      .filter((graduation) => graduation.courseId === entityId)
+      .flatMap((alumni) => alumni.graduations || [])
+      .filter((graduation) => graduation?.courseId === entityId)
       .filter((graduation) => {
         const conclusionYearDate = new Date(graduation.conclusionYear, 0, 1);
         return (
@@ -213,7 +206,7 @@ export class TrendAnalyticsService {
       });
 
       dataPoints.push({
-        label: getLabelForDate(currentDate, Frequency.MONTHLY),
+        label: getLabelForDate(currentDate, FREQUENCY.MONTHLY),
         value: activeRoles.length,
       });
 
@@ -248,7 +241,7 @@ export class TrendAnalyticsService {
       );
 
       dataPoints.push({
-        label: getLabelForDate(currentDate, Frequency.MONTHLY),
+        label: getLabelForDate(currentDate, FREQUENCY.MONTHLY),
         value: activeCompanies.size,
       });
 
@@ -279,7 +272,7 @@ export class TrendAnalyticsService {
       });
 
       dataPoints.push({
-        label: getLabelForDate(currentDate, Frequency.YEARLY),
+        label: getLabelForDate(currentDate, FREQUENCY.YEARLY),
         value: activeGraduations.length,
       });
 

@@ -7,7 +7,7 @@ import {
   MajorListItemDto,
   FacultyListItemDto,
 } from '@/analytics/dto';
-import { SortBy } from './types';
+import { SORT_BY } from '../consts';
 
 type SortableData =
   | CompanyListItemExtendedDto
@@ -21,7 +21,7 @@ type SortableData =
 export const sortData = <T extends SortableData>(
   data: T[],
   order: {
-    sortBy: SortBy;
+    sortBy: SORT_BY;
     direction: 'asc' | 'desc';
   },
 ): T[] => {
@@ -32,10 +32,10 @@ export const sortData = <T extends SortableData>(
     let comparison = 0;
 
     switch (order.sortBy) {
-      case SortBy.NAME:
+      case SORT_BY.NAME:
         comparison = a.name.localeCompare(b.name);
         break;
-      case SortBy.COUNT:
+      case SORT_BY.COUNT:
         comparison = a.count - b.count;
         break;
       default:

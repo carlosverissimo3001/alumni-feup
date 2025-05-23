@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { getYearList } from "./utils/helper";
 import { ChevronLeft, ChevronDown } from "lucide-react";
 import { useNavbar } from "@/contexts/NavbarContext";
@@ -8,11 +8,12 @@ import { useListCourses } from "@/hooks/courses/useListCourses";
 import { MultiSelect } from "../ui/multi-select";
 import { useFetchGeoJson } from "@/hooks/alumni/useFetchGeoJson";
 import { GeoJSONFeatureCollection } from "@/sdk";
-import { Feature, Point, Position } from 'geojson';
+import { Feature, Point, Position } from "geojson";
 import { AlumniControllerFindAllGeoJSONGroupByEnum as GROUP_BY } from "@/sdk";
 import { Checkbox } from "../ui/checkbox";
 import { Label } from "../ui/label";
 import SwitchFilter from "../ui/switchFilter";
+import { useSearchParams } from "next/navigation";
 
 export interface GeoJSONProperties {
   name: string[];
@@ -27,7 +28,6 @@ export interface GeoJSONProperties {
   companyNames: { [key: string]: string };
 }
 
-
 type props = {
   handleLoading: (loading: boolean) => void;
   onSelectGeoJSON: (geoJson: GeoJSONFeatureCollection) => void;
@@ -35,7 +35,7 @@ type props = {
   yearUrl?: string;
   showTimeLine: boolean;
   setShowTimeLine: (show: boolean) => void;
-  selectedYear?: number
+  selectedYear?: number;
   setSelectedYear: (year?: number) => void;
   showCompareYear: boolean;
   setShowCompareYear: (show: boolean) => void;
@@ -48,8 +48,7 @@ export type AlumniInfo = {
   coordinates: number[];
   link: string;
   coursesYears: { [key: string]: string };
-
-}
+};
 
 const MapFilters = ({
   handleLoading,
@@ -62,20 +61,16 @@ const MapFilters = ({
   showCompareYear,
   setShowCompareYear,
   compareYear,
-  setCompareYear
+  setCompareYear,
 }: props) => {
-  // Global navbar state
   const { isCollapsed } = useNavbar();
-
-  // Panel state
+  const searchParams = useSearchParams();
   const [isVisible, setIsVisible] = useState(true);
-
-  // Options
   const { data: courses, isLoading: isLoadingCourses } = useListCourses({
-    enabled:true
+    enabled: true,
   });
   const yearList = getYearList();
-  
+
   /** Selectors & Filters **/
   // Search input
   const [searchInput, setSearchInput] = useState<string>("");
@@ -88,38 +83,134 @@ const MapFilters = ({
   const [conclusionYears, setConclusionYears] = useState<number[]>([]);
   // Course
   const [courseIds, setCourseIds] = useState<string[]>([]);
-  
-  const { data: geoJson, refetch: refetchGeoJson, isLoading: isLoadingGeoJson } = useFetchGeoJson({
+
+  const [isInitialized, setIsInitialized] = useState(false);
+  const {
+    data: geoJson,
+    refetch: refetchGeoJson,
+    isLoading: isLoadingGeoJson,
+  } = useFetchGeoJson({
     courseIds,
     conclusionYears,
     groupBy,
     selectedYear,
-    compareYear
+    compareYear,
+    enabled: isInitialized,
   });
 
   // State variables
-  const [cleanButtonEnabled, setCleanButtonEnabled] = useState(false)
-  const [paramsCleaned, setParamsCleaned] = useState(false)
+  const [cleanButtonEnabled, setCleanButtonEnabled] = useState(false);
+  const [paramsCleaned, setParamsCleaned] = useState(false);
 
-  const [hadYear, setHadYear] = useState(false)
+  const initializeFiltersFromURL = useCallback(() => {
+    let hasProcessedYears = false;
+    let hasProcessedCourses = false;
+
+    if (searchParams.has("lat") || searchParams.has("lng")) {
+      setGroupBy(GROUP_BY.Cities);
+    }
+
+    // Check for map-specific parameters that should enable the clean button immediately
+    const hasMapParams =
+      searchParams.has("lat") ||
+      searchParams.has("lng") ||
+      searchParams.has("name") ||
+      searchParams.has("group_by");
+
+    if (hasMapParams) {
+      setCleanButtonEnabled(true);
+    }
+
+    const yearParam = searchParams.getAll("conclusion_year");
+    if (yearParam.length) {
+      const years = yearParam
+        .flatMap((param) => param.split(","))
+        .map((year) => Number(year.trim()))
+        .filter(
+          (year) =>
+            !isNaN(year) && year > 1900 && year <= new Date().getFullYear()
+        );
+      if (years.length) {
+        setConclusionYears(years);
+      }
+    }
+    hasProcessedYears = true;
+
+    const courseParam = searchParams.getAll("course");
+    if (courseParam.length && courses?.length) {
+      const courseMap = new Map(
+        courses.map((c) => [c.acronym.toLowerCase(), c.id])
+      );
+      const courseIds = courseParam
+        .flatMap((param) => param.split(","))
+        .map((acronym) => acronym.toLowerCase().replace(/_/g, ".").trim())
+        .map((acronym) => courseMap.get(acronym))
+        .filter((id): id is string => id !== undefined);
+
+      if (courseIds.length) {
+        setCourseIds(courseIds);
+      }
+    }
+    hasProcessedCourses = true;
+
+    if (hasProcessedYears && hasProcessedCourses) {
+      setIsInitialized(true);
+    }
+  }, [searchParams, courses]);
 
   useEffect(() => {
-    // Extract year from URL path
-    const urlParams = new URLSearchParams(window.location.search);
-    const year = urlParams.get('year');
-    // Check if the last part is actually a year
-    if (year && /^\d{4}$/.test(year)) {
-      setConclusionYears([Number(year)]);
-      setHadYear(true)
+    initializeFiltersFromURL();
+  }, [initializeFiltersFromURL]);
 
-      // We enable the clean button because we have a year
-      setCleanButtonEnabled(true)
+  const [hasUserChangedFilters, setHasUserChangedFilters] = useState(false);
+
+  type FilterType = "conclusionYears" | "courseIds";
+  type FilterValue = number[] | string[];
+
+  const handleFilterChange = useCallback(
+    (type: FilterType, value: FilterValue) => {
+      setHasUserChangedFilters(true);
+      switch (type) {
+        case "conclusionYears":
+          setConclusionYears(value as number[]);
+          break;
+        case "courseIds":
+          setCourseIds(value as string[]);
+          break;
+      }
+    },
+    []
+  );
+
+  useEffect(() => {
+    if (!isInitialized || !hasUserChangedFilters) return;
+
+    const hasUrlParams =
+      searchParams.has("lat") ||
+      searchParams.has("lng") ||
+      searchParams.has("name") ||
+      searchParams.has("group_by");
+
+    if (hasUrlParams) {
+      clearUrlParams();
     }
-    // Only fetch after setting the year
-    else {
-      refetchGeoJson();
-    }
-  }, [refetchGeoJson]);
+
+    refetchGeoJson();
+  }, [
+    isInitialized,
+    conclusionYears,
+    courseIds,
+    groupBy,
+    hasUserChangedFilters,
+  ]);
+
+  useEffect(() => {
+    if (!isInitialized) return;
+
+    const hasFilters = conclusionYears.length > 0 || courseIds.length > 0;
+    setCleanButtonEnabled(hasFilters);
+    refetchGeoJson();
+  }, [refetchGeoJson, conclusionYears.length, courseIds.length, isInitialized]);
 
   useEffect(() => {
     // Only show loading for geoJson updates
@@ -127,7 +218,9 @@ const MapFilters = ({
   }, [isLoadingGeoJson, handleLoading]);
 
   // Panel state
-  const [filteredAlumniNamesCoord, setFilteredAlumniNamesCoord] = useState<AlumniInfo[]>([]);
+  const [filteredAlumniNamesCoord, setFilteredAlumniNamesCoord] = useState<
+    AlumniInfo[]
+  >([]);
   const [listAlumniNamesWithCoordinates, setListAlumniNamesWithCoordinates] =
     useState<AlumniInfo[]>([]);
   const [alumniLength, setAlumniLength] = useState(0);
@@ -150,27 +243,30 @@ const MapFilters = ({
       if (geoJson) {
         try {
           // Get the names with their LinkedIn links
-          const namesLinkedinLinks = (geoJson.features as Feature<Point, GeoJSONProperties>[]).flatMap(
-            (feature) => {
-              const coordinates = feature.geometry.coordinates;
-              return Object.entries(feature.properties.listLinkedinLinksByUser)
-                .map(([link, name]) => ({
-                  name,
-                  link,
-                  coordinates,
-                }));
-            }
-          );
+          const namesLinkedinLinks = (
+            geoJson.features as Feature<Point, GeoJSONProperties>[]
+          ).flatMap((feature) => {
+            const coordinates = feature.geometry.coordinates;
+            return Object.entries(
+              feature.properties.listLinkedinLinksByUser
+            ).map(([link, name]) => ({
+              name,
+              link,
+              coordinates,
+            }));
+          });
 
           // Get the courses data with the years of conclusion
-          const namesCourseYears = (geoJson.features as Feature<Point, GeoJSONProperties>[]).flatMap((feature) =>
+          const namesCourseYears = (
+            geoJson.features as Feature<Point, GeoJSONProperties>[]
+          ).flatMap((feature) =>
             Object.entries(feature.properties.coursesYearConclusionByUser).map(
               ([linkedinLink, courseYears]) => ({
                 linkedinLink,
                 courseYears,
               })
             )
-          )
+          );
 
           const alumniNamesWithCoords = namesLinkedinLinks.map((alumniInfo) => {
             // Find the corresponding courses data based on name
@@ -187,10 +283,9 @@ const MapFilters = ({
 
           // Sort the alumni names alphabetically
           alumniNamesWithCoords.sort((a, b) => a.name.localeCompare(b.name));
-          
+
           setListAlumniNamesWithCoordinates(alumniNamesWithCoords);
           setAlumniLength(alumniNamesWithCoords.length);
-          
         } catch (error) {
           console.log("Attention! ", error);
         }
@@ -225,7 +320,21 @@ const MapFilters = ({
     }
   }, [listAlumniNamesWithCoordinates, searchInput]);
 
- 
+  const clearUrlParams = () => {
+    if (paramsCleaned) return;
+
+    const urlParams = new URLSearchParams(window.location.search);
+    urlParams.delete("conclusion_year");
+    urlParams.delete("course");
+    window.history.replaceState(
+      {},
+      "",
+      window.location.pathname +
+        (urlParams.toString() ? "?" + urlParams.toString() : "")
+    );
+    setParamsCleaned(true);
+  };
+
   const onClickClean = () => {
     // Reset the filters
     setGroupBy(GROUP_BY.Countries);
@@ -236,9 +345,12 @@ const MapFilters = ({
     setShowCompareYear(false);
     setShowTimeLine(false);
     setCompareYear(undefined);
-    
+
     // Reset alumni selection
     onSelectAlumni("", [-9.142685, 38.736946]);
+
+    // Clear URL parameters if they exist
+    clearUrlParams();
 
     // Only refetch if we have courses data
     if (courses) {
@@ -247,50 +359,55 @@ const MapFilters = ({
         refetchGeoJson();
       }, 50);
     }
-    clearUrlParams();
   };
-
-  const clearUrlParams = () => {
-    if (paramsCleaned || !hadYear) 
-      return;
-    
-    const urlParams = new URLSearchParams(window.location.search);
-    urlParams.delete('year');
-    urlParams.delete('course');
-    window.history.replaceState({}, '', window.location.pathname + '?' + urlParams.toString());
-    setParamsCleaned(true);
-  }
 
   const toggleVisibility = () => setIsVisible(!isVisible);
 
   useEffect(() => {
-    // Button is enabled if any filter has a value
-    const hasFilters = 
-      courseIds.length > 0 || 
-      conclusionYears.length > 0 || 
-      searchInput.trim() !== '' ||
+    const hasFilters =
+      courseIds.length > 0 ||
+      conclusionYears.length > 0 ||
+      searchInput.trim() !== "" ||
       selectedYear !== undefined ||
       compareYear !== undefined;
 
-    setCleanButtonEnabled(hasFilters);
-  }, [courseIds, conclusionYears, groupBy, searchInput, selectedYear, compareYear]);
+    const hasUrlParams =
+      searchParams.has("lat") ||
+      searchParams.has("lng") ||
+      searchParams.has("name") ||
+      searchParams.has("group_by");
+    setCleanButtonEnabled(hasFilters || hasUrlParams);
+  }, [
+    courseIds,
+    conclusionYears,
+    groupBy,
+    searchInput,
+    selectedYear,
+    compareYear,
+    searchParams,
+  ]);
 
   const handleTimeLineCheckboxChange = () => {
-    if(showTimeLine){
+    if (showTimeLine) {
       setShowTimeLine(false);
       setSelectedYear(undefined);
-    }else{
+    } else {
       setShowTimeLine(true);
     }
   };
 
   const handleCompareYearCheckboxChange = () => {
-    if(showCompareYear){
+    if (showCompareYear) {
       setShowCompareYear(false);
       setCompareYear(undefined);
-    }else{
+    } else {
       setShowCompareYear(true);
     }
+  };
+
+  const handleGroupByChange = (value: GROUP_BY) => {
+    setHasUserChangedFilters(true);
+    setGroupBy(value);
   };
 
   return (
@@ -310,19 +427,16 @@ const MapFilters = ({
           !isVisible && "pointer-events-auto"
         )}
       >
-        { (
+        {
           <span className="text-[#A02D20] text-md font-medium px-2">
             Map Filters
           </span>
-        )}
-        { !isVisible ? 
-        (
+        }
+        {!isVisible ? (
           <ChevronLeft className="text-[#A02D20] w-6 h-6 cursor-pointer hover:opacity-80" />
-        ) :
-        (
+        ) : (
           <ChevronDown className="text-[#A02D20] w-6 h-6 cursor-pointer hover:opacity-80" />
-        )
-      }
+        )}
       </div>
 
       {/* Main Content */}
@@ -341,7 +455,7 @@ const MapFilters = ({
         {/* Group By Toggle */}
         <div className="flex">
           <div
-            onClick={() => setGroupBy(GROUP_BY.Countries)}
+            onClick={() => handleGroupByChange(GROUP_BY.Countries)}
             className={cn(
               "flex-1 text-center py-2 cursor-pointer",
               groupBy === GROUP_BY.Countries
@@ -352,7 +466,7 @@ const MapFilters = ({
             Countries
           </div>
           <div
-            onClick={() => setGroupBy(GROUP_BY.Cities)}
+            onClick={() => handleGroupByChange(GROUP_BY.Cities)}
             className={cn(
               "flex-1 text-center py-2 cursor-pointer",
               groupBy === GROUP_BY.Cities
@@ -375,14 +489,27 @@ const MapFilters = ({
             className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-md"
           />
           {filteredAlumniNamesCoord.length > 0 && (
-                <div className={`search-results ${filteredAlumniNamesCoord.length > 5 ? 'scrollable' : ''}`}>
-                {filteredAlumniNamesCoord.map((alumniData, index) => (
-                    <div  className='dropdown-search-names' key={index} onClick={() => handleAlumniSelection(alumniData.name, alumniData.coordinates)}>
-                        {alumniData.name}
-                    </div>
-                ))}
+            <div
+              className={`search-results ${
+                filteredAlumniNamesCoord.length > 5 ? "scrollable" : ""
+              }`}
+            >
+              {filteredAlumniNamesCoord.map((alumniData, index) => (
+                <div
+                  className="dropdown-search-names"
+                  key={index}
+                  onClick={() =>
+                    handleAlumniSelection(
+                      alumniData.name,
+                      alumniData.coordinates
+                    )
+                  }
+                >
+                  {alumniData.name}
                 </div>
-            )}
+              ))}
+            </div>
+          )}
         </div>
 
         {/* Filter Section */}
@@ -392,13 +519,21 @@ const MapFilters = ({
           {/* Course Dropdown */}
           <div className="mb-4">
             <MultiSelect
-              options={Array.isArray(courses) ? courses.map((course) => ({
-                label: course.acronym,
-                value: course.id,
-              })) : []}
-              onValueChange={(values) => setCourseIds(values || [])}
+              options={
+                Array.isArray(courses)
+                  ? courses.map((course) => ({
+                      label: course.acronym,
+                      value: course.id,
+                    }))
+                  : []
+              }
+              onValueChange={(values) =>
+                handleFilterChange("courseIds", values || [])
+              }
               value={courseIds}
-              placeholder={isLoadingCourses ? "Loading courses..." : "Select course"}
+              placeholder={
+                isLoadingCourses ? "Loading courses..." : "Select course"
+              }
               variant="inverted"
               maxCount={4}
               disabled={isLoadingCourses || !Array.isArray(courses)}
@@ -413,7 +548,9 @@ const MapFilters = ({
                 label: year,
                 value: year,
               }))}
-              onValueChange={(values) => setConclusionYears(values.map(Number))}
+              onValueChange={(values) =>
+                handleFilterChange("conclusionYears", values.map(Number))
+              }
               value={conclusionYears.map(String)}
               placeholder="Select conclusion year"
               variant="inverted"
@@ -424,21 +561,25 @@ const MapFilters = ({
           {/* Time Line Checkbox */}
           <div className="mb-4">
             <Checkbox
-            checked={showTimeLine}
-            onCheckedChange={handleTimeLineCheckboxChange}
+              checked={showTimeLine}
+              onCheckedChange={handleTimeLineCheckboxChange}
             />
             <Label className="text-lg font-semibold text-gray-800 ml-2">
               Time Line
             </Label>
           </div>
 
-          { showTimeLine ?
-          (
+          {showTimeLine ? (
             <div className="flex items-center space-x-2">
-            <SwitchFilter checked={showCompareYear} onChange={handleCompareYearCheckboxChange} />
-            <Label className="font-bold">{showCompareYear ? "Range Selection" : "Single Year"}</Label>
-          </div>
-        ) : null }
+              <SwitchFilter
+                checked={showCompareYear}
+                onChange={handleCompareYearCheckboxChange}
+              />
+              <Label className="font-bold">
+                {showCompareYear ? "Range Selection" : "Single Year"}
+              </Label>
+            </div>
+          ) : null}
 
           {/* Action Buttons */}
           <div className="flex gap-2 mt-4">

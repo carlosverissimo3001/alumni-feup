@@ -15,18 +15,18 @@
 
 import * as runtime from '../runtime';
 import type {
-  AddFacultyDto,
+  CreateFacultyDto,
   Faculty,
 } from '../models/index';
 import {
-    AddFacultyDtoFromJSON,
-    AddFacultyDtoToJSON,
+    CreateFacultyDtoFromJSON,
+    CreateFacultyDtoToJSON,
     FacultyFromJSON,
     FacultyToJSON,
 } from '../models/index';
 
 export interface FacultyControllerCreateRequest {
-    addFacultyDto: AddFacultyDto;
+    createFacultyDto: CreateFacultyDto;
 }
 
 /**
@@ -39,7 +39,7 @@ export interface FacultyApiInterface {
     /**
      * 
      * @summary Create a faculty
-     * @param {AddFacultyDto} addFacultyDto 
+     * @param {CreateFacultyDto} createFacultyDto 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof FacultyApiInterface
@@ -76,10 +76,10 @@ export class FacultyApi extends runtime.BaseAPI implements FacultyApiInterface {
      * Create a faculty
      */
     async facultyControllerCreateRaw(requestParameters: FacultyControllerCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Faculty>> {
-        if (requestParameters['addFacultyDto'] == null) {
+        if (requestParameters['createFacultyDto'] == null) {
             throw new runtime.RequiredError(
-                'addFacultyDto',
-                'Required parameter "addFacultyDto" was null or undefined when calling facultyControllerCreate().'
+                'createFacultyDto',
+                'Required parameter "createFacultyDto" was null or undefined when calling facultyControllerCreate().'
             );
         }
 
@@ -94,7 +94,7 @@ export class FacultyApi extends runtime.BaseAPI implements FacultyApiInterface {
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: AddFacultyDtoToJSON(requestParameters['addFacultyDto']),
+            body: CreateFacultyDtoToJSON(requestParameters['createFacultyDto']),
         }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => FacultyFromJSON(jsonValue));

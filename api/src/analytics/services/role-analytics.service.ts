@@ -13,12 +13,13 @@ import {
   DEFAULT_QUERY_LIMIT,
   DEFAULT_QUERY_OFFSET,
   DEFAULT_QUERY_SORT_BY,
-} from '../utils/consts';
-import { DEFAULT_QUERY_SORT_ORDER } from '../utils/consts';
+  DEFAULT_QUERY_SORT_ORDER,
+} from '../consts';
 import { sortData } from '../utils';
 import { TrendAnalyticsService } from './trend-analytics.service';
 import { applyDateFilters } from '../utils/filters';
 import { EscoClassificationAnalyticsEntity } from '../entities/esco-classification.entity';
+
 @Injectable()
 export class RoleAnalyticsService {
   constructor(
@@ -30,54 +31,63 @@ export class RoleAnalyticsService {
   async getRolesWithCounts(
     query: QueryParamsDto,
   ): Promise<RoleListResponseDto> {
-    const alumnusUnfiltered = await this.alumniRepository.find(query);
+    const [alumnusUnfiltered, count] = await Promise.all([
+      this.alumniRepository.find(query),
+      this.roleRepository.count(),
+    ]);
+
     const alumnus = applyDateFilters(alumnusUnfiltered, query);
+    const escoLevel = query.escoClassificationLevel;
+    const isDifferentLevel = escoLevel !== 4;
+
+    const allRoles = alumnus
+      .flatMap((alumni) => alumni.roles || [])
+      .filter((role) => role.jobClassification?.escoClassification);
+
+    const uniqueCodes = new Set<string>();
+    if (isDifferentLevel) {
+      allRoles.forEach((role) => {
+        const code = role.jobClassification!.escoClassification.code.slice(
+          0,
+          escoLevel,
+        );
+        uniqueCodes.add(code);
+      });
+    }
+
+    const hierarchyMap = new Map<string, EscoClassificationAnalyticsEntity>();
+    if (uniqueCodes.size > 0) {
+      const classifications = await Promise.all(
+        Array.from(uniqueCodes).map((code) =>
+          this.roleRepository.getClassification(code),
+        ),
+      );
+      classifications.forEach((classification) => {
+        if (classification) {
+          hierarchyMap.set(classification.code, classification);
+        }
+      });
+    }
 
     const roleMap = new Map<string, RoleListItemDto>();
-    const escoLevel = query.escoClassificationLevel;
-
-    // Keeps a map of the hierarchy of the esco classifications
-    const isDifferentLevel = escoLevel !== 4;
-    const hierarchyMap = new Map<string, EscoClassificationAnalyticsEntity>();
-
-    const allRoles = alumnus.flatMap((alumni) => alumni.roles || []);
     for (const role of allRoles) {
-      if (!role.jobClassification) continue;
-
-      const jobClassification = role.jobClassification;
-      const escoClassification = jobClassification.escoClassification;
-
-      let code = escoClassification.code;
-      let titleEn = escoClassification.titleEn;
-      let isLeaf = escoClassification.isLeaf;
-      let level = escoClassification.level;
+      let { code, titleEn, isLeaf, level } =
+        role.jobClassification!.escoClassification;
 
       if (isDifferentLevel) {
-        code = code.slice(0, escoLevel);
-        // First, let's see if we already have the hierarchy
-        const hierarchy = hierarchyMap.get(code);
-        if (!hierarchy) {
-          const newHierarchy =
-            await this.roleRepository.getClassification(code);
-          if (newHierarchy) {
-            hierarchyMap.set(code, newHierarchy);
-            code = newHierarchy.code;
-            titleEn = newHierarchy.titleEn;
-            isLeaf = newHierarchy.isLeaf;
-            level = newHierarchy.level;
-          } else {
-            // If we don't have the hierarchy, we can't add the role
-            // Note, this should not happen
-            continue;
-          }
-        }
+        const shortCode = code.slice(0, escoLevel);
+        const hierarchy = hierarchyMap.get(shortCode);
+        if (!hierarchy) continue;
+
+        code = hierarchy.code;
+        titleEn = hierarchy.titleEn;
+        isLeaf = hierarchy.isLeaf;
+        level = hierarchy.level;
       }
 
-      if (roleMap.has(code)) {
-        const existingRole = roleMap.get(code);
-        if (existingRole) {
-          existingRole.count++;
-        }
+      const existingRole = roleMap.get(code);
+      if (existingRole) {
+        existingRole.count++;
       } else {
         roleMap.set(code, {
           name: titleEn,
@@ -85,35 +95,37 @@ export class RoleAnalyticsService {
           isLeaf: isLeaf,
           level: escoLevel || level,
           count: 1,
-          trend: query.includeTrend
-            ? this.trendAnalyticsService.getRoleTrend({
-                data: alumnusUnfiltered,
-                entityId: code,
-                isDifferentClassificationLevel: isDifferentLevel,
-              })
-            : [],
+          trend: [],
         });
       }
     }
 
     const roles = Array.from(roleMap.values());
+    if (query.includeTrend) {
+      const trends = await Promise.all(
+        roles.map((role) =>
+          this.trendAnalyticsService.getRoleTrend({
+            data: alumnusUnfiltered,
+            entityId: role.code,
+            isDifferentClassificationLevel: isDifferentLevel,
+          }),
+        ),
+      );
+      roles.forEach((role, index) => {
+        role.trend = trends[index];
+      });
+    }
 
-    // Fitered count
     const filteredCount = roles.reduce((acc, role) => acc + role.count, 0);
-
-    // Total count
-    const count = await this.roleRepository.count();
 
     const rolesOrdered = sortData(roles, {
       sortBy: query.sortBy || DEFAULT_QUERY_SORT_BY,
       direction: query.sortOrder || DEFAULT_QUERY_SORT_ORDER,
     });
 
-    const rolesPaginated = rolesOrdered.slice(
-      query.offset || DEFAULT_QUERY_OFFSET,
-      (query.offset || DEFAULT_QUERY_OFFSET) +
-        (query.limit || DEFAULT_QUERY_LIMIT),
-    );
+    const offset = query.offset || DEFAULT_QUERY_OFFSET;
+    const limit = query.limit || DEFAULT_QUERY_LIMIT;
+    const rolesPaginated = rolesOrdered.slice(offset, offset + limit);
 
     return {
       roles: rolesPaginated,

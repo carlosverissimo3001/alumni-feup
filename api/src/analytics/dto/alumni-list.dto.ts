@@ -1,5 +1,6 @@
+import { LocationAnalyticsEntity } from '../entities';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { IsString } from 'class-validator';
+import { IsObject, IsString } from 'class-validator';
 
 export class AlumniListItemDto {
   @ApiProperty({
@@ -19,18 +20,23 @@ export class AlumniListItemDto {
   @ApiPropertyOptional({
     description: 'The linkedin url of the alumni',
     type: String,
-    nullable: true,
   })
   @IsString()
-  linkedinUrl: string | null;
+  linkedinUrl?: string;
 
   @ApiPropertyOptional({
     description: 'The profile picture of the alumni',
     type: String,
-    nullable: true,
   })
   @IsString()
-  profilePictureUrl: string | null;
+  profilePictureUrl?: string;
+
+  @ApiPropertyOptional({
+    description: 'The location of the alumni`s current role',
+    type: LocationAnalyticsEntity,
+  })
+  @IsObject()
+  currentRoleLocation?: LocationAnalyticsEntity;
 }
 
 export class AlumniListResponseDto {

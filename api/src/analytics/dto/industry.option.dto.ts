@@ -11,4 +11,3 @@ export class IndustryOptionDto {
   })
   name: string;
 }
-

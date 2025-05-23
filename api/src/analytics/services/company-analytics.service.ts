@@ -11,16 +11,16 @@ import {
 import { AlumniAnalyticsEntity } from '../entities/';
 import { AlumniAnalyticsRepository, CompanyRepository } from '../repositories';
 import {
-  sortData,
   DEFAULT_QUERY_LIMIT,
   DEFAULT_QUERY_OFFSET,
   DEFAULT_QUERY_SORT_BY,
   DEFAULT_QUERY_SORT_ORDER,
-} from '../utils/';
+} from '../consts';
+import { sortData } from '../utils';
 import { formatYearsToHuman } from '../../utils/format';
 import { TrendAnalyticsService } from './trend-analytics.service';
 import { applyDateFilters } from '../utils/filters';
-import { COMPANY_SIZE, COMPANY_TYPE } from '@/consts';
+import { COMPANY_SIZE, COMPANY_TYPE } from '../consts';
 import { differenceInYears } from 'date-fns';
 
 /* Mental note: Try not to use prisma directly in services.
@@ -42,49 +42,47 @@ export class CompanyAnalyticsService {
   async getCompaniesWithAlumniCount(
     query: QueryParamsDto,
   ): Promise<CompanyListResponseDto> {
-    // I know, it's really ugly, but I need the unfiltered data to get the trend
-    // As it is always fixed to the last 15 years
     const alumnusUnfiltered = await this.alumniRepository.find(query);
-
-    // This contains the actual data
     const alumnus = applyDateFilters(alumnusUnfiltered, query);
+
+    const [companyCount, alumniCount] = await Promise.all([
+      this.companyRepository.count(),
+      this.alumniRepository.countAlumni(),
+    ]);
+
     const companiesWithAlumniCount = this.getCompanyMap(alumnus);
-
-    // Count without filters
-    const companyCount = await this.companyRepository.count();
-    const alumniCount = await this.alumniRepository.countAlumni();
-
-    // Count with filters
-    const alumniFilteredCount = alumnus.length;
-    const companyFilteredCount = companiesWithAlumniCount.length;
-
     const companiesWithAlumniCountOrdered = sortData(companiesWithAlumniCount, {
       sortBy: query.sortBy || DEFAULT_QUERY_SORT_BY,
       direction: query.sortOrder || DEFAULT_QUERY_SORT_ORDER,
     });
 
+    const offset = query.offset || DEFAULT_QUERY_OFFSET;
+    const limit = query.limit || DEFAULT_QUERY_LIMIT;
     const companies = companiesWithAlumniCountOrdered.slice(
-      query.offset || DEFAULT_QUERY_OFFSET,
-      (query.offset || DEFAULT_QUERY_OFFSET) +
-        (query.limit || DEFAULT_QUERY_LIMIT),
+      offset,
+      offset + limit,
     );
 
-    // Trend data
-    companies.map((company) => {
-      company.trend = query.includeTrend
-        ? this.trendAnalyticsService.getCompanyTrend({
+    if (query.includeTrend) {
+      const trends = await Promise.all(
+        companies.map((company) =>
+          this.trendAnalyticsService.getCompanyTrend({
             data: alumnusUnfiltered,
             entityId: company.id,
-          })
-        : [];
-    });
+          }),
+        ),
+      );
+      companies.forEach((company, index) => {
+        company.trend = trends[index];
+      });
+    }
 
     return {
       companies,
       companyCount,
-      companyFilteredCount,
+      companyFilteredCount: companiesWithAlumniCount.length,
       alumniCount,
-      alumniFilteredCount,
+      alumniFilteredCount: alumnus.length,
     };
   }
 
@@ -109,56 +107,58 @@ export class CompanyAnalyticsService {
   async getIndustryWithCounts(
     query: QueryParamsDto,
   ): Promise<IndustryListResponseDto> {
-    const industriesMap = new Map<string, { name: string; count: number }>();
+    const [alumnusUnfiltered, totalIndustries] = await Promise.all([
+      this.alumniRepository.find(query),
+      this.companyRepository.countIndustries(),
+    ]);
 
-    const alumnusUnfiltered = await this.alumniRepository.find(query);
     const alumnus = applyDateFilters(alumnusUnfiltered, query);
     const companiesWithAlumniCount = this.getCompanyMap(alumnus);
 
-    // Total Industries, regardless of filters
-    const totalIndustries = await this.companyRepository.countIndustries();
-
-    companiesWithAlumniCount.forEach((company) => {
+    const industriesMap = new Map<string, { name: string; count: number }>();
+    for (const company of companiesWithAlumniCount) {
       const industryId = company.industryId;
+      if (!industryId) continue;
 
-      if (industryId && !industriesMap.has(industryId)) {
-        industriesMap.set(industryId, {
-          name: company.industry,
-          count: 0,
-        });
-      }
-
-      const industryData = industriesMap.get(industryId)!; // We just made sure it exists above, so we're gucci
-
+      const industryData = industriesMap.get(industryId) || {
+        name: company.industry,
+        count: 0,
+      };
       industryData.count += company.count;
-    });
+      industriesMap.set(industryId, industryData);
+    }
 
     const industries: IndustryListItemDto[] = Array.from(
       industriesMap.entries(),
-    ).map(([industryId, data]) => {
-      return {
-        id: industryId,
-        name: data.name,
-        count: data.count,
-        trend: query.includeTrend
-          ? this.trendAnalyticsService.getIndustryTrend({
-              data: alumnusUnfiltered,
-              entityId: industryId,
-            })
-          : [],
-      };
-    });
+    ).map(([industryId, data]) => ({
+      id: industryId,
+      name: data.name,
+      count: data.count,
+      trend: [],
+    }));
+
+    if (query.includeTrend) {
+      const trends = await Promise.all(
+        industries.map((industry) =>
+          this.trendAnalyticsService.getIndustryTrend({
+            data: alumnusUnfiltered,
+            entityId: industry.id,
+          }),
+        ),
+      );
+      industries.forEach((industry, index) => {
+        industry.trend = trends[index];
+      });
+    }
 
     const industriesOrdered = sortData(industries, {
       sortBy: query.sortBy || DEFAULT_QUERY_SORT_BY,
       direction: query.sortOrder || DEFAULT_QUERY_SORT_ORDER,
     });
 
-    const industriesPaginated = industriesOrdered.slice(
-      query.offset || DEFAULT_QUERY_OFFSET,
-      (query.offset || DEFAULT_QUERY_OFFSET) +
-        (query.limit || DEFAULT_QUERY_LIMIT),
-    );
+    const offset = query.offset || DEFAULT_QUERY_OFFSET;
+    const limit = query.limit || DEFAULT_QUERY_LIMIT;
+    const industriesPaginated = industriesOrdered.slice(offset, offset + limit);
 
     return {
       industries: industriesPaginated,
@@ -168,43 +168,72 @@ export class CompanyAnalyticsService {
   }
 
   async getCompanyInsights(id: string): Promise<CompanyInsightsDto> {
-    const alumnus = await this.alumniRepository.find({
-      companyIds: [id],
-    });
+    const [company, alumnus] = await Promise.all([
+      this.companyRepository.findById(id),
+      this.alumniRepository.find({ companyIds: [id] }),
+    ]);
 
-    const company = await this.companyRepository.findById(id);
-    const roles = alumnus.flatMap((alumnus) => alumnus.roles);
+    const roles = alumnus.flatMap((a) => a.roles);
+    if (roles.length === 0) {
+      return {
+        id,
+        name: company.name,
+        logo: company.logo,
+        linkedinUrl: company.linkedinUrl,
+        levelsFyiUrl: company.levelsFyiUrl,
+        foundedByAlumni: false,
+        companySize: company.companySize
+          ? COMPANY_SIZE[company.companySize]
+          : undefined,
+        companyType: company.companyType
+          ? COMPANY_TYPE[company.companyType]
+          : undefined,
+        founded: company.founded,
+        website: company.website,
+        headquarters: company.location,
+        industry: company.industry,
+        similarCompanies: [],
+        averageYOE: 0,
+        averageYOC: formatYearsToHuman(0),
+        roles: [],
+        currentAlumni: [],
+        alumni: [],
+        countries: [],
+        cities: [],
+        alumniTrend: [],
+        averageTrend: [],
+        industryTrend: [],
+        migrations: [],
+      };
+    }
 
-    // Years in Company, regardless of end date
     const yearsInCompany =
       roles
         .map((role) => {
           const startDate = new Date(role.startDate);
           const endDate = role.endDate ? new Date(role.endDate) : new Date();
-          const years = endDate.getFullYear() - startDate.getFullYear();
-          return years;
+          return endDate.getFullYear() - startDate.getFullYear();
         })
         .reduce((acc, curr) => acc + curr, 0) / roles.length;
 
-    const companyAlumni = [
-      ...new Set(
-        roles.filter((role) => role.isCurrent).map((role) => role.alumniId),
-      ),
-    ];
+    const currentAlumniIds = new Set(
+      roles.filter((role) => role.isCurrent).map((role) => role.alumniId),
+    );
 
     const yoes = await Promise.all(
-      companyAlumni.map(async (alumniId) => {
+      Array.from(currentAlumniIds).map(async (alumniId) => {
         const oldestRole =
           await this.alumniRepository.findOldestAlumniRole(alumniId);
-        if (!oldestRole) return 0;
-
-        return differenceInYears(new Date(), new Date(oldestRole.startDate));
+        return oldestRole
+          ? differenceInYears(new Date(), new Date(oldestRole.startDate))
+          : 0;
       }),
     );
 
-    const yoe = Math.round(
-      yoes.reduce((acc, curr) => acc + curr, 0) / yoes.length,
-    );
+    const yoe =
+      yoes.length > 0
+        ? Math.round(yoes.reduce((acc, curr) => acc + curr, 0) / yoes.length)
+        : 0;
 
     return {
       id,
@@ -246,50 +275,54 @@ export class CompanyAnalyticsService {
   getCompanyMap(
     alumnus: AlumniAnalyticsEntity[],
   ): CompanyListItemExtendedDto[] {
-    // Maps an alumni to a set of companies they've worked at
-    const alumniCompanyMap = new Map<string, Set<string>>();
-    const companiesWithAlumniCount: CompanyListItemExtendedDto[] = [];
-
-    alumnus.forEach((alumnus) => {
-      if (!alumniCompanyMap.has(alumnus.id)) {
-        alumniCompanyMap.set(alumnus.id, new Set());
+    const companyMap = new Map<
+      string,
+      {
+        count: number;
+        name: string;
+        logo: string | undefined;
+        industry: string;
+        industryId: string;
+        levelsFyiUrl: string | undefined;
       }
+    >();
 
-      alumnus.roles.forEach((role) => {
-        alumniCompanyMap.get(alumnus.id)!.add(role.company.id);
-      });
-    });
+    for (const alumni of alumnus) {
+      const seenCompanies = new Set<string>();
 
-    const companyCountMap = new Map<string, number>();
-    alumniCompanyMap.forEach((companySet) => {
-      companySet.forEach((companyId) => {
-        companyCountMap.set(
-          companyId,
-          (companyCountMap.get(companyId) || 0) + 1,
-        );
-      });
-    });
+      for (const role of alumni.roles) {
+        const companyId = role.company.id;
 
-    companyCountMap.forEach((count, companyId) => {
-      const role = alumnus
-        .flatMap((a) => a.roles)
-        .find((r) => r.company.id === companyId);
+        if (!seenCompanies.has(companyId)) {
+          seenCompanies.add(companyId);
 
-      if (role) {
-        companiesWithAlumniCount.push({
-          id: companyId,
-          name: role.company.name,
-          count: count,
-          logo: role.company.logo,
-          industry: role.company.industry.name,
-          industryId: role.company.industry.id,
-          levelsFyiUrl: role.company.levelsFyiUrl,
-          trend: [],
-        });
+          const existingCompany = companyMap.get(companyId);
+          if (existingCompany) {
+            existingCompany.count++;
+          } else {
+            companyMap.set(companyId, {
+              count: 1,
+              name: role.company.name,
+              logo: role.company.logo,
+              industry: role.company.industry.name,
+              industryId: role.company.industry.id,
+              levelsFyiUrl: role.company.levelsFyiUrl,
+            });
+          }
+        }
       }
-    });
+    }
 
-    return companiesWithAlumniCount;
+    return Array.from(companyMap.entries()).map(([id, data]) => ({
+      id,
+      name: data.name,
+      count: data.count,
+      logo: data.logo,
+      industry: data.industry,
+      industryId: data.industryId,
+      levelsFyiUrl: data.levelsFyiUrl,
+      trend: [],
+    }));
   }
 
   /**

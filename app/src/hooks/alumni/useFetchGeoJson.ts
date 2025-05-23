@@ -9,6 +9,7 @@ type Props = {
   conclusionYears?: number[];
   selectedYear?: number;
   compareYear?: number;
+  enabled?: boolean;
 };
 
 /**
@@ -17,7 +18,7 @@ type Props = {
  * @param conclusionYears - The conclusion year(s)
  * @returns The GeoJSON data
  */
-export const useFetchGeoJson = ({ courseIds, conclusionYears, groupBy, selectedYear, compareYear }: Props) => {
+export const useFetchGeoJson = ({ courseIds, conclusionYears, groupBy, selectedYear, compareYear, enabled = true }: Props) => {
   const query = useQuery({
     queryKey: ["geoJson", { courseIds, conclusionYears, groupBy, selectedYear, compareYear }],
     queryFn: () =>
@@ -32,7 +33,7 @@ export const useFetchGeoJson = ({ courseIds, conclusionYears, groupBy, selectedY
     gcTime: 1000 * 60 * 60 * 24 * 7, // Cache for 7 days
     refetchOnMount: false,
     refetchOnWindowFocus: false,
-    enabled: true
+    enabled: enabled || false,
   });
 
   const parsedError = useJsonFromResponse<{ error?: string }>(query.error as unknown as Response | undefined);

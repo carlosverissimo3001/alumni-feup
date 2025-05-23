@@ -72,6 +72,7 @@ export class UserAuthGuard implements CanActivate {
     }
 
     // Add user to request for use in controllers
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     (request as any).user = user;
     return true;
   }

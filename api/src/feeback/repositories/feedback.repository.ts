@@ -1,4 +1,4 @@
-import { SendFeedbackDto } from '@/dto/send-feedback.dto';
+import { SendFeedbackDto } from '@/feeback/dto/send-feedback.dto';
 import { PrismaService } from '@/prisma/prisma.service';
 import { Injectable } from '@nestjs/common';
 

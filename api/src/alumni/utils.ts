@@ -1,4 +1,5 @@
-import { Name, PORTUGUESE_NAME_CONNECTORS } from '@/consts';
+import { PORTUGUESE_NAME_CONNECTORS } from './consts';
+import { NameDto } from './dto/name-dto';
 
 /**
  * In the DB, we don't use the 'www' subdomain, so in order to match the user, we need to remove it.
@@ -24,7 +25,7 @@ export const removeAccents = (str: string): string => {
  * @param fullName - The full name to parse
  * @returns The parsed name parts, name object with firstName, lastName and fullName
  */
-export const parseNameParts = (fullName: string): Name => {
+export const parseNameParts = (fullName: string): NameDto => {
   const nameParts = fullName.trim().split(' ');
 
   // If we have at least 2 parts
@@ -51,11 +52,13 @@ export const parseNameParts = (fullName: string): Name => {
       lastName = nameParts[1];
     }
 
-    return {
+    const name: NameDto = {
       firstName: removeAccents(firstName),
       lastName: removeAccents(lastName),
       fullName: removeAccents(fullName),
     };
+
+    return name;
   }
 
   // Note: I don't think this will ever happen, but just in case

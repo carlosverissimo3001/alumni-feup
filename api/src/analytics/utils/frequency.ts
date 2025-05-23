@@ -1,4 +1,4 @@
-import { Frequency } from './types';
+import { FREQUENCY } from '../consts';
 import { differenceInDays, subYears } from 'date-fns';
 
 /**
@@ -10,7 +10,7 @@ import { differenceInDays, subYears } from 'date-fns';
 export function determineFrequency(
   startDate?: string | Date,
   endDate?: string | Date,
-): Frequency {
+): FREQUENCY {
   const now = new Date();
   const start = startDate
     ? new Date(startDate)
@@ -22,9 +22,9 @@ export function determineFrequency(
   const durationInDays = differenceInDays(end, start);
   // Note: Seeing weekly data wouldn't be too useful in my opinion
   // So if the user's range is not bigger than a year, we'll return monthly data
-  if (durationInDays <= 366) return Frequency.MONTHLY;
-  if (durationInDays <= 3 * 365) return Frequency.QUARTERLY;
-  if (durationInDays <= 10 * 365) return Frequency.SEMIANNUAL;
+  if (durationInDays <= 366) return FREQUENCY.MONTHLY;
+  if (durationInDays <= 3 * 365) return FREQUENCY.QUARTERLY;
+  if (durationInDays <= 10 * 365) return FREQUENCY.SEMIANNUAL;
 
-  return Frequency.YEARLY;
+  return FREQUENCY.YEARLY;
 }

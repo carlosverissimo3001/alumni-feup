@@ -12,7 +12,6 @@ apis/UserApi.ts
 apis/V1Api.ts
 apis/index.ts
 index.ts
-models/AddFacultyDto.ts
 models/Alumni.ts
 models/AlumniExtended.ts
 models/AlumniListItemDto.ts
@@ -28,6 +27,7 @@ models/COMPANYSIZE.ts
 models/COMPANYTYPE.ts
 models/ChangeReviewScoreDto.ts
 models/CheckPermissionDto.ts
+models/CheckPermissionResponse.ts
 models/CityListItemDto.ts
 models/CityListResponseDto.ts
 models/CityOptionDto.ts
@@ -45,9 +45,11 @@ models/CourseAnalyticsEntity.ts
 models/CourseCompletion.ts
 models/CreateAlumniDto.ts
 models/CreateCourseDto.ts
+models/CreateFacultyDto.ts
 models/CreateReviewDto.ts
 models/CurrentRoleDto.ts
 models/DataPointDto.ts
+models/DeleteUserDto.ts
 models/EscoClassificationDto.ts
 models/ExtendedCompanyDto.ts
 models/Faculty.ts
@@ -66,6 +68,7 @@ models/IndustryListResponseDto.ts
 models/IndustryOptionDto.ts
 models/LinkedinAuthDto.ts
 models/Location.ts
+models/LocationAnalyticsEntity.ts
 models/LocationGeo.ts
 models/MajorListDto.ts
 models/MajorListItemDto.ts

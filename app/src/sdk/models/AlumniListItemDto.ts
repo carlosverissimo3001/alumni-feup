@@ -13,6 +13,14 @@
  */
 
 import { mapValues } from '../runtime';
+import type { LocationAnalyticsEntity } from './LocationAnalyticsEntity';
+import {
+    LocationAnalyticsEntityFromJSON,
+    LocationAnalyticsEntityFromJSONTyped,
+    LocationAnalyticsEntityToJSON,
+    LocationAnalyticsEntityToJSONTyped,
+} from './LocationAnalyticsEntity';
+
 /**
  * 
  * @export
@@ -36,13 +44,19 @@ export interface AlumniListItemDto {
      * @type {string}
      * @memberof AlumniListItemDto
      */
-    linkedinUrl?: string | null;
+    linkedinUrl?: string;
     /**
      * The profile picture of the alumni
      * @type {string}
      * @memberof AlumniListItemDto
      */
-    profilePictureUrl?: string | null;
+    profilePictureUrl?: string;
+    /**
+     * The location of the alumni`s current role
+     * @type {LocationAnalyticsEntity}
+     * @memberof AlumniListItemDto
+     */
+    currentRoleLocation?: LocationAnalyticsEntity;
 }
 
 /**
@@ -68,6 +82,7 @@ export function AlumniListItemDtoFromJSONTyped(json: any, ignoreDiscriminator: b
         'fullName': json['fullName'],
         'linkedinUrl': json['linkedinUrl'] == null ? undefined : json['linkedinUrl'],
         'profilePictureUrl': json['profilePictureUrl'] == null ? undefined : json['profilePictureUrl'],
+        'currentRoleLocation': json['currentRoleLocation'] == null ? undefined : LocationAnalyticsEntityFromJSON(json['currentRoleLocation']),
     };
 }
 
@@ -86,6 +101,7 @@ export function AlumniListItemDtoToJSONTyped(value?: AlumniListItemDto | null, i
         'fullName': value['fullName'],
         'linkedinUrl': value['linkedinUrl'],
         'profilePictureUrl': value['profilePictureUrl'],
+        'currentRoleLocation': LocationAnalyticsEntityToJSON(value['currentRoleLocation']),
     };
 }
 

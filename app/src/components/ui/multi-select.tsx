@@ -243,10 +243,15 @@ export const MultiSelect = React.forwardRef<
         return options;
       }
 
-      const lowercasedSearch = searchValue.toLowerCase();
-      return options.filter((option) =>
-        option.label.toLowerCase().includes(lowercasedSearch)
-      );
+      const searchTerms = searchValue
+        .toLowerCase()
+        .split(/\s+/)
+        .filter(Boolean);
+
+      return options.filter((option) => {
+        const optionText = option.label.toLowerCase();
+        return searchTerms.every((term) => optionText.includes(term));
+      });
     }, [options, searchValue]);
 
     const displayOptions = React.useMemo(() => {
@@ -289,16 +294,17 @@ export const MultiSelect = React.forwardRef<
                         key={value}
                         className={cn(
                           isAnimating ? "animate-bounce" : "",
-                          multiSelectVariants({ variant })
+                          multiSelectVariants({ variant }),
+                          "max-w-[200px]"
                         )}
                         style={{ animationDuration: `${animation}s` }}
                       >
                         {IconComponent && (
-                          <IconComponent className="h-4 w-4 mr-2" />
+                          <IconComponent className="h-4 w-4 mr-2 flex-shrink-0" />
                         )}
-                        {option?.label}
+                        <span className="truncate">{option?.label}</span>
                         <XCircle
-                          className="ml-2 h-4 w-4 cursor-pointer"
+                          className="ml-2 h-4 w-4 cursor-pointer flex-shrink-0"
                           onClick={(event) => {
                             event.stopPropagation();
                             if (!disabled) toggleOption(value);
@@ -409,7 +415,7 @@ export const MultiSelect = React.forwardRef<
                     >
                       <div
                         className={cn(
-                          "mr-2 flex h-4 w-4 items-center justify-center rounded-sm border border-primary",
+                          "mr-2 flex h-4 w-4 items-center justify-center rounded-sm border border-primary flex-shrink-0",
                           isSelected
                             ? "bg-primary text-primary-foreground"
                             : "opacity-50 [&_svg]:invisible"
@@ -418,9 +424,9 @@ export const MultiSelect = React.forwardRef<
                         <CheckIcon className="h-4 w-4" />
                       </div>
                       {option.icon && (
-                        <option.icon className="mr-2 h-4 w-4 text-muted-foreground" />
+                        <option.icon className="mr-2 h-4 w-4 text-muted-foreground flex-shrink-0" />
                       )}
-                      <span>{option.label}</span>
+                      <span className="truncate flex-1">{option.label}</span>
                     </CommandItem>
                   );
                 })}
