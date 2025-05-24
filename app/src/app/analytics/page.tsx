@@ -33,7 +33,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 
-export const initialFilters: FilterState = {
+const initialFilters: FilterState = {
   dateRange: undefined,
   courseIds: undefined,
   facultyIds: undefined,
