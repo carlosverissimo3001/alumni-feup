@@ -10,7 +10,7 @@ import {
   CityListResponseDto,
 } from '@/analytics/dto';
 
-@ApiTags('V1', 'Analytics')
+@ApiTags('V1')
 @Controller('analytics/geo')
 export class GeoAnalyticsController {
   constructor(private readonly geoAnalyticsService: GeoAnalyticsService) {}

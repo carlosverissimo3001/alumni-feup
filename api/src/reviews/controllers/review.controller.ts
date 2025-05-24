@@ -14,7 +14,7 @@ import { CreateReviewDto } from '../dto/create-review.dto';
 import { GetReviewGeoJSONDto } from '../dto/get-review-geojson.dto';
 import { ReviewService } from '../services/review.service';
 
-@ApiTags('V1', 'Reviews')
+@ApiTags('V1')
 @Controller('reviews')
 export class ReviewController {
   constructor(private readonly reviewService: ReviewService) {}

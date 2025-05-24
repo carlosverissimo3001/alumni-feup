@@ -8,7 +8,7 @@ import {
   CompanyInsightsDto,
 } from '../dto';
 
-@ApiTags('V1', 'Analytics')
+@ApiTags('V1')
 @Controller('analytics/companies')
 export class CompanyAnalyticsController {
   constructor(

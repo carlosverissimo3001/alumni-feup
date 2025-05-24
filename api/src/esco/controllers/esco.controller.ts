@@ -3,7 +3,7 @@ import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { EscoClassificationDto } from '../dto';
 import { EscoService } from '../services/esco.service';
 
-@ApiTags('V1', 'ESCO')
+@ApiTags('V1')
 @Controller('esco')
 export class EscoController {
   constructor(private readonly escoService: EscoService) {}

@@ -19,7 +19,7 @@ import {
 import { AlumniProfileService } from '../services/alumni-profile.service';
 import { AlumniService } from '../services/alumni.service';
 
-@ApiTags('V1', 'Alumni')
+@ApiTags('V1')
 @Controller('alumni')
 export class AlumniController {
   constructor(

@@ -4,7 +4,7 @@ import { Company } from 'src/entities';
 import { Param } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
-@ApiTags('V1', 'Company')
+@ApiTags('V1')
 @Controller('company')
 export class CompanyController {
   constructor(private readonly companyService: CompanyService) {}

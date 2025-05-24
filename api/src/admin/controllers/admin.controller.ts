@@ -5,7 +5,7 @@ import { SkipThrottle } from '@nestjs/throttler';
 import { MergeCompaniesDto, MergeLocationsDto } from '../dto';
 import { AdminService } from '../services/admin.service';
 
-@ApiTags('V1', 'Admin')
+@ApiTags('V1')
 @Controller('admin')
 @SkipThrottle()
 @UseGuards(UserAuthGuard)
