@@ -1,8 +1,8 @@
 import { MultiSelect } from "../ui/multi-select";
-import { CourseExtended } from "@/sdk";
+import { Course } from "@/sdk";
 
 type CourseSelectProps = {
-  courses: CourseExtended[];
+  courses: Course[];
   setCourseIds: (courseIds: string[]) => void;
   isLoadingCourses: boolean;
   courseIds: string[];
