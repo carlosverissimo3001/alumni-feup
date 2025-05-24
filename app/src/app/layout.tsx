@@ -18,6 +18,21 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "30EIC",
   description: "The 30EIC Alumni Map",
+  icons: {
+    icon: [
+      {
+        url: "/images/logo-simple.png",
+        type: "image/png",
+      },
+    ],
+    shortcut: ["/images/logo-simple.png"],
+    apple: [
+      {
+        url: "/images/logo-simple.png",
+        type: "image/png",
+      },
+    ],
+  },
 };
 
 export default function RootLayout({
@@ -27,7 +42,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased bg-zinc-900`}>
+      <body
+        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-zinc-900`}
+      >
         <Providers>
           <Layout>{children}</Layout>
           <Toaster />
