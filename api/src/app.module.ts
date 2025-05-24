@@ -17,6 +17,7 @@ import { OtpModule } from './otp/otp.module';
 import { ReviewModule } from './reviews/review.module';
 import { UserModule } from './user/user.module';
 import { EmailModule } from './email/email.module';
+import { AppController } from './app.controller';
 
 @Module({
   imports: [
@@ -48,6 +49,7 @@ import { EmailModule } from './email/email.module';
     AgentsApiModule,
     ReviewModule,
   ],
+  controllers: [AppController],
   providers: [
     {
       provide: APP_GUARD,
