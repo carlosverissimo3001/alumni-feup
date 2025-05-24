@@ -1,6 +1,21 @@
 {
   "openapi": "3.0.0",
   "paths": {
+    "/api/health": {
+      "get": {
+        "operationId": "AppController_getHealth",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "API is healthy"
+          }
+        },
+        "summary": "Health check",
+        "tags": [
+          "System"
+        ]
+      }
+    },
     "/api/admin/proxycurl-balance": {
       "get": {
         "operationId": "AdminController_getProxyCurlBalance",
