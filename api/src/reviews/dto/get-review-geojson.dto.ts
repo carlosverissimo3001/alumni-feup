@@ -1,5 +1,13 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { IsNumber, IsArray, IsOptional, IsUUID, IsEnum, IsInt, Min, Max, IsString, IsDate } from 'class-validator';
+import {
+  IsNumber,
+  IsOptional,
+  IsEnum,
+  IsInt,
+  Min,
+  Max,
+  IsDate,
+} from 'class-validator';
 import { Transform } from 'class-transformer';
 import { GROUP_BY } from '@/consts';
 

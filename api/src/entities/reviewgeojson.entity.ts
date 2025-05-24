@@ -2,24 +2,24 @@ import { ApiProperty } from '@nestjs/swagger';
 import { Feature, FeatureCollection, Point } from 'geojson';
 
 export enum ReviewType {
-    COMPANY = 'Company',
-    LOCATION = 'Location',
+  COMPANY = 'Company',
+  LOCATION = 'Location',
 }
 
 export interface CustomProperties {
-    name: string[];
-    reviews: number;
-    alumniNames: { [key: string]: string };
-    profilePics: { [key: string]: string };
-    descriptions: { [key: string]: string };
-    ratings: { [key: string]: number };
-    upvotes: { [key: string]: string[] };
-    downvotes: { [key: string]: string[] };
-    reviewTypes: { [key: string]: string };
-    companyNames: { [key: string]: string };
-    timeSincePosted: { [key: string]: number };
-    timeSincePostedType: { [key: string]: string };
-    createdAt: { [key: string]: Date | null };
+  name: string[];
+  reviews: number;
+  alumniNames: { [key: string]: string };
+  profilePics: { [key: string]: string };
+  descriptions: { [key: string]: string };
+  ratings: { [key: string]: number };
+  upvotes: { [key: string]: string[] };
+  downvotes: { [key: string]: string[] };
+  reviewTypes: { [key: string]: string };
+  companyNames: { [key: string]: string };
+  timeSincePosted: { [key: string]: number };
+  timeSincePostedType: { [key: string]: string };
+  createdAt: { [key: string]: Date | null };
 }
 
 export class ReviewGeoJSONFeature implements Feature<Point, CustomProperties> {
@@ -39,19 +39,19 @@ export class ReviewGeoJSONFeature implements Feature<Point, CustomProperties> {
       coordinates: [0, 0],
     };
     this.properties = {
-        name: [],
-        reviews: 0,
-        alumniNames: {},
-        profilePics: {},
-        descriptions: {},
-        ratings: {},
-        upvotes: {},
-        downvotes: {},
-        reviewTypes: {},
-        companyNames: {},
-        timeSincePosted: {},
-        timeSincePostedType: {},
-        createdAt: {},
+      name: [],
+      reviews: 0,
+      alumniNames: {},
+      profilePics: {},
+      descriptions: {},
+      ratings: {},
+      upvotes: {},
+      downvotes: {},
+      reviewTypes: {},
+      companyNames: {},
+      timeSincePosted: {},
+      timeSincePostedType: {},
+      createdAt: {},
     };
   }
 }

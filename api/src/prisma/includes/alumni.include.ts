@@ -134,7 +134,7 @@ export const alumniSelectOnlyCompany = {
   },
   ReviewsCompany: {
     select: reviewCompanySelect,
-  }
+  },
 } satisfies Prisma.AlumniSelect;
 
 export const alumniSelectOnlyLocation = {

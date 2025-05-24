@@ -20,7 +20,6 @@ import { GeoJSONFeatureCollection } from "@/sdk";
 import "mapbox-gl/dist/mapbox-gl.css";
 import { GeoJSONProperties } from "./mapFilters";
 import { AlumniData } from "@/types/alumni";
-import { set } from "lodash";
 import { useSearchParams } from "next/navigation";
 
 type MapViewProps = {
@@ -138,15 +137,15 @@ const MapView = ({
     totalAlumni: number,
     totalAlumniPrev: number
   ) => {
-      setListPlaceName(listPlaceName);
-      setListAlumniNames(listAlumniNames);
-      setListLinkedinLinks(listLinkedinLinks);
-      setAlumniData(alumniData);
-      setHoveredCluster(true);
-      setCompareYearStudents(compareYearStudents);
-      setStudents(students);
-      setTotalAlumni(totalAlumni);
-      setTotalAlumniPrev(totalAlumniPrev);
+    setListPlaceName(listPlaceName);
+    setListAlumniNames(listAlumniNames);
+    setListLinkedinLinks(listLinkedinLinks);
+    setAlumniData(alumniData);
+    setHoveredCluster(true);
+    setCompareYearStudents(compareYearStudents);
+    setStudents(students);
+    setTotalAlumni(totalAlumni);
+    setTotalAlumniPrev(totalAlumniPrev);
   };
 
   // Clusters content
@@ -176,9 +175,13 @@ const MapView = ({
           profilePics,
           jobTitles,
           companyNames,
-        } = await extractFeatureFields(feature as unknown as Feature<Geometry, GeoJSONProperties>);
+        } = await extractFeatureFields(
+          feature as unknown as Feature<Geometry, GeoJSONProperties>
+        );
         const mapUserCoursesYears = await extractCoursesYears(
-          coursesYearConclusionByUser
+          typeof coursesYearConclusionByUser === "string"
+            ? coursesYearConclusionByUser
+            : JSON.stringify(coursesYearConclusionByUser)
         );
 
         const alumniData = buildAlumniData(
@@ -187,7 +190,7 @@ const MapView = ({
           profilePics,
           mapUserCoursesYears,
           jobTitles,
-          companyNames,
+          companyNames
         );
 
         const parsedFlattenedPlaceNames = parsePlaceNames(listPlaceName);

@@ -4,20 +4,12 @@ import { Calendar } from "@/components/ui/calendar"
 import { Badge } from "@/components/ui/badge"
 import { useNavbar } from "@/contexts/NavbarContext";
 import { cn } from "@/lib/utils";
-import { useListCourses } from "@/hooks/courses/useListCourses";
-import { useFetchGeoJson } from "@/hooks/alumni/useFetchGeoJson";
-import { GeoJSONFeatureCollection } from "@/sdk";
-import { Feature, Point } from 'geojson';
-import { AlumniControllerFindAllGeoJSONGroupByEnum as GROUP_BY } from "@/sdk";
+import { GeoJSONFeatureCollection, AlumniControllerFindAllGeoJSONGroupByEnum as GROUP_BY } from "@/sdk";
 import { useFetchReviewGeoJson } from "@/hooks/reviews/useFetchReviewGeoJson";
-import { Select } from "@/components/ui/select";
-import { ReviewData, ReviewGeoJSONProperties } from "@/types/review";
 import { Button } from "@/components/ui/button";
-import { MultiSelect } from "@/components/ui/multi-select";
 import { format } from "date-fns"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { each } from "lodash";
 
 
 type props = {
@@ -77,6 +69,7 @@ const ReviewMapFilters = ({
   const [cleanButtonEnabled, setCleanButtonEnabled] = useState(false)
   const [paramsCleaned, setParamsCleaned] = useState(false)
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [hadYear, setHadYear] = useState(false)
 
   useEffect(() => {
@@ -89,12 +82,15 @@ const ReviewMapFilters = ({
       refetchGeoJson();
       setScoreFetch(false);
     }
-  }, [scoreFetch]);
+  }, [scoreFetch, refetchGeoJson, setScoreFetch]);
 
   // Panel state
-  const [filteredAlumniNamesCoord, setFilteredAlumniNamesCoord] = useState<AlumniInfo[]>([]);
-  const [listAlumniNamesWithCoordinates, setListAlumniNamesWithCoordinates] =
-    useState<AlumniInfo[]>([]);
+  /*const [filteredAlumniNamesCoord, setFilteredAlumniNamesCoord] = useState<AlumniInfo[]>([]);
+    const [listAlumniNamesWithCoordinates, setListAlumniNamesWithCoordinates] =
+      useState<AlumniInfo[]>([]); */
+  
+  
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [alumniLength, setAlumniLength] = useState(0);
 
   // Use the data when it changes
@@ -149,10 +145,6 @@ const ReviewMapFilters = ({
 
   const toggleVisibility = () => setIsVisible(!isVisible);
 
-  // Clear all filters
-  const clearFilters = () => {
-    
-  }
 
   return (
     <div

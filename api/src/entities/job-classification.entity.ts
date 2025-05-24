@@ -1,5 +1,3 @@
-import { IsDate, IsNumber, IsString } from '@nestjs/class-validator';
-
 import { ApiProperty } from '@nestjs/swagger';
 import { EscoClassification } from './esco-classification.entity';
 

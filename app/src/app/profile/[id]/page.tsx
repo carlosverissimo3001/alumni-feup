@@ -22,7 +22,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { mapSeniorityLevel } from "@/utils/mappings";
 import { Button } from "@/components/ui/button";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Progress } from "@/components/ui/progress";
 import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
