@@ -237,6 +237,8 @@ model Role {
   Location          Location?          @relation(fields: [locationId], references: [id])
   RoleRaw           RoleRaw?
 
+  metadata Json? @map("metadata")
+
   @@index([alumniId])
   @@index([companyId])
   @@index([locationId])
