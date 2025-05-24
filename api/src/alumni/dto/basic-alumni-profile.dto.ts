@@ -84,13 +84,9 @@ export class CurrentRoleDto {
   endDate?: Date | null;
 }
 
-export class ReviewCompanyDto {
+export class ReviewCompanyDto {}
 
-}
-
-export class ReviewLocationDto {
-
-}
+export class ReviewLocationDto {}
 
 export class BasicAlumniProfileDto {
   @ApiProperty()
@@ -135,7 +131,6 @@ export class BasicAlumniProfileDto {
   })
   graduations?: GraduationDto[] | null;
 }
-
 
 export class AlumniPastLocationsAndCompaniesDto {
   @ApiPropertyOptional({

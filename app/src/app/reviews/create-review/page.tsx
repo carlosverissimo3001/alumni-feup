@@ -1,7 +1,7 @@
 "use client"
 
 import { useFetchPastLocationsAndCompanies } from "@/hooks/reviews/useFetchPastLocationsAndCompanies";
-import { useAuth } from "@/contexts/AuthContext";
+//import { useAuth } from "@/contexts/AuthContext";
 import { useState } from "react"
 import { useForm } from "react-hook-form"
 import { Building2, MapPin, Star } from "lucide-react"
@@ -50,12 +50,10 @@ const SubmitReview = () => {
 
     const {
         data: pastLocationsAndCompanies,
-        isLoading,
-        error,
     } = useFetchPastLocationsAndCompanies(id as string);
 
-    const { user, isAuthenticated } = useAuth();
-    const isOwnProfile = user?.id === id;
+    // const { user } = useAuth();
+    //const isOwnProfile = user?.id === id;
 
     const companies = transformData(pastLocationsAndCompanies?.companies);
     const locations = pastLocationsAndCompanies?.locations;
@@ -109,10 +107,10 @@ const SubmitReview = () => {
       },
     })
   
-    function onSubmit() {
+    /* function onSubmit() {
       sendReviewSubmit();
       reset();
-    }
+    } */
 
     const handleSubmit = (e: React.FormEvent) => {
       e.preventDefault();
@@ -136,7 +134,7 @@ const SubmitReview = () => {
     }
 
     const watchReviewType = watch("reviewType");
-    const watchReviewText = watch("reviewText");
+    //const watchReviewText = watch("reviewText");
     const watchRating = watch("rating");
     const selectedRating = watchRating ? Number.parseInt(watchRating) : 0
 
@@ -149,7 +147,7 @@ const SubmitReview = () => {
       locationId: selectedLocation || '',
     }
 
-    const { mutate: sendReviewSubmit, isPending } = useReviewSubmit({
+    const { mutate: sendReviewSubmit } = useReviewSubmit({
       data: createReviewDto,
       onSuccess,
     });

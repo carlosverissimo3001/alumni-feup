@@ -1,23 +1,20 @@
 /**
  * This class is responsible for listing the alumnis in a certain cluster. It also handles with Pagination
  */
-import React, { use, useEffect, useState } from "react";
-import { AlumniData } from "@/types/alumni";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import React, { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowRight, Building2, MapPin, Star, ThumbsDown, ThumbsUp } from "lucide-react";
+import { Building2, MapPin, Star, ThumbsDown, ThumbsUp } from "lucide-react";
 import { ReviewData } from "@/types/review";
 import ImageWithFallback from "@/components/ui/image-with-fallback";
 import { Card, CardContent } from "@/components/ui/card";
 import { Avatar } from "@/components/ui/avatar";
-import { AvatarImage } from "@radix-ui/react-avatar";
 import { ReviewType } from "../utils/reviewhelper";
 import { useChangeReviewScore } from "@/hooks/reviews/useChangeReviewScore";
 import { ChangeReviewScoreDto } from "@/sdk/models";
-import { useAuth } from '@/contexts/AuthContext';
+import { useAuth } from "@/contexts/AuthContext";
 
 type props = {
   hoveredCluster: boolean;
@@ -32,22 +29,22 @@ type props = {
 
 const ReviewClusterInfo = ({
   hoveredCluster,
-  listAlumniNames,
-  listLinkedinLinks,
   listPlaceName,
-  //reviews,
   hoveredMouseCoords,
   reviewData,
-  scoreFetch,
-  setScoreFetch
+  //scoreFetch,
+  setScoreFetch,
 }: props) => {
   const nAlumniToShow = 10; // Defines the nº of alumnis to show when a hoover is preformed
   const [startPosition, setStartPosition] = useState(0); // Position in the array to start to read from
   const [endPosition, setEndPosition] = useState(nAlumniToShow - 1); // Position in the array to stop reading from. 0 is also a number therefore the -1
   const [showPrev, setShowPrev] = useState(false); // Defines if it is to show the "...Prev"
   const [showMore, setShowMore] = useState(false); // Defines if it is to show the "More..."
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [showCompare, setShowCompare] = useState(false);
-  const [reviewScore, setReviewScore] = useState<ChangeReviewScoreDto | null>(null);
+  const [reviewScore, setReviewScore] = useState<ChangeReviewScoreDto | null>(
+    null
+  );
 
   const { user, isAuthenticated } = useAuth();
 
@@ -99,20 +96,25 @@ const ReviewClusterInfo = ({
     setShowMore(true);
   };
 
-  useEffect(() => {
-    showCompare
-  });
+/*   useEffect(() => {
+    showCompare;
+  }); */
 
   const renderStars = (rating: number) => {
     return Array(5)
       .fill(0)
       .map((_, i) => (
-        <Star key={i} className={`h-4 w-4 ${i < rating ? "fill-amber-400 text-amber-400" : "text-gray-300"}`} />
-      ))
-  }
+        <Star
+          key={i}
+          className={`h-4 w-4 ${
+            i < rating ? "fill-amber-400 text-amber-400" : "text-gray-300"
+          }`}
+        />
+      ));
+  };
 
   function handleHelpful(review: ReviewData, isHelpful: boolean) {
-    if(user?.id && isAuthenticated) {
+    if (user?.id && isAuthenticated) {
       const reviewScore: ChangeReviewScoreDto = {
         alumniId: user?.id,
         reviewId: review.id,
@@ -126,21 +128,22 @@ const ReviewClusterInfo = ({
   }
 
   function handleRealTimeScoreChange(review: ReviewData, isHelpful: boolean) {
-    if(review.upvotes?.includes(user?.id!)) {
-      review.upvotes = review.upvotes.filter((id) => id !== user?.id!);
-      if(!isHelpful) {
-        review.downvotes!.push(user?.id!);
+    if (!user?.id) return;
+
+    if (review.upvotes?.includes(user.id)) {
+      review.upvotes = review.upvotes.filter((id) => id !== user.id);
+      if (!isHelpful && review.downvotes) {
+        review.downvotes.push(user.id);
       }
-    }else if(review.downvotes?.includes(user?.id!)) {
-      review.downvotes = review.downvotes.filter((id) => id !== user?.id!);
-      if(isHelpful) {
-        review.upvotes!.push(user?.id!);
+    } else if (review.downvotes?.includes(user.id)) {
+      review.downvotes = review.downvotes.filter((id) => id !== user.id);
+      if (isHelpful && review.upvotes) {
+        review.upvotes.push(user.id);
       }
-    }
-    else if(isHelpful) {
-      review.upvotes!.push(user?.id!);
-    }else if(!isHelpful) {
-      review.downvotes!.push(user?.id!);
+    } else if (isHelpful && review.upvotes) {
+      review.upvotes.push(user.id);
+    } else if (!isHelpful && review.downvotes) {
+      review.downvotes.push(user.id);
     }
   }
 
@@ -149,15 +152,19 @@ const ReviewClusterInfo = ({
   });
 
   const getReviewTypeIcon = (type: string) => {
-    return type === ReviewType.Company ? <Building2 className="h-3.5 w-3.5" /> : <MapPin className="h-3.5 w-3.5" />
-  }
+    return type === ReviewType.Company ? (
+      <Building2 className="h-3.5 w-3.5" />
+    ) : (
+      <MapPin className="h-3.5 w-3.5" />
+    );
+  };
 
   return (
     <AnimatePresence>
       {hoveredCluster &&
-        // listAlumniNames.length > 0 &&
-        // listLinkedinLinks.length > 0 &&
-        listPlaceName.length > 0 ? (
+      // listAlumniNames.length > 0 &&
+      // listLinkedinLinks.length > 0 &&
+      listPlaceName.length > 0 ? (
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
@@ -169,110 +176,146 @@ const ReviewClusterInfo = ({
           }}
         >
           {
-          <div className="space-y-4">
-            <div>
-              <h3 className="text-sm font-semibold tracking-wider text-red-700 uppercase mb-2">
-                Location
-              </h3>
-              <div className="flex flex-wrap gap-1">
-                {listPlaceName.map((place, index) => (
-                  <Badge key={index} variant="secondary" className="text-xs">
-                    {place}
-                  </Badge>
-                ))}
+            <div className="space-y-4">
+              <div>
+                <h3 className="text-sm font-semibold tracking-wider text-red-700 uppercase mb-2">
+                  Location
+                </h3>
+                <div className="flex flex-wrap gap-1">
+                  {listPlaceName.map((place, index) => (
+                    <Badge key={index} variant="secondary" className="text-xs">
+                      {place}
+                    </Badge>
+                  ))}
+                </div>
               </div>
-            </div>
-            <ScrollArea className="h-[350px] w-full rounded-md">
+              <ScrollArea className="h-[350px] w-full rounded-md">
                 <div className="w-full max-w-3xl mx-auto">
-                    <div className="space-y-6">
+                  <div className="space-y-6">
                     {reviewData
-                    .sort((a, b) => a.name.localeCompare(b.name))
-                    .slice(startPosition, endPosition + 1)
-                    .map((review, index) => (
+                      .sort((a, b) => a.name.localeCompare(b.name))
+                      .slice(startPosition, endPosition + 1)
+                      .map((review, index) => (
                         <Card key={index} className="overflow-hidden">
-                            <CardContent className="p-6">
+                          <CardContent className="p-6">
                             <div className="flex items-start gap-4">
-                                <Avatar className="h-10 w-10 border">
+                              <Avatar className="h-10 w-10 border">
                                 <ImageWithFallback
-                                    src={review.profile_pic_url ?? ""}
-                                    alt={review.name}
-                                    />
-                                </Avatar>
-                                <div className="flex-1 space-y-2">
+                                  src={review.profile_pic_url ?? ""}
+                                  alt={review.name}
+                                />
+                              </Avatar>
+                              <div className="flex-1 space-y-2">
                                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
-                                    <div>
-                                    <h3 className="font-semibold">{review.name}</h3>
+                                  <div>
+                                    <h3 className="font-semibold">
+                                      {review.name}
+                                    </h3>
                                     <div className="flex items-center gap-2">
-                                        <div className="flex">{renderStars(review.rating!)}</div>
-                                        <span className="text-sm text-muted-foreground">• {review.timeSincePosted} {review.timeSincePostedType} ago</span>
+                                      <div className="flex">
+                                        {renderStars(review.rating!)}
+                                      </div>
+                                      <span className="text-sm text-muted-foreground">
+                                        • {review.timeSincePosted}{" "}
+                                        {review.timeSincePostedType} ago
+                                      </span>
                                     </div>
-                                    </div>
-                                    <div className="flex items-center gap-2 text-sm">
-                                    <span className="text-muted-foreground">Was this review helpful?</span>
+                                  </div>
+                                  <div className="flex items-center gap-2 text-sm">
+                                    <span className="text-muted-foreground">
+                                      Was this review helpful?
+                                    </span>
                                     <Button
-                                        variant="outline"
-                                        size="sm"
-                                        className={`h-8 gap-1 ${review.upvotes?.includes(user?.id!) ? "text-white bg-zinc-900" : ""}`}
-                                        onClick={() => handleHelpful(review, true)}
+                                      variant="outline"
+                                      size="sm"
+                                      className={`h-8 gap-1 ${
+                                        review.upvotes?.includes(user?.id ?? "")
+                                          ? "text-white bg-zinc-900"
+                                          : ""
+                                      }`}
+                                      onClick={() =>
+                                        handleHelpful(review, true)
+                                      }
                                     >
-                                        <ThumbsUp className="h-3.5 w-3.5" />
-                                        <span>{review.upvotes?.length}</span>
+                                      <ThumbsUp className="h-3.5 w-3.5" />
+                                      <span>{review.upvotes?.length}</span>
                                     </Button>
                                     <Button
-                                        variant="outline"
-                                        size="sm"
-                                        className={`h-8 gap-1 ${review.downvotes?.includes(user?.id!)  ? "text-white bg-zinc-900" : ""}`}
-                                        onClick={() => handleHelpful(review, false)}
+                                      variant="outline"
+                                      size="sm"
+                                      className={`h-8 gap-1 ${
+                                        review.downvotes?.includes(
+                                          user?.id ?? ""
+                                        )
+                                          ? "text-white bg-zinc-900"
+                                          : ""
+                                      }`}
+                                      onClick={() =>
+                                        handleHelpful(review, false)
+                                      }
                                     >
-                                        <ThumbsDown className="h-3.5 w-3.5" />
-                                        <span>{review.downvotes?.length}</span>
+                                      <ThumbsDown className="h-3.5 w-3.5" />
+                                      <span>{review.downvotes?.length}</span>
                                     </Button>
-                                    </div>
+                                  </div>
                                 </div>
                                 <div className=" pt-3 rounded-md">
-                                    <div className="flex items-center gap-1.5 mb-2">
-                                    <Badge variant="outline" className="flex items-center gap-1 px-2 py-0.5 h-5 text-xs font-normal">
-                                        {getReviewTypeIcon(review.reviewType!)}
-                                        <span>{review.reviewType === ReviewType.Company ? "Company" : "Location"}</span>
+                                  <div className="flex items-center gap-1.5 mb-2">
+                                    <Badge
+                                      variant="outline"
+                                      className="flex items-center gap-1 px-2 py-0.5 h-5 text-xs font-normal"
+                                    >
+                                      {getReviewTypeIcon(review.reviewType!)}
+                                      <span>
+                                        {review.reviewType ===
+                                        ReviewType.Company
+                                          ? "Company"
+                                          : "Location"}
+                                      </span>
                                     </Badge>
-                                    <h4 className="font-medium text-sm">{review.reviewType === ReviewType.Company ? review.companyName : ""}</h4>
-                                    </div>
-                                    <p className="text-sm text-muted-foreground">{review.description}</p>
+                                    <h4 className="font-medium text-sm">
+                                      {review.reviewType === ReviewType.Company
+                                        ? review.companyName
+                                        : ""}
+                                    </h4>
+                                  </div>
+                                  <p className="text-sm text-muted-foreground">
+                                    {review.description}
+                                  </p>
                                 </div>
-                                </div>
+                              </div>
                             </div>
-                            </CardContent>
+                          </CardContent>
                         </Card>
-                        ))}
-                    </div>
-                    </div>
-            </ScrollArea>
+                      ))}
+                  </div>
+                </div>
+              </ScrollArea>
 
-            <div className="flex justify-between pt-2">
-              {showPrev && (
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={handleShowPrev}
-                  className="text-xs"
-                >
-                  ← Previous
-                </Button>
-              )}
-              {showMore && (
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={handleShowMore}
-                  className="text-xs ml-auto"
-                >
-                  More →
-                </Button>
-              )}
+              <div className="flex justify-between pt-2">
+                {showPrev && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={handleShowPrev}
+                    className="text-xs"
+                  >
+                    ← Previous
+                  </Button>
+                )}
+                {showMore && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={handleShowMore}
+                    className="text-xs ml-auto"
+                  >
+                    More →
+                  </Button>
+                )}
+              </div>
             </div>
-          </div>
           }
-
         </motion.div>
       ) : null}
     </AnimatePresence>

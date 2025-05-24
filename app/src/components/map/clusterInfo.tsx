@@ -1,7 +1,7 @@
 /**
  * This class is responsible for listing the alumnis in a certain cluster. It also handles with Pagination
  */
-import React, { use, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { AlumniData } from "@/types/alumni";
 import ImageWithFallback from "../ui/image-with-fallback";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -28,8 +28,6 @@ type props = {
 };
 const ClusterInfo = ({
   hoveredCluster,
-  listAlumniNames,
-  listLinkedinLinks,
   listPlaceName,
   compareYearStudents,
   students,
@@ -45,7 +43,7 @@ const ClusterInfo = ({
   const [endPosition, setEndPosition] = useState(nAlumniToShow - 1); // Position in the array to stop reading from. 0 is also a number therefore the -1
   const [showPrev, setShowPrev] = useState(false); // Defines if it is to show the "...Prev"
   const [showMore, setShowMore] = useState(false); // Defines if it is to show the "More..."
-  const [showCompare, setShowCompare] = useState(false);
+  //const [showCompare, setShowCompare] = useState(false);
   const [displayMode, setDisplayMode] = useState<"numbers" | "percentages">("numbers")
 
   useEffect(() => {
@@ -96,9 +94,9 @@ const ClusterInfo = ({
     setShowMore(true);
   };
 
-  useEffect(() => {
-    showCompare
-  });
+  // useEffect(() => {
+  //   showCompare
+  // });
 
 
   return (
@@ -153,7 +151,7 @@ const ClusterInfo = ({
                             <div className="relative h-8 w-8 rounded-full overflow-hidden">
                               <ImageWithFallback
                                 className="object-cover"
-                                src={alumni.profile_pic_url || null}
+                                src={alumni.profile_pic_url || ""}
                                 alt={alumni.name}
                               />
                             </div>

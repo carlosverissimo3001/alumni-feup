@@ -50,4 +50,4 @@ export class AlumniGeoJSONResponse {
       acronym: string;
     };
   }>;
-} 
+}

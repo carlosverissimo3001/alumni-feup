@@ -10,12 +10,10 @@ import { useNavbar } from "@/contexts/NavbarContext";
 
 import { GeoJSONFeatureCollection } from "@/sdk";
 import 'mapbox-gl/dist/mapbox-gl.css';
-import { AlumniData } from "@/types/alumni";
 import { ReviewData, ReviewGeoJSONProperties } from "@/types/review";
 import { buildReviewData, extractReviewFeatureFields, sortReviewData } from "../utils/reviewhelper";
 import ReviewClusterInfo from "./reviewClusterInfo";
 import ReviewMapGLSource from "./reviewMapGlSource";
-import { set } from "date-fns";
 
 import { clusterLayer } from "./reviewMapLayers";
 import { parsePlaceNames } from "../utils/helper";
@@ -44,7 +42,7 @@ const ReviewMapView = ({
   reviewData,
   setReviewData,
   sortBy,
-  setSortBy,
+  // setSortBy,
   scoreFetch,
   setScoreFetch
 }: MapViewProps) => {
@@ -54,10 +52,12 @@ const ReviewMapView = ({
   const [listPlaceName, setListPlaceName] = useState<string[]>([]);
   const [listAlumniNames, setListAlumniNames] = useState<string[]>([]);
   const [listLinkedinLinks, setListLinkedinLinks] = useState<string[]>([]);
-  const [reviews, setReviews] = useState<number>(0);
+  
+  // const [reviews, setReviews] = useState<number>(0);
   
   const [hoveredCluster, setHoveredCluster] = useState(false);
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const mapRef = useRef<any>(null);
 
   const [mapLoaded, setMapLoaded] = useState(false);
@@ -116,7 +116,6 @@ const ReviewMapView = ({
         const feature = event.features[0];
         const {
             listPlaceName,
-            reviews,
             listReviewIds,
             listAlumniNames,
             linkedInLinks,
@@ -171,7 +170,7 @@ const ReviewMapView = ({
   };
 
 
-
+  // !!! Set this in an environment variable
   const TOKEN =
     "pk.eyJ1IjoiamVuaWZlcjEyMyIsImEiOiJjbHJndXUyNnAwamF1MmptamwwMjNqZm0xIn0.vUNEIrEka3ibQKmb8jzgFQ";
 

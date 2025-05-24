@@ -79,26 +79,10 @@ const NameWithTooltip = ({
   );
 };
 
-const getPlaceholderImage = (imageType: ImageType | undefined) => {
-  if (!imageType) {
-    return "/images/placeholder/no-image.png";
-  }
-  switch (imageType) {
-    case "company":
-      return "/images/placeholders/no-logo.png";
-    case "location":
-      return "/images/placeholders/no-location.png";
-    case "alumni":
-      return "/images/placeholders/no-user.png";
-    default:
-      return "/images/placeholders/no-image.png";
-  }
-};
 
 const LogoSection = ({
   image,
   name,
-  imageType,
 }: {
   image?: string;
   name: string;

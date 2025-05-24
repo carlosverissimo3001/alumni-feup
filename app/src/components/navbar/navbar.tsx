@@ -3,11 +3,9 @@
 import { cn } from "@/lib/utils";
 import {
   GlobeIcon,
-  BadgeHelpIcon,
   UserIcon,
   ChartSpline,
   MessageCircleCode,
-  BrainIcon,
   FormInputIcon,
   InfoIcon,
 } from "lucide-react";
