@@ -1517,7 +1517,7 @@ export class V1Api extends runtime.BaseAPI implements V1ApiInterface {
         const headerParameters: runtime.HTTPHeaders = {};
 
         const response = await this.request({
-            path: `/api/admin/brightdata-balance`,
+            path: `/admin/brightdata-balance`,
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
@@ -1547,7 +1547,7 @@ export class V1Api extends runtime.BaseAPI implements V1ApiInterface {
         const headerParameters: runtime.HTTPHeaders = {};
 
         const response = await this.request({
-            path: `/api/admin/proxycurl-balance`,
+            path: `/admin/proxycurl-balance`,
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
@@ -1586,7 +1586,7 @@ export class V1Api extends runtime.BaseAPI implements V1ApiInterface {
         headerParameters['Content-Type'] = 'application/json';
 
         const response = await this.request({
-            path: `/api/admin/merge-companies`,
+            path: `/admin/merge-companies`,
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
@@ -1621,7 +1621,7 @@ export class V1Api extends runtime.BaseAPI implements V1ApiInterface {
         headerParameters['Content-Type'] = 'application/json';
 
         const response = await this.request({
-            path: `/api/admin/merge-locations`,
+            path: `/admin/merge-locations`,
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
@@ -1762,7 +1762,7 @@ export class V1Api extends runtime.BaseAPI implements V1ApiInterface {
         const headerParameters: runtime.HTTPHeaders = {};
 
         const response = await this.request({
-            path: `/api/analytics/alumni`,
+            path: `/analytics/alumni`,
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
@@ -1788,7 +1788,7 @@ export class V1Api extends runtime.BaseAPI implements V1ApiInterface {
         const headerParameters: runtime.HTTPHeaders = {};
 
         const response = await this.request({
-            path: `/api/analytics/alumni/options`,
+            path: `/analytics/alumni/options`,
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
@@ -1823,7 +1823,7 @@ export class V1Api extends runtime.BaseAPI implements V1ApiInterface {
         headerParameters['Content-Type'] = 'application/json';
 
         const response = await this.request({
-            path: `/api/alumni`,
+            path: `/alumni`,
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
@@ -1850,7 +1850,7 @@ export class V1Api extends runtime.BaseAPI implements V1ApiInterface {
         const headerParameters: runtime.HTTPHeaders = {};
 
         const response = await this.request({
-            path: `/api/alumni`,
+            path: `/alumni`,
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
@@ -1903,7 +1903,7 @@ export class V1Api extends runtime.BaseAPI implements V1ApiInterface {
         const headerParameters: runtime.HTTPHeaders = {};
 
         const response = await this.request({
-            path: `/api/alumni/geoJSON`,
+            path: `/alumni/geoJSON`,
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
@@ -1936,7 +1936,7 @@ export class V1Api extends runtime.BaseAPI implements V1ApiInterface {
         const headerParameters: runtime.HTTPHeaders = {};
 
         const response = await this.request({
-            path: `/api/alumni/{id}`.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id']))),
+            path: `/alumni/{id}`.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id']))),
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
@@ -1962,7 +1962,7 @@ export class V1Api extends runtime.BaseAPI implements V1ApiInterface {
         const headerParameters: runtime.HTTPHeaders = {};
 
         const response = await this.request({
-            path: `/api/alumni/review`,
+            path: `/alumni/review`,
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
@@ -1995,7 +1995,7 @@ export class V1Api extends runtime.BaseAPI implements V1ApiInterface {
         const headerParameters: runtime.HTTPHeaders = {};
 
         const response = await this.request({
-            path: `/api/alumni/basic-profile/{id}`.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id']))),
+            path: `/alumni/basic-profile/{id}`.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id']))),
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
@@ -2028,7 +2028,7 @@ export class V1Api extends runtime.BaseAPI implements V1ApiInterface {
         const headerParameters: runtime.HTTPHeaders = {};
 
         const response = await this.request({
-            path: `/api/alumni/past-locations-companies/{id}`.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id']))),
+            path: `/alumni/past-locations-companies/{id}`.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id']))),
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
@@ -2063,7 +2063,7 @@ export class V1Api extends runtime.BaseAPI implements V1ApiInterface {
         headerParameters['Content-Type'] = 'application/json';
 
         const response = await this.request({
-            path: `/api/alumni/review`,
+            path: `/alumni/review`,
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
@@ -2205,7 +2205,7 @@ export class V1Api extends runtime.BaseAPI implements V1ApiInterface {
         const headerParameters: runtime.HTTPHeaders = {};
 
         const response = await this.request({
-            path: `/api/analytics/companies`,
+            path: `/analytics/companies`,
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
@@ -2238,7 +2238,7 @@ export class V1Api extends runtime.BaseAPI implements V1ApiInterface {
         const headerParameters: runtime.HTTPHeaders = {};
 
         const response = await this.request({
-            path: `/api/analytics/companies/{id}`.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id']))),
+            path: `/analytics/companies/{id}`.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id']))),
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
@@ -2264,7 +2264,7 @@ export class V1Api extends runtime.BaseAPI implements V1ApiInterface {
         const headerParameters: runtime.HTTPHeaders = {};
 
         const response = await this.request({
-            path: `/api/analytics/companies/growth`,
+            path: `/analytics/companies/growth`,
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
@@ -2289,7 +2289,7 @@ export class V1Api extends runtime.BaseAPI implements V1ApiInterface {
         const headerParameters: runtime.HTTPHeaders = {};
 
         const response = await this.request({
-            path: `/api/analytics/companies/options`,
+            path: `/analytics/companies/options`,
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
@@ -2315,7 +2315,7 @@ export class V1Api extends runtime.BaseAPI implements V1ApiInterface {
         const headerParameters: runtime.HTTPHeaders = {};
 
         const response = await this.request({
-            path: `/api/company`,
+            path: `/company`,
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
@@ -2347,7 +2347,7 @@ export class V1Api extends runtime.BaseAPI implements V1ApiInterface {
         const headerParameters: runtime.HTTPHeaders = {};
 
         const response = await this.request({
-            path: `/api/company/{id}`.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id']))),
+            path: `/company/{id}`.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id']))),
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
@@ -2381,7 +2381,7 @@ export class V1Api extends runtime.BaseAPI implements V1ApiInterface {
         headerParameters['Content-Type'] = 'application/json';
 
         const response = await this.request({
-            path: `/api/course`,
+            path: `/course`,
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
@@ -2416,7 +2416,7 @@ export class V1Api extends runtime.BaseAPI implements V1ApiInterface {
         const headerParameters: runtime.HTTPHeaders = {};
 
         const response = await this.request({
-            path: `/api/course`,
+            path: `/course`,
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
@@ -2449,7 +2449,7 @@ export class V1Api extends runtime.BaseAPI implements V1ApiInterface {
         const headerParameters: runtime.HTTPHeaders = {};
 
         const response = await this.request({
-            path: `/api/course/{id}`.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id']))),
+            path: `/course/{id}`.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id']))),
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
@@ -2590,7 +2590,7 @@ export class V1Api extends runtime.BaseAPI implements V1ApiInterface {
         const headerParameters: runtime.HTTPHeaders = {};
 
         const response = await this.request({
-            path: `/api/analytics/education/faculties`,
+            path: `/analytics/education/faculties`,
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
@@ -2731,7 +2731,7 @@ export class V1Api extends runtime.BaseAPI implements V1ApiInterface {
         const headerParameters: runtime.HTTPHeaders = {};
 
         const response = await this.request({
-            path: `/api/analytics/education/graduations`,
+            path: `/analytics/education/graduations`,
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
@@ -2872,7 +2872,7 @@ export class V1Api extends runtime.BaseAPI implements V1ApiInterface {
         const headerParameters: runtime.HTTPHeaders = {};
 
         const response = await this.request({
-            path: `/api/analytics/education/majors`,
+            path: `/analytics/education/majors`,
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
@@ -2898,7 +2898,7 @@ export class V1Api extends runtime.BaseAPI implements V1ApiInterface {
         const headerParameters: runtime.HTTPHeaders = {};
 
         const response = await this.request({
-            path: `/api/esco/level-one`,
+            path: `/esco/level-one`,
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
@@ -2924,7 +2924,7 @@ export class V1Api extends runtime.BaseAPI implements V1ApiInterface {
         const headerParameters: runtime.HTTPHeaders = {};
 
         const response = await this.request({
-            path: `/api/esco/level-two`,
+            path: `/esco/level-two`,
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
@@ -2959,7 +2959,7 @@ export class V1Api extends runtime.BaseAPI implements V1ApiInterface {
         headerParameters['Content-Type'] = 'application/json';
 
         const response = await this.request({
-            path: `/api/faculty`,
+            path: `/faculty`,
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
@@ -2986,7 +2986,7 @@ export class V1Api extends runtime.BaseAPI implements V1ApiInterface {
         const headerParameters: runtime.HTTPHeaders = {};
 
         const response = await this.request({
-            path: `/api/faculty`,
+            path: `/faculty`,
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
@@ -3021,7 +3021,7 @@ export class V1Api extends runtime.BaseAPI implements V1ApiInterface {
         headerParameters['Content-Type'] = 'application/json';
 
         const response = await this.request({
-            path: `/api/feedback`,
+            path: `/feedback`,
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
@@ -3056,7 +3056,7 @@ export class V1Api extends runtime.BaseAPI implements V1ApiInterface {
         headerParameters['Content-Type'] = 'application/json';
 
         const response = await this.request({
-            path: `/api/files`,
+            path: `/files`,
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
@@ -3091,7 +3091,7 @@ export class V1Api extends runtime.BaseAPI implements V1ApiInterface {
         const headerParameters: runtime.HTTPHeaders = {};
 
         const response = await this.request({
-            path: `/api/analytics/geo/city-options`,
+            path: `/analytics/geo/city-options`,
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
@@ -3232,7 +3232,7 @@ export class V1Api extends runtime.BaseAPI implements V1ApiInterface {
         const headerParameters: runtime.HTTPHeaders = {};
 
         const response = await this.request({
-            path: `/api/analytics/geo/cities`,
+            path: `/analytics/geo/cities`,
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
@@ -3258,7 +3258,7 @@ export class V1Api extends runtime.BaseAPI implements V1ApiInterface {
         const headerParameters: runtime.HTTPHeaders = {};
 
         const response = await this.request({
-            path: `/api/analytics/geo/country-options`,
+            path: `/analytics/geo/country-options`,
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
@@ -3399,7 +3399,7 @@ export class V1Api extends runtime.BaseAPI implements V1ApiInterface {
         const headerParameters: runtime.HTTPHeaders = {};
 
         const response = await this.request({
-            path: `/api/analytics/geo/countries`,
+            path: `/analytics/geo/countries`,
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
@@ -3426,7 +3426,7 @@ export class V1Api extends runtime.BaseAPI implements V1ApiInterface {
         const headerParameters: runtime.HTTPHeaders = {};
 
         const response = await this.request({
-            path: `/api/analytics/industries/options`,
+            path: `/analytics/industries/options`,
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
@@ -3568,7 +3568,7 @@ export class V1Api extends runtime.BaseAPI implements V1ApiInterface {
         const headerParameters: runtime.HTTPHeaders = {};
 
         const response = await this.request({
-            path: `/api/analytics/industries`,
+            path: `/analytics/industries`,
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
@@ -3603,7 +3603,7 @@ export class V1Api extends runtime.BaseAPI implements V1ApiInterface {
         headerParameters['Content-Type'] = 'application/json';
 
         const response = await this.request({
-            path: `/api/reviews/changeScore`,
+            path: `/reviews/changeScore`,
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
@@ -3638,7 +3638,7 @@ export class V1Api extends runtime.BaseAPI implements V1ApiInterface {
         headerParameters['Content-Type'] = 'application/json';
 
         const response = await this.request({
-            path: `/api/reviews`,
+            path: `/reviews`,
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
@@ -3691,7 +3691,7 @@ export class V1Api extends runtime.BaseAPI implements V1ApiInterface {
         const headerParameters: runtime.HTTPHeaders = {};
 
         const response = await this.request({
-            path: `/api/reviews/geoJSON`,
+            path: `/reviews/geoJSON`,
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
@@ -3718,7 +3718,7 @@ export class V1Api extends runtime.BaseAPI implements V1ApiInterface {
         const headerParameters: runtime.HTTPHeaders = {};
 
         const response = await this.request({
-            path: `/api/analytics/roles/options`,
+            path: `/analytics/roles/options`,
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
@@ -3860,7 +3860,7 @@ export class V1Api extends runtime.BaseAPI implements V1ApiInterface {
         const headerParameters: runtime.HTTPHeaders = {};
 
         const response = await this.request({
-            path: `/api/analytics/roles`,
+            path: `/analytics/roles`,
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
@@ -3895,7 +3895,7 @@ export class V1Api extends runtime.BaseAPI implements V1ApiInterface {
         headerParameters['Content-Type'] = 'application/json';
 
         const response = await this.request({
-            path: `/api/user/check-permission`,
+            path: `/user/check-permission`,
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
@@ -3931,7 +3931,7 @@ export class V1Api extends runtime.BaseAPI implements V1ApiInterface {
         headerParameters['Content-Type'] = 'application/json';
 
         const response = await this.request({
-            path: `/api/user/delete-user`,
+            path: `/user/delete-user`,
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
@@ -3966,7 +3966,7 @@ export class V1Api extends runtime.BaseAPI implements V1ApiInterface {
         headerParameters['Content-Type'] = 'application/json';
 
         const response = await this.request({
-            path: `/api/user/linkedinAuth`,
+            path: `/user/linkedinAuth`,
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
@@ -4002,7 +4002,7 @@ export class V1Api extends runtime.BaseAPI implements V1ApiInterface {
         headerParameters['Content-Type'] = 'application/json';
 
         const response = await this.request({
-            path: `/api/user/linkedin-confirm`,
+            path: `/user/linkedin-confirm`,
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
@@ -4038,7 +4038,7 @@ export class V1Api extends runtime.BaseAPI implements V1ApiInterface {
         headerParameters['Content-Type'] = 'application/json';
 
         const response = await this.request({
-            path: `/api/user/verify-email`,
+            path: `/user/verify-email`,
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
@@ -4073,7 +4073,7 @@ export class V1Api extends runtime.BaseAPI implements V1ApiInterface {
         headerParameters['Content-Type'] = 'application/json';
 
         const response = await this.request({
-            path: `/api/user/verify-email/token`,
+            path: `/user/verify-email/token`,
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
