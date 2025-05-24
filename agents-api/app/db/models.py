@@ -255,6 +255,8 @@ class Role(Base):
     company = relationship("Company", back_populates="roles")
     location = relationship("Location", back_populates="roles")
     role_raw = relationship("RoleRaw", back_populates="role")
+    
+    metadata_ = Column(JSONB, name="metadata", nullable=True)
 
 
 class RoleRaw(Base):

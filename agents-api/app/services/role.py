@@ -6,9 +6,14 @@ from app.db.models import Role, RoleRaw, SeniorityLevel
 from app.db.session import get_db
 from app.schemas.linkedin import ExperienceBase
 from app.schemas.location import LocationType, RoleLocationInput
-from app.schemas.role import RoleAlumniResolveLocationParams, RoleResolveLocationParams
+from app.schemas.role import RoleResolveLocationParams
 from app.utils.misc.convert import linkedin_date_to_timestamp
-from app.utils.role_db import get_all_roles, get_role_raw_by_id, get_roles_by_alumni_id, get_roles_by_ids, update_role
+from app.utils.role_db import (
+    get_all_roles,
+    get_role_raw_by_id,
+    get_roles_by_alumni_id,
+    get_roles_by_ids,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -24,7 +29,7 @@ class RoleService:
         Resolves the location of the roles
         """
         role_ids = params.role_ids
-        #logger.info(f"Requesting role location resolution for {role_ids}")
+        # logger.info(f"Requesting role location resolution for {role_ids}")
 
         roles: list[Role] = []
 
@@ -38,14 +43,14 @@ class RoleService:
         # and newsflash, that user is me :))
         roles = list(set(roles))
 
-        #logger.info(f"Going to update {len(roles)} roles")
+        # logger.info(f"Going to update {len(roles)} roles")
 
         batch_size = 30
         for i in range(0, len(roles), batch_size):
             batch = roles[i : i + batch_size]
-            #logger.info(
+            # logger.info(
             #    f"Processing batch {i // batch_size + 1} of {(len(roles) + batch_size - 1) // batch_size} ({len(batch)} roles)"
-            #)
+            # )
 
             tasks = []
             for role in batch:
@@ -70,7 +75,7 @@ class RoleService:
 
             if i + batch_size < len(roles):
                 await asyncio.sleep(0.5)
-    
+
     async def resolve_role_location_for_alumni(self, alumni_ids: str) -> None:
         """
         Resolves the location of the roles for a given alumni
@@ -97,7 +102,7 @@ class RoleService:
         Returns:
             Role object ready to be inserted in the database
         """
-        #logger.info(f"Parsing role {role.title} of {alumni_id}")
+        # logger.info(f"Parsing role {role.title} of {alumni_id}")
 
         # Convert LinkedIn date format to timestamps
         start_date = linkedin_date_to_timestamp(role.starts_at)
