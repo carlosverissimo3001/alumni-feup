@@ -35,19 +35,13 @@ def update_alumni(alumni: Alumni, db: Session) -> None:
 
 
 def find_all(db: Session) -> list[Alumni]:
-    # temp
-    # finding all alumni with a role that does not have a job classification yet
-    alumni : list[Alumni] = db.query(Alumni).all()
-    
-    to_update = []
-    for alumni in alumni:
-        for role in alumni.roles:
-            if role.job_classification is None:
-                to_update.append(alumni)
-                break
-    return to_update
-
-    # return db.query(Alumni).all()
+    return (
+        db.query(Alumni)
+        .filter(
+            Alumni.profile_picture_url.isnot(None), Alumni.profile_picture_url.like("%media.licdn%")
+        )
+        .all()
+    )
 
 
 def find_by_id(id: str, db: Session) -> Alumni:
