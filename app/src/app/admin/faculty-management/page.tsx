@@ -84,7 +84,7 @@ export default function FacultyAndCourseManagement() {
     e.preventDefault();
     try {
       await addFacultyMutation.mutateAsync({
-        addFacultyDto: {
+        createFacultyDto: {
           name: facultyName,
           nameInt: facultyNameInt,
           acronym: facultyAcronym,
