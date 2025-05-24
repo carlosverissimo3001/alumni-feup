@@ -1,20 +1,20 @@
-import { PHASE_DEVELOPMENT_SERVER } from 'next/constants.js';
+//import { PHASE_DEVELOPMENT_SERVER } from 'next/constants.js';
 
 /**
  * @param {string} phase
  * @returns {import('next').NextConfig}
  */
-const nextConfig = (phase) => {
-  const isDev = phase === PHASE_DEVELOPMENT_SERVER;
+const nextConfig = (/* phase */) => {
+  //const isDev = phase === PHASE_DEVELOPMENT_SERVER;
 
   return {
     reactStrictMode: true,
-    ...(isDev
+    /* ...(isDev
       ? {}
       : {
           basePath: '/newalumnieiworld',
           assetPrefix: '/newalumnieiworld/',
-        }),
+        }), */
     env: {
       MAPBOX_ACCESS_TOKEN: process.env.MAPBOX_ACCESS_TOKEN,
       LINKEDIN_CLIENT_ID: process.env.LINKEDIN_CLIENT_ID,
