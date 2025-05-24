@@ -78,11 +78,11 @@ const ReviewAlumni = ({ alumniToReview }: { alumniToReview: AlumniExtended[] }) 
                         </Link>
                       )}
                     </h3>
-                    {alumni.Location && alumni.Location.city && alumni.Location.country && (
+                    {alumni.location && alumni.location.city && alumni.location.country && (
                       <div className="flex items-center gap-2 text-sm">
                         <PinIcon className="h-4 w-4 text-red-500" strokeWidth={2} />
                         <span className="text-muted-foreground">
-                          {String(alumni.Location.city)}, {String(alumni.Location.country)}
+                          {String(alumni.location.city)}, {String(alumni.location.country)}
                         </span>
                       </div>
                     )}
@@ -99,17 +99,17 @@ const ReviewAlumni = ({ alumniToReview }: { alumniToReview: AlumniExtended[] }) 
                   </div>
                 </div>
 
-                {alumni.Graduations && alumni.Graduations.length > 0 && (
+                {alumni.graduations && alumni.graduations.length > 0 && (
                   <div className="space-y-1">
                     <div className="space-y-2">
-                      {alumni.Graduations.map((graduation, index) => (
+                      {alumni.graduations.map((graduation, index) => (
                         <div 
                           key={index}
                           className="text-sm border-l-2 border-muted pl-2"
                         >
-                          <span className="font-medium">{graduation.Course.name.toString()}</span>
+                          <span className="font-medium">{graduation.course.name.toString()}</span>
                           <span className="text-muted-foreground"> ({graduation.conclusionYear.toString()})</span>
-                          <div className="text-xs text-muted-foreground">{graduation.Course.acronym.toString()}</div>
+                          <div className="text-xs text-muted-foreground">{graduation.course.acronym.toString()}</div>
                         </div>
                       ))}
                     </div>
