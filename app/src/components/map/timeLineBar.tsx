@@ -64,6 +64,7 @@ const TimeLineBar = ( {
   }
 
   const handleTouchStart = (handle: "start" | "end") => (e: React.TouchEvent) => {
+    e.preventDefault()
     setIsDragging(handle)
   }
 

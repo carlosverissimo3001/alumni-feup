@@ -22,9 +22,9 @@ export async function convertBlobToGeoJSON(blob: Blob) {
       const reader = new FileReader();
       reader.onload = () => {
         try {
-          const json = JSON.parse(reader.result);
+          const json = JSON.parse(reader.result as string);
           resolve(json);
-        } catch (error) {
+        } catch {
           reject("Failed to parse JSON");
         }
       };
@@ -74,19 +74,6 @@ export async function extractJSONObjects(str: string) {
   return jsonObjects.map((jsonStr) => JSON.parse(jsonStr));
 }
 
-/**
- * Flattens an array
- * @param arr - The array to flatten
- * @returns The flattened array
- */
-export function flattenArray(arr: any[]) {
-  if (!Array.isArray(arr)) return [arr];
-  let flattened = [];
-  arr.forEach((item) => {
-    flattened = flattened.concat(Helper.flattenArray(item));
-  });
-  return flattened;
-}
 
 /**
  * Parses the place names

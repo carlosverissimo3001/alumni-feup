@@ -17,6 +17,9 @@
     "noImplicitAny": true,
     "strictBindCallApply": true,
     "noFallthroughCasesInSwitch": true,
+    // TODO: Separation of concerns: there should be global dtos and entities, unless they
+    // are used in multiple libraries
+    // We should assume alumni/ is one library, auth/ is another & so on
     "paths": {
       "@/*": ["src/*"],
       "@dto": ["src/dto"],

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Source, MapRef } from 'react-map-gl/mapbox-legacy';
 import { GeoJSONFeatureCollection } from '@/sdk';
-import { clusterCountLayer, clusterLayer, statsLayer, unclusterPointLayer } from './mapLayers';
+import { clusterCountLayer, clusterLayer, statsLayer } from './mapLayers';
 
 const LAYER_IDS = ['cluster-count', 'unclustered-point', 'clusters', 'stats'];
 
