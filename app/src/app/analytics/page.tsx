@@ -18,7 +18,7 @@ import {
   EducationDashboard,
   AlumniTable,
 } from "@/components/analytics/dashboards";
-import { useState, useCallback, useMemo, useEffect } from "react";
+import { useState, useCallback, useMemo, useEffect, Suspense } from "react";
 import OverallStats from "@/components/analytics/OverallStats";
 import { GlobalFilters, FilterState } from "@/components/analytics/common";
 import { handleDateRange } from "@/utils/date";
@@ -55,6 +55,27 @@ const initialFilters: FilterState = {
 };
 
 export default function Analytics() {
+  return (
+    <Suspense
+      fallback={
+        <div className="p-6 space-y-3 bg-gray-100 min-h-screen">
+          <div className="flex items-center gap-4">
+            <ChartSpline className="h-8 w-8 text-[#8C2D19]" />
+            <div>
+              <h1 className="text-3xl font-extrabold text-[#8C2D19]">
+                Loading Analytics...
+              </h1>
+            </div>
+          </div>
+        </div>
+      }
+    >
+      <AnalyticsContent />
+    </Suspense>
+  );
+}
+
+function AnalyticsContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { data: companyOptions } = useCompanyOptions();
@@ -135,8 +156,6 @@ export default function Analytics() {
     (newFilters: FilterState) => {
       setFilters(newFilters);
 
-      // Here, we're checking if the company filters have changed.
-      // If so, no sense in having the parms in the url.
       const onlyCompaniesChanged = Object.entries(newFilters).every(
         ([key, value]) => {
           if (key === "companyIds") return true;
@@ -388,7 +407,6 @@ export default function Analytics() {
           const currentCourses = prev.courseIds || [];
           const yearString = year?.toString() || "";
 
-          // Year not in filters, we add, alognside the course, if not already present
           if (!currentYears.includes(yearString)) {
             return {
               ...prev,
@@ -397,14 +415,11 @@ export default function Analytics() {
                 : [...currentCourses, id],
               graduationYears: [...currentYears, yearString],
             };
-          }
-          // If the year is in filters, only remove the year and course if it's the last instance
-          else {
+          } else {
             const updatedYears = currentYears.filter(
               (gradYear) => gradYear !== yearString
             );
 
-            // Only remove the course if we're removing its last associated year
             const shouldRemoveCourse = !currentYears.some(
               (y) => y !== yearString && currentCourses.includes(id)
             );
