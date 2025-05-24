@@ -1,9 +1,9 @@
-import { V1Api, Configuration } from "@/sdk";
+import { V1Api } from "@/sdk/apis";
 import { bindClassMethods } from "@/sdk/utils";
+import { Configuration } from "@/sdk/runtime";
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
-// Helper to safely access localStorage (only in browser)
 const getLocalStorageItem = (key: string): string | null => {
   if (typeof window !== 'undefined') {
     return localStorage.getItem(key);
@@ -11,7 +11,6 @@ const getLocalStorageItem = (key: string): string | null => {
   return null;
 };
 
-// Custom middleware configuration for authentication
 const configuration = new Configuration({
     basePath: BASE_URL,
     middleware: [

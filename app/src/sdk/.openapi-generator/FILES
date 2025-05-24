@@ -1,14 +1,3 @@
-apis/AdminApi.ts
-apis/AlumniApi.ts
-apis/AnalyticsApi.ts
-apis/CompanyApi.ts
-apis/CourseApi.ts
-apis/ESCOApi.ts
-apis/FacultyApi.ts
-apis/FeedbackApi.ts
-apis/FilesApi.ts
-apis/ReviewsApi.ts
-apis/UserApi.ts
 apis/V1Api.ts
 apis/index.ts
 index.ts

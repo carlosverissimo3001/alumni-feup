@@ -8,7 +8,7 @@ import {
 } from '@/analytics/dto';
 import { EducationAnalyticsService } from '@/analytics/services';
 
-@ApiTags('V1', 'Analytics')
+@ApiTags('V1')
 @Controller('analytics/education')
 export class EducationAnalyticsController {
   constructor(
