@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "next dev --turbopack -p 4200",
     "build": "next build",
-    "start": "PORT=3010 next start",
+    "start": "PORT=4200 next start",
     "lint": "next lint",
     "generate-sdk": "ts-node scripts/generate-sdk.ts",
     "watch-sdk": "ts-node scripts/watch-sdk.ts"
