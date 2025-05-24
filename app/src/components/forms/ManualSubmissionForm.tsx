@@ -20,7 +20,7 @@ import { useManualSubmission } from "@/hooks/alumni/useManualSubmission";
 import { useToast } from "@/hooks/misc/useToast";
 import { CreateAlumniDto } from "@/sdk/api";
 import { Alert, AlertDescription, AlertTitle } from "../ui/alert";
-import { CourseExtended } from "@/sdk";
+import { CourseAnalyticsEntity as Course } from "@/sdk";
 import { Button } from "@/components/ui/button";
 import { useVerifyEmail, useVerifyEmailToken } from "@/hooks/auth/useAuth";
 import { Info } from "lucide-react";
@@ -31,7 +31,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 
-type CourseWithYear = CourseExtended & {
+type CourseWithYear = Course & {
   conclusionYear: string;
 }
 
