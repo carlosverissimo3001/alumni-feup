@@ -7,7 +7,7 @@ import {
   RoleOptionDto,
 } from '@/analytics/dto';
 
-@ApiTags('V1', 'Analytics')
+@ApiTags('V1')
 @Controller('analytics/roles')
 export class RoleAnalyticsController {
   constructor(private readonly roleAnalyticsService: RoleAnalyticsService) {}

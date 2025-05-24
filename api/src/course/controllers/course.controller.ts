@@ -14,7 +14,7 @@ import { CreateCourseDto, FindCoursesDto } from '../dto';
 import { RequirePermission } from '@/auth';
 import { CourseAnalyticsEntity as CourseEntity } from '@/analytics/entities';
 
-@ApiTags('V1', 'Course')
+@ApiTags('V1')
 @Controller('course')
 export class CourseController {
   constructor(private readonly courseService: CourseService) {}

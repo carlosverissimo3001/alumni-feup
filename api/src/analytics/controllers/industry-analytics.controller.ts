@@ -8,7 +8,7 @@ import { CompanyAnalyticsService } from '@/analytics/services';
 import { Controller, Get, Query } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
-@ApiTags('V1', 'Analytics')
+@ApiTags('V1')
 @Controller('analytics/industries')
 export class IndustryAnalyticsController {
   constructor(

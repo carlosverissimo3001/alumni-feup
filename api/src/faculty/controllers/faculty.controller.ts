@@ -12,7 +12,8 @@ import { ApiResponse } from '@nestjs/swagger';
 import { Faculty } from '@/entities/faculty.entity';
 import { CreateFacultyDto } from '../dto';
 import { RequirePermission } from '@/auth/user-auth.guard';
-@ApiTags('V1', 'Faculty')
+
+@ApiTags('V1')
 @Controller('faculty')
 export class FacultyController {
   constructor(private readonly facultyService: FacultyService) {}

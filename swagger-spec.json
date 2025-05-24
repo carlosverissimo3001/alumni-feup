@@ -19,8 +19,7 @@
         },
         "summary": "Get ProxyCurl balance",
         "tags": [
-          "V1",
-          "Admin"
+          "V1"
         ]
       }
     },
@@ -42,8 +41,7 @@
         },
         "summary": "Get BrightData balance",
         "tags": [
-          "V1",
-          "Admin"
+          "V1"
         ]
       }
     },
@@ -68,8 +66,7 @@
         },
         "summary": "Merge companies",
         "tags": [
-          "V1",
-          "Admin"
+          "V1"
         ]
       }
     },
@@ -94,8 +91,7 @@
         },
         "summary": "Merge locations",
         "tags": [
-          "V1",
-          "Admin"
+          "V1"
         ]
       }
     },
@@ -120,8 +116,7 @@
         },
         "summary": "Get all alumni, enriched with location, graduations and roles",
         "tags": [
-          "V1",
-          "Alumni"
+          "V1"
         ]
       },
       "post": {
@@ -151,8 +146,7 @@
         },
         "summary": "Create a new alumni",
         "tags": [
-          "V1",
-          "Alumni"
+          "V1"
         ]
       }
     },
@@ -233,8 +227,7 @@
         },
         "summary": "Get all alumni to be displayed in the map",
         "tags": [
-          "V1",
-          "Alumni"
+          "V1"
         ]
       }
     },
@@ -259,8 +252,7 @@
         },
         "summary": "Get all alumni submissions that need to be reviewed",
         "tags": [
-          "V1",
-          "Alumni"
+          "V1"
         ]
       },
       "post": {
@@ -290,8 +282,7 @@
         },
         "summary": "Mark an alumni as reviewed",
         "tags": [
-          "V1",
-          "Alumni"
+          "V1"
         ]
       }
     },
@@ -322,8 +313,7 @@
         },
         "summary": "Get alumni by id, enriched with location, graduations and roles",
         "tags": [
-          "V1",
-          "Alumni"
+          "V1"
         ]
       }
     },
@@ -354,8 +344,7 @@
         },
         "summary": "Get basic profile of an alumni",
         "tags": [
-          "V1",
-          "Alumni"
+          "V1"
         ]
       }
     },
@@ -386,8 +375,7 @@
         },
         "summary": "Get the past locations and companies of an alumni",
         "tags": [
-          "V1",
-          "Alumni"
+          "V1"
         ]
       }
     },
@@ -743,8 +731,7 @@
         },
         "summary": "Get the companies, and the number of alumni working in them.",
         "tags": [
-          "V1",
-          "Analytics"
+          "V1"
         ]
       }
     },
@@ -769,8 +756,7 @@
         },
         "summary": "List of possible companies to search for.",
         "tags": [
-          "V1",
-          "Analytics"
+          "V1"
         ]
       }
     },
@@ -785,8 +771,7 @@
         },
         "summary": "Returns company employment growth over time.",
         "tags": [
-          "V1",
-          "Analytics"
+          "V1"
         ]
       }
     },
@@ -817,8 +802,7 @@
         },
         "summary": "Returns detailed information about a specific company.",
         "tags": [
-          "V1",
-          "Analytics"
+          "V1"
         ]
       }
     },
@@ -1174,8 +1158,7 @@
         },
         "summary": "Get the countries, and the number of alumni working in them.",
         "tags": [
-          "V1",
-          "Analytics"
+          "V1"
         ]
       }
     },
@@ -1531,8 +1514,7 @@
         },
         "summary": "Get the cities, and the number of alumni working in them.",
         "tags": [
-          "V1",
-          "Analytics"
+          "V1"
         ]
       }
     },
@@ -1557,8 +1539,7 @@
         },
         "summary": "Get the countries options.",
         "tags": [
-          "V1",
-          "Analytics"
+          "V1"
         ]
       }
     },
@@ -1596,8 +1577,7 @@
         },
         "summary": "Get the cities options.",
         "tags": [
-          "V1",
-          "Analytics"
+          "V1"
         ]
       }
     },
@@ -1953,8 +1933,7 @@
         },
         "summary": "Returns the number of alumni working in companies grouped by industry.",
         "tags": [
-          "V1",
-          "Analytics"
+          "V1"
         ]
       }
     },
@@ -1980,8 +1959,7 @@
         },
         "summary": "List of possible industries to search for.",
         "tags": [
-          "V1",
-          "Analytics"
+          "V1"
         ]
       }
     },
@@ -2337,8 +2315,7 @@
         },
         "summary": "Gets the faculties, and the number of alumni graduated from them.",
         "tags": [
-          "V1",
-          "Analytics"
+          "V1"
         ]
       }
     },
@@ -2694,8 +2671,7 @@
         },
         "summary": "Get the majors, and the number of alumni graduated from them.",
         "tags": [
-          "V1",
-          "Analytics"
+          "V1"
         ]
       }
     },
@@ -3051,8 +3027,7 @@
         },
         "summary": "Get the graduations, and the number of alumni graduated from them.",
         "tags": [
-          "V1",
-          "Analytics"
+          "V1"
         ]
       }
     },
@@ -3408,8 +3383,7 @@
         },
         "summary": "Returns the number of roles classified with each ESCO classification",
         "tags": [
-          "V1",
-          "Analytics"
+          "V1"
         ]
       }
     },
@@ -3435,8 +3409,7 @@
         },
         "summary": "List of possible role titles to search for.",
         "tags": [
-          "V1",
-          "Analytics"
+          "V1"
         ]
       }
     },
@@ -3792,8 +3765,7 @@
         },
         "summary": "Get all alumni list",
         "tags": [
-          "V1",
-          "Analytics"
+          "V1"
         ]
       }
     },
@@ -3818,8 +3790,7 @@
         },
         "summary": "Get all alumni options",
         "tags": [
-          "V1",
-          "Analytics"
+          "V1"
         ]
       }
     },
@@ -3834,8 +3805,7 @@
         },
         "summary": "Get all companies",
         "tags": [
-          "V1",
-          "Company"
+          "V1"
         ]
       }
     },
@@ -3859,8 +3829,7 @@
         },
         "summary": "Get company by id",
         "tags": [
-          "V1",
-          "Company"
+          "V1"
         ]
       }
     },
@@ -3910,8 +3879,7 @@
         },
         "summary": "Get courses",
         "tags": [
-          "V1",
-          "Course"
+          "V1"
         ]
       },
       "post": {
@@ -3941,8 +3909,7 @@
         },
         "summary": "Create a course",
         "tags": [
-          "V1",
-          "Course"
+          "V1"
         ]
       }
     },
@@ -3973,8 +3940,7 @@
         },
         "summary": "Get a course by id",
         "tags": [
-          "V1",
-          "Course"
+          "V1"
         ]
       }
     },
@@ -3999,8 +3965,7 @@
         },
         "summary": "Get all level 1 ESCO classifications",
         "tags": [
-          "V1",
-          "ESCO"
+          "V1"
         ]
       }
     },
@@ -4025,8 +3990,7 @@
         },
         "summary": "Get all level 2 ESCO classifications",
         "tags": [
-          "V1",
-          "ESCO"
+          "V1"
         ]
       }
     },
@@ -4051,8 +4015,7 @@
         },
         "summary": "Get all faculties",
         "tags": [
-          "V1",
-          "Faculty"
+          "V1"
         ]
       },
       "post": {
@@ -4082,8 +4045,7 @@
         },
         "summary": "Create a faculty",
         "tags": [
-          "V1",
-          "Faculty"
+          "V1"
         ]
       }
     },
@@ -4108,8 +4070,7 @@
         },
         "summary": "Handles the feedback by inserting it into the database and sending an email to the administrators",
         "tags": [
-          "V1",
-          "Feedback"
+          "V1"
         ]
       }
     },
@@ -4142,8 +4103,7 @@
         },
         "summary": "Upload a file",
         "tags": [
-          "V1",
-          "Files"
+          "V1"
         ]
       }
     },
@@ -4178,8 +4138,7 @@
         },
         "summary": "Authenticate a user with LinkedIn",
         "tags": [
-          "V1",
-          "User"
+          "V1"
         ]
       }
     },
@@ -4204,8 +4163,7 @@
         },
         "summary": "Verify the email of the alumni by generating a token and sending it to the email",
         "tags": [
-          "V1",
-          "User"
+          "V1"
         ]
       }
     },
@@ -4230,8 +4188,7 @@
         },
         "summary": "Validate the token against the email",
         "tags": [
-          "V1",
-          "User"
+          "V1"
         ]
       }
     },
@@ -4263,8 +4220,7 @@
         },
         "summary": "Confirm the LinkedIn profile and generate a JWT token",
         "tags": [
-          "V1",
-          "User"
+          "V1"
         ]
       }
     },
@@ -4296,8 +4252,7 @@
         },
         "summary": "Check if a user has a permission",
         "tags": [
-          "V1",
-          "User"
+          "V1"
         ]
       }
     },
@@ -4322,8 +4277,7 @@
         },
         "summary": "Delete a user",
         "tags": [
-          "V1",
-          "User"
+          "V1"
         ]
       }
     },
@@ -4399,8 +4353,7 @@
         },
         "summary": "Get all the review to be displayed on the map",
         "tags": [
-          "V1",
-          "Reviews"
+          "V1"
         ]
       }
     },
@@ -4425,8 +4378,7 @@
         },
         "summary": "Create a new review",
         "tags": [
-          "V1",
-          "Reviews"
+          "V1"
         ]
       }
     },
@@ -4451,8 +4403,7 @@
         },
         "summary": "Update a review score",
         "tags": [
-          "V1",
-          "Reviews"
+          "V1"
         ]
       }
     }

@@ -3,7 +3,7 @@ import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { AlumniAnalyticsService } from '../services';
 import { AlumniListResponseDto, AlumniOptionDto, QueryParamsDto } from '../dto';
 
-@ApiTags('V1', 'Analytics')
+@ApiTags('V1')
 @Controller('analytics/alumni')
 export class AlumniAnalyticsController {
   constructor(

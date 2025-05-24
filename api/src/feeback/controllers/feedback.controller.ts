@@ -3,7 +3,7 @@ import { Controller, HttpCode, HttpStatus, Post, Body } from '@nestjs/common';
 import { FeedbackService } from '../services/feeback.service';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 
-@ApiTags('V1', 'Feedback')
+@ApiTags('V1')
 @Controller('feedback')
 export class FeedbackController {
   constructor(private readonly feedbackService: FeedbackService) {}
