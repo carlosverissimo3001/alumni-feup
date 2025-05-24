@@ -1,7 +1,7 @@
 {
   "openapi": "3.0.0",
   "paths": {
-    "/api/health": {
+    "/health": {
       "get": {
         "operationId": "AppController_getHealth",
         "parameters": [],
@@ -16,7 +16,7 @@
         ]
       }
     },
-    "/api/admin/proxycurl-balance": {
+    "/admin/proxycurl-balance": {
       "get": {
         "operationId": "AdminController_getProxyCurlBalance",
         "parameters": [],
@@ -38,7 +38,7 @@
         ]
       }
     },
-    "/api/admin/brightdata-balance": {
+    "/admin/brightdata-balance": {
       "get": {
         "operationId": "AdminController_getBrightDataBalance",
         "parameters": [],
@@ -60,7 +60,7 @@
         ]
       }
     },
-    "/api/admin/merge-companies": {
+    "/admin/merge-companies": {
       "post": {
         "operationId": "AdminController_mergeCompanies",
         "parameters": [],
@@ -85,7 +85,7 @@
         ]
       }
     },
-    "/api/admin/merge-locations": {
+    "/admin/merge-locations": {
       "post": {
         "operationId": "AdminController_mergeLocations",
         "parameters": [],
@@ -110,7 +110,7 @@
         ]
       }
     },
-    "/api/alumni": {
+    "/alumni": {
       "get": {
         "operationId": "AlumniController_findAll",
         "parameters": [],
@@ -165,7 +165,7 @@
         ]
       }
     },
-    "/api/alumni/geoJSON": {
+    "/alumni/geoJSON": {
       "get": {
         "operationId": "AlumniController_findAllGeoJSON",
         "parameters": [
@@ -246,7 +246,7 @@
         ]
       }
     },
-    "/api/alumni/review": {
+    "/alumni/review": {
       "get": {
         "operationId": "AlumniController_getAlumniToReview",
         "parameters": [],
@@ -301,7 +301,7 @@
         ]
       }
     },
-    "/api/alumni/{id}": {
+    "/alumni/{id}": {
       "get": {
         "operationId": "AlumniController_findOne",
         "parameters": [
@@ -332,7 +332,7 @@
         ]
       }
     },
-    "/api/alumni/basic-profile/{id}": {
+    "/alumni/basic-profile/{id}": {
       "get": {
         "operationId": "AlumniController_getBasicProfile",
         "parameters": [
@@ -363,7 +363,7 @@
         ]
       }
     },
-    "/api/alumni/past-locations-companies/{id}": {
+    "/alumni/past-locations-companies/{id}": {
       "get": {
         "operationId": "AlumniController_getPastLocationsAndCompanies",
         "parameters": [
@@ -394,7 +394,7 @@
         ]
       }
     },
-    "/api/analytics/companies": {
+    "/analytics/companies": {
       "get": {
         "operationId": "CompanyAnalyticsController_getCompaniesWithAlumniCount",
         "parameters": [
@@ -750,7 +750,7 @@
         ]
       }
     },
-    "/api/analytics/companies/options": {
+    "/analytics/companies/options": {
       "get": {
         "operationId": "CompanyAnalyticsController_getCompanyOptions",
         "parameters": [],
@@ -775,7 +775,7 @@
         ]
       }
     },
-    "/api/analytics/companies/growth": {
+    "/analytics/companies/growth": {
       "get": {
         "operationId": "CompanyAnalyticsController_getCompanyGrowth",
         "parameters": [],
@@ -790,7 +790,7 @@
         ]
       }
     },
-    "/api/analytics/companies/{id}": {
+    "/analytics/companies/{id}": {
       "get": {
         "operationId": "CompanyAnalyticsController_getCompanyDetails",
         "parameters": [
@@ -821,7 +821,7 @@
         ]
       }
     },
-    "/api/analytics/geo/countries": {
+    "/analytics/geo/countries": {
       "get": {
         "operationId": "GeoAnalyticsController_getCountriesWithAlumniCount",
         "parameters": [
@@ -1177,7 +1177,7 @@
         ]
       }
     },
-    "/api/analytics/geo/cities": {
+    "/analytics/geo/cities": {
       "get": {
         "operationId": "GeoAnalyticsController_getCitiesWithAlumniCount",
         "parameters": [
@@ -1533,7 +1533,7 @@
         ]
       }
     },
-    "/api/analytics/geo/country-options": {
+    "/analytics/geo/country-options": {
       "get": {
         "operationId": "GeoAnalyticsController_getCountriesOptions",
         "parameters": [],
@@ -1558,7 +1558,7 @@
         ]
       }
     },
-    "/api/analytics/geo/city-options": {
+    "/analytics/geo/city-options": {
       "get": {
         "operationId": "GeoAnalyticsController_getCitiesOptions",
         "parameters": [
@@ -1596,7 +1596,7 @@
         ]
       }
     },
-    "/api/analytics/industries": {
+    "/analytics/industries": {
       "get": {
         "operationId": "IndustryAnalyticsController_getIndustryWithCounts",
         "parameters": [
@@ -1952,7 +1952,7 @@
         ]
       }
     },
-    "/api/analytics/industries/options": {
+    "/analytics/industries/options": {
       "get": {
         "description": "Returns a list of industries with their id and name.",
         "operationId": "IndustryAnalyticsController_getIndustryOptions",
@@ -1978,7 +1978,7 @@
         ]
       }
     },
-    "/api/analytics/education/faculties": {
+    "/analytics/education/faculties": {
       "get": {
         "operationId": "EducationAnalyticsController_getFaculties",
         "parameters": [
@@ -2334,7 +2334,7 @@
         ]
       }
     },
-    "/api/analytics/education/majors": {
+    "/analytics/education/majors": {
       "get": {
         "operationId": "EducationAnalyticsController_getMajors",
         "parameters": [
@@ -2690,7 +2690,7 @@
         ]
       }
     },
-    "/api/analytics/education/graduations": {
+    "/analytics/education/graduations": {
       "get": {
         "operationId": "EducationAnalyticsController_getGraduations",
         "parameters": [
@@ -3046,7 +3046,7 @@
         ]
       }
     },
-    "/api/analytics/roles": {
+    "/analytics/roles": {
       "get": {
         "operationId": "RoleAnalyticsController_getRoles",
         "parameters": [
@@ -3402,7 +3402,7 @@
         ]
       }
     },
-    "/api/analytics/roles/options": {
+    "/analytics/roles/options": {
       "get": {
         "description": "Returns a list of roles with their ESCO code and title.",
         "operationId": "RoleAnalyticsController_getRoleOptions",
@@ -3428,7 +3428,7 @@
         ]
       }
     },
-    "/api/analytics/alumni": {
+    "/analytics/alumni": {
       "get": {
         "operationId": "AlumniAnalyticsController_getAlumniList",
         "parameters": [
@@ -3784,7 +3784,7 @@
         ]
       }
     },
-    "/api/analytics/alumni/options": {
+    "/analytics/alumni/options": {
       "get": {
         "operationId": "AlumniAnalyticsController_getAlumniOptions",
         "parameters": [],
@@ -3809,7 +3809,7 @@
         ]
       }
     },
-    "/api/company": {
+    "/company": {
       "get": {
         "operationId": "CompanyController_findAll",
         "parameters": [],
@@ -3824,7 +3824,7 @@
         ]
       }
     },
-    "/api/company/{id}": {
+    "/company/{id}": {
       "get": {
         "operationId": "CompanyController_findOne",
         "parameters": [
@@ -3848,7 +3848,7 @@
         ]
       }
     },
-    "/api/course": {
+    "/course": {
       "get": {
         "operationId": "CourseController_find",
         "parameters": [
@@ -3928,7 +3928,7 @@
         ]
       }
     },
-    "/api/course/{id}": {
+    "/course/{id}": {
       "get": {
         "operationId": "CourseController_findOne",
         "parameters": [
@@ -3959,7 +3959,7 @@
         ]
       }
     },
-    "/api/esco/level-one": {
+    "/esco/level-one": {
       "get": {
         "operationId": "EscoController_getLevelOneClassifications",
         "parameters": [],
@@ -3984,7 +3984,7 @@
         ]
       }
     },
-    "/api/esco/level-two": {
+    "/esco/level-two": {
       "get": {
         "operationId": "EscoController_getLevelTwoClassifications",
         "parameters": [],
@@ -4009,7 +4009,7 @@
         ]
       }
     },
-    "/api/faculty": {
+    "/faculty": {
       "get": {
         "operationId": "FacultyController_findAll",
         "parameters": [],
@@ -4064,7 +4064,7 @@
         ]
       }
     },
-    "/api/feedback": {
+    "/feedback": {
       "post": {
         "operationId": "FeedbackController_create",
         "parameters": [],
@@ -4089,7 +4089,7 @@
         ]
       }
     },
-    "/api/files": {
+    "/files": {
       "post": {
         "operationId": "FileUploadController_create",
         "parameters": [],
@@ -4122,7 +4122,7 @@
         ]
       }
     },
-    "/api/user/linkedinAuth": {
+    "/user/linkedinAuth": {
       "post": {
         "operationId": "UserController_linkedinAuth",
         "parameters": [],
@@ -4157,7 +4157,7 @@
         ]
       }
     },
-    "/api/user/verify-email": {
+    "/user/verify-email": {
       "post": {
         "operationId": "UserController_verifyEmail",
         "parameters": [],
@@ -4182,7 +4182,7 @@
         ]
       }
     },
-    "/api/user/verify-email/token": {
+    "/user/verify-email/token": {
       "post": {
         "operationId": "UserController_verifyEmailToken",
         "parameters": [],
@@ -4207,7 +4207,7 @@
         ]
       }
     },
-    "/api/user/linkedin-confirm": {
+    "/user/linkedin-confirm": {
       "post": {
         "operationId": "UserController_linkedinConfirm",
         "parameters": [],
@@ -4239,7 +4239,7 @@
         ]
       }
     },
-    "/api/user/check-permission": {
+    "/user/check-permission": {
       "post": {
         "operationId": "UserController_checkPermission",
         "parameters": [],
@@ -4271,7 +4271,7 @@
         ]
       }
     },
-    "/api/user/delete-user": {
+    "/user/delete-user": {
       "post": {
         "operationId": "UserController_deleteUser",
         "parameters": [],
@@ -4296,7 +4296,7 @@
         ]
       }
     },
-    "/api/reviews/geoJSON": {
+    "/reviews/geoJSON": {
       "get": {
         "operationId": "ReviewController_findAllGeoJSON",
         "parameters": [
@@ -4372,7 +4372,7 @@
         ]
       }
     },
-    "/api/reviews": {
+    "/reviews": {
       "post": {
         "operationId": "ReviewController_create",
         "parameters": [],
@@ -4397,7 +4397,7 @@
         ]
       }
     },
-    "/api/reviews/changeScore": {
+    "/reviews/changeScore": {
       "post": {
         "operationId": "ReviewController_changeScore",
         "parameters": [],
