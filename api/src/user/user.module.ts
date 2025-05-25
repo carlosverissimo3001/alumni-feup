@@ -5,7 +5,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { OtpService } from '../otp/otp.service';
 import { PrismaService } from '../prisma/prisma.service';
 import { UserController } from './controllers/user.controller';
-import { UserRepository } from './repositories/user.repository';
+import { InviteRepository, UserRepository } from './repositories';
 import { UserService } from './services/user.service';
 
 @Module({
@@ -27,6 +27,7 @@ import { UserService } from './services/user.service';
     OtpService,
     EmailService,
     UserRepository,
+    InviteRepository,
   ],
 })
 export class UserModule {}
