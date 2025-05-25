@@ -591,7 +591,7 @@ export const GlobalFilters = ({
               Only international roles
             </Label>
           </div>
-          <div className="flex items-center space-x-2">
+          {/* <div className="flex items-center space-x-2">
             <Checkbox
               id="hideUnknownRoles"
               checked={filters.hideUnknownRoles}
@@ -606,7 +606,7 @@ export const GlobalFilters = ({
             >
               Hide remote/unlocated roles
             </Label>
-          </div>
+          </div> */}
         </div>
       </div>
     );
