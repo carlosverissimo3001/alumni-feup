@@ -53,7 +53,7 @@ export default function CompanyOverview({ data }: props) {
         duration: 2000,
       });
       setTimeout(() => setIsCopied(false), 2000);
-    } catch  {
+    } catch {
       toast({
         title: "Failed to copy link",
         description: "Please try again",
@@ -79,7 +79,8 @@ export default function CompanyOverview({ data }: props) {
                   <CardTitle className="text-2xl">{data.name}</CardTitle>
                   {companyType && (
                     <Badge
-                      className={`${companyType.color} hover:scale-110 transition-transform duration-200`}
+                      variant="outline"
+                      className={`${companyType.color} hover:scale-105 hover:shadow-md transition-all duration-300 ease-in-out cursor-default`}
                     >
                       {companyType.label}
                     </Badge>
