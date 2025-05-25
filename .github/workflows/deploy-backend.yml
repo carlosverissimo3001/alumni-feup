@@ -10,13 +10,45 @@ jobs:
     name: Deploy on VM
     runs-on: self-hosted
     environment: Production – alumni-feup
+
     steps:
+      - name: Check API health before deployment
+        run: |
+          if ! curl -s http://localhost:3010/health; then
+            echo "❌ API is not healthy before deployment"
+            exit 1
+          fi
+
       - name: Pull latest backend code and restart
         run: |
           cd ~/newAlumniProj/api
+          echo "📥 Pulling latest changes..."
           git pull origin main
-          yarn install
+
+          echo "📦 Installing dependencies..."
+          yarn install --frozen-lockfile
+
+          echo "🔨 Generating Prisma client..."
           yarn prisma generate
+
+          echo "🔄 Running migrations..."
           yarn prisma migrate deploy
+
+          echo "🏗️ Building application..."
           yarn build
-          pm2 restart api
+
+          echo "🔄 Restarting API..."
+          pm2 restart api --update-env
+
+          # Wait for API to be ready
+          echo "⏳ Waiting for API to be ready..."
+          sleep 5
+
+          # Check if API is healthy after deployment
+          if ! curl -s http://localhost:3010/health; then
+            echo "❌ API is not healthy after deployment"
+            pm2 logs api --lines 50
+            exit 1
+          fi
+
+          echo "✅ Deployment successful!"
