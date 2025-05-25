@@ -7,20 +7,15 @@ on:
 
 jobs:
   deploy:
-    name: Deploy to VM
+    name: Deploy on VM
     runs-on: self-hosted
     environment: Production – alumni-feup
     steps:
-      - name: SSH and deploy
-        uses: appleboy/ssh-action@v1.0.0
-        with:
-          host: ${{ secrets.VM_HOST }}
-          username: ${{ secrets.VM_USER }}
-          key: ${{ secrets.VM_SSH_KEY }}
-          script: |
-            cd ~/newAlumniProj/api
-            git pull origin main
-            yarn install
-            yarn prisma generate
-            yarn prisma migrate deploy
-            pm2 restart api
+      - name: Pull latest backend code and restart
+        run: |
+          cd ~/newAlumniProj/api
+          git pull origin main
+          yarn install
+          yarn prisma generate
+          yarn prisma migrate deploy
+          pm2 restart api
