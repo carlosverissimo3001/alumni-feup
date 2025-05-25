@@ -705,7 +705,7 @@ export const GlobalFilters = ({
                   handleFilterChange("roleCountryCodes", value)
                 }
                 placeholder="Select countries"
-                maxCount={6}
+                maxCount={3}
               />
             </div>
             <div>
@@ -721,7 +721,7 @@ export const GlobalFilters = ({
                 onValueChange={(value) =>
                   handleFilterChange("roleCityIds", value)
                 }
-                maxCount={6}
+                maxCount={3}
                 isLoading={isRoleCityOptionsLoading}
               />
             </div>
