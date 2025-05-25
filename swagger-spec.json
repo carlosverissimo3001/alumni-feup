@@ -6677,6 +6677,10 @@
           "email": {
             "type": "string",
             "description": "The email of the alumni"
+          },
+          "isInviteFlow": {
+            "type": "boolean",
+            "description": "Whether the request is part of the invite-only flow"
           }
         },
         "required": [
@@ -6689,6 +6693,10 @@
           "email": {
             "type": "string",
             "description": "The email of the alumni"
+          },
+          "isInviteFlow": {
+            "type": "boolean",
+            "description": "Whether the request is part of the invite-only flow"
           },
           "token": {
             "type": "string",
