@@ -1,4 +1,4 @@
-# AlumniEI 
+# AlumniEI [Deprecated]
 
 ## Overview
 
