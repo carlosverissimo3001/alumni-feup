@@ -43,13 +43,34 @@ export default function InviteFlow() {
         isInviteFlow: true,
       },
     },
-    onSuccess: () => {
-      toast({
-        title: "Success",
-        description: "You're in!",
-        variant: "success",
-      });
-      window.location.href = "/analytics";
+    onSuccess: async () => {
+      try {
+        const response = await fetch("/api/invite/verify", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ email }),
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to set cookie");
+        }
+
+        toast({
+          title: "Success",
+          description: "You're in!",
+          variant: "success",
+        });
+
+        window.location.href = "/analytics";
+      } catch {
+        toast({
+          title: "Error",
+          description: "Something went wrong. Please try again.",
+          variant: "destructive",
+        });
+      }
     },
     onError: () =>
       toast({
@@ -60,14 +81,14 @@ export default function InviteFlow() {
   });
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 flex items-center justify-center p-4">
-      <Card className="w-full max-w-md p-8 bg-white/5 backdrop-blur-lg rounded-xl shadow-2xl">
+    <div className="min-h-screen bg-white flex items-center justify-center p-4">
+      <Card className="w-full max-w-md p-8 bg-white border border-gray-200 rounded-xl shadow-md">
         <div className="space-y-6">
           <div className="text-center space-y-2">
-            <h1 className="text-3xl font-bold text-white">
+            <h1 className="text-3xl font-bold text-gray-900">
               Welcome to the Alumni FEUP Platform
             </h1>
-            <p className="text-gray-400">
+            <p className="text-gray-500">
               {step === "email"
                 ? "Enter your email to get started"
                 : "Enter the verification code sent to your email"}
@@ -81,12 +102,12 @@ export default function InviteFlow() {
                 placeholder="your@email.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full bg-white/10 border-white/20 text-white placeholder:text-gray-400"
+                className="w-full bg-white border-gray-200 text-gray-900 placeholder:text-gray-400"
               />
               <Button
                 onClick={() => verifyEmail()}
                 disabled={!email}
-                className="w-full bg-blue-600 hover:bg-blue-700 text-white"
+                className="w-full bg-[#8C2D19] hover:bg-[#8C2D19] text-white transition-colors"
               >
                 Get Verification Code
               </Button>
@@ -98,18 +119,18 @@ export default function InviteFlow() {
                 placeholder="Enter verification code"
                 value={token}
                 onChange={(e) => setToken(e.target.value)}
-                className="w-full bg-white/10 border-white/20 text-white placeholder:text-gray-400"
+                className="w-full bg-white border-gray-200 text-gray-900 placeholder:text-gray-400"
               />
               <Button
                 onClick={() => verifyToken()}
                 disabled={!token}
-                className="w-full bg-blue-600 hover:bg-blue-700 text-white"
+                className="w-full bg-[#8C2D19] hover:bg-[#8C2D19] text-white transition-colors"
               >
                 Verify Code
               </Button>
               <button
                 onClick={() => setStep("email")}
-                className="w-full text-sm text-gray-400 hover:text-white transition-colors"
+                className="w-full text-sm text-gray-500 hover:text-gray-700 transition-colors"
               >
                 ← Back to email
               </button>
