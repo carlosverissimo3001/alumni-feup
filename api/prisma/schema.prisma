@@ -345,6 +345,17 @@ model Trend {
 
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamp(6)
   updatedAt DateTime @default(now()) @map("updated_at") @db.Timestamp(6)
+
+  @@map("trend")
+}
+
+model Invite {
+  email          String   @id @default(dbgenerated("gen_random_uuid()"))
+  usedCount      Int      @default(0)
+  createdAt      DateTime @default(now()) @map("created_at") @db.Timestamp(6)
+  updatedAt      DateTime @default(now()) @map("updated_at") @db.Timestamp(6)
+
+  @@map("invite")
 }
 
 enum TREND_TYPE {
@@ -364,17 +375,6 @@ enum FEEDBACK_TYPE {
   FEATURE_REQUEST
   OTHER
 }
-
-/**
- * model ReviewLocationProperty {
- * id String @id @default(dbgenerated("gen_random_uuid()"))
- * reviewLocationId String @map("review_location_id")
- * property ReviewLocationProperty @map("property")
- * rating Int @db.SmallInt
- * ReviewLocation ReviewLocation @relation(fields: [reviewLocationId], references: [id])
- * @@map("review_location_property")
- * }
- */
 
 enum COURSE_TYPE {
   INTEGRATED_MASTERS
@@ -427,25 +427,3 @@ enum COMPANY_TYPE {
   SELF_EMPLOYED
   SELF_OWNED
 }
-
-/**
- * enum ReviewCompanyProperty {
- * WORK_LIFE_BALANCE
- * SALARY_AND_BENEFITS
- * CAREER_OPPORTUNITIES
- * MANAGEMENT
- * COMPANY_CULTURE
- * }
- */
-
-/**
- * enum ReviewLocationProperty {
- * COST_OF_LIVING
- * WEATHER
- * TRANSPORTATION
- * SAFETY
- * PUBLIC_SERVICES
- * HOUSING
- * OTHER
- * }
- */
