@@ -25,6 +25,12 @@ export interface VerifyEmailDto {
      * @memberof VerifyEmailDto
      */
     email: string;
+    /**
+     * Whether the request is part of the invite-only flow
+     * @type {boolean}
+     * @memberof VerifyEmailDto
+     */
+    isInviteFlow?: boolean;
 }
 
 /**
@@ -46,6 +52,7 @@ export function VerifyEmailDtoFromJSONTyped(json: any, ignoreDiscriminator: bool
     return {
         
         'email': json['email'],
+        'isInviteFlow': json['isInviteFlow'] == null ? undefined : json['isInviteFlow'],
     };
 }
 
@@ -61,6 +68,7 @@ export function VerifyEmailDtoToJSONTyped(value?: VerifyEmailDto | null, ignoreD
     return {
         
         'email': value['email'],
+        'isInviteFlow': value['isInviteFlow'],
     };
 }
 

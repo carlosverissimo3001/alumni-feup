@@ -26,6 +26,12 @@ export interface VerifyEmailTokenDto {
      */
     email: string;
     /**
+     * Whether the request is part of the invite-only flow
+     * @type {boolean}
+     * @memberof VerifyEmailTokenDto
+     */
+    isInviteFlow?: boolean;
+    /**
      * The OTP token of the alumni
      * @type {string}
      * @memberof VerifyEmailTokenDto
@@ -53,6 +59,7 @@ export function VerifyEmailTokenDtoFromJSONTyped(json: any, ignoreDiscriminator:
     return {
         
         'email': json['email'],
+        'isInviteFlow': json['isInviteFlow'] == null ? undefined : json['isInviteFlow'],
         'token': json['token'],
     };
 }
@@ -69,6 +76,7 @@ export function VerifyEmailTokenDtoToJSONTyped(value?: VerifyEmailTokenDto | nul
     return {
         
         'email': value['email'],
+        'isInviteFlow': value['isInviteFlow'],
         'token': value['token'],
     };
 }
