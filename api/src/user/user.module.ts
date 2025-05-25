@@ -29,5 +29,6 @@ import { UserService } from './services/user.service';
     UserRepository,
     InviteRepository,
   ],
+  exports: [UserService],
 })
 export class UserModule {}

@@ -44,6 +44,7 @@ import type {
   GraduationListDto,
   IndustryListResponseDto,
   IndustryOptionDto,
+  InviteUserDto,
   LinkedinAuthDto,
   MajorListDto,
   MarkAsReviewedDto,
@@ -117,6 +118,8 @@ import {
     IndustryListResponseDtoToJSON,
     IndustryOptionDtoFromJSON,
     IndustryOptionDtoToJSON,
+    InviteUserDtoFromJSON,
+    InviteUserDtoToJSON,
     LinkedinAuthDtoFromJSON,
     LinkedinAuthDtoToJSON,
     MajorListDtoFromJSON,
@@ -144,6 +147,10 @@ import {
     VerifyEmailTokenDtoFromJSON,
     VerifyEmailTokenDtoToJSON,
 } from '../models/index';
+
+export interface AdminControllerInviteUserRequest {
+    inviteUserDto: InviteUserDto;
+}
 
 export interface AdminControllerMergeCompaniesRequest {
     mergeCompaniesDto: MergeCompaniesDto;
@@ -562,6 +569,21 @@ export interface V1ApiInterface {
      * Get ProxyCurl balance
      */
     adminControllerGetProxyCurlBalance(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<number>;
+
+    /**
+     * 
+     * @summary Invite user
+     * @param {InviteUserDto} inviteUserDto 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof V1ApiInterface
+     */
+    adminControllerInviteUserRaw(requestParameters: AdminControllerInviteUserRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>>;
+
+    /**
+     * Invite user
+     */
+    adminControllerInviteUser(requestParameters: AdminControllerInviteUserRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void>;
 
     /**
      * 
@@ -1566,6 +1588,41 @@ export class V1Api extends runtime.BaseAPI implements V1ApiInterface {
     async adminControllerGetProxyCurlBalance(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<number> {
         const response = await this.adminControllerGetProxyCurlBalanceRaw(initOverrides);
         return await response.value();
+    }
+
+    /**
+     * Invite user
+     */
+    async adminControllerInviteUserRaw(requestParameters: AdminControllerInviteUserRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+        if (requestParameters['inviteUserDto'] == null) {
+            throw new runtime.RequiredError(
+                'inviteUserDto',
+                'Required parameter "inviteUserDto" was null or undefined when calling adminControllerInviteUser().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
+
+        const response = await this.request({
+            path: `/admin/invite-user`,
+            method: 'POST',
+            headers: headerParameters,
+            query: queryParameters,
+            body: InviteUserDtoToJSON(requestParameters['inviteUserDto']),
+        }, initOverrides);
+
+        return new runtime.VoidApiResponse(response);
+    }
+
+    /**
+     * Invite user
+     */
+    async adminControllerInviteUser(requestParameters: AdminControllerInviteUserRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+        await this.adminControllerInviteUserRaw(requestParameters, initOverrides);
     }
 
     /**

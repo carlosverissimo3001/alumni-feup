@@ -23,6 +23,7 @@ import {
   VerifyEmailDto,
   VerifyEmailTokenDto,
 } from '../dto';
+import { InviteEntity } from '../entities/invite.entity';
 
 @Injectable()
 export class UserService {
@@ -245,5 +246,9 @@ export class UserService {
 
   async deleteUser(body: DeleteUserDto): Promise<void> {
     await this.userRepository.deleteUser(body.id);
+  }
+
+  async inviteUser(email: string): Promise<InviteEntity> {
+    return await this.inviteRepository.create(email);
   }
 }
