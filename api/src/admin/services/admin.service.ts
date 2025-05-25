@@ -2,7 +2,9 @@ import { CompanyService } from '@/company/services/company.service';
 import { LocationService } from '@/location/location.service';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { MergeCompaniesDto, MergeLocationsDto } from '../dto';
+import { InviteUserDto, MergeCompaniesDto, MergeLocationsDto } from '../dto';
+import { UserService } from '@/user/services/user.service';
+import { InviteEntity } from '@/user/entities/invite.entity';
 
 type ProxyCurlBalanceResponse = {
   // This is an interger value
@@ -28,6 +30,7 @@ export class AdminService {
     private readonly config: ConfigService,
     private readonly companyService: CompanyService,
     private readonly locationService: LocationService,
+    private readonly userService: UserService,
   ) {
     this.proxycurlBaseUrl = this.config.get<string>('PROXYCURL_BASE_URL') || '';
     this.proxycurlApiKey = this.config.get<string>('PROXYCURL_API_KEY') || '';
@@ -118,5 +121,14 @@ export class AdminService {
     );
 
     return;
+  }
+
+  async inviteUser(inviteUserDto: InviteUserDto): Promise<InviteEntity> {
+    const { email } = inviteUserDto;
+
+    // Create a new invite
+    const invite = await this.userService.inviteUser(email);
+
+    return invite;
   }
 }

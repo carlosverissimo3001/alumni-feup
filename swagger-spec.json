@@ -110,6 +110,205 @@
         ]
       }
     },
+    "/admin/invite-user": {
+      "post": {
+        "operationId": "AdminController_inviteUser",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/InviteUserDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "User invited"
+          }
+        },
+        "summary": "Invite user",
+        "tags": [
+          "V1"
+        ]
+      }
+    },
+    "/user/linkedinAuth": {
+      "post": {
+        "operationId": "UserController_linkedinAuth",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LinkedinAuthDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "User authenticated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserAuthResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No matching alumni record found"
+          }
+        },
+        "summary": "Authenticate a user with LinkedIn",
+        "tags": [
+          "V1"
+        ]
+      }
+    },
+    "/user/verify-email": {
+      "post": {
+        "operationId": "UserController_verifyEmail",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/VerifyEmailDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "default": {
+            "description": "Returns the verified email"
+          }
+        },
+        "summary": "Verify the email of the alumni by generating a token and sending it to the email",
+        "tags": [
+          "V1"
+        ]
+      }
+    },
+    "/user/verify-email/token": {
+      "post": {
+        "operationId": "UserController_verifyEmailToken",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/VerifyEmailTokenDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "default": {
+            "description": "Returns the status of the validation"
+          }
+        },
+        "summary": "Validate the token against the email",
+        "tags": [
+          "V1"
+        ]
+      }
+    },
+    "/user/linkedin-confirm": {
+      "post": {
+        "operationId": "UserController_linkedinConfirm",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LinkedinAuthDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "User authenticated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserAuthResponse"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Confirm the LinkedIn profile and generate a JWT token",
+        "tags": [
+          "V1"
+        ]
+      }
+    },
+    "/user/check-permission": {
+      "post": {
+        "operationId": "UserController_checkPermission",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CheckPermissionDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "User has the permission",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CheckPermissionResponse"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Check if a user has a permission",
+        "tags": [
+          "V1"
+        ]
+      }
+    },
+    "/user/delete-user": {
+      "post": {
+        "operationId": "UserController_deleteUser",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeleteUserDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "User deleted successfully"
+          }
+        },
+        "summary": "Delete a user",
+        "tags": [
+          "V1"
+        ]
+      }
+    },
     "/alumni": {
       "get": {
         "operationId": "AlumniController_findAll",
@@ -4122,180 +4321,6 @@
         ]
       }
     },
-    "/user/linkedinAuth": {
-      "post": {
-        "operationId": "UserController_linkedinAuth",
-        "parameters": [],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/LinkedinAuthDto"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "User authenticated successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/UserAuthResponse"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "No matching alumni record found"
-          }
-        },
-        "summary": "Authenticate a user with LinkedIn",
-        "tags": [
-          "V1"
-        ]
-      }
-    },
-    "/user/verify-email": {
-      "post": {
-        "operationId": "UserController_verifyEmail",
-        "parameters": [],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/VerifyEmailDto"
-              }
-            }
-          }
-        },
-        "responses": {
-          "default": {
-            "description": "Returns the verified email"
-          }
-        },
-        "summary": "Verify the email of the alumni by generating a token and sending it to the email",
-        "tags": [
-          "V1"
-        ]
-      }
-    },
-    "/user/verify-email/token": {
-      "post": {
-        "operationId": "UserController_verifyEmailToken",
-        "parameters": [],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/VerifyEmailTokenDto"
-              }
-            }
-          }
-        },
-        "responses": {
-          "default": {
-            "description": "Returns the status of the validation"
-          }
-        },
-        "summary": "Validate the token against the email",
-        "tags": [
-          "V1"
-        ]
-      }
-    },
-    "/user/linkedin-confirm": {
-      "post": {
-        "operationId": "UserController_linkedinConfirm",
-        "parameters": [],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/LinkedinAuthDto"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "User authenticated successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/UserAuthResponse"
-                }
-              }
-            }
-          }
-        },
-        "summary": "Confirm the LinkedIn profile and generate a JWT token",
-        "tags": [
-          "V1"
-        ]
-      }
-    },
-    "/user/check-permission": {
-      "post": {
-        "operationId": "UserController_checkPermission",
-        "parameters": [],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CheckPermissionDto"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "User has the permission",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/CheckPermissionResponse"
-                }
-              }
-            }
-          }
-        },
-        "summary": "Check if a user has a permission",
-        "tags": [
-          "V1"
-        ]
-      }
-    },
-    "/user/delete-user": {
-      "post": {
-        "operationId": "UserController_deleteUser",
-        "parameters": [],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/DeleteUserDto"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "User deleted successfully"
-          }
-        },
-        "summary": "Delete a user",
-        "tags": [
-          "V1"
-        ]
-      }
-    },
     "/reviews/geoJSON": {
       "get": {
         "operationId": "ReviewController_findAllGeoJSON",
@@ -4490,6 +4515,201 @@
         "required": [
           "locationIds",
           "mergeIntoLocationId"
+        ]
+      },
+      "InviteUserDto": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "The email of the user to invite",
+            "example": "test@example.com"
+          }
+        },
+        "required": [
+          "email"
+        ]
+      },
+      "LinkedinAuthDto": {
+        "type": "object",
+        "properties": {
+          "personId": {
+            "type": "string",
+            "description": "A unique identifying value for the member. Referenced as personId in other API documentation pages."
+          },
+          "firstName": {
+            "type": "string",
+            "description": "The first name of the member."
+          },
+          "lastName": {
+            "type": "string",
+            "description": "The first name of the member."
+          },
+          "personalEmail": {
+            "type": "string",
+            "description": "The personal email of the member."
+          },
+          "profilePictureUrl": {
+            "type": "string",
+            "description": "The URL of the member's profile picture."
+          },
+          "linkedinUrl": {
+            "type": "string",
+            "description": "The LinkedIn URL of the member."
+          }
+        },
+        "required": [
+          "personId",
+          "firstName",
+          "lastName"
+        ]
+      },
+      "User": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The ID of the user"
+          },
+          "firstName": {
+            "type": "string",
+            "description": "The first name of the user"
+          },
+          "lastName": {
+            "type": "string",
+            "description": "The last name of the user"
+          },
+          "profilePictureUrl": {
+            "type": "string",
+            "description": "The profile picture URL of the user"
+          }
+        },
+        "required": [
+          "id",
+          "firstName",
+          "lastName"
+        ]
+      },
+      "UserAuthResponse": {
+        "type": "object",
+        "properties": {
+          "access_token": {
+            "type": "string",
+            "description": "The access token of the user",
+            "nullable": true
+          },
+          "user": {
+            "description": "The user object",
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/User"
+              }
+            ]
+          },
+          "status": {
+            "type": "string",
+            "description": "The status of the user",
+            "enum": [
+              "MATCHED",
+              "UNMATCHED"
+            ]
+          },
+          "personId": {
+            "type": "string",
+            "description": "The person ID of the user",
+            "nullable": true
+          }
+        },
+        "required": [
+          "status"
+        ]
+      },
+      "VerifyEmailDto": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "The email of the alumni"
+          },
+          "isInviteFlow": {
+            "type": "boolean",
+            "description": "Whether the request is part of the invite-only flow"
+          }
+        },
+        "required": [
+          "email"
+        ]
+      },
+      "VerifyEmailTokenDto": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "The email of the alumni"
+          },
+          "isInviteFlow": {
+            "type": "boolean",
+            "description": "Whether the request is part of the invite-only flow"
+          },
+          "token": {
+            "type": "string",
+            "description": "The OTP token of the alumni"
+          }
+        },
+        "required": [
+          "email",
+          "token"
+        ]
+      },
+      "CheckPermissionDto": {
+        "type": "object",
+        "properties": {
+          "userId": {
+            "type": "string",
+            "description": "The ID of the user to check permission for",
+            "example": "123e4567-e89b-12d3-a456-426614174000"
+          },
+          "resource": {
+            "type": "string",
+            "description": "The resource to check permission for",
+            "example": "read"
+          },
+          "action": {
+            "type": "string",
+            "description": "The action to check permission for",
+            "example": "read"
+          }
+        },
+        "required": [
+          "userId",
+          "resource",
+          "action"
+        ]
+      },
+      "CheckPermissionResponse": {
+        "type": "object",
+        "properties": {
+          "hasPermission": {
+            "type": "boolean",
+            "description": "Whether the user has permission",
+            "example": true
+          }
+        },
+        "required": [
+          "hasPermission"
+        ]
+      },
+      "DeleteUserDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The id of the user to delete"
+          }
+        },
+        "required": [
+          "id"
         ]
       },
       "Company": {
@@ -6574,188 +6794,6 @@
         "required": [
           "facultyId",
           "courseId"
-        ]
-      },
-      "LinkedinAuthDto": {
-        "type": "object",
-        "properties": {
-          "personId": {
-            "type": "string",
-            "description": "A unique identifying value for the member. Referenced as personId in other API documentation pages."
-          },
-          "firstName": {
-            "type": "string",
-            "description": "The first name of the member."
-          },
-          "lastName": {
-            "type": "string",
-            "description": "The first name of the member."
-          },
-          "personalEmail": {
-            "type": "string",
-            "description": "The personal email of the member."
-          },
-          "profilePictureUrl": {
-            "type": "string",
-            "description": "The URL of the member's profile picture."
-          },
-          "linkedinUrl": {
-            "type": "string",
-            "description": "The LinkedIn URL of the member."
-          }
-        },
-        "required": [
-          "personId",
-          "firstName",
-          "lastName"
-        ]
-      },
-      "User": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string",
-            "description": "The ID of the user"
-          },
-          "firstName": {
-            "type": "string",
-            "description": "The first name of the user"
-          },
-          "lastName": {
-            "type": "string",
-            "description": "The last name of the user"
-          },
-          "profilePictureUrl": {
-            "type": "string",
-            "description": "The profile picture URL of the user"
-          }
-        },
-        "required": [
-          "id",
-          "firstName",
-          "lastName"
-        ]
-      },
-      "UserAuthResponse": {
-        "type": "object",
-        "properties": {
-          "access_token": {
-            "type": "string",
-            "description": "The access token of the user",
-            "nullable": true
-          },
-          "user": {
-            "description": "The user object",
-            "nullable": true,
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/User"
-              }
-            ]
-          },
-          "status": {
-            "type": "string",
-            "description": "The status of the user",
-            "enum": [
-              "MATCHED",
-              "UNMATCHED"
-            ]
-          },
-          "personId": {
-            "type": "string",
-            "description": "The person ID of the user",
-            "nullable": true
-          }
-        },
-        "required": [
-          "status"
-        ]
-      },
-      "VerifyEmailDto": {
-        "type": "object",
-        "properties": {
-          "email": {
-            "type": "string",
-            "description": "The email of the alumni"
-          },
-          "isInviteFlow": {
-            "type": "boolean",
-            "description": "Whether the request is part of the invite-only flow"
-          }
-        },
-        "required": [
-          "email"
-        ]
-      },
-      "VerifyEmailTokenDto": {
-        "type": "object",
-        "properties": {
-          "email": {
-            "type": "string",
-            "description": "The email of the alumni"
-          },
-          "isInviteFlow": {
-            "type": "boolean",
-            "description": "Whether the request is part of the invite-only flow"
-          },
-          "token": {
-            "type": "string",
-            "description": "The OTP token of the alumni"
-          }
-        },
-        "required": [
-          "email",
-          "token"
-        ]
-      },
-      "CheckPermissionDto": {
-        "type": "object",
-        "properties": {
-          "userId": {
-            "type": "string",
-            "description": "The ID of the user to check permission for",
-            "example": "123e4567-e89b-12d3-a456-426614174000"
-          },
-          "resource": {
-            "type": "string",
-            "description": "The resource to check permission for",
-            "example": "read"
-          },
-          "action": {
-            "type": "string",
-            "description": "The action to check permission for",
-            "example": "read"
-          }
-        },
-        "required": [
-          "userId",
-          "resource",
-          "action"
-        ]
-      },
-      "CheckPermissionResponse": {
-        "type": "object",
-        "properties": {
-          "hasPermission": {
-            "type": "boolean",
-            "description": "Whether the user has permission",
-            "example": true
-          }
-        },
-        "required": [
-          "hasPermission"
-        ]
-      },
-      "DeleteUserDto": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string",
-            "description": "The id of the user to delete"
-          }
-        },
-        "required": [
-          "id"
         ]
       },
       "ReviewGeoJSONFeature": {
