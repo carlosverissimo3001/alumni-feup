@@ -1,4 +1,4 @@
-name: Commit Lint
+name: PR Title Lint
 
 on:
   pull_request:
@@ -10,8 +10,6 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
 
       - name: Set up Node.js
         uses: actions/setup-node@v3
@@ -21,7 +19,7 @@ jobs:
       - name: Install dependencies
         run: yarn install --frozen-lockfile
 
-      - name: Run commitlint on PR commits
+      - name: Lint PR Title
         run: |
           yarn add -D @commitlint/cli @commitlint/config-conventional
-          npx commitlint --from=origin/${{ github.base_ref }} --to=HEAD
+          echo "${{ github.event.pull_request.title }}" | npx commitlint
