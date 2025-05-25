@@ -68,13 +68,22 @@ export default function AddBetaTester() {
     }
 
     try {
-      for (const email of emails) {
-        inviteUser({
-          inviteUserDto: {
-            email,
-          },
-        });
-      }
+      const invitePromises = emails.map(async (email) => {
+        try {
+          await inviteUser({
+            inviteUserDto: {
+              email,
+            },
+          });
+        } catch {
+          toast({
+            title: `Failed to send invitation to ${email}`,
+            variant: "destructive",
+          });
+        }
+      });
+      await Promise.all(invitePromises);
+      
       toast({
         title: `Invitations sent to ${emails.length} users`,
         variant: "success",

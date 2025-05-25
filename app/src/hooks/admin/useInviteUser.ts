@@ -3,7 +3,7 @@ import NestAPI from "@/api";
 import { AdminControllerInviteUserRequest } from "@/sdk";
 
 export const useInviteUser = () => {
-  const { mutate, isPending, error } = useMutation({
+  const { mutateAsync: mutate, isPending, error } = useMutation({
     mutationFn: (params: AdminControllerInviteUserRequest) =>
       NestAPI.adminControllerInviteUser(params),
   });
