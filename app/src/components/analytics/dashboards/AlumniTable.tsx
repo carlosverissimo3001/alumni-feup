@@ -153,6 +153,13 @@ export const AlumniTable = ({ filters, onAddToFilters }: AlumniTableProps) => {
     return filters.alumniIds?.includes(alumni.id) ?? false;
   };
 
+  const getInitials = (name: string) => {
+    const words = name.split(" ");
+    const firstInitial = words[0][0];
+    const lastInitial = words[words.length - 1][0];
+    return (firstInitial + lastInitial).toUpperCase();
+  };
+
   const renderTable = () => {
     return (
       <>
@@ -203,12 +210,7 @@ export const AlumniTable = ({ filters, onAddToFilters }: AlumniTableProps) => {
                               />
                             ) : (
                               <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-gray-100 to-gray-200 text-gray-500 text-sm font-semibold">
-                                {alumni.fullName
-                                  .split(" ")
-                                  .map((word) => word[0])
-                                  .join("")
-                                  .slice(0, 2)
-                                  .toUpperCase()}
+                                {getInitials(alumni.fullName)}
                               </div>
                             )}
                           </div>
@@ -286,7 +288,6 @@ export const AlumniTable = ({ filters, onAddToFilters }: AlumniTableProps) => {
                                               "lng",
                                               alumni.currentRoleLocation.longitude.toString()
                                             );
-
                                           }
                                           window.open(
                                             `/?${params.toString()}`,
