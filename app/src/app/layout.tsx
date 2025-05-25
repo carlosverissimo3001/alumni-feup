@@ -20,8 +20,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "30EIC",
-  description: "The 30EIC Alumni Map",
+  title: "Alumni FEUP",
+  description: "FEUP Alumni Platform for deep insights",
   icons: {
     icon: [
       {
