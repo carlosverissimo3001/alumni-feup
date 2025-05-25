@@ -1,17 +1,14 @@
-'use client';
+"use client";
 
-import React, { useEffect, useState } from 'react';
+import React, { useState } from "react";
 import { useNavbar } from "@/contexts/NavbarContext";
 import { cn } from "@/lib/utils";
 import { GeoJSONFeatureCollection } from "@/sdk";
-import { useRouter } from "next/navigation";
 
-
-import ReviewMapView from '@/components/map/reviews/reviewMapView';
-import ReviewButton from './review-button';
-import { useAuth } from '@/contexts/AuthContext';
-import { ReviewData } from '@/types/review';
-import ReviewMapFilters from '@/components/map/reviews/reviewMapFilters';
+import ReviewMapView from "@/components/map/reviews/reviewMapView";
+import ReviewButton from "./review-button";
+import { ReviewData } from "@/types/review";
+import ReviewMapFilters from "@/components/map/reviews/reviewMapFilters";
 
 // Type definitions
 interface Coordinates {
@@ -25,36 +22,29 @@ interface SelectedReviews {
 }
 
 const ReviewMapComponent = () => {
-  const router = useRouter();
-  const { user, isAuthenticated } = useAuth();
-
-  useEffect(() => {
-    if (!isAuthenticated || !user) {
-      router.push("/analytics");
-    }
-  }, [isAuthenticated, router, user]);
-  
-  const [reviewGeoJSON, setReviewGeoJSON] = useState<GeoJSONFeatureCollection | null>(null);
+  const [reviewGeoJSON, setReviewGeoJSON] =
+    useState<GeoJSONFeatureCollection | null>(null);
 
   // The alumni the user is searching for.
   // Set in the filters -> Used in the mapView to center the map on the alumni.
-  const [selectedReviews, setSelectedReviews] = useState<SelectedReviews | null>(null);
+  const [selectedReviews, setSelectedReviews] =
+    useState<SelectedReviews | null>(null);
   const { isCollapsed } = useNavbar();
   const [loading, setLoading] = useState(false);
 
   const [reviewData, setReviewData] = useState<ReviewData[]>([]);
 
-  const [sortBy, setSortBy] = useState<'most' | 'least' | null>(null)
+  const [sortBy, setSortBy] = useState<"most" | "least" | null>(null);
 
   const [scoreFetch, setScoreFetch] = useState<boolean>(false);
 
   const handleSelectReviews = (id: string, coordinates: number[]): void => {
-    setSelectedReviews({ 
-      id, 
-      coordinates: { 
-        lat: coordinates[1], 
-        lng: coordinates[0] 
-      } 
+    setSelectedReviews({
+      id,
+      coordinates: {
+        lat: coordinates[1],
+        lng: coordinates[0],
+      },
     });
   };
 
@@ -72,14 +62,16 @@ const ReviewMapComponent = () => {
 
   return (
     <>
-      <div className={cn(
-        "fixed top-5 z-[100] transition-all duration-300",
-        isCollapsed ? "left-24" : "left-64"
-      )}>
+      <div
+        className={cn(
+          "fixed top-5 z-[100] transition-all duration-300",
+          isCollapsed ? "left-24" : "left-64"
+        )}
+      >
         <div className="bg-[#EDEDEC] rounded-md p-2.5 flex flex-col">
           <ReviewMapFilters
             handleLoading={handleLoading}
-            onSelectReview={handleSelectReviews} 
+            onSelectReview={handleSelectReviews}
             onSelectGeoJSON={handleSelectGeoJSON}
             sortBy={sortBy}
             setSortBy={setSortBy}
