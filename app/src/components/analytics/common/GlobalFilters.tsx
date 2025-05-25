@@ -127,7 +127,7 @@ export const GlobalFilters = ({
   const { data: courseOptions, isLoading: isCourseOptionsLoading } =
     useListCourses({
       params: {
-        facultyIds: filters.facultyIds,
+        facultyIds: filters.facultyIds?.length ? filters.facultyIds : undefined,
       },
     });
 
@@ -245,6 +245,7 @@ export const GlobalFilters = ({
       dateRange: undefined,
       companyIds: [],
       courseIds: [],
+      facultyIds: [],
       graduationYears: [],
       industryIds: [],
       companyHQsCountryCodes: [],
