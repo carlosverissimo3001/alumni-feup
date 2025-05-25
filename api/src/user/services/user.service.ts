@@ -1,4 +1,10 @@
-import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
+import {
+  HttpException,
+  HttpStatus,
+  Injectable,
+  Logger,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
@@ -7,7 +13,7 @@ import { UserStatus } from '@/user/consts/enum';
 import { sanitizeLinkedinUrl } from '@/alumni/utils';
 import { Permission } from '@prisma/client';
 import { EmailService } from '@/email/services/email.service';
-import { UserRepository } from '../repositories/user.repository';
+import { UserRepository, InviteRepository } from '../repositories';
 import {
   CheckPermissionDto,
   CheckPermissionResponse,
@@ -28,6 +34,7 @@ export class UserService {
     private readonly otpService: OtpService,
     private readonly emailService: EmailService,
     private readonly userRepository: UserRepository,
+    private readonly inviteRepository: InviteRepository,
   ) {}
 
   async linkedinAuth(body: LinkedinAuthDto): Promise<UserAuthResponse> {
@@ -102,14 +109,21 @@ export class UserService {
    * @param body - The body of the request
    */
   async verifyEmail(body: VerifyEmailDto): Promise<void> {
-    const { email } = body;
+    const { email, isInviteFlow } = body;
 
-    // Generate a verification code, and save it to Redis
+    if (isInviteFlow) {
+      const invite = await this.inviteRepository.find({ email });
+      if (!invite) {
+        throw new UnauthorizedException(
+          'You are not whitelisted, please contact the admin if you believe this is an error',
+        );
+      }
+    }
+
     const code = await this.otpService.generateOTP(email);
     const hashed = this.otpService['hash'](code);
     await this.otpService['redis'].set(`otp:${email}`, hashed, 'EX', 600);
 
-    // Send the verification code to the user's email
     await this.emailService.sendOtpEmail(email, code);
   }
 
@@ -118,7 +132,7 @@ export class UserService {
    * @param body - The body of the request
    */
   async verifyEmailToken(body: VerifyEmailTokenDto): Promise<void> {
-    const { email, token } = body;
+    const { email, token, isInviteFlow } = body;
     const isValid = await this.otpService.verifyOTP(email, token);
 
     if (!isValid) {
@@ -126,6 +140,18 @@ export class UserService {
         'Invalid verification code',
         HttpStatus.BAD_REQUEST,
       );
+    }
+
+    // For tracking purposes mostly
+    if (isInviteFlow) {
+      const invite = await this.inviteRepository.find({ email });
+      if (!invite) {
+        throw new UnauthorizedException(
+          'You are not whitelisted, please contact the admin if you believe this is an error',
+        );
+      }
+
+      await this.inviteRepository.incrementUsedCount(email);
     }
   }
 
