@@ -8,9 +8,10 @@ import getHypertune from "./lib/getHypertune";
 
 export async function middleware(request: NextRequest) {
   const hypertune = await getHypertune();
-  const isInviteFlowEnabled = hypertune.isInviteFlowEnabled({
-    fallback: false,
-  });
+  // No need to check for this in dev
+  const isInviteFlowEnabled =
+    process.env.NODE_ENV === "production" &&
+    hypertune.isInviteFlowEnabled({ fallback: false });
 
   if (isInviteFlowEnabled) {
     return inviteOnlyMiddleware(request);

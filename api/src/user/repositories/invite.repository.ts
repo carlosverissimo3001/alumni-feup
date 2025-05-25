@@ -29,6 +29,13 @@ export class InviteRepository {
     });
   }
 
+  async create(email: string): Promise<InviteEntity> {
+    const invite = await this.prisma.invite.create({
+      data: { email },
+    });
+    return this.fromPrismaObject(invite);
+  }
+
   /**
    * Maps a Prisma Invite object to an InviteEntity
    * TODO: This will be used for handling nullable fields and custom mappings in the future

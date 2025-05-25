@@ -54,6 +54,7 @@ export * from './IndustryAnalyticsEntity';
 export * from './IndustryListItemDto';
 export * from './IndustryListResponseDto';
 export * from './IndustryOptionDto';
+export * from './InviteUserDto';
 export * from './LinkedinAuthDto';
 export * from './Location';
 export * from './LocationAnalyticsEntity';
