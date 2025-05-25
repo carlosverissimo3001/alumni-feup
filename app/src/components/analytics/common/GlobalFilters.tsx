@@ -14,10 +14,7 @@ import {
   MapPin,
   Briefcase,
   Users,
-  Search,
-  X,
 } from "lucide-react";
-import { Input } from "@/components/ui/input";
 import { useState, useMemo, useEffect, useCallback } from "react";
 import {
   Tooltip,
@@ -266,14 +263,14 @@ export const GlobalFilters = ({
     onFiltersChange(emptyFilters);
   };
 
-  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  /* const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value.trim() === "" ? undefined : e.target.value;
     handleFilterChange("search", value);
   };
 
   const handleClearSearch = () => {
     handleFilterChange("search", undefined);
-  };
+  }; */
 
   const buildMapUrl = useCallback(() => {
     const params = new URLSearchParams();
@@ -387,7 +384,7 @@ export const GlobalFilters = ({
             </TooltipProvider>
           </div>
 
-          <div
+          {/* <div
             className="relative flex-1 mx-8 max-w-md"
             onClick={(e) => e.stopPropagation()}
           >
@@ -413,7 +410,7 @@ export const GlobalFilters = ({
                 </Button>
               )}
             </div>
-          </div>
+          </div> */}
 
           {activeFilterCount > 0 && (
             <Button
