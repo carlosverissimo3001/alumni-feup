@@ -420,7 +420,7 @@ const AboutPage = () => {
             <Tooltip>
               <TooltipTrigger asChild>
                 <Link
-                  href="https://github.com/carlosverissimo3001/alumniEI"
+                  href="https://github.com/carlosverissimo3001/alumni-feup"
                   target="_blank"
                   className="inline-flex items-center gap-3 bg-gradient-to-r from-[#8C2D19] to-orange-500 text-white px-8 py-4 rounded-2xl transition-all hover:scale-105 hover:shadow-xl hover:shadow-[#8C2D19]/20 font-semibold text-lg group"
                 >
