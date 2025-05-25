@@ -8,7 +8,9 @@ import getHypertune from "./lib/getHypertune";
 
 export async function middleware(request: NextRequest) {
   const hypertune = await getHypertune();
-  const isInviteFlowEnabled = hypertune.isInviteFlowEnabled({ fallback: false });
+  const isInviteFlowEnabled = hypertune.isInviteFlowEnabled({
+    fallback: false,
+  });
 
   if (isInviteFlowEnabled) {
     return inviteOnlyMiddleware(request);
@@ -26,6 +28,6 @@ export async function middleware(request: NextRequest) {
 
 export const config = {
   matcher: [
-    "/((?!api|_next/static|_next/image|favicon.ico).*)",
+    "/((?!api|_next/static|_next/image|favicon.ico|images|logos|fonts).*)",
   ],
 };
