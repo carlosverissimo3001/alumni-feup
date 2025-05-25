@@ -8,7 +8,7 @@ on:
 jobs:
   deploy:
     name: Deploy to VM
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     environment: Production – alumni-feup
     steps:
       - name: SSH and deploy
