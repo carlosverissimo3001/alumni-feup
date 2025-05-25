@@ -18,4 +18,5 @@ jobs:
           yarn install
           yarn prisma generate
           yarn prisma migrate deploy
+          yarn build
           pm2 restart api
