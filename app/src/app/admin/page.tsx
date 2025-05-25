@@ -46,6 +46,12 @@ const AdminDashboard = () => {
       icon: <BookOpenIcon className="h-6 w-6" />,
       href: "/admin/faculty-management",
     },
+    {
+      title: "Invite User",
+      description: "Invite a user to early access the platform",
+      icon: <UsersIcon className="h-6 w-6" />,
+      href: "/admin/invite-user",
+    },
   ];
 
   return (

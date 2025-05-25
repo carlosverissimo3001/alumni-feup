@@ -2,7 +2,7 @@ import { RequirePermission, UserAuthGuard } from '@/auth';
 import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { SkipThrottle } from '@nestjs/throttler';
-import { MergeCompaniesDto, MergeLocationsDto } from '../dto';
+import { MergeCompaniesDto, MergeLocationsDto, InviteUserDto } from '../dto';
 import { AdminService } from '../services/admin.service';
 
 @ApiTags('V1')
@@ -56,5 +56,16 @@ export class AdminController {
   })
   async mergeLocations(@Body() mergeLocationsDto: MergeLocationsDto) {
     return this.adminService.mergeLocations(mergeLocationsDto);
+  }
+
+  @Post('invite-user')
+  @RequirePermission('admin', 'write')
+  @ApiOperation({ summary: 'Invite user' })
+  @ApiResponse({
+    status: 200,
+    description: 'User invited',
+  })
+  async inviteUser(@Body() inviteUserDto: InviteUserDto) {
+    return this.adminService.inviteUser(inviteUserDto);
   }
 }
