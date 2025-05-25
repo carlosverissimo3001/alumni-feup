@@ -1,0 +1,25 @@
+name: PR Title Lint
+
+on:
+  pull_request:
+    types: [opened, edited, synchronize]
+
+jobs:
+  commitlint:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Lint PR Title
+        run: |
+          yarn add -D @commitlint/cli @commitlint/config-conventional
+          echo "${{ github.event.pull_request.title }}" | npx commitlint
