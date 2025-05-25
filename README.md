@@ -1,4 +1,6 @@
-# AlumniEI 
+# Alumni Feup
+
+![image](https://github.com/user-attachments/assets/30b40ad6-b9af-477b-ba25-41d52922434f)
 
 ## Overview
 
@@ -6,10 +8,6 @@
 
 <!-- TODO: Write this section -->
 
-```sh
-docker-compose -f docker-compose-dev.yml up -d
-```
-
 ## Caveats
 
-## Roadmap
+## Feature Roadmap
