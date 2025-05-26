@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-require-imports */
 import path from 'path';
 import chokidar from 'chokidar';
 import { execSync } from 'child_process';
