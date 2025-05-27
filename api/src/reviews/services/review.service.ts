@@ -378,7 +378,7 @@ export class ReviewService {
   }
 
   async create(body: CreateReviewDto): Promise<void> {
-    console.log('Create review', body);
+
     if (body.reviewType === ReviewType.COMPANY.toString()) {
       if (body.companyId === undefined || body.locationId === undefined) {
         throw new HttpException(
