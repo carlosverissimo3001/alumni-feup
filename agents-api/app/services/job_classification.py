@@ -197,10 +197,9 @@ class JobClassificationService:
             )
             state["messages"].append(response)
 
-            logger.info(f"Response: {response}")
-            tool_call = [tc for tc in response.tool_calls if tc.name == "return_esco_choices"]
+            tool_call = [tc for tc in response.tool_calls if tc["name"] == "return_esco_choices"]
             if tool_call:
-                state["parsed_esco_results"] = tool_call[0].args["results"]
+                state["parsed_esco_results"] = tool_call[0]["args"]["results"]
 
             # Save reasoning if it exists (may be blank)
             state["esco_reasoning"] = response.content or "No explanation provided."
@@ -236,6 +235,7 @@ class JobClassificationService:
             error=None,
             reasoning=None,
         )
+        logger.info(f"Processing role: {role.role_id}")
 
         graph = self.create_graph()
         events = graph.stream(state, stream_mode="values", config=config)

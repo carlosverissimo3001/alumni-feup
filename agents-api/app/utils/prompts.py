@@ -15,6 +15,7 @@ Only use that tool — do not write raw JSON.
 - Use the **exact** `title` and `confidence` fields
 - Do not add, remove, or change anything
 - Return exactly 3 results
+- Each result **must include all 3 fields**: "id", "title", and "confidence".
 """
 
 VALIDATE_ESCO_EXTRA_DETAILS = """
