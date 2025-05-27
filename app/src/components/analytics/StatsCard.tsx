@@ -14,7 +14,7 @@ import { useSpring, animated } from "@react-spring/web";
 export type StatsCardProps = {
   icon: React.ReactNode;
   name: string;
-  values: number[] | undefined; // Allow undefined for loading states
+  values: number | undefined; // Allow undefined for loading states
   infoMessage?: string;
 };
 
@@ -29,14 +29,14 @@ export default function StatsCard({
 
   const { number } = useSpring({
     from: { number: 0 },
-    number: isLoaded && values ? values[0] : 0,
+    number: isLoaded && values ? values : 0,
     delay: 150,
     config: { mass: 1, tension: 20, friction: 10, duration: 1000 },
   });
 
   useEffect(() => {
-    if (values && values[1] > 0) {
-      const calculatedPercentage = Math.round((values[0] / values[1]) * 100);
+    if (values && values > 0) {
+      const calculatedPercentage = Math.round((values / values) * 100);
       const timer = setTimeout(() => {
         setIsLoaded(true);
         setPercentage(calculatedPercentage);
@@ -51,7 +51,7 @@ export default function StatsCard({
     return "default";
   };
 
-  if (!values || values[1] === 0) {
+  if (!values || values === 0) {
     return (
       <Card className="p-2.5 h-full bg-gray-100 animate-pulse rounded-xl border border-[#8C2D19]/20">
         <div className="flex items-center gap-3">
@@ -124,24 +124,6 @@ export default function StatsCard({
             <motion.h3 className="text-xl font-extrabold text-[#8C2D19] tracking-tight">
               <animated.span>{number.to((n) => Math.floor(n))}</animated.span>
             </motion.h3>
-            <p className="text-[10px] font-normal text-[#5D5D5D]">
-              (out of a total of{" "}
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <span className="text-[10px] font-semibold text-[#5D5D5D] italic hover:underline cursor-pointer">
-                      {values[1]}
-                    </span>
-                  </TooltipTrigger>
-                  <TooltipContent side="bottom" className="max-w-xs">
-                    <p className="text-sm">
-                      Total {name.toLowerCase()} in the dataset
-                    </p>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-              )
-            </p>
           </div>
         </div>
       </Card>

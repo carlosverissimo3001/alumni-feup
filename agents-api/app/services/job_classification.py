@@ -2,15 +2,17 @@ import asyncio
 import json
 import logging
 import time
-import uuid
-from typing import Dict, List
+from typing import List
 
+from fastapi.encoders import jsonable_encoder
 from langchain_core.messages import HumanMessage, SystemMessage
 from langchain_core.runnables.config import RunnableConfig
 from langchain_core.tools import Tool
-from langchain_ollama import ChatOllama
+from langchain_openai import ChatOpenAI
 from langgraph.graph import END, START, StateGraph
 from langgraph.prebuilt import ToolNode, tools_condition
+from prometheus_client import Counter, Gauge, Summary
+from redis import Redis
 
 from app.core.config import settings
 from app.db import get_db
@@ -25,7 +27,9 @@ from app.utils.agents.esco_reference import (
     search_esco_classifications,
 )
 from app.utils.alumni_db import find_all, find_by_ids
-from app.utils.esco_db import update_role_with_classifications
+from app.utils.esco_db import (
+    update_role_with_classifications_batch,
+)
 from app.utils.prompts import (
     VALIDATE_ESCO_CORE_PROMPT,
     VALIDATE_ESCO_EXTRA_DETAILS,
@@ -38,10 +42,13 @@ config = RunnableConfig(recursion_limit=5)
 # Get a database session for the service
 db = next(get_db())
 
-
 json_schema = {
     "type": "object",
     "properties": {
+        "reasoning": {
+            "type": "string",
+            "description": "Explain why the selected ESCO result is the best fit for the role.",
+        },
         "results": {
             "type": "array",
             "items": {
@@ -55,9 +62,9 @@ json_schema = {
             },
             "minItems": 3,
             "maxItems": 3,
-        }
+        },
     },
-    "required": ["results"],
+    "required": ["reasoning", "results"],
 }
 
 
@@ -71,6 +78,7 @@ validate_tool = Tool.from_function(
     description="Return exactly 3 ESCO matches with id, title, and confidence",
     args_schema=json_schema,
 )
+
 get_detailed_esco_classification = Tool.from_function(
     func=get_detailed_esco_classification,
     name="get_detailed_esco_classification",
@@ -79,16 +87,14 @@ get_detailed_esco_classification = Tool.from_function(
 
 tools = [get_detailed_esco_classification, validate_tool]
 
-cold_llm = ChatOllama(
-    base_url=settings.OLLAMA_BASE_URL,
-    model=settings.DEFAULT_MODEL,
+cold_llm = ChatOpenAI(
+    model=settings.OPENAI_DEFAULT_MODEL,
+    api_key=settings.OPENAI_API_KEY,
     temperature=0.0,
 )
 llm_with_tools = cold_llm.bind_tools(tools)
 
-tool_node = ToolNode(
-    tools=tools,
-)
+tool_node = ToolNode(tools=tools)
 
 
 def get_esco_prompt(retry_count: int = 0) -> str:
@@ -99,216 +105,220 @@ def get_esco_prompt(retry_count: int = 0) -> str:
 
 class JobClassificationService:
     def __init__(self):
-        # Simple in-memory cache for ESCO classifications
-        self._esco_cache: Dict[str, List] = {}
+        self._redis_cache = Redis(host="localhost", port=6379, db=0)
+        self.CACHE_TTL = 60 * 60 * 24  # 24 hours
+        self.MAX_CONCURRENT = 10
+        self.BATCH_SIZE = 50
         self.MAX_RETRIES = 1
+
+        self.classification_time = Summary(
+            "job_classification_duration_seconds", "Time spent processing job classification"
+        )
+        self.cache_hits = Counter("job_classification_cache_hits", "Number of cache hits")
+        self.active_classifications = Gauge(
+            "job_classification_active", "Number of active classification jobs"
+        )
+
+    def _get_cache_key(self, query: str) -> str:
+        return f"esco_classification:{query}"
+
+    def _get_from_cache(self, query: str) -> List | None:
+        cached = self._redis_cache.get(self._get_cache_key(query))
+        if cached:
+            self.cache_hits.inc()
+            return json.loads(cached)
+        return None
+
+    def _set_in_cache(self, query: str, results: List):
+        self._redis_cache.setex(
+            self._get_cache_key(query), self.CACHE_TTL, json.dumps(jsonable_encoder(results))
+        )
 
     def create_graph(self) -> StateGraph:
         graph = StateGraph(JobClassificationAgentState)
-
-        # *** Nodes ***
         graph.add_node("get_best_esco_matches_db", self.get_best_esco_matches_db)
-        graph.add_node("validate_esco_results", self.validate_esco_results)
-        graph.add_node("validate_esco_results_tool_calls", tool_node)
-        graph.add_node("insert_classification_into_db", self.insert_classification_into_db)
-
-        # *** Edges ***
+        graph.add_node("validate_and_update", self._process_roles_batch)
         graph.add_edge(START, "get_best_esco_matches_db")
-        graph.add_edge("get_best_esco_matches_db", "validate_esco_results")
-        graph.add_edge("validate_esco_results_tool_calls", "validate_esco_results")
-        graph.add_edge("validate_esco_results", "insert_classification_into_db")
-
-        # If tools are needed during validation, go to tool node
-        graph.add_conditional_edges(
-            "validate_esco_results",
-            tools_condition,
-            {
-                "tools": "validate_esco_results_tool_calls",
-                END: "insert_classification_into_db",
-            },
-        )
-
-        graph.add_edge("insert_classification_into_db", END)
-
-        compiled_graph = graph.compile()
-        # compiled_graph.get_graph().draw_mermaid_png(output_file_path="job_classification_graph.png")
-        return compiled_graph
+        graph.add_edge("get_best_esco_matches_db", "validate_and_update")
+        graph.add_edge("validate_and_update", END)
+        return graph.compile()
 
     def get_best_esco_matches_db(
-        self,
-        state: JobClassificationAgentState,
+        self, state: JobClassificationAgentState
     ) -> JobClassificationAgentState:
-        """
-        Get the best (top k) embeddings for this role, using the embeddings of the job title and
-        description.
-        """
-        # For the deterministic embeddings, we'll just use the title and description
-        # The remaining fields of role are used as context for the agent in the next node(s)
-        query = state["role"].title
-        if state["role"].description:
-            query += f" {state['role'].description}"
+        with self.classification_time.time():
+            query = state["role"].title
+            if state["role"].description:
+                query += f" {state['role'].description}"
 
-        # Check cache first to avoid redundant embedding searches
-        if query in self._esco_cache:
-            state["esco_results_from_embeddings"] = self._esco_cache[query]
+            cached_results = self._get_from_cache(query)
+            if cached_results:
+                state["esco_results_from_embeddings"] = cached_results
+                return state
+
+            try:
+                esco_results = search_esco_classifications(query)
+                state["esco_results_from_embeddings"] = esco_results
+                if esco_results:
+                    self._set_in_cache(query, esco_results)
+            except Exception as e:
+                logger.error(f"Error searching ESCO classifications: {str(e)}")
+                state["esco_results_from_embeddings"] = []
+                state["error"] = f"Failed to search ESCO classifications: {str(e)}"
+
+            state["processing_time"] = time.time() - state.get("processing_time", 0.0)
             return state
 
-        start_time = time.time()
-        try:
-            esco_results = search_esco_classifications(query)
-            # Always initialize the results list, even if empty
-            state["esco_results_from_embeddings"] = esco_results
-            if len(esco_results) > 0:
-                # Only cache non-empty results
-                self._esco_cache[query] = esco_results
-            else:
-                logger.warning(f"No ESCO matches found for query: {query}")
-        except Exception as e:
-            logger.error(f"Error searching ESCO classifications: {str(e)}")
-            state["esco_results_from_embeddings"] = []
-            state["error"] = f"Failed to search ESCO classifications: {str(e)}"
+    async def validate_esco_results_batch(
+        self, states: List[JobClassificationAgentState]
+    ) -> List[JobClassificationAgentState]:
+        async def _validate_single(state: JobClassificationAgentState):
+            retry_count = state.get("retry_count", 0)
+            max_retries = 3
+            base_delay = 0.5
 
-        state["processing_time"] = time.time() - start_time
-        return state
-
-    def validate_esco_results(self, state: JobClassificationAgentState):
-        """
-        Validate the ESCO results with the help of the Agent
-        """
-        retry_count = state.get("retry_count", 0)
-        esco_prompt = get_esco_prompt(retry_count)
-
-        try:
-            response = llm_with_tools.invoke(
-                [
-                    SystemMessage(content=esco_prompt),
-                    SystemMessage(
-                        content=f"Here are the list of results from the vector search: {state['esco_results_from_embeddings']}"
-                    ),
-                    SystemMessage(content=f"Here is the role to classify: {state['role']}"),
-                    *state["messages"],
-                    HumanMessage(
-                        content="""Please validate the results and provide the 3 best matches using the return_esco_choices tool.
+            while retry_count < max_retries:
+                try:
+                    esco_prompt = get_esco_prompt(retry_count)
+                    response = await llm_with_tools.ainvoke(
+                        [
+                            SystemMessage(content=esco_prompt),
+                            SystemMessage(
+                                content=f"Here are the list of results from the vector search: {state['esco_results_from_embeddings']}"
+                            ),
+                            SystemMessage(content=f"Here is the role to classify: {state['role']}"),
+                            *state["messages"],
+                            HumanMessage(
+                                content="""Please validate the results and provide the 3 best matches using the return_esco_choices tool.
                         Only include: id, title, confidence.
                         DO NOT use the ESCO code as the ID.
                         DO NOT include any comments, extra fields, or explanation."""
-                    ),
-                ]
-            )
-            state["messages"].append(response)
+                            ),
+                        ]
+                    )
+                    state["messages"].append(response)
 
-            tool_call = [tc for tc in response.tool_calls if tc["name"] == "return_esco_choices"]
-            if tool_call:
-                state["parsed_esco_results"] = tool_call[0]["args"]["results"]
+                    tool_call = [
+                        tc for tc in response.tool_calls if tc["name"] == "return_esco_choices"
+                    ]
+                    if tool_call:
+                        args = tool_call[0]["args"]
+                        state["parsed_esco_results"] = args.get("results", [])
+                        state["reasoning"] = args.get("reasoning", "No explanation provided.")
+                        break  
 
-            # Save reasoning if it exists (may be blank)
-            state["esco_reasoning"] = response.content or "No explanation provided."
+                except Exception as e:
+                    if "429" in str(e):  
+                        retry_count += 1
+                        if retry_count < max_retries:
+                            delay = base_delay * (2**retry_count)
+                            logger.info(f"Rate limit hit, retrying in {delay}s...")
+                            await asyncio.sleep(delay)
+                            continue
+
+                    logger.error(f"LLM validation failed for role {state['role']}: {e}")
+                    state["error"] = str(e)
+                    break
+
+            return state
+
+        # Process in smaller chunks to avoid overwhelming the API
+        chunk_size = 3
+        results = []
+        for i in range(0, len(states), chunk_size):
+            chunk = states[i : i + chunk_size]
+            chunk_results = await asyncio.gather(*[_validate_single(state) for state in chunk])
+            results.extend(chunk_results)
+            if i + chunk_size < len(states):
+                await asyncio.sleep(1)  # Add delay between chunks
+
+        return results
+
+    async def batch_update_classifications(self, states: List[JobClassificationAgentState]):
+        try:
+            updates = [
+                {
+                    "role_id": state["role"].role_id,
+                    "classifications": state["parsed_esco_results"],
+                    "reasoning": state["reasoning"],
+                }
+                for state in states
+                if state["parsed_esco_results"]
+            ]
+
+            if updates:
+                await update_role_with_classifications_batch(db, updates)
 
         except Exception as e:
-            logger.error(f"LLM validation failed: {e}")
-            state["error"] = str(e)
+            logger.error(f"Error in batch update classifications: {str(e)}")
 
-        return state
+    async def _process_roles_batch(
+        self, roles: List[JobClassificationRoleInput]
+    ) -> List[JobClassificationAgentState]:
+        states = [
+            JobClassificationAgentState(
+                role=role,
+                messages=[],
+                esco_results_from_embeddings=[],
+                esco_results_from_agent=[],
+                parsed_esco_results=[],
+                processing_time=0.0,
+                model_used=settings.OPENAI_DEFAULT_MODEL,
+                retry_count=0,
+                error=None,
+                reasoning=None,
+            )
+            for role in roles
+        ]
 
-    def insert_classification_into_db(self, state: JobClassificationAgentState):
-        """
-        Insert the classification into the database
-        """
-        update_role_with_classifications(db, state)
-        return state
-
-    # This is the actual "Agent" code
-    async def _process_role(self, role: JobClassificationRoleInput):
-        """
-        Async function that processes a single role and finds its ESCO classification
-        """
-        # Initialize the state with all required fields
-        state = JobClassificationAgentState(
-            role=role,
-            messages=[],
-            esco_results_from_embeddings=[],
-            esco_results_from_agent=[],
-            parsed_esco_results=[],
-            processing_time=0.0,
-            model_used="granite3.2:8b",
-            retry_count=0,
-            error=None,
-            reasoning=None,
-        )
-        logger.info(f"Processing role: {role.role_id}")
-
-        graph = self.create_graph()
-        events = graph.stream(state, stream_mode="values", config=config)
-
-        # Consume all events from the stream
-        [event for event in events]
+        states = [self.get_best_esco_matches_db(state) for state in states]
+        states = await self.validate_esco_results_batch(states)
+        await self.batch_update_classifications(states)
+        return states
 
     async def classify_roles_for_alumni(self, alumni_id: str):
-        """
-        Classify all the roles of an alumni into the ESCO taxonomy.
-        This is a background task that processes roles asynchronously.
-
-        Args:
-            alumni_id: the ID of the alumni
-        """
         try:
-            # Get the roles of the alumni
+            self.active_classifications.inc()
             input_data = get_extended_roles_by_alumni_id(alumni_id, db)
-
             if not input_data.roles:
                 return
 
-            # Process all roles concurrently with parallelism limit to avoid overwhelming resources
-            tasks = [self._process_role(role) for role in input_data.roles]
+            roles = input_data.roles
 
-            # Process in smaller chunks if there are many roles
-            max_concurrent = 5  # Process up to 5 roles concurrently
-            for i in range(0, len(tasks), max_concurrent):
-                batch = tasks[i : i + max_concurrent]
-                await asyncio.gather(*batch)
+            for i in range(0, len(roles), self.MAX_CONCURRENT):
+                batch = roles[i : i + self.MAX_CONCURRENT]
+                await self._process_roles_batch(batch)
+                if i + self.MAX_CONCURRENT < len(roles):
+                    await asyncio.sleep(0.1)
 
         except Exception as e:
             logger.error(f"Error classifying roles for alumni {alumni_id}: {str(e)}")
-            # We don't raise the exception since this is a background task
+        finally:
+            self.active_classifications.dec()
 
     async def request_alumni_classification(self, params: AlumniJobClassificationParams):
-        """
-        Request the classification of the roles of the alumni
-        """
         alumni_ids = params.alumni_ids
         alumni: list[Alumni] = []
 
         if alumni_ids:
-            alumni_ids = alumni_ids.split(",")
-            alumni = find_by_ids(alumni_ids, db)
+            alumni = find_by_ids(alumni_ids.split(","), db)
         else:
             alumni = find_all(db)
 
-        # just making sure the user was not dumb and provided duplicate alumni IDs
-        # and newsflash, that user is me :))
         alumni = list(set(alumni))
-
         logger.info(f"Going to update {len(alumni)} alumni")
 
-        # Process in larger batches to improve throughput
-        batch_size = 30
-        for i in range(0, len(alumni), batch_size):
-            batch = alumni[i : i + batch_size]
+        for i in range(0, len(alumni), self.BATCH_SIZE):
+            batch = alumni[i : i + self.BATCH_SIZE]
             logger.info(
-                f"Processing batch {i // batch_size + 1} of {(len(alumni) + batch_size - 1) // batch_size} ({len(batch)} alumni)"
+                f"Processing batch {i // self.BATCH_SIZE + 1} of {(len(alumni) + self.BATCH_SIZE - 1) // self.BATCH_SIZE}"
             )
 
-            tasks = []
-            for alumni_obj in batch:
-                task = asyncio.create_task(self.classify_roles_for_alumni(alumni_obj.id))
-                tasks.append(task)
-
-            # Wait for all tasks in this batch to complete
+            tasks = [asyncio.create_task(self.classify_roles_for_alumni(al.id)) for al in batch]
             await asyncio.gather(*tasks)
 
-            # Small delay between batches to prevent rate limiting
-            if i + batch_size < len(alumni):
-                await asyncio.sleep(0.5)
+            if i + self.BATCH_SIZE < len(alumni):
+                await asyncio.sleep(0.1)
 
 
 job_classification_service = JobClassificationService()

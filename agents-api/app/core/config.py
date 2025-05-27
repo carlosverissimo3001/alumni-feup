@@ -29,8 +29,12 @@ class Settings(BaseSettings):
 
     # LLM Settings
     OLLAMA_BASE_URL: str = "http://localhost:11434"
-    DEFAULT_MODEL: str = "granite-7b"
+    
+    OPENAI_DEFAULT_MODEL: str = "gpt-4o-mini"
     OPENAI_API_KEY: str = ""
+    
+    GROQ_DEFAULT_MODEL: str = "llama3-8b-8192"
+    GROQ_API_KEY: str = ""
     """
     LANGSMITH_TRACING: bool = False
     LANGSMITH_ENDPOINT: str = ""

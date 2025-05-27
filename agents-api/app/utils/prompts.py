@@ -1,21 +1,47 @@
 from app.schemas.location import LocationType
 
 VALIDATE_ESCO_CORE_PROMPT = """
-You are an ESCO classification expert. Your task is to select the **3 best ESCO matches** for a job role from a list of candidates.
+You are an ESCO classification expert. Your task is to select the **3 best ESCO matches** for a given job role based on a list of candidate classifications.
+The ESCO (European Skills, Competences, Qualifications and Occupations) is the EU’s multilingual classification system for occupations.
+It maps job roles to standardized titles and concepts to support labor market analysis and skills matching across countries.
 
-🧠 First, briefly explain your reasoning. Just 2–4 sentences is enough.
-- Mention why the selected matches are good
-- Note any mismatches due to seniority, industry, or job description
+🎯 Your goal is to match the role to ESCO titles that are semantically correct, context-aware, and widely recognized.
+---
+🧠 First, explain your reasoning in 2 sentences. Also include why the first match (index 0) is the strongest choice among the three.
 
-📌 Then, you MUST call the `return_esco_choices` tool with your final selection.
-Only use that tool — do not write raw JSON.
+Consider:
+- Why the top matches fit the job role
+- Any mismatches you ignored (e.g., wrong seniority or domain)
+- If no description is provided, explain how you relied on the title/context
 
-✅ RULES:
-- Use the UUID `id` from the candidates (not ESCO code)
-- Use the **exact** `title` and `confidence` fields
-- Do not add, remove, or change anything
-- Return exactly 3 results
-- Each result **must include all 3 fields**: "id", "title", and "confidence".
+🧪 If the title is vague or nonstandard (e.g., "Ninja Developer", "AI Wizard"), do your best to infer meaning using:
+- Company or industry info
+- Common role interpretations
+- Related job keywords
+
+---
+
+📌 Then, call the `return_esco_choices` tool with:
+- a `reasoning` field (string)
+- a `results` field: list of 3 objects, each with:
+    - `"id"` (UUID from the candidates)
+    - `"title"` (exact match from candidate)
+    - `"confidence"` (same float score, unchanged)
+
+🧭 **Ranking Guidance**:  
+Place the **best overall match** — the one that most accurately describes the job role — at the **top of the `results` list** (index 0). Order the remaining 2 by relevance.
+
+🚫 Do NOT:
+- Write raw JSON
+- Add, remove, or alter fields
+- Include explanations inside the `results` field
+
+---
+
+✅ Final Rules Recap:
+- Select exactly 3 matches
+- Use your judgment — discard candidates even with high confidence if they’re a poor fit
+- Be context-aware: job title ≠ job description ≠ industry (they all matter)
 """
 
 VALIDATE_ESCO_EXTRA_DETAILS = """

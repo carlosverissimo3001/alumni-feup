@@ -5,7 +5,7 @@ from json.decoder import JSONDecodeError
 from typing import Literal
 
 from langchain_core.messages import HumanMessage, SystemMessage
-from langchain_ollama import ChatOllama
+from langchain_openai import ChatOpenAI
 from langgraph.graph import END, START, StateGraph
 from langgraph.prebuilt import ToolNode
 
@@ -29,15 +29,15 @@ logger = logging.getLogger(__name__)
 db = next(get_db())
 
 # Initializes the LLMs
-cold_llm = ChatOllama(
-    base_url=settings.OLLAMA_BASE_URL,
-    model=settings.DEFAULT_MODEL,
+cold_llm = ChatOpenAI(
+    model=settings.OPENAI_DEFAULT_MODEL,
+    api_key=settings.OPENAI_API_KEY,
     temperature=0.0,
 )
 
-hot_llm = ChatOllama(
-    base_url=settings.OLLAMA_BASE_URL,
-    model=settings.DEFAULT_MODEL,
+hot_llm = ChatOpenAI(
+    model=settings.OPENAI_DEFAULT_MODEL,
+    api_key=settings.OPENAI_API_KEY,
     temperature=0.3,
 )
 
@@ -363,7 +363,7 @@ class LocationAgent:
             messages=[],
             db_locations=[],
             processing_time=0.0,
-            model_used="mistral:7b",
+            model_used=settings.OPENAI_DEFAULT_MODEL,
         )
 
         graph = self.create_graph()

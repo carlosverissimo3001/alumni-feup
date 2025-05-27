@@ -1,10 +1,10 @@
-import json
 import logging
 from typing import List
 
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
+from app.core.config import settings
 from app.db.models import EscoClassification, JobClassification
 from app.schemas.job_classification import EscoResult, JobClassificationAgentState
 
@@ -65,7 +65,7 @@ def update_role_with_classifications(db: Session, state: JobClassificationAgentS
 
     metadata_json = {
         "choices": [result.model_dump() for result in results],
-        "reasoning": state.get("esco_reasoning", ""),
+        "reasoning": state.get("reasoning", ""),
     }
 
     try:
@@ -77,7 +77,53 @@ def update_role_with_classifications(db: Session, state: JobClassificationAgentS
             metadata_=metadata_json,
         )
 
-        insert_classification(db, classification) 
+        insert_classification(db, classification)
     except Exception as e:
         logger.error(f"Error inserting classification into DB: {str(e)}")
         db.rollback()
+
+
+async def update_role_with_classifications_batch(db: Session, updates: List[dict]):
+    """
+    Batch update role classifications in the database
+    """
+    try:
+        for update in updates:
+            delete_existing_classifications(db, update["role_id"])
+
+            if not update["classifications"]:
+                logger.warning(f"No classifications for role {update['role_id']}, skipping")
+                continue
+
+            try:
+                results = [EscoResult(**result) for result in update["classifications"]]
+            except Exception as e:
+                logger.error(f"Error parsing ESCO results for role {update['role_id']}: {str(e)}")
+                continue
+
+            best_result = results[0]
+            metadata_json = {
+                "choices": [result.model_dump() for result in results],
+                "reasoning": update.get("reasoning", ""),
+            }
+
+            try:
+                classification = JobClassification(
+                    role_id=update["role_id"],
+                    esco_classification_id=best_result.id,
+                    confidence=best_result.confidence,
+                    model_used=settings.OPENAI_DEFAULT_MODEL,
+                    metadata_=metadata_json,
+                )
+                db.add(classification)
+            except Exception as e:
+                logger.error(
+                    f"Error creating classification for role {update['role_id']}: {str(e)}"
+                )
+                continue
+
+        db.commit()
+    except Exception as e:
+        logger.error(f"Error in batch update: {str(e)}")
+        db.rollback()
+        raise
