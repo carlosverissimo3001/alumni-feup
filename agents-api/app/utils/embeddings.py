@@ -34,27 +34,20 @@ def generate_embedding(text: str) -> List[float]:
 
 def generate_esco_embedding(esco: EscoClassification) -> List[float]:
     """
-    Generate an embedding for an ESCO classification by combining its relevant fields.
-    
-    Args:
-        esco: The ESCO classification to generate an embedding for
-        
-    Returns:
-        A list of floats representing the embedding vector
+    Generate an embedding for an ESCO classification using its core semantic fields.
+    Excludes irrelevant or noisy fields like excluded occupations.
     """
-    text = f"""
-    Title: {esco.title_en}
-    Definition: {esco.definition}
-    Tasks: {esco.tasks_include}
-    Included Occupations: {esco.included_occupations}
-    Excluded Occupations: {esco.excluded_occupations}
-    Notes: {esco.notes if esco.notes else ''}
-    """
-    return generate_embedding(text.strip())
+    text_parts = [
+        esco.title_en or "",
+        esco.alt_labels or "",
+        esco.definition or "",
+        esco.tasks_include or "",
+    ]
+    return generate_embedding(" ".join(text_parts).strip())
 
 async def update_esco_embeddings(db: Session, batch_size: int = 100) -> None:
     """
-    Update embeddings for all ESCO classifications that don't have them yet.
+    Generates embeddings for all ESCO classifications that are leaves.
     
     Args:
         db: Database session
@@ -62,7 +55,7 @@ async def update_esco_embeddings(db: Session, batch_size: int = 100) -> None:
     """
     try:
         classifications = db.query(EscoClassification).filter(
-            EscoClassification.embedding.is_(None)
+            EscoClassification.is_leaf.is_(True)
         ).all()
         
         logger.info(f"Found {len(classifications)} ESCO classifications without embeddings")

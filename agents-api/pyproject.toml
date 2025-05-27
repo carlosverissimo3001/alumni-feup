@@ -27,6 +27,7 @@ dependencies = [
     "openai>=1.73.0",
     "pgvector>=0.4.0",
     "grandalf>=0.8",
+    "sentence-transformers>=4.1.0",
 ]
 
 [project.optional-dependencies]

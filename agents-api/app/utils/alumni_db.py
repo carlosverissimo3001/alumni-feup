@@ -35,13 +35,7 @@ def update_alumni(alumni: Alumni, db: Session) -> None:
 
 
 def find_all(db: Session) -> list[Alumni]:
-    return (
-        db.query(Alumni)
-        .filter(
-            Alumni.profile_picture_url.isnot(None), Alumni.profile_picture_url.like("%media.licdn%")
-        )
-        .all()
-    )
+    return db.query(Alumni).all()
 
 
 def find_by_id(id: str, db: Session) -> Alumni:

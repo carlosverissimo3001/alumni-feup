@@ -17,7 +17,7 @@ class Settings(BaseSettings):
     ENVIRONMENT: str = "development"
     CORS_ORIGINS: List[str] = ["http://localhost:3000", "http://localhost:8080"]
 
-    @field_validator("CORS_ORIGINS", mode='before')
+    @field_validator("CORS_ORIGINS", mode="before")
     def parse_cors_origins(cls, v):
         """Parse the CORS origins from a comma-separated string."""
         if isinstance(v, str):
@@ -29,7 +29,7 @@ class Settings(BaseSettings):
 
     # LLM Settings
     OLLAMA_BASE_URL: str = "http://localhost:11434"
-    DEFAULT_MODEL: str = "mistral:7b"
+    DEFAULT_MODEL: str = "granite-7b"
     OPENAI_API_KEY: str = ""
     """
     LANGSMITH_TRACING: bool = False
@@ -37,21 +37,21 @@ class Settings(BaseSettings):
     LANGSMITH_API_KEY: str = ""
     LANGSMITH_PROJECT: str = ""
     """
-    
+
     # Proxycurl API Settings
     PROXYCURL_API_KEY: str = ""
     PROXYCURL_BASE_URL: str = "https://nubela.co/proxycurl/api"
-    
+
     # Bright Data Settings
     BRIGHTDATA_API_KEY: str = ""
     BRIGHTDATA_BASE_URL: str = "https://api.brightdata.com/datasets/v3"
     BRIGHTDATA_COMPANY_DATASET_ID: str = ""
-    
+
     # Cloudinary Settings
     CLOUDINARY_CLOUD_NAME: str = ""
     CLOUDINARY_API_KEY: str = ""
     CLOUDINARY_API_SECRET: str = ""
-    
+
     # Geolocation API Settings
     GEOLOCATION_API_KEY: str = ""
     GEOLOCATION_BASE_URL: str = "https://api.openweathermap.org/geo/1.0/direct?q="

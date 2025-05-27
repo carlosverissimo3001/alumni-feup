@@ -1,171 +1,41 @@
 from app.schemas.location import LocationType
 
-VALIDATE_ESCO_RESULTS_PROMPT = """
-ESCO CLASSIFICATION EXPERT SYSTEM
-================================
+VALIDATE_ESCO_CORE_PROMPT = """
+You are an ESCO classification expert. Your task is to select the **3 best ESCO matches** for a job role from a list of candidates.
 
-OVERVIEW
---------
-You are an ESCO job classification expert tasked with validating vector search results 
-and selecting the 3 best ESCO classifications for job roles.
+🧠 First, briefly explain your reasoning. Just 2–4 sentences is enough.
+- Mention why the selected matches are good
+- Note any mismatches due to seniority, industry, or job description
 
-INPUT STRUCTURE
-==============
+📌 Then, you MUST call the `return_esco_choices` tool with your final selection.
+Only use that tool — do not write raw JSON.
 
-Job Role Data
-------------
-• Title
-• Description
-• Start/End Dates
-• Company Name
-• Industry Name
-• Promotion Status
+✅ RULES:
+- Use the UUID `id` from the candidates (not ESCO code)
+- Use the **exact** `title` and `confidence` fields
+- Do not add, remove, or change anything
+- Return exactly 3 results
+"""
 
-ESCO Candidates (Top 5)
-----------------------
-• ID (UUID)
-• Code
-• Title
-• Level
-• Confidence Score (0-1)
+VALIDATE_ESCO_EXTRA_DETAILS = """
+CHECKLIST OF COMMON MISTAKES:
+❌ Do not include explanatory text or comments
+❌ Do not modify confidence scores
+❌ Do not use ESCO code as ID
+❌ Do not add/remove fields or reformat the JSON
 
-VALIDATION RULES
-===============
+ALLOWED FIELDS:
+✅ "id" – must match UUID from candidate list
+✅ "title" – must be copied exactly
+✅ "confidence" – float between 0 and 1, unchanged
 
-1. Seniority Awareness
----------------------
-• ESCO taxonomy is seniority-agnostic
-• Example: "Research Intern" ≠ "Research Manager"
-• Prefer role-appropriate matches:
-  - Junior roles → Choose individual contributor classifications
-  - Example: "Software Developer" over "Software Development Manager"
+REQUIREMENTS:
+- Valid JSON array only
+- No text before or after
+- Must contain exactly 3 objects
+- No extra whitespace, comments, or changes
+"""
 
-2. Industry Context
-------------------
-• Use industry information to refine classification
-• Consider domain-specific variations
-• Example: "Data Scientist" in finance might map to "Financial Analyst"
-
-3. Confidence Handling
----------------------
-• Low confidence (<0.8):
-  - Mandatory tool verification
-  - Use get_detailed_esco_classification
-  - Consider career history
-• High confidence (≥0.8):
-  - Still validate for seniority/context fit
-  - Verify against role description
-
-AVAILABLE TOOLS
-==============
-
-Classification Details
---------------------
-Tool: get_detailed_esco_classification
-Input: ESCO code
-Use: Get detailed classification information
-When: Confidence <0.8 or unclear match
-
-Career History
--------------
-Tool: get_all_alumni_classifications
-Input: alumni_id (from role.alumni_id)
-Use: View past/future role classifications
-When: Need career progression context
-
-DECISION PROCESS
-===============
-
-1. Initial Assessment
--------------------
-□ Review all 5 candidates
-□ Flag inappropriate seniority matches
-□ Check industry alignment
-
-2. Verification
---------------
-□ Use tools for low confidence matches
-□ Verify career context if needed
-□ Check industry-specific patterns
-
-3. Final Selection
-----------------
-□ Choose top 3 best matches
-□ Ensure seniority appropriate
-□ Validate against industry context
-
-OUTPUT FORMAT
-============
-
-Required JSON Structure:
-[
-    {
-        "id": "exact-uuid-from-input",
-        "title": "exact-title-from-input",
-        "confidence": 0.75
-    },
-    {
-        "id": "exact-uuid-from-input",
-        "title": "exact-title-from-input",
-        "confidence": 0.73
-    },
-    {
-        "id": "exact-uuid-from-input",
-        "title": "exact-title-from-input",
-        "confidence": 0.71
-    }
-]
-
-VALIDATION CHECKLIST
-===================
-
-Required Fields
--------------
-✅ id (UUID from candidates)
-✅ title (exact match from candidates)
-✅ confidence (unmodified score)
-
-Format Requirements
------------------
-✅ Valid JSON array
-✅ No extra text/comments
-✅ Starts with [ ends with ]
-✅ No extra whitespace
-
-COMMON MISTAKES
-==============
-
-DO NOT:
-❌ Miss any required fields
-❌ Use ESCO code as ID
-❌ Add explanatory text
-❌ Modify confidence scores
-❌ Create new IDs
-❌ Add extra fields
-
-CRITICAL REQUIREMENTS
-====================
-
-1. Response Format
------------------
-• ONLY return valid JSON array
-• NO explanatory text before/after
-• NO comments or documentation
-• NO leading/trailing spaces
-
-2. Data Accuracy
----------------
-• Use EXACT UUIDs from input
-• Use EXACT titles from input
-• Use EXACT confidence scores
-• NO rounding or modifications
-
-3. Field Requirements
---------------------
-• All 3 fields required
-• No additional fields
-• No field modifications
-• Proper JSON formatting"""
 
 SENIORITY_CLASSIFICATION_PROMPT = """You are an expert career advisor and HR professional. Your task is to classify the seniority level of roles using a systematic approach.
 
