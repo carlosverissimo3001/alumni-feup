@@ -32,7 +32,6 @@ const ReviewClusterInfo = ({
   listPlaceName,
   hoveredMouseCoords,
   reviewData,
-  //scoreFetch,
   setScoreFetch,
 }: props) => {
   const nAlumniToShow = 10; // Defines the nº of alumnis to show when a hoover is preformed
@@ -40,7 +39,6 @@ const ReviewClusterInfo = ({
   const [endPosition, setEndPosition] = useState(nAlumniToShow - 1); // Position in the array to stop reading from. 0 is also a number therefore the -1
   const [showPrev, setShowPrev] = useState(false); // Defines if it is to show the "...Prev"
   const [showMore, setShowMore] = useState(false); // Defines if it is to show the "More..."
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [showCompare, setShowCompare] = useState(false);
   const [reviewScore, setReviewScore] = useState<ChangeReviewScoreDto | null>(
     null
@@ -95,10 +93,6 @@ const ReviewClusterInfo = ({
     }
     setShowMore(true);
   };
-
-/*   useEffect(() => {
-    showCompare;
-  }); */
 
   const renderStars = (rating: number) => {
     return Array(5)
@@ -162,8 +156,6 @@ const ReviewClusterInfo = ({
   return (
     <AnimatePresence>
       {hoveredCluster &&
-      // listAlumniNames.length > 0 &&
-      // listLinkedinLinks.length > 0 &&
       listPlaceName.length > 0 ? (
         <motion.div
           initial={{ opacity: 0, y: 10 }}
