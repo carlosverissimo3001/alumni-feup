@@ -62,7 +62,6 @@ export default function StatsCard({
               <div className="h-5 bg-gray-200 rounded w-10"></div>
             </div>
             <div className="h-6 bg-gray-200 rounded w-16 mt-1"></div>
-            <div className="h-3 bg-gray-200 rounded w-32 mt-1"></div>
           </div>
         </div>
       </Card>
