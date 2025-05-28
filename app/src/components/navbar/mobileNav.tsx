@@ -6,7 +6,6 @@ import {
   InfoIcon,
   FormInputIcon,
   MessageCircleCode,
-  XIcon,
   Menu,
 } from "lucide-react";
 import Link from "next/link";
@@ -17,7 +16,6 @@ import {
   DrawerContent,
   DrawerTrigger,
   DrawerTitle,
-  DrawerClose,
 } from "@/components/ui/drawer";
 import { motion } from "framer-motion";
 
