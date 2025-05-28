@@ -34,29 +34,17 @@ export interface CompanyListResponseDto {
      */
     companies: Array<CompanyListItemDto>;
     /**
-     * The total number of companies in the database, regardless of filters
+     * The total number of companies in the database, after applying the filters
      * @type {number}
      * @memberof CompanyListResponseDto
      */
     companyCount: number;
     /**
-     * The total number of companies in the database, after applying the filters
-     * @type {number}
-     * @memberof CompanyListResponseDto
-     */
-    companyFilteredCount: number;
-    /**
-     * The total number of alumni in the database
+     * The total number of alumni in the database, after applying the filters
      * @type {number}
      * @memberof CompanyListResponseDto
      */
     alumniCount: number;
-    /**
-     * The total number of alumni with roles in the database, after applying the filters
-     * @type {number}
-     * @memberof CompanyListResponseDto
-     */
-    alumniFilteredCount: number;
 }
 
 /**
@@ -65,9 +53,7 @@ export interface CompanyListResponseDto {
 export function instanceOfCompanyListResponseDto(value: object): value is CompanyListResponseDto {
     if (!('companies' in value) || value['companies'] === undefined) return false;
     if (!('companyCount' in value) || value['companyCount'] === undefined) return false;
-    if (!('companyFilteredCount' in value) || value['companyFilteredCount'] === undefined) return false;
     if (!('alumniCount' in value) || value['alumniCount'] === undefined) return false;
-    if (!('alumniFilteredCount' in value) || value['alumniFilteredCount'] === undefined) return false;
     return true;
 }
 
@@ -83,9 +69,7 @@ export function CompanyListResponseDtoFromJSONTyped(json: any, ignoreDiscriminat
         
         'companies': ((json['companies'] as Array<any>).map(CompanyListItemDtoFromJSON)),
         'companyCount': json['companyCount'],
-        'companyFilteredCount': json['companyFilteredCount'],
         'alumniCount': json['alumniCount'],
-        'alumniFilteredCount': json['alumniFilteredCount'],
     };
 }
 
@@ -102,9 +86,7 @@ export function CompanyListResponseDtoToJSONTyped(value?: CompanyListResponseDto
         
         'companies': ((value['companies'] as Array<any>).map(CompanyListItemDtoToJSON)),
         'companyCount': value['companyCount'],
-        'companyFilteredCount': value['companyFilteredCount'],
         'alumniCount': value['alumniCount'],
-        'alumniFilteredCount': value['alumniFilteredCount'],
     };
 }
 

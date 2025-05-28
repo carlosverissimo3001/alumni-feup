@@ -48,3 +48,7 @@ async def fetch_esco_classifications(
     To be used inside a cron job, running every 6 months, or on demand, when the European Commission
     releases a new version of the ESCO classifications.
     """
+    # NOTE: I'm not sure of the feasibility of this, neither do I have the time to implement it.
+    #       If we do implement it, we'll use the ESCO API 
+    #       https://esco.ec.europa.eu/en/use-esco/use-esco-services-api/esco-web-service-api
+    pass

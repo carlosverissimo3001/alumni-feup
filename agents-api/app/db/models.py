@@ -280,6 +280,7 @@ class EscoClassification(Base):
     code = Column(String, nullable=False)
     title_en = Column(String, nullable=False)
     definition = Column(String, nullable=False)
+    alt_labels = Column(String, nullable=True)
     tasks_include = Column(String, nullable=False)
     included_occupations = Column(String, nullable=False)
     excluded_occupations = Column(String, nullable=False)

@@ -38,13 +38,11 @@ import { ViewType } from "@/types/view";
 import { TrendFrequency, EntityType } from "@/types/entityTypes";
 
 type IndustryDashboardProps = {
-  onDataUpdate: (industryCount: number, industryFilteredCount: number) => void;
   filters: FilterState;
   onAddToFilters?: (industryId: string) => void;
 };
 
 export const IndustryDashboard = ({
-  onDataUpdate,
   filters,
   onAddToFilters,
 }: IndustryDashboardProps) => {
@@ -75,14 +73,7 @@ export const IndustryDashboard = ({
   });
 
   const industries = data?.industries || [];
-  const totalItems = data?.filteredCount || 0;
-
-  // Update parent only when total changes
-  useEffect(() => {
-    if (data?.count !== undefined) {
-      onDataUpdate(data.count, data.filteredCount);
-    }
-  }, [data?.count, data?.filteredCount, onDataUpdate]);
+  const totalItems = data?.count || 0;
 
   useEffect(() => {
     setPageInput(String(page));
