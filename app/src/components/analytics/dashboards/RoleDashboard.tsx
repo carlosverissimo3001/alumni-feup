@@ -45,7 +45,7 @@ import { ClassificationLevel } from "@/types/roles";
 import { ESCO_INFO, ISCO_INFO } from "@/consts";
 
 type RoleDashboardProps = {
-  onDataUpdate: (roleCount: number, roleFilteredCount: number) => void;
+  onDataUpdate: (roleCount: number) => void;
   filters: FilterState;
   onAddToFilters?: (roleId: string) => void;
 };
@@ -86,14 +86,13 @@ export const RoleDashboard = ({
 
   const roles = data?.roles || [];
   const totalRoles = data?.count || 0;
-  const totalRolesFiltered = data?.filteredCount || 0;
   const totalItems = data?.distinctCount || 0;
 
   useEffect(() => {
     if (totalRoles !== undefined) {
-      onDataUpdate(totalRoles, totalRolesFiltered);
+      onDataUpdate(totalRoles);
     }
-  }, [totalRoles, totalRolesFiltered, onDataUpdate]);
+  }, [totalRoles, onDataUpdate]);
 
   useEffect(() => {
     setPageInput(String(page));

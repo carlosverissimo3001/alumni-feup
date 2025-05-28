@@ -175,6 +175,7 @@ model EscoClassification {
   isLeaf              Boolean                @default(false) @map("is_leaf")
   titleEn             String                 @map("title_en")
   definition          String                 @map("definition")
+  altLabels           String?                @map("alt_labels")
   tasksInclude        String?                @map("tasks_include")
   includedOccupations String?                @map("included_occupations")
   excludedOccupations String?                @map("excluded_occupations")
@@ -350,10 +351,10 @@ model Trend {
 }
 
 model Invite {
-  email          String   @id @default(dbgenerated("gen_random_uuid()"))
-  usedCount      Int      @default(0)
-  createdAt      DateTime @default(now()) @map("created_at") @db.Timestamp(6)
-  updatedAt      DateTime @default(now()) @map("updated_at") @db.Timestamp(6)
+  email     String   @id @default(dbgenerated("gen_random_uuid()"))
+  usedCount Int      @default(0)
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamp(6)
+  updatedAt DateTime @default(now()) @map("updated_at") @db.Timestamp(6)
 
   @@map("invite")
 }

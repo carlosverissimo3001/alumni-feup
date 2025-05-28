@@ -1,6 +1,7 @@
 from typing import List, TypedDict
 
 from langchain_core.tools import tool
+from sentence_transformers.cross_encoder import CrossEncoder
 from sqlalchemy import select
 
 from app.db import get_db
@@ -8,6 +9,8 @@ from app.db.models import EscoClassification
 from app.schemas.job_classification import EscoResult
 from app.utils.embeddings import generate_embedding
 from app.utils.esco_db import get_classification_by_code
+
+_cross_encoder = CrossEncoder("cross-encoder/ms-marco-MiniLM-L-6-v2", device="cpu")
 
 
 class EscoClassificationInfo(TypedDict):
@@ -53,13 +56,13 @@ def get_detailed_esco_classification(code: str) -> EscoClassificationInfo:
     }
 
 
-def search_esco_classifications(query: str, top_k: int = 5) -> List[EscoResult]:
+def search_esco_classifications(query: str, top_k: int = 20) -> List[EscoResult]:
     """
     Search ESCO classifications using vector similarity in PostgreSQL
 
     Args:
         query: The job title or description to search for
-        top_k: Number of similar classifications to return (default: 5)
+        top_k: Number of similar classifications to return (default: 20)
 
     Returns:
         List[EscoResult]: A list of matching ESCO classifications with confidence scores that reflect both
@@ -86,7 +89,7 @@ def search_esco_classifications(query: str, top_k: int = 5) -> List[EscoResult]:
                 EscoClassification.title_en,
                 computed_col,
             )
-            .where(EscoClassification.embedding.is_not(None))
+            .where(EscoClassification.is_leaf.is_(True))
             .order_by(computed_col)
             .limit(top_k)
         )
@@ -103,7 +106,7 @@ def search_esco_classifications(query: str, top_k: int = 5) -> List[EscoResult]:
         # - Uses absolute similarity to ensure high confidence only for genuinely good matches
         # - Also considers relative similarity to preserve ranking
         # - Applies a scaling factor to ensure reasonable confidence distribution
-        return [
+        results = [
             EscoResult(
                 id=row.id,
                 code=row.code,
@@ -120,5 +123,13 @@ def search_esco_classifications(query: str, top_k: int = 5) -> List[EscoResult]:
             )
             for row in results
         ]
+        return rerank_esco(query, results, top_k=5)
     except Exception as e:
         raise Exception(f"Error searching ESCO classifications: {str(e)}")
+
+
+def rerank_esco(query: str, results: List[EscoResult], top_k: int = 5) -> List[EscoResult]:
+    pairs = [[query, r.title] for r in results]
+    scores = _cross_encoder.predict(pairs)
+    ranked = sorted(zip(results, scores), key=lambda x: x[1], reverse=True)
+    return [r for r, _ in ranked[:top_k]]

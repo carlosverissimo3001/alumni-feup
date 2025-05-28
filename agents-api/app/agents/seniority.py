@@ -4,7 +4,7 @@ import time
 from json.decoder import JSONDecodeError
 
 from langchain_core.messages import HumanMessage, SystemMessage
-from langchain_ollama import ChatOllama
+from langchain_openai import ChatOpenAI
 from langgraph.graph import END, START, StateGraph
 from langgraph.prebuilt import ToolNode
 
@@ -22,10 +22,10 @@ logger = logging.getLogger(__name__)
 db = next(get_db())
 
 # Initialize the LLM
-cold_llm = ChatOllama(
-    base_url=settings.OLLAMA_BASE_URL,
-    model=settings.DEFAULT_MODEL,
+cold_llm = ChatOpenAI(
+    model=settings.OPENAI_DEFAULT_MODEL,
     temperature=0.0,
+    api_key=settings.OPENAI_API_KEY,
 )
 
 # This agent doesn't need any tools for now
@@ -362,7 +362,7 @@ class SeniorityAgent:
             messages=[],
             classification=None,
             processing_time=0.0,
-            model_used="mistral:7b",
+            model_used=settings.OPENAI_DEFAULT_MODEL,
             retry_count=0,
             error=None,
         )

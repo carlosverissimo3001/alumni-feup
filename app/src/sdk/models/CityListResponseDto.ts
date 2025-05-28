@@ -39,12 +39,6 @@ export interface CityListResponseDto {
      * @memberof CityListResponseDto
      */
     count: number;
-    /**
-     * The total number of cities in the database before applying the filters
-     * @type {number}
-     * @memberof CityListResponseDto
-     */
-    filteredCount: number;
 }
 
 /**
@@ -53,7 +47,6 @@ export interface CityListResponseDto {
 export function instanceOfCityListResponseDto(value: object): value is CityListResponseDto {
     if (!('cities' in value) || value['cities'] === undefined) return false;
     if (!('count' in value) || value['count'] === undefined) return false;
-    if (!('filteredCount' in value) || value['filteredCount'] === undefined) return false;
     return true;
 }
 
@@ -69,7 +62,6 @@ export function CityListResponseDtoFromJSONTyped(json: any, ignoreDiscriminator:
         
         'cities': ((json['cities'] as Array<any>).map(CityListItemDtoFromJSON)),
         'count': json['count'],
-        'filteredCount': json['filteredCount'],
     };
 }
 
@@ -86,7 +78,6 @@ export function CityListResponseDtoToJSONTyped(value?: CityListResponseDto | nul
         
         'cities': ((value['cities'] as Array<any>).map(CityListItemDtoToJSON)),
         'count': value['count'],
-        'filteredCount': value['filteredCount'],
     };
 }
 

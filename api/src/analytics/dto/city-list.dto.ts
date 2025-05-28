@@ -47,10 +47,4 @@ export class CityListResponseDto {
       'The total number of cities in the database after applying the filters',
   })
   count: number;
-
-  @ApiProperty({
-    description:
-      'The total number of cities in the database before applying the filters',
-  })
-  filteredCount: number;
 }

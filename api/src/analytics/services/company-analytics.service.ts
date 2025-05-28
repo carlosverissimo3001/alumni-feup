@@ -45,11 +45,6 @@ export class CompanyAnalyticsService {
     const alumnusUnfiltered = await this.alumniRepository.find(query);
     const alumnus = applyDateFilters(alumnusUnfiltered, query);
 
-    const [companyCount, alumniCount] = await Promise.all([
-      this.companyRepository.count(),
-      this.alumniRepository.countAlumni(),
-    ]);
-
     const companiesWithAlumniCount = this.getCompanyMap(alumnus);
     const companiesWithAlumniCountOrdered = sortData(companiesWithAlumniCount, {
       sortBy: query.sortBy || DEFAULT_QUERY_SORT_BY,
@@ -79,10 +74,8 @@ export class CompanyAnalyticsService {
 
     return {
       companies,
-      companyCount,
-      companyFilteredCount: companiesWithAlumniCount.length,
-      alumniCount,
-      alumniFilteredCount: alumnus.length,
+      companyCount: companiesWithAlumniCount.length,
+      alumniCount: alumnus.length,
     };
   }
 
@@ -107,10 +100,7 @@ export class CompanyAnalyticsService {
   async getIndustryWithCounts(
     query: QueryParamsDto,
   ): Promise<IndustryListResponseDto> {
-    const [alumnusUnfiltered, totalIndustries] = await Promise.all([
-      this.alumniRepository.find(query),
-      this.companyRepository.countIndustries(),
-    ]);
+    const alumnusUnfiltered = await this.alumniRepository.find(query);
 
     const alumnus = applyDateFilters(alumnusUnfiltered, query);
     const companiesWithAlumniCount = this.getCompanyMap(alumnus);
@@ -162,8 +152,7 @@ export class CompanyAnalyticsService {
 
     return {
       industries: industriesPaginated,
-      count: totalIndustries,
-      filteredCount: industries.length,
+      count: industries.length,
     };
   }
 
