@@ -47,12 +47,7 @@ import TrendLineComponent from "../common/TrendLineComponent";
 import { DashboardSkeleton } from "../skeletons/DashboardSkeleton";
 
 type GeoDashboardProps = {
-  onDataUpdate: (
-    countryCount: number,
-    countryFilteredCount: number,
-    cityCount: number,
-    cityFilteredCount: number
-  ) => void;
+  onDataUpdate: (countryCount: number) => void;
   filters: FilterState;
   onAddToFilters?: (id: string, type: "role" | "company") => void;
   mode: GeoDrillType;
@@ -119,27 +114,13 @@ export const GeoDashboard = ({
 
   const countries = countryData?.countries || [];
   const totalCountries = countryData?.count || 0;
-  const countryFilteredCount = countryData?.filteredCount || 0;
 
   const cities = cityData?.cities || [];
   const totalCities = cityData?.count || 0;
-  const cityFilteredCount = cityData?.filteredCount || 0;
-
   // Update parent only when total changes
   useEffect(() => {
-    onDataUpdate(
-      totalCountries,
-      countryFilteredCount,
-      totalCities,
-      cityFilteredCount
-    );
-  }, [
-    totalCountries,
-    countryFilteredCount,
-    totalCities,
-    cityFilteredCount,
-    onDataUpdate,
-  ]);
+    onDataUpdate(totalCountries);
+  }, [totalCountries, onDataUpdate]);
 
   useEffect(() => {
     setPageInput(String(page));
@@ -212,7 +193,9 @@ export const GeoDashboard = ({
                             imageType="location"
                           />
                           <TableCell
-                            className={`w-[12%] px-4 ${view === ViewType.TABLE ? "py-1" : "py-3"} text-sm ${
+                            className={`w-[12%] px-4 ${
+                              view === ViewType.TABLE ? "py-1" : "py-3"
+                            } text-sm ${
                               isRowInFilters(row)
                                 ? "font-bold text-[#8C2D19]"
                                 : "text-[#000000]"
@@ -376,9 +359,7 @@ export const GeoDashboard = ({
           setPage={setPage}
           itemsPerPage={itemsPerPage}
           setItemsPerPage={setItemsPerPage}
-          totalItems={
-            mode === "country" ? countryFilteredCount : cityFilteredCount
-          }
+          totalItems={mode === "country" ? totalCountries : totalCities}
           visible={data.length > 0}
           currentCount={data.length}
           showTrendFrequency={view === ViewType.TREND}

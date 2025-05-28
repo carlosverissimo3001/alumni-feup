@@ -31,10 +31,7 @@ export class RoleAnalyticsService {
   async getRolesWithCounts(
     query: QueryParamsDto,
   ): Promise<RoleListResponseDto> {
-    const [alumnusUnfiltered, count] = await Promise.all([
-      this.alumniRepository.find(query),
-      this.roleRepository.count(),
-    ]);
+    const alumnusUnfiltered = await this.alumniRepository.find(query);
 
     const alumnus = applyDateFilters(alumnusUnfiltered, query);
     const escoLevel = query.escoClassificationLevel;
@@ -129,8 +126,7 @@ export class RoleAnalyticsService {
 
     return {
       roles: rolesPaginated,
-      count,
-      filteredCount,
+      count: filteredCount,
       distinctCount: roles.length,
     };
   }

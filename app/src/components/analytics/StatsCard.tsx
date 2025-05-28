@@ -105,21 +105,20 @@ export default function StatsCard({
                   </TooltipProvider>
                 )}
               </div>
-              <motion.div
-                initial={{ opacity: 0, scale: 0.5 }}
-                animate={{
-                  opacity: isLoaded ? 1 : 0,
-                  scale: isLoaded ? 1 : 0.5,
-                }}
-                transition={{ duration: 0.5, type: "spring", stiffness: 200 }}
-              >
-                <Badge
-                  variant={getBadgeVariant()}
-                  className="text-xs font-medium px-2 animate-pop"
+              {percentage < 100 && (
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.5 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.5, delay: 0.2 }}
                 >
-                  {percentage}%
-                </Badge>
-              </motion.div>
+                  <Badge
+                    variant={getBadgeVariant()}
+                    className="text-xs font-medium px-2"
+                  >
+                    {percentage}%
+                  </Badge>
+                </motion.div>
+              )}
             </div>
             <motion.h3 className="text-xl font-extrabold text-[#8C2D19] tracking-tight">
               <animated.span>{number.to((n) => Math.floor(n))}</animated.span>

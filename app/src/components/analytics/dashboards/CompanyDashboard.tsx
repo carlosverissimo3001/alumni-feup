@@ -38,12 +38,7 @@ import { FilterState } from "../common/GlobalFilters";
 import { DashboardSkeleton } from "../skeletons/DashboardSkeleton";
 
 type CompanyDashboardProps = {
-  onDataUpdate: (
-    alumniCount: number,
-    companyCount: number,
-    alumniFilteredCount: number,
-    companyFilteredCount: number
-  ) => void;
+  onDataUpdate: (alumniCount: number, companyCount: number) => void;
   filters: FilterState;
   onAddToFilters?: (companyId: string) => void;
 };
@@ -83,26 +78,11 @@ export const CompanyDashboard = ({
 
   useEffect(() => {
     if (data) {
-      const {
-        alumniCount,
-        companyCount,
-        alumniFilteredCount,
-        companyFilteredCount,
-      } = data;
+      const { alumniCount, companyCount } = data;
 
-      if (
-        alumniCount !== undefined &&
-        companyCount !== undefined &&
-        alumniFilteredCount !== undefined &&
-        companyFilteredCount !== undefined
-      ) {
-        setTotalItems(companyFilteredCount);
-        onDataUpdate(
-          alumniCount,
-          companyCount,
-          alumniFilteredCount,
-          companyFilteredCount
-        );
+      if (alumniCount !== undefined && companyCount !== undefined) {
+        setTotalItems(companyCount);
+        onDataUpdate(alumniCount, companyCount);
       }
     }
   }, [data, onDataUpdate]);

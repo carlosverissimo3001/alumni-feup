@@ -9,6 +9,7 @@ import {
   FormInputIcon,
   InfoIcon,
   LogOutIcon,
+  UserPlus,
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -91,6 +92,12 @@ const Navbar = () => {
       icon: <UserIcon size={20} />,
       href: user ? `/profile/${user.id}` : "/",
       disabled: !isAuthenticated,
+    },
+    {
+      label: "Join Us",
+      icon: <UserPlus size={20} />,
+      href: "/join-us",
+      disabled: isAuthenticated,
     },
     {
       label: "About",
@@ -243,7 +250,7 @@ const Navbar = () => {
             <button
               onClick={logout}
               className={cn(
-                "text-xs group flex p-3 w-full justify-start font-medium cursor-pointer hover:text-red-400 hover:bg-gradient-to-r hover:from-red-900/20 hover:to-zinc-800 rounded-lg transition-all duration-200 text-red-500/70",
+                "text-sm group flex p-3 w-full justify-start font-medium cursor-pointer hover:text-red-400 hover:bg-gradient-to-r hover:from-red-900/20 hover:to-zinc-800 rounded-lg transition-all duration-200 text-red-500/70",
                 isCollapsed && "justify-center"
               )}
             >

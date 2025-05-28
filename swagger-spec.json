@@ -5551,27 +5551,17 @@
           },
           "companyCount": {
             "type": "number",
-            "description": "The total number of companies in the database, regardless of filters"
-          },
-          "companyFilteredCount": {
-            "type": "number",
             "description": "The total number of companies in the database, after applying the filters"
           },
           "alumniCount": {
             "type": "number",
-            "description": "The total number of alumni in the database"
-          },
-          "alumniFilteredCount": {
-            "type": "number",
-            "description": "The total number of alumni with roles in the database, after applying the filters"
+            "description": "The total number of alumni in the database, after applying the filters"
           }
         },
         "required": [
           "companies",
           "companyCount",
-          "companyFilteredCount",
-          "alumniCount",
-          "alumniFilteredCount"
+          "alumniCount"
         ]
       },
       "CompanyOptionDto": {
@@ -5937,16 +5927,11 @@
           "count": {
             "type": "number",
             "description": "The total number of countries in the database after applying the filters"
-          },
-          "filteredCount": {
-            "type": "number",
-            "description": "The total number of countries in the database before applying the filters"
           }
         },
         "required": [
           "countries",
-          "count",
-          "filteredCount"
+          "count"
         ]
       },
       "CityListItemDto": {
@@ -5996,16 +5981,11 @@
           "count": {
             "type": "number",
             "description": "The total number of cities in the database after applying the filters"
-          },
-          "filteredCount": {
-            "type": "number",
-            "description": "The total number of cities in the database before applying the filters"
           }
         },
         "required": [
           "cities",
-          "count",
-          "filteredCount"
+          "count"
         ]
       },
       "CountryOptionDto": {
@@ -6095,16 +6075,11 @@
           "count": {
             "type": "number",
             "description": "The total number of industries in the database"
-          },
-          "filteredCount": {
-            "type": "number",
-            "description": "The total number of industries in the database before applying the filters"
           }
         },
         "required": [
           "industries",
-          "count",
-          "filteredCount"
+          "count"
         ]
       },
       "IndustryOptionDto": {
@@ -6359,19 +6334,14 @@
             "type": "number",
             "description": "The total number of roles in the database"
           },
-          "filteredCount": {
-            "type": "number",
-            "description": "The total number of roles in the database after applying the filters"
-          },
           "distinctCount": {
             "type": "number",
-            "description": "The total number of distinct roles in the database after applying the filters"
+            "description": "The total number of distinct roles in the database"
           }
         },
         "required": [
           "roles",
           "count",
-          "filteredCount",
           "distinctCount"
         ]
       },

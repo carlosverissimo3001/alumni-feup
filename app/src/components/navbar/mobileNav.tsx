@@ -4,6 +4,10 @@ import {
   UserIcon,
   ChartSpline,
   MoreHorizontalIcon,
+  InfoIcon,
+  FormInputIcon,
+  MessageCircleCode,
+  XIcon,
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -13,6 +17,7 @@ import {
   DrawerContent,
   DrawerTrigger,
   DrawerTitle,
+  DrawerClose,
 } from "@/components/ui/drawer";
 import { motion } from "framer-motion";
 
@@ -35,6 +40,25 @@ const MobileNav = () => {
       label: "Profile",
       icon: <UserIcon size={24} />,
       href: user ? `/profile/${user.id}` : "/",
+      disabled: !isAuthenticated,
+    },
+  ];
+
+  const moreRoutes = [
+    {
+      label: "About",
+      icon: <InfoIcon size={24} />,
+      href: "/about",
+    },
+    {
+      label: "Feedback",
+      icon: <FormInputIcon size={24} />,
+      href: "/feedback",
+    },
+    {
+      label: "Reviews",
+      icon: <MessageCircleCode size={24} />,
+      href: "/reviews",
       disabled: !isAuthenticated,
     },
   ];
@@ -77,31 +101,41 @@ const MobileNav = () => {
             </button>
           </DrawerTrigger>
           <DrawerContent>
-            <DrawerTitle className="text-lg font-semibold px-4 pt-4">
-              More Options
-            </DrawerTitle>
-            <div className="p-4 pt-2">
-              <div className="space-y-2">
-                <Link
-                  href="/about"
-                  className="flex items-center p-3 hover:bg-zinc-100 rounded-lg transition-colors"
-                >
-                  <span>About</span>
-                </Link>
-                <Link
-                  href="/feedback"
-                  className="flex items-center p-3 hover:bg-zinc-100 rounded-lg transition-colors"
-                >
-                  <span>Feedback</span>
-                </Link>
-                {isAuthenticated && (
-                  <Link
-                    href="/reviews"
-                    className="flex items-center p-3 hover:bg-zinc-100 rounded-lg transition-colors"
-                  >
-                    <span>Reviews</span>
-                  </Link>
-                )}
+            <div className="bg-white">
+              <div className="flex justify-between items-center px-4 pt-4 border-b pb-4">
+                <DrawerTitle className="text-xl font-semibold text-zinc-900">
+                  More Options
+                </DrawerTitle>
+                <DrawerClose className="text-zinc-400 hover:text-zinc-600 transition-colors">
+                  <XIcon size={24} />
+                </DrawerClose>
+              </div>
+              <div className="p-4">
+                <div className="space-y-2">
+                  {moreRoutes
+                    .filter((route) => !route.disabled)
+                    .map((route) => (
+                      <Link
+                        key={route.label}
+                        href={route.href}
+                        className={cn(
+                          "flex items-center p-3 rounded-lg transition-all duration-200",
+                          pathname === route.href
+                            ? "bg-[#8C2D19]/10 text-[#8C2D19]"
+                            : "text-zinc-600 hover:text-[#8C2D19] hover:bg-[#8C2D19]/5"
+                        )}
+                      >
+                        <motion.div
+                          whileHover={{ scale: 1.1 }}
+                          whileTap={{ scale: 0.95 }}
+                          className="mr-3"
+                        >
+                          {route.icon}
+                        </motion.div>
+                        <span className="font-medium">{route.label}</span>
+                      </Link>
+                    ))}
+                </div>
               </div>
             </div>
           </DrawerContent>

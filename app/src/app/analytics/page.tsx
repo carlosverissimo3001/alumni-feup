@@ -182,58 +182,31 @@ function AnalyticsContent() {
   }, [filters, processedDateRange]);
 
   const handleCompanyDataUpdate = useCallback(
-    (
-      alumniCount: number,
-      companyCount: number,
-      alumniFilteredCount: number,
-      companyFilteredCount: number
-    ) => {
+    (alumniCount: number, companyCount: number) => {
       setStats((prev) => ({
         ...prev,
         alumniCount,
         companyCount,
-        alumniFilteredCount,
-        companyFilteredCount,
-      }));
-    },
-    []
-  );
-
-  const handleIndustryDataUpdate = useCallback(
-    (industryCount: number, industryFilteredCount: number) => {
-      setStats((prev) => ({
-        ...prev,
-        industryCount,
-        industryFilteredCount,
       }));
     },
     []
   );
 
   const handleGeoDataUpdate = useCallback(
-    (
-      countryCount: number,
-      countryFilteredCount: number,
-      cityCount: number,
-      cityFilteredCount: number
-    ) => {
+    (countryCount: number) => {
       setStats((prev) => ({
         ...prev,
         countryCount,
-        countryFilteredCount,
-        cityCount,
-        cityFilteredCount,
       }));
     },
     []
   );
 
   const handleRoleDataUpdate = useCallback(
-    (roleCount: number, roleFilteredCount: number) => {
+    (roleCount: number) => {
       setStats((prev) => ({
         ...prev,
         roleCount,
-        roleFilteredCount,
       }));
     },
     []
@@ -430,7 +403,7 @@ function AnalyticsContent() {
 
   const statsConfig = [
     {
-      name: "FEUP EI Alumni",
+      name: "Alumni",
       values: stats.alumniCount,
       icon: <Users className="h-4 w-4 text-[#8C2D19]" />,
       infoMessage:
@@ -508,7 +481,6 @@ function AnalyticsContent() {
           onAddToFilters={handleAddRoleToFilters}
         />
         <IndustryDashboard
-          onDataUpdate={handleIndustryDataUpdate}
           filters={combinedFilters}
           onAddToFilters={handleAddIndustryToFilters}
         />

@@ -6,10 +6,12 @@ type OverallStatsProps = {
 
 export default function OverallStats({ stats }: OverallStatsProps) {
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4 gap-4">
-      {stats.map((stat, index) => (
-        <StatsCard key={index} {...stat} />
-      ))}
+    <div className="overflow-x-auto sm:overflow-visible">
+      <div className="flex sm:grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 min-w-[600px] sm:min-w-0">
+        {stats.map((stat, index) => (
+          <StatsCard key={index} {...stat} />
+        ))}
+      </div>
     </div>
   );
 }

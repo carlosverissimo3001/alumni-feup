@@ -50,15 +50,7 @@ export class RoleListResponseDto {
   count: number;
 
   @ApiProperty({
-    description:
-      'The total number of roles in the database after applying the filters',
-    type: Number,
-  })
-  filteredCount: number;
-
-  @ApiProperty({
-    description:
-      'The total number of distinct roles in the database after applying the filters',
+    description: 'The total number of distinct roles in the database',
     type: Number,
   })
   distinctCount: number;
