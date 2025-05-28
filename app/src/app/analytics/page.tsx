@@ -4,9 +4,7 @@ import {
   BarChart3,
   Users,
   ChartSpline,
-  Factory,
   Briefcase,
-  MapPin,
   Flag,
   ArrowUp,
 } from "lucide-react";
@@ -81,18 +79,10 @@ function AnalyticsContent() {
   const { data: companyOptions } = useCompanyOptions();
 
   const [stats, setStats] = useState({
-    alumniFilteredCount: 0,
     alumniCount: 0,
-    companyFilteredCount: 0,
     companyCount: 0,
-    industryCount: 0,
-    industryFilteredCount: 0,
     countryCount: 0,
-    countryFilteredCount: 0,
-    cityCount: 0,
-    cityFilteredCount: 0,
     roleCount: 0,
-    roleFilteredCount: 0,
   });
 
   const [geoMode, setGeoMode] = useState<GeoDrillType>(GeoDrillType.COUNTRY);
@@ -192,58 +182,31 @@ function AnalyticsContent() {
   }, [filters, processedDateRange]);
 
   const handleCompanyDataUpdate = useCallback(
-    (
-      alumniCount: number,
-      companyCount: number,
-      alumniFilteredCount: number,
-      companyFilteredCount: number
-    ) => {
+    (alumniCount: number, companyCount: number) => {
       setStats((prev) => ({
         ...prev,
         alumniCount,
         companyCount,
-        alumniFilteredCount,
-        companyFilteredCount,
-      }));
-    },
-    []
-  );
-
-  const handleIndustryDataUpdate = useCallback(
-    (industryCount: number, industryFilteredCount: number) => {
-      setStats((prev) => ({
-        ...prev,
-        industryCount,
-        industryFilteredCount,
       }));
     },
     []
   );
 
   const handleGeoDataUpdate = useCallback(
-    (
-      countryCount: number,
-      countryFilteredCount: number,
-      cityCount: number,
-      cityFilteredCount: number
-    ) => {
+    (countryCount: number) => {
       setStats((prev) => ({
         ...prev,
         countryCount,
-        countryFilteredCount,
-        cityCount,
-        cityFilteredCount,
       }));
     },
     []
   );
 
   const handleRoleDataUpdate = useCallback(
-    (roleCount: number, roleFilteredCount: number) => {
+    (roleCount: number) => {
       setStats((prev) => ({
         ...prev,
         roleCount,
-        roleFilteredCount,
       }));
     },
     []
@@ -440,37 +403,27 @@ function AnalyticsContent() {
 
   const statsConfig = [
     {
-      name: "FEUP EI Alumni",
-      values: [stats.alumniFilteredCount, stats.alumniCount],
+      name: "Alumni",
+      values: stats.alumniCount,
       icon: <Users className="h-4 w-4 text-[#8C2D19]" />,
       infoMessage:
         "The number of alumni who have graduated from the tracked courses",
     },
     {
       name: "Roles",
-      values: [stats.roleFilteredCount, stats.roleCount],
+      values: stats.roleCount,
       icon: <Briefcase className="h-4 w-4 text-[#8C2D19]" />,
       infoMessage: "The total number of individual roles that alumni had",
     },
     {
       name: "Companies",
-      values: [stats.companyFilteredCount, stats.companyCount],
+      values: stats.companyCount,
       icon: <BarChart3 className="h-4 w-4 text-[#8C2D19]" />,
     },
     {
       name: "Countries",
-      values: [stats.countryFilteredCount, stats.countryCount],
+      values: stats.countryCount,
       icon: <Flag className="h-4 w-4 text-[#8C2D19]" />,
-    },
-    {
-      name: "Cities",
-      values: [stats.cityFilteredCount, stats.cityCount],
-      icon: <MapPin className="h-4 w-4 text-[#8C2D19]" />,
-    },
-    {
-      name: "Industries",
-      values: [stats.industryFilteredCount, stats.industryCount],
-      icon: <Factory className="h-4 w-4 text-[#8C2D19]" />,
     },
   ];
 
@@ -528,7 +481,6 @@ function AnalyticsContent() {
           onAddToFilters={handleAddRoleToFilters}
         />
         <IndustryDashboard
-          onDataUpdate={handleIndustryDataUpdate}
           filters={combinedFilters}
           onAddToFilters={handleAddIndustryToFilters}
         />

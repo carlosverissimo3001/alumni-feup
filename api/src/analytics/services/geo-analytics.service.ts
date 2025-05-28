@@ -38,10 +38,7 @@ export class GeoAnalyticsService {
   async getCountriesWithAlumniCount(
     query: QueryParamsDto,
   ): Promise<CountryListResponseDto> {
-    const [alumnusUnfiltered, totalCountries] = await Promise.all([
-      this.alumniRepository.find(query),
-      this.locationRepository.countCountries(),
-    ]);
+    const alumnusUnfiltered = await this.alumniRepository.find(query);
 
     const alumnus = applyDateFilters(alumnusUnfiltered, query);
 
@@ -100,18 +97,14 @@ export class GeoAnalyticsService {
 
     return {
       countries: countriesOrdered.slice(offset, offset + limit),
-      filteredCount: countries.length,
-      count: totalCountries,
+      count: countries.length,
     };
   }
 
   async getCitiesWithAlumniCount(
     query: QueryParamsDto,
   ): Promise<CityListResponseDto> {
-    const [alumnusUnfiltered, totalCities] = await Promise.all([
-      this.alumniRepository.find(query),
-      this.locationRepository.countCities(),
-    ]);
+    const alumnusUnfiltered = await this.alumniRepository.find(query);
 
     const alumnus = applyDateFilters(alumnusUnfiltered, query);
 
@@ -169,8 +162,7 @@ export class GeoAnalyticsService {
 
     return {
       cities: citiesOrdered.slice(offset, offset + limit),
-      filteredCount: cities.length,
-      count: totalCities,
+      count: cities.length,
     };
   }
 

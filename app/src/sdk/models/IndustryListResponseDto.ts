@@ -39,12 +39,6 @@ export interface IndustryListResponseDto {
      * @memberof IndustryListResponseDto
      */
     count: number;
-    /**
-     * The total number of industries in the database before applying the filters
-     * @type {number}
-     * @memberof IndustryListResponseDto
-     */
-    filteredCount: number;
 }
 
 /**
@@ -53,7 +47,6 @@ export interface IndustryListResponseDto {
 export function instanceOfIndustryListResponseDto(value: object): value is IndustryListResponseDto {
     if (!('industries' in value) || value['industries'] === undefined) return false;
     if (!('count' in value) || value['count'] === undefined) return false;
-    if (!('filteredCount' in value) || value['filteredCount'] === undefined) return false;
     return true;
 }
 
@@ -69,7 +62,6 @@ export function IndustryListResponseDtoFromJSONTyped(json: any, ignoreDiscrimina
         
         'industries': ((json['industries'] as Array<any>).map(IndustryListItemDtoFromJSON)),
         'count': json['count'],
-        'filteredCount': json['filteredCount'],
     };
 }
 
@@ -86,7 +78,6 @@ export function IndustryListResponseDtoToJSONTyped(value?: IndustryListResponseD
         
         'industries': ((value['industries'] as Array<any>).map(IndustryListItemDtoToJSON)),
         'count': value['count'],
-        'filteredCount': value['filteredCount'],
     };
 }
 

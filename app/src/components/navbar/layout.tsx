@@ -1,19 +1,15 @@
-'use client';
+"use client";
 
-import { cn } from '@/lib/utils';
+import { cn } from "@/lib/utils";
 import Navbar from "./navbar";
-import { ProfileButton } from "../profile/profileButton";
-import { useNavbar } from '@/contexts/NavbarContext';
+import MobileNav from "./mobileNav";
+import { useNavbar } from "@/contexts/NavbarContext";
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
   const { isCollapsed } = useNavbar();
 
   return (
     <div className="h-screen relative">
-      <div className="absolute top-6 right-4 z-[60]">
-        <ProfileButton />
-      </div>
-
       <div className="flex h-full">
         <div
           className={cn(
@@ -25,7 +21,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
         </div>
         <main
           className={cn(
-            "flex-1 min-h-screen w-full bg-white",
+            "flex-1 min-h-screen w-full bg-white pb-20 md:pb-0",
             "relative z-[20] transition-all duration-300",
             isCollapsed ? "md:pl-20" : "md:pl-60"
           )}
@@ -33,6 +29,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
           {children}
         </main>
       </div>
+      <MobileNav />
     </div>
   );
 };
