@@ -13,14 +13,21 @@ export class RoleRepository {
 
   async findAllClassifications(): Promise<RoleOptionDto[]> {
     const classifications = await this.prisma.escoClassification.findMany({
-      distinct: ['code'],
       select: {
         code: true,
         titleEn: true,
         level: true,
+        isLeaf: true,
+        _count: {
+          select: {
+            JobClassification: true,
+          },
+        },
       },
-      where: {
-        level: { gte: 5 },
+      orderBy: {
+        JobClassification: {
+          _count: 'desc',
+        },
       },
     });
 
@@ -28,6 +35,7 @@ export class RoleRepository {
       escoCode: classification.code,
       title: classification.titleEn,
       level: classification.level,
+      relevance: classification._count.JobClassification,
     }));
   }
 

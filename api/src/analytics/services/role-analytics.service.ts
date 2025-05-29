@@ -3,12 +3,13 @@ import {
   QueryParamsDto,
   RoleOptionDto,
   RoleListItemDto,
+  GetRoleHierarchyDto,
 } from '@/analytics/dto';
 import {
   AlumniAnalyticsRepository,
   RoleRepository,
 } from '@/analytics/repositories';
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import {
   DEFAULT_QUERY_LIMIT,
   DEFAULT_QUERY_OFFSET,
@@ -26,6 +27,7 @@ export class RoleAnalyticsService {
     private readonly alumniRepository: AlumniAnalyticsRepository,
     private readonly roleRepository: RoleRepository,
     private readonly trendAnalyticsService: TrendAnalyticsService,
+    private readonly logger: Logger,
   ) {}
 
   async getRolesWithCounts(
@@ -34,30 +36,59 @@ export class RoleAnalyticsService {
     const alumnusUnfiltered = await this.alumniRepository.find(query);
 
     const alumnus = applyDateFilters(alumnusUnfiltered, query);
-    const escoLevel = query.escoClassificationLevel;
-    const isDifferentLevel = escoLevel !== 4;
+    const requestedLevel = query.escoClassificationLevel;
+    const isGranular = requestedLevel && requestedLevel >= 5;
 
     const allRoles = alumnus
       .flatMap((alumni) => alumni.roles || [])
       .filter((role) => role.jobClassification?.escoClassification);
 
-    const uniqueCodes = new Set<string>();
-    if (isDifferentLevel) {
-      allRoles.forEach((role) => {
-        const code = role.jobClassification!.escoClassification.code.slice(
+    const uniqueCodes = new Map<string, string>();
+    for (const role of allRoles) {
+      let actualCode: string | undefined;
+      let resolvedCode: string | undefined;
+
+      const roleLevel = role.jobClassification!.escoClassification.level;
+      const rawCode = role.jobClassification!.escoClassification.code;
+
+      // Skip roles classified at a lower level than requested, if granular
+      if (isGranular && requestedLevel && roleLevel < requestedLevel) {
+        continue;
+      }
+
+      if (isGranular) {
+        // If role is at the same level as requested, use it as is
+        if (roleLevel === requestedLevel) {
+          actualCode = rawCode;
+          resolvedCode = rawCode;
+        } else {
+          // For roles at a higher level, truncate to requested level
+          // e.g., for level 5, '2511.14.1' becomes '2511.14'
+          const parts = rawCode.split('.');
+          const baseCode = parts[0];
+          const relevantParts = parts.slice(1, requestedLevel - 3); // -3 because first part is 4 digits
+          actualCode = baseCode + '.' + relevantParts.join('.');
+          resolvedCode = actualCode;
+        }
+      } else {
+        actualCode = role.jobClassification!.escoClassification.code.slice(
           0,
-          escoLevel,
+          requestedLevel,
         );
-        uniqueCodes.add(code);
-      });
+        resolvedCode = actualCode;
+      }
+      if (!actualCode || !resolvedCode) continue;
+      uniqueCodes.set(actualCode, resolvedCode);
     }
 
     const hierarchyMap = new Map<string, EscoClassificationAnalyticsEntity>();
     if (uniqueCodes.size > 0) {
       const classifications = await Promise.all(
-        Array.from(uniqueCodes).map((code) =>
-          this.roleRepository.getClassification(code),
-        ),
+        Array.from(uniqueCodes.values()).map(async (resolvedCode) => {
+          const result =
+            await this.roleRepository.getClassification(resolvedCode);
+          return result;
+        }),
       );
       classifications.forEach((classification) => {
         if (classification) {
@@ -71,16 +102,17 @@ export class RoleAnalyticsService {
       let { code, titleEn, isLeaf, level } =
         role.jobClassification!.escoClassification;
 
-      if (isDifferentLevel) {
-        const shortCode = code.slice(0, escoLevel);
-        const hierarchy = hierarchyMap.get(shortCode);
-        if (!hierarchy) continue;
-
-        code = hierarchy.code;
-        titleEn = hierarchy.titleEn;
-        isLeaf = hierarchy.isLeaf;
-        level = hierarchy.level;
+      // Let's return early if we don't have a hierarchy for this code
+      const hierarchy = isGranular
+        ? hierarchyMap.get(code)
+        : hierarchyMap.get(code.slice(0, requestedLevel));
+      if (!hierarchy) {
+        continue;
       }
+      code = hierarchy.code;
+      titleEn = hierarchy.titleEn;
+      isLeaf = hierarchy.isLeaf;
+      level = hierarchy.level;
 
       const existingRole = roleMap.get(code);
       if (existingRole) {
@@ -90,7 +122,7 @@ export class RoleAnalyticsService {
           name: titleEn,
           code: code,
           isLeaf: isLeaf,
-          level: escoLevel || level,
+          level: requestedLevel || level,
           count: 1,
           trend: [],
         });
@@ -104,7 +136,7 @@ export class RoleAnalyticsService {
           this.trendAnalyticsService.getRoleTrend({
             data: alumnusUnfiltered,
             entityId: role.code,
-            isDifferentClassificationLevel: isDifferentLevel,
+            isDifferentClassificationLevel: false,
           }),
         ),
       );
@@ -133,5 +165,43 @@ export class RoleAnalyticsService {
 
   async findAllClassifications(): Promise<RoleOptionDto[]> {
     return this.roleRepository.findAllClassifications();
+  }
+
+  async getRoleHierarchy(query: GetRoleHierarchyDto): Promise<string> {
+    const parts: string[] = [];
+    let currentCode = query.code;
+
+    // Keep going up the hierarchy until we reach level 1
+    while (currentCode.length > 0) {
+      const classification =
+        await this.roleRepository.getClassification(currentCode);
+      if (!classification) {
+        this.logger.warn(`No classification found for code: ${currentCode}`);
+        break;
+      }
+
+      parts.unshift(classification.titleEn);
+
+      // Move up one level
+      if (currentCode.length <= 1) break;
+
+      // For level 1, we're done
+      if (currentCode.length === 1) break;
+
+      // For level 2-4, remove last digit
+      if (currentCode.length <= 4) {
+        currentCode = currentCode.slice(0, -1);
+      } else {
+        // For level 5+, remove everything after the last dot
+        const lastDotIndex = currentCode.lastIndexOf('.');
+        if (lastDotIndex === -1) {
+          currentCode = currentCode.slice(0, -1);
+        } else {
+          currentCode = currentCode.slice(0, lastDotIndex);
+        }
+      }
+    }
+
+    return parts.join(' > ');
   }
 }
