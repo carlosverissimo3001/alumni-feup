@@ -70,14 +70,13 @@ export const buildWhereClause = (
     });
   }
 
-  // TODO: Right now, its a 1-1 mapping between role and job classification.
-  // Later, we will have 2 classifications for each role: level 1 is the more general one,
-  // and level 2 is the more specific one.
   if (params.escoCodes?.length) {
     roleAndClauses.push({
       JobClassification: {
         EscoClassification: {
-          code: { in: params.escoCodes },
+          OR: params.escoCodes.map((code) => ({
+            code: { startsWith: code },
+          })),
         },
       },
     });

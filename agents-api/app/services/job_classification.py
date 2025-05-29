@@ -4,15 +4,22 @@ import logging
 import time
 from typing import List
 
+import openai
 from fastapi.encoders import jsonable_encoder
 from langchain_core.messages import HumanMessage, SystemMessage
 from langchain_core.runnables.config import RunnableConfig
 from langchain_core.tools import Tool
 from langchain_openai import ChatOpenAI
 from langgraph.graph import END, START, StateGraph
-from langgraph.prebuilt import ToolNode, tools_condition
+from langgraph.prebuilt import ToolNode
 from prometheus_client import Counter, Gauge, Summary
 from redis import Redis
+from tenacity import (
+    before_sleep_log,
+    retry,
+    stop_after_attempt,
+    wait_random_exponential,
+)
 
 from app.core.config import settings
 from app.db import get_db
@@ -90,7 +97,8 @@ tools = [get_detailed_esco_classification, validate_tool]
 cold_llm = ChatOpenAI(
     model=settings.OPENAI_DEFAULT_MODEL,
     api_key=settings.OPENAI_API_KEY,
-    temperature=0.0,
+    max_retries=3,
+    # temperature=0.0,
 )
 llm_with_tools = cold_llm.bind_tools(tools)
 
@@ -109,7 +117,7 @@ class JobClassificationService:
         self.CACHE_TTL = 60 * 60 * 24  # 24 hours
         self.MAX_CONCURRENT = 10
         self.BATCH_SIZE = 50
-        self.MAX_RETRIES = 1
+        self.MAX_RETRIES = 3
 
         self.classification_time = Summary(
             "job_classification_duration_seconds", "Time spent processing job classification"
@@ -172,55 +180,50 @@ class JobClassificationService:
     async def validate_esco_results_batch(
         self, states: List[JobClassificationAgentState]
     ) -> List[JobClassificationAgentState]:
+        @retry(
+            wait=wait_random_exponential(min=5, max=60, exp_base=1),
+            stop=stop_after_attempt(self.MAX_RETRIES),
+            before_sleep=before_sleep_log(logger, logging.WARNING),
+        )
         async def _validate_single(state: JobClassificationAgentState):
             retry_count = state.get("retry_count", 0)
-            max_retries = 3
-            base_delay = 0.5
-
-            while retry_count < max_retries:
-                try:
-                    esco_prompt = get_esco_prompt(retry_count)
-                    response = await llm_with_tools.ainvoke(
-                        [
-                            SystemMessage(content=esco_prompt),
-                            SystemMessage(
-                                content=f"Here are the list of results from the vector search: {state['esco_results_from_embeddings']}"
-                            ),
-                            SystemMessage(content=f"Here is the role to classify: {state['role']}"),
-                            *state["messages"],
-                            HumanMessage(
-                                content="""Please validate the results and provide the 3 best matches using the return_esco_choices tool.
-                        Only include: id, title, confidence.
-                        DO NOT use the ESCO code as the ID.
-                        DO NOT include any comments, extra fields, or explanation."""
-                            ),
-                        ]
-                    )
-                    state["messages"].append(response)
-
-                    tool_call = [
-                        tc for tc in response.tool_calls if tc["name"] == "return_esco_choices"
+            try:
+                esco_prompt = get_esco_prompt(retry_count)
+                response = await llm_with_tools.ainvoke(
+                    [
+                        SystemMessage(content=esco_prompt),
+                        SystemMessage(
+                            content=f"Here are the list of results from the vector search: {state['esco_results_from_embeddings']}"
+                        ),
+                        SystemMessage(content=f"Here is the role to classify: {state['role']}"),
+                        *state["messages"],
+                        HumanMessage(
+                            content="""Please validate the results and provide the 3 best matches using the return_esco_choices tool.
+                    Only include: id, title, confidence.
+                    DO NOT use the ESCO code as the ID.
+                    DO NOT include any comments, extra fields, or explanation."""
+                        ),
                     ]
-                    if tool_call:
-                        args = tool_call[0]["args"]
-                        state["parsed_esco_results"] = args.get("results", [])
-                        state["reasoning"] = args.get("reasoning", "No explanation provided.")
-                        break  
+                )
+                state["messages"].append(response)
 
-                except Exception as e:
-                    if "429" in str(e):  
-                        retry_count += 1
-                        if retry_count < max_retries:
-                            delay = base_delay * (2**retry_count)
-                            logger.info(f"Rate limit hit, retrying in {delay}s...")
-                            await asyncio.sleep(delay)
-                            continue
+                tool_call = [
+                    tc for tc in response.tool_calls if tc["name"] == "return_esco_choices"
+                ]
+                if tool_call:
+                    args = tool_call[0]["args"]
+                    state["parsed_esco_results"] = args.get("results", [])
+                    state["reasoning"] = args.get("reasoning", "No explanation provided.")
+                    return state
 
-                    logger.error(f"LLM validation failed for role {state['role']}: {e}")
-                    state["error"] = str(e)
-                    break
+            except Exception as e:
+                if isinstance(e, openai.RateLimitError) or "429" in str(e):
+                    state["retry_count"] = retry_count + 1
+                    raise e
 
-            return state
+                logger.error(f"LLM validation failed for role {state['role']}: {e}")
+                state["error"] = str(e)
+                raise e
 
         # Process in smaller chunks to avoid overwhelming the API
         chunk_size = 3
@@ -230,7 +233,7 @@ class JobClassificationService:
             chunk_results = await asyncio.gather(*[_validate_single(state) for state in chunk])
             results.extend(chunk_results)
             if i + chunk_size < len(states):
-                await asyncio.sleep(1)  # Add delay between chunks
+                await asyncio.sleep(5)
 
         return results
 

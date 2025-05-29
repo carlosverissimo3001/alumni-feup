@@ -34,6 +34,7 @@ export const escoClassificationSelect = {
   code: true,
   isLeaf: true,
   level: true,
+  escoUrl: true,
 } satisfies Prisma.EscoClassificationSelect;
 
 export const jobClassificationSelect = {

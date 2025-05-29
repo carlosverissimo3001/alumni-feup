@@ -3627,6 +3627,39 @@
         ]
       }
     },
+    "/analytics/roles/hierarchy": {
+      "get": {
+        "description": "Returns a list of roles with their ESCO code and title.",
+        "operationId": "RoleAnalyticsController_getRoleHierarchy",
+        "parameters": [
+          {
+            "name": "code",
+            "required": true,
+            "in": "query",
+            "description": "The ESCO code of the role",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The hierarchy of a role",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RoleHierarchyDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Gets the hierarchy of a role",
+        "tags": [
+          "V1"
+        ]
+      }
+    },
     "/analytics/alumni": {
       "get": {
         "operationId": "AlumniAnalyticsController_getAlumniList",
@@ -6368,6 +6401,42 @@
           "escoCode",
           "title",
           "level"
+        ]
+      },
+      "RoleHierarchyItemDto": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "description": "The role title"
+          },
+          "code": {
+            "type": "string",
+            "description": "The role code"
+          },
+          "escoUrl": {
+            "type": "string",
+            "description": "The role esco url"
+          }
+        },
+        "required": [
+          "title",
+          "code"
+        ]
+      },
+      "RoleHierarchyDto": {
+        "type": "object",
+        "properties": {
+          "hierarchy": {
+            "description": "The role hierarchy",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RoleHierarchyItemDto"
+            }
+          }
+        },
+        "required": [
+          "hierarchy"
         ]
       },
       "LocationAnalyticsEntity": {

@@ -23,7 +23,11 @@ import { handleDateRange } from "@/utils/date";
 import { Button } from "@/components/ui/button";
 import { useSearchParams, useRouter } from "next/navigation";
 import { useCompanyOptions } from "@/hooks/analytics/useCompanyOptions";
-import { EducationDrillType, GeoDrillType } from "@/types/drillType";
+import {
+  EducationDrillType,
+  GeoDrillType,
+  ClassificationLevel,
+} from "@/types/drillType";
 import {
   Tooltip,
   TooltipContent,
@@ -78,7 +82,12 @@ function AnalyticsContent() {
   const searchParams = useSearchParams();
   const { data: companyOptions } = useCompanyOptions();
 
-  const [stats, setStats] = useState({
+  const [stats, setStats] = useState<{
+    alumniCount: number;
+    companyCount: number;
+    countryCount: number;
+    roleCount: number;
+  }>({
     alumniCount: 0,
     companyCount: 0,
     countryCount: 0,
@@ -88,6 +97,9 @@ function AnalyticsContent() {
   const [geoMode, setGeoMode] = useState<GeoDrillType>(GeoDrillType.COUNTRY);
   const [educationMode, setEducationMode] = useState<EducationDrillType>(
     EducationDrillType.MAJOR
+  );
+  const [classificationLevel, setClassificationLevel] = useState<ClassificationLevel>(
+    ClassificationLevel.LEVEL_4
   );
 
   const initializeFiltersFromURL = useCallback(() => {
@@ -192,25 +204,19 @@ function AnalyticsContent() {
     []
   );
 
-  const handleGeoDataUpdate = useCallback(
-    (countryCount: number) => {
-      setStats((prev) => ({
-        ...prev,
-        countryCount,
-      }));
-    },
-    []
-  );
+  const handleGeoDataUpdate = useCallback((countryCount: number) => {
+    setStats((prev) => ({
+      ...prev,
+      countryCount,
+    }));
+  }, []);
 
-  const handleRoleDataUpdate = useCallback(
-    (roleCount: number) => {
-      setStats((prev) => ({
-        ...prev,
-        roleCount,
-      }));
-    },
-    []
-  );
+  const handleRoleDataUpdate = useCallback((roleCount: number) => {
+    setStats((prev) => ({
+      ...prev,
+      roleCount,
+    }));
+  }, []);
 
   const handleAddCompanyToFilters = useCallback((companyId: string) => {
     setFilters((prev) => {
@@ -290,22 +296,43 @@ function AnalyticsContent() {
     });
   }, []);
 
-  const handleAddRoleToFilters = useCallback((escoCode: string) => {
-    setFilters((prev) => {
-      const currentEscoCodes = prev.escoCodes || [];
-      if (!currentEscoCodes.includes(escoCode)) {
-        return {
-          ...prev,
-          escoCodes: [...currentEscoCodes, escoCode],
-        };
-      } else {
-        return {
-          ...prev,
-          escoCodes: currentEscoCodes.filter((id) => id !== escoCode),
-        };
-      }
-    });
-  }, []);
+  const getClassificationLevel = (classificationLevel: ClassificationLevel) => {
+    return Number(classificationLevel.split(" ")[1]);
+  };
+
+  const getCodeLevel = (code: string) => {
+    if (code.length <= 5) {
+      return code.length;
+    }
+    const parts = code.split(".");
+    return parts.length + 4; // 4 as the first 4 digits are not seperated by a dot
+  };
+
+  const handleAddRoleToFilters = useCallback(
+    (escoCode: string) => {
+      setFilters((prev) => {
+        const newCodeLevel = getCodeLevel(escoCode);
+
+        const newEscoCodes = prev.escoCodes?.includes(escoCode)
+          ? prev.escoCodes.filter((code) => code !== escoCode)
+          : [...(prev.escoCodes || []), escoCode];
+          
+        // If we're adding a new code and not at level 8, increment the level
+        if (
+          !prev.escoCodes?.includes(escoCode) &&
+          classificationLevel !== ClassificationLevel.LEVEL_8 &&
+          newCodeLevel >= getClassificationLevel(classificationLevel)
+        ) {
+          const currentLevel = Number(classificationLevel.split(" ")[1]);
+          const nextLevel = `Level ${currentLevel + 1}` as ClassificationLevel;
+          setClassificationLevel(nextLevel);
+        }
+
+        return { ...prev, escoCodes: newEscoCodes };
+      });
+    },
+    [classificationLevel]
+  );
 
   const handleAddAlumniToFilters = useCallback((alumniId: string) => {
     setFilters((prev) => {
@@ -479,6 +506,8 @@ function AnalyticsContent() {
           onDataUpdate={handleRoleDataUpdate}
           filters={combinedFilters}
           onAddToFilters={handleAddRoleToFilters}
+          classificationLevel={classificationLevel}
+          setClassificationLevel={setClassificationLevel}
         />
         <IndustryDashboard
           filters={combinedFilters}
