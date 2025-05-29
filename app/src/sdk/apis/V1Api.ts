@@ -44,9 +44,12 @@ import type {
   GraduationListDto,
   IndustryListResponseDto,
   IndustryOptionDto,
+  InviteUserDto,
   LinkedinAuthDto,
   MajorListDto,
   MarkAsReviewedDto,
+  MergeCompaniesDto,
+  MergeLocationsDto,
   ReviewGeoJSONFeatureCollection,
   RoleHierarchyDto,
   RoleListResponseDto,
@@ -116,12 +119,18 @@ import {
     IndustryListResponseDtoToJSON,
     IndustryOptionDtoFromJSON,
     IndustryOptionDtoToJSON,
+    InviteUserDtoFromJSON,
+    InviteUserDtoToJSON,
     LinkedinAuthDtoFromJSON,
     LinkedinAuthDtoToJSON,
     MajorListDtoFromJSON,
     MajorListDtoToJSON,
     MarkAsReviewedDtoFromJSON,
     MarkAsReviewedDtoToJSON,
+    MergeCompaniesDtoFromJSON,
+    MergeCompaniesDtoToJSON,
+    MergeLocationsDtoFromJSON,
+    MergeLocationsDtoToJSON,
     ReviewGeoJSONFeatureCollectionFromJSON,
     ReviewGeoJSONFeatureCollectionToJSON,
     RoleHierarchyDtoFromJSON,
@@ -141,6 +150,18 @@ import {
     VerifyEmailTokenDtoFromJSON,
     VerifyEmailTokenDtoToJSON,
 } from '../models/index';
+
+export interface AdminControllerInviteUserRequest {
+    inviteUserDto: InviteUserDto;
+}
+
+export interface AdminControllerMergeCompaniesRequest {
+    mergeCompaniesDto: MergeCompaniesDto;
+}
+
+export interface AdminControllerMergeLocationsRequest {
+    mergeLocationsDto: MergeLocationsDto;
+}
 
 export interface AlumniAnalyticsControllerGetAlumniListRequest {
     includeTrend: boolean;
@@ -528,6 +549,79 @@ export interface UserControllerVerifyEmailTokenRequest {
  * @interface V1ApiInterface
  */
 export interface V1ApiInterface {
+    /**
+     * 
+     * @summary Get BrightData balance
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof V1ApiInterface
+     */
+    adminControllerGetBrightDataBalanceRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<number>>;
+
+    /**
+     * Get BrightData balance
+     */
+    adminControllerGetBrightDataBalance(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<number>;
+
+    /**
+     * 
+     * @summary Get ProxyCurl balance
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof V1ApiInterface
+     */
+    adminControllerGetProxyCurlBalanceRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<number>>;
+
+    /**
+     * Get ProxyCurl balance
+     */
+    adminControllerGetProxyCurlBalance(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<number>;
+
+    /**
+     * 
+     * @summary Invite user
+     * @param {InviteUserDto} inviteUserDto 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof V1ApiInterface
+     */
+    adminControllerInviteUserRaw(requestParameters: AdminControllerInviteUserRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>>;
+
+    /**
+     * Invite user
+     */
+    adminControllerInviteUser(requestParameters: AdminControllerInviteUserRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void>;
+
+    /**
+     * 
+     * @summary Merge companies
+     * @param {MergeCompaniesDto} mergeCompaniesDto 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof V1ApiInterface
+     */
+    adminControllerMergeCompaniesRaw(requestParameters: AdminControllerMergeCompaniesRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>>;
+
+    /**
+     * Merge companies
+     */
+    adminControllerMergeCompanies(requestParameters: AdminControllerMergeCompaniesRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void>;
+
+    /**
+     * 
+     * @summary Merge locations
+     * @param {MergeLocationsDto} mergeLocationsDto 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof V1ApiInterface
+     */
+    adminControllerMergeLocationsRaw(requestParameters: AdminControllerMergeLocationsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>>;
+
+    /**
+     * Merge locations
+     */
+    adminControllerMergeLocations(requestParameters: AdminControllerMergeLocationsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void>;
+
     /**
      * 
      * @summary Get all alumni list
@@ -1458,6 +1552,171 @@ export interface V1ApiInterface {
  * 
  */
 export class V1Api extends runtime.BaseAPI implements V1ApiInterface {
+
+    /**
+     * Get BrightData balance
+     */
+    async adminControllerGetBrightDataBalanceRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<number>> {
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        const response = await this.request({
+            path: `/admin/brightdata-balance`,
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        if (this.isJsonMime(response.headers.get('content-type'))) {
+            return new runtime.JSONApiResponse<number>(response);
+        } else {
+            return new runtime.TextApiResponse(response) as any;
+        }
+    }
+
+    /**
+     * Get BrightData balance
+     */
+    async adminControllerGetBrightDataBalance(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<number> {
+        const response = await this.adminControllerGetBrightDataBalanceRaw(initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Get ProxyCurl balance
+     */
+    async adminControllerGetProxyCurlBalanceRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<number>> {
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        const response = await this.request({
+            path: `/admin/proxycurl-balance`,
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        if (this.isJsonMime(response.headers.get('content-type'))) {
+            return new runtime.JSONApiResponse<number>(response);
+        } else {
+            return new runtime.TextApiResponse(response) as any;
+        }
+    }
+
+    /**
+     * Get ProxyCurl balance
+     */
+    async adminControllerGetProxyCurlBalance(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<number> {
+        const response = await this.adminControllerGetProxyCurlBalanceRaw(initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Invite user
+     */
+    async adminControllerInviteUserRaw(requestParameters: AdminControllerInviteUserRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+        if (requestParameters['inviteUserDto'] == null) {
+            throw new runtime.RequiredError(
+                'inviteUserDto',
+                'Required parameter "inviteUserDto" was null or undefined when calling adminControllerInviteUser().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
+
+        const response = await this.request({
+            path: `/admin/invite-user`,
+            method: 'POST',
+            headers: headerParameters,
+            query: queryParameters,
+            body: InviteUserDtoToJSON(requestParameters['inviteUserDto']),
+        }, initOverrides);
+
+        return new runtime.VoidApiResponse(response);
+    }
+
+    /**
+     * Invite user
+     */
+    async adminControllerInviteUser(requestParameters: AdminControllerInviteUserRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+        await this.adminControllerInviteUserRaw(requestParameters, initOverrides);
+    }
+
+    /**
+     * Merge companies
+     */
+    async adminControllerMergeCompaniesRaw(requestParameters: AdminControllerMergeCompaniesRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+        if (requestParameters['mergeCompaniesDto'] == null) {
+            throw new runtime.RequiredError(
+                'mergeCompaniesDto',
+                'Required parameter "mergeCompaniesDto" was null or undefined when calling adminControllerMergeCompanies().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
+
+        const response = await this.request({
+            path: `/admin/merge-companies`,
+            method: 'POST',
+            headers: headerParameters,
+            query: queryParameters,
+            body: MergeCompaniesDtoToJSON(requestParameters['mergeCompaniesDto']),
+        }, initOverrides);
+
+        return new runtime.VoidApiResponse(response);
+    }
+
+    /**
+     * Merge companies
+     */
+    async adminControllerMergeCompanies(requestParameters: AdminControllerMergeCompaniesRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+        await this.adminControllerMergeCompaniesRaw(requestParameters, initOverrides);
+    }
+
+    /**
+     * Merge locations
+     */
+    async adminControllerMergeLocationsRaw(requestParameters: AdminControllerMergeLocationsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+        if (requestParameters['mergeLocationsDto'] == null) {
+            throw new runtime.RequiredError(
+                'mergeLocationsDto',
+                'Required parameter "mergeLocationsDto" was null or undefined when calling adminControllerMergeLocations().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
+
+        const response = await this.request({
+            path: `/admin/merge-locations`,
+            method: 'POST',
+            headers: headerParameters,
+            query: queryParameters,
+            body: MergeLocationsDtoToJSON(requestParameters['mergeLocationsDto']),
+        }, initOverrides);
+
+        return new runtime.VoidApiResponse(response);
+    }
+
+    /**
+     * Merge locations
+     */
+    async adminControllerMergeLocations(requestParameters: AdminControllerMergeLocationsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+        await this.adminControllerMergeLocationsRaw(requestParameters, initOverrides);
+    }
 
     /**
      * Get all alumni list

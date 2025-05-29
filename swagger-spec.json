@@ -16,6 +16,125 @@
         ]
       }
     },
+    "/admin/proxycurl-balance": {
+      "get": {
+        "operationId": "AdminController_getProxyCurlBalance",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "ProxyCurl balance",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "number"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Get ProxyCurl balance",
+        "tags": [
+          "V1"
+        ]
+      }
+    },
+    "/admin/brightdata-balance": {
+      "get": {
+        "operationId": "AdminController_getBrightDataBalance",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "BrightData balance",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "number"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Get BrightData balance",
+        "tags": [
+          "V1"
+        ]
+      }
+    },
+    "/admin/merge-companies": {
+      "post": {
+        "operationId": "AdminController_mergeCompanies",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MergeCompaniesDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Companies merged"
+          }
+        },
+        "summary": "Merge companies",
+        "tags": [
+          "V1"
+        ]
+      }
+    },
+    "/admin/merge-locations": {
+      "post": {
+        "operationId": "AdminController_mergeLocations",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MergeLocationsDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Locations merged"
+          }
+        },
+        "summary": "Merge locations",
+        "tags": [
+          "V1"
+        ]
+      }
+    },
+    "/admin/invite-user": {
+      "post": {
+        "operationId": "AdminController_inviteUser",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/InviteUserDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "User invited"
+          }
+        },
+        "summary": "Invite user",
+        "tags": [
+          "V1"
+        ]
+      }
+    },
     "/user/linkedinAuth": {
       "post": {
         "operationId": "UserController_linkedinAuth",
@@ -4379,6 +4498,71 @@
       }
     },
     "schemas": {
+      "MergeCompaniesDto": {
+        "type": "object",
+        "properties": {
+          "companyIds": {
+            "description": "The company ids to merge",
+            "example": [
+              "1",
+              "2",
+              "3"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "mergeIntoCompanyId": {
+            "type": "string",
+            "description": "The company id to merge into",
+            "example": "1"
+          }
+        },
+        "required": [
+          "companyIds",
+          "mergeIntoCompanyId"
+        ]
+      },
+      "MergeLocationsDto": {
+        "type": "object",
+        "properties": {
+          "locationIds": {
+            "description": "The location ids to merge",
+            "example": [
+              "1",
+              "2",
+              "3"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "mergeIntoLocationId": {
+            "type": "string",
+            "description": "The location id to merge into",
+            "example": "1"
+          }
+        },
+        "required": [
+          "locationIds",
+          "mergeIntoLocationId"
+        ]
+      },
+      "InviteUserDto": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "The email of the user to invite",
+            "example": "test@example.com"
+          }
+        },
+        "required": [
+          "email"
+        ]
+      },
       "LinkedinAuthDto": {
         "type": "object",
         "properties": {

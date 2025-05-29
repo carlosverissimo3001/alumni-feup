@@ -56,6 +56,7 @@ models/IndustryAnalyticsEntity.ts
 models/IndustryListItemDto.ts
 models/IndustryListResponseDto.ts
 models/IndustryOptionDto.ts
+models/InviteUserDto.ts
 models/LinkedinAuthDto.ts
 models/Location.ts
 models/LocationAnalyticsEntity.ts
@@ -63,6 +64,8 @@ models/LocationGeo.ts
 models/MajorListDto.ts
 models/MajorListItemDto.ts
 models/MarkAsReviewedDto.ts
+models/MergeCompaniesDto.ts
+models/MergeLocationsDto.ts
 models/ReviewCompany.ts
 models/ReviewGeoJSONFeature.ts
 models/ReviewGeoJSONFeatureCollection.ts

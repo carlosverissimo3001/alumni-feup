@@ -1,16 +1,10 @@
 import { RequirePermission, UserAuthGuard } from '@/auth';
 import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
-import {
-  ApiExcludeController,
-  ApiOperation,
-  ApiResponse,
-  ApiTags,
-} from '@nestjs/swagger';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { SkipThrottle } from '@nestjs/throttler';
 import { MergeCompaniesDto, MergeLocationsDto, InviteUserDto } from '../dto';
 import { AdminService } from '../services/admin.service';
 
-@ApiExcludeController()
 @ApiTags('V1')
 @Controller('admin')
 @SkipThrottle()
