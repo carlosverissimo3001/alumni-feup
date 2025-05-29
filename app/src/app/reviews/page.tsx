@@ -10,7 +10,6 @@ import ReviewButton from "./review-button";
 import { ReviewData } from "@/types/review";
 import ReviewMapFilters from "@/components/map/reviews/reviewMapFilters";
 
-// Type definitions
 interface Coordinates {
   lat: number;
   lng: number;
@@ -25,8 +24,6 @@ const ReviewMapComponent = () => {
   const [reviewGeoJSON, setReviewGeoJSON] =
     useState<GeoJSONFeatureCollection | null>(null);
 
-  // The alumni the user is searching for.
-  // Set in the filters -> Used in the mapView to center the map on the alumni.
   const [selectedReviews, setSelectedReviews] =
     useState<SelectedReviews | null>(null);
   const { isCollapsed } = useNavbar();
