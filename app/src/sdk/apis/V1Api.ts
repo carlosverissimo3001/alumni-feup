@@ -51,6 +51,7 @@ import type {
   MergeCompaniesDto,
   MergeLocationsDto,
   ReviewGeoJSONFeatureCollection,
+  RoleHierarchyDto,
   RoleListResponseDto,
   RoleOptionDto,
   SendFeedbackDto,
@@ -132,6 +133,8 @@ import {
     MergeLocationsDtoToJSON,
     ReviewGeoJSONFeatureCollectionFromJSON,
     ReviewGeoJSONFeatureCollectionToJSON,
+    RoleHierarchyDtoFromJSON,
+    RoleHierarchyDtoToJSON,
     RoleListResponseDtoFromJSON,
     RoleListResponseDtoToJSON,
     RoleOptionDtoFromJSON,
@@ -479,6 +482,10 @@ export interface ReviewControllerFindAllGeoJSONRequest {
     rating?: number;
     dateFrom?: Date;
     dateTo?: Date;
+}
+
+export interface RoleAnalyticsControllerGetRoleHierarchyRequest {
+    code: string;
 }
 
 export interface RoleAnalyticsControllerGetRolesRequest {
@@ -1376,6 +1383,22 @@ export interface V1ApiInterface {
      * Get all the review to be displayed on the map
      */
     reviewControllerFindAllGeoJSON(requestParameters: ReviewControllerFindAllGeoJSONRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ReviewGeoJSONFeatureCollection>;
+
+    /**
+     * Returns a list of roles with their ESCO code and title.
+     * @summary Gets the hierarchy of a role
+     * @param {string} code The ESCO code of the role
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof V1ApiInterface
+     */
+    roleAnalyticsControllerGetRoleHierarchyRaw(requestParameters: RoleAnalyticsControllerGetRoleHierarchyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<RoleHierarchyDto>>;
+
+    /**
+     * Returns a list of roles with their ESCO code and title.
+     * Gets the hierarchy of a role
+     */
+    roleAnalyticsControllerGetRoleHierarchy(requestParameters: RoleAnalyticsControllerGetRoleHierarchyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<RoleHierarchyDto>;
 
     /**
      * Returns a list of roles with their ESCO code and title.
@@ -3762,6 +3785,45 @@ export class V1Api extends runtime.BaseAPI implements V1ApiInterface {
      */
     async reviewControllerFindAllGeoJSON(requestParameters: ReviewControllerFindAllGeoJSONRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ReviewGeoJSONFeatureCollection> {
         const response = await this.reviewControllerFindAllGeoJSONRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Returns a list of roles with their ESCO code and title.
+     * Gets the hierarchy of a role
+     */
+    async roleAnalyticsControllerGetRoleHierarchyRaw(requestParameters: RoleAnalyticsControllerGetRoleHierarchyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<RoleHierarchyDto>> {
+        if (requestParameters['code'] == null) {
+            throw new runtime.RequiredError(
+                'code',
+                'Required parameter "code" was null or undefined when calling roleAnalyticsControllerGetRoleHierarchy().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        if (requestParameters['code'] != null) {
+            queryParameters['code'] = requestParameters['code'];
+        }
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        const response = await this.request({
+            path: `/analytics/roles/hierarchy`,
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => RoleHierarchyDtoFromJSON(jsonValue));
+    }
+
+    /**
+     * Returns a list of roles with their ESCO code and title.
+     * Gets the hierarchy of a role
+     */
+    async roleAnalyticsControllerGetRoleHierarchy(requestParameters: RoleAnalyticsControllerGetRoleHierarchyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<RoleHierarchyDto> {
+        const response = await this.roleAnalyticsControllerGetRoleHierarchyRaw(requestParameters, initOverrides);
         return await response.value();
     }
 

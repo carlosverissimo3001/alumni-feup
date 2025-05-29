@@ -8,13 +8,12 @@ import {
 } from "../ui/tooltip";
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
-import { Badge } from "../ui/badge";
 import { useSpring, animated } from "@react-spring/web";
 
 export type StatsCardProps = {
   icon: React.ReactNode;
   name: string;
-  values: number | undefined; // Allow undefined for loading states
+  values: number | undefined;
   infoMessage?: string;
 };
 
@@ -25,7 +24,6 @@ export default function StatsCard({
   infoMessage,
 }: StatsCardProps) {
   const [isLoaded, setIsLoaded] = useState(false);
-  const [percentage, setPercentage] = useState(0);
 
   const { number } = useSpring({
     from: { number: 0 },
@@ -36,20 +34,13 @@ export default function StatsCard({
 
   useEffect(() => {
     if (values && values > 0) {
-      const calculatedPercentage = Math.round((values / values) * 100);
       const timer = setTimeout(() => {
         setIsLoaded(true);
-        setPercentage(calculatedPercentage);
       }, 300);
       return () => clearTimeout(timer);
     }
   }, [values]);
 
-  const getBadgeVariant = () => {
-    if (percentage < 30) return "destructive";
-    if (percentage < 70) return "secondary";
-    return "default";
-  };
 
   if (!values || values === 0) {
     return (
@@ -104,20 +95,6 @@ export default function StatsCard({
                   </TooltipProvider>
                 )}
               </div>
-              {percentage < 100 && (
-                <motion.div
-                  initial={{ opacity: 0, scale: 0.5 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ duration: 0.5, delay: 0.2 }}
-                >
-                  <Badge
-                    variant={getBadgeVariant()}
-                    className="text-xs font-medium px-2"
-                  >
-                    {percentage}%
-                  </Badge>
-                </motion.div>
-              )}
             </div>
             <motion.h3 className="text-xl font-extrabold text-[#8C2D19] tracking-tight">
               <animated.span>{number.to((n) => Math.floor(n))}</animated.span>

@@ -5,6 +5,8 @@ import {
   QueryParamsDto,
   RoleListResponseDto,
   RoleOptionDto,
+  GetRoleHierarchyDto,
+  RoleHierarchyDto,
 } from '@/analytics/dto';
 
 @ApiTags('V1')
@@ -40,5 +42,19 @@ export class RoleAnalyticsController {
   })
   async getRoleOptions() {
     return this.roleAnalyticsService.findAllClassifications();
+  }
+
+  @Get('/hierarchy')
+  @ApiOperation({
+    summary: 'Gets the hierarchy of a role',
+    description: 'Returns a list of roles with their ESCO code and title.',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'The hierarchy of a role',
+    type: RoleHierarchyDto,
+  })
+  async getRoleHierarchy(@Query() query: GetRoleHierarchyDto) {
+    return this.roleAnalyticsService.getRoleHierarchy(query);
   }
 }

@@ -51,6 +51,7 @@ export type FilterState = {
   roleCountryCodes?: string[];
   roleCityIds?: string[];
   escoCodes?: string[];
+  escoClassificationLevel?: number;
   currentRolesOnly?: boolean;
   search?: string;
   excludeResearchAndHighEducation?: boolean;

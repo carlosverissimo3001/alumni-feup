@@ -33,6 +33,7 @@ async function bootstrap() {
   });
 
   SwaggerModule.setup('docs', app, document);
+
   app.useGlobalPipes(VALIDATION_CONFIG);
   await app.listen(process.env.PORT ?? 3010);
 
