@@ -89,8 +89,8 @@ const AboutPage = () => {
     {
       name: "José Pessoa",
       role: "Full Stack Developer",
-      image: "/images/no-image.png",
-      linkedinUrl: "https://www.linkedin.com/in/josepessoa/",
+      image: "/images/team/jose.png",
+      linkedinUrl: "https://www.linkedin.com/in/jos%C3%A9-pessoa-098837352/",
       githubUrl: "https://github.com/JDP818",
     },
   ];
