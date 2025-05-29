@@ -7,6 +7,10 @@ import {
 import getHypertune from "./lib/getHypertune";
 
 export async function middleware(request: NextRequest) {
+  if (request.nextUrl.pathname.startsWith("/admin")) {
+    return adminMiddleware(request);
+  }
+  
   const hypertune = await getHypertune();
   // No need to check for this in dev
   const isInviteFlowEnabled =
@@ -19,9 +23,6 @@ export async function middleware(request: NextRequest) {
 
   if (request.nextUrl.pathname.startsWith("/reviews")) {
     return authMiddleware(request);
-  }
-  if (request.nextUrl.pathname.startsWith("/admin")) {
-    return adminMiddleware(request);
   }
 
   return;
