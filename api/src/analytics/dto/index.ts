@@ -1,5 +1,5 @@
 // Company
-export {
+  export {
   CompanyListResponseDto,
   CompanyListItemExtendedDto,
 } from './company-list.dto';
@@ -27,6 +27,8 @@ export { QueryParamsDto } from './query-params.dto';
 // Role
 export { RoleListResponseDto, RoleListItemDto } from './role-list.dto';
 export { RoleOptionDto } from './role-option.dto';
+export { GetRoleHierarchyDto } from './get-role-hierarchy.dto';
+export { RoleHierarchyDto, RoleHierarchyItemDto } from './role-hierarchy.dto';
 
 // Data point
 export { DataPointDto } from './data-point.dto';
