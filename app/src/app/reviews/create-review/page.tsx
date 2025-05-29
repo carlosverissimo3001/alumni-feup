@@ -43,16 +43,12 @@ interface CompanyTransformed {
 const SubmitReview = () => {
     const { toast } = useToast();
     const router = useRouter();
-    
-    //Hardcoded Id for testing
-    const id = '49b4ffbe-e537-49c7-a14b-d5076c8af689';
-    //const id = '144e0a9f-1cea-4da7-a6c2-6b0097a11e80';
 
-    //const { user } = useAuth();
+    const { user } = useAuth();
 
     const {
         data: pastLocationsAndCompanies,
-    } = useFetchPastLocationsAndCompanies(id as string);
+    } = useFetchPastLocationsAndCompanies(user?.id as string);
 
     const companies = transformData(pastLocationsAndCompanies?.companies);
     const locations = pastLocationsAndCompanies?.locations;
@@ -116,7 +112,7 @@ const SubmitReview = () => {
     }
 
     const createReviewDto: CreateReviewDto = {
-      alumniId: id || '',
+      alumniId: user?.id || '',
       description: description,
       rating: reviewRating,
       reviewType: reviewType,
@@ -136,7 +132,6 @@ const SubmitReview = () => {
         setErrors(validationErrors);
         return;
       }else{
-        //createReviewDto.alumniId = user!.id;
         console.log(createReviewDto.alumniId);
         sendReviewSubmit();
         if(error){

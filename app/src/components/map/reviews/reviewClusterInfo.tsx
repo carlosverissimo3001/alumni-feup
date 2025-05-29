@@ -39,7 +39,6 @@ const ReviewClusterInfo = ({
   const [endPosition, setEndPosition] = useState(nAlumniToShow - 1); // Position in the array to stop reading from. 0 is also a number therefore the -1
   const [showPrev, setShowPrev] = useState(false); // Defines if it is to show the "...Prev"
   const [showMore, setShowMore] = useState(false); // Defines if it is to show the "More..."
-  const [showCompare, setShowCompare] = useState(false);
   const [reviewScore, setReviewScore] = useState<ChangeReviewScoreDto | null>(
     null
   );
