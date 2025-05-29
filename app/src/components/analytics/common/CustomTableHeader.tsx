@@ -20,6 +20,7 @@ type CustomTableHeaderProps = {
   customAlumniHeader?: string;
   showTrend?: boolean;
   trendFrequency?: TrendFrequency;
+  showInfoColumn?: boolean;
   allowCountSort?: boolean;
   extraHeaderName?: string;
 };
@@ -29,6 +30,7 @@ export const CustomTableHeader = ({
   sortOrder,
   onSort,
   hoverMessage,
+  showInfoColumn = false,
   customNameHeader,
   customAlumniHeader,
   showTrend = false,
@@ -37,9 +39,7 @@ export const CustomTableHeader = ({
   extraHeaderName,
 }: CustomTableHeaderProps) => {
   const renderSortIcon = (field: SortBy) => {
-    if (sortField !== field) {
-      return;
-    }
+    if (sortField !== field) return null;
     return sortOrder === "asc" ? (
       <ArrowUp className="h-3.5 w-3.5 inline-block" />
     ) : (
@@ -47,23 +47,29 @@ export const CustomTableHeader = ({
     );
   };
 
+  // Dynamically calculate column widths
+  const numberColWidth = "w-[5%]";
+  const infoColWidth = showInfoColumn ? "w-[5%]" : "";
+  const nameColWidth = extraHeaderName
+    ? showInfoColumn ? "w-[40%]" : "w-[45%]"
+    : showInfoColumn ? "w-[55%]" : "w-[60%]";
+  const extraHeaderWidth = "w-[10%]";
+  const countColWidth = "w-[20%]";
+
   return (
     <TableHeader className="bg-gradient-to-r from-[#A13A23]/10 to-gray-100/80 sticky top-0 z-10 backdrop-blur-sm border-b border-gray-200/80 hover:bg-[#A13A23]/15 transition-all duration-300">
       <TableRow>
-        {/* The number column */}
-        <TableHead className="w-[5%] pl-3 py-1 text-left text-xs font-semibold text-[#8C2D19] uppercase tracking-wider">
+        {/* Number column */}
+        <TableHead className={`${numberColWidth} pl-3 py-1 text-left text-xs font-semibold text-[#8C2D19] uppercase tracking-wider`}>
           #
         </TableHead>
-        {/* The name(company, city, etc.) column */}
-        <TableHead
-          className={`${
-            extraHeaderName ? "w-[45%]" : "w-[65%]"
-          }  text-xs font-semibold text-[#8C2D19] tracking-wider`}
-        >
-          <div className="flex items-center">
+
+        {/* Name column */}
+        <TableHead className={`${nameColWidth} text-xs font-semibold text-[#8C2D19] tracking-wider`}>
+          <div className="flex items-center min-w-0">
             <Button
               variant="ghost"
-              className="h-8 px-1 font-semibold hover:bg-[#A13A23]/10 hover:text-[#A13A23] flex items-center gap-1 rounded-md transition-all duration-200"
+              className="h-8 px-1 font-semibold hover:bg-[#A13A23]/10 hover:text-[#A13A23] flex items-center gap-1 rounded-md transition-all duration-200 truncate"
               onClick={() => onSort?.(SortBy.NAME)}
             >
               <span className="truncate">{customNameHeader || "Name"}</span>
@@ -71,9 +77,10 @@ export const CustomTableHeader = ({
             </Button>
           </div>
         </TableHead>
-        {/* Extra headers (year, etc...) */}
+
+        {/* Optional extra header (e.g., Year) */}
         {extraHeaderName && (
-          <TableHead className="w-[10%] py-1 text-left text-xs font-semibold text-[#8C2D19] tracking-wider">
+          <TableHead className={`${extraHeaderWidth} py-1 text-left text-xs font-semibold text-[#8C2D19] tracking-wider`}>
             <div className="flex items-center justify-center">
               <Button
                 variant="ghost"
@@ -86,7 +93,16 @@ export const CustomTableHeader = ({
             </div>
           </TableHead>
         )}
-        <TableHead className="w-[20%] py-1 text-xs font-semibold text-[#8C2D19] tracking-wider">
+
+        {/* Info icon column (conditionally rendered) */}
+        {showInfoColumn && (
+          <TableHead className={`${infoColWidth} px-2 py-1 text-xs font-semibold text-[#8C2D19] tracking-wider text-center`}>
+            {/* Empty header cell for alignment */}
+          </TableHead>
+        )}
+
+        {/* Count / Alumni column */}
+        <TableHead className={`${countColWidth} py-1 text-xs font-semibold text-[#8C2D19] tracking-wider`}>
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger asChild>
@@ -122,17 +138,18 @@ export const CustomTableHeader = ({
 };
 
 const getDateRange = (trendFrequency: TrendFrequency) => {
+  const currentYear = new Date().getFullYear();
   switch (trendFrequency) {
     case TrendFrequency.MAX:
-      return `${new Date().getFullYear() - 30} - ${new Date().getFullYear()}`;
+      return `${currentYear - 30} - ${currentYear}`;
     case TrendFrequency.Y20:
-      return `${new Date().getFullYear() - 20} - ${new Date().getFullYear()}`;
+      return `${currentYear - 20} - ${currentYear}`;
     case TrendFrequency.Y10:
-      return `${new Date().getFullYear() - 10} - ${new Date().getFullYear()}`;
+      return `${currentYear - 10} - ${currentYear}`;
     case TrendFrequency.Y5:
-      return `${new Date().getFullYear() - 5} - ${new Date().getFullYear()}`;
+      return `${currentYear - 5} - ${currentYear}`;
     case TrendFrequency.Y3:
-      return `${new Date().getFullYear() - 3} - ${new Date().getFullYear()}`;
+      return `${currentYear - 3} - ${currentYear}`;
     case TrendFrequency.YTD: {
       const now = new Date();
       const start = new Date(now.getFullYear(), 0, 1);

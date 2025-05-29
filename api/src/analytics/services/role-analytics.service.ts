@@ -4,6 +4,8 @@ import {
   RoleOptionDto,
   RoleListItemDto,
   GetRoleHierarchyDto,
+  RoleHierarchyDto,
+  RoleHierarchyItemDto,
 } from '@/analytics/dto';
 import {
   AlumniAnalyticsRepository,
@@ -167,8 +169,10 @@ export class RoleAnalyticsService {
     return this.roleRepository.findAllClassifications();
   }
 
-  async getRoleHierarchy(query: GetRoleHierarchyDto): Promise<string> {
-    const parts: string[] = [];
+  async getRoleHierarchy(
+    query: GetRoleHierarchyDto,
+  ): Promise<RoleHierarchyDto> {
+    const parts: RoleHierarchyItemDto[] = [];
     let currentCode = query.code;
 
     // Keep going up the hierarchy until we reach level 1
@@ -180,7 +184,11 @@ export class RoleAnalyticsService {
         break;
       }
 
-      parts.unshift(classification.titleEn);
+      parts.unshift({
+        title: classification.titleEn,
+        code: currentCode,
+        escoUrl: classification.escoUrl,
+      });
 
       // Move up one level
       if (currentCode.length <= 1) break;
@@ -202,6 +210,8 @@ export class RoleAnalyticsService {
       }
     }
 
-    return parts.join(' > ');
+    return {
+      hierarchy: parts,
+    };
   }
 }

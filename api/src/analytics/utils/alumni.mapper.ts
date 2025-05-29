@@ -22,6 +22,7 @@ type RawEscoClassification = {
   code: string;
   isLeaf: boolean;
   level: number;
+  escoUrl?: string | null;
 };
 
 type RawJobClassification = {
@@ -143,7 +144,7 @@ const mapIndustryFromPrisma = (
   };
 };
 
-const mapEscoClassificationFromPrisma = (
+export const mapEscoClassificationFromPrisma = (
   escoClassification: RawEscoClassification,
 ): EscoClassificationAnalyticsEntity => {
   return {
@@ -151,6 +152,7 @@ const mapEscoClassificationFromPrisma = (
     code: escoClassification.code,
     level: escoClassification.level,
     isLeaf: escoClassification.isLeaf,
+    escoUrl: escoClassification.escoUrl ?? undefined,
   };
 };
 

@@ -43,11 +43,6 @@ import { DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { DropdownMenu } from "@/components/ui/dropdown-menu";
 import { ESCO_INFO, ISCO_INFO } from "@/consts";
 import { ClassificationLevel } from "@/types/drillType";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
 import { RoleHierarchyInfo } from "../misc/RoleHierarchyInfo";
 
 type RoleDashboardProps = {
@@ -133,40 +128,54 @@ export const RoleDashboard = ({
                 onSort={handleSort}
                 showTrend={view === ViewType.TREND}
                 trendFrequency={trendFrequency}
+                showInfoColumn={true}
                 customAlumniHeader="Roles"
                 hoverMessage="The total of alumni roles classified with this title"
               />
 
               {isLoading || isFetching ? (
-                <DashboardSkeleton />
+                <DashboardSkeleton hasInfoColumn={true} />
               ) : (
                 <TableBody className="bg-white divide-y divide-gray-200">
                   {roles.length > 0 ? (
                     roles.map((role: RoleListItemDto, index: number) => {
                       const rowNumber = (page - 1) * itemsPerPage + index + 1;
+
                       return (
-                        <CustomTableRow key={role.code} index={index}>
+                        <CustomTableRow
+                          key={role.code}
+                          index={index}
+                          className="group"
+                        >
                           <TableNumberCell rowNumber={rowNumber} />
                           <TableNameCell
                             name={role.name}
                             isRowInFilters={!!isRowInFilters(role)}
                           />
                           <TableCell className="w-[36px] px-2 align-middle">
-                            <Popover>
-                              <PopoverTrigger asChild>
-                                <Button
-                                  variant="ghost"
-                                  size="icon"
-                                  className="p-1 h-6 w-6 rounded-full bg-gray-100 hover:bg-gray-200"
-                                  aria-label="Show hierarchy"
-                                >
-                                  <Info className="h-4 w-4 text-[#8C2D19]" />
-                                </Button>
-                              </PopoverTrigger>
-                              <PopoverContent className="w-auto max-w-xs">
-                                <RoleHierarchyInfo code={role.code} />
-                              </PopoverContent>
-                            </Popover>
+                            {classificationLevel !==
+                              ClassificationLevel.LEVEL_1 && (
+                              <TooltipProvider>
+                                <Tooltip>
+                                  <TooltipTrigger asChild>
+                                    <Button
+                                      variant="ghost"
+                                      size="icon"
+                                      className="p-1 h-6 w-6 rounded-full bg-gray-100 hover:bg-gray-200 group-hover:opacity-100 opacity-0 transition-opacity"
+                                      aria-label="Show hierarchy"
+                                    >
+                                      <Info className="h-4 w-4 text-[#8C2D19]" />
+                                    </Button>
+                                  </TooltipTrigger>
+                                  <TooltipContent
+                                    align="end"
+                                    className="max-w-md p-2 text-sm text-gray-800 bg-white border shadow-md rounded-md"
+                                  >
+                                    <RoleHierarchyInfo code={role.code} />
+                                  </TooltipContent>
+                                </Tooltip>
+                              </TooltipProvider>
+                            )}
                           </TableCell>
                           <TableCell
                             className={`w-[12%] px-4 ${
@@ -227,6 +236,7 @@ export const RoleDashboard = ({
                     <NotFoundComponent
                       message="No role data available"
                       description="Try adjusting your filters to find roles that match your criteria."
+                      colSpan={4}
                     />
                   )}
                 </TableBody>
@@ -258,9 +268,9 @@ export const RoleDashboard = ({
           <LoadingChart message="Loading chart data..." />
         ) : roles.length === 0 ? (
           <NotFoundComponent
-            message="No industry data available"
-            description="Try adjusting your filters to find industries that match your criteria."
-            colSpan={1}
+            message="No role data available"
+            description="Try adjusting your filters to find roles that match your criteria."
+            colSpan={4}
           />
         ) : (
           <ChartView

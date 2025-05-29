@@ -48,6 +48,7 @@ import type {
   MajorListDto,
   MarkAsReviewedDto,
   ReviewGeoJSONFeatureCollection,
+  RoleHierarchyDto,
   RoleListResponseDto,
   RoleOptionDto,
   SendFeedbackDto,
@@ -123,6 +124,8 @@ import {
     MarkAsReviewedDtoToJSON,
     ReviewGeoJSONFeatureCollectionFromJSON,
     ReviewGeoJSONFeatureCollectionToJSON,
+    RoleHierarchyDtoFromJSON,
+    RoleHierarchyDtoToJSON,
     RoleListResponseDtoFromJSON,
     RoleListResponseDtoToJSON,
     RoleOptionDtoFromJSON,
@@ -1295,13 +1298,13 @@ export interface V1ApiInterface {
      * @throws {RequiredError}
      * @memberof V1ApiInterface
      */
-    roleAnalyticsControllerGetRoleHierarchyRaw(requestParameters: RoleAnalyticsControllerGetRoleHierarchyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<string>>;
+    roleAnalyticsControllerGetRoleHierarchyRaw(requestParameters: RoleAnalyticsControllerGetRoleHierarchyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<RoleHierarchyDto>>;
 
     /**
      * Returns a list of roles with their ESCO code and title.
      * Gets the hierarchy of a role
      */
-    roleAnalyticsControllerGetRoleHierarchy(requestParameters: RoleAnalyticsControllerGetRoleHierarchyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<string>;
+    roleAnalyticsControllerGetRoleHierarchy(requestParameters: RoleAnalyticsControllerGetRoleHierarchyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<RoleHierarchyDto>;
 
     /**
      * Returns a list of roles with their ESCO code and title.
@@ -3530,7 +3533,7 @@ export class V1Api extends runtime.BaseAPI implements V1ApiInterface {
      * Returns a list of roles with their ESCO code and title.
      * Gets the hierarchy of a role
      */
-    async roleAnalyticsControllerGetRoleHierarchyRaw(requestParameters: RoleAnalyticsControllerGetRoleHierarchyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<string>> {
+    async roleAnalyticsControllerGetRoleHierarchyRaw(requestParameters: RoleAnalyticsControllerGetRoleHierarchyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<RoleHierarchyDto>> {
         if (requestParameters['code'] == null) {
             throw new runtime.RequiredError(
                 'code',
@@ -3553,18 +3556,14 @@ export class V1Api extends runtime.BaseAPI implements V1ApiInterface {
             query: queryParameters,
         }, initOverrides);
 
-        if (this.isJsonMime(response.headers.get('content-type'))) {
-            return new runtime.JSONApiResponse<string>(response);
-        } else {
-            return new runtime.TextApiResponse(response) as any;
-        }
+        return new runtime.JSONApiResponse(response, (jsonValue) => RoleHierarchyDtoFromJSON(jsonValue));
     }
 
     /**
      * Returns a list of roles with their ESCO code and title.
      * Gets the hierarchy of a role
      */
-    async roleAnalyticsControllerGetRoleHierarchy(requestParameters: RoleAnalyticsControllerGetRoleHierarchyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<string> {
+    async roleAnalyticsControllerGetRoleHierarchy(requestParameters: RoleAnalyticsControllerGetRoleHierarchyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<RoleHierarchyDto> {
         const response = await this.roleAnalyticsControllerGetRoleHierarchyRaw(requestParameters, initOverrides);
         return await response.value();
     }

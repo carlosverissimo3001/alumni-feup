@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from '@/prisma/prisma.service';
 import { RoleOptionDto } from '@/analytics/dto/role-option.dto';
 import { EscoClassificationAnalyticsEntity } from '../entities/esco-classification.entity';
+import { mapEscoClassificationFromPrisma } from '../utils/alumni.mapper';
 
 @Injectable()
 export class RoleRepository {
@@ -55,11 +56,6 @@ export class RoleRepository {
       return undefined;
     }
 
-    return {
-      titleEn: classification.titleEn,
-      code: classification.code,
-      isLeaf: classification.isLeaf,
-      level: classification.level,
-    };
+    return mapEscoClassificationFromPrisma(classification);
   }
 }

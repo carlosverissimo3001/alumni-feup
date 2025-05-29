@@ -3,9 +3,14 @@ import { TableCell, TableRow, TableBody } from "@/components/ui/table";
 type DashboardSkeletonProps = {
   rows?: number;
   hasExtraColumn?: boolean;
+  hasInfoColumn?: boolean;
 };
 
-export const DashboardSkeleton = ({ rows = 5, hasExtraColumn = false }: DashboardSkeletonProps) => {
+export const DashboardSkeleton = ({
+  rows = 5,
+  hasExtraColumn = false,
+  hasInfoColumn = false,
+}: DashboardSkeletonProps) => {
   return (
     <TableBody className="bg-white divide-y divide-gray-200">
       {Array.from({ length: rows }).map((_, index) => (
@@ -22,6 +27,11 @@ export const DashboardSkeleton = ({ rows = 5, hasExtraColumn = false }: Dashboar
             <div className="h-4 w-3/4 bg-gray-200 rounded animate-pulse" />
           </TableCell>
           {hasExtraColumn && (
+            <TableCell className="w-[12%] px-3 py-1.5 text-sm align-middle">
+              <div className="h-4 w-12 bg-gray-200 rounded animate-pulse" />
+            </TableCell>
+          )}
+          {hasInfoColumn && (
             <TableCell className="w-[12%] px-3 py-1.5 text-sm align-middle">
               <div className="h-4 w-12 bg-gray-200 rounded animate-pulse" />
             </TableCell>

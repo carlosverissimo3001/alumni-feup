@@ -10,6 +10,9 @@ export class EscoClassificationAnalyticsEntity {
   @ApiProperty()
   level: number;
 
-  @ApiPropertyOptional()
+  @ApiProperty()
   isLeaf: boolean;
+
+  @ApiPropertyOptional()
+  escoUrl?: string;
 }

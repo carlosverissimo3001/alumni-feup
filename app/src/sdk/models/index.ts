@@ -66,6 +66,8 @@ export * from './ReviewGeoJSONFeature';
 export * from './ReviewGeoJSONFeatureCollection';
 export * from './ReviewLocation';
 export * from './Role';
+export * from './RoleHierarchyDto';
+export * from './RoleHierarchyItemDto';
 export * from './RoleListItemDto';
 export * from './RoleListResponseDto';
 export * from './RoleOptionDto';

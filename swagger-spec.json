@@ -3529,7 +3529,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "string"
+                  "$ref": "#/components/schemas/RoleHierarchyDto"
                 }
               }
             }
@@ -6217,6 +6217,42 @@
           "escoCode",
           "title",
           "level"
+        ]
+      },
+      "RoleHierarchyItemDto": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "description": "The role title"
+          },
+          "code": {
+            "type": "string",
+            "description": "The role code"
+          },
+          "escoUrl": {
+            "type": "string",
+            "description": "The role esco url"
+          }
+        },
+        "required": [
+          "title",
+          "code"
+        ]
+      },
+      "RoleHierarchyDto": {
+        "type": "object",
+        "properties": {
+          "hierarchy": {
+            "description": "The role hierarchy",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RoleHierarchyItemDto"
+            }
+          }
+        },
+        "required": [
+          "hierarchy"
         ]
       },
       "LocationAnalyticsEntity": {

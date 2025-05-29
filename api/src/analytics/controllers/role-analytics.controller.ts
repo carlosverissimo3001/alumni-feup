@@ -6,6 +6,7 @@ import {
   RoleListResponseDto,
   RoleOptionDto,
   GetRoleHierarchyDto,
+  RoleHierarchyDto,
 } from '@/analytics/dto';
 
 @ApiTags('V1')
@@ -51,7 +52,7 @@ export class RoleAnalyticsController {
   @ApiResponse({
     status: 200,
     description: 'The hierarchy of a role',
-    type: String,
+    type: RoleHierarchyDto,
   })
   async getRoleHierarchy(@Query() query: GetRoleHierarchyDto) {
     return this.roleAnalyticsService.getRoleHierarchy(query);

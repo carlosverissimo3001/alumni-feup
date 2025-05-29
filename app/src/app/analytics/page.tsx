@@ -296,9 +296,23 @@ function AnalyticsContent() {
     });
   }, []);
 
+  const getClassificationLevel = (classificationLevel: ClassificationLevel) => {
+    return Number(classificationLevel.split(" ")[1]);
+  };
+
+  const getCodeLevel = (code: string) => {
+    if (code.length <= 5) {
+      return code.length;
+    }
+    const parts = code.split(".");
+    return parts.length + 4; // 4 as the first 4 digits are not seperated by a dot
+  };
+
   const handleAddRoleToFilters = useCallback(
     (escoCode: string) => {
       setFilters((prev) => {
+        const newCodeLevel = getCodeLevel(escoCode);
+
         const newEscoCodes = prev.escoCodes?.includes(escoCode)
           ? prev.escoCodes.filter((code) => code !== escoCode)
           : [...(prev.escoCodes || []), escoCode];
@@ -306,7 +320,8 @@ function AnalyticsContent() {
         // If we're adding a new code and not at level 8, increment the level
         if (
           !prev.escoCodes?.includes(escoCode) &&
-          classificationLevel !== ClassificationLevel.LEVEL_8
+          classificationLevel !== ClassificationLevel.LEVEL_8 &&
+          newCodeLevel >= getClassificationLevel(classificationLevel)
         ) {
           const currentLevel = Number(classificationLevel.split(" ")[1]);
           const nextLevel = `Level ${currentLevel + 1}` as ClassificationLevel;
