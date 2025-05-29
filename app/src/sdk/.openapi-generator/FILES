@@ -71,6 +71,8 @@ models/ReviewGeoJSONFeature.ts
 models/ReviewGeoJSONFeatureCollection.ts
 models/ReviewLocation.ts
 models/Role.ts
+models/RoleHierarchyDto.ts
+models/RoleHierarchyItemDto.ts
 models/RoleListItemDto.ts
 models/RoleListResponseDto.ts
 models/RoleOptionDto.ts
