@@ -101,7 +101,7 @@ export class RoleAnalyticsService {
 
     const roleMap = new Map<string, RoleListItemDto>();
     for (const role of allRoles) {
-      let { code, titleEn, isLeaf, level } =
+      let { code, titleEn, level, escoUrl } =
         role.jobClassification!.escoClassification;
 
       // Let's return early if we don't have a hierarchy for this code
@@ -113,8 +113,8 @@ export class RoleAnalyticsService {
       }
       code = hierarchy.code;
       titleEn = hierarchy.titleEn;
-      isLeaf = hierarchy.isLeaf;
       level = hierarchy.level;
+      escoUrl = hierarchy.escoUrl;
 
       const existingRole = roleMap.get(code);
       if (existingRole) {
@@ -123,8 +123,8 @@ export class RoleAnalyticsService {
         roleMap.set(code, {
           name: titleEn,
           code: code,
-          isLeaf: isLeaf,
           level: requestedLevel || level,
+          escoUrl: escoUrl,
           count: 1,
           trend: [],
         });
@@ -132,13 +132,15 @@ export class RoleAnalyticsService {
     }
 
     const roles = Array.from(roleMap.values());
+
     if (query.includeTrend) {
       const trends = await Promise.all(
         roles.map((role) =>
           this.trendAnalyticsService.getRoleTrend({
             data: alumnusUnfiltered,
-            entityId: role.code,
-            isDifferentClassificationLevel: false,
+            entityId: isGranular
+              ? role.code
+              : role.code.slice(0, requestedLevel),
           }),
         ),
       );

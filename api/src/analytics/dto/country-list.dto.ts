@@ -1,4 +1,4 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { DataPointDto } from './data-point.dto';
 
 export class CountryListItemDto {
@@ -16,6 +16,18 @@ export class CountryListItemDto {
     description: 'The country code (ISO 3166-1 alpha-2)',
   })
   code: string;
+
+  @ApiPropertyOptional({
+    description: 'The latitude of the country',
+    type: Number,
+  })
+  latitude?: number;
+
+  @ApiPropertyOptional({
+    description: 'The longitude of the country',
+    type: Number,
+  })
+  longitude?: number;
 
   @ApiProperty({
     description: 'The number of alumni in the country',

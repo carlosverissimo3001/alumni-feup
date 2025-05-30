@@ -34,6 +34,9 @@ const getTitle = (entity: EntityType, items: number) => {
     case EntityType.YEAR:
       title += "Graduation Years";
       break;
+    case EntityType.SENIORITY:
+      title += "Seniority Levels";
+      break;
     default:
       return title;
   }

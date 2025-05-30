@@ -29,9 +29,11 @@ import { useCityOptions } from "@/hooks/analytics/useCityOptions";
 import { useIndustryOptions } from "@/hooks/analytics/useIndustryOptions";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { COMPANY_SIZE, COMPANY_TYPE } from "@/types/company";
+import { SENIORITY_LEVEL_API_TO_ENUM } from "@/types/roles";
 import {
   CompanyAnalyticsControllerGetCompaniesWithAlumniCountCompanySizeEnum as CompanySizeEnum,
   CompanyAnalyticsControllerGetCompaniesWithAlumniCountCompanyTypeEnum as CompanyTypeEnum,
+  RoleAnalyticsControllerGetRolesSeniorityLevelEnum as SeniorityLevelEnum,
 } from "@/sdk";
 import { motion, AnimatePresence } from "framer-motion";
 import { useRoleOptions } from "@/hooks/analytics/useRoleOptions";
@@ -60,6 +62,7 @@ export type FilterState = {
   hideUnknownRoles?: boolean;
   companySize?: CompanySizeEnum[];
   companyType?: CompanyTypeEnum[];
+  seniorityLevel?: SeniorityLevelEnum[];
   alumniIds?: string[];
 };
 
@@ -197,6 +200,10 @@ export const GlobalFilters = ({
           label: COMPANY_TYPE[key as keyof typeof COMPANY_TYPE],
         }))
         .sort((a, b) => a.label.localeCompare(b.label)),
+      seniorityLevels: Object.values(SeniorityLevelEnum).map((value) => ({
+        value: value,
+        label: SENIORITY_LEVEL_API_TO_ENUM[value],
+      })),
       roles: (roleOptions || []).map((role) => ({
         value: role.escoCode,
         label: `${role.title} `,
@@ -264,14 +271,6 @@ export const GlobalFilters = ({
     onFiltersChange(emptyFilters);
   };
 
-  /* const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value.trim() === "" ? undefined : e.target.value;
-    handleFilterChange("search", value);
-  };
-
-  const handleClearSearch = () => {
-    handleFilterChange("search", undefined);
-  }; */
 
   const buildMapUrl = useCallback(() => {
     const params = new URLSearchParams();
@@ -492,7 +491,7 @@ export const GlobalFilters = ({
 
   function renderRolesTab() {
     return (
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-start">
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-center">
         <div>
           <div className="flex items-center gap-1 mb-1">
             <Label
@@ -555,7 +554,26 @@ export const GlobalFilters = ({
           />
         </div>
 
-        <div className="grid grid-cols-2 gap-2 gap-x-4 mt-5">
+        <div>
+          <Label
+            htmlFor="seniorityLevelSelect"
+            className="text-xs font-medium text-gray-700 mb-1 block"
+          >
+            Seniority Level
+          </Label>
+          <MultiSelect
+            id="seniorityLevelSelect"
+            options={options.seniorityLevels}
+            value={filters.seniorityLevel}
+            onValueChange={(value) =>
+              handleFilterChange("seniorityLevel", value)
+            }
+            placeholder="Select role seniority"
+            maxCount={2}
+          />
+        </div>
+
+        <div className="h-full flex flex-col justify-center gap-3 mt-4">
           <div className="flex items-center space-x-2">
             <Checkbox
               id="currentRoles"
@@ -589,22 +607,6 @@ export const GlobalFilters = ({
               Only international roles
             </Label>
           </div>
-          {/* <div className="flex items-center space-x-2">
-            <Checkbox
-              id="hideUnknownRoles"
-              checked={filters.hideUnknownRoles}
-              onCheckedChange={(checked) =>
-                handleFilterChange("hideUnknownRoles", checked)
-              }
-              className="border-gray-300 data-[state=checked]:bg-[#8C2D19] data-[state=checked]:border-[#8C2D19] hover:scale-110 transition-transform duration-200"
-            />
-            <Label
-              htmlFor="hideUnknownRoles"
-              className="text-xs font-medium text-gray-700 peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-            >
-              Hide remote/unlocated roles
-            </Label>
-          </div> */}
         </div>
       </div>
     );

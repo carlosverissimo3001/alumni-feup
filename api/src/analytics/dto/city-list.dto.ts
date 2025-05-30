@@ -1,4 +1,4 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { IsNumber, IsString } from 'class-validator';
 import { DataPointDto } from './data-point.dto';
 export class CityListItemDto {
@@ -22,6 +22,20 @@ export class CityListItemDto {
   })
   @IsString()
   code: string;
+
+  @ApiPropertyOptional({
+    description: 'The latitude of the city',
+    type: Number,
+  })
+  @IsNumber()
+  latitude?: number;
+
+  @ApiProperty({
+    description: 'The longitude of the city',
+    type: Number,
+  })
+  @IsNumber()
+  longitude?: number;
 
   @ApiProperty({
     description: 'The number of alumni in the city',

@@ -841,6 +841,31 @@
             }
           },
           {
+            "name": "seniorityLevel",
+            "required": false,
+            "in": "query",
+            "description": "The seniority levels to filter by",
+            "schema": {
+              "example": [
+                "INTERN",
+                "ENTRY_LEVEL"
+              ],
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "INTERN",
+                  "ENTRY_LEVEL",
+                  "ASSOCIATE",
+                  "MID_SENIOR_LEVEL",
+                  "DIRECTOR",
+                  "EXECUTIVE",
+                  "C_LEVEL"
+                ]
+              }
+            }
+          },
+          {
             "name": "escoCodes",
             "required": false,
             "in": "query",
@@ -1268,6 +1293,31 @@
             }
           },
           {
+            "name": "seniorityLevel",
+            "required": false,
+            "in": "query",
+            "description": "The seniority levels to filter by",
+            "schema": {
+              "example": [
+                "INTERN",
+                "ENTRY_LEVEL"
+              ],
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "INTERN",
+                  "ENTRY_LEVEL",
+                  "ASSOCIATE",
+                  "MID_SENIOR_LEVEL",
+                  "DIRECTOR",
+                  "EXECUTIVE",
+                  "C_LEVEL"
+                ]
+              }
+            }
+          },
+          {
             "name": "escoCodes",
             "required": false,
             "in": "query",
@@ -1619,6 +1669,31 @@
                   "PUBLIC_COMPANY",
                   "SELF_EMPLOYED",
                   "SELF_OWNED"
+                ]
+              }
+            }
+          },
+          {
+            "name": "seniorityLevel",
+            "required": false,
+            "in": "query",
+            "description": "The seniority levels to filter by",
+            "schema": {
+              "example": [
+                "INTERN",
+                "ENTRY_LEVEL"
+              ],
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "INTERN",
+                  "ENTRY_LEVEL",
+                  "ASSOCIATE",
+                  "MID_SENIOR_LEVEL",
+                  "DIRECTOR",
+                  "EXECUTIVE",
+                  "C_LEVEL"
                 ]
               }
             }
@@ -2043,6 +2118,31 @@
             }
           },
           {
+            "name": "seniorityLevel",
+            "required": false,
+            "in": "query",
+            "description": "The seniority levels to filter by",
+            "schema": {
+              "example": [
+                "INTERN",
+                "ENTRY_LEVEL"
+              ],
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "INTERN",
+                  "ENTRY_LEVEL",
+                  "ASSOCIATE",
+                  "MID_SENIOR_LEVEL",
+                  "DIRECTOR",
+                  "EXECUTIVE",
+                  "C_LEVEL"
+                ]
+              }
+            }
+          },
+          {
             "name": "escoCodes",
             "required": false,
             "in": "query",
@@ -2425,6 +2525,31 @@
             }
           },
           {
+            "name": "seniorityLevel",
+            "required": false,
+            "in": "query",
+            "description": "The seniority levels to filter by",
+            "schema": {
+              "example": [
+                "INTERN",
+                "ENTRY_LEVEL"
+              ],
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "INTERN",
+                  "ENTRY_LEVEL",
+                  "ASSOCIATE",
+                  "MID_SENIOR_LEVEL",
+                  "DIRECTOR",
+                  "EXECUTIVE",
+                  "C_LEVEL"
+                ]
+              }
+            }
+          },
+          {
             "name": "escoCodes",
             "required": false,
             "in": "query",
@@ -2776,6 +2901,31 @@
                   "PUBLIC_COMPANY",
                   "SELF_EMPLOYED",
                   "SELF_OWNED"
+                ]
+              }
+            }
+          },
+          {
+            "name": "seniorityLevel",
+            "required": false,
+            "in": "query",
+            "description": "The seniority levels to filter by",
+            "schema": {
+              "example": [
+                "INTERN",
+                "ENTRY_LEVEL"
+              ],
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "INTERN",
+                  "ENTRY_LEVEL",
+                  "ASSOCIATE",
+                  "MID_SENIOR_LEVEL",
+                  "DIRECTOR",
+                  "EXECUTIVE",
+                  "C_LEVEL"
                 ]
               }
             }
@@ -3137,6 +3287,31 @@
             }
           },
           {
+            "name": "seniorityLevel",
+            "required": false,
+            "in": "query",
+            "description": "The seniority levels to filter by",
+            "schema": {
+              "example": [
+                "INTERN",
+                "ENTRY_LEVEL"
+              ],
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "INTERN",
+                  "ENTRY_LEVEL",
+                  "ASSOCIATE",
+                  "MID_SENIOR_LEVEL",
+                  "DIRECTOR",
+                  "EXECUTIVE",
+                  "C_LEVEL"
+                ]
+              }
+            }
+          },
+          {
             "name": "escoCodes",
             "required": false,
             "in": "query",
@@ -3493,6 +3668,31 @@
             }
           },
           {
+            "name": "seniorityLevel",
+            "required": false,
+            "in": "query",
+            "description": "The seniority levels to filter by",
+            "schema": {
+              "example": [
+                "INTERN",
+                "ENTRY_LEVEL"
+              ],
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "INTERN",
+                  "ENTRY_LEVEL",
+                  "ASSOCIATE",
+                  "MID_SENIOR_LEVEL",
+                  "DIRECTOR",
+                  "EXECUTIVE",
+                  "C_LEVEL"
+                ]
+              }
+            }
+          },
+          {
             "name": "escoCodes",
             "required": false,
             "in": "query",
@@ -3655,6 +3855,387 @@
           }
         },
         "summary": "Gets the hierarchy of a role",
+        "tags": [
+          "V1"
+        ]
+      }
+    },
+    "/analytics/roles/seniority": {
+      "get": {
+        "operationId": "RoleAnalyticsController_getSeniorityLevels",
+        "parameters": [
+          {
+            "name": "alumniIds",
+            "required": false,
+            "in": "query",
+            "description": "The alumni IDs to filter by",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "startDate",
+            "required": false,
+            "in": "query",
+            "description": "The start date of the role",
+            "schema": {
+              "example": "2023-11-16",
+              "type": "string"
+            }
+          },
+          {
+            "name": "endDate",
+            "required": false,
+            "in": "query",
+            "description": "The end date of the role",
+            "schema": {
+              "example": "2025-04-20",
+              "type": "string"
+            }
+          },
+          {
+            "name": "facultyIds",
+            "required": false,
+            "in": "query",
+            "description": "The faculty IDs to filter by",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "courseIds",
+            "required": false,
+            "in": "query",
+            "description": "The course IDs to filter by",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "graduationYears",
+            "required": false,
+            "in": "query",
+            "description": "The graduation years to filter by",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "companyIds",
+            "required": false,
+            "in": "query",
+            "description": "The company IDs to filter by",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "industryIds",
+            "required": false,
+            "in": "query",
+            "description": "The industry IDs to filter by",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "roleCountryCodes",
+            "required": false,
+            "in": "query",
+            "description": "The country codes where alumni exerced their roles",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "roleCityIds",
+            "required": false,
+            "in": "query",
+            "description": "The city IDS where alumni exerced their roles",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "companyHQsCountryCodes",
+            "required": false,
+            "in": "query",
+            "description": "The company HQs country codes to filter by",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "companyHQsCityIds",
+            "required": false,
+            "in": "query",
+            "description": "The company HQs city ids to filter by",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "currentRolesOnly",
+            "required": false,
+            "in": "query",
+            "description": "Filter for current roles only",
+            "schema": {
+              "example": true,
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "onlyCompaniesWithSalaryData",
+            "required": false,
+            "in": "query",
+            "description": "Include only companies with salary data",
+            "schema": {
+              "example": true,
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "onlyInternational",
+            "required": false,
+            "in": "query",
+            "description": "Whether to exclude roles in Portugal",
+            "schema": {
+              "example": true,
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "excludeResearchAndHighEducation",
+            "required": false,
+            "in": "query",
+            "description": "Exclude research and high education roles",
+            "schema": {
+              "example": true,
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "alumniSearch",
+            "required": false,
+            "in": "query",
+            "description": "Search query for companies",
+            "schema": {
+              "example": "search query",
+              "type": "string"
+            }
+          },
+          {
+            "name": "companySize",
+            "required": false,
+            "in": "query",
+            "description": "The company sizes to filter by",
+            "schema": {
+              "example": [
+                "A",
+                "B"
+              ],
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "A",
+                  "B",
+                  "C",
+                  "D",
+                  "E",
+                  "F",
+                  "G",
+                  "H",
+                  "I"
+                ]
+              }
+            }
+          },
+          {
+            "name": "companyType",
+            "required": false,
+            "in": "query",
+            "description": "The company types to filter by",
+            "schema": {
+              "example": [
+                "PUBLIC_COMPANY",
+                "PRIVATELY_HELD"
+              ],
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "EDUCATIONAL",
+                  "GOVERNMENT_AGENCY",
+                  "NON_PROFIT",
+                  "PARTNERSHIP",
+                  "PRIVATELY_HELD",
+                  "PUBLIC_COMPANY",
+                  "SELF_EMPLOYED",
+                  "SELF_OWNED"
+                ]
+              }
+            }
+          },
+          {
+            "name": "seniorityLevel",
+            "required": false,
+            "in": "query",
+            "description": "The seniority levels to filter by",
+            "schema": {
+              "example": [
+                "INTERN",
+                "ENTRY_LEVEL"
+              ],
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "INTERN",
+                  "ENTRY_LEVEL",
+                  "ASSOCIATE",
+                  "MID_SENIOR_LEVEL",
+                  "DIRECTOR",
+                  "EXECUTIVE",
+                  "C_LEVEL"
+                ]
+              }
+            }
+          },
+          {
+            "name": "escoCodes",
+            "required": false,
+            "in": "query",
+            "description": "The ESCO codes to filter by",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "escoClassificationLevel",
+            "required": false,
+            "in": "query",
+            "description": "The ESCO classification level to filter by",
+            "schema": {
+              "default": 1,
+              "example": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "The number of results to return",
+            "schema": {
+              "example": 10,
+              "type": "number"
+            }
+          },
+          {
+            "name": "offset",
+            "required": false,
+            "in": "query",
+            "description": "The offset of the query",
+            "schema": {
+              "default": 0,
+              "example": 0,
+              "type": "number"
+            }
+          },
+          {
+            "name": "search",
+            "required": false,
+            "in": "query",
+            "description": "Broad search query",
+            "schema": {
+              "example": "search query",
+              "type": "string"
+            }
+          },
+          {
+            "name": "sortBy",
+            "required": false,
+            "in": "query",
+            "description": "How to sort the results",
+            "schema": {
+              "default": "count",
+              "type": "string",
+              "enum": [
+                "count",
+                "name",
+                "year"
+              ]
+            }
+          },
+          {
+            "name": "sortOrder",
+            "required": false,
+            "in": "query",
+            "description": "The order of the results",
+            "schema": {
+              "default": "desc",
+              "example": "asc",
+              "type": "string"
+            }
+          },
+          {
+            "name": "includeTrend",
+            "required": true,
+            "in": "query",
+            "description": "Whether to include the trend data",
+            "schema": {
+              "example": true,
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The number of roles classified with each seniority level",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SeniorityListResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Returns the number of roles classified with each seniority level",
         "tags": [
           "V1"
         ]
@@ -3903,6 +4484,31 @@
                   "PUBLIC_COMPANY",
                   "SELF_EMPLOYED",
                   "SELF_OWNED"
+                ]
+              }
+            }
+          },
+          {
+            "name": "seniorityLevel",
+            "required": false,
+            "in": "query",
+            "description": "The seniority levels to filter by",
+            "schema": {
+              "example": [
+                "INTERN",
+                "ENTRY_LEVEL"
+              ],
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "INTERN",
+                  "ENTRY_LEVEL",
+                  "ASSOCIATE",
+                  "MID_SENIOR_LEVEL",
+                  "DIRECTOR",
+                  "EXECUTIVE",
+                  "C_LEVEL"
                 ]
               }
             }
@@ -5928,6 +6534,14 @@
             "type": "string",
             "description": "The country code (ISO 3166-1 alpha-2)"
           },
+          "latitude": {
+            "type": "number",
+            "description": "The latitude of the country"
+          },
+          "longitude": {
+            "type": "number",
+            "description": "The longitude of the country"
+          },
           "count": {
             "type": "number",
             "description": "The number of alumni in the country"
@@ -5982,6 +6596,14 @@
             "type": "string",
             "description": "The country code of the country that the city belongs to"
           },
+          "latitude": {
+            "type": "number",
+            "description": "The latitude of the city"
+          },
+          "longitude": {
+            "type": "number",
+            "description": "The longitude of the city"
+          },
           "count": {
             "type": "number",
             "description": "The number of alumni in the city"
@@ -5998,6 +6620,7 @@
           "id",
           "name",
           "code",
+          "longitude",
           "count",
           "trend"
         ]
@@ -6325,9 +6948,9 @@
             "type": "number",
             "description": "The level of classification of the role, 1-4 being ISCO-08 and 5+ being ESCO"
           },
-          "isLeaf": {
-            "type": "boolean",
-            "description": "Whether the role is a leaf node in the classification tree"
+          "escoUrl": {
+            "type": "string",
+            "description": "The URL of the role in the ESCO classification tree"
           },
           "code": {
             "type": "string",
@@ -6348,7 +6971,6 @@
         "required": [
           "name",
           "level",
-          "isLeaf",
           "code",
           "count",
           "trend"
@@ -6439,6 +7061,59 @@
           "hierarchy"
         ]
       },
+      "SeniorityListItemDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "The name of the seniority level",
+            "enum": [
+              "INTERN",
+              "ENTRY_LEVEL",
+              "ASSOCIATE",
+              "MID_SENIOR_LEVEL",
+              "DIRECTOR",
+              "EXECUTIVE",
+              "C_LEVEL"
+            ]
+          },
+          "count": {
+            "type": "number",
+            "description": "The number of roles with this seniority level"
+          },
+          "trend": {
+            "description": "The trend of the seniority level",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DataPointDto"
+            }
+          }
+        },
+        "required": [
+          "name",
+          "count",
+          "trend"
+        ]
+      },
+      "SeniorityListResponseDto": {
+        "type": "object",
+        "properties": {
+          "seniorityLevels": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SeniorityListItemDto"
+            }
+          },
+          "count": {
+            "type": "number",
+            "description": "The total number of seniority levels in the database after applying the filters"
+          }
+        },
+        "required": [
+          "seniorityLevels",
+          "count"
+        ]
+      },
       "LocationAnalyticsEntity": {
         "type": "object",
         "properties": {
@@ -6446,24 +7121,23 @@
             "type": "string"
           },
           "country": {
-            "type": "object",
-            "nullable": true
+            "type": "string",
+            "description": "The country of the location"
           },
           "countryCode": {
-            "type": "object",
-            "nullable": true
+            "type": "string"
           },
           "city": {
-            "type": "object",
-            "nullable": true
+            "type": "string",
+            "description": "The city of the location"
           },
           "latitude": {
-            "type": "object",
-            "nullable": true
+            "type": "number",
+            "description": "The latitude of the location"
           },
           "longitude": {
-            "type": "object",
-            "nullable": true
+            "type": "number",
+            "description": "The longitude of the location"
           }
         },
         "required": [

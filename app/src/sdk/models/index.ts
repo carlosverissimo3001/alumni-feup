@@ -75,6 +75,8 @@ export * from './RoleListItemDto';
 export * from './RoleListResponseDto';
 export * from './RoleOptionDto';
 export * from './SendFeedbackDto';
+export * from './SeniorityListItemDto';
+export * from './SeniorityListResponseDto';
 export * from './UploadExtractionDto';
 export * from './User';
 export * from './UserAuthResponse';

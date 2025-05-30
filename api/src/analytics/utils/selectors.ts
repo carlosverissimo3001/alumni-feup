@@ -52,6 +52,7 @@ export const roleSelect = {
   startDate: true,
   endDate: true,
   isCurrent: true,
+  seniorityLevel: true,
   Location: {
     select: locationSelect,
   },
