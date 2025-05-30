@@ -50,7 +50,7 @@ export interface CityListItemDto {
      * @type {number}
      * @memberof CityListItemDto
      */
-    latitude: number;
+    latitude?: number;
     /**
      * The longitude of the city
      * @type {number}
@@ -78,7 +78,6 @@ export function instanceOfCityListItemDto(value: object): value is CityListItemD
     if (!('id' in value) || value['id'] === undefined) return false;
     if (!('name' in value) || value['name'] === undefined) return false;
     if (!('code' in value) || value['code'] === undefined) return false;
-    if (!('latitude' in value) || value['latitude'] === undefined) return false;
     if (!('longitude' in value) || value['longitude'] === undefined) return false;
     if (!('count' in value) || value['count'] === undefined) return false;
     if (!('trend' in value) || value['trend'] === undefined) return false;
@@ -98,7 +97,7 @@ export function CityListItemDtoFromJSONTyped(json: any, ignoreDiscriminator: boo
         'id': json['id'],
         'name': json['name'],
         'code': json['code'],
-        'latitude': json['latitude'],
+        'latitude': json['latitude'] == null ? undefined : json['latitude'],
         'longitude': json['longitude'],
         'count': json['count'],
         'trend': ((json['trend'] as Array<any>).map(DataPointDtoFromJSON)),

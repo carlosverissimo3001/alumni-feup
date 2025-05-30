@@ -23,7 +23,7 @@ export class CountryListItemDto {
   })
   latitude?: number;
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     description: 'The longitude of the country',
     type: Number,
   })

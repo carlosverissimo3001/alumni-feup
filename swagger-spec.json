@@ -6558,7 +6558,6 @@
           "id",
           "name",
           "code",
-          "longitude",
           "count",
           "trend"
         ]
@@ -6621,7 +6620,6 @@
           "id",
           "name",
           "code",
-          "latitude",
           "longitude",
           "count",
           "trend"
