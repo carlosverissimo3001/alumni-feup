@@ -69,7 +69,7 @@ const NameWithTooltip = ({
     <TooltipProvider>
       <Tooltip>
         <TooltipTrigger asChild>{children}</TooltipTrigger>
-        <TooltipContent>
+        <TooltipContent align="start">
           <p>
             <NameContent name={name} acronym={acronym} forTooltip={true} />
           </p>
@@ -78,7 +78,6 @@ const NameWithTooltip = ({
     </TooltipProvider>
   );
 };
-
 
 const LogoSection = ({
   image,
@@ -98,12 +97,7 @@ const LogoSection = ({
   return (
     <div className="min-w-[24px] w-6 h-6 mr-1 rounded-full overflow-hidden flex items-center justify-center bg-gray-50">
       {image ? (
-        <ImageWithFallback
-          src={image}
-          alt={name}
-          width={24}
-          height={24}
-        />
+        <ImageWithFallback src={image} alt={name} width={24} height={24} />
       ) : (
         <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-gray-100 to-gray-200 text-gray-500 text-[10px] font-semibold border border-gray-200">
           {initials}
@@ -128,19 +122,21 @@ export const TableNameCell = ({
     return (
       <TableCell className="py-2.5 align-middle">
         <div className={baseClassName}>
-          <NameWithTooltip name={name} acronym={acronym}>
-            <div
-              className={`text-ellipsis overflow-hidden whitespace-nowrap w-full text-left ${
-                isRowInFilters ? "font-bold" : "font-medium"
-              }`}
-            >
-              <NameContent
-                name={name}
-                acronym={acronym}
-                isRowInFilters={isRowInFilters}
-              />
-            </div>
-          </NameWithTooltip>
+          <div
+            className={`text-ellipsis overflow-hidden whitespace-nowrap w-full text-left ${
+              isRowInFilters ? "font-bold" : "font-medium"
+            }`}
+          >
+            <NameWithTooltip name={name} acronym={acronym}>
+              <span>
+                <NameContent
+                  name={name}
+                  acronym={acronym}
+                  isRowInFilters={isRowInFilters}
+                />
+              </span>
+            </NameWithTooltip>
+          </div>
         </div>
       </TableCell>
     );
@@ -149,7 +145,9 @@ export const TableNameCell = ({
   return (
     <TableCell className="py-1.5 align-middle">
       <div className={`${baseClassName} gap-1.5`}>
-        {imageType && <LogoSection image={image} name={name} imageType={imageType} />}
+        {imageType && (
+          <LogoSection image={image} name={name} imageType={imageType} />
+        )}
         <div className="flex flex-1 min-w-0">
           <div className="flex items-center flex-1 min-w-0">
             <Button

@@ -116,7 +116,7 @@ export class TrendAnalyticsService {
         const jobClassification = role?.jobClassification;
         const escoClassification = jobClassification?.escoClassification;
 
-        return escoClassification?.code === entityId;
+        return escoClassification?.code.startsWith(entityId);
       })
       .filter((role) => {
         const startDate = new Date(role.startDate);

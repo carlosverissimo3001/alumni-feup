@@ -138,7 +138,9 @@ export class RoleAnalyticsService {
         roles.map((role) =>
           this.trendAnalyticsService.getRoleTrend({
             data: alumnusUnfiltered,
-            entityId: role.code,
+            entityId: isGranular
+              ? role.code
+              : role.code.slice(0, requestedLevel),
           }),
         ),
       );
