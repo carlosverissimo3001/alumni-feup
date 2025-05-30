@@ -1,4 +1,6 @@
-export enum ClassificationLevel {
+import { SeniorityListItemDtoNameEnum as API_SENIORITY_LEVEL } from "@/sdk";
+
+export enum CLASSIFICATION_LEVEL {
   LEVEL_1 = "Level 1",
   LEVEL_2 = "Level 2",
   LEVEL_3 = "Level 3",
@@ -8,3 +10,23 @@ export enum ClassificationLevel {
   LEVEL_7 = "Level 7",
   LEVEL_8 = "Level 8",
 }
+
+export enum SENIORITY_LEVEL {
+  INTERN = "Intern",
+  ENTRY_LEVEL = "Entry level",
+  ASSOCIATE = "Associate",
+  MID_SENIOR_LEVEL = "Mid-Senior level",
+  DIRECTOR = "Director",
+  EXECUTIVE = "Executive",
+  C_LEVEL = "C-Level",
+}
+
+export const SENIORITY_LEVEL_API_TO_ENUM: Record<API_SENIORITY_LEVEL, SENIORITY_LEVEL> = {
+  INTERN: SENIORITY_LEVEL.INTERN,
+  ENTRY_LEVEL: SENIORITY_LEVEL.ENTRY_LEVEL,
+  ASSOCIATE: SENIORITY_LEVEL.ASSOCIATE,
+  MID_SENIOR_LEVEL: SENIORITY_LEVEL.MID_SENIOR_LEVEL,
+  DIRECTOR: SENIORITY_LEVEL.DIRECTOR,
+  EXECUTIVE: SENIORITY_LEVEL.EXECUTIVE,
+  C_LEVEL: SENIORITY_LEVEL.C_LEVEL,
+};  

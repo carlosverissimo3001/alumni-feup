@@ -3,6 +3,7 @@ import {
   COMPANY_TYPE,
   COURSE_STATUS,
   COURSE_TYPE,
+  SENIORITY_LEVEL,
 } from '@prisma/client';
 import {
   AlumniAnalyticsEntity,
@@ -38,6 +39,7 @@ type RawRole = {
   isCurrent: boolean;
   startDate: Date;
   endDate?: Date | null;
+  seniorityLevel: SENIORITY_LEVEL;
   Location?: RawLocation | null;
   JobClassification?: RawJobClassification | null;
   Company: RawCompany;
@@ -106,17 +108,6 @@ type RawGraduation = {
   Course: RawCourse;
 };
 
-export function toRoleAnalyticsEntity(
-  role: Pick<RawRole, 'id' | 'startDate' | 'endDate' | 'alumniId'>,
-): Partial<RoleAnalyticsEntity> {
-  return {
-    id: role.id,
-    startDate: role.startDate,
-    endDate: role.endDate ?? undefined,
-    alumniId: role.alumniId,
-  };
-}
-
 export const mapCompanyFromPrisma = (
   company: RawCompany,
 ): CompanyAnalyticsEntity => {
@@ -171,7 +162,7 @@ const mapJobClassificationFromPrisma = (
   };
 };
 
-const mapLocationFromPrisma = (
+export const mapLocationFromPrisma = (
   location?: RawLocation | null,
 ): LocationAnalyticsEntity | undefined => {
   if (!location) return undefined;
@@ -195,6 +186,7 @@ const mapRoleFromPrisma = (role: RawRole): RoleAnalyticsEntity => {
     jobClassification: mapJobClassificationFromPrisma(role.JobClassification),
     company: mapCompanyFromPrisma(role.Company),
     location: mapLocationFromPrisma(role.Location),
+    seniorityLevel: role.seniorityLevel,
   };
 };
 

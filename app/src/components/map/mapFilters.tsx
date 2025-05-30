@@ -106,11 +106,9 @@ const MapFilters = ({
     let hasProcessedYears = false;
     let hasProcessedCourses = false;
 
-    if (searchParams.has("lat") || searchParams.has("lng")) {
-      setGroupBy(GROUP_BY.Cities);
+    if (searchParams.has("group_by")) {
+      setGroupBy(searchParams.get("group_by") as GROUP_BY);
     }
-
-    // Check for map-specific parameters that should enable the clean button immediately
     const hasMapParams =
       searchParams.has("lat") ||
       searchParams.has("lng") ||

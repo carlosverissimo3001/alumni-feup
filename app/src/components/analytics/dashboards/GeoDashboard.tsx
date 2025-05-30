@@ -60,6 +60,8 @@ type DataRowProps = {
   name: string;
   count: number;
   trend: DataPointDto[];
+  latitude?: number;
+  longitude?: number;
 };
 
 export const GeoDashboard = ({
@@ -159,6 +161,14 @@ export const GeoDashboard = ({
       );
     };
 
+    const buildMapUrl = (latitude?: number, longitude?: number) : string | undefined => {
+      if (!latitude || !longitude) {
+        return undefined;
+      }
+      return `/?lat=${latitude}&lng=${longitude}&group_by=${mode}`;
+    };
+    
+
     return (
       <>
         <div className="flex-1 relative border-t border-b border-gray-200 flex flex-col overflow-hidden">
@@ -191,6 +201,7 @@ export const GeoDashboard = ({
                             isRowInFilters={!!isRowInFilters(row)}
                             image={flagUrl}
                             imageType="location"
+                            pageUrl={buildMapUrl(row.latitude, row.longitude)}
                           />
                           <TableCell
                             className={`w-[12%] px-4 ${
@@ -359,7 +370,7 @@ export const GeoDashboard = ({
           setPage={setPage}
           itemsPerPage={itemsPerPage}
           setItemsPerPage={setItemsPerPage}
-          totalItems={mode === "country" ? totalCountries : totalCities}
+          totalItems={mode === GeoDrillType.COUNTRY ? totalCountries : totalCities}
           visible={data.length > 0}
           currentCount={data.length}
           showTrendFrequency={view === ViewType.TREND}
@@ -415,9 +426,9 @@ export const GeoDashboard = ({
       <div className="flex items-center justify-between mb-2">
         <div className="flex items-center gap-2">
           <TableTitle
-            title={mode === "country" ? "Countries" : "Cities"}
+            title={mode === GeoDrillType.COUNTRY ? "Countries" : "Cities"}
             icon={
-              mode === "country" ? (
+              mode === GeoDrillType.COUNTRY ? (
                 <Flag className="h-5 w-5 text-[#8C2D19]" />
               ) : (
                 <MapPin className="h-5 w-5 text-[#8C2D19]" />
@@ -425,7 +436,7 @@ export const GeoDashboard = ({
             }
             className="pl-1"
             tooltipMessage={
-              mode === "country"
+              mode === GeoDrillType.COUNTRY
                 ? "Distribution of alumni by the country of their role."
                 : "Distribution of alumni by the city of their role."
             }

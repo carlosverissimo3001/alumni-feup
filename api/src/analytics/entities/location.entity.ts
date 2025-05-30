@@ -4,18 +4,30 @@ export class LocationAnalyticsEntity {
   @ApiProperty()
   id: string;
 
-  @ApiPropertyOptional({ nullable: true })
-  country?: string | null;
+  @ApiPropertyOptional({
+    description: 'The country of the location',
+    type: String,
+  })
+  country?: string;
 
-  @ApiPropertyOptional({ nullable: true })
-  countryCode?: string | null;
+  @ApiPropertyOptional()
+  countryCode?: string;
 
-  @ApiPropertyOptional({ nullable: true })
-  city?: string | null;
+  @ApiPropertyOptional({
+    description: 'The city of the location',
+    type: String,
+  })
+  city?: string;
 
-  @ApiPropertyOptional({ nullable: true })
-  latitude?: number | null;
+  @ApiPropertyOptional({
+    description: 'The latitude of the location',
+    type: Number,
+  })
+  latitude?: number;
 
-  @ApiPropertyOptional({ nullable: true })
-  longitude?: number | null;
+  @ApiPropertyOptional({
+    description: 'The longitude of the location',
+    type: Number,
+  })
+  longitude?: number;
 }

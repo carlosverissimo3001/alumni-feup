@@ -26,35 +26,35 @@ export interface LocationAnalyticsEntity {
      */
     id: string;
     /**
-     * 
-     * @type {object}
+     * The country of the location
+     * @type {string}
      * @memberof LocationAnalyticsEntity
      */
-    country?: object | null;
+    country?: string;
     /**
      * 
-     * @type {object}
+     * @type {string}
      * @memberof LocationAnalyticsEntity
      */
-    countryCode?: object | null;
+    countryCode?: string;
     /**
-     * 
-     * @type {object}
+     * The city of the location
+     * @type {string}
      * @memberof LocationAnalyticsEntity
      */
-    city?: object | null;
+    city?: string;
     /**
-     * 
-     * @type {object}
+     * The latitude of the location
+     * @type {number}
      * @memberof LocationAnalyticsEntity
      */
-    latitude?: object | null;
+    latitude?: number;
     /**
-     * 
-     * @type {object}
+     * The longitude of the location
+     * @type {number}
      * @memberof LocationAnalyticsEntity
      */
-    longitude?: object | null;
+    longitude?: number;
 }
 
 /**

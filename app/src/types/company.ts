@@ -20,4 +20,3 @@ export enum COMPANY_TYPE {
   SelfEmployed = "Self-employed",
   SelfOwned = "Self-owned",
 }
-

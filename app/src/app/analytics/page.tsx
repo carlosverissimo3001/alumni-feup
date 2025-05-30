@@ -15,6 +15,7 @@ import {
   RoleDashboard,
   EducationDashboard,
   AlumniTable,
+  SeniorityDashboard,
 } from "@/components/analytics/dashboards";
 import { useState, useCallback, useMemo, useEffect, Suspense } from "react";
 import OverallStats from "@/components/analytics/OverallStats";
@@ -34,6 +35,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { RoleAnalyticsControllerGetSeniorityLevelsSeniorityLevelEnum as SeniorityLevel } from "@/sdk";
 
 const initialFilters: FilterState = {
   dateRange: undefined,
@@ -54,6 +56,7 @@ const initialFilters: FilterState = {
   companySize: [],
   escoCodes: [],
   alumniIds: [],
+  seniorityLevel: [],
 };
 
 export default function Analytics() {
@@ -98,9 +101,8 @@ function AnalyticsContent() {
   const [educationMode, setEducationMode] = useState<EducationDrillType>(
     EducationDrillType.MAJOR
   );
-  const [classificationLevel, setClassificationLevel] = useState<ClassificationLevel>(
-    ClassificationLevel.LEVEL_4
-  );
+  const [classificationLevel, setClassificationLevel] =
+    useState<ClassificationLevel>(ClassificationLevel.LEVEL_4);
 
   const initializeFiltersFromURL = useCallback(() => {
     const urlFilters: FilterState = { ...initialFilters };
@@ -237,7 +239,7 @@ function AnalyticsContent() {
 
   const handleGeoAddToFilters = useCallback(
     (geoId: string, type: "role" | "company") => {
-      if (geoMode === "country") {
+      if (geoMode === GeoDrillType.COUNTRY) {
         setFilters((prev) => {
           const key =
             type === "role" ? "roleCountryCodes" : "companyHQsCountryCodes";
@@ -313,13 +315,13 @@ function AnalyticsContent() {
       setFilters((prev) => {
         const newCodeLevel = getCodeLevel(escoCode);
 
-        const newEscoCodes = prev.escoCodes?.includes(escoCode)
-          ? prev.escoCodes.filter((code) => code !== escoCode)
-          : [...(prev.escoCodes || []), escoCode];
-          
+        // If the code is already selected, remove it (clear the filter)
+        const isAlreadySelected = prev.escoCodes?.includes(escoCode);
+        const newEscoCodes = isAlreadySelected ? [] : [escoCode];
+
         // If we're adding a new code and not at level 8, increment the level
         if (
-          !prev.escoCodes?.includes(escoCode) &&
+          !isAlreadySelected &&
           classificationLevel !== ClassificationLevel.LEVEL_8 &&
           newCodeLevel >= getClassificationLevel(classificationLevel)
         ) {
@@ -350,6 +352,28 @@ function AnalyticsContent() {
       }
     });
   }, []);
+
+  const handleAddSeniorityToFilters = useCallback(
+    (seniorityLevel: SeniorityLevel) => {
+      setFilters((prev) => {
+        const currentSeniorityLevels = prev.seniorityLevel || [];
+        if (!currentSeniorityLevels.includes(seniorityLevel)) {
+          return {
+            ...prev,
+            seniorityLevel: [...currentSeniorityLevels, seniorityLevel],
+          };
+        } else {
+          return {
+            ...prev,
+            seniorityLevel: currentSeniorityLevels.filter(
+              (level) => level !== seniorityLevel
+            ),
+          };
+        }
+      });
+    },
+    []
+  );
 
   const handleAddEducationToFilters = useCallback(
     (id: string, year?: number) => {
@@ -519,6 +543,11 @@ function AnalyticsContent() {
           mode={educationMode}
           setMode={setEducationMode}
           onAddToFilters={handleAddEducationToFilters}
+        />
+
+        <SeniorityDashboard
+          filters={combinedFilters}
+          onAddToFilters={handleAddSeniorityToFilters}
         />
       </div>
 

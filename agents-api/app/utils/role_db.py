@@ -49,8 +49,6 @@ def get_extended_roles_by_alumni_id(alumni_id: str, db: Session) -> JobClassific
     roles = (
         db.query(Role)
         .filter(Role.alumni_id == alumni_id)
-        .outerjoin(JobClassification)
-        .filter(JobClassification.id.is_(None))
         .all()
     )
 
