@@ -124,7 +124,7 @@ export const TableNameCell = ({
 }: TableNameCellProps) => {
   const baseClassName = `w-full text-sm flex items-center pl-1`;
 
-  if (!imageType) {
+  if (!imageType && !pageUrl) {
     return (
       <TableCell className="py-2.5 align-middle">
         <div className={baseClassName}>
@@ -149,7 +149,7 @@ export const TableNameCell = ({
   return (
     <TableCell className="py-1.5 align-middle">
       <div className={`${baseClassName} gap-1.5`}>
-        <LogoSection image={image} name={name} imageType={imageType} />
+        {imageType && <LogoSection image={image} name={name} imageType={imageType} />}
         <div className="flex flex-1 min-w-0">
           <div className="flex items-center flex-1 min-w-0">
             <Button

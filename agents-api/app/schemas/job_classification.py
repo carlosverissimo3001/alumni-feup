@@ -55,7 +55,6 @@ class JobClassificationAgentState(TypedDict):
     esco_results_from_embeddings: List[EscoResult]
     esco_results_from_agent: str 
     parsed_esco_results: List[dict]
-    reasoning: Optional[str]
     processing_time: float
     model_used: str
     retry_count: int

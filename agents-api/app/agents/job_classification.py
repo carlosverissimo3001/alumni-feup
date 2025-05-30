@@ -7,12 +7,10 @@ from typing import List
 import openai
 from fastapi.encoders import jsonable_encoder
 from langchain_core.messages import HumanMessage, SystemMessage
-from langchain_core.runnables.config import RunnableConfig
 from langchain_core.tools import Tool
 from langchain_openai import ChatOpenAI
 from langgraph.graph import END, START, StateGraph
 from langgraph.prebuilt import ToolNode
-from prometheus_client import Counter, Gauge, Summary
 from redis import Redis
 from tenacity import (
     before_sleep_log,
@@ -23,9 +21,7 @@ from tenacity import (
 
 from app.core.config import settings
 from app.db import get_db
-from app.db.models import Alumni
 from app.schemas.job_classification import (
-    AlumniJobClassificationParams,
     JobClassificationAgentState,
     JobClassificationRoleInput,
 )
@@ -33,7 +29,6 @@ from app.utils.agents.esco_reference import (
     get_detailed_esco_classification,
     search_esco_classifications,
 )
-from app.utils.alumni_db import find_all, find_by_ids
 from app.utils.esco_db import (
     update_role_with_classifications_batch,
 )
@@ -96,7 +91,7 @@ cold_llm = ChatOpenAI(
     model=settings.OPENAI_DEFAULT_MODEL,
     api_key=settings.OPENAI_API_KEY,
     max_retries=3,
-    # temperature=0.0,
+    temperature=0.0,
 )
 llm_with_tools = cold_llm.bind_tools(tools)
 

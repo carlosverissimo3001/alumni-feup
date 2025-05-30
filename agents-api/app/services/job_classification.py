@@ -42,6 +42,9 @@ class JobClassificationService:
             self.active_classifications.dec()
 
     async def request_alumni_classification(self, params: AlumniJobClassificationParams):
+        """
+        Request the classification of the roles of the alumni
+        """
         alumni_ids = params.alumni_ids
         alumni: list[Alumni] = []
 

@@ -77,6 +77,8 @@ models/RoleListItemDto.ts
 models/RoleListResponseDto.ts
 models/RoleOptionDto.ts
 models/SendFeedbackDto.ts
+models/SeniorityListItemDto.ts
+models/SeniorityListResponseDto.ts
 models/UploadExtractionDto.ts
 models/User.ts
 models/UserAuthResponse.ts

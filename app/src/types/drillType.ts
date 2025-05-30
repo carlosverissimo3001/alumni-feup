@@ -5,8 +5,8 @@ export enum EducationDrillType {
 }
 
 export enum GeoDrillType {
-  COUNTRY = "country",
-  CITY = "city",
+  COUNTRY = "countries",
+  CITY = "cities",
 }
 
 export enum ClassificationLevel {

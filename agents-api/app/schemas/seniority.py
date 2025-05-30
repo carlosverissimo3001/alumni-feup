@@ -51,21 +51,11 @@ class BatchSeniorityOutput(BaseModel):
 
 
 class SeniorityAgentState(TypedDict):
-    # The batch of roles being processed
     batch: BatchSeniorityInput
-
-    # The agent's classification result
-    classification: Optional[str]
-
-    # Track retry attempts
-    retry_count: int
-
-    # Store any error messages
-    error: Optional[str]
-
-    # For the LangGraph framework
     messages: Annotated[list, add_messages]
-
+    seniority_results_from_agent: str
+    parsed_seniority_results: List[dict]
     processing_time: float
-
     model_used: str
+    retry_count: int
+    error: Optional[str]

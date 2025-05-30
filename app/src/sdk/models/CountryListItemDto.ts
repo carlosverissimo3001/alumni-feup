@@ -46,6 +46,18 @@ export interface CountryListItemDto {
      */
     code: string;
     /**
+     * The latitude of the country
+     * @type {number}
+     * @memberof CountryListItemDto
+     */
+    latitude?: number;
+    /**
+     * The longitude of the country
+     * @type {number}
+     * @memberof CountryListItemDto
+     */
+    longitude: number;
+    /**
      * The number of alumni in the country
      * @type {number}
      * @memberof CountryListItemDto
@@ -66,6 +78,7 @@ export function instanceOfCountryListItemDto(value: object): value is CountryLis
     if (!('id' in value) || value['id'] === undefined) return false;
     if (!('name' in value) || value['name'] === undefined) return false;
     if (!('code' in value) || value['code'] === undefined) return false;
+    if (!('longitude' in value) || value['longitude'] === undefined) return false;
     if (!('count' in value) || value['count'] === undefined) return false;
     if (!('trend' in value) || value['trend'] === undefined) return false;
     return true;
@@ -84,6 +97,8 @@ export function CountryListItemDtoFromJSONTyped(json: any, ignoreDiscriminator: 
         'id': json['id'],
         'name': json['name'],
         'code': json['code'],
+        'latitude': json['latitude'] == null ? undefined : json['latitude'],
+        'longitude': json['longitude'],
         'count': json['count'],
         'trend': ((json['trend'] as Array<any>).map(DataPointDtoFromJSON)),
     };
@@ -103,6 +118,8 @@ export function CountryListItemDtoToJSONTyped(value?: CountryListItemDto | null,
         'id': value['id'],
         'name': value['name'],
         'code': value['code'],
+        'latitude': value['latitude'],
+        'longitude': value['longitude'],
         'count': value['count'],
         'trend': ((value['trend'] as Array<any>).map(DataPointDtoToJSON)),
     };

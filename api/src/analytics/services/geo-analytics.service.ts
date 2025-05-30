@@ -25,6 +25,8 @@ type GeoEntityMap = {
   name: string;
   code: string;
   count: number;
+  latitude: number;
+  longitude: number;
 };
 
 @Injectable()
@@ -42,14 +44,25 @@ export class GeoAnalyticsService {
 
     const alumnus = applyDateFilters(alumnusUnfiltered, query);
 
-    const roles = alumnus
-      .flatMap((a) =>
-        (a.roles || []).map((role) => ({
-          alumniId: a.id,
-          location: role.location,
-        })),
-      )
-      .filter((role) => role.location?.countryCode);
+    const rolesWithCoords = await Promise.all(
+      alumnus.flatMap((a) =>
+        (a.roles || []).map(async (role) => {
+          const countryCode = role.location?.countryCode;
+          const countryCoordinates = countryCode
+            ? await this.locationRepository.getCountryCoordinates(countryCode)
+            : undefined;
+          return {
+            alumniId: a.id,
+            location: role.location,
+            countryCoordinates,
+          };
+        }),
+      ),
+    );
+
+    const roles = rolesWithCoords.filter(
+      (role) => role.location?.countryCode && role.countryCoordinates,
+    );
 
     const { entityMap } = this.groupByGeoEntity(
       roles,
@@ -57,6 +70,8 @@ export class GeoAnalyticsService {
       (role) => ({
         name: role.location!.country ?? '',
         code: role.location!.countryCode!,
+        latitude: role.countryCoordinates!.latitude ?? 0,
+        longitude: role.countryCoordinates!.longitude ?? 0,
       }),
       (role) => role.alumniId,
     );
@@ -68,6 +83,8 @@ export class GeoAnalyticsService {
         code: data.code,
         count: data.count,
         trend: [],
+        latitude: data.latitude,
+        longitude: data.longitude,
       }),
     );
 
@@ -124,6 +141,8 @@ export class GeoAnalyticsService {
       (role) => ({
         name: role.location!.city!,
         code: role.location!.countryCode ?? '',
+        latitude: role.location!.latitude ?? 0,
+        longitude: role.location!.longitude ?? 0,
       }),
       (role) => role.alumniId,
     );
@@ -135,6 +154,8 @@ export class GeoAnalyticsService {
         code: data.code,
         count: data.count,
         trend: [],
+        latitude: data.latitude,
+        longitude: data.longitude,
       }),
     );
 
@@ -203,7 +224,12 @@ export class GeoAnalyticsService {
   private groupByGeoEntity<T, R extends GeoEntityMap>(
     items: T[],
     getKey: (item: T) => string,
-    getData: (item: T) => { name: string; code: string },
+    getData: (item: T) => {
+      name: string;
+      code: string;
+      latitude: number;
+      longitude: number;
+    },
     getUniqueId: (item: T) => string,
   ) {
     const entityMap = new Map<string, R>();
@@ -214,11 +240,13 @@ export class GeoAnalyticsService {
       const uniqueId = getUniqueId(item);
 
       if (!entityMap.has(key)) {
-        const { name, code } = getData(item);
+        const { name, code, latitude, longitude } = getData(item);
         entityMap.set(key, {
           name,
           code,
           count: 0,
+          latitude,
+          longitude,
         } as R);
         countedEntities.set(key, new Set());
       }

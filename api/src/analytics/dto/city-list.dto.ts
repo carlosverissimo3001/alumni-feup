@@ -24,6 +24,20 @@ export class CityListItemDto {
   code: string;
 
   @ApiProperty({
+    description: 'The latitude of the city',
+    type: Number,
+  })
+  @IsNumber()
+  latitude: number;
+
+  @ApiProperty({
+    description: 'The longitude of the city',
+    type: Number,
+  })
+  @IsNumber()
+  longitude: number;
+
+  @ApiProperty({
     description: 'The number of alumni in the city',
     type: Number,
   })

@@ -64,206 +64,77 @@ REQUIREMENTS:
 """
 
 
-SENIORITY_CLASSIFICATION_PROMPT = """You are an expert career advisor and HR professional. Your task is to classify the seniority level of roles using a systematic approach.
+SENIORITY_CLASSIFICATION_PROMPT = """
+You are an expert HR analyst. Your task is to classify each role into one of the following seniority levels:
 
-CRITICAL CLASSIFICATION RULES:
-1. Each role MUST be evaluated INDEPENDENTLY
-   - Do NOT try to distribute different levels across roles
-   - Do NOT assume roles need different levels
-   - Multiple roles can and often should have the SAME level
-   - Example: 3 internships should ALL be classified as INTERN
+- INTERN
+- ENTRY_LEVEL
+- ASSOCIATE
+- MID_SENIOR_LEVEL
+- DIRECTOR
+- EXECUTIVE
+- C_LEVEL
 
-2. Title-Based Rules (NO EXCEPTIONS):
-   - ANY role with "Intern", "Trainee", "Research Assistant" → MUST be INTERN
-   - This applies even if you have multiple intern roles
-   - ALL internships must be INTERN level, no matter how many
+Each role includes: title, company, duration, ESCO classification, and optional description. You will also receive total experience and career timeline.
 
-3. Natural Career Progression:
-   - Typical path: INTERN → ENTRY_LEVEL → ASSOCIATE → MID_SENIOR_LEVEL
-   - Moving from internship to full-time usually starts at ENTRY_LEVEL
-   - Previous internships don't count towards years of experience
+🎯 For each role:
+- Use title indicators (e.g., "Intern", "Senior", "Director", etc.)
+- Use career progression and years of experience
+- Consider industry and company context
+- Classify each role independently (e.g., multiple internships can all be INTERN)
 
-STEP-BY-STEP CLASSIFICATION PROCESS:
+🧠 Also include:
+- Confidence (0.0–1.0)
+- Reasoning: title, experience, company, and career position
 
-Step 1: CHECK FOR EXPLICIT INDICATORS (STRICT RULES)
-- MOST IMPORTANT: If title contains "Intern", "Trainee", "Research Assistant" → MUST be INTERN (no exceptions)
-- If title contains "Junior", "Jr", "I", "Graduate" → ENTRY_LEVEL  
-- If title contains "Senior", "Sr", "III", "Lead" → MID_SENIOR_LEVEL
-- If title contains "Director", "Head of", "VP" → DIRECTOR or EXECUTIVE
-- If title contains "CEO", "CTO", "Chief" → C_LEVEL
-
-Step 2: VALIDATE WITH EXPERIENCE
-- 0-1 years total experience → ENTRY_LEVEL (unless intern)
-- 2-4 years experience → ASSOCIATE
-- 5-8 years experience → MID_SENIOR_LEVEL  
-- 8+ years with management → DIRECTOR+
-
-Step 3: ADJUST FOR CONTEXT
-- Startup titles: Reduce by 1 level if inflated
-- Large tech companies: Trust leveling systems (L3=ENTRY, L4=ASSOCIATE, L5=MID_SENIOR, L6+=DIRECTOR)
-- Career gaps or transitions: Focus on relevant experience
-
-PRECISE SENIORITY BOUNDARIES:
-
-INTERN (Any duration):
-- Explicit intern/trainee title
-- Research assistant (non-PhD)
-- Co-op programs
-- Summer/winter programs
-
-ENTRY_LEVEL (0-2.5 years):
-- First full-time role
-- Graduate program roles
-- Junior/Associate I positions
-- Bootcamp graduate first role
-
-ASSOCIATE (2.5-5 years):
-- Mid-level individual contributor
-- Some mentoring responsibility
-- Independent project ownership
-- "II" or "Associate" level designations
-
-MID_SENIOR_LEVEL (5-8 years):
-- Senior individual contributor
-- Technical leadership
-- "Senior" or "III+" designations
-- May lead small teams (1-3 people)
-
-DIRECTOR (8+ years):
-- Manages multiple teams
-- Strategic responsibility
-- Budget ownership
-- "Director", "Head of", or manages 5+ people
-
-EXECUTIVE (10+ years):
-- VP level or equivalent
-- Cross-functional leadership
-- Organizational impact
-- Multiple departments
-
-C_LEVEL:
-- CEO, CTO, Chief titles
-- Company-wide responsibility
-- Board interaction
-
-COMMON PATTERNS TO RECOGNIZE:
-
-Tech Career Progressions:
-- Software Engineer → Senior Software Engineer → Staff Engineer → Principal Engineer
-- Data Analyst → Data Scientist → Senior Data Scientist → Lead Data Scientist
-- Product Manager → Senior PM → Director PM → VP Product
-
-Consulting/Finance Progressions:
-- Analyst → Associate → Senior Associate → Manager → Director
-
-Academic/Research Progressions:
-- PhD Student/Postdoc → Research Scientist → Senior Scientist → Principal Scientist
-
-RED FLAGS (Likely Misclassified):
-- "Senior" title with <2 years experience at small startup
-- "Director" with no management experience
-- Multiple "intern" roles spanning >2 years without progression
-
-INDUSTRY ADJUSTMENTS:
-
-Technology:
-- IC track: Engineer I→II→Senior→Staff→Principal→Distinguished
-- Management track: Engineer→Senior→Lead→Manager→Director→VP
-- Product: APM→PM→Senior PM→Group PM→Director→VP
-
-Finance:
-- Analyst→Associate→VP→Director→MD (note: VP is mid-level in finance)
-
-Consulting:
-- Analyst→Associate→Engagement Manager→Principal→Partner
-
-Healthcare:
-- Resident→Fellow→Attending→Department Head→Chief
-
-VALIDATION CHECKLIST:
-□ Does the classification match the career timeline?
-□ Is the progression realistic given industry standards?
-□ Are there any title-experience mismatches?
-□ Does the company context make sense?
-□ Is this consistent with similar roles in the dataset?
-
-COMMON MISTAKES TO AVOID:
-- Don't promote based on duration alone
-- Don't demote based on short tenure alone
-- Don't ignore explicit seniority indicators
-- Don't assume startup inflation without evidence
-- Don't classify PhD students/postdocs as anything but INTERN (unless faculty)
-
-CONFIDENCE SCORING:
-0.9-1.0: Clear title indicators + experience match + normal progression
-0.7-0.8: Most factors align, minor ambiguity
-0.5-0.6: Mixed signals, required judgment call
-0.3-0.4: Unusual case, significant uncertainty
-0.0-0.2: Insufficient information or contradictory data
-
-For each role, you will receive:
-- Title and description
-- Duration and dates
-- Company and industry
-- ESCO classification
-- Whether it's a current role
-- Full career timeline for context
-
-IMPORTANT FOR MODEL CONSISTENCY:
-- Use systematic evaluation, not intuition
-- When uncertain, choose the more conservative option
-- Prioritize consistency across similar roles
-- If confidence < 0.7, explain why in alternative_considered field
-
-You must respond with a JSON object in this exact format:
+📦 Then call the `return_seniority_choices` tool with:
+```json
 {
-    "classifications": [
-        {
-            "role_id": "<exact role ID>",
-            "seniority": "<SENIORITY_LEVEL>",
-            "reasoning_steps": {
-                "title_indicator": "<what the title suggests>",
-                "experience_factor": "<years of experience assessment>", 
-                "company_context": "<startup/enterprise adjustment>",
-                "career_position": "<where in overall timeline>"
-            },
-            "final_decision": "<why this level was chosen>",
-            "confidence": <0.0-1.0>,
-            "alternative_considered": "<next most likely level or null>"
-        }
-    ],
-    "career_summary": "<progression assessment>",
-    "consistency_check": "<any concerns or 'none'>"
-}
-
-CRITICAL OUTPUT REQUIREMENTS:
-1. Return ONLY valid JSON - no preamble or explanation text
-2. All role_ids must match exactly as provided
-3. Seniority must be one of: INTERN, ENTRY_LEVEL, ASSOCIATE, MID_SENIOR_LEVEL, DIRECTOR, EXECUTIVE, C_LEVEL
-4. Confidence must be numeric between 0.0 and 1.0
-5. All explanation fields must be concise (under 100 characters)
-
-RESPONSE TEMPLATE EXAMPLE:
-{
-  "classifications": [
+  "results": [
     {
-      "role_id": "role_123",
-      "seniority": "MID_SENIOR_LEVEL",
-      "reasoning_steps": {
-        "title_indicator": "Senior Engineer suggests MID_SENIOR",
-        "experience_factor": "6 years aligns with MID_SENIOR",
-        "company_context": "Large tech company, standard leveling",
-        "career_position": "Natural progression from previous roles"
-      },
-      "final_decision": "Clear senior title + experience match + normal progression",
+      "role_id": "<role_id>",
+      "seniority": "<SENIORITY_LEVEL>",
       "confidence": 0.9,
-      "alternative_considered": null
+      "reasoning": "Clear senior title and 6 years of experience"
     }
-  ],
-  "career_summary": "Consistent upward progression in tech career",
-  "consistency_check": "none"
-}"""
+  ]
+}
+"""
 
+SENIORITY_CLASSIFICATION_PROMPT_EXTRA_DETAILS = """
+🧪 CHECKLIST OF COMMON MISTAKES:
+❌ Do not include text outside the JSON object
+❌ Do not invent new fields or enums
+❌ Do not classify based only on job duration
+❌ Do not assume seniority without title/experience match
+
+✅ REQUIRED FIELDS:
+- "role_id": must exactly match the provided role ID
+- "seniority": one of INTERN, ENTRY_LEVEL, ASSOCIATE, MID_SENIOR_LEVEL, DIRECTOR, EXECUTIVE, C_LEVEL
+- "confidence": float between 0.0 and 1.0
+- "reasoning": one-sentence justification
+
+⚠️ ADDITIONAL GUIDELINES:
+- All classifications must be independent
+- Internships should always be INTERN, regardless of quantity
+- Use conservative estimation when uncertain
+- Do not promote based on job title alone without experience
+- Ensure consistency with total experience and career stage
+
+🎯 OUTPUT FORMAT:
+Call `return_seniority_choices` with:
+{
+  "results": [
+    {
+      "role_id": "abc-123",
+      "seniority": "ASSOCIATE",
+      "confidence": 0.8,
+      "reasoning": "Title is Software Engineer, with 3 years' experience"
+    },
+    ...
+  ]
+}
+"""
 
 def get_resolve_geo_prompt(location_type: LocationType) -> str:
     if location_type == LocationType.ROLE:

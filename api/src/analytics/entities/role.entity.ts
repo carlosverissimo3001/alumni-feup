@@ -2,6 +2,7 @@ import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { LocationAnalyticsEntity } from './location.entity';
 import { CompanyAnalyticsEntity } from './company.entity';
 import { JobClassificationAnalyticsEntity } from './job-classification.entity';
+import { SENIORITY_LEVEL } from '@prisma/client';
 
 export class RoleAnalyticsEntity {
   @ApiProperty()
@@ -24,6 +25,12 @@ export class RoleAnalyticsEntity {
 
   @ApiProperty()
   company: CompanyAnalyticsEntity;
+
+  @ApiProperty({
+    type: 'string',
+    enum: SENIORITY_LEVEL,
+  })
+  seniorityLevel: SENIORITY_LEVEL;
 
   @ApiPropertyOptional({
     type: JobClassificationAnalyticsEntity,

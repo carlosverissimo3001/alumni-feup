@@ -1,5 +1,5 @@
 // Company
-  export {
+export {
   CompanyListResponseDto,
   CompanyListItemExtendedDto,
 } from './company-list.dto';
@@ -49,3 +49,9 @@ export {
   GraduationListDto,
   GraduationListItemDto,
 } from './education-list.dto';
+
+// Seniority
+export {
+  SeniorityListResponseDto,
+  SeniorityListItemDto,
+} from './seniority-list.dto';

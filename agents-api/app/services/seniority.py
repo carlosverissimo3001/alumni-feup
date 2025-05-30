@@ -1,5 +1,6 @@
 import asyncio
 import logging
+import math
 from datetime import datetime
 from typing import List
 
@@ -17,6 +18,11 @@ db = next(get_db())
 
 
 class SeniorityService:
+    def __init__(self):
+        self.MAX_CONCURRENT = 10
+        self.BATCH_SIZE = 50
+        self.semaphore = asyncio.Semaphore(self.MAX_CONCURRENT)
+
     def _prepare_role_input(self, role: Role) -> RoleSeniorityInput:
         """
         Prepares a role for seniority classification by gathering all necessary context
@@ -109,7 +115,7 @@ class SeniorityService:
         Prepares a batch of roles with rich career context
         """
         sorted_roles = sorted(roles, key=lambda r: r.start_date)
-    
+
         role_inputs = [self._prepare_role_input(role) for role in sorted_roles]
 
         industries = {
@@ -133,52 +139,45 @@ class SeniorityService:
         """
         try:
             roles = get_roles_by_alumni_id(alumni_id, db)
-
             if not roles:
-                logger.info(f"No roles found for alumni {alumni_id}")
                 return
 
             batch_input = self._prepare_batch_input(alumni_id, roles)
 
-            await seniority_agent.process_role_batch(batch_input)
+            async with self.semaphore:
+                await seniority_agent.process_role_batch(batch_input)
 
         except Exception as e:
             logger.error(f"Error processing roles for alumni {alumni_id}: {str(e)}")
 
     async def request_alumni_seniority(self, params: AlumniSeniorityParams) -> None:
         """
-        Request the classification of the roles of the alumni
+        Request the classification of seniority of the roles of the alumni
         """
         alumni_ids = params.alumni_ids
         alumni: list[Alumni] = []
 
         if alumni_ids:
-            alumni_ids = alumni_ids.split(",")
-            alumni = find_by_ids(alumni_ids, db)
+            alumni = find_by_ids(alumni_ids.split(","), db)
         else:
             alumni = find_all(db)
 
         alumni = list(set(alumni))
-
         logger.info(f"Going to process roles for {len(alumni)} alumni")
 
         # Process in batches
-        batch_size = 30
-        for i in range(0, len(alumni), batch_size):
-            batch = alumni[i : i + batch_size]
+        for i in range(0, len(alumni), self.BATCH_SIZE):
+            batch = alumni[i : i + self.BATCH_SIZE]
+            batch_no = i // self.BATCH_SIZE + 1
             logger.info(
-                f"Processing batch {i // batch_size + 1} of {(len(alumni) + batch_size - 1) // batch_size} ({len(batch)} alumni)"
+                f"Processing batch {batch_no} of {math.ceil(len(alumni) / self.BATCH_SIZE)}"
             )
-
-            tasks = []
-            for alumni_obj in batch:
-                task = asyncio.create_task(self.process_alumni_roles(alumni_obj.id))
-                tasks.append(task)
-
+            
+            tasks = [
+                asyncio.create_task(self.process_alumni_roles(al.id))
+                for al in batch
+            ]
             await asyncio.gather(*tasks)
-
-            if i + batch_size < len(alumni):
-                await asyncio.sleep(0.5)
 
 
 seniority_service = SeniorityService()

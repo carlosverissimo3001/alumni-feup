@@ -3,7 +3,7 @@ from datetime import datetime, timezone
 
 from sqlalchemy.orm import Session
 
-from app.db.models import Alumni, Role, JobClassification
+from app.db.models import Alumni
 from app.utils.role_db import delete_role
 
 logger = logging.getLogger(__name__)
@@ -35,14 +35,7 @@ def update_alumni(alumni: Alumni, db: Session) -> None:
 
 
 def find_all(db: Session) -> list[Alumni]:
-    return (
-        db.query(Alumni)
-        .join(Role)
-        .outerjoin(JobClassification)
-        .filter(JobClassification.id.is_(None))
-        .distinct()
-        .all()
-    )
+    return db.query(Alumni).all()
 
 
 def find_by_id(id: str, db: Session) -> Alumni:
