@@ -1,4 +1,7 @@
-import { RoleAnalyticsService } from '@/analytics/services';
+import {
+  RoleAnalyticsService,
+  SeniorityAnalyticsService,
+} from '@/analytics/services';
 import { Controller, Get, Query } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import {
@@ -7,12 +10,16 @@ import {
   RoleOptionDto,
   GetRoleHierarchyDto,
   RoleHierarchyDto,
+  SeniorityListResponseDto,
 } from '@/analytics/dto';
 
 @ApiTags('V1')
 @Controller('analytics/roles')
 export class RoleAnalyticsController {
-  constructor(private readonly roleAnalyticsService: RoleAnalyticsService) {}
+  constructor(
+    private readonly roleAnalyticsService: RoleAnalyticsService,
+    private readonly seniorityAnalyticsService: SeniorityAnalyticsService,
+  ) {}
 
   @Get('/')
   @ApiOperation({
@@ -56,5 +63,18 @@ export class RoleAnalyticsController {
   })
   async getRoleHierarchy(@Query() query: GetRoleHierarchyDto) {
     return this.roleAnalyticsService.getRoleHierarchy(query);
+  }
+
+  @Get('/seniority')
+  @ApiOperation({
+    summary: 'Returns the number of roles classified with each seniority level',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'The number of roles classified with each seniority level',
+    type: SeniorityListResponseDto,
+  })
+  async getSeniorityLevels(@Query() query: QueryParamsDto) {
+    return this.seniorityAnalyticsService.getSeniorityLevels(query);
   }
 }

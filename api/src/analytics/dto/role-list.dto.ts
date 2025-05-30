@@ -1,4 +1,4 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { DataPointDto } from './data-point.dto';
 export class RoleListItemDto {
   @ApiProperty({
@@ -14,11 +14,11 @@ export class RoleListItemDto {
   })
   level: number;
 
-  @ApiProperty({
-    description: 'Whether the role is a leaf node in the classification tree',
-    type: Boolean,
+  @ApiPropertyOptional({
+    description: 'The URL of the role in the ESCO classification tree',
+    type: String,
   })
-  isLeaf: boolean;
+  escoUrl?: string;
 
   @ApiProperty({
     description: 'The ESCO code of the role',

@@ -20,7 +20,6 @@ type CustomTableHeaderProps = {
   customAlumniHeader?: string;
   showTrend?: boolean;
   trendFrequency?: TrendFrequency;
-  showInfoColumn?: boolean;
   allowCountSort?: boolean;
   extraHeaderName?: string;
 };
@@ -30,7 +29,6 @@ export const CustomTableHeader = ({
   sortOrder,
   onSort,
   hoverMessage,
-  showInfoColumn = false,
   customNameHeader,
   customAlumniHeader,
   showTrend = false,
@@ -49,10 +47,9 @@ export const CustomTableHeader = ({
 
   // Dynamically calculate column widths
   const numberColWidth = "w-[5%]";
-  const infoColWidth = showInfoColumn ? "w-[5%]" : "";
   const nameColWidth = extraHeaderName
-    ? showInfoColumn ? "w-[40%]" : "w-[45%]"
-    : showInfoColumn ? "w-[55%]" : "w-[60%]";
+    ? "w-[45%]"
+    : "w-[60%]";
   const extraHeaderWidth = "w-[10%]";
   const countColWidth = "w-[20%]";
 
@@ -91,13 +88,6 @@ export const CustomTableHeader = ({
                 {renderSortIcon(SortBy.YEAR)}
               </Button>
             </div>
-          </TableHead>
-        )}
-
-        {/* Info icon column (conditionally rendered) */}
-        {showInfoColumn && (
-          <TableHead className={`${infoColWidth} px-2 py-1 text-xs font-semibold text-[#8C2D19] tracking-wider text-center`}>
-            {/* Empty header cell for alignment */}
           </TableHead>
         )}
 

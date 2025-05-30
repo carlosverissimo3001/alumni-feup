@@ -22,6 +22,7 @@ import {
   TrendAnalyticsService,
   AlumniAnalyticsService,
   EducationAnalyticsService,
+  SeniorityAnalyticsService,
 } from '@/analytics/services';
 import { AlumniAnalyticsController } from './controllers/alumni-analytics.controller';
 
@@ -49,6 +50,7 @@ import { AlumniAnalyticsController } from './controllers/alumni-analytics.contro
     RoleRepository,
     Logger,
     TrendAnalyticsService,
+    SeniorityAnalyticsService,
   ],
 })
 export class AnalyticsModule {}

@@ -155,6 +155,12 @@ export const buildWhereClause = (
     });
   }
 
+  if (params.seniorityLevel?.length) {
+    roleAndClauses.push({
+      seniorityLevel: { in: params.seniorityLevel },
+    });
+  }
+
   // Alumni search
   if (params.alumniSearch?.trim()) {
     const searchTerms = normalizeText(params.alumniSearch)

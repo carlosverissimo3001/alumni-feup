@@ -55,6 +55,7 @@ import type {
   RoleListResponseDto,
   RoleOptionDto,
   SendFeedbackDto,
+  SeniorityListResponseDto,
   UploadExtractionDto,
   UserAuthResponse,
   VerifyEmailDto,
@@ -141,6 +142,8 @@ import {
     RoleOptionDtoToJSON,
     SendFeedbackDtoFromJSON,
     SendFeedbackDtoToJSON,
+    SeniorityListResponseDtoFromJSON,
+    SeniorityListResponseDtoToJSON,
     UploadExtractionDtoFromJSON,
     UploadExtractionDtoToJSON,
     UserAuthResponseFromJSON,
@@ -184,6 +187,7 @@ export interface AlumniAnalyticsControllerGetAlumniListRequest {
     alumniSearch?: string;
     companySize?: Array<AlumniAnalyticsControllerGetAlumniListCompanySizeEnum>;
     companyType?: Array<AlumniAnalyticsControllerGetAlumniListCompanyTypeEnum>;
+    seniorityLevel?: Array<AlumniAnalyticsControllerGetAlumniListSeniorityLevelEnum>;
     escoCodes?: Array<string>;
     escoClassificationLevel?: number;
     limit?: number;
@@ -242,6 +246,7 @@ export interface CompanyAnalyticsControllerGetCompaniesWithAlumniCountRequest {
     alumniSearch?: string;
     companySize?: Array<CompanyAnalyticsControllerGetCompaniesWithAlumniCountCompanySizeEnum>;
     companyType?: Array<CompanyAnalyticsControllerGetCompaniesWithAlumniCountCompanyTypeEnum>;
+    seniorityLevel?: Array<CompanyAnalyticsControllerGetCompaniesWithAlumniCountSeniorityLevelEnum>;
     escoCodes?: Array<string>;
     escoClassificationLevel?: number;
     limit?: number;
@@ -293,6 +298,7 @@ export interface EducationAnalyticsControllerGetFacultiesRequest {
     alumniSearch?: string;
     companySize?: Array<EducationAnalyticsControllerGetFacultiesCompanySizeEnum>;
     companyType?: Array<EducationAnalyticsControllerGetFacultiesCompanyTypeEnum>;
+    seniorityLevel?: Array<EducationAnalyticsControllerGetFacultiesSeniorityLevelEnum>;
     escoCodes?: Array<string>;
     escoClassificationLevel?: number;
     limit?: number;
@@ -323,6 +329,7 @@ export interface EducationAnalyticsControllerGetGraduationsRequest {
     alumniSearch?: string;
     companySize?: Array<EducationAnalyticsControllerGetGraduationsCompanySizeEnum>;
     companyType?: Array<EducationAnalyticsControllerGetGraduationsCompanyTypeEnum>;
+    seniorityLevel?: Array<EducationAnalyticsControllerGetGraduationsSeniorityLevelEnum>;
     escoCodes?: Array<string>;
     escoClassificationLevel?: number;
     limit?: number;
@@ -353,6 +360,7 @@ export interface EducationAnalyticsControllerGetMajorsRequest {
     alumniSearch?: string;
     companySize?: Array<EducationAnalyticsControllerGetMajorsCompanySizeEnum>;
     companyType?: Array<EducationAnalyticsControllerGetMajorsCompanyTypeEnum>;
+    seniorityLevel?: Array<EducationAnalyticsControllerGetMajorsSeniorityLevelEnum>;
     escoCodes?: Array<string>;
     escoClassificationLevel?: number;
     limit?: number;
@@ -399,6 +407,7 @@ export interface GeoAnalyticsControllerGetCitiesWithAlumniCountRequest {
     alumniSearch?: string;
     companySize?: Array<GeoAnalyticsControllerGetCitiesWithAlumniCountCompanySizeEnum>;
     companyType?: Array<GeoAnalyticsControllerGetCitiesWithAlumniCountCompanyTypeEnum>;
+    seniorityLevel?: Array<GeoAnalyticsControllerGetCitiesWithAlumniCountSeniorityLevelEnum>;
     escoCodes?: Array<string>;
     escoClassificationLevel?: number;
     limit?: number;
@@ -429,6 +438,7 @@ export interface GeoAnalyticsControllerGetCountriesWithAlumniCountRequest {
     alumniSearch?: string;
     companySize?: Array<GeoAnalyticsControllerGetCountriesWithAlumniCountCompanySizeEnum>;
     companyType?: Array<GeoAnalyticsControllerGetCountriesWithAlumniCountCompanyTypeEnum>;
+    seniorityLevel?: Array<GeoAnalyticsControllerGetCountriesWithAlumniCountSeniorityLevelEnum>;
     escoCodes?: Array<string>;
     escoClassificationLevel?: number;
     limit?: number;
@@ -459,6 +469,7 @@ export interface IndustryAnalyticsControllerGetIndustryWithCountsRequest {
     alumniSearch?: string;
     companySize?: Array<IndustryAnalyticsControllerGetIndustryWithCountsCompanySizeEnum>;
     companyType?: Array<IndustryAnalyticsControllerGetIndustryWithCountsCompanyTypeEnum>;
+    seniorityLevel?: Array<IndustryAnalyticsControllerGetIndustryWithCountsSeniorityLevelEnum>;
     escoCodes?: Array<string>;
     escoClassificationLevel?: number;
     limit?: number;
@@ -509,12 +520,44 @@ export interface RoleAnalyticsControllerGetRolesRequest {
     alumniSearch?: string;
     companySize?: Array<RoleAnalyticsControllerGetRolesCompanySizeEnum>;
     companyType?: Array<RoleAnalyticsControllerGetRolesCompanyTypeEnum>;
+    seniorityLevel?: Array<RoleAnalyticsControllerGetRolesSeniorityLevelEnum>;
     escoCodes?: Array<string>;
     escoClassificationLevel?: number;
     limit?: number;
     offset?: number;
     search?: string;
     sortBy?: RoleAnalyticsControllerGetRolesSortByEnum;
+    sortOrder?: string;
+}
+
+export interface RoleAnalyticsControllerGetSeniorityLevelsRequest {
+    includeTrend: boolean;
+    alumniIds?: Array<string>;
+    startDate?: string;
+    endDate?: string;
+    facultyIds?: Array<string>;
+    courseIds?: Array<string>;
+    graduationYears?: Array<string>;
+    companyIds?: Array<string>;
+    industryIds?: Array<string>;
+    roleCountryCodes?: Array<string>;
+    roleCityIds?: Array<string>;
+    companyHQsCountryCodes?: Array<string>;
+    companyHQsCityIds?: Array<string>;
+    currentRolesOnly?: boolean;
+    onlyCompaniesWithSalaryData?: boolean;
+    onlyInternational?: boolean;
+    excludeResearchAndHighEducation?: boolean;
+    alumniSearch?: string;
+    companySize?: Array<RoleAnalyticsControllerGetSeniorityLevelsCompanySizeEnum>;
+    companyType?: Array<RoleAnalyticsControllerGetSeniorityLevelsCompanyTypeEnum>;
+    seniorityLevel?: Array<RoleAnalyticsControllerGetSeniorityLevelsSeniorityLevelEnum>;
+    escoCodes?: Array<string>;
+    escoClassificationLevel?: number;
+    limit?: number;
+    offset?: number;
+    search?: string;
+    sortBy?: RoleAnalyticsControllerGetSeniorityLevelsSortByEnum;
     sortOrder?: string;
 }
 
@@ -645,6 +688,7 @@ export interface V1ApiInterface {
      * @param {string} [alumniSearch] Search query for companies
      * @param {Array<'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G' | 'H' | 'I'>} [companySize] The company sizes to filter by
      * @param {Array<'EDUCATIONAL' | 'GOVERNMENT_AGENCY' | 'NON_PROFIT' | 'PARTNERSHIP' | 'PRIVATELY_HELD' | 'PUBLIC_COMPANY' | 'SELF_EMPLOYED' | 'SELF_OWNED'>} [companyType] The company types to filter by
+     * @param {Array<'INTERN' | 'ENTRY_LEVEL' | 'ASSOCIATE' | 'MID_SENIOR_LEVEL' | 'DIRECTOR' | 'EXECUTIVE' | 'C_LEVEL'>} [seniorityLevel] The seniority levels to filter by
      * @param {Array<string>} [escoCodes] The ESCO codes to filter by
      * @param {number} [escoClassificationLevel] The ESCO classification level to filter by
      * @param {number} [limit] The number of results to return
@@ -822,6 +866,7 @@ export interface V1ApiInterface {
      * @param {string} [alumniSearch] Search query for companies
      * @param {Array<'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G' | 'H' | 'I'>} [companySize] The company sizes to filter by
      * @param {Array<'EDUCATIONAL' | 'GOVERNMENT_AGENCY' | 'NON_PROFIT' | 'PARTNERSHIP' | 'PRIVATELY_HELD' | 'PUBLIC_COMPANY' | 'SELF_EMPLOYED' | 'SELF_OWNED'>} [companyType] The company types to filter by
+     * @param {Array<'INTERN' | 'ENTRY_LEVEL' | 'ASSOCIATE' | 'MID_SENIOR_LEVEL' | 'DIRECTOR' | 'EXECUTIVE' | 'C_LEVEL'>} [seniorityLevel] The seniority levels to filter by
      * @param {Array<string>} [escoCodes] The ESCO codes to filter by
      * @param {number} [escoClassificationLevel] The ESCO classification level to filter by
      * @param {number} [limit] The number of results to return
@@ -981,6 +1026,7 @@ export interface V1ApiInterface {
      * @param {string} [alumniSearch] Search query for companies
      * @param {Array<'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G' | 'H' | 'I'>} [companySize] The company sizes to filter by
      * @param {Array<'EDUCATIONAL' | 'GOVERNMENT_AGENCY' | 'NON_PROFIT' | 'PARTNERSHIP' | 'PRIVATELY_HELD' | 'PUBLIC_COMPANY' | 'SELF_EMPLOYED' | 'SELF_OWNED'>} [companyType] The company types to filter by
+     * @param {Array<'INTERN' | 'ENTRY_LEVEL' | 'ASSOCIATE' | 'MID_SENIOR_LEVEL' | 'DIRECTOR' | 'EXECUTIVE' | 'C_LEVEL'>} [seniorityLevel] The seniority levels to filter by
      * @param {Array<string>} [escoCodes] The ESCO codes to filter by
      * @param {number} [escoClassificationLevel] The ESCO classification level to filter by
      * @param {number} [limit] The number of results to return
@@ -1022,6 +1068,7 @@ export interface V1ApiInterface {
      * @param {string} [alumniSearch] Search query for companies
      * @param {Array<'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G' | 'H' | 'I'>} [companySize] The company sizes to filter by
      * @param {Array<'EDUCATIONAL' | 'GOVERNMENT_AGENCY' | 'NON_PROFIT' | 'PARTNERSHIP' | 'PRIVATELY_HELD' | 'PUBLIC_COMPANY' | 'SELF_EMPLOYED' | 'SELF_OWNED'>} [companyType] The company types to filter by
+     * @param {Array<'INTERN' | 'ENTRY_LEVEL' | 'ASSOCIATE' | 'MID_SENIOR_LEVEL' | 'DIRECTOR' | 'EXECUTIVE' | 'C_LEVEL'>} [seniorityLevel] The seniority levels to filter by
      * @param {Array<string>} [escoCodes] The ESCO codes to filter by
      * @param {number} [escoClassificationLevel] The ESCO classification level to filter by
      * @param {number} [limit] The number of results to return
@@ -1063,6 +1110,7 @@ export interface V1ApiInterface {
      * @param {string} [alumniSearch] Search query for companies
      * @param {Array<'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G' | 'H' | 'I'>} [companySize] The company sizes to filter by
      * @param {Array<'EDUCATIONAL' | 'GOVERNMENT_AGENCY' | 'NON_PROFIT' | 'PARTNERSHIP' | 'PRIVATELY_HELD' | 'PUBLIC_COMPANY' | 'SELF_EMPLOYED' | 'SELF_OWNED'>} [companyType] The company types to filter by
+     * @param {Array<'INTERN' | 'ENTRY_LEVEL' | 'ASSOCIATE' | 'MID_SENIOR_LEVEL' | 'DIRECTOR' | 'EXECUTIVE' | 'C_LEVEL'>} [seniorityLevel] The seniority levels to filter by
      * @param {Array<string>} [escoCodes] The ESCO codes to filter by
      * @param {number} [escoClassificationLevel] The ESCO classification level to filter by
      * @param {number} [limit] The number of results to return
@@ -1206,6 +1254,7 @@ export interface V1ApiInterface {
      * @param {string} [alumniSearch] Search query for companies
      * @param {Array<'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G' | 'H' | 'I'>} [companySize] The company sizes to filter by
      * @param {Array<'EDUCATIONAL' | 'GOVERNMENT_AGENCY' | 'NON_PROFIT' | 'PARTNERSHIP' | 'PRIVATELY_HELD' | 'PUBLIC_COMPANY' | 'SELF_EMPLOYED' | 'SELF_OWNED'>} [companyType] The company types to filter by
+     * @param {Array<'INTERN' | 'ENTRY_LEVEL' | 'ASSOCIATE' | 'MID_SENIOR_LEVEL' | 'DIRECTOR' | 'EXECUTIVE' | 'C_LEVEL'>} [seniorityLevel] The seniority levels to filter by
      * @param {Array<string>} [escoCodes] The ESCO codes to filter by
      * @param {number} [escoClassificationLevel] The ESCO classification level to filter by
      * @param {number} [limit] The number of results to return
@@ -1261,6 +1310,7 @@ export interface V1ApiInterface {
      * @param {string} [alumniSearch] Search query for companies
      * @param {Array<'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G' | 'H' | 'I'>} [companySize] The company sizes to filter by
      * @param {Array<'EDUCATIONAL' | 'GOVERNMENT_AGENCY' | 'NON_PROFIT' | 'PARTNERSHIP' | 'PRIVATELY_HELD' | 'PUBLIC_COMPANY' | 'SELF_EMPLOYED' | 'SELF_OWNED'>} [companyType] The company types to filter by
+     * @param {Array<'INTERN' | 'ENTRY_LEVEL' | 'ASSOCIATE' | 'MID_SENIOR_LEVEL' | 'DIRECTOR' | 'EXECUTIVE' | 'C_LEVEL'>} [seniorityLevel] The seniority levels to filter by
      * @param {Array<string>} [escoCodes] The ESCO codes to filter by
      * @param {number} [escoClassificationLevel] The ESCO classification level to filter by
      * @param {number} [limit] The number of results to return
@@ -1317,6 +1367,7 @@ export interface V1ApiInterface {
      * @param {string} [alumniSearch] Search query for companies
      * @param {Array<'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G' | 'H' | 'I'>} [companySize] The company sizes to filter by
      * @param {Array<'EDUCATIONAL' | 'GOVERNMENT_AGENCY' | 'NON_PROFIT' | 'PARTNERSHIP' | 'PRIVATELY_HELD' | 'PUBLIC_COMPANY' | 'SELF_EMPLOYED' | 'SELF_OWNED'>} [companyType] The company types to filter by
+     * @param {Array<'INTERN' | 'ENTRY_LEVEL' | 'ASSOCIATE' | 'MID_SENIOR_LEVEL' | 'DIRECTOR' | 'EXECUTIVE' | 'C_LEVEL'>} [seniorityLevel] The seniority levels to filter by
      * @param {Array<string>} [escoCodes] The ESCO codes to filter by
      * @param {number} [escoClassificationLevel] The ESCO classification level to filter by
      * @param {number} [limit] The number of results to return
@@ -1438,6 +1489,7 @@ export interface V1ApiInterface {
      * @param {string} [alumniSearch] Search query for companies
      * @param {Array<'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G' | 'H' | 'I'>} [companySize] The company sizes to filter by
      * @param {Array<'EDUCATIONAL' | 'GOVERNMENT_AGENCY' | 'NON_PROFIT' | 'PARTNERSHIP' | 'PRIVATELY_HELD' | 'PUBLIC_COMPANY' | 'SELF_EMPLOYED' | 'SELF_OWNED'>} [companyType] The company types to filter by
+     * @param {Array<'INTERN' | 'ENTRY_LEVEL' | 'ASSOCIATE' | 'MID_SENIOR_LEVEL' | 'DIRECTOR' | 'EXECUTIVE' | 'C_LEVEL'>} [seniorityLevel] The seniority levels to filter by
      * @param {Array<string>} [escoCodes] The ESCO codes to filter by
      * @param {number} [escoClassificationLevel] The ESCO classification level to filter by
      * @param {number} [limit] The number of results to return
@@ -1455,6 +1507,48 @@ export interface V1ApiInterface {
      * Returns the number of roles classified with each ESCO classification
      */
     roleAnalyticsControllerGetRoles(requestParameters: RoleAnalyticsControllerGetRolesRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<RoleListResponseDto>;
+
+    /**
+     * 
+     * @summary Returns the number of roles classified with each seniority level
+     * @param {boolean} includeTrend Whether to include the trend data
+     * @param {Array<string>} [alumniIds] The alumni IDs to filter by
+     * @param {string} [startDate] The start date of the role
+     * @param {string} [endDate] The end date of the role
+     * @param {Array<string>} [facultyIds] The faculty IDs to filter by
+     * @param {Array<string>} [courseIds] The course IDs to filter by
+     * @param {Array<string>} [graduationYears] The graduation years to filter by
+     * @param {Array<string>} [companyIds] The company IDs to filter by
+     * @param {Array<string>} [industryIds] The industry IDs to filter by
+     * @param {Array<string>} [roleCountryCodes] The country codes where alumni exerced their roles
+     * @param {Array<string>} [roleCityIds] The city IDS where alumni exerced their roles
+     * @param {Array<string>} [companyHQsCountryCodes] The company HQs country codes to filter by
+     * @param {Array<string>} [companyHQsCityIds] The company HQs city ids to filter by
+     * @param {boolean} [currentRolesOnly] Filter for current roles only
+     * @param {boolean} [onlyCompaniesWithSalaryData] Include only companies with salary data
+     * @param {boolean} [onlyInternational] Whether to exclude roles in Portugal
+     * @param {boolean} [excludeResearchAndHighEducation] Exclude research and high education roles
+     * @param {string} [alumniSearch] Search query for companies
+     * @param {Array<'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G' | 'H' | 'I'>} [companySize] The company sizes to filter by
+     * @param {Array<'EDUCATIONAL' | 'GOVERNMENT_AGENCY' | 'NON_PROFIT' | 'PARTNERSHIP' | 'PRIVATELY_HELD' | 'PUBLIC_COMPANY' | 'SELF_EMPLOYED' | 'SELF_OWNED'>} [companyType] The company types to filter by
+     * @param {Array<'INTERN' | 'ENTRY_LEVEL' | 'ASSOCIATE' | 'MID_SENIOR_LEVEL' | 'DIRECTOR' | 'EXECUTIVE' | 'C_LEVEL'>} [seniorityLevel] The seniority levels to filter by
+     * @param {Array<string>} [escoCodes] The ESCO codes to filter by
+     * @param {number} [escoClassificationLevel] The ESCO classification level to filter by
+     * @param {number} [limit] The number of results to return
+     * @param {number} [offset] The offset of the query
+     * @param {string} [search] Broad search query
+     * @param {'count' | 'name' | 'year'} [sortBy] How to sort the results
+     * @param {string} [sortOrder] The order of the results
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof V1ApiInterface
+     */
+    roleAnalyticsControllerGetSeniorityLevelsRaw(requestParameters: RoleAnalyticsControllerGetSeniorityLevelsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<SeniorityListResponseDto>>;
+
+    /**
+     * Returns the number of roles classified with each seniority level
+     */
+    roleAnalyticsControllerGetSeniorityLevels(requestParameters: RoleAnalyticsControllerGetSeniorityLevelsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<SeniorityListResponseDto>;
 
     /**
      * 
@@ -1805,6 +1899,10 @@ export class V1Api extends runtime.BaseAPI implements V1ApiInterface {
 
         if (requestParameters['companyType'] != null) {
             queryParameters['companyType'] = requestParameters['companyType'];
+        }
+
+        if (requestParameters['seniorityLevel'] != null) {
+            queryParameters['seniorityLevel'] = requestParameters['seniorityLevel'];
         }
 
         if (requestParameters['escoCodes'] != null) {
@@ -2250,6 +2348,10 @@ export class V1Api extends runtime.BaseAPI implements V1ApiInterface {
             queryParameters['companyType'] = requestParameters['companyType'];
         }
 
+        if (requestParameters['seniorityLevel'] != null) {
+            queryParameters['seniorityLevel'] = requestParameters['seniorityLevel'];
+        }
+
         if (requestParameters['escoCodes'] != null) {
             queryParameters['escoCodes'] = requestParameters['escoCodes'];
         }
@@ -2635,6 +2737,10 @@ export class V1Api extends runtime.BaseAPI implements V1ApiInterface {
             queryParameters['companyType'] = requestParameters['companyType'];
         }
 
+        if (requestParameters['seniorityLevel'] != null) {
+            queryParameters['seniorityLevel'] = requestParameters['seniorityLevel'];
+        }
+
         if (requestParameters['escoCodes'] != null) {
             queryParameters['escoCodes'] = requestParameters['escoCodes'];
         }
@@ -2776,6 +2882,10 @@ export class V1Api extends runtime.BaseAPI implements V1ApiInterface {
             queryParameters['companyType'] = requestParameters['companyType'];
         }
 
+        if (requestParameters['seniorityLevel'] != null) {
+            queryParameters['seniorityLevel'] = requestParameters['seniorityLevel'];
+        }
+
         if (requestParameters['escoCodes'] != null) {
             queryParameters['escoCodes'] = requestParameters['escoCodes'];
         }
@@ -2915,6 +3025,10 @@ export class V1Api extends runtime.BaseAPI implements V1ApiInterface {
 
         if (requestParameters['companyType'] != null) {
             queryParameters['companyType'] = requestParameters['companyType'];
+        }
+
+        if (requestParameters['seniorityLevel'] != null) {
+            queryParameters['seniorityLevel'] = requestParameters['seniorityLevel'];
         }
 
         if (requestParameters['escoCodes'] != null) {
@@ -3277,6 +3391,10 @@ export class V1Api extends runtime.BaseAPI implements V1ApiInterface {
             queryParameters['companyType'] = requestParameters['companyType'];
         }
 
+        if (requestParameters['seniorityLevel'] != null) {
+            queryParameters['seniorityLevel'] = requestParameters['seniorityLevel'];
+        }
+
         if (requestParameters['escoCodes'] != null) {
             queryParameters['escoCodes'] = requestParameters['escoCodes'];
         }
@@ -3442,6 +3560,10 @@ export class V1Api extends runtime.BaseAPI implements V1ApiInterface {
 
         if (requestParameters['companyType'] != null) {
             queryParameters['companyType'] = requestParameters['companyType'];
+        }
+
+        if (requestParameters['seniorityLevel'] != null) {
+            queryParameters['seniorityLevel'] = requestParameters['seniorityLevel'];
         }
 
         if (requestParameters['escoCodes'] != null) {
@@ -3611,6 +3733,10 @@ export class V1Api extends runtime.BaseAPI implements V1ApiInterface {
 
         if (requestParameters['companyType'] != null) {
             queryParameters['companyType'] = requestParameters['companyType'];
+        }
+
+        if (requestParameters['seniorityLevel'] != null) {
+            queryParameters['seniorityLevel'] = requestParameters['seniorityLevel'];
         }
 
         if (requestParameters['escoCodes'] != null) {
@@ -3944,6 +4070,10 @@ export class V1Api extends runtime.BaseAPI implements V1ApiInterface {
             queryParameters['companyType'] = requestParameters['companyType'];
         }
 
+        if (requestParameters['seniorityLevel'] != null) {
+            queryParameters['seniorityLevel'] = requestParameters['seniorityLevel'];
+        }
+
         if (requestParameters['escoCodes'] != null) {
             queryParameters['escoCodes'] = requestParameters['escoCodes'];
         }
@@ -3993,6 +4123,151 @@ export class V1Api extends runtime.BaseAPI implements V1ApiInterface {
      */
     async roleAnalyticsControllerGetRoles(requestParameters: RoleAnalyticsControllerGetRolesRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<RoleListResponseDto> {
         const response = await this.roleAnalyticsControllerGetRolesRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Returns the number of roles classified with each seniority level
+     */
+    async roleAnalyticsControllerGetSeniorityLevelsRaw(requestParameters: RoleAnalyticsControllerGetSeniorityLevelsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<SeniorityListResponseDto>> {
+        if (requestParameters['includeTrend'] == null) {
+            throw new runtime.RequiredError(
+                'includeTrend',
+                'Required parameter "includeTrend" was null or undefined when calling roleAnalyticsControllerGetSeniorityLevels().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        if (requestParameters['alumniIds'] != null) {
+            queryParameters['alumniIds'] = requestParameters['alumniIds'];
+        }
+
+        if (requestParameters['startDate'] != null) {
+            queryParameters['startDate'] = requestParameters['startDate'];
+        }
+
+        if (requestParameters['endDate'] != null) {
+            queryParameters['endDate'] = requestParameters['endDate'];
+        }
+
+        if (requestParameters['facultyIds'] != null) {
+            queryParameters['facultyIds'] = requestParameters['facultyIds'];
+        }
+
+        if (requestParameters['courseIds'] != null) {
+            queryParameters['courseIds'] = requestParameters['courseIds'];
+        }
+
+        if (requestParameters['graduationYears'] != null) {
+            queryParameters['graduationYears'] = requestParameters['graduationYears'];
+        }
+
+        if (requestParameters['companyIds'] != null) {
+            queryParameters['companyIds'] = requestParameters['companyIds'];
+        }
+
+        if (requestParameters['industryIds'] != null) {
+            queryParameters['industryIds'] = requestParameters['industryIds'];
+        }
+
+        if (requestParameters['roleCountryCodes'] != null) {
+            queryParameters['roleCountryCodes'] = requestParameters['roleCountryCodes'];
+        }
+
+        if (requestParameters['roleCityIds'] != null) {
+            queryParameters['roleCityIds'] = requestParameters['roleCityIds'];
+        }
+
+        if (requestParameters['companyHQsCountryCodes'] != null) {
+            queryParameters['companyHQsCountryCodes'] = requestParameters['companyHQsCountryCodes'];
+        }
+
+        if (requestParameters['companyHQsCityIds'] != null) {
+            queryParameters['companyHQsCityIds'] = requestParameters['companyHQsCityIds'];
+        }
+
+        if (requestParameters['currentRolesOnly'] != null) {
+            queryParameters['currentRolesOnly'] = requestParameters['currentRolesOnly'];
+        }
+
+        if (requestParameters['onlyCompaniesWithSalaryData'] != null) {
+            queryParameters['onlyCompaniesWithSalaryData'] = requestParameters['onlyCompaniesWithSalaryData'];
+        }
+
+        if (requestParameters['onlyInternational'] != null) {
+            queryParameters['onlyInternational'] = requestParameters['onlyInternational'];
+        }
+
+        if (requestParameters['excludeResearchAndHighEducation'] != null) {
+            queryParameters['excludeResearchAndHighEducation'] = requestParameters['excludeResearchAndHighEducation'];
+        }
+
+        if (requestParameters['alumniSearch'] != null) {
+            queryParameters['alumniSearch'] = requestParameters['alumniSearch'];
+        }
+
+        if (requestParameters['companySize'] != null) {
+            queryParameters['companySize'] = requestParameters['companySize'];
+        }
+
+        if (requestParameters['companyType'] != null) {
+            queryParameters['companyType'] = requestParameters['companyType'];
+        }
+
+        if (requestParameters['seniorityLevel'] != null) {
+            queryParameters['seniorityLevel'] = requestParameters['seniorityLevel'];
+        }
+
+        if (requestParameters['escoCodes'] != null) {
+            queryParameters['escoCodes'] = requestParameters['escoCodes'];
+        }
+
+        if (requestParameters['escoClassificationLevel'] != null) {
+            queryParameters['escoClassificationLevel'] = requestParameters['escoClassificationLevel'];
+        }
+
+        if (requestParameters['limit'] != null) {
+            queryParameters['limit'] = requestParameters['limit'];
+        }
+
+        if (requestParameters['offset'] != null) {
+            queryParameters['offset'] = requestParameters['offset'];
+        }
+
+        if (requestParameters['search'] != null) {
+            queryParameters['search'] = requestParameters['search'];
+        }
+
+        if (requestParameters['sortBy'] != null) {
+            queryParameters['sortBy'] = requestParameters['sortBy'];
+        }
+
+        if (requestParameters['sortOrder'] != null) {
+            queryParameters['sortOrder'] = requestParameters['sortOrder'];
+        }
+
+        if (requestParameters['includeTrend'] != null) {
+            queryParameters['includeTrend'] = requestParameters['includeTrend'];
+        }
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        const response = await this.request({
+            path: `/analytics/roles/seniority`,
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => SeniorityListResponseDtoFromJSON(jsonValue));
+    }
+
+    /**
+     * Returns the number of roles classified with each seniority level
+     */
+    async roleAnalyticsControllerGetSeniorityLevels(requestParameters: RoleAnalyticsControllerGetSeniorityLevelsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<SeniorityListResponseDto> {
+        const response = await this.roleAnalyticsControllerGetSeniorityLevelsRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -4243,6 +4518,19 @@ export type AlumniAnalyticsControllerGetAlumniListCompanyTypeEnum = typeof Alumn
 /**
  * @export
  */
+export const AlumniAnalyticsControllerGetAlumniListSeniorityLevelEnum = {
+    Intern: 'INTERN',
+    EntryLevel: 'ENTRY_LEVEL',
+    Associate: 'ASSOCIATE',
+    MidSeniorLevel: 'MID_SENIOR_LEVEL',
+    Director: 'DIRECTOR',
+    Executive: 'EXECUTIVE',
+    CLevel: 'C_LEVEL'
+} as const;
+export type AlumniAnalyticsControllerGetAlumniListSeniorityLevelEnum = typeof AlumniAnalyticsControllerGetAlumniListSeniorityLevelEnum[keyof typeof AlumniAnalyticsControllerGetAlumniListSeniorityLevelEnum];
+/**
+ * @export
+ */
 export const AlumniAnalyticsControllerGetAlumniListSortByEnum = {
     Count: 'count',
     Name: 'name',
@@ -4289,6 +4577,19 @@ export type CompanyAnalyticsControllerGetCompaniesWithAlumniCountCompanyTypeEnum
 /**
  * @export
  */
+export const CompanyAnalyticsControllerGetCompaniesWithAlumniCountSeniorityLevelEnum = {
+    Intern: 'INTERN',
+    EntryLevel: 'ENTRY_LEVEL',
+    Associate: 'ASSOCIATE',
+    MidSeniorLevel: 'MID_SENIOR_LEVEL',
+    Director: 'DIRECTOR',
+    Executive: 'EXECUTIVE',
+    CLevel: 'C_LEVEL'
+} as const;
+export type CompanyAnalyticsControllerGetCompaniesWithAlumniCountSeniorityLevelEnum = typeof CompanyAnalyticsControllerGetCompaniesWithAlumniCountSeniorityLevelEnum[keyof typeof CompanyAnalyticsControllerGetCompaniesWithAlumniCountSeniorityLevelEnum];
+/**
+ * @export
+ */
 export const CompanyAnalyticsControllerGetCompaniesWithAlumniCountSortByEnum = {
     Count: 'count',
     Name: 'name',
@@ -4324,6 +4625,19 @@ export const EducationAnalyticsControllerGetFacultiesCompanyTypeEnum = {
     SelfOwned: 'SELF_OWNED'
 } as const;
 export type EducationAnalyticsControllerGetFacultiesCompanyTypeEnum = typeof EducationAnalyticsControllerGetFacultiesCompanyTypeEnum[keyof typeof EducationAnalyticsControllerGetFacultiesCompanyTypeEnum];
+/**
+ * @export
+ */
+export const EducationAnalyticsControllerGetFacultiesSeniorityLevelEnum = {
+    Intern: 'INTERN',
+    EntryLevel: 'ENTRY_LEVEL',
+    Associate: 'ASSOCIATE',
+    MidSeniorLevel: 'MID_SENIOR_LEVEL',
+    Director: 'DIRECTOR',
+    Executive: 'EXECUTIVE',
+    CLevel: 'C_LEVEL'
+} as const;
+export type EducationAnalyticsControllerGetFacultiesSeniorityLevelEnum = typeof EducationAnalyticsControllerGetFacultiesSeniorityLevelEnum[keyof typeof EducationAnalyticsControllerGetFacultiesSeniorityLevelEnum];
 /**
  * @export
  */
@@ -4365,6 +4679,19 @@ export type EducationAnalyticsControllerGetGraduationsCompanyTypeEnum = typeof E
 /**
  * @export
  */
+export const EducationAnalyticsControllerGetGraduationsSeniorityLevelEnum = {
+    Intern: 'INTERN',
+    EntryLevel: 'ENTRY_LEVEL',
+    Associate: 'ASSOCIATE',
+    MidSeniorLevel: 'MID_SENIOR_LEVEL',
+    Director: 'DIRECTOR',
+    Executive: 'EXECUTIVE',
+    CLevel: 'C_LEVEL'
+} as const;
+export type EducationAnalyticsControllerGetGraduationsSeniorityLevelEnum = typeof EducationAnalyticsControllerGetGraduationsSeniorityLevelEnum[keyof typeof EducationAnalyticsControllerGetGraduationsSeniorityLevelEnum];
+/**
+ * @export
+ */
 export const EducationAnalyticsControllerGetGraduationsSortByEnum = {
     Count: 'count',
     Name: 'name',
@@ -4400,6 +4727,19 @@ export const EducationAnalyticsControllerGetMajorsCompanyTypeEnum = {
     SelfOwned: 'SELF_OWNED'
 } as const;
 export type EducationAnalyticsControllerGetMajorsCompanyTypeEnum = typeof EducationAnalyticsControllerGetMajorsCompanyTypeEnum[keyof typeof EducationAnalyticsControllerGetMajorsCompanyTypeEnum];
+/**
+ * @export
+ */
+export const EducationAnalyticsControllerGetMajorsSeniorityLevelEnum = {
+    Intern: 'INTERN',
+    EntryLevel: 'ENTRY_LEVEL',
+    Associate: 'ASSOCIATE',
+    MidSeniorLevel: 'MID_SENIOR_LEVEL',
+    Director: 'DIRECTOR',
+    Executive: 'EXECUTIVE',
+    CLevel: 'C_LEVEL'
+} as const;
+export type EducationAnalyticsControllerGetMajorsSeniorityLevelEnum = typeof EducationAnalyticsControllerGetMajorsSeniorityLevelEnum[keyof typeof EducationAnalyticsControllerGetMajorsSeniorityLevelEnum];
 /**
  * @export
  */
@@ -4441,6 +4781,19 @@ export type GeoAnalyticsControllerGetCitiesWithAlumniCountCompanyTypeEnum = type
 /**
  * @export
  */
+export const GeoAnalyticsControllerGetCitiesWithAlumniCountSeniorityLevelEnum = {
+    Intern: 'INTERN',
+    EntryLevel: 'ENTRY_LEVEL',
+    Associate: 'ASSOCIATE',
+    MidSeniorLevel: 'MID_SENIOR_LEVEL',
+    Director: 'DIRECTOR',
+    Executive: 'EXECUTIVE',
+    CLevel: 'C_LEVEL'
+} as const;
+export type GeoAnalyticsControllerGetCitiesWithAlumniCountSeniorityLevelEnum = typeof GeoAnalyticsControllerGetCitiesWithAlumniCountSeniorityLevelEnum[keyof typeof GeoAnalyticsControllerGetCitiesWithAlumniCountSeniorityLevelEnum];
+/**
+ * @export
+ */
 export const GeoAnalyticsControllerGetCitiesWithAlumniCountSortByEnum = {
     Count: 'count',
     Name: 'name',
@@ -4479,6 +4832,19 @@ export type GeoAnalyticsControllerGetCountriesWithAlumniCountCompanyTypeEnum = t
 /**
  * @export
  */
+export const GeoAnalyticsControllerGetCountriesWithAlumniCountSeniorityLevelEnum = {
+    Intern: 'INTERN',
+    EntryLevel: 'ENTRY_LEVEL',
+    Associate: 'ASSOCIATE',
+    MidSeniorLevel: 'MID_SENIOR_LEVEL',
+    Director: 'DIRECTOR',
+    Executive: 'EXECUTIVE',
+    CLevel: 'C_LEVEL'
+} as const;
+export type GeoAnalyticsControllerGetCountriesWithAlumniCountSeniorityLevelEnum = typeof GeoAnalyticsControllerGetCountriesWithAlumniCountSeniorityLevelEnum[keyof typeof GeoAnalyticsControllerGetCountriesWithAlumniCountSeniorityLevelEnum];
+/**
+ * @export
+ */
 export const GeoAnalyticsControllerGetCountriesWithAlumniCountSortByEnum = {
     Count: 'count',
     Name: 'name',
@@ -4514,6 +4880,19 @@ export const IndustryAnalyticsControllerGetIndustryWithCountsCompanyTypeEnum = {
     SelfOwned: 'SELF_OWNED'
 } as const;
 export type IndustryAnalyticsControllerGetIndustryWithCountsCompanyTypeEnum = typeof IndustryAnalyticsControllerGetIndustryWithCountsCompanyTypeEnum[keyof typeof IndustryAnalyticsControllerGetIndustryWithCountsCompanyTypeEnum];
+/**
+ * @export
+ */
+export const IndustryAnalyticsControllerGetIndustryWithCountsSeniorityLevelEnum = {
+    Intern: 'INTERN',
+    EntryLevel: 'ENTRY_LEVEL',
+    Associate: 'ASSOCIATE',
+    MidSeniorLevel: 'MID_SENIOR_LEVEL',
+    Director: 'DIRECTOR',
+    Executive: 'EXECUTIVE',
+    CLevel: 'C_LEVEL'
+} as const;
+export type IndustryAnalyticsControllerGetIndustryWithCountsSeniorityLevelEnum = typeof IndustryAnalyticsControllerGetIndustryWithCountsSeniorityLevelEnum[keyof typeof IndustryAnalyticsControllerGetIndustryWithCountsSeniorityLevelEnum];
 /**
  * @export
  */
@@ -4563,9 +4942,73 @@ export type RoleAnalyticsControllerGetRolesCompanyTypeEnum = typeof RoleAnalytic
 /**
  * @export
  */
+export const RoleAnalyticsControllerGetRolesSeniorityLevelEnum = {
+    Intern: 'INTERN',
+    EntryLevel: 'ENTRY_LEVEL',
+    Associate: 'ASSOCIATE',
+    MidSeniorLevel: 'MID_SENIOR_LEVEL',
+    Director: 'DIRECTOR',
+    Executive: 'EXECUTIVE',
+    CLevel: 'C_LEVEL'
+} as const;
+export type RoleAnalyticsControllerGetRolesSeniorityLevelEnum = typeof RoleAnalyticsControllerGetRolesSeniorityLevelEnum[keyof typeof RoleAnalyticsControllerGetRolesSeniorityLevelEnum];
+/**
+ * @export
+ */
 export const RoleAnalyticsControllerGetRolesSortByEnum = {
     Count: 'count',
     Name: 'name',
     Year: 'year'
 } as const;
 export type RoleAnalyticsControllerGetRolesSortByEnum = typeof RoleAnalyticsControllerGetRolesSortByEnum[keyof typeof RoleAnalyticsControllerGetRolesSortByEnum];
+/**
+ * @export
+ */
+export const RoleAnalyticsControllerGetSeniorityLevelsCompanySizeEnum = {
+    A: 'A',
+    B: 'B',
+    C: 'C',
+    D: 'D',
+    E: 'E',
+    F: 'F',
+    G: 'G',
+    H: 'H',
+    I: 'I'
+} as const;
+export type RoleAnalyticsControllerGetSeniorityLevelsCompanySizeEnum = typeof RoleAnalyticsControllerGetSeniorityLevelsCompanySizeEnum[keyof typeof RoleAnalyticsControllerGetSeniorityLevelsCompanySizeEnum];
+/**
+ * @export
+ */
+export const RoleAnalyticsControllerGetSeniorityLevelsCompanyTypeEnum = {
+    Educational: 'EDUCATIONAL',
+    GovernmentAgency: 'GOVERNMENT_AGENCY',
+    NonProfit: 'NON_PROFIT',
+    Partnership: 'PARTNERSHIP',
+    PrivatelyHeld: 'PRIVATELY_HELD',
+    PublicCompany: 'PUBLIC_COMPANY',
+    SelfEmployed: 'SELF_EMPLOYED',
+    SelfOwned: 'SELF_OWNED'
+} as const;
+export type RoleAnalyticsControllerGetSeniorityLevelsCompanyTypeEnum = typeof RoleAnalyticsControllerGetSeniorityLevelsCompanyTypeEnum[keyof typeof RoleAnalyticsControllerGetSeniorityLevelsCompanyTypeEnum];
+/**
+ * @export
+ */
+export const RoleAnalyticsControllerGetSeniorityLevelsSeniorityLevelEnum = {
+    Intern: 'INTERN',
+    EntryLevel: 'ENTRY_LEVEL',
+    Associate: 'ASSOCIATE',
+    MidSeniorLevel: 'MID_SENIOR_LEVEL',
+    Director: 'DIRECTOR',
+    Executive: 'EXECUTIVE',
+    CLevel: 'C_LEVEL'
+} as const;
+export type RoleAnalyticsControllerGetSeniorityLevelsSeniorityLevelEnum = typeof RoleAnalyticsControllerGetSeniorityLevelsSeniorityLevelEnum[keyof typeof RoleAnalyticsControllerGetSeniorityLevelsSeniorityLevelEnum];
+/**
+ * @export
+ */
+export const RoleAnalyticsControllerGetSeniorityLevelsSortByEnum = {
+    Count: 'count',
+    Name: 'name',
+    Year: 'year'
+} as const;
+export type RoleAnalyticsControllerGetSeniorityLevelsSortByEnum = typeof RoleAnalyticsControllerGetSeniorityLevelsSortByEnum[keyof typeof RoleAnalyticsControllerGetSeniorityLevelsSortByEnum];

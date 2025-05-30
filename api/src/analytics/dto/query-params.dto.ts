@@ -21,7 +21,7 @@ import {
   toBoolean,
   TransformToArray,
 } from '@/validators';
-import { COMPANY_SIZE, COMPANY_TYPE } from '@prisma/client';
+import { COMPANY_SIZE, COMPANY_TYPE, SENIORITY_LEVEL } from '@prisma/client';
 
 export class QueryParamsDto {
   @ApiPropertyOptional({
@@ -299,6 +299,24 @@ export class QueryParamsDto {
   @IsOptional()
   @IsEnum(COMPANY_TYPE, { each: true })
   companyType?: COMPANY_TYPE[];
+
+  @ApiPropertyOptional({
+    description: 'The seniority levels to filter by',
+    example: [SENIORITY_LEVEL.INTERN, SENIORITY_LEVEL.ENTRY_LEVEL],
+    isArray: true,
+    enum: SENIORITY_LEVEL,
+    type: 'string',
+  })
+  @TransformToArray()
+  @Transform(({ value }: { value: string | string[] }) => {
+    if (Array.isArray(value)) {
+      return value.filter((seniorityLevel: string) => seniorityLevel?.trim());
+    }
+    return value;
+  })
+  @IsOptional()
+  @IsEnum(SENIORITY_LEVEL, { each: true })
+  seniorityLevel?: SENIORITY_LEVEL[];
 
   @ApiPropertyOptional({
     description: 'The ESCO codes to filter by',

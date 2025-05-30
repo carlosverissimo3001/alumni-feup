@@ -21,6 +21,7 @@ import "mapbox-gl/dist/mapbox-gl.css";
 import { GeoJSONProperties } from "./mapFilters";
 import { AlumniData } from "@/types/alumni";
 import { useSearchParams } from "next/navigation";
+import { GeoDrillType } from "@/types/drillType";
 
 type MapViewProps = {
   loading: boolean;
@@ -93,8 +94,13 @@ const MapView = ({
 
   useEffect(() => {
     if (mapLoaded && mapRef.current) {
+      let zoom = 10;
       const lat = searchParams.get("lat");
       const lng = searchParams.get("lng");
+      const groupBy = searchParams.get("group_by");
+      if (groupBy && groupBy === GeoDrillType.COUNTRY) {
+        zoom = 5.5;
+      }
 
       if (lat && lng) {
         const coordinates = { lat: parseFloat(lat), lng: parseFloat(lng) };
@@ -102,7 +108,7 @@ const MapView = ({
         if (map) {
           map.flyTo({
             center: [coordinates.lng, coordinates.lat],
-            zoom: 12,
+            zoom,
             duration: 2000,
           });
         }

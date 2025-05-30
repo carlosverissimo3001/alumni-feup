@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { RoleListItemDto } from "@/sdk";
-import { Briefcase, Filter, Info, ExternalLink, CheckIcon } from "lucide-react";
+import { Briefcase, Filter, Info, CheckIcon, ChevronDown } from "lucide-react";
 
 import { DashboardSkeleton } from "../skeletons/DashboardSkeleton";
 import TableTitle from "../common/TableTitle";
@@ -128,13 +128,12 @@ export const RoleDashboard = ({
                 onSort={handleSort}
                 showTrend={view === ViewType.TREND}
                 trendFrequency={trendFrequency}
-                showInfoColumn={true}
                 customAlumniHeader="Roles"
                 hoverMessage="The total of alumni roles classified with this title"
               />
 
               {isLoading || isFetching ? (
-                <DashboardSkeleton hasInfoColumn={true} />
+                <DashboardSkeleton />
               ) : (
                 <TableBody className="bg-white divide-y divide-gray-200">
                   {roles.length > 0 ? (
@@ -151,35 +150,11 @@ export const RoleDashboard = ({
                           <TableNameCell
                             name={role.name}
                             isRowInFilters={!!isRowInFilters(role)}
+                            pageUrl={role.escoUrl}
                           />
-                          <TableCell className="w-[36px] px-2 align-middle">
-                            {classificationLevel !==
-                              ClassificationLevel.LEVEL_1 && (
-                              <TooltipProvider>
-                                <Tooltip>
-                                  <TooltipTrigger asChild>
-                                    <Button
-                                      variant="ghost"
-                                      size="icon"
-                                      className="p-1 h-6 w-6 rounded-full bg-gray-100 hover:bg-gray-200 group-hover:opacity-100 opacity-0 transition-opacity"
-                                      aria-label="Show hierarchy"
-                                    >
-                                      <Info className="h-4 w-4 text-[#8C2D19]" />
-                                    </Button>
-                                  </TooltipTrigger>
-                                  <TooltipContent
-                                    align="end"
-                                    className="max-w-md p-2 text-sm text-gray-800 bg-white border shadow-md rounded-md"
-                                  >
-                                    <RoleHierarchyInfo code={role.code} />
-                                  </TooltipContent>
-                                </Tooltip>
-                              </TooltipProvider>
-                            )}
-                          </TableCell>
                           <TableCell
                             className={`w-[12%] px-4 ${
-                              view === ViewType.TABLE ? "py-1" : "py-3"
+                              view === ViewType.TABLE ? "py-1" : ""
                             } text-sm ${
                               isRowInFilters(role)
                                 ? "font-bold text-[#8C2D19]"
@@ -189,15 +164,44 @@ export const RoleDashboard = ({
                             <div className="flex items-center gap-0 justify-center">
                               {view === ViewType.TABLE ? (
                                 <>
+                                  {classificationLevel !==
+                                    ClassificationLevel.LEVEL_1 && (
+                                      <div
+                                      className={`${
+                                        isRowInFilters(role)
+                                          ? "opacity-100"
+                                          : "opacity-0 group-hover:opacity-100"
+                                      } transition-opacity mr-2`}
+                                    >
+                                    <TooltipProvider>
+                                      <Tooltip>
+                                        <TooltipTrigger asChild>
+                                          <Button
+                                            variant="ghost"
+                                            size="icon"
+                                            className="p-0 h-6 w-6 rounded-full bg-gray-100 hover:bg-gray-200 group-hover:opacity-100 opacity-0 transition-opacity"
+                                            aria-label="Show hierarchy"
+                                          >
+                                            <Info className="h-4 w-4 text-[#8C2D19]" />
+                                          </Button>
+                                        </TooltipTrigger>
+                                        <TooltipContent
+                                          align="end"
+                                          className="max-w-md p-2 text-sm text-gray-800 bg-white border shadow-md rounded-md"
+                                        >
+                                          <RoleHierarchyInfo code={role.code} />
+                                        </TooltipContent>
+                                      </Tooltip>
+                                    </TooltipProvider>
+                                  </div>
+                                  )}
                                   <CountComponent count={role.count} />
                                   <div
                                     className={`${
                                       isRowInFilters(role)
                                         ? "opacity-100"
                                         : "opacity-0 group-hover:opacity-100"
-                                    } transition-opacity ${
-                                      view === ViewType.TABLE ? "ml-2" : "ml-0"
-                                    }`}
+                                    } transition-opacity ml-2`}
                                   >
                                     <TooltipProvider>
                                       <Tooltip>
@@ -302,82 +306,71 @@ export const RoleDashboard = ({
 
         <div className="flex items-center space-x-2">
           <div className="flex items-center space-x-2px-2 py-1">
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <div>
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          className="min-w-[90px] justify-start text-left font-medium text-[#000000] border-gray-200 rounded-lg shadow-sm hover:bg-gray-100 transition-colors"
-                        >
-                          {classificationLevel}
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent className="shadow-md rounded-lg border-gray-200">
-                        {Object.values(ClassificationLevel).map(
-                          (item: ClassificationLevel) => (
-                            <DropdownMenuItem
-                              key={item}
-                              onClick={() => {
-                                setClassificationLevel(item);
-                              }}
-                              className="hover:bg-gray-100 transition-colors"
-                            >
-                              {item}
-                              {item === classificationLevel && (
-                                <CheckIcon className="h-4 w-4 text-[#8C2D19]" />
-                              )}
-                            </DropdownMenuItem>
-                          )
-                        )}
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  </div>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>Select ESCO classification grouping</p>
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="min-w-[90px] justify-start text-left font-medium text-[#000000] border-gray-200 rounded-lg shadow-sm hover:bg-gray-100 transition-colors flex items-center gap-1"
+                >
+                  {classificationLevel}
+                  <ChevronDown className="w-4 h-4 ml-1" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="shadow-md rounded-lg border-gray-200">
+                {Object.values(ClassificationLevel).map(
+                  (item: ClassificationLevel) => (
+                    <DropdownMenuItem
+                      key={item}
+                      onClick={() => {
+                        setClassificationLevel(item);
+                      }}
+                      className="hover:bg-gray-100 transition-colors"
+                    >
+                      {item}
+                      {item === classificationLevel && (
+                        <CheckIcon className="h-4 w-4 text-[#8C2D19]" />
+                      )}
+                    </DropdownMenuItem>
+                  )
+                )}
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger asChild>
                 <Info className="h-5 w-5 text-[#8C2D19]" />
               </TooltipTrigger>
-              <TooltipContent className="max-w-xs" align="end">
+              <TooltipContent className="max-w-md" align="end">
                 <div className="space-y-2">
                   <p>
-                    <strong>Levels 1-4:</strong> ISCO-08 classification
-                    hierarchy
+                    <strong>Levels 1-4:</strong>{" "}
+                    <a
+                      href={ISCO_INFO}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-blue-500 hover:underline"
+                    >
+                      ISCO-08
+                    </a>{" "}
+                    (broad international classification)
                   </p>
                   <p>
-                    <strong>Level 5+:</strong> ESCO occupations that build upon
-                    and extend the ISCO structure
+                    <strong>Levels 5+:</strong>{" "}
+                    <a
+                      href={ESCO_INFO}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-blue-500 hover:underline"
+                    >
+                      ESCO
+                    </a>{" "}
+                    (detailed occupations, extends ISCO-08)
                   </p>
-                </div>
-                <div className="space-y-1">
-                  <a
-                    href={ISCO_INFO}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center text-xs font-medium text-blue-500 hover:underline mt-1"
-                  >
-                    Learn more about the ISCO Classification
-                    <ExternalLink className="h-3.5 w-3.5 ml-1" />
-                  </a>
-                  <a
-                    href={ESCO_INFO}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center text-xs font-medium text-blue-500 hover:underline mt-1"
-                  >
-                    Learn more about the ESCO Classification
-                    <ExternalLink className="h-3.5 w-3.5 ml-1" />
-                  </a>
+                  <p className="font-bold text-[13px]">
+                    Roles here are classified at ESCO level 5+
+                  </p>
                 </div>
               </TooltipContent>
             </Tooltip>
