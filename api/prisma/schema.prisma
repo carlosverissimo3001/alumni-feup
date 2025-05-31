@@ -149,6 +149,7 @@ model JobClassification {
   id                   String @id @default(dbgenerated("gen_random_uuid()"))
   escoClassificationId String @map("esco_classification_id")
   roleId               String @unique @map("role_id")
+  wasAcceptedByUser    Boolean @default(false) @map("was_accepted_by_user")
 
   confidence Float?
   modelUsed  String? @map("model_used")
@@ -221,6 +222,7 @@ model Role {
   companyId      String          @map("company_id")
   locationId     String?         @map("location_id")
   seniorityLevel SENIORITY_LEVEL @map("seniority_level")
+  wasSeniorityLevelAcceptedByUser Boolean @default(false) @map("was_seniority_level_accepted_by_user")
 
   startDate DateTime  @map("start_date") @db.Timestamptz(6)
   endDate   DateTime? @map("end_date") @db.Timestamptz(6)

@@ -31,6 +31,7 @@ type RawJobClassification = {
   escoClassificationId: string;
   confidence?: number | null;
   EscoClassification: RawEscoClassification;
+  wasAcceptedByUser: boolean;
 };
 
 type RawRole = {
@@ -43,6 +44,7 @@ type RawRole = {
   Location?: RawLocation | null;
   JobClassification?: RawJobClassification | null;
   Company: RawCompany;
+  wasSeniorityLevelAcceptedByUser: boolean;
 };
 
 type RawLocation = {
@@ -147,7 +149,7 @@ export const mapEscoClassificationFromPrisma = (
   };
 };
 
-const mapJobClassificationFromPrisma = (
+export const mapJobClassificationFromPrisma = (
   jobClassification?: RawJobClassification | null,
 ): JobClassificationAnalyticsEntity | undefined => {
   if (!jobClassification || !jobClassification.EscoClassification)
@@ -159,6 +161,7 @@ const mapJobClassificationFromPrisma = (
     escoClassification: mapEscoClassificationFromPrisma(
       jobClassification.EscoClassification,
     ),
+    wasAcceptedByUser: jobClassification.wasAcceptedByUser,
   };
 };
 
@@ -176,7 +179,7 @@ export const mapLocationFromPrisma = (
   };
 };
 
-const mapRoleFromPrisma = (role: RawRole): RoleAnalyticsEntity => {
+export const mapRoleFromPrisma = (role: RawRole): RoleAnalyticsEntity => {
   return {
     id: role.id,
     alumniId: role.alumniId,
@@ -187,6 +190,7 @@ const mapRoleFromPrisma = (role: RawRole): RoleAnalyticsEntity => {
     company: mapCompanyFromPrisma(role.Company),
     location: mapLocationFromPrisma(role.Location),
     seniorityLevel: role.seniorityLevel,
+    wasSeniorityLevelAcceptedByUser: role.wasSeniorityLevelAcceptedByUser,
   };
 };
 

@@ -11,13 +11,17 @@ import {
   Query,
 } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { CreateAlumniDto, GetGeoJSONDto, MarkAsReviewedDto } from '../dto';
 import {
-  AlumniPastLocationsAndCompaniesDto,
-  BasicAlumniProfileDto,
-} from '../dto/basic-alumni-profile.dto';
+  CreateAlumniDto,
+  GetGeoJSONDto,
+  MarkAsReviewedDto,
+  SeniorityLevelAcceptedByUserDto,
+} from '../dto';
 import { AlumniProfileService } from '../services/alumni-profile.service';
 import { AlumniService } from '../services/alumni.service';
+import { AlumniAnalyticsEntity } from '@/analytics/entities/alumni.entity';
+import { RoleAnalyticsEntity } from '@/analytics/entities/role.entity';
+import { AlumniPastLocationsAndCompaniesDto } from '../dto/alumni-profile.dto';
 
 @ApiTags('V1')
 @Controller('alumni')
@@ -108,17 +112,15 @@ export class AlumniController {
     return this.alumniService.create(createAlumniDto);
   }
 
-  @Get('basic-profile/:id')
+  @Get('profile/:id')
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Get basic profile of an alumni' })
   @ApiResponse({
     description: 'Returns the basic profile of an alumni',
-    type: BasicAlumniProfileDto,
+    type: AlumniAnalyticsEntity,
   })
-  async getBasicProfile(
-    @Param('id') id: string,
-  ): Promise<BasicAlumniProfileDto> {
-    return this.alumniProfileService.getBasicProfile(id);
+  async getProfile(@Param('id') id: string): Promise<AlumniAnalyticsEntity> {
+    return this.alumniProfileService.getProfile(id);
   }
 
   @Get('past-locations-companies/:id')
@@ -134,5 +136,21 @@ export class AlumniController {
     @Param('id') id: string,
   ): Promise<AlumniPastLocationsAndCompaniesDto> {
     return this.alumniProfileService.getPastLocationsAndCompanies(id);
+  }
+
+  @Post('/role/accept-seniority-level/:id')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({
+    summary: 'Accept the seniority level of a role',
+  })
+  @ApiResponse({
+    description: 'Returns the role with the accepted seniority level',
+    type: SeniorityLevelAcceptedByUserDto,
+  })
+  async acceptSeniorityLevel(
+    @Param('id') id: string,
+    @Body() body: SeniorityLevelAcceptedByUserDto,
+  ): Promise<RoleAnalyticsEntity> {
+    return this.alumniProfileService.acceptSeniorityLevel(id, body);
   }
 }

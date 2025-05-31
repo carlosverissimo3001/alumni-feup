@@ -3,13 +3,13 @@ apis/V1Api.ts
 apis/index.ts
 index.ts
 models/Alumni.ts
+models/AlumniAnalyticsEntity.ts
 models/AlumniExtended.ts
 models/AlumniListItemDto.ts
 models/AlumniListResponseDto.ts
 models/AlumniOptionDto.ts
 models/AlumniPastLocationsAndCompaniesDto.ts
 models/BasicAlumniDto.ts
-models/BasicAlumniProfileDto.ts
 models/BasicCompanyDto.ts
 models/BasicGeoDto.ts
 models/BasicRoleDto.ts
@@ -22,7 +22,7 @@ models/CityListItemDto.ts
 models/CityListResponseDto.ts
 models/CityOptionDto.ts
 models/Company.ts
-models/CompanyDto.ts
+models/CompanyAnalyticsEntity.ts
 models/CompanyInsightsDto.ts
 models/CompanyListItemDto.ts
 models/CompanyListResponseDto.ts
@@ -37,9 +37,9 @@ models/CreateAlumniDto.ts
 models/CreateCourseDto.ts
 models/CreateFacultyDto.ts
 models/CreateReviewDto.ts
-models/CurrentRoleDto.ts
 models/DataPointDto.ts
 models/DeleteUserDto.ts
+models/EscoClassificationAnalyticsEntity.ts
 models/EscoClassificationDto.ts
 models/ExtendedCompanyDto.ts
 models/Faculty.ts
@@ -49,7 +49,7 @@ models/FacultyListItemDto.ts
 models/GeoJSONFeature.ts
 models/GeoJSONFeatureCollection.ts
 models/Graduation.ts
-models/GraduationDto.ts
+models/GraduationAnalyticsEntity.ts
 models/GraduationListDto.ts
 models/GraduationListItemDto.ts
 models/IndustryAnalyticsEntity.ts
@@ -57,6 +57,7 @@ models/IndustryListItemDto.ts
 models/IndustryListResponseDto.ts
 models/IndustryOptionDto.ts
 models/InviteUserDto.ts
+models/JobClassificationAnalyticsEntity.ts
 models/LinkedinAuthDto.ts
 models/Location.ts
 models/LocationAnalyticsEntity.ts
@@ -71,6 +72,7 @@ models/ReviewGeoJSONFeature.ts
 models/ReviewGeoJSONFeatureCollection.ts
 models/ReviewLocation.ts
 models/Role.ts
+models/RoleAnalyticsEntity.ts
 models/RoleHierarchyDto.ts
 models/RoleHierarchyItemDto.ts
 models/RoleListItemDto.ts

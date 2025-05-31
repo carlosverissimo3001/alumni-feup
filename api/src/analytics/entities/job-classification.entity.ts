@@ -8,9 +8,18 @@ export class JobClassificationAnalyticsEntity {
   @ApiProperty()
   roleId: string;
 
-  @ApiPropertyOptional()
+  @ApiPropertyOptional({
+    description: 'The confidence of the job classification',
+    type: Number,
+  })
   confidence?: number | null;
 
   @ApiProperty()
   escoClassification: EscoClassificationAnalyticsEntity;
+
+  @ApiProperty({
+    description: 'Whether the seniority level was accepted by the user',
+    type: Boolean,
+  })
+  wasAcceptedByUser: boolean;
 }

@@ -3,7 +3,7 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useParams } from "next/navigation";
-import { useFetchBasicProfile } from "@/hooks/profile/useFetchBasicProfile";
+import { useFetchProfile } from "@/hooks/profile/useFetchProfile";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import {
@@ -37,8 +37,7 @@ import {
 import { useAuth } from "@/contexts/AuthContext";
 import { useListEscoClassifications } from "@/hooks/esco/useListEscoClassifications";
 import { Combobox } from "@/components/ui/combobox";
-
-const ESCO_BASE_URL = process.env.NEXT_PUBLIC_ESCO_BASE_URL;
+import RoleHistory from "@/components/profile/RoleHistory";
 
 export default function Profile() {
   const { id } = useParams();
@@ -46,14 +45,16 @@ export default function Profile() {
     data: profile,
     isLoading,
     error,
-  } = useFetchBasicProfile({ id: id as string });
+  } = useFetchProfile({ id: id as string });
 
   const { user } = useAuth();
 
-  const escoUrl = ESCO_BASE_URL ? ESCO_BASE_URL + profile?.role?.escoCode : "#";
+  const currentRoles = profile?.roles.filter(role => role.isCurrent);
+  // If the alumni has more than one current role, we'll display the one that started first
+  const currentRole = currentRoles?.sort((a, b) => new Date(a.startDate).getTime() - new Date(b.startDate).getTime())[0];
 
   // For placeholder purposes, simulate confidence if not provided
-  const confidenceValue = profile?.role?.confidence || 0.65;
+  const confidenceValue = currentRole?.jobClassification?.confidence || 0.65;
 
   // State for selected ESCO classifications
   const [selectedEsco, setSelectedEsco] = useState<string | null>(null);
@@ -109,7 +110,7 @@ export default function Profile() {
   }
 
   // Get the job title from the first job classification if available
-  const jobTitle = profile?.role?.title;
+  const jobTitle = currentRole?.jobClassification?.escoClassification.titleEn;
 
   return (
     <div className="max-w-6xl mx-auto py-12 px-4">
@@ -121,7 +122,7 @@ export default function Profile() {
             alt="Profile"
           />
           <AvatarFallback className="text-xl font-semibold bg-primary/10">
-            {profile?.name
+            {profile?.fullName
               ?.split(" ")
               .map((word) => word[0])
               .join("")
@@ -131,7 +132,7 @@ export default function Profile() {
         </Avatar>
         <div>
           <h2 className="text-3xl font-bold flex items-center">
-            {profile?.name}
+            {profile?.fullName}
             {profile?.linkedinUrl && (
               <Link
                 href={profile.linkedinUrl}
@@ -153,8 +154,8 @@ export default function Profile() {
               Graduated from
               {profile.graduations.map((graduation, index) => (
                 <div key={index} className="font-semibold">
-                  {graduation.acronym} ({graduation.conclusionYear}) @
-                  {graduation.facultyAcronym}
+                  {graduation.course.acronym} ({graduation.conclusionYear}) @
+                  {graduation.course.faculty.acronym}
                 </div>
               ))}
             </div>
@@ -175,23 +176,23 @@ export default function Profile() {
               <div className="text-lg font-semibold">
                 {jobTitle || "No role specified"}
               </div>
-              {profile?.role?.seniorityLevel && (
+              {currentRole?.seniorityLevel && (
                 <>
                   <div className="flex items-center text-sm text-muted-foreground">
                     <span className="inline-block w-2 h-2 rounded-full bg-primary/80 mr-2"></span>
-                    {mapSeniorityLevel(profile?.role?.seniorityLevel)}
+                    {mapSeniorityLevel(currentRole?.seniorityLevel)}
                   </div>
                   <div className="flex items-center text-sm text-muted-foreground">
                     <Clock className="h-3.5 w-3.5 mr-1.5 opacity-70" />
-                    {profile?.role?.startDate
-                      ? new Date(profile?.role?.startDate).toLocaleDateString(
+                    {currentRole?.startDate
+                      ? new Date(currentRole?.startDate).toLocaleDateString(
                           "en-US",
                           { month: "long", year: "numeric" }
                         )
                       : ""}
-                    {profile?.role?.endDate
+                    {currentRole?.endDate
                       ? ` to ${new Date(
-                          profile?.role?.endDate
+                          currentRole?.endDate
                         ).toLocaleDateString("en-US", {
                           month: "long",
                           year: "numeric",
@@ -199,13 +200,13 @@ export default function Profile() {
                       : " - Present"}
                   </div>
                   <Link
-                    href={escoUrl}
+                    href={currentRole?.jobClassification?.escoClassification.escoUrl || "#"}
                     className="text-xs hover:text-primary transition-colors group flex items-center gap-1 mt-2"
                     target="_blank"
                   >
                     In ESCO as{" "}
                     <span className="font-bold underline">
-                      {profile?.role?.escoTitle}
+                      {currentRole?.jobClassification?.escoClassification.titleEn}
                     </span>
                     <ArrowUpRight className="w-3.5 h-3.5 group-hover:text-primary transition-colors" />
                   </Link>
@@ -215,11 +216,11 @@ export default function Profile() {
 
             <div className="space-y-2">
               <div className="flex items-center gap-2">
-                {profile?.company?.logo && (
+                {currentRole?.company?.logo && (
                   <div className="bg-white p-1 rounded-md shadow-sm">
                     <Image
-                      src={profile.company.logo}
-                      alt={profile.company.name || ""}
+                      src={currentRole.company.logo}
+                      alt={currentRole.company.name || ""}
                       className="w-7 h-7 object-contain"
                       width={28}
                       height={28}
@@ -227,23 +228,23 @@ export default function Profile() {
                   </div>
                 )}
                 <Link
-                  href={`/company/${profile?.company?.id}`}
+                  href={`/company/${currentRole?.company?.id}`}
                   className="text-lg font-semibold hover:text-primary transition-colors group flex items-center gap-1"
                 >
-                  {profile?.company?.name || "No company specified"}
+                  {currentRole?.company?.name || "No company specified"}
                   <ArrowUpRight className="w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity" />
                 </Link>
               </div>
-              {profile?.company?.industry && (
+              {currentRole?.company?.industry && (
                 <div className="flex items-center text-sm text-muted-foreground">
                   <span className="inline-block w-2 h-2 rounded-full bg-zinc-400 mr-2"></span>
-                  {profile.company.industry}
+                  {currentRole.company.industry.name}
                 </div>
               )}
               <div className="mt-3 flex flex-col gap-2">
-                {profile?.company?.website && (
+                {currentRole?.company?.website && (
                   <Link
-                    href={profile.company.website}
+                    href={currentRole.company.website}
                     target="_blank"
                     className="flex items-center text-primary hover:text-primary/80 transition-color"
                     title="Visit Website"
@@ -254,9 +255,9 @@ export default function Profile() {
                     </div>
                   </Link>
                 )}
-                {profile?.company?.linkedinUrl && (
+                {currentRole?.company?.linkedinUrl && (
                   <Link
-                    href={profile?.company?.linkedinUrl}
+                    href={currentRole.company.linkedinUrl}
                     target="_blank"
                     className="flex items-center text-primary hover:text-primary/80 transition-colors"
                     title="View on LinkedIn"
@@ -278,13 +279,13 @@ export default function Profile() {
             <div className="space-y-2">
               <div className="text-lg font-semibold flex items-center gap-2">
                 <MapPin className="h-4 w-4 text-muted-foreground" />
-                {profile?.location?.city && profile?.location?.country
-                  ? `${profile.location.city}, ${profile.location.country}`
+                {currentRole?.location?.city && currentRole?.location?.country
+                  ? `${currentRole.location.city}, ${currentRole.location.country}`
                   : "Location not specified"}
-                {profile?.location?.countryCode && (
+                {currentRole?.location?.countryCode && (
                   <Image
-                    src={`https://flagcdn.com/${profile.location.countryCode.toLowerCase()}.svg`}
-                    alt={profile.location.country || ""}
+                    src={`https://flagcdn.com/${currentRole.location.countryCode.toLowerCase()}.svg`}
+                    alt={currentRole.location.country || ""}
                     className="w-8 h-5 rounded shadow-sm ml-2"
                     width={32}
                     height={20}
@@ -295,6 +296,13 @@ export default function Profile() {
           </div>
         </CardContent>
       </Card>
+
+      {/* Role History Section */}
+      {profile?.roles && profile.roles.length > 1 && (
+        <RoleHistory
+          roles={profile.roles.filter((role) => !role.isCurrent || role.id !== currentRole?.id)}
+        />
+      )}
 
       {user?.id === profile?.id && (
         <>
@@ -394,13 +402,13 @@ export default function Profile() {
                           </div>
                           <div className="flex items-center justify-between py-2">
                             <p className="font-semibold">
-                              {profile?.role?.title || "Unknown"}
+                              {currentRole?.jobClassification?.escoClassification.titleEn || "Unknown"}
                             </p>
                             <Badge
                               variant="outline"
                               className="bg-amber-50 text-amber-800 hover:bg-amber-100 border-amber-200"
                             >
-                              {profile?.role?.escoCode || "Not Classified"}
+                              {currentRole?.jobClassification?.escoClassification?.code || "Not Classified"}
                             </Badge>
                           </div>
 
@@ -408,7 +416,7 @@ export default function Profile() {
                             <div className="flex items-center justify-between">
                               <p className="text-sm font-medium">Confidence</p>
                               <span className="text-xs font-medium">
-                                {Math.round(confidenceValue * 100)}%
+                                {Math.round(confidenceValue as number * 100)}%
                               </span>
                             </div>
                             <Progress

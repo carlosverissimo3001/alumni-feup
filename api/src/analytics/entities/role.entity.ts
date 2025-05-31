@@ -36,4 +36,10 @@ export class RoleAnalyticsEntity {
     type: JobClassificationAnalyticsEntity,
   })
   jobClassification?: JobClassificationAnalyticsEntity;
+
+  @ApiProperty({
+    description: 'Whether the seniority level was accepted by the user',
+    type: Boolean,
+  })
+  wasSeniorityLevelAcceptedByUser: boolean;
 }
