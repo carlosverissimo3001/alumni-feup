@@ -89,7 +89,7 @@ export class ReviewService {
                 if(!curr.anonymous) {
                   acc[curr.reviewId] = curr.alumniName;
                 }else{
-                  acc[curr.reviewId] = 'Annonymous';
+                  acc[curr.reviewId] = 'Anonymous';
                 }
               }
               return acc;
