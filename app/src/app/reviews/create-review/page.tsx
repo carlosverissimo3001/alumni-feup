@@ -401,7 +401,7 @@ const SubmitReview = () => {
             )}
             
 
-              <Button type="submit" className="w-full" >
+              <Button type="submit" className="w-full" disabled={!isFormValid}>
                 Submit Review
               </Button>
 
