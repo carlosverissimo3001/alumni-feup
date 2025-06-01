@@ -276,6 +276,7 @@ model ReviewCompany {
   description String?
   upvotes     String[]
   downvotes   String[]
+  anonymous   Boolean  @default(true)
   createdAt   DateTime @default(now()) @map("created_at") @db.Timestamp(6)
   updatedAt   DateTime @default(now()) @map("updated_at") @db.Timestamp(6)
 
@@ -295,6 +296,7 @@ model ReviewLocation {
   description String?
   upvotes     String[]
   downvotes   String[]
+  anonymous   Boolean  @default(true)
   createdAt   DateTime @default(now()) @map("created_at") @db.Timestamp(6)
   updatedAt   DateTime @default(now()) @map("updated_at") @db.Timestamp(6)
 

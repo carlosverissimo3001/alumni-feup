@@ -10,6 +10,7 @@ models/AlumniListResponseDto.ts
 models/AlumniOptionDto.ts
 models/AlumniPastLocationsAndCompaniesDto.ts
 models/BasicAlumniDto.ts
+models/BasicAlumniProfileDto.ts
 models/BasicCompanyDto.ts
 models/BasicGeoDto.ts
 models/BasicRoleDto.ts
@@ -23,6 +24,7 @@ models/CityListResponseDto.ts
 models/CityOptionDto.ts
 models/Company.ts
 models/CompanyAnalyticsEntity.ts
+models/CompanyDto.ts
 models/CompanyInsightsDto.ts
 models/CompanyListItemDto.ts
 models/CompanyListResponseDto.ts
@@ -37,9 +39,11 @@ models/CreateAlumniDto.ts
 models/CreateCourseDto.ts
 models/CreateFacultyDto.ts
 models/CreateReviewDto.ts
+models/CurrentRoleDto.ts
 models/DataPointDto.ts
 models/DeleteUserDto.ts
 models/EscoClassificationAnalyticsEntity.ts
+models/EscoClassificationDto.ts
 models/EvaluateClassificationDto.ts
 models/EvaluateSeniorityLevelDto.ts
 models/ExtendedCompanyDto.ts
@@ -51,6 +55,7 @@ models/GeoJSONFeature.ts
 models/GeoJSONFeatureCollection.ts
 models/Graduation.ts
 models/GraduationAnalyticsEntity.ts
+models/GraduationDto.ts
 models/GraduationListDto.ts
 models/GraduationListItemDto.ts
 models/IndustryAnalyticsEntity.ts

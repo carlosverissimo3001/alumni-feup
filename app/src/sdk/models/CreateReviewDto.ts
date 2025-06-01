@@ -55,6 +55,12 @@ export interface CreateReviewDto {
      * @memberof CreateReviewDto
      */
     locationId: string;
+    /**
+     * Review anonymity
+     * @type {boolean}
+     * @memberof CreateReviewDto
+     */
+    anonymous?: boolean;
 }
 
 /**
@@ -85,6 +91,7 @@ export function CreateReviewDtoFromJSONTyped(json: any, ignoreDiscriminator: boo
         'reviewType': json['reviewType'],
         'companyId': json['companyId'],
         'locationId': json['locationId'],
+        'anonymous': json['anonymous'] == null ? undefined : json['anonymous'],
     };
 }
 
@@ -105,6 +112,7 @@ export function CreateReviewDtoToJSONTyped(value?: CreateReviewDto | null, ignor
         'reviewType': value['reviewType'],
         'companyId': value['companyId'],
         'locationId': value['locationId'],
+        'anonymous': value['anonymous'],
     };
 }
 
