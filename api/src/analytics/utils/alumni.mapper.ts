@@ -15,8 +15,14 @@ import {
   LocationAnalyticsEntity,
   RoleAnalyticsEntity,
   GraduationAnalyticsEntity,
+  RoleRawAnalyticsEntity,
 } from '../entities';
 import { EscoClassificationAnalyticsEntity } from '../entities/esco-classification.entity';
+
+// What a name lol
+type RawRoleRaw = {
+  title: string;
+};
 
 type RawEscoClassification = {
   titleEn: string;
@@ -31,6 +37,7 @@ type RawJobClassification = {
   escoClassificationId: string;
   confidence?: number | null;
   EscoClassification: RawEscoClassification;
+  wasAcceptedByUser?: boolean | null;
 };
 
 type RawRole = {
@@ -43,6 +50,8 @@ type RawRole = {
   Location?: RawLocation | null;
   JobClassification?: RawJobClassification | null;
   Company: RawCompany;
+  wasSeniorityLevelAcceptedByUser?: boolean | null;
+  RoleRaw: RawRoleRaw | null;
 };
 
 type RawLocation = {
@@ -147,7 +156,7 @@ export const mapEscoClassificationFromPrisma = (
   };
 };
 
-const mapJobClassificationFromPrisma = (
+export const mapJobClassificationFromPrisma = (
   jobClassification?: RawJobClassification | null,
 ): JobClassificationAnalyticsEntity | undefined => {
   if (!jobClassification || !jobClassification.EscoClassification)
@@ -159,6 +168,7 @@ const mapJobClassificationFromPrisma = (
     escoClassification: mapEscoClassificationFromPrisma(
       jobClassification.EscoClassification,
     ),
+    wasAcceptedByUser: jobClassification.wasAcceptedByUser ?? undefined,
   };
 };
 
@@ -176,7 +186,7 @@ export const mapLocationFromPrisma = (
   };
 };
 
-const mapRoleFromPrisma = (role: RawRole): RoleAnalyticsEntity => {
+export const mapRoleFromPrisma = (role: RawRole): RoleAnalyticsEntity => {
   return {
     id: role.id,
     alumniId: role.alumniId,
@@ -187,6 +197,18 @@ const mapRoleFromPrisma = (role: RawRole): RoleAnalyticsEntity => {
     company: mapCompanyFromPrisma(role.Company),
     location: mapLocationFromPrisma(role.Location),
     seniorityLevel: role.seniorityLevel,
+    wasSeniorityLevelAcceptedByUser:
+      role.wasSeniorityLevelAcceptedByUser ?? undefined,
+    roleRaw: mapRoleRawFromPrisma(role.RoleRaw),
+  };
+};
+
+export const mapRoleRawFromPrisma = (
+  roleRaw?: RawRoleRaw | null,
+): RoleRawAnalyticsEntity | undefined => {
+  if (!roleRaw) return undefined;
+  return {
+    title: roleRaw.title,
   };
 };
 

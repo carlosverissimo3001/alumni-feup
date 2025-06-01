@@ -7,3 +7,4 @@ export { JobClassificationAnalyticsEntity } from './job-classification.entity';
 export { GraduationAnalyticsEntity } from './graduation.entity';
 export { CourseAnalyticsEntity } from './course.entity';
 export { FacultyAnalyticsEntity } from './faculty.entity';
+export { RoleRawAnalyticsEntity } from './role-raw.entity';

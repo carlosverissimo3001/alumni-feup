@@ -146,9 +146,10 @@ model Industry {
 }
 
 model JobClassification {
-  id                   String @id @default(dbgenerated("gen_random_uuid()"))
-  escoClassificationId String @map("esco_classification_id")
-  roleId               String @unique @map("role_id")
+  id                   String   @id @default(dbgenerated("gen_random_uuid()"))
+  escoClassificationId String   @map("esco_classification_id")
+  roleId               String   @unique @map("role_id")
+  wasAcceptedByUser    Boolean? @map("was_accepted_by_user")
 
   confidence Float?
   modelUsed  String? @map("model_used")
@@ -217,10 +218,11 @@ model Location {
 model Role {
   id String @id @default(dbgenerated("gen_random_uuid()"))
 
-  alumniId       String          @map("alumni_id")
-  companyId      String          @map("company_id")
-  locationId     String?         @map("location_id")
-  seniorityLevel SENIORITY_LEVEL @map("seniority_level")
+  alumniId                        String          @map("alumni_id")
+  companyId                       String          @map("company_id")
+  locationId                      String?         @map("location_id")
+  seniorityLevel                  SENIORITY_LEVEL @map("seniority_level")
+  wasSeniorityLevelAcceptedByUser Boolean?        @map("was_seniority_level_accepted_by_user")
 
   startDate DateTime  @map("start_date") @db.Timestamptz(6)
   endDate   DateTime? @map("end_date") @db.Timestamptz(6)

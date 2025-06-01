@@ -17,7 +17,7 @@ chokidar.watch(swaggerPath, {
   if (event === 'add' || event === 'change') {
     console.log('Swagger spec changed, generating SDK...');
     try {
-      execSync(`npx ts-node ${__dirname}/generate-sdk.ts`, { stdio: 'inherit' });
+      execSync(`npx tsx ${__dirname}/generate-sdk.ts`, { stdio: 'inherit' });
       console.log('SDK generated successfully');
     } catch (error) {
       console.log('Error generating SDK:', error);

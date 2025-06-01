@@ -2,6 +2,13 @@ import { ApiProperty } from '@nestjs/swagger';
 
 export class RoleOptionDto {
   @ApiProperty({
+    description: 'The id of the ESCO classification',
+    example: '1',
+    type: String,
+  })
+  escoClassificationId: string;
+
+  @ApiProperty({
     description: 'The ESCO code of the role',
     example: '2512',
     type: String,

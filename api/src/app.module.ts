@@ -9,7 +9,6 @@ import { AnalyticsModule } from './analytics/analytics.module';
 import { AuthModule } from './auth/auth.module';
 import { CompanyModule } from './company/company.module';
 import { CourseModule } from './course/course.module';
-import { EscoModule } from './esco/esco.module';
 import { FacultyModule } from './faculty/faculty.module';
 import { FeedbackModule } from './feeback/feeback.module';
 import { FileUploadModule } from './file-upload/file-upload.module';
@@ -40,7 +39,6 @@ import { AppController } from './app.controller';
     CompanyModule,
     EmailModule,
     CourseModule,
-    EscoModule,
     FacultyModule,
     FeedbackModule,
     AuthModule,

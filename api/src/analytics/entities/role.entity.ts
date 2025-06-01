@@ -3,6 +3,7 @@ import { LocationAnalyticsEntity } from './location.entity';
 import { CompanyAnalyticsEntity } from './company.entity';
 import { JobClassificationAnalyticsEntity } from './job-classification.entity';
 import { SENIORITY_LEVEL } from '@prisma/client';
+import { RoleRawAnalyticsEntity } from './role-raw.entity';
 
 export class RoleAnalyticsEntity {
   @ApiProperty()
@@ -36,4 +37,15 @@ export class RoleAnalyticsEntity {
     type: JobClassificationAnalyticsEntity,
   })
   jobClassification?: JobClassificationAnalyticsEntity;
+
+  @ApiPropertyOptional({
+    type: RoleRawAnalyticsEntity,
+  })
+  roleRaw?: RoleRawAnalyticsEntity;
+
+  @ApiPropertyOptional({
+    description: 'Whether the seniority level was accepted by the user',
+    type: Boolean,
+  })
+  wasSeniorityLevelAcceptedByUser?: boolean;
 }
