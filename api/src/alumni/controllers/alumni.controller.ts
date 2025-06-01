@@ -15,13 +15,14 @@ import {
   CreateAlumniDto,
   GetGeoJSONDto,
   MarkAsReviewedDto,
-  SeniorityLevelAcceptedByUserDto,
+  EvaluateSeniorityLevelDto,
 } from '../dto';
 import { AlumniProfileService } from '../services/alumni-profile.service';
 import { AlumniService } from '../services/alumni.service';
 import { AlumniAnalyticsEntity } from '@/analytics/entities/alumni.entity';
 import { RoleAnalyticsEntity } from '@/analytics/entities/role.entity';
 import { AlumniPastLocationsAndCompaniesDto } from '../dto/alumni-profile.dto';
+import { EvaluateClassificationDto } from '../dto/evaluate-classification.dto';
 
 @ApiTags('V1')
 @Controller('alumni')
@@ -145,12 +146,28 @@ export class AlumniController {
   })
   @ApiResponse({
     description: 'Returns the role with the accepted seniority level',
-    type: SeniorityLevelAcceptedByUserDto,
+    type: RoleAnalyticsEntity,
   })
   async acceptSeniorityLevel(
     @Param('id') id: string,
-    @Body() body: SeniorityLevelAcceptedByUserDto,
+    @Body() body: EvaluateSeniorityLevelDto,
   ): Promise<RoleAnalyticsEntity> {
-    return this.alumniProfileService.acceptSeniorityLevel(id, body);
+    return this.alumniProfileService.evaluateSeniorityLevel(id, body);
+  }
+
+  @Post('/role/evaluate-classification/:id')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({
+    summary: 'Evaluate the classification of a role',
+  })
+  @ApiResponse({
+    description: 'Returns the role with the evaluated classification',
+    type: RoleAnalyticsEntity,
+  })
+  async evaluateClassification(
+    @Param('id') id: string,
+    @Body() body: EvaluateClassificationDto,
+  ): Promise<RoleAnalyticsEntity> {
+    return this.alumniProfileService.evaluateJobClassification(id, body);
   }
 }

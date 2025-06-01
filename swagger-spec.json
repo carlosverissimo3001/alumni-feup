@@ -611,7 +611,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/SeniorityLevelAcceptedByUserDto"
+                "$ref": "#/components/schemas/EvaluateSeniorityLevelDto"
               }
             }
           }
@@ -622,13 +622,54 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/SeniorityLevelAcceptedByUserDto"
+                  "$ref": "#/components/schemas/RoleAnalyticsEntity"
                 }
               }
             }
           }
         },
         "summary": "Accept the seniority level of a role",
+        "tags": [
+          "V1"
+        ]
+      }
+    },
+    "/alumni/role/evaluate-classification/{id}": {
+      "post": {
+        "operationId": "AlumniController_evaluateClassification",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EvaluateClassificationDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "default": {
+            "description": "Returns the role with the evaluated classification",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RoleAnalyticsEntity"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Evaluate the classification of a role",
         "tags": [
           "V1"
         ]
@@ -6065,8 +6106,18 @@
         "required": [
           "escoClassificationId",
           "roleId",
-          "escoClassification",
-          "wasAcceptedByUser"
+          "escoClassification"
+        ]
+      },
+      "RoleRawAnalyticsEntity": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "title"
         ]
       },
       "RoleAnalyticsEntity": {
@@ -6110,6 +6161,9 @@
           "jobClassification": {
             "$ref": "#/components/schemas/JobClassificationAnalyticsEntity"
           },
+          "roleRaw": {
+            "$ref": "#/components/schemas/RoleRawAnalyticsEntity"
+          },
           "wasSeniorityLevelAcceptedByUser": {
             "type": "boolean",
             "description": "Whether the seniority level was accepted by the user"
@@ -6121,8 +6175,7 @@
           "startDate",
           "isCurrent",
           "company",
-          "seniorityLevel",
-          "wasSeniorityLevelAcceptedByUser"
+          "seniorityLevel"
         ]
       },
       "FacultyAnalyticsEntity": {
@@ -6399,7 +6452,7 @@
           }
         }
       },
-      "SeniorityLevelAcceptedByUserDto": {
+      "EvaluateSeniorityLevelDto": {
         "type": "object",
         "properties": {
           "wasSeniorityLevelAcceptedByUser": {
@@ -6409,6 +6462,18 @@
         },
         "required": [
           "wasSeniorityLevelAcceptedByUser"
+        ]
+      },
+      "EvaluateClassificationDto": {
+        "type": "object",
+        "properties": {
+          "wasAcceptedByUser": {
+            "type": "boolean",
+            "description": "Whether the job classification was accepted by the user"
+          }
+        },
+        "required": [
+          "wasAcceptedByUser"
         ]
       },
       "DataPointDto": {

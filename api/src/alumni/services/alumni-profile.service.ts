@@ -4,25 +4,15 @@ import {
   CompanyDto,
   ExtendedCompanyDto,
 } from '../dto/alumni-profile.dto';
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { Location } from '@/entities';
-import {
-  jobClassificationSelect,
-  roleSelect,
-} from '@/analytics/utils/selectors';
+import { roleSelect } from '@/analytics/utils/selectors';
 import { graduationSelect } from '@/analytics/utils/selectors';
 import { AlumniAnalyticsEntity } from '@/analytics/entities/alumni.entity';
 import { mapAlumniFromPrisma } from '@/analytics/utils/alumni.mapper';
 import { RoleAnalyticsEntity } from '@/analytics/entities/role.entity';
-import {
-  mapJobClassificationFromPrisma,
-  mapRoleFromPrisma,
-} from '@/analytics/utils/alumni.mapper';
-import { JobClassificationAnalyticsEntity } from '@/analytics/entities';
-import {
-  SeniorityLevelAcceptedByUserDto,
-  ClassificationAcceptedByUserDto,
-} from '../dto';
+import { mapRoleFromPrisma } from '@/analytics/utils/alumni.mapper';
+import { EvaluateSeniorityLevelDto, EvaluateClassificationDto } from '../dto';
 
 @Injectable()
 export class AlumniProfileService {
@@ -105,9 +95,9 @@ export class AlumniProfileService {
     };
   }
 
-  async acceptSeniorityLevel(
+  async evaluateSeniorityLevel(
     id: string,
-    params: SeniorityLevelAcceptedByUserDto,
+    params: EvaluateSeniorityLevelDto,
   ): Promise<RoleAnalyticsEntity> {
     const role = await this.prisma.role.findUniqueOrThrow({
       where: { id },
@@ -122,19 +112,32 @@ export class AlumniProfileService {
     return mapRoleFromPrisma(role);
   }
 
-  async acceptJobClassification(
+  async evaluateJobClassification(
     id: string,
-    params: ClassificationAcceptedByUserDto,
-  ): Promise<JobClassificationAnalyticsEntity | null> {
-    const classification =
-      await this.prisma.jobClassification.findUniqueOrThrow({
-        where: { id },
-        select: jobClassificationSelect,
-      });
-    await this.prisma.jobClassification.update({
+    params: EvaluateClassificationDto,
+  ): Promise<RoleAnalyticsEntity> {
+    const role = await this.prisma.role.findUniqueOrThrow({
       where: { id },
-      data: { wasAcceptedByUser: params.wasAcceptedByUser },
+      select: roleSelect,
     });
-    return mapJobClassificationFromPrisma(classification) ?? null;
+
+    const classification = role.JobClassification;
+    if (!classification) {
+      throw new NotFoundException('Job classification not found');
+    }
+
+    await this.prisma.role.update({
+      where: { id },
+      data: {
+        JobClassification: {
+          update: {
+            where: { id: classification.escoClassificationId },
+            data: { wasAcceptedByUser: params.wasAcceptedByUser },
+          },
+        },
+      },
+    });
+
+    return mapRoleFromPrisma(role);
   }
 }

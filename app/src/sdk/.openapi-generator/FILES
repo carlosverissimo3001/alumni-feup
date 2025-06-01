@@ -41,6 +41,8 @@ models/DataPointDto.ts
 models/DeleteUserDto.ts
 models/EscoClassificationAnalyticsEntity.ts
 models/EscoClassificationDto.ts
+models/EvaluateClassificationDto.ts
+models/EvaluateSeniorityLevelDto.ts
 models/ExtendedCompanyDto.ts
 models/Faculty.ts
 models/FacultyAnalyticsEntity.ts
@@ -78,6 +80,7 @@ models/RoleHierarchyItemDto.ts
 models/RoleListItemDto.ts
 models/RoleListResponseDto.ts
 models/RoleOptionDto.ts
+models/RoleRawAnalyticsEntity.ts
 models/SendFeedbackDto.ts
 models/SeniorityListItemDto.ts
 models/SeniorityListResponseDto.ts

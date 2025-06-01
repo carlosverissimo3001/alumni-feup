@@ -51,6 +51,12 @@ export interface JobClassificationAnalyticsEntity {
      * @memberof JobClassificationAnalyticsEntity
      */
     escoClassification: EscoClassificationAnalyticsEntity;
+    /**
+     * Whether the seniority level was accepted by the user
+     * @type {boolean}
+     * @memberof JobClassificationAnalyticsEntity
+     */
+    wasAcceptedByUser?: boolean;
 }
 
 /**
@@ -77,6 +83,7 @@ export function JobClassificationAnalyticsEntityFromJSONTyped(json: any, ignoreD
         'roleId': json['roleId'],
         'confidence': json['confidence'] == null ? undefined : json['confidence'],
         'escoClassification': EscoClassificationAnalyticsEntityFromJSON(json['escoClassification']),
+        'wasAcceptedByUser': json['wasAcceptedByUser'] == null ? undefined : json['wasAcceptedByUser'],
     };
 }
 
@@ -95,6 +102,7 @@ export function JobClassificationAnalyticsEntityToJSONTyped(value?: JobClassific
         'roleId': value['roleId'],
         'confidence': value['confidence'],
         'escoClassification': EscoClassificationAnalyticsEntityToJSON(value['escoClassification']),
+        'wasAcceptedByUser': value['wasAcceptedByUser'],
     };
 }
 

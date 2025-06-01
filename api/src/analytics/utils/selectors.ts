@@ -1,5 +1,9 @@
 import { Prisma } from '@prisma/client';
 
+export const roleRawSelect = {
+  title: true,
+} satisfies Prisma.RoleRawSelect;
+
 export const industrySelect = {
   id: true,
   name: true,
@@ -19,6 +23,8 @@ export const companySelect = {
   name: true,
   logo: true,
   levelsFyiUrl: true,
+  website: true,
+  linkedinUrl: true,
   companySize: true,
   companyType: true,
   Industry: {
@@ -63,6 +69,9 @@ export const roleSelect = {
   },
   JobClassification: {
     select: jobClassificationSelect,
+  },
+  RoleRaw: {
+    select: roleRawSelect,
   },
 } satisfies Prisma.RoleSelect;
 

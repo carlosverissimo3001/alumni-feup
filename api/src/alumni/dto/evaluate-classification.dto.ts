@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-export class ClassificationAcceptedByUserDto {
+export class EvaluateClassificationDto {
   @ApiProperty({
     description: 'Whether the job classification was accepted by the user',
     type: Boolean,

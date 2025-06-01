@@ -34,6 +34,13 @@ import {
     LocationAnalyticsEntityToJSON,
     LocationAnalyticsEntityToJSONTyped,
 } from './LocationAnalyticsEntity';
+import type { RoleRawAnalyticsEntity } from './RoleRawAnalyticsEntity';
+import {
+    RoleRawAnalyticsEntityFromJSON,
+    RoleRawAnalyticsEntityFromJSONTyped,
+    RoleRawAnalyticsEntityToJSON,
+    RoleRawAnalyticsEntityToJSONTyped,
+} from './RoleRawAnalyticsEntity';
 
 /**
  * 
@@ -95,6 +102,18 @@ export interface RoleAnalyticsEntity {
      * @memberof RoleAnalyticsEntity
      */
     jobClassification?: JobClassificationAnalyticsEntity;
+    /**
+     * 
+     * @type {RoleRawAnalyticsEntity}
+     * @memberof RoleAnalyticsEntity
+     */
+    roleRaw?: RoleRawAnalyticsEntity;
+    /**
+     * Whether the seniority level was accepted by the user
+     * @type {boolean}
+     * @memberof RoleAnalyticsEntity
+     */
+    wasSeniorityLevelAcceptedByUser?: boolean;
 }
 
 
@@ -145,6 +164,8 @@ export function RoleAnalyticsEntityFromJSONTyped(json: any, ignoreDiscriminator:
         'company': CompanyAnalyticsEntityFromJSON(json['company']),
         'seniorityLevel': json['seniorityLevel'],
         'jobClassification': json['jobClassification'] == null ? undefined : JobClassificationAnalyticsEntityFromJSON(json['jobClassification']),
+        'roleRaw': json['roleRaw'] == null ? undefined : RoleRawAnalyticsEntityFromJSON(json['roleRaw']),
+        'wasSeniorityLevelAcceptedByUser': json['wasSeniorityLevelAcceptedByUser'] == null ? undefined : json['wasSeniorityLevelAcceptedByUser'],
     };
 }
 
@@ -168,6 +189,8 @@ export function RoleAnalyticsEntityToJSONTyped(value?: RoleAnalyticsEntity | nul
         'company': CompanyAnalyticsEntityToJSON(value['company']),
         'seniorityLevel': value['seniorityLevel'],
         'jobClassification': JobClassificationAnalyticsEntityToJSON(value['jobClassification']),
+        'roleRaw': RoleRawAnalyticsEntityToJSON(value['roleRaw']),
+        'wasSeniorityLevelAcceptedByUser': value['wasSeniorityLevelAcceptedByUser'],
     };
 }
 

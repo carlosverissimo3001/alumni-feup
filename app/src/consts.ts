@@ -24,3 +24,12 @@ export enum ViewType {
   TREND = 'trend',
 }
 
+export const SENIORITY_COLORS: Record<string, string> = {
+  INTERN: "bg-blue-100 text-blue-800 border-blue-200",
+  ENTRY_LEVEL: "bg-green-100 text-green-800 border-green-200",
+  ASSOCIATE: "bg-yellow-100 text-yellow-800 border-yellow-200",
+  MID_SENIOR_LEVEL: "bg-purple-100 text-purple-800 border-purple-200",
+  DIRECTOR: "bg-pink-100 text-pink-800 border-pink-200",
+  EXECUTIVE: "bg-red-100 text-red-800 border-red-200",
+  C_LEVEL: "bg-gray-200 text-gray-900 border-gray-300",
+};

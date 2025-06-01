@@ -17,9 +17,9 @@ export class JobClassificationAnalyticsEntity {
   @ApiProperty()
   escoClassification: EscoClassificationAnalyticsEntity;
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     description: 'Whether the seniority level was accepted by the user',
     type: Boolean,
   })
-  wasAcceptedByUser: boolean;
+  wasAcceptedByUser?: boolean;
 }
