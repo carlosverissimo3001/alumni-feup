@@ -16,6 +16,7 @@ import {
   GetGeoJSONDto,
   MarkAsReviewedDto,
   EvaluateSeniorityLevelDto,
+  UpdateClassificationDto,
 } from '../dto';
 import { AlumniProfileService } from '../services/alumni-profile.service';
 import { AlumniService } from '../services/alumni.service';
@@ -148,7 +149,7 @@ export class AlumniController {
     description: 'Returns the role with the accepted seniority level',
     type: RoleAnalyticsEntity,
   })
-  async acceptSeniorityLevel(
+  async evaluateSeniorityLevel(
     @Param('id') id: string,
     @Body() body: EvaluateSeniorityLevelDto,
   ): Promise<RoleAnalyticsEntity> {
@@ -169,5 +170,22 @@ export class AlumniController {
     @Body() body: EvaluateClassificationDto,
   ): Promise<RoleAnalyticsEntity> {
     return this.alumniProfileService.evaluateJobClassification(id, body);
+  }
+
+  @Post('role/update-classification/:id')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({
+    summary: 'Update the classification of a role',
+    description: 'Update the classification of a role',
+  })
+  @ApiResponse({
+    description: 'Returns the role with the updated classification',
+    type: RoleAnalyticsEntity,
+  })
+  async updateClassification(
+    @Param('id') id: string,
+    @Body() body: UpdateClassificationDto,
+  ): Promise<RoleAnalyticsEntity> {
+    return this.alumniProfileService.updateJobClassification(id, body);
   }
 }

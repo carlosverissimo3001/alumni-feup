@@ -117,7 +117,7 @@ export const GlobalFilters = ({
     });
 
   const { data: roleOptions, isLoading: isRoleOptionsLoading } =
-    useRoleOptions();
+    useRoleOptions({});
 
   const { data: industryOptions, isLoading: isIndustryOptionsLoading } =
     useIndustryOptions();

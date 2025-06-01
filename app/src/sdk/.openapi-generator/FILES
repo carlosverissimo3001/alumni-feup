@@ -40,7 +40,6 @@ models/CreateReviewDto.ts
 models/DataPointDto.ts
 models/DeleteUserDto.ts
 models/EscoClassificationAnalyticsEntity.ts
-models/EscoClassificationDto.ts
 models/EvaluateClassificationDto.ts
 models/EvaluateSeniorityLevelDto.ts
 models/ExtendedCompanyDto.ts
@@ -84,6 +83,7 @@ models/RoleRawAnalyticsEntity.ts
 models/SendFeedbackDto.ts
 models/SeniorityListItemDto.ts
 models/SeniorityListResponseDto.ts
+models/UpdateClassificationDto.ts
 models/UploadExtractionDto.ts
 models/User.ts
 models/UserAuthResponse.ts

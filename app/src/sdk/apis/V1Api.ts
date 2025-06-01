@@ -37,7 +37,6 @@ import type {
   CreateFacultyDto,
   CreateReviewDto,
   DeleteUserDto,
-  EscoClassificationDto,
   EvaluateClassificationDto,
   EvaluateSeniorityLevelDto,
   Faculty,
@@ -59,6 +58,7 @@ import type {
   RoleOptionDto,
   SendFeedbackDto,
   SeniorityListResponseDto,
+  UpdateClassificationDto,
   UploadExtractionDto,
   UserAuthResponse,
   VerifyEmailDto,
@@ -109,8 +109,6 @@ import {
     CreateReviewDtoToJSON,
     DeleteUserDtoFromJSON,
     DeleteUserDtoToJSON,
-    EscoClassificationDtoFromJSON,
-    EscoClassificationDtoToJSON,
     EvaluateClassificationDtoFromJSON,
     EvaluateClassificationDtoToJSON,
     EvaluateSeniorityLevelDtoFromJSON,
@@ -153,6 +151,8 @@ import {
     SendFeedbackDtoToJSON,
     SeniorityListResponseDtoFromJSON,
     SeniorityListResponseDtoToJSON,
+    UpdateClassificationDtoFromJSON,
+    UpdateClassificationDtoToJSON,
     UploadExtractionDtoFromJSON,
     UploadExtractionDtoToJSON,
     UserAuthResponseFromJSON,
@@ -206,11 +206,6 @@ export interface AlumniAnalyticsControllerGetAlumniListRequest {
     sortOrder?: string;
 }
 
-export interface AlumniControllerAcceptSeniorityLevelRequest {
-    id: string;
-    evaluateSeniorityLevelDto: EvaluateSeniorityLevelDto;
-}
-
 export interface AlumniControllerCreateRequest {
     createAlumniDto: CreateAlumniDto;
 }
@@ -218,6 +213,11 @@ export interface AlumniControllerCreateRequest {
 export interface AlumniControllerEvaluateClassificationRequest {
     id: string;
     evaluateClassificationDto: EvaluateClassificationDto;
+}
+
+export interface AlumniControllerEvaluateSeniorityLevelRequest {
+    id: string;
+    evaluateSeniorityLevelDto: EvaluateSeniorityLevelDto;
 }
 
 export interface AlumniControllerFindAllGeoJSONRequest {
@@ -242,6 +242,11 @@ export interface AlumniControllerGetProfileRequest {
 
 export interface AlumniControllerMarkAsReviewedRequest {
     markAsReviewedDto: MarkAsReviewedDto;
+}
+
+export interface AlumniControllerUpdateClassificationRequest {
+    id: string;
+    updateClassificationDto: UpdateClassificationDto;
 }
 
 export interface CompanyAnalyticsControllerGetCompaniesWithAlumniCountRequest {
@@ -514,6 +519,10 @@ export interface ReviewControllerFindAllGeoJSONRequest {
     dateTo?: Date;
 }
 
+export interface RoleAnalyticsControllerGetRoleRequest {
+    id: string;
+}
+
 export interface RoleAnalyticsControllerGetRoleHierarchyRequest {
     code: string;
 }
@@ -742,22 +751,6 @@ export interface V1ApiInterface {
 
     /**
      * 
-     * @summary Accept the seniority level of a role
-     * @param {string} id 
-     * @param {EvaluateSeniorityLevelDto} evaluateSeniorityLevelDto 
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof V1ApiInterface
-     */
-    alumniControllerAcceptSeniorityLevelRaw(requestParameters: AlumniControllerAcceptSeniorityLevelRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<RoleAnalyticsEntity>>;
-
-    /**
-     * Accept the seniority level of a role
-     */
-    alumniControllerAcceptSeniorityLevel(requestParameters: AlumniControllerAcceptSeniorityLevelRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<RoleAnalyticsEntity>;
-
-    /**
-     * 
      * @summary Create a new alumni
      * @param {CreateAlumniDto} createAlumniDto 
      * @param {*} [options] Override http request option.
@@ -786,6 +779,22 @@ export interface V1ApiInterface {
      * Evaluate the classification of a role
      */
     alumniControllerEvaluateClassification(requestParameters: AlumniControllerEvaluateClassificationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<RoleAnalyticsEntity>;
+
+    /**
+     * 
+     * @summary Accept the seniority level of a role
+     * @param {string} id 
+     * @param {EvaluateSeniorityLevelDto} evaluateSeniorityLevelDto 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof V1ApiInterface
+     */
+    alumniControllerEvaluateSeniorityLevelRaw(requestParameters: AlumniControllerEvaluateSeniorityLevelRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<RoleAnalyticsEntity>>;
+
+    /**
+     * Accept the seniority level of a role
+     */
+    alumniControllerEvaluateSeniorityLevel(requestParameters: AlumniControllerEvaluateSeniorityLevelRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<RoleAnalyticsEntity>;
 
     /**
      * 
@@ -893,6 +902,23 @@ export interface V1ApiInterface {
      * Mark an alumni as reviewed
      */
     alumniControllerMarkAsReviewed(requestParameters: AlumniControllerMarkAsReviewedRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Alumni>;
+
+    /**
+     * Update the classification of a role
+     * @summary Update the classification of a role
+     * @param {string} id 
+     * @param {UpdateClassificationDto} updateClassificationDto 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof V1ApiInterface
+     */
+    alumniControllerUpdateClassificationRaw(requestParameters: AlumniControllerUpdateClassificationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<RoleAnalyticsEntity>>;
+
+    /**
+     * Update the classification of a role
+     * Update the classification of a role
+     */
+    alumniControllerUpdateClassification(requestParameters: AlumniControllerUpdateClassificationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<RoleAnalyticsEntity>;
 
     /**
      * 
@@ -1182,34 +1208,6 @@ export interface V1ApiInterface {
 
     /**
      * 
-     * @summary Get all level 1 ESCO classifications
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof V1ApiInterface
-     */
-    escoControllerGetLevelOneClassificationsRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<EscoClassificationDto>>>;
-
-    /**
-     * Get all level 1 ESCO classifications
-     */
-    escoControllerGetLevelOneClassifications(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<EscoClassificationDto>>;
-
-    /**
-     * 
-     * @summary Get all level 2 ESCO classifications
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof V1ApiInterface
-     */
-    escoControllerGetLevelTwoClassificationsRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<EscoClassificationDto>>>;
-
-    /**
-     * Get all level 2 ESCO classifications
-     */
-    escoControllerGetLevelTwoClassifications(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<EscoClassificationDto>>;
-
-    /**
-     * 
      * @summary Create a faculty
      * @param {CreateFacultyDto} createFacultyDto 
      * @param {*} [options] Override http request option.
@@ -1485,6 +1483,21 @@ export interface V1ApiInterface {
      * Get all the review to be displayed on the map
      */
     reviewControllerFindAllGeoJSON(requestParameters: ReviewControllerFindAllGeoJSONRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ReviewGeoJSONFeatureCollection>;
+
+    /**
+     * 
+     * @summary Returns the role with the given id
+     * @param {string} id 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof V1ApiInterface
+     */
+    roleAnalyticsControllerGetRoleRaw(requestParameters: RoleAnalyticsControllerGetRoleRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<RoleAnalyticsEntity>>;
+
+    /**
+     * Returns the role with the given id
+     */
+    roleAnalyticsControllerGetRole(requestParameters: RoleAnalyticsControllerGetRoleRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<RoleAnalyticsEntity>;
 
     /**
      * Returns a list of roles with their ESCO code and title.
@@ -2035,49 +2048,6 @@ export class V1Api extends runtime.BaseAPI implements V1ApiInterface {
     }
 
     /**
-     * Accept the seniority level of a role
-     */
-    async alumniControllerAcceptSeniorityLevelRaw(requestParameters: AlumniControllerAcceptSeniorityLevelRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<RoleAnalyticsEntity>> {
-        if (requestParameters['id'] == null) {
-            throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling alumniControllerAcceptSeniorityLevel().'
-            );
-        }
-
-        if (requestParameters['evaluateSeniorityLevelDto'] == null) {
-            throw new runtime.RequiredError(
-                'evaluateSeniorityLevelDto',
-                'Required parameter "evaluateSeniorityLevelDto" was null or undefined when calling alumniControllerAcceptSeniorityLevel().'
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        headerParameters['Content-Type'] = 'application/json';
-
-        const response = await this.request({
-            path: `/alumni/role/accept-seniority-level/{id}`.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id']))),
-            method: 'POST',
-            headers: headerParameters,
-            query: queryParameters,
-            body: EvaluateSeniorityLevelDtoToJSON(requestParameters['evaluateSeniorityLevelDto']),
-        }, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => RoleAnalyticsEntityFromJSON(jsonValue));
-    }
-
-    /**
-     * Accept the seniority level of a role
-     */
-    async alumniControllerAcceptSeniorityLevel(requestParameters: AlumniControllerAcceptSeniorityLevelRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<RoleAnalyticsEntity> {
-        const response = await this.alumniControllerAcceptSeniorityLevelRaw(requestParameters, initOverrides);
-        return await response.value();
-    }
-
-    /**
      * Create a new alumni
      */
     async alumniControllerCreateRaw(requestParameters: AlumniControllerCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Alumni>> {
@@ -2153,6 +2123,49 @@ export class V1Api extends runtime.BaseAPI implements V1ApiInterface {
      */
     async alumniControllerEvaluateClassification(requestParameters: AlumniControllerEvaluateClassificationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<RoleAnalyticsEntity> {
         const response = await this.alumniControllerEvaluateClassificationRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Accept the seniority level of a role
+     */
+    async alumniControllerEvaluateSeniorityLevelRaw(requestParameters: AlumniControllerEvaluateSeniorityLevelRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<RoleAnalyticsEntity>> {
+        if (requestParameters['id'] == null) {
+            throw new runtime.RequiredError(
+                'id',
+                'Required parameter "id" was null or undefined when calling alumniControllerEvaluateSeniorityLevel().'
+            );
+        }
+
+        if (requestParameters['evaluateSeniorityLevelDto'] == null) {
+            throw new runtime.RequiredError(
+                'evaluateSeniorityLevelDto',
+                'Required parameter "evaluateSeniorityLevelDto" was null or undefined when calling alumniControllerEvaluateSeniorityLevel().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
+
+        const response = await this.request({
+            path: `/alumni/role/accept-seniority-level/{id}`.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id']))),
+            method: 'POST',
+            headers: headerParameters,
+            query: queryParameters,
+            body: EvaluateSeniorityLevelDtoToJSON(requestParameters['evaluateSeniorityLevelDto']),
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => RoleAnalyticsEntityFromJSON(jsonValue));
+    }
+
+    /**
+     * Accept the seniority level of a role
+     */
+    async alumniControllerEvaluateSeniorityLevel(requestParameters: AlumniControllerEvaluateSeniorityLevelRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<RoleAnalyticsEntity> {
+        const response = await this.alumniControllerEvaluateSeniorityLevelRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -2393,6 +2406,51 @@ export class V1Api extends runtime.BaseAPI implements V1ApiInterface {
      */
     async alumniControllerMarkAsReviewed(requestParameters: AlumniControllerMarkAsReviewedRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Alumni> {
         const response = await this.alumniControllerMarkAsReviewedRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Update the classification of a role
+     * Update the classification of a role
+     */
+    async alumniControllerUpdateClassificationRaw(requestParameters: AlumniControllerUpdateClassificationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<RoleAnalyticsEntity>> {
+        if (requestParameters['id'] == null) {
+            throw new runtime.RequiredError(
+                'id',
+                'Required parameter "id" was null or undefined when calling alumniControllerUpdateClassification().'
+            );
+        }
+
+        if (requestParameters['updateClassificationDto'] == null) {
+            throw new runtime.RequiredError(
+                'updateClassificationDto',
+                'Required parameter "updateClassificationDto" was null or undefined when calling alumniControllerUpdateClassification().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
+
+        const response = await this.request({
+            path: `/alumni/role/update-classification/{id}`.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id']))),
+            method: 'POST',
+            headers: headerParameters,
+            query: queryParameters,
+            body: UpdateClassificationDtoToJSON(requestParameters['updateClassificationDto']),
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => RoleAnalyticsEntityFromJSON(jsonValue));
+    }
+
+    /**
+     * Update the classification of a role
+     * Update the classification of a role
+     */
+    async alumniControllerUpdateClassification(requestParameters: AlumniControllerUpdateClassificationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<RoleAnalyticsEntity> {
+        const response = await this.alumniControllerUpdateClassificationRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -3221,58 +3279,6 @@ export class V1Api extends runtime.BaseAPI implements V1ApiInterface {
     }
 
     /**
-     * Get all level 1 ESCO classifications
-     */
-    async escoControllerGetLevelOneClassificationsRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<EscoClassificationDto>>> {
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        const response = await this.request({
-            path: `/esco/level-one`,
-            method: 'GET',
-            headers: headerParameters,
-            query: queryParameters,
-        }, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(EscoClassificationDtoFromJSON));
-    }
-
-    /**
-     * Get all level 1 ESCO classifications
-     */
-    async escoControllerGetLevelOneClassifications(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<EscoClassificationDto>> {
-        const response = await this.escoControllerGetLevelOneClassificationsRaw(initOverrides);
-        return await response.value();
-    }
-
-    /**
-     * Get all level 2 ESCO classifications
-     */
-    async escoControllerGetLevelTwoClassificationsRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<EscoClassificationDto>>> {
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        const response = await this.request({
-            path: `/esco/level-two`,
-            method: 'GET',
-            headers: headerParameters,
-            query: queryParameters,
-        }, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(EscoClassificationDtoFromJSON));
-    }
-
-    /**
-     * Get all level 2 ESCO classifications
-     */
-    async escoControllerGetLevelTwoClassifications(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<EscoClassificationDto>> {
-        const response = await this.escoControllerGetLevelTwoClassificationsRaw(initOverrides);
-        return await response.value();
-    }
-
-    /**
      * Create a faculty
      */
     async facultyControllerCreateRaw(requestParameters: FacultyControllerCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Faculty>> {
@@ -4048,6 +4054,39 @@ export class V1Api extends runtime.BaseAPI implements V1ApiInterface {
      */
     async reviewControllerFindAllGeoJSON(requestParameters: ReviewControllerFindAllGeoJSONRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ReviewGeoJSONFeatureCollection> {
         const response = await this.reviewControllerFindAllGeoJSONRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Returns the role with the given id
+     */
+    async roleAnalyticsControllerGetRoleRaw(requestParameters: RoleAnalyticsControllerGetRoleRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<RoleAnalyticsEntity>> {
+        if (requestParameters['id'] == null) {
+            throw new runtime.RequiredError(
+                'id',
+                'Required parameter "id" was null or undefined when calling roleAnalyticsControllerGetRole().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        const response = await this.request({
+            path: `/analytics/roles/{id}`.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id']))),
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => RoleAnalyticsEntityFromJSON(jsonValue));
+    }
+
+    /**
+     * Returns the role with the given id
+     */
+    async roleAnalyticsControllerGetRole(requestParameters: RoleAnalyticsControllerGetRoleRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<RoleAnalyticsEntity> {
+        const response = await this.roleAnalyticsControllerGetRoleRaw(requestParameters, initOverrides);
         return await response.value();
     }
 

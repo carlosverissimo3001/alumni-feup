@@ -12,7 +12,11 @@ import { AlumniAnalyticsEntity } from '@/analytics/entities/alumni.entity';
 import { mapAlumniFromPrisma } from '@/analytics/utils/alumni.mapper';
 import { RoleAnalyticsEntity } from '@/analytics/entities/role.entity';
 import { mapRoleFromPrisma } from '@/analytics/utils/alumni.mapper';
-import { EvaluateSeniorityLevelDto, EvaluateClassificationDto } from '../dto';
+import {
+  EvaluateSeniorityLevelDto,
+  EvaluateClassificationDto,
+  UpdateClassificationDto,
+} from '../dto';
 
 @Injectable()
 export class AlumniProfileService {
@@ -126,18 +130,58 @@ export class AlumniProfileService {
       throw new NotFoundException('Job classification not found');
     }
 
+    await this.prisma.jobClassification.update({
+      where: { roleId: id },
+      data: { wasAcceptedByUser: params.wasAcceptedByUser },
+    });
+
+    // refetch the updated role
+    const updatedRole = await this.prisma.role.findUniqueOrThrow({
+      where: { id },
+      select: roleSelect,
+    });
+
+    return mapRoleFromPrisma(updatedRole);
+  }
+
+  async updateJobClassification(
+    id: string,
+    params: UpdateClassificationDto,
+  ): Promise<RoleAnalyticsEntity> {
+    const { escoClassificationId } = params;
+
+    // Get the role
+    const role = await this.prisma.role.findUniqueOrThrow({
+      where: { id },
+      select: roleSelect,
+    });
+
+    console.log(role);
+
+    // Get the current classification
+    const classification = role.JobClassification;
+    if (!classification) {
+      throw new NotFoundException('Job classification not found');
+    }
+
+    // Update the classification to point to the new ESCO classification
     await this.prisma.role.update({
       where: { id },
       data: {
         JobClassification: {
           update: {
             where: { id: classification.escoClassificationId },
-            data: { wasAcceptedByUser: params.wasAcceptedByUser },
+            data: {
+              escoClassificationId,
+              // We assume that if the user updates the classification, it was accepted by the user
+              wasAcceptedByUser: true,
+            },
           },
         },
       },
     });
 
+    // Return the updated role
     return mapRoleFromPrisma(role);
   }
 }

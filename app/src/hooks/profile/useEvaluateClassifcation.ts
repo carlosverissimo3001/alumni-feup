@@ -1,18 +1,25 @@
 import { useMutation } from "@tanstack/react-query";
 import NestAPI from "@/api";
-import { EvaluateClassificationDto } from "@/sdk";
+import { AlumniControllerEvaluateClassificationRequest } from "@/sdk";
+import { useQueryClient } from "@tanstack/react-query";
 
 type Input = {
-  roleId: string;
+  onSuccess?: () => void | Promise<void>;
 };
 
-export const useEvaluateClassifcation = ({ roleId }: Input) => {
+export const useEvaluateClassifcation = ({ onSuccess }: Input) => {
+  const qc = useQueryClient();
+
   const mutation = useMutation({
-    mutationFn: (dto: EvaluateClassificationDto) => {
+    mutationFn: (dto: AlumniControllerEvaluateClassificationRequest) => {
       return NestAPI.alumniControllerEvaluateClassification({
-        id: roleId,
-        evaluateClassificationDto: dto,
+        id: dto.id,
+        evaluateClassificationDto: dto.evaluateClassificationDto,
       });
+    },
+    onSuccess: (dto) => {
+      qc.invalidateQueries({ queryKey: ["role", dto.id] });
+      onSuccess?.();
     },
   });
 

@@ -20,6 +20,12 @@ import { mapValues } from '../runtime';
  */
 export interface RoleOptionDto {
     /**
+     * The id of the ESCO classification
+     * @type {string}
+     * @memberof RoleOptionDto
+     */
+    escoClassificationId: string;
+    /**
      * The ESCO code of the role
      * @type {string}
      * @memberof RoleOptionDto
@@ -43,6 +49,7 @@ export interface RoleOptionDto {
  * Check if a given object implements the RoleOptionDto interface.
  */
 export function instanceOfRoleOptionDto(value: object): value is RoleOptionDto {
+    if (!('escoClassificationId' in value) || value['escoClassificationId'] === undefined) return false;
     if (!('escoCode' in value) || value['escoCode'] === undefined) return false;
     if (!('title' in value) || value['title'] === undefined) return false;
     if (!('level' in value) || value['level'] === undefined) return false;
@@ -59,6 +66,7 @@ export function RoleOptionDtoFromJSONTyped(json: any, ignoreDiscriminator: boole
     }
     return {
         
+        'escoClassificationId': json['escoClassificationId'],
         'escoCode': json['escoCode'],
         'title': json['title'],
         'level': json['level'],
@@ -76,6 +84,7 @@ export function RoleOptionDtoToJSONTyped(value?: RoleOptionDto | null, ignoreDis
 
     return {
         
+        'escoClassificationId': value['escoClassificationId'],
         'escoCode': value['escoCode'],
         'title': value['title'],
         'level': value['level'],

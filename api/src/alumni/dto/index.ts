@@ -5,3 +5,4 @@ export { GetGeoJSONDto } from '../../dto/get-geojson.dto';
 export { AlumniGeoJSONResponse } from './alumni-geojson.dto';
 export { EvaluateSeniorityLevelDto } from './evaluate-seniority-level.dto';
 export { EvaluateClassificationDto } from './evaluate-classification.dto';
+export { UpdateClassificationDto } from './update-classification.dto';

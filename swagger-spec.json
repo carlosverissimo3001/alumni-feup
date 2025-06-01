@@ -595,7 +595,7 @@
     },
     "/alumni/role/accept-seniority-level/{id}": {
       "post": {
-        "operationId": "AlumniController_acceptSeniorityLevel",
+        "operationId": "AlumniController_evaluateSeniorityLevel",
         "parameters": [
           {
             "name": "id",
@@ -670,6 +670,48 @@
           }
         },
         "summary": "Evaluate the classification of a role",
+        "tags": [
+          "V1"
+        ]
+      }
+    },
+    "/alumni/role/update-classification/{id}": {
+      "post": {
+        "description": "Update the classification of a role",
+        "operationId": "AlumniController_updateClassification",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateClassificationDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "default": {
+            "description": "Returns the role with the updated classification",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RoleAnalyticsEntity"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Update the classification of a role",
         "tags": [
           "V1"
         ]
@@ -4323,6 +4365,37 @@
         ]
       }
     },
+    "/analytics/roles/{id}": {
+      "get": {
+        "operationId": "RoleAnalyticsController_getRole",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The role with the given id",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RoleAnalyticsEntity"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Returns the role with the given id",
+        "tags": [
+          "V1"
+        ]
+      }
+    },
     "/analytics/alumni": {
       "get": {
         "operationId": "AlumniAnalyticsController_getAlumniList",
@@ -4874,56 +4947,6 @@
           }
         },
         "summary": "Get a course by id",
-        "tags": [
-          "V1"
-        ]
-      }
-    },
-    "/esco/level-one": {
-      "get": {
-        "operationId": "EscoController_getLevelOneClassifications",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "Returns all level 1 ESCO classifications",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/EscoClassificationDto"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "summary": "Get all level 1 ESCO classifications",
-        "tags": [
-          "V1"
-        ]
-      }
-    },
-    "/esco/level-two": {
-      "get": {
-        "operationId": "EscoController_getLevelTwoClassifications",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "Returns all level 2 ESCO classifications",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/EscoClassificationDto"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "summary": "Get all level 2 ESCO classifications",
         "tags": [
           "V1"
         ]
@@ -6476,6 +6499,18 @@
           "wasAcceptedByUser"
         ]
       },
+      "UpdateClassificationDto": {
+        "type": "object",
+        "properties": {
+          "escoClassificationId": {
+            "type": "string",
+            "description": "The new ESCO classification of the role"
+          }
+        },
+        "required": [
+          "escoClassificationId"
+        ]
+      },
       "DataPointDto": {
         "type": "object",
         "properties": {
@@ -7340,6 +7375,11 @@
       "RoleOptionDto": {
         "type": "object",
         "properties": {
+          "escoClassificationId": {
+            "type": "string",
+            "description": "The id of the ESCO classification",
+            "example": "1"
+          },
           "escoCode": {
             "type": "string",
             "description": "The ESCO code of the role",
@@ -7357,6 +7397,7 @@
           }
         },
         "required": [
+          "escoClassificationId",
           "escoCode",
           "title",
           "level"
@@ -7592,25 +7633,6 @@
           "status",
           "facultyId",
           "startYear"
-        ]
-      },
-      "EscoClassificationDto": {
-        "type": "object",
-        "properties": {
-          "escoCode": {
-            "type": "string",
-            "description": "The ESCO code for the classification",
-            "example": "2512"
-          },
-          "title": {
-            "type": "string",
-            "description": "The title for the classification",
-            "example": "Software Engineer"
-          }
-        },
-        "required": [
-          "escoCode",
-          "title"
         ]
       },
       "Faculty": {
