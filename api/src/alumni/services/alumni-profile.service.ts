@@ -1,140 +1,44 @@
 import { PrismaService } from 'src/prisma/prisma.service';
 import {
   AlumniPastLocationsAndCompaniesDto,
-  BasicAlumniProfileDto,
   CompanyDto,
   ExtendedCompanyDto,
-  GraduationDto,
-} from '../dto/basic-alumni-profile.dto';
-import { NotFoundException, Injectable } from '@nestjs/common';
-import { LocationGeo, Role, Location } from '@/entities';
-import { SENIORITY_LEVEL } from '@prisma/client';
+} from '../dto/alumni-profile.dto';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { Location } from '@/entities';
+import { roleSelect } from '@/analytics/utils/selectors';
+import { graduationSelect } from '@/analytics/utils/selectors';
+import { AlumniAnalyticsEntity } from '@/analytics/entities/alumni.entity';
+import { mapAlumniFromPrisma } from '@/analytics/utils/alumni.mapper';
+import { RoleAnalyticsEntity } from '@/analytics/entities/role.entity';
+import { mapRoleFromPrisma } from '@/analytics/utils/alumni.mapper';
+import {
+  EvaluateSeniorityLevelDto,
+  EvaluateClassificationDto,
+  UpdateClassificationDto,
+} from '../dto';
 
 @Injectable()
 export class AlumniProfileService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async getBasicProfile(id: string): Promise<BasicAlumniProfileDto> {
+  async getProfile(id: string): Promise<AlumniAnalyticsEntity> {
     const alumni = await this.prisma.alumni.findUniqueOrThrow({
       where: { id },
-      include: {
+      select: {
+        id: true,
+        fullName: true,
+        linkedinUrl: true,
+        profilePictureUrl: true,
         Roles: {
-          include: {
-            Location: true,
-            Company: true,
-            JobClassification: {
-              include: {
-                EscoClassification: true,
-              },
-            },
-          },
+          select: roleSelect,
         },
-        Graduations: true,
-        Location: true,
+        Graduations: {
+          select: graduationSelect,
+        },
       },
     });
-
-    const currentRole = this.getCurrentOrLastRole(
-      alumni.Roles as unknown as Role[],
-    );
-    let company: CompanyDto | null = null;
-    let location: LocationGeo | null = null;
-    if (currentRole) {
-      const company_db = await this.prisma.company.findUnique({
-        where: { id: currentRole.Company.id },
-        include: {
-          Industry: {
-            select: {
-              name: true,
-            },
-          },
-        },
-      });
-
-      if (!company_db) {
-        throw new NotFoundException('Company not found');
-      }
-
-      company = {
-        id: company_db.id,
-        name: company_db.name,
-        industry: company_db.Industry.name,
-        website: company_db.website,
-        linkedinUrl: company_db.linkedinUrl,
-        logo: company_db.logo,
-      };
-
-      location = currentRole.Location || alumni.Location || null;
-    }
-
-    const graduations: GraduationDto[] = [];
-    for (const graduation of alumni.Graduations) {
-      const course = await this.prisma.course.findUniqueOrThrow({
-        where: { id: graduation.courseId },
-      });
-
-      const faculty = await this.prisma.faculty.findUniqueOrThrow({
-        where: { id: course.facultyId },
-      });
-
-      const grad: GraduationDto = {
-        conclusionYear: graduation.conclusionYear,
-        acronym: course.acronym,
-        facultyAcronym: faculty.acronym,
-      };
-
-      graduations.push(grad);
-    }
-
-    let title: string = 'No Current Role';
-    if (currentRole) {
-      const role_raw = await this.prisma.roleRaw.findUniqueOrThrow({
-        where: { roleId: currentRole.id },
-      });
-
-      title = role_raw.title;
-    }
-
-    return {
-      id: alumni.id,
-      name: `${alumni.firstName} ${alumni.lastName}`,
-      profilePictureUrl: alumni.profilePictureUrl,
-      linkedinUrl: alumni.linkedinUrl,
-      role: {
-        title: title,
-        startDate: currentRole?.startDate,
-        endDate: currentRole?.endDate,
-        confidence: currentRole?.JobClassification?.confidence,
-        escoTitle: currentRole?.JobClassification?.EscoClassification.titleEn,
-        escoCode: currentRole?.JobClassification?.EscoClassification.code,
-        seniorityLevel: currentRole?.seniorityLevel as SENIORITY_LEVEL,
-      },
-      company: company,
-      location: {
-        city: location?.city,
-        country: location?.country,
-        countryCode: location?.countryCode,
-      },
-      graduations: graduations,
-    };
-  }
-
-  /**
-   * Get the current or last role of the alumni
-   * @param roles - The roles of the alumni
-   * @returns The current or last role of the alumni
-   */
-  getCurrentOrLastRole(roles: Role[]): Role | null {
-    if (roles.length === 0) {
-      return null;
-    }
-
-    const sortedRoles = roles.sort(
-      (a, b) => b.startDate.getTime() - a.startDate.getTime(),
-    );
-    const currentRole = sortedRoles.find((role) => !role.endDate);
-
-    return currentRole || sortedRoles[0];
+    return mapAlumniFromPrisma(alumni);
   }
 
   async getPastLocationsAndCompanies(
@@ -193,5 +97,91 @@ export class AlumniProfileService {
       Companies: companies,
       Locations: locations,
     };
+  }
+
+  async evaluateSeniorityLevel(
+    id: string,
+    params: EvaluateSeniorityLevelDto,
+  ): Promise<RoleAnalyticsEntity> {
+    const role = await this.prisma.role.findUniqueOrThrow({
+      where: { id },
+      select: roleSelect,
+    });
+    await this.prisma.role.update({
+      where: { id },
+      data: {
+        wasSeniorityLevelAcceptedByUser: params.wasSeniorityLevelAcceptedByUser,
+      },
+    });
+    return mapRoleFromPrisma(role);
+  }
+
+  async evaluateJobClassification(
+    id: string,
+    params: EvaluateClassificationDto,
+  ): Promise<RoleAnalyticsEntity> {
+    const role = await this.prisma.role.findUniqueOrThrow({
+      where: { id },
+      select: roleSelect,
+    });
+
+    const classification = role.JobClassification;
+    if (!classification) {
+      throw new NotFoundException('Job classification not found');
+    }
+
+    await this.prisma.jobClassification.update({
+      where: { roleId: id },
+      data: { wasAcceptedByUser: params.wasAcceptedByUser },
+    });
+
+    // refetch the updated role
+    const updatedRole = await this.prisma.role.findUniqueOrThrow({
+      where: { id },
+      select: roleSelect,
+    });
+
+    return mapRoleFromPrisma(updatedRole);
+  }
+
+  async updateJobClassification(
+    id: string,
+    params: UpdateClassificationDto,
+  ): Promise<RoleAnalyticsEntity> {
+    const { escoClassificationId } = params;
+
+    // Get the role
+    const role = await this.prisma.role.findUniqueOrThrow({
+      where: { id },
+      select: roleSelect,
+    });
+
+    console.log(role);
+
+    // Get the current classification
+    const classification = role.JobClassification;
+    if (!classification) {
+      throw new NotFoundException('Job classification not found');
+    }
+
+    // Update the classification to point to the new ESCO classification
+    await this.prisma.role.update({
+      where: { id },
+      data: {
+        JobClassification: {
+          update: {
+            where: { id: classification.escoClassificationId },
+            data: {
+              escoClassificationId,
+              // We assume that if the user updates the classification, it was accepted by the user
+              wasAcceptedByUser: true,
+            },
+          },
+        },
+      },
+    });
+
+    // Return the updated role
+    return mapRoleFromPrisma(role);
   }
 }

@@ -531,9 +531,9 @@
         ]
       }
     },
-    "/alumni/basic-profile/{id}": {
+    "/alumni/profile/{id}": {
       "get": {
-        "operationId": "AlumniController_getBasicProfile",
+        "operationId": "AlumniController_getProfile",
         "parameters": [
           {
             "name": "id",
@@ -550,7 +550,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/BasicAlumniProfileDto"
+                  "$ref": "#/components/schemas/AlumniAnalyticsEntity"
                 }
               }
             }
@@ -588,6 +588,130 @@
           }
         },
         "summary": "Get the past locations and companies of an alumni",
+        "tags": [
+          "V1"
+        ]
+      }
+    },
+    "/alumni/role/accept-seniority-level/{id}": {
+      "post": {
+        "operationId": "AlumniController_evaluateSeniorityLevel",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EvaluateSeniorityLevelDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "default": {
+            "description": "Returns the role with the accepted seniority level",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RoleAnalyticsEntity"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Accept the seniority level of a role",
+        "tags": [
+          "V1"
+        ]
+      }
+    },
+    "/alumni/role/evaluate-classification/{id}": {
+      "post": {
+        "operationId": "AlumniController_evaluateClassification",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EvaluateClassificationDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "default": {
+            "description": "Returns the role with the evaluated classification",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RoleAnalyticsEntity"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Evaluate the classification of a role",
+        "tags": [
+          "V1"
+        ]
+      }
+    },
+    "/alumni/role/update-classification/{id}": {
+      "post": {
+        "description": "Update the classification of a role",
+        "operationId": "AlumniController_updateClassification",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateClassificationDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "default": {
+            "description": "Returns the role with the updated classification",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RoleAnalyticsEntity"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Update the classification of a role",
         "tags": [
           "V1"
         ]
@@ -4241,6 +4365,37 @@
         ]
       }
     },
+    "/analytics/roles/{id}": {
+      "get": {
+        "operationId": "RoleAnalyticsController_getRole",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The role with the given id",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RoleAnalyticsEntity"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Returns the role with the given id",
+        "tags": [
+          "V1"
+        ]
+      }
+    },
     "/analytics/alumni": {
       "get": {
         "operationId": "AlumniAnalyticsController_getAlumniList",
@@ -4792,56 +4947,6 @@
           }
         },
         "summary": "Get a course by id",
-        "tags": [
-          "V1"
-        ]
-      }
-    },
-    "/esco/level-one": {
-      "get": {
-        "operationId": "EscoController_getLevelOneClassifications",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "Returns all level 1 ESCO classifications",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/EscoClassificationDto"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "summary": "Get all level 1 ESCO classifications",
-        "tags": [
-          "V1"
-        ]
-      }
-    },
-    "/esco/level-two": {
-      "get": {
-        "operationId": "EscoController_getLevelTwoClassifications",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "Returns all level 2 ESCO classifications",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/EscoClassificationDto"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "summary": "Get all level 2 ESCO classifications",
         "tags": [
           "V1"
         ]
@@ -5894,20 +5999,183 @@
           "facultyId"
         ]
       },
-      "CurrentRoleDto": {
+      "LocationAnalyticsEntity": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "country": {
+            "type": "string",
+            "description": "The country of the location"
+          },
+          "countryCode": {
+            "type": "string"
+          },
+          "city": {
+            "type": "string",
+            "description": "The city of the location"
+          },
+          "latitude": {
+            "type": "number",
+            "description": "The latitude of the location"
+          },
+          "longitude": {
+            "type": "number",
+            "description": "The longitude of the location"
+          }
+        },
+        "required": [
+          "id"
+        ]
+      },
+      "IndustryAnalyticsEntity": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "name"
+        ]
+      },
+      "CompanyAnalyticsEntity": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "logo": {
+            "type": "string"
+          },
+          "levelsFyiUrl": {
+            "type": "string"
+          },
+          "industry": {
+            "$ref": "#/components/schemas/IndustryAnalyticsEntity"
+          },
+          "location": {
+            "$ref": "#/components/schemas/LocationAnalyticsEntity"
+          },
+          "website": {
+            "type": "string"
+          },
+          "founded": {
+            "type": "number"
+          },
+          "companySize": {
+            "type": "string"
+          },
+          "companyType": {
+            "type": "string"
+          },
+          "linkedinUrl": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "industry"
+        ]
+      },
+      "EscoClassificationAnalyticsEntity": {
+        "type": "object",
+        "properties": {
+          "titleEn": {
+            "type": "string"
+          },
+          "code": {
+            "type": "string"
+          },
+          "level": {
+            "type": "number"
+          },
+          "isLeaf": {
+            "type": "boolean"
+          },
+          "escoUrl": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "titleEn",
+          "code",
+          "level",
+          "isLeaf"
+        ]
+      },
+      "JobClassificationAnalyticsEntity": {
+        "type": "object",
+        "properties": {
+          "escoClassificationId": {
+            "type": "string"
+          },
+          "roleId": {
+            "type": "string"
+          },
+          "confidence": {
+            "type": "number",
+            "description": "The confidence of the job classification"
+          },
+          "escoClassification": {
+            "$ref": "#/components/schemas/EscoClassificationAnalyticsEntity"
+          },
+          "wasAcceptedByUser": {
+            "type": "boolean",
+            "description": "Whether the seniority level was accepted by the user"
+          }
+        },
+        "required": [
+          "escoClassificationId",
+          "roleId",
+          "escoClassification"
+        ]
+      },
+      "RoleRawAnalyticsEntity": {
         "type": "object",
         "properties": {
           "title": {
             "type": "string"
-          },
-          "escoTitle": {
+          }
+        },
+        "required": [
+          "title"
+        ]
+      },
+      "RoleAnalyticsEntity": {
+        "type": "object",
+        "properties": {
+          "id": {
             "type": "string"
           },
-          "confidence": {
-            "type": "number"
-          },
-          "escoCode": {
+          "alumniId": {
             "type": "string"
+          },
+          "startDate": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "endDate": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "isCurrent": {
+            "type": "boolean"
+          },
+          "location": {
+            "$ref": "#/components/schemas/LocationAnalyticsEntity"
+          },
+          "company": {
+            "$ref": "#/components/schemas/CompanyAnalyticsEntity"
           },
           "seniorityLevel": {
             "type": "string",
@@ -5921,116 +6189,199 @@
               "C_LEVEL"
             ]
           },
-          "startDate": {
-            "format": "date-time",
-            "type": "string"
+          "jobClassification": {
+            "$ref": "#/components/schemas/JobClassificationAnalyticsEntity"
           },
-          "endDate": {
-            "format": "date-time",
-            "type": "string"
+          "roleRaw": {
+            "$ref": "#/components/schemas/RoleRawAnalyticsEntity"
+          },
+          "wasSeniorityLevelAcceptedByUser": {
+            "type": "boolean",
+            "description": "Whether the seniority level was accepted by the user"
           }
         },
         "required": [
-          "title"
+          "id",
+          "alumniId",
+          "startDate",
+          "isCurrent",
+          "company",
+          "seniorityLevel"
         ]
       },
-      "CompanyDto": {
+      "FacultyAnalyticsEntity": {
         "type": "object",
         "properties": {
           "id": {
-            "type": "string"
+            "type": "string",
+            "description": "The id of the faculty"
           },
           "name": {
-            "type": "string"
+            "type": "string",
+            "description": "The name of the faculty"
           },
-          "industry": {
-            "type": "string"
+          "nameInt": {
+            "type": "string",
+            "description": "The international name of the faculty"
           },
-          "website": {
-            "type": "string"
-          },
-          "linkedinUrl": {
-            "type": "string"
-          },
-          "logo": {
-            "type": "string"
+          "acronym": {
+            "type": "string",
+            "description": "The acronym of the faculty"
           }
         },
         "required": [
           "id",
           "name",
-          "industry"
+          "nameInt",
+          "acronym"
         ]
       },
-      "GraduationDto": {
-        "type": "object",
-        "properties": {
-          "conclusionYear": {
-            "type": "number"
-          },
-          "acronym": {
-            "type": "string"
-          },
-          "facultyAcronym": {
-            "type": "string"
-          }
-        },
-        "required": [
-          "conclusionYear",
-          "acronym",
-          "facultyAcronym"
-        ]
-      },
-      "BasicAlumniProfileDto": {
+      "CourseAnalyticsEntity": {
         "type": "object",
         "properties": {
           "id": {
-            "type": "string"
+            "type": "string",
+            "description": "The id of the course"
           },
           "name": {
-            "type": "string"
+            "type": "string",
+            "description": "The name of the course"
           },
-          "profilePictureUrl": {
-            "type": "string"
+          "acronym": {
+            "type": "string",
+            "description": "The acronym of the course"
+          },
+          "status": {
+            "type": "string",
+            "description": "The status of the course",
+            "enum": [
+              "ACTIVE",
+              "INACTIVE"
+            ]
+          },
+          "courseType": {
+            "type": "string",
+            "description": "The course type of the course",
+            "enum": [
+              "INTEGRATED_MASTERS",
+              "BACHELORS",
+              "MASTERS",
+              "DOCTORATE"
+            ]
+          },
+          "facultyAcronym": {
+            "type": "string",
+            "description": "The faculty acronym of the course"
+          },
+          "startYear": {
+            "type": "number",
+            "description": "The start year of the course"
+          },
+          "endYear": {
+            "type": "number",
+            "description": "The year in which the course ceased to exist"
+          },
+          "facultyId": {
+            "type": "string",
+            "description": "The faculty id of the course"
+          },
+          "faculty": {
+            "description": "The faculty of the course",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/FacultyAnalyticsEntity"
+              }
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "acronym",
+          "status",
+          "courseType",
+          "facultyAcronym",
+          "startYear",
+          "facultyId",
+          "faculty"
+        ]
+      },
+      "GraduationAnalyticsEntity": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The id of the graduation"
+          },
+          "alumniId": {
+            "type": "string",
+            "description": "The id of the alumni"
+          },
+          "courseId": {
+            "type": "string",
+            "description": "The id of the course"
+          },
+          "conclusionYear": {
+            "type": "number",
+            "description": "The year of graduation"
+          },
+          "course": {
+            "description": "The course of the graduation",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/CourseAnalyticsEntity"
+              }
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "alumniId",
+          "courseId",
+          "conclusionYear",
+          "course"
+        ]
+      },
+      "AlumniAnalyticsEntity": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The id of the alumni"
+          },
+          "fullName": {
+            "type": "string",
+            "description": "The full name of the alumni"
           },
           "linkedinUrl": {
-            "type": "string"
+            "type": "string",
+            "description": "The linkedin url of the alumni"
           },
-          "role": {
-            "description": "The current role of the alumni - If the alumni is not active, this will be the last role",
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/CurrentRoleDto"
-              }
-            ]
+          "profilePictureUrl": {
+            "type": "string",
+            "description": "The profile picture of the alumni"
           },
-          "company": {
-            "description": "The current company of the alumni",
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/CompanyDto"
-              }
-            ]
-          },
-          "location": {
-            "description": "The current location of the alumni",
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/LocationGeo"
-              }
-            ]
+          "roles": {
+            "description": "The roles of the alumni",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RoleAnalyticsEntity"
+            }
           },
           "graduations": {
             "description": "The graduations of the alumni",
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/GraduationDto"
+              "$ref": "#/components/schemas/GraduationAnalyticsEntity"
             }
           }
         },
         "required": [
           "id",
-          "name"
+          "fullName",
+          "profilePictureUrl",
+          "roles",
+          "graduations"
         ]
       },
       "Location": {
@@ -6131,6 +6482,42 @@
             }
           }
         }
+      },
+      "EvaluateSeniorityLevelDto": {
+        "type": "object",
+        "properties": {
+          "wasSeniorityLevelAcceptedByUser": {
+            "type": "boolean",
+            "description": "Whether the seniority level was accepted by the user"
+          }
+        },
+        "required": [
+          "wasSeniorityLevelAcceptedByUser"
+        ]
+      },
+      "EvaluateClassificationDto": {
+        "type": "object",
+        "properties": {
+          "wasAcceptedByUser": {
+            "type": "boolean",
+            "description": "Whether the job classification was accepted by the user"
+          }
+        },
+        "required": [
+          "wasAcceptedByUser"
+        ]
+      },
+      "UpdateClassificationDto": {
+        "type": "object",
+        "properties": {
+          "escoClassificationId": {
+            "type": "string",
+            "description": "The new ESCO classification of the role"
+          }
+        },
+        "required": [
+          "escoClassificationId"
+        ]
       },
       "DataPointDto": {
         "type": "object",
@@ -6254,21 +6641,6 @@
           "SELF_OWNED"
         ],
         "description": "The type of the company"
-      },
-      "IndustryAnalyticsEntity": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string"
-          },
-          "name": {
-            "type": "string"
-          }
-        },
-        "required": [
-          "id",
-          "name"
-        ]
       },
       "BasicCompanyDto": {
         "type": "object",
@@ -7011,6 +7383,11 @@
       "RoleOptionDto": {
         "type": "object",
         "properties": {
+          "escoClassificationId": {
+            "type": "string",
+            "description": "The id of the ESCO classification",
+            "example": "1"
+          },
           "escoCode": {
             "type": "string",
             "description": "The ESCO code of the role",
@@ -7028,6 +7405,7 @@
           }
         },
         "required": [
+          "escoClassificationId",
           "escoCode",
           "title",
           "level"
@@ -7122,36 +7500,6 @@
           "count"
         ]
       },
-      "LocationAnalyticsEntity": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string"
-          },
-          "country": {
-            "type": "string",
-            "description": "The country of the location"
-          },
-          "countryCode": {
-            "type": "string"
-          },
-          "city": {
-            "type": "string",
-            "description": "The city of the location"
-          },
-          "latitude": {
-            "type": "number",
-            "description": "The latitude of the location"
-          },
-          "longitude": {
-            "type": "number",
-            "description": "The longitude of the location"
-          }
-        },
-        "required": [
-          "id"
-        ]
-      },
       "AlumniListItemDto": {
         "type": "object",
         "properties": {
@@ -7227,103 +7575,6 @@
           "fullName"
         ]
       },
-      "FacultyAnalyticsEntity": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string",
-            "description": "The id of the faculty"
-          },
-          "name": {
-            "type": "string",
-            "description": "The name of the faculty"
-          },
-          "nameInt": {
-            "type": "string",
-            "description": "The international name of the faculty"
-          },
-          "acronym": {
-            "type": "string",
-            "description": "The acronym of the faculty"
-          }
-        },
-        "required": [
-          "id",
-          "name",
-          "nameInt",
-          "acronym"
-        ]
-      },
-      "CourseAnalyticsEntity": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string",
-            "description": "The id of the course"
-          },
-          "name": {
-            "type": "string",
-            "description": "The name of the course"
-          },
-          "acronym": {
-            "type": "string",
-            "description": "The acronym of the course"
-          },
-          "status": {
-            "type": "string",
-            "description": "The status of the course",
-            "enum": [
-              "ACTIVE",
-              "INACTIVE"
-            ]
-          },
-          "courseType": {
-            "type": "string",
-            "description": "The course type of the course",
-            "enum": [
-              "INTEGRATED_MASTERS",
-              "BACHELORS",
-              "MASTERS",
-              "DOCTORATE"
-            ]
-          },
-          "facultyAcronym": {
-            "type": "string",
-            "description": "The faculty acronym of the course"
-          },
-          "startYear": {
-            "type": "number",
-            "description": "The start year of the course"
-          },
-          "endYear": {
-            "type": "number",
-            "description": "The year in which the course ceased to exist"
-          },
-          "facultyId": {
-            "type": "string",
-            "description": "The faculty id of the course"
-          },
-          "faculty": {
-            "description": "The faculty of the course",
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/FacultyAnalyticsEntity"
-              }
-            ]
-          }
-        },
-        "required": [
-          "id",
-          "name",
-          "acronym",
-          "status",
-          "courseType",
-          "facultyAcronym",
-          "startYear",
-          "facultyId",
-          "faculty"
-        ]
-      },
       "CreateCourseDto": {
         "type": "object",
         "properties": {
@@ -7390,25 +7641,6 @@
           "status",
           "facultyId",
           "startYear"
-        ]
-      },
-      "EscoClassificationDto": {
-        "type": "object",
-        "properties": {
-          "escoCode": {
-            "type": "string",
-            "description": "The ESCO code for the classification",
-            "example": "2512"
-          },
-          "title": {
-            "type": "string",
-            "description": "The title for the classification",
-            "example": "Software Engineer"
-          }
-        },
-        "required": [
-          "escoCode",
-          "title"
         ]
       },
       "Faculty": {

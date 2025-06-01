@@ -1,15 +1,15 @@
-import { CurrentRoleDtoSeniorityLevelEnum } from "@/sdk";
+import { RoleAnalyticsControllerGetSeniorityLevelsSeniorityLevelEnum as SeniorityLevel } from "@/sdk";
 
 
-export const mapSeniorityLevel = (seniorityLevel: CurrentRoleDtoSeniorityLevelEnum) => {
+export const mapSeniorityLevel = (seniorityLevel: SeniorityLevel) => {
     const mapping = {
-        [CurrentRoleDtoSeniorityLevelEnum.Intern]: 'Intern',
-        [CurrentRoleDtoSeniorityLevelEnum.EntryLevel]: 'Entry Level',
-        [CurrentRoleDtoSeniorityLevelEnum.Associate]: 'Associate',
-        [CurrentRoleDtoSeniorityLevelEnum.MidSeniorLevel]: 'Mid-Senior Level',
-        [CurrentRoleDtoSeniorityLevelEnum.Director]: 'Director',
-        [CurrentRoleDtoSeniorityLevelEnum.Executive]: 'Executive',
-        [CurrentRoleDtoSeniorityLevelEnum.CLevel]: 'C-Level',
+        [SeniorityLevel.Intern]: 'Intern',
+        [SeniorityLevel.EntryLevel]: 'Entry Level',
+        [SeniorityLevel.Associate]: 'Associate',
+        [SeniorityLevel.MidSeniorLevel]: 'Mid-Senior Level',
+        [SeniorityLevel.Director]: 'Director',
+        [SeniorityLevel.Executive]: 'Executive',
+        [SeniorityLevel.CLevel]: 'C-Level',
     }
 
     return mapping[seniorityLevel];

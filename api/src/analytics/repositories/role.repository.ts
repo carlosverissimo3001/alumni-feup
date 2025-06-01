@@ -2,7 +2,9 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from '@/prisma/prisma.service';
 import { RoleOptionDto } from '@/analytics/dto/role-option.dto';
 import { EscoClassificationAnalyticsEntity } from '../entities/esco-classification.entity';
-import { mapEscoClassificationFromPrisma } from '../utils/alumni.mapper';
+import { mapEscoClassificationFromPrisma, mapRoleFromPrisma } from '../utils/alumni.mapper';
+import { RoleAnalyticsEntity } from '../entities/role.entity';
+import { roleSelect } from '../utils/selectors';
 
 @Injectable()
 export class RoleRepository {
@@ -15,6 +17,7 @@ export class RoleRepository {
   async findAllClassifications(): Promise<RoleOptionDto[]> {
     const classifications = await this.prisma.escoClassification.findMany({
       select: {
+        id: true,
         code: true,
         titleEn: true,
         level: true,
@@ -37,6 +40,7 @@ export class RoleRepository {
       title: classification.titleEn,
       level: classification.level,
       relevance: classification._count.JobClassification,
+      escoClassificationId: classification.id,
     }));
   }
 
@@ -57,5 +61,13 @@ export class RoleRepository {
     }
 
     return mapEscoClassificationFromPrisma(classification);
+  }
+
+  async findById(id: string): Promise<RoleAnalyticsEntity> {
+    const role = await this.prisma.role.findUniqueOrThrow({
+      where: { id },
+      select: roleSelect,
+    });
+    return mapRoleFromPrisma(role);
   }
 }
