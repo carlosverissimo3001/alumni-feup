@@ -1,6 +1,5 @@
 "use client";
 
-import { RoleAnalyticsEntity } from "@/sdk";
 import { Badge } from "../ui/badge";
 import { SENIORITY_COLORS } from "@/consts";
 import { mapSeniorityLevel } from "@/utils/mappings";
