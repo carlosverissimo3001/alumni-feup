@@ -5478,6 +5478,10 @@
             "format": "date-time",
             "type": "string",
             "description": "The date and time when the review was created"
+          },
+          "anonymous": {
+            "type": "boolean",
+            "description": "The review anonymity"
           }
         },
         "required": [
@@ -5526,6 +5530,10 @@
             "format": "date-time",
             "type": "string",
             "description": "The date and time when the review was created"
+          },
+          "anonymous": {
+            "type": "boolean",
+            "description": "The review anonymity"
           }
         },
         "required": [
@@ -7574,6 +7582,10 @@
           "locationId": {
             "type": "string",
             "description": "The id of the location"
+          },
+          "anonymous": {
+            "type": "boolean",
+            "description": "Review anonymity"
           }
         },
         "required": [

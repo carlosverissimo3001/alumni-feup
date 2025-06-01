@@ -21,6 +21,7 @@ import { useReviewSubmit } from "@/hooks/reviews/useReviewSubmit";
 import { CreateReviewDto } from "@/sdk/models/CreateReviewDto";
 import { ExtendedCompanyDto } from "@/sdk/models/ExtendedCompanyDto";
 import { useAuth } from "@/contexts/AuthContext";
+import { Checkbox } from "@/components/ui/checkbox";
 
 
 type Errors = {
@@ -60,6 +61,7 @@ const SubmitReview = () => {
     const [selectCompanyTransform, setSelectedCompanyTransform] = useState<string>('');
     const [selectedCompany, setSelectedCompanyDefault] = useState<string | undefined>(undefined);
     const [selectedLocation, setSelectedLocation] = useState<string | undefined>(undefined);
+    const [anonymous, setAnonymous] = useState<boolean>(false);
     const [errors, setErrors] = useState<Errors>({});
 
     const setSelectedCompany = (value: string) => {
@@ -118,6 +120,7 @@ const SubmitReview = () => {
       reviewType: reviewType,
       companyId: selectedCompany || '',
       locationId: selectedLocation || '',
+      anonymous: anonymous,
     }
 
     const { mutate: sendReviewSubmit, error} = useReviewSubmit({
@@ -132,7 +135,7 @@ const SubmitReview = () => {
         setErrors(validationErrors);
         return;
       }else{
-        console.log(createReviewDto.alumniId);
+        console.log("Submitting review:", createReviewDto.anonymous);
         sendReviewSubmit();
         if(error){
           alert("Failed to submit review. Please try again.")
@@ -362,7 +365,7 @@ const SubmitReview = () => {
                   onChange={(e) => setReviewText(e.target.value)}
                 />
                 <div className="flex justify-between">
-                  <p className="text-sm text-muted-foreground">Be honest and detailed in your review</p>
+                  <p className="text-sm text-muted-foreground">Provide an honest and detailed review</p>
                   <p
                     className={`text-xs ${
                       (description?.length || 0) > 500
@@ -383,9 +386,33 @@ const SubmitReview = () => {
               )}
               </div>
             )}
-              <Button type="submit" className="w-full" disabled={isFormValid}>
+
+
+            {reviewType && (
+              <div className="flex items-center space-x-2">
+                <Checkbox
+                  id="anonymous"
+                  onCheckedChange={() => setAnonymous(!anonymous)}
+                />
+                <Label htmlFor="anonymous" className="text-sm font-normal cursor-pointer">
+                  Submit this review anonymously
+                </Label>
+              </div>
+            )}
+            
+
+              <Button type="submit" className="w-full" disabled={!isFormValid}>
                 Submit Review
               </Button>
+
+              {anonymous && (
+                <div className="bg-blue-50 border border-blue-200 rounded-md p-3">
+                  <p className="text-sm text-blue-800">
+                    <strong>Anonymous Review:</strong> Your review will be displayed without a name or any identifying
+                    information.
+                  </p>
+                </div>
+              )}
           </form>
         </CardContent>
       </Card>

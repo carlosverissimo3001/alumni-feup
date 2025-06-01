@@ -3,10 +3,6 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { Alumni, AlumniExtended } from 'src/entities/alumni.entity';
 import {
   alumniSelect,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  alumniSelectOnlyCompany,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  alumniSelectOnlyLocation,
 } from 'src/prisma/includes/alumni.include';
 import { GetGeoJSONDto } from '@/dto/get-geojson.dto';
 import { Prisma } from '@prisma/client';
@@ -89,7 +85,6 @@ export class AlumniRepository {
 
     const alumniWhere = {
       ...graduationsFilter,
-      //...rolesWhere,
       Location: {
         is: {
           latitude: { not: null },
@@ -141,6 +136,7 @@ export class AlumniRepository {
           ReviewsLocation: {
             include: {
               Location: true,
+             
             },
             where: {
               ...ratingFilter,
