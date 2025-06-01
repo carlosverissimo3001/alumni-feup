@@ -30,6 +30,12 @@ export class ReviewCompany {
   })
   createdAt?: Date | null;
 
+  @ApiPropertyOptional({
+    description: 'The review anonymity',
+    type: Boolean,
+  })
+  anonymous: Boolean;
+
   constructor(data: ReviewCompany) {
     this.id = data.id;
     this.description = data.description;

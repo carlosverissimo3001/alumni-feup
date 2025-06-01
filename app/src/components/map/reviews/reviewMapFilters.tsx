@@ -84,15 +84,6 @@ const ReviewMapFilters = ({
     }
   }, [scoreFetch, refetchGeoJson, setScoreFetch]);
 
-  // Panel state
-  /*const [filteredAlumniNamesCoord, setFilteredAlumniNamesCoord] = useState<AlumniInfo[]>([]);
-    const [listAlumniNamesWithCoordinates, setListAlumniNamesWithCoordinates] =
-      useState<AlumniInfo[]>([]); */
-  
-  
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [alumniLength, setAlumniLength] = useState(0);
-
   // Use the data when it changes
   useEffect(() => {
     if (geoJson) {
@@ -362,7 +353,7 @@ const ReviewMapFilters = ({
 
       </div>
       
-          <div className="flex translate-x-1/2 left-1/2 gap-2 w-1/2 mb-2 mt-5">
+          <div className="flex translate-x-1/2 left-1/2 gap-2 w-1/2 mb-5 mt-5">
             <Button
               onClick={onClickClean}
               disabled={!cleanButtonEnabled}
@@ -376,16 +367,6 @@ const ReviewMapFilters = ({
               Clear
             </Button>
           </div>
-        
-        {/* Stats Footer */}
-        <div className="px-6 py-4 bg-gray-50 border-t">
-          <p className="text-xl text-gray-600 font-bold">
-            Total number of alumni: {alumniLength}
-          </p>
-          <p className="text-xs text-gray-500 mt-1">
-            *Data from LinkedIn profiles and SIGARRA
-          </p>
-        </div>
       </div>
     </div>
   );

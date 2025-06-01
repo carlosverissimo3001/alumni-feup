@@ -44,4 +44,11 @@ export class CreateReviewDto {
   @IsString()
   @Transform(({ value }) => (value ? String(value) : undefined))
   locationId?: string;
+
+  @ApiPropertyOptional({
+    description: 'Review anonymity',
+  })
+  @IsOptional()
+  @Transform(({ value }) => (Boolean(value)))
+  anonymous?: boolean;
 }
