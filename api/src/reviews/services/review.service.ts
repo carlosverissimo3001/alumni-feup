@@ -38,6 +38,7 @@ type ReviewsGrouped = {
     timeSincePosted: number;
     timeSincePostedType: string;
     createdAt: Date | null;
+    anonymous: Boolean;
   }>;
 };
 
@@ -85,7 +86,11 @@ export class ReviewService {
           alumniNames: data.reviews.reduce(
             (acc, curr) => {
               if (curr.alumniName) {
-                acc[curr.reviewId] = curr.alumniName;
+                if(!curr.anonymous) {
+                  acc[curr.reviewId] = curr.alumniName;
+                }else{
+                  acc[curr.reviewId] = 'Anonymous';
+                }
               }
               return acc;
             },
@@ -94,7 +99,11 @@ export class ReviewService {
           linkedinLinks: data.reviews.reduce(
             (acc, curr) => {
               if (curr.linkedinLink) {
-                acc[curr.reviewId] = curr.linkedinLink;
+                if(!curr.anonymous) {
+                  acc[curr.reviewId] = curr.linkedinLink;
+                } else {
+                  acc[curr.reviewId] = '';
+                }
               }
               return acc;
             },
@@ -103,7 +112,11 @@ export class ReviewService {
           profilePics: data.reviews.reduce(
             (acc, curr) => {
               if (curr.profile_pic) {
-                acc[curr.reviewId] = curr.profile_pic;
+                if(!curr.anonymous) {
+                  acc[curr.reviewId] = curr.profile_pic;
+                }else {
+                  acc[curr.reviewId] = '';
+                }
               }
               return acc;
             },
@@ -248,6 +261,7 @@ export class ReviewService {
             timeSincePosted: time.timeSincePosted,
             timeSincePostedType: time.timeSincePostedType,
             createdAt: review.createdAt || null,
+            anonymous: review.anonymous
           });
         }
       }
@@ -296,6 +310,7 @@ export class ReviewService {
             timeSincePosted: time.timeSincePosted,
             timeSincePostedType: time.timeSincePostedType,
             createdAt: review.createdAt || null,
+            anonymous: review.anonymous
           });
         }
       }
@@ -370,6 +385,7 @@ export class ReviewService {
           timeSincePosted: time.timeSincePosted,
           timeSincePostedType: time.timeSincePostedType,
           createdAt: review.createdAt || null,
+          anonymous: review.anonymous 
         });
       }
     }
@@ -394,6 +410,7 @@ export class ReviewService {
           alumniId: body.alumniId,
           companyId: body.companyId,
           locationId: body.locationId,
+          anonymous: body.anonymous
         },
       });
     } else if (body.reviewType === ReviewType.LOCATION.toString()) {
@@ -408,6 +425,7 @@ export class ReviewService {
           downvotes: [],
           alumniId: body.alumniId,
           locationId: body.locationId,
+          anonymous: body.anonymous
         },
       });
     }

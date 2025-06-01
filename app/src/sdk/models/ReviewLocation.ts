@@ -61,6 +61,12 @@ export interface ReviewLocation {
      * @memberof ReviewLocation
      */
     createdAt?: Date;
+    /**
+     * The review anonymity
+     * @type {boolean}
+     * @memberof ReviewLocation
+     */
+    anonymous?: boolean;
 }
 
 /**
@@ -92,6 +98,7 @@ export function ReviewLocationFromJSONTyped(json: any, ignoreDiscriminator: bool
         'downvotes': json['downvotes'],
         'location': json['Location'] == null ? undefined : json['Location'],
         'createdAt': json['createdAt'] == null ? undefined : (new Date(json['createdAt'])),
+        'anonymous': json['anonymous'] == null ? undefined : json['anonymous'],
     };
 }
 
@@ -113,6 +120,7 @@ export function ReviewLocationToJSONTyped(value?: ReviewLocation | null, ignoreD
         'downvotes': value['downvotes'],
         'Location': value['location'],
         'createdAt': value['createdAt'] == null ? undefined : ((value['createdAt']).toISOString()),
+        'anonymous': value['anonymous'],
     };
 }
 

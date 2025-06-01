@@ -73,6 +73,7 @@ export const reviewCompanySelect = {
   rating: true,
   description: true,
   createdAt: true,
+  anonymous: true,
   Company: {
     select: companySelectWithRoles,
   },
@@ -88,6 +89,7 @@ export const reviewLocationSelect = {
   rating: true,
   description: true,
   createdAt: true,
+  anonymous: true,
   Location: {
     select: locationSelect,
   },

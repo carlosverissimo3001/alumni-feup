@@ -75,6 +75,12 @@ export interface ReviewCompany {
      * @memberof ReviewCompany
      */
     createdAt?: Date;
+    /**
+     * The review anonymity
+     * @type {boolean}
+     * @memberof ReviewCompany
+     */
+    anonymous?: boolean;
 }
 
 /**
@@ -108,6 +114,7 @@ export function ReviewCompanyFromJSONTyped(json: any, ignoreDiscriminator: boole
         'location': json['Location'] == null ? undefined : json['Location'],
         'company': CompanyFromJSON(json['Company']),
         'createdAt': json['createdAt'] == null ? undefined : (new Date(json['createdAt'])),
+        'anonymous': json['anonymous'] == null ? undefined : json['anonymous'],
     };
 }
 
@@ -130,6 +137,7 @@ export function ReviewCompanyToJSONTyped(value?: ReviewCompany | null, ignoreDis
         'Location': value['location'],
         'Company': CompanyToJSON(value['company']),
         'createdAt': value['createdAt'] == null ? undefined : ((value['createdAt']).toISOString()),
+        'anonymous': value['anonymous'],
     };
 }
 

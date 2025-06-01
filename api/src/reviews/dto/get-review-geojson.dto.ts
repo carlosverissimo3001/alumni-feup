@@ -48,11 +48,4 @@ export class GetReviewGeoJSONDto {
   @IsDate()
   @Transform(({ value }) => (value ? new Date(value) : undefined))
   dateTo?: Date;
-
-  // @ApiPropertyOptional({
-  //   description: 'Sort by most voted, least voted',
-  //   example: 'most',
-  // })
-  // @IsString()
-  // sortBy?: string;
 }
