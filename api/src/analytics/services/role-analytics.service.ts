@@ -22,6 +22,7 @@ import { sortData } from '../utils';
 import { TrendAnalyticsService } from './trend-analytics.service';
 import { applyDateFilters } from '../utils/filters';
 import { EscoClassificationAnalyticsEntity } from '../entities/esco-classification.entity';
+import { RoleAnalyticsEntity } from '../entities/role.entity';
 
 @Injectable()
 export class RoleAnalyticsService {
@@ -215,5 +216,9 @@ export class RoleAnalyticsService {
     return {
       hierarchy: parts,
     };
+  }
+
+  async getRole(id: string): Promise<RoleAnalyticsEntity> {
+    return await this.roleRepository.findById(id);
   }
 }

@@ -8,8 +8,8 @@
     "build": "next build",
     "start": "NODE_ENV=production PORT=4200 next start",
     "lint": "next lint",
-    "generate-sdk": "ts-node scripts/generate-sdk.ts",
-    "watch-sdk": "ts-node scripts/watch-sdk.ts",
+    "generate-sdk": "tsx scripts/generate-sdk.ts",
+    "watch-sdk": "tsx scripts/watch-sdk.ts",
     "dev:watch": "concurrently \"npm run dev\" \"npm run watch-sdk\""
   },
   "dependencies": {
@@ -90,6 +90,7 @@
     "postcss": "^8.5.3",
     "tailwindcss": "^3.4.17",
     "ts-node": "^10.9.2",
+    "tsx": "^4.19.4",
     "typescript": "^5.8.3"
   }
 }
