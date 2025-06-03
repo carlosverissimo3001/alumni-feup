@@ -43,7 +43,7 @@ export class AlumniAnalyticsRepository {
       },
     });
 
-    return alumni.map(mapAlumniFromPrisma);
+    return alumni;
   }
 
   async findAllAlumniRoles(id: string) {
