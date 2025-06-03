@@ -21,13 +21,33 @@ import Image from "next/image";
 import Link from "next/link";
 import { mapSeniorityLevel } from "@/utils/mappings";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";  
+import { Badge } from "@/components/ui/badge";
 import { useAuth } from "@/contexts/AuthContext";
 import CareerTimeline from "@/components/profile/CareerTimeline";
 import { LocationAnalyticsEntity, RoleAnalyticsEntity } from "@/sdk";
 import { motion } from "framer-motion";
 import { SENIORITY_COLORS } from "@/consts";
 import clsx from "clsx";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { useDeleteProfile } from "@/hooks/profile/useDeleteProfile";
+import { useRequestDataUpdate } from "@/hooks/profile/useRequestDataUpdate";
+import { toast } from "@/hooks/misc/useToast";
 
 export default function Profile() {
   const { id } = useParams();
@@ -69,20 +89,87 @@ export default function Profile() {
     return `/?lat=${location.latitude}&lng=${location.longitude}&group_by=cities`;
   };
 
+  // Hooks
+  const { mutate: requestDataUpdate, isPending: isRequestingDataUpdate } =
+    useRequestDataUpdate({
+      onSuccess: () => {
+        toast({
+          title: "Profile update requested",
+          variant: "success",
+          description: "Your profile update has been requested",
+          duration: 2000,
+        });
+      },
+    });
+  const { mutate: deleteProfile, isPending: isDeletingProfile } =
+    useDeleteProfile({
+      onSuccess: () => {
+        toast({
+          title: "Profile deleted",
+          variant: "success",
+          description: "Your profile has been deleted",
+          duration: 5000,
+        });
+      },
+    });
+  const handleRequestDataUpdate = () => {
+    requestDataUpdate(id as string);
+  };
+  const handleDeleteProfile = () => {
+    deleteProfile(id as string);
+  };
+
   if (isLoading) {
     return (
-      <div className="max-w-4xl mx-auto py-12 px-4">
-        <div className="flex items-center gap-6 mb-8">
-          <Skeleton className="h-24 w-24 rounded-full" />
-          <div className="space-y-2">
-            <Skeleton className="h-9 w-56" />
-            <Skeleton className="h-5 w-40" />
+      <div className="min-h-screen">
+        <div className="max-w-screen-xl mx-auto py-12 px-4">
+          {/* Header Section */}
+          <div className="flex flex-col md:flex-row md:items-center gap-6 mb-10">
+            <Skeleton className="h-24 w-24 rounded-full" />
+            <div className="space-y-3">
+              <Skeleton className="h-9 w-56" />
+              <Skeleton className="h-6 w-96" />
+            </div>
           </div>
-        </div>
-        <Skeleton className="h-64 w-full mb-8 rounded-xl" />
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <Skeleton className="h-48 w-full rounded-xl" />
-          <Skeleton className="h-48 w-full rounded-xl" />
+
+          {/* Role Info Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8 items-stretch mb-8">
+            {/* Role Card */}
+            <div className="p-3 rounded-xl bg-gradient-to-br from-primary/5 to-primary/10 border border-primary/20 flex flex-col h-full">
+              <Skeleton className="h-[240px] w-full" />
+            </div>
+
+            {/* Company Card */}
+            <div className="p-3 rounded-xl bg-gradient-to-br from-blue-50 to-blue-100 border border-blue-200 flex flex-col h-full">
+              <Skeleton className="h-[240px] w-full" />
+            </div>
+
+            {/* Location Card */}
+            <div className="p-3 rounded-xl bg-gradient-to-br from-green-50 to-green-100 border border-green-200 flex flex-col h-full">
+              <Skeleton className="h-[240px] w-full" />
+            </div>
+          </div>
+
+          {/* Career Timeline */}
+          <div className="mb-8">
+            <div className="flex items-center gap-2 p-4 rounded-lg border bg-card hover:bg-accent transition-colors">
+              <Skeleton className="h-5 w-5" />
+              <Skeleton className="h-6 w-32" />
+              <div className="flex-1" />
+              <Skeleton className="h-5 w-5" />
+            </div>
+          </div>
+
+          {/* Profile Actions - Only show if user is viewing their own profile */}
+          {user?.id === id && (
+            <div>
+              <Skeleton className="h-8 w-48 mb-4" />
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-stretch">
+                <Skeleton className="h-[200px] w-full rounded-xl" />
+                <Skeleton className="h-[200px] w-full rounded-xl" />
+              </div>
+            </div>
+          )}
         </div>
       </div>
     );
@@ -184,52 +271,54 @@ export default function Profile() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.4 }}
         >
-          <Card className="mb-4 bg-transparent border-none shadow-none">
-            <CardContent className="pt-2 pb-2 bg-transparent">
-              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8 items-stretch mb-2">
-                <div className="space-y-4">
-                  <div className="p-3 rounded-xl bg-gradient-to-br from-primary/5 to-primary/10 border border-primary/20 flex flex-col h-full">
-                    <h3 className="text-xl font-bold text-gray-800 mb-2">
-                      {jobTitle || "No role specified"}
-                    </h3>
-                    {focusedRole?.seniorityLevel && (
-                      <>
-                        <div className="flex items-center text-sm text-gray-600 mb-2">
-                          <span
-                            className={clsx(
-                              "px-2 py-0.5 ml-[-3px] rounded-full border text-xs font-medium",
-                              SENIORITY_COLORS[focusedRole.seniorityLevel] ||
-                                "bg-gray-100 text-gray-800 border-gray-200"
-                            )}
-                          >
-                            {mapSeniorityLevel(focusedRole.seniorityLevel)}
-                          </span>
-                        </div>
-                      </>
-                    )}
-                    <div className="flex items-center text-sm text-gray-600 mb-3">
-                      <Clock className="h-4 w-4 mr-3 text-primary" />
-                      <span>
-                        {focusedRole?.startDate
-                          ? new Date(focusedRole?.startDate).toLocaleDateString(
-                              "en-US",
-                              { month: "long", year: "numeric" }
-                            )
-                          : ""}
-                        {focusedRole?.endDate
-                          ? ` to ${new Date(
-                              focusedRole?.endDate
-                            ).toLocaleDateString("en-US", {
-                              month: "long",
-                              year: "numeric",
-                            })}`
-                          : " - Present"}
-                      </span>
-                    </div>
-                    <div className="flex items-center justify-between p-3 bg-white/70 rounded-lg border border-gray-200 mt-auto">
-                      <div className="flex items-center gap-2 text-xs text-gray-600">
-                        <TagIcon className="h-4 w-4 text-primary" />
-                        <span>ESCO:</span>
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8 items-stretch mb-8">
+            {/* Role Card */}
+            <div className="p-3 rounded-xl bg-gradient-to-br from-primary/5 to-primary/10 border border-primary/20 flex flex-col h-full">
+              <h3 className="text-xl font-bold text-gray-800 mb-2">
+                {jobTitle || "No role specified"}
+              </h3>
+              {focusedRole?.seniorityLevel && (
+                <>
+                  <div className="flex items-center text-sm text-gray-600 mb-2">
+                    <span
+                      className={clsx(
+                        "px-2 py-0.5 ml-[-3px] rounded-full border text-xs font-medium",
+                        SENIORITY_COLORS[focusedRole.seniorityLevel] ||
+                          "bg-gray-100 text-gray-800 border-gray-200"
+                      )}
+                    >
+                      {mapSeniorityLevel(focusedRole.seniorityLevel)}
+                    </span>
+                  </div>
+                </>
+              )}
+              <div className="flex items-center text-sm text-gray-600 mb-3">
+                <Clock className="h-4 w-4 mr-3 text-primary" />
+                <span>
+                  {focusedRole?.startDate
+                    ? new Date(focusedRole?.startDate).toLocaleDateString(
+                        "en-US",
+                        { month: "long", year: "numeric" }
+                      )
+                    : ""}
+                  {focusedRole?.endDate
+                    ? ` to ${new Date(focusedRole?.endDate).toLocaleDateString(
+                        "en-US",
+                        {
+                          month: "long",
+                          year: "numeric",
+                        }
+                      )}`
+                    : " - Present"}
+                </span>
+              </div>
+              <div className="flex items-center justify-between p-3 bg-white/70 rounded-lg border border-gray-200 mt-auto">
+                <div className="flex items-center gap-2 text-xs text-gray-600">
+                  <TagIcon className="h-4 w-4 text-primary" />
+                  <span>ESCO:</span>
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
                         <Link
                           href={
                             focusedRole?.jobClassification?.escoClassification
@@ -242,93 +331,108 @@ export default function Profile() {
                             focusedRole?.jobClassification?.escoClassification
                               .titleEn
                           }
+                          <span className="sr-only">
+                            View ESCO classification details
+                          </span>
                         </Link>
-                        <ArrowUpRight className="w-3 h-3 text-primary" />
-                      </div>
-                      <Badge variant="secondary" className="text-xs font-mono">
-                        {focusedRole?.jobClassification?.escoClassification
-                          ?.code || "N/A"}
-                      </Badge>
-                    </div>
-                  </div>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        View ESCO classification details
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                  <ArrowUpRight className="w-3 h-3 text-primary" />
                 </div>
+                <Badge variant="secondary" className="text-xs font-mono">
+                  {focusedRole?.jobClassification?.escoClassification?.code ||
+                    "N/A"}
+                </Badge>
+              </div>
+            </div>
 
-                {/* Company Section */}
-                <div className="space-y-4">
-                  <div className="p-3 rounded-xl bg-gradient-to-br from-blue-50 to-blue-100 border border-blue-200 flex flex-col h-full">
-                    <div className="flex items-center gap-3">
-                      {focusedRole?.company?.logo && (
-                        <div className="p-2 bg-white rounded-lg shadow-sm">
-                          <Image
-                            src={focusedRole.company.logo}
-                            alt={focusedRole.company.name || ""}
-                            className="w-8 h-8 object-contain"
-                            width={32}
-                            height={32}
-                          />
-                        </div>
+            {/* Company Card */}
+            <div className="p-3 rounded-xl bg-gradient-to-br from-blue-50 to-blue-100 border border-blue-200 flex flex-col h-full">
+              <div className="flex items-center gap-3">
+                {focusedRole?.company?.logo && (
+                  <div className="p-2 bg-white rounded-lg shadow-sm">
+                    <Image
+                      src={focusedRole.company.logo}
+                      alt={focusedRole.company.name || ""}
+                      className="w-8 h-8 object-contain"
+                      width={32}
+                      height={32}
+                    />
+                  </div>
+                )}
+                <Link
+                  href={`/company/${focusedRole?.company?.id}`}
+                  className="text-xl font-bold text-gray-800 hover:text-primary transition-colors group flex items-center gap-2"
+                >
+                  {focusedRole?.company?.name || "No company specified"}
+                  <ArrowUpRight className="w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity" />
+                </Link>
+              </div>
+
+              {(focusedRole?.company?.location ||
+                focusedRole?.company?.industry) && (
+                <div className="flex flex-col gap-1 my-3 ml-1">
+                  {focusedRole?.company?.location && (
+                    <div className="flex items-center gap-2 text-sm text-gray-700 font-medium">
+                      <MapPin className="h-4 w-4 text-blue-600" />
+                      {focusedRole.company.location.city &&
+                      focusedRole.company.location.country
+                        ? `${focusedRole.company.location.city}, ${focusedRole.company.location.countryCode}`
+                        : focusedRole.company.location.country || "Unknown"}
+                      {focusedRole.company.location.countryCode && (
+                        <Image
+                          src={`https://flagcdn.com/${focusedRole.company.location.countryCode.toLowerCase()}.svg`}
+                          alt={focusedRole.company.location.country || ""}
+                          className="w-6 h-4 rounded shadow-sm"
+                          width={24}
+                          height={16}
+                        />
                       )}
-                      <Link
-                        href={`/company/${focusedRole?.company?.id}`}
-                        className="text-xl font-bold text-gray-800 hover:text-primary transition-colors group flex items-center gap-2"
-                      >
-                        {focusedRole?.company?.name || "No company specified"}
-                        <ArrowUpRight className="w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity" />
-                      </Link>
                     </div>
+                  )}
+                  {focusedRole?.company?.industry && (
+                    <div className="flex items-center gap-2 text-sm text-gray-700 font-medium">
+                      <Factory className="h-4 w-4 text-blue-600" />
+                      {focusedRole.company.industry.name}
+                    </div>
+                  )}
+                </div>
+              )}
 
-                    {(focusedRole?.company?.location ||
-                      focusedRole?.company?.industry) && (
-                      <div className="flex flex-col gap-1 my-3 ml-1">
-                        {focusedRole?.company?.location && (
-                          <div className="flex items-center gap-2 text-sm text-gray-700 font-medium">
-                            <MapPin className="h-4 w-4 text-blue-600" />
-                            {focusedRole.company.location.city &&
-                            focusedRole.company.location.country
-                              ? `${focusedRole.company.location.city}, ${focusedRole.company.location.countryCode}`
-                              : focusedRole.company.location.country ||
-                                "Unknown"}
-                            {focusedRole.company.location.countryCode && (
-                              <Image
-                                src={`https://flagcdn.com/${focusedRole.company.location.countryCode.toLowerCase()}.svg`}
-                                alt={focusedRole.company.location.country || ""}
-                                className="w-6 h-4 rounded shadow-sm"
-                                width={24}
-                                height={16}
-                              />
-                            )}
-                          </div>
-                        )}
-                        {focusedRole?.company?.industry && (
-                          <div className="flex items-center gap-2 text-sm text-gray-700 font-medium">
-                            <Factory className="h-4 w-4 text-blue-600" />
-                            {focusedRole.company.industry.name}
-                          </div>
-                        )}
-                      </div>
-                    )}
+              <div className="flex-1"></div>
 
-                    <div className="flex-1"></div>
-
-                    <div className="flex flex-row gap-12 justify-center">
-                      {focusedRole?.company?.website && (
-                        <Button
-                          title="Visit Website"
-                          variant="outline"
-                          className="gap-2 hover:bg-blue-50 hover:border-blue-200 transition-all"
+              <div className="flex flex-row gap-12 justify-center">
+                {focusedRole?.company?.website && (
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger>
+                        <div
+                          className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2 gap-2 hover:bg-blue-50 hover:border-blue-200 transition-all cursor-pointer"
                           onClick={() => {
                             window.open(focusedRole.company.website, "_blank");
                           }}
                         >
                           <Globe className="w-4 h-4 group-hover:scale-110 transition-transform" />
-                          Website
-                        </Button>
-                      )}
-                      {focusedRole?.company?.linkedinUrl && (
-                        <Button
-                          title="Visit LinkedIn"
-                          variant="outline"
-                          className="gap-2 hover:bg-blue-50 hover:border-blue-200 transition-all"
+                          <span>Website</span>
+                          <span className="sr-only">Visit Website</span>
+                        </div>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        Visit the company&apos;s website
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                )}
+                {focusedRole?.company?.linkedinUrl && (
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger>
+                        <div
+                          className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2 gap-2 hover:bg-blue-50 hover:border-blue-200 transition-all cursor-pointer"
                           onClick={() => {
                             window.open(
                               focusedRole.company.linkedinUrl,
@@ -343,49 +447,56 @@ export default function Profile() {
                             height={20}
                             className="hover:opacity-80 transition-opacity"
                           />
-                          LinkedIn
-                        </Button>
-                      )}
-                      {!focusedRole?.company?.website &&
-                        !focusedRole?.company?.linkedinUrl && (
-                          <p className="text-sm text-gray-500 italic">
-                            No company links available
-                          </p>
-                        )}
-                    </div>
-                  </div>
+                          <span>LinkedIn</span>
+                          <span className="sr-only">
+                            Visit LinkedIn Profile
+                          </span>
+                        </div>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        Visit the company&apos;s LinkedIn profile
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                )}
+                {!focusedRole?.company?.website &&
+                  !focusedRole?.company?.linkedinUrl && (
+                    <p className="text-sm text-gray-500 italic">
+                      No company links available
+                    </p>
+                  )}
+              </div>
+            </div>
+
+            {/* Location Card */}
+            <div className="space-y-4">
+              <div className="p-6 rounded-xl bg-gradient-to-br from-primary/5 to-primary/10 border border-primary/20 flex flex-col h-full">
+                <div className="flex items-center gap-3 mb-3">
+                  <MapPin className="h-5 w-5 text-primary" />
+                  <span className="text-xl font-bold text-gray-800">
+                    {profile?.location?.city && profile?.location?.country
+                      ? `${profile.location.city}, ${profile.location.country}`
+                      : "Location not specified"}
+                  </span>
+                  {focusedRole?.location?.countryCode && (
+                    <Image
+                      src={`https://flagcdn.com/${focusedRole.location.countryCode.toLowerCase()}.svg`}
+                      alt={focusedRole.location.country || ""}
+                      className="w-8 h-5 rounded shadow-sm"
+                      width={32}
+                      height={20}
+                    />
+                  )}
                 </div>
 
-                <div className="space-y-4">
-                  <div className="p-3 rounded-xl bg-gradient-to-br from-green-50 to-green-100 border border-green-200 flex flex-col h-full">
-                    <div className="flex items-center gap-3 mb-3">
-                      <MapPin className="h-5 w-5 text-green-600" />
-                      <span className="text-xl font-bold text-gray-800">
-                        {focusedRole?.location?.city &&
-                        focusedRole?.location?.country
-                          ? `${focusedRole.location.city}, ${focusedRole.location.country}`
-                          : "Location not specified"}
-                      </span>
-                      {focusedRole?.location?.countryCode && (
-                        <Image
-                          src={`https://flagcdn.com/${focusedRole.location.countryCode.toLowerCase()}.svg`}
-                          alt={focusedRole.location.country || ""}
-                          className="w-8 h-5 rounded shadow-sm"
-                          width={32}
-                          height={20}
-                        />
-                      )}
-                    </div>
+                <div className="flex-1"></div>
 
-                    {/* Spacer to push button to bottom */}
-                    <div className="flex-1"></div>
-
-                    {/* View in Map button */}
-                    {focusedRole?.location &&
-                      buildMapUrl(focusedRole.location) && (
-                        <Button
-                          variant="outline"
-                          className="gap-2 hover:bg-green-50/80 hover:border-green-200 mt-4 transition-all"
+                {focusedRole?.location && buildMapUrl(focusedRole.location) && (
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger>
+                        <div
+                          className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2 w-full gap-2 hover:bg-primary/5 hover:border-primary/20 mt-4 transition-all group cursor-pointer"
                           onClick={() => {
                             const mapUrl = buildMapUrl(focusedRole.location!);
                             if (mapUrl) {
@@ -393,15 +504,22 @@ export default function Profile() {
                             }
                           }}
                         >
-                          <MapPin className="h-4 w-4" />
-                          View in Map
-                        </Button>
-                      )}
-                  </div>
-                </div>
+                          <MapPin className="h-4 w-4 text-primary group-hover:scale-110 transition-transform" />
+                          <span>View in Map</span>
+                          <span className="sr-only">
+                            View location in interactive map
+                          </span>
+                        </div>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        View this location in the interactive map
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                )}
               </div>
-            </CardContent>
-          </Card>
+            </div>
+          </div>
         </motion.div>
 
         {/* Role History Section */}
@@ -439,13 +557,41 @@ export default function Profile() {
                       can request an update to this profile.
                     </p>
                     <div className="mt-auto">
-                      <Button
-                        className="w-full bg-primary hover:bg-primary/90 shadow-md hover:shadow-lg transition-all"
-                        size="lg"
-                      >
-                        <RefreshCw className="mr-2 h-4 w-4" />
-                        Request Profile Update
-                      </Button>
+                      <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                          <Button
+                            className="w-full bg-primary hover:bg-primary/90 shadow-md hover:shadow-lg transition-all"
+                            size="lg"
+                            disabled={isRequestingDataUpdate}
+                          >
+                            <RefreshCw className="mr-2 h-4 w-4" />
+                            Request Profile Update
+                          </Button>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent>
+                          <AlertDialogHeader>
+                            <AlertDialogTitle>
+                              Request Profile Update
+                            </AlertDialogTitle>
+                            <AlertDialogDescription>
+                              This will request an update of your profile data
+                              from LinkedIn. The update process may take a few
+                              minutes to complete.
+                            </AlertDialogDescription>
+                          </AlertDialogHeader>
+                          <AlertDialogFooter>
+                            <AlertDialogCancel>Cancel</AlertDialogCancel>
+                            <AlertDialogAction
+                              onClick={handleRequestDataUpdate}
+                              className="bg-primary text-primary-foreground hover:bg-primary/90"
+                            >
+                              {isRequestingDataUpdate
+                                ? "Requesting..."
+                                : "Confirm Update"}
+                            </AlertDialogAction>
+                          </AlertDialogFooter>
+                        </AlertDialogContent>
+                      </AlertDialog>
                     </div>
                   </CardContent>
                 </Card>
@@ -472,14 +618,42 @@ export default function Profile() {
                       our database.
                     </p>
                     <div className="mt-auto">
-                      <Button
-                        variant="destructive"
-                        className="w-full shadow-md hover:shadow-lg transition-all"
-                        size="lg"
-                      >
-                        <Trash2 className="mr-2 h-4 w-4" />
-                        Request Account Deletion
-                      </Button>
+                      <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                          <Button
+                            variant="destructive"
+                            className="w-full shadow-md hover:shadow-lg transition-all"
+                            size="lg"
+                            disabled={isDeletingProfile}
+                          >
+                            <Trash2 className="mr-2 h-4 w-4" />
+                            Request Account Deletion
+                          </Button>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent>
+                          <AlertDialogHeader>
+                            <AlertDialogTitle>
+                              Are you absolutely sure?
+                            </AlertDialogTitle>
+                            <AlertDialogDescription>
+                              This action cannot be undone. This will
+                              permanently delete your account and remove all
+                              your data from our servers.
+                            </AlertDialogDescription>
+                          </AlertDialogHeader>
+                          <AlertDialogFooter>
+                            <AlertDialogCancel>Cancel</AlertDialogCancel>
+                            <AlertDialogAction
+                              onClick={handleDeleteProfile}
+                              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                            >
+                              {isDeletingProfile
+                                ? "Deleting..."
+                                : "Delete Account"}
+                            </AlertDialogAction>
+                          </AlertDialogFooter>
+                        </AlertDialogContent>
+                      </AlertDialog>
                     </div>
                   </CardContent>
                 </Card>
