@@ -125,58 +125,23 @@ function AnalyticsContent() {
   }, [searchParams, companyOptions]);
 
   const [filters, setFilters] = useState<FilterState>(initialFilters);
+  const [initializedFromURL, setInitializedFromURL] = useState(false);
 
   useEffect(() => {
-    if (companyOptions) {
+    if (companyOptions && !initializedFromURL) {
       setFilters(initializeFiltersFromURL());
+      setInitializedFromURL(true);
     }
   }, [companyOptions, initializeFiltersFromURL]);
-
-  const updateURL = useCallback(
-    (newFilters: FilterState) => {
-      const companyIds = newFilters.companyIds;
-      if (companyIds && companyIds.length > 0 && companyOptions) {
-        const companies = companyIds
-          .map((id) => companyOptions.find((c) => c.id === id))
-          .filter((company) => company !== undefined)
-          .map((company) => company!.name.toLowerCase());
-
-        if (companies.length > 0) {
-          const params = new URLSearchParams();
-          params.set("company", companies.join(","));
-          const newURL = `${window.location.pathname}${
-            params.toString() ? "?" + params.toString() : ""
-          }`;
-          router.push(newURL);
-        }
-      } else {
-        router.push(window.location.pathname);
-      }
-    },
-    [router, companyOptions]
-  );
 
   const handleFiltersChange = useCallback(
     (newFilters: FilterState) => {
       setFilters(newFilters);
-
-      const onlyCompaniesChanged = Object.entries(newFilters).every(
-        ([key, value]) => {
-          if (key === "companyIds") return true;
-          if (Array.isArray(value)) return value.length === 0;
-          if (typeof value === "boolean")
-            return value === initialFilters[key as keyof FilterState];
-          return !value;
-        }
-      );
-
-      if (onlyCompaniesChanged) {
-        updateURL(newFilters);
-      } else {
-        router.push(window.location.pathname);
+      if (searchParams.toString()) {
+        router.replace(window.location.pathname);
       }
     },
-    [updateURL, router]
+    [router, searchParams]
   );
 
   const processedDateRange = useMemo(() => {

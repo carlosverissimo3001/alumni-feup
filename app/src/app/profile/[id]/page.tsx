@@ -478,10 +478,10 @@ export default function Profile() {
                       ? `${profile.location.city}, ${profile.location.country}`
                       : "Location not specified"}
                   </span>
-                  {focusedRole?.location?.countryCode && (
+                  {profile?.location?.countryCode && (
                     <Image
-                      src={`https://flagcdn.com/${focusedRole.location.countryCode.toLowerCase()}.svg`}
-                      alt={focusedRole.location.country || ""}
+                      src={`https://flagcdn.com/${profile.location.countryCode.toLowerCase()}.svg`}
+                      alt={profile.location.country || ""}
                       className="w-8 h-5 rounded shadow-sm"
                       width={32}
                       height={20}
