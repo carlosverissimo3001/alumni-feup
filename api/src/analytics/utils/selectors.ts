@@ -53,6 +53,7 @@ export const jobClassificationSelect = {
   },
   wasAcceptedByUser: true,
   wasModifiedByUser: true,
+  metadata: true,
 } satisfies Prisma.JobClassificationSelect;
 
 export const roleSelect = {
