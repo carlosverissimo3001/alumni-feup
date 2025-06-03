@@ -26,12 +26,10 @@ from app.schemas.location import LocationAgentState, LocationInput, LocationResu
 from app.services.coordinates import coordinates_service
 from app.utils.alumni_db import find_by_id, update_alumni
 from app.utils.company_db import get_company_by_id, update_company
+from app.utils.consts import REMOTE_COUNTRY_CODE, REMOTE_LOCATION_ID
 from app.utils.location_db import create_location, get_locations_by_country_code
 from app.utils.prompts import RESOLVE_GEO_PROMPT, RESOLVE_LOCATION_PROMPT
 from app.utils.role_db import get_role_by_id, update_role
-
-REMOTE_LOCATION_ID = "15045675-0782-458b-9bb7-02567ac246fd"
-REMOTE_COUNTRY_CODE = "REMOTE"
 
 logger = logging.getLogger(__name__)
 

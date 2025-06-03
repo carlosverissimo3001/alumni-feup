@@ -24,7 +24,7 @@ from app.utils.alumni_db import (
     update_alumni,
 )
 from app.utils.company_db import get_company_by_linkedin_url, insert_company
-from app.utils.consts import NULL_ISLAND_ID
+from app.utils.consts import REMOTE_LOCATION_ID
 from app.utils.http_client import HTTPClient
 from app.utils.location_db import get_location
 from app.utils.misc.string import sanitize_linkedin_url
@@ -147,7 +147,7 @@ class LinkedInService:
         country_code = profile_data.country
 
         # All are fields null? Let's put this person in the middle of the oceandels
-        location_id = NULL_ISLAND_ID
+        location_id = REMOTE_LOCATION_ID
         if city or country or country_code:
             location = get_location(city, country, country_code, db)
 

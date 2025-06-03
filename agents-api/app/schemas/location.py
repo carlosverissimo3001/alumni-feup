@@ -39,9 +39,9 @@ class AlumniLocationInput(LocationInput):
     type: LocationType = LocationType.ALUMNI
     # # https://nubela.co/proxycurl/docs#people-api-person-profile-endpoint
     alumni_id: str = Field(..., description="The alumni ID to resolved the location for")
-    country_code: str = Field(..., description="The country code of the location", example="PT")
-    city: str = Field(..., description="The city of the location", example="Porto")
-    country: str = Field(..., description="The country of the location", example="Portugal")
+    country_code: Optional[str] = Field(None, description="The country code of the location", example="PT")
+    city: Optional[str] = Field(None, description="The city of the location", example="Porto")
+    country: Optional[str] = Field(None, description="The country of the location", example="Portugal")
 
 
 class RoleLocationInput(LocationInput):

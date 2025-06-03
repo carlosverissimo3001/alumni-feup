@@ -18,6 +18,9 @@ export const useUpdateClassification = ({ onSuccess }: Input) => {
     },
     onSuccess: (dto) => {
       queryClient.invalidateQueries({ queryKey: ["role", dto.id] });
+
+      // Force a refresh of the profile
+      queryClient.invalidateQueries({ queryKey: ["profile", dto.alumniId] });
       onSuccess?.();
     },
   });

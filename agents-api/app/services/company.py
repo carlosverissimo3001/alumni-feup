@@ -212,6 +212,7 @@ class CompanyService:
             company_logo = image_storage_service.upload_image(company_response.logo, company_id)
 
         # Create a task for location processing to be executed after company update
+        # If we have headquarters and country code, we can process the location
         if company_response.headquarters and company_response.country_code:
             input = CompanyLocationInput(
                 type=LocationType.COMPANY,
