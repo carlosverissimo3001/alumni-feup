@@ -195,24 +195,54 @@ class LinkedInService:
     async def update_profile_data(
         self,
         alumni_ids: Optional[List[str]] = None,
+        batch_size: int = 5,
     ):
         """
         Update the profile data for specified alumni or all alumni if none specified.
+        Processes updates in parallel batches for better performance.
 
         Args:
             alumni_ids: Optional list of alumni IDs to update. If None, updates all alumni.
+            batch_size: Number of profiles to process concurrently. Defaults to 5.
         """
         # Get alumni from database based on whether specific IDs were provided
         ids = alumni_ids if alumni_ids else [alumni.id for alumni in find_all(db)]
 
-        for alumni_id in ids:
-            # Delete existing data before extraction
-            logger.info(f"Deleting existing data for {alumni_id}")
-            delete_profile_data(alumni_id, db)
+        async def process_single_alumni(alumni_id: str):
+            try:
+                # Delete existing data before extraction
+                logger.info(f"Deleting existing data for {alumni_id}")
+                delete_profile_data(alumni_id, db)
 
-            # Extract new data
-            logger.info(f"Extracting LinkedIn data for {alumni_id}")
-            await self.extract_profile_data(alumni_id)
+                # Extract new data
+                logger.info(f"Extracting LinkedIn data for {alumni_id}")
+                await self.extract_profile_data(alumni_id)
+            except Exception as e:
+                logger.error(f"Error processing alumni {alumni_id}: {str(e)}")
+                # Don't raise the exception to allow other profiles to continue processing
+                return False
+            return True
+
+        # Process alumni in batches
+        results = []
+        for i in range(0, len(ids), batch_size):
+            batch = ids[i : i + batch_size]
+            logger.info(f"Processing batch of {len(batch)} alumni")
+
+            # Process batch concurrently
+            batch_results = await asyncio.gather(
+                *[process_single_alumni(alumni_id) for alumni_id in batch], return_exceptions=False
+            )
+            results.extend(batch_results)
+
+        # Log summary
+        successful = sum(1 for r in results if r)
+        failed = len(results) - successful
+        logger.info(
+            f"Profile update complete. Successfully updated {successful} profiles, {failed} failed."
+        )
+
+        return {"total": len(results), "successful": successful, "failed": failed}
 
 
 linkedin_service = LinkedInService()
