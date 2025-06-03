@@ -6,7 +6,7 @@ import {
 } from '../dto/alumni-profile.dto';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { Location } from '@/entities';
-import { roleSelect } from '@/analytics/utils/selectors';
+import { locationSelect, roleSelect } from '@/analytics/utils/selectors';
 import { graduationSelect } from '@/analytics/utils/selectors';
 import { AlumniAnalyticsEntity } from '@/analytics/entities/alumni.entity';
 import { mapAlumniFromPrisma } from '@/analytics/utils/alumni.mapper';
@@ -16,11 +16,17 @@ import {
   EvaluateSeniorityLevelDto,
   EvaluateClassificationDto,
   UpdateClassificationDto,
+  UpdateSeniorityLevelDto,
 } from '../dto';
+import { AgentsApiService } from '@/agents-api/services/agents-api.service';
+import { LINKEDIN_OPERATION } from '@/consts';
 
 @Injectable()
 export class AlumniProfileService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly agentsApiService: AgentsApiService,
+  ) {}
 
   async getProfile(id: string): Promise<AlumniAnalyticsEntity> {
     const alumni = await this.prisma.alumni.findUniqueOrThrow({
@@ -35,6 +41,9 @@ export class AlumniProfileService {
         },
         Graduations: {
           select: graduationSelect,
+        },
+        Location: {
+          select: locationSelect,
         },
       },
     });
@@ -156,8 +165,6 @@ export class AlumniProfileService {
       select: roleSelect,
     });
 
-    console.log(role);
-
     // Get the current classification
     const classification = role.JobClassification;
     if (!classification) {
@@ -165,23 +172,65 @@ export class AlumniProfileService {
     }
 
     // Update the classification to point to the new ESCO classification
-    await this.prisma.role.update({
-      where: { id },
+    await this.prisma.jobClassification.update({
+      where: { id: classification.id },
       data: {
-        JobClassification: {
-          update: {
-            where: { id: classification.escoClassificationId },
-            data: {
-              escoClassificationId,
-              // We assume that if the user updates the classification, it was accepted by the user
-              wasAcceptedByUser: true,
-            },
-          },
-        },
+        escoClassificationId,
+        wasModifiedByUser: true,
       },
     });
 
+    // Refetch the updated classification
+
+    // refetch the updated role
+    const updatedRole = await this.prisma.role.findUniqueOrThrow({
+      where: { id },
+      select: roleSelect,
+    });
+
     // Return the updated role
-    return mapRoleFromPrisma(role);
+    return mapRoleFromPrisma(updatedRole);
+  }
+
+  async updateSeniorityLevel(
+    id: string,
+    params: UpdateSeniorityLevelDto,
+  ): Promise<RoleAnalyticsEntity> {
+    const { seniorityLevel } = params;
+
+    const updatedRole = await this.prisma.role.update({
+      select: roleSelect,
+      where: { id },
+      data: {
+        seniorityLevel,
+        wasSeniorityLevelModifiedByUser: true,
+      },
+    });
+    return mapRoleFromPrisma(updatedRole);
+  }
+
+  /**
+   * Triggers a LinkedIn operation to update the data for an alumni
+   * @param id - The ID of the alumni to update
+   * @returns A success message, as the update is triggered asynchronously
+   */
+  async requestDataUpdate(id: string): Promise<string> {
+    await this.agentsApiService.triggerLinkedinOperation(
+      LINKEDIN_OPERATION.UPDATE,
+      [id],
+    );
+    return 'Data update requested';
+  }
+
+  /**
+   * Deletes an alumni
+   * @param id - The ID of the alumni to delete
+   * @returns A success message, as the alumni is deleted asynchronously
+   */
+  async delete(id: string): Promise<string> {
+    await this.prisma.alumni.delete({
+      where: { id },
+    });
+    return 'Alumni deleted';
   }
 }

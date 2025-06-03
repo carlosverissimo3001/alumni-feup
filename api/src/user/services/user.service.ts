@@ -17,7 +17,6 @@ import { UserRepository, InviteRepository } from '../repositories';
 import {
   CheckPermissionDto,
   CheckPermissionResponse,
-  DeleteUserDto,
   LinkedinAuthDto,
   UserAuthResponse,
   VerifyEmailDto,
@@ -244,10 +243,19 @@ export class UserService {
     return { hasPermission };
   }
 
-  async deleteUser(body: DeleteUserDto): Promise<void> {
-    await this.userRepository.deleteUser(body.id);
+  /**
+   * Deletes a user, and its associated data (using database cascade)
+   * @param body - The body of the request
+   */
+  async deleteUser(id: string): Promise<void> {
+    await this.userRepository.deleteUser(id);
   }
 
+  /**
+   * Invites a user to have early access to the platform
+   * @param email - The email of the user to invite
+   * @returns The invite entity
+   */
   async inviteUser(email: string): Promise<InviteEntity> {
     return await this.inviteRepository.create(email);
   }

@@ -18,8 +18,14 @@ export class JobClassificationAnalyticsEntity {
   escoClassification: EscoClassificationAnalyticsEntity;
 
   @ApiPropertyOptional({
-    description: 'Whether the seniority level was accepted by the user',
+    description: 'Whether the job classification was accepted by the user',
     type: Boolean,
   })
   wasAcceptedByUser?: boolean;
+
+  @ApiPropertyOptional({
+    description: 'Whether the job classification was modified by the user',
+    type: Boolean,
+  })
+  wasModifiedByUser?: boolean;
 }

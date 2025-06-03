@@ -44,6 +44,7 @@ export const escoClassificationSelect = {
 } satisfies Prisma.EscoClassificationSelect;
 
 export const jobClassificationSelect = {
+  id: true,
   roleId: true,
   escoClassificationId: true,
   confidence: true,
@@ -51,6 +52,7 @@ export const jobClassificationSelect = {
     select: escoClassificationSelect,
   },
   wasAcceptedByUser: true,
+  wasModifiedByUser: true,
 } satisfies Prisma.JobClassificationSelect;
 
 export const roleSelect = {
@@ -61,6 +63,7 @@ export const roleSelect = {
   isCurrent: true,
   seniorityLevel: true,
   wasSeniorityLevelAcceptedByUser: true,
+  wasSeniorityLevelModifiedByUser: true,
   Location: {
     select: locationSelect,
   },
