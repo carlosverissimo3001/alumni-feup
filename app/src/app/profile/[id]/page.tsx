@@ -496,7 +496,7 @@ export default function Profile() {
                     <Tooltip>
                       <TooltipTrigger>
                         <div
-                          className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2 w-full gap-2 hover:bg-primary/5 hover:border-primary/20 mt-4 transition-all group cursor-pointer"
+                          className="inline-flex w-1/2 items-center justify-center whitespace-nowrap rounded-md text-sm font-medium border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 gap-2 cursor-pointer"
                           onClick={() => {
                             const mapUrl = buildMapUrl(focusedRole.location!);
                             if (mapUrl) {
