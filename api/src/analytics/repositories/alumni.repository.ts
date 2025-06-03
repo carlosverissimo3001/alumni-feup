@@ -4,7 +4,11 @@ import { buildWhereClause } from '../utils/query-builder';
 import { Injectable } from '@nestjs/common';
 import { mapAlumniFromPrisma } from '../utils/alumni.mapper';
 import { AlumniAnalyticsEntity } from '../entities/alumni.entity';
-import { graduationSelect, roleSelect } from '../utils/selectors';
+import {
+  graduationSelect,
+  locationSelect,
+  roleSelect,
+} from '../utils/selectors';
 
 @Injectable()
 export class AlumniAnalyticsRepository {

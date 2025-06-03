@@ -25,6 +25,8 @@ from app.schemas.job_classification import (
     JobClassificationAgentState,
     JobClassificationRoleInput,
 )
+from app.schemas.seniority import AlumniSeniorityParams
+from app.services.seniority import seniority_service
 from app.utils.agents.esco_reference import (
     get_detailed_esco_classification,
     search_esco_classifications,
@@ -137,28 +139,27 @@ class JobClassificationAgent:
     def get_best_esco_matches_db(
         self, state: JobClassificationAgentState
     ) -> JobClassificationAgentState:
-        with self.classification_time.time():
-            query = state["role"].title
-            if state["role"].description:
-                query += f" {state['role'].description}"
+        query = state["role"].title
+        if state["role"].description:
+            query += f" {state['role'].description}"
 
-            cached_results = self._get_from_cache(query)
-            if cached_results:
-                state["esco_results_from_embeddings"] = cached_results
-                return state
-
-            try:
-                esco_results = search_esco_classifications(query)
-                state["esco_results_from_embeddings"] = esco_results
-                if esco_results:
-                    self._set_in_cache(query, esco_results)
-            except Exception as e:
-                logger.error(f"Error searching ESCO classifications: {str(e)}")
-                state["esco_results_from_embeddings"] = []
-                state["error"] = f"Failed to search ESCO classifications: {str(e)}"
-
-            state["processing_time"] = time.time() - state.get("processing_time", 0.0)
+        cached_results = self._get_from_cache(query)
+        if cached_results:
+            state["esco_results_from_embeddings"] = cached_results
             return state
+
+        try:
+            esco_results = search_esco_classifications(query)
+            state["esco_results_from_embeddings"] = esco_results
+            if esco_results:
+                self._set_in_cache(query, esco_results)
+        except Exception as e:
+            logger.error(f"Error searching ESCO classifications: {str(e)}")
+            state["esco_results_from_embeddings"] = []
+            state["error"] = f"Failed to search ESCO classifications: {str(e)}"
+
+        state["processing_time"] = time.time() - state.get("processing_time", 0.0)
+        return state
 
     async def validate_esco_results_batch(
         self, states: List[JobClassificationAgentState]
@@ -239,7 +240,7 @@ class JobClassificationAgent:
             logger.error(f"Error in batch update classifications: {str(e)}")
 
     async def _process_roles_batch(
-        self, roles: List[JobClassificationRoleInput]
+        self, roles: List[JobClassificationRoleInput], alumni_id: str
     ) -> List[JobClassificationAgentState]:
         states = [
             JobClassificationAgentState(
@@ -260,6 +261,12 @@ class JobClassificationAgent:
         states = [self.get_best_esco_matches_db(state) for state in states]
         states = await self.validate_esco_results_batch(states)
         await self.batch_update_classifications(states)
+
+        # Let the seniority agent handle the rest of the workload
+        asyncio.create_task(
+            seniority_service.request_alumni_seniority(AlumniSeniorityParams(alumni_ids=alumni_id))
+        )
+
         return states
 
 

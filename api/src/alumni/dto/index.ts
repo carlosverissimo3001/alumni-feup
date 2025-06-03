@@ -6,3 +6,4 @@ export { AlumniGeoJSONResponse } from './alumni-geojson.dto';
 export { EvaluateSeniorityLevelDto } from './evaluate-seniority-level.dto';
 export { EvaluateClassificationDto } from './evaluate-classification.dto';
 export { UpdateClassificationDto } from './update-classification.dto';
+export { UpdateSeniorityLevelDto } from './update-seniority.dto';

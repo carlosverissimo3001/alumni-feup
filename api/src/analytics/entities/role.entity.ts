@@ -48,4 +48,10 @@ export class RoleAnalyticsEntity {
     type: Boolean,
   })
   wasSeniorityLevelAcceptedByUser?: boolean;
+
+  @ApiPropertyOptional({
+    description: 'Whether the seniority level was modified by the user',
+    type: Boolean,
+  })
+  wasSeniorityLevelModifiedByUser?: boolean;
 }
