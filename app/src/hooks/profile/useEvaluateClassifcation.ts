@@ -1,7 +1,6 @@
-import { useMutation } from "@tanstack/react-query";
 import NestAPI from "@/api";
 import { AlumniControllerEvaluateClassificationRequest } from "@/sdk";
-import { useQueryClient } from "@tanstack/react-query";
+import { useQueryClient, useMutation } from "@tanstack/react-query";
 
 type Input = {
   onSuccess?: () => void | Promise<void>;

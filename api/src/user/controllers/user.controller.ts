@@ -1,9 +1,16 @@
-import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  HttpCode,
+  HttpStatus,
+  Post,
+  Delete,
+  Param,
+} from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import {
   CheckPermissionDto,
   CheckPermissionResponse,
-  DeleteUserDto,
   LinkedinAuthDto,
   UserAuthResponse,
   VerifyEmailDto,
@@ -85,14 +92,14 @@ export class UserController {
     return this.userService.checkPermission(body);
   }
 
-  @Post('delete-user')
+  @Delete(':id')
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Delete a user' })
   @ApiResponse({
     status: HttpStatus.OK,
     description: 'User deleted successfully',
   })
-  async deleteUser(@Body() body: DeleteUserDto): Promise<void> {
-    return this.userService.deleteUser(body);
+  async deleteUser(@Param('id') id: string): Promise<void> {
+    return this.userService.deleteUser(id);
   }
 }

@@ -38,6 +38,7 @@ type RawJobClassification = {
   confidence?: number | null;
   EscoClassification: RawEscoClassification;
   wasAcceptedByUser?: boolean | null;
+  wasModifiedByUser?: boolean | null;
 };
 
 type RawRole = {
@@ -51,6 +52,7 @@ type RawRole = {
   JobClassification?: RawJobClassification | null;
   Company: RawCompany;
   wasSeniorityLevelAcceptedByUser?: boolean | null;
+  wasSeniorityLevelModifiedByUser?: boolean | null;
   RoleRaw: RawRoleRaw | null;
 };
 
@@ -70,6 +72,7 @@ type RawAlumni = {
   profilePictureUrl: string | null;
   Roles: RawRole[];
   Graduations: RawGraduation[];
+  Location?: RawLocation | null;
 };
 
 type RawCompany = {
@@ -169,6 +172,7 @@ export const mapJobClassificationFromPrisma = (
       jobClassification.EscoClassification,
     ),
     wasAcceptedByUser: jobClassification.wasAcceptedByUser ?? undefined,
+    wasModifiedByUser: jobClassification.wasModifiedByUser ?? undefined,
   };
 };
 
@@ -199,6 +203,8 @@ export const mapRoleFromPrisma = (role: RawRole): RoleAnalyticsEntity => {
     seniorityLevel: role.seniorityLevel,
     wasSeniorityLevelAcceptedByUser:
       role.wasSeniorityLevelAcceptedByUser ?? undefined,
+    wasSeniorityLevelModifiedByUser:
+      role.wasSeniorityLevelModifiedByUser ?? undefined,
     roleRaw: mapRoleRawFromPrisma(role.RoleRaw),
   };
 };
@@ -260,5 +266,6 @@ export const mapAlumniFromPrisma = (
     profilePictureUrl: alumni.profilePictureUrl ?? undefined,
     roles: alumni.Roles.map(mapRoleFromPrisma),
     graduations: alumni.Graduations.map(mapGraduationFromPrisma),
+    location: mapLocationFromPrisma(alumni.Location),
   };
 };

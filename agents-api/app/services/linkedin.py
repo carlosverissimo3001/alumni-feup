@@ -6,6 +6,7 @@ from app.agents.location import location_agent
 from app.core.config import settings
 from app.db import get_db
 from app.db.models import Alumni, Company
+from app.schemas.job_classification import AlumniJobClassificationParams
 from app.schemas.linkedin import (
     LinkedInProfileResponse,
     convert_to_linkedin_profile_response,
@@ -60,12 +61,12 @@ class LinkedInService:
             alumni_id: ID of the alumni for linking data
 
         """
-        #logger.info(f"Extracting LinkedIn data for {alumni_id}")
+        # logger.info(f"Extracting LinkedIn data for {alumni_id}")
 
         # Get the alumni from the database
         alumni = find_by_id(alumni_id, db)
         if not alumni or not alumni.linkedin_url:
-            #logger.error(f"Alumni with id {alumni_id} not found or has no LinkedIn URL")
+            # logger.error(f"Alumni with id {alumni_id} not found or has no LinkedIn URL")
             return
 
         profile_url = alumni.linkedin_url
@@ -97,7 +98,7 @@ class LinkedInService:
         profile_data: LinkedInProfileResponse,
         alumni_id: str,
     ) -> None:
-        #logger.info(f"Processing profile data for alumni with id {alumni_id}")
+        # logger.info(f"Processing profile data for alumni with id {alumni_id}")
 
         # First, let's parse the roles, to understand if we need to extract company data
         for role in profile_data.experiences:
@@ -108,10 +109,10 @@ class LinkedInService:
                 db_company = get_company_by_linkedin_url(sanitized_url, db)
                 # All good, no need to call the API
                 if db_company:
-                    #logger.info(f"Company {sanitized_url} found in the database")
+                    # logger.info(f"Company {sanitized_url} found in the database")
                     company_id = db_company.id
                 else:
-                    #logger.info(f"Company {sanitized_url} not found in the database")
+                    # logger.info(f"Company {sanitized_url} not found in the database")
                     # We insert the company before we call the API, so that we can link the role to the company # noqa: E501
                     db_company = insert_company(
                         Company(
@@ -184,7 +185,11 @@ class LinkedInService:
 
         # We'll now offload the role classification to a background task, using the agent
         # Note that we do NOT wait for this to finish, as it can take a while
-        asyncio.create_task(job_classification_service.classify_roles_for_alumni(alumni_id))
+        asyncio.create_task(
+            job_classification_service.request_alumni_classification(
+                params=AlumniJobClassificationParams(alumni_ids=alumni_id)
+            )
+        )
 
         # We'll also use the location agent to update the alumni location
         asyncio.create_task(role_service.resolve_role_location_for_alumni(alumni_id))
@@ -209,9 +214,7 @@ class LinkedInService:
 
             # Extract new data
             logger.info(f"Extracting LinkedIn data for {alumni_id}")
-            await self.extract_profile_data(
-                alumni_id
-            )
+            await self.extract_profile_data(alumni_id)
 
 
 linkedin_service = LinkedInService()

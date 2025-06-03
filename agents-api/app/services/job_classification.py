@@ -23,7 +23,6 @@ class JobClassificationService:
 
     async def classify_roles_for_alumni(self, alumni_id: str):
         try:
-            self.active_classifications.inc()
             input_data = get_extended_roles_by_alumni_id(alumni_id, db)
             if not input_data.roles:
                 return
@@ -32,14 +31,12 @@ class JobClassificationService:
 
             for i in range(0, len(roles), self.MAX_CONCURRENT):
                 batch = roles[i : i + self.MAX_CONCURRENT]
-                await self._process_roles_batch(batch)
+                await job_classification_agent._process_roles_batch(batch, alumni_id)
                 if i + self.MAX_CONCURRENT < len(roles):
                     await asyncio.sleep(0.1)
 
         except Exception as e:
             logger.error(f"Error classifying roles for alumni {alumni_id}: {str(e)}")
-        finally:
-            self.active_classifications.dec()
 
     async def request_alumni_classification(self, params: AlumniJobClassificationParams):
         """
@@ -64,7 +61,7 @@ class JobClassificationService:
             )
 
             tasks = [
-                asyncio.create_task(job_classification_agent.classify_roles_for_alumni(al.id))
+                asyncio.create_task(self.classify_roles_for_alumni(al.id))
                 for al in batch
             ]
             await asyncio.gather(*tasks)

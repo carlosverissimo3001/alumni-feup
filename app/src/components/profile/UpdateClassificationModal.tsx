@@ -5,6 +5,7 @@ import {
   DialogDescription,
   DialogContent,
   DialogHeader,
+  DialogFooter,
 } from "../ui/dialog";
 import { Button } from "../ui/button";
 import { TagIcon } from "lucide-react";
@@ -15,6 +16,8 @@ import { Combobox } from "../ui/combobox";
 import { useState } from "react";
 import { useFetchRole } from "@/hooks/role/useFetchRole";
 import { useRoleOptions } from "@/hooks/analytics/useRoleOptions";
+import { useUpdateClassification } from "@/hooks/profile/useUpdateClassification";
+import { useToast } from "@/hooks/misc/useToast";
 
 interface Props {
   roleId: string;
@@ -24,17 +27,43 @@ interface Props {
 export function UpdateClassificationModal({ roleId, trigger }: Props) {
   // State
   const [open, setOpen] = useState(false);
-  
+  const { toast } = useToast();
+
+  // Mutations
+  const { mutate: updateClassification, isPending } = useUpdateClassification({
+    onSuccess: () => {
+      toast({
+        title: "Classification updated",
+        variant: "success",
+        description: "Your job classification has been updated",
+      });
+      setOpen(false);
+    },
+  });
+
   // Hooks
   const { data: role } = useFetchRole(roleId);
   const { data: escoOptionsData } = useRoleOptions({ enabled: open });
   const [selectedEsco, setSelectedEsco] = useState<string | null>(
     role?.jobClassification?.escoClassificationId || null
   );
+
   if (!role) return null;
 
   const handleOpenChange = (isOpen: boolean) => {
     setOpen(isOpen);
+    if (!isOpen) {
+      // Reset selection when closing
+      setSelectedEsco(role?.jobClassification?.escoClassificationId || null);
+    }
+  };
+
+  const handleUpdateClassification = () => {
+    if (!selectedEsco) return;
+    updateClassification({
+      id: roleId,
+      updateClassificationDto: { escoClassificationId: selectedEsco },
+    });
   };
 
   const escoOptions = escoOptionsData?.map((option) => ({
@@ -156,6 +185,27 @@ export function UpdateClassificationModal({ roleId, trigger }: Props) {
             />
           </div>
         </div>
+
+        <DialogFooter className="mt-6">
+          <Button
+            variant="outline"
+            onClick={() => setOpen(false)}
+            className="w-full sm:w-auto"
+          >
+            Cancel
+          </Button>
+          <Button
+            onClick={handleUpdateClassification}
+            className="w-full sm:w-auto"
+            disabled={
+              !selectedEsco ||
+              selectedEsco === role.jobClassification?.escoClassificationId ||
+              isPending
+            }
+          >
+            {isPending ? "Updating..." : "Update Classification"}
+          </Button>
+        </DialogFooter>
       </DialogContent>
     </Dialog>
   );

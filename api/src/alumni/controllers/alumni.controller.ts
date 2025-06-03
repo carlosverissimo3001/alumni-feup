@@ -1,29 +1,57 @@
+import { AlumniAnalyticsEntity } from '@/analytics/entities/alumni.entity';
+import { RoleAnalyticsEntity } from '@/analytics/entities/role.entity';
 import { Alumni, GeoJSONFeatureCollection } from '@/entities';
 import { AlumniExtended } from '@/entities/alumni.entity';
 import {
+  ArgumentsHost,
   Body,
+  Catch,
   Controller,
+  ExceptionFilter,
   Get,
   HttpCode,
   HttpStatus,
   Param,
   Post,
   Query,
+  UseFilters,
 } from '@nestjs/common';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiOkResponse,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
+import { Throttle, ThrottlerException } from '@nestjs/throttler';
+import { UPDATE_REQUEST_THROTTLE_TTL } from '../consts/consts';
 import {
   CreateAlumniDto,
+  EvaluateSeniorityLevelDto,
   GetGeoJSONDto,
   MarkAsReviewedDto,
-  EvaluateSeniorityLevelDto,
   UpdateClassificationDto,
+  UpdateSeniorityLevelDto,
 } from '../dto';
-import { AlumniProfileService } from '../services/alumni-profile.service';
-import { AlumniService } from '../services/alumni.service';
-import { AlumniAnalyticsEntity } from '@/analytics/entities/alumni.entity';
-import { RoleAnalyticsEntity } from '@/analytics/entities/role.entity';
 import { AlumniPastLocationsAndCompaniesDto } from '../dto/alumni-profile.dto';
 import { EvaluateClassificationDto } from '../dto/evaluate-classification.dto';
+import { AlumniProfileService } from '../services/alumni-profile.service';
+import { AlumniService } from '../services/alumni.service';
+
+@Catch(ThrottlerException)
+export class ThrottlerExceptionFilter implements ExceptionFilter {
+  catch(exception: ThrottlerException, host: ArgumentsHost) {
+    const ctx = host.switchToHttp();
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+    const response = ctx.getResponse();
+
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
+    response.status(HttpStatus.TOO_MANY_REQUESTS).json({
+      statusCode: HttpStatus.TOO_MANY_REQUESTS,
+      message:
+        'You can only request a data update once per week. Please try again later.',
+    });
+  }
+}
 
 @ApiTags('V1')
 @Controller('alumni')
@@ -187,5 +215,36 @@ export class AlumniController {
     @Body() body: UpdateClassificationDto,
   ): Promise<RoleAnalyticsEntity> {
     return this.alumniProfileService.updateJobClassification(id, body);
+  }
+
+  @Post('role/update-seniority-level/:id')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({
+    summary: 'Update the seniority level of a role',
+    description: 'Update the seniority level of a role',
+  })
+  @ApiResponse({
+    description: 'Returns the role with the updated seniority level',
+    type: RoleAnalyticsEntity,
+  })
+  async updateSeniorityLevel(
+    @Param('id') id: string,
+    @Body() body: UpdateSeniorityLevelDto,
+  ): Promise<RoleAnalyticsEntity> {
+    return this.alumniProfileService.updateSeniorityLevel(id, body);
+  }
+
+  @Post('request-data-update/:id')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({
+    summary: 'Request a data update for an alumni',
+  })
+  @ApiOkResponse({
+    description: 'A success message',
+  })
+  @UseFilters(ThrottlerExceptionFilter)
+  @Throttle({ default: { limit: 5, ttl: UPDATE_REQUEST_THROTTLE_TTL } })
+  async requestDataUpdate(@Param('id') id: string): Promise<string> {
+    return this.alumniProfileService.requestDataUpdate(id);
   }
 }

@@ -103,7 +103,10 @@ export default function CareerTimeline({ roles }: CareerTimelineProps) {
           variant="ghost"
           size="icon"
           className="text-primary hover:text-primary/80 hover:bg-transparent"
-          onClick={() => setOpen((open) => !open)}
+          onClick={(e) => {
+            e.stopPropagation();
+            setOpen((open) => !open);
+          }}
         >
           <ChevronDown
             className={clsx(

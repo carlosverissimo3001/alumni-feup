@@ -284,20 +284,19 @@
         ]
       }
     },
-    "/user/delete-user": {
-      "post": {
+    "/user/{id}": {
+      "delete": {
         "operationId": "UserController_deleteUser",
-        "parameters": [],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/DeleteUserDto"
-              }
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
             }
           }
-        },
+        ],
         "responses": {
           "200": {
             "description": "User deleted successfully"
@@ -712,6 +711,72 @@
           }
         },
         "summary": "Update the classification of a role",
+        "tags": [
+          "V1"
+        ]
+      }
+    },
+    "/alumni/role/update-seniority-level/{id}": {
+      "post": {
+        "description": "Update the seniority level of a role",
+        "operationId": "AlumniController_updateSeniorityLevel",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateSeniorityLevelDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "default": {
+            "description": "Returns the role with the updated seniority level",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RoleAnalyticsEntity"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Update the seniority level of a role",
+        "tags": [
+          "V1"
+        ]
+      }
+    },
+    "/alumni/request-data-update/{id}": {
+      "post": {
+        "operationId": "AlumniController_requestDataUpdate",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A success message"
+          }
+        },
+        "summary": "Request a data update for an alumni",
         "tags": [
           "V1"
         ]
@@ -5444,18 +5509,6 @@
           "hasPermission"
         ]
       },
-      "DeleteUserDto": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string",
-            "description": "The id of the user to delete"
-          }
-        },
-        "required": [
-          "id"
-        ]
-      },
       "Company": {
         "type": "object",
         "properties": {
@@ -6131,7 +6184,11 @@
           },
           "wasAcceptedByUser": {
             "type": "boolean",
-            "description": "Whether the seniority level was accepted by the user"
+            "description": "Whether the job classification was accepted by the user"
+          },
+          "wasModifiedByUser": {
+            "type": "boolean",
+            "description": "Whether the job classification was modified by the user"
           }
         },
         "required": [
@@ -6198,6 +6255,10 @@
           "wasSeniorityLevelAcceptedByUser": {
             "type": "boolean",
             "description": "Whether the seniority level was accepted by the user"
+          },
+          "wasSeniorityLevelModifiedByUser": {
+            "type": "boolean",
+            "description": "Whether the seniority level was modified by the user"
           }
         },
         "required": [
@@ -6374,6 +6435,14 @@
             "items": {
               "$ref": "#/components/schemas/GraduationAnalyticsEntity"
             }
+          },
+          "location": {
+            "description": "The location of the alumni",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/LocationAnalyticsEntity"
+              }
+            ]
           }
         },
         "required": [
@@ -6517,6 +6586,28 @@
         },
         "required": [
           "escoClassificationId"
+        ]
+      },
+      "UpdateSeniorityLevelDto": {
+        "type": "object",
+        "properties": {
+          "seniorityLevel": {
+            "type": "string",
+            "description": "The new seniority level",
+            "example": "INTERN",
+            "enum": [
+              "INTERN",
+              "ENTRY_LEVEL",
+              "ASSOCIATE",
+              "MID_SENIOR_LEVEL",
+              "DIRECTOR",
+              "EXECUTIVE",
+              "C_LEVEL"
+            ]
+          }
+        },
+        "required": [
+          "seniorityLevel"
         ]
       },
       "DataPointDto": {
