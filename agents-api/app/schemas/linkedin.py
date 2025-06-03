@@ -17,24 +17,11 @@ class LinkedInExtractProfileRequest(BaseModel):
 
     alumni_ids: List[str] = Field(..., description="List of alumni IDs to extract")
 
-    class Config:
-        json_schema_extra = {
-            "example": {
-                "alumni_ids": ["12345", "67890"]
-            }
-        }
 
 class LinkedInUpdateProfileRequest(BaseModel):
     """Schema for requesting LinkedIn profile data extraction."""
 
     alumni_ids: List[str] = Field(..., description="List of alumni IDs to update")
-
-    class Config:
-        json_schema_extra = {
-            "example": {
-                "alumni_ids": ["12345", "67890"]
-            }
-        }
 
 class ExperienceDate(BaseModel):
     """Schema for experience date."""
