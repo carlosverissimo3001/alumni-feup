@@ -25,7 +25,6 @@ import { GROUP_BY, LINKEDIN_OPERATION } from '@/consts';
 import { GeolocationService } from '@/geolocation/services/geolocation.service';
 import { AgentsApiService } from '@/agents-api/services/agents-api.service';
 import { parseNameParts, sanitizeLinkedinUrl } from '../utils';
-import { OtpService } from '@/otp/otp.service';
 import { AlumniExtended } from '@/entities/alumni.entity';
 import { Source } from '@prisma/client';
 
@@ -73,7 +72,6 @@ export class AlumniService {
     private readonly alumniRepository: AlumniRepository,
     private readonly logger: Logger,
     private readonly agentsApiService: AgentsApiService,
-    private readonly otpService: OtpService,
   ) {}
 
   async findAll(): Promise<Alumni[]> {

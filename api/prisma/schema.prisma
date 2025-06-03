@@ -150,6 +150,7 @@ model JobClassification {
   escoClassificationId String   @map("esco_classification_id")
   roleId               String   @unique @map("role_id")
   wasAcceptedByUser    Boolean? @map("was_accepted_by_user")
+  wasModifiedByUser    Boolean? @map("was_modified_by_user")
 
   confidence Float?
   modelUsed  String? @map("model_used")
@@ -223,6 +224,7 @@ model Role {
   locationId                      String?         @map("location_id")
   seniorityLevel                  SENIORITY_LEVEL @map("seniority_level")
   wasSeniorityLevelAcceptedByUser Boolean?        @map("was_seniority_level_accepted_by_user")
+  wasSeniorityLevelModifiedByUser Boolean?        @map("was_seniority_level_modified_by_user")
 
   startDate DateTime  @map("start_date") @db.Timestamptz(6)
   endDate   DateTime? @map("end_date") @db.Timestamptz(6)
