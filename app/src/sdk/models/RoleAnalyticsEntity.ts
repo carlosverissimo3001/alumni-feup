@@ -114,6 +114,12 @@ export interface RoleAnalyticsEntity {
      * @memberof RoleAnalyticsEntity
      */
     wasSeniorityLevelAcceptedByUser?: boolean;
+    /**
+     * Whether the seniority level was modified by the user
+     * @type {boolean}
+     * @memberof RoleAnalyticsEntity
+     */
+    wasSeniorityLevelModifiedByUser?: boolean;
 }
 
 
@@ -166,6 +172,7 @@ export function RoleAnalyticsEntityFromJSONTyped(json: any, ignoreDiscriminator:
         'jobClassification': json['jobClassification'] == null ? undefined : JobClassificationAnalyticsEntityFromJSON(json['jobClassification']),
         'roleRaw': json['roleRaw'] == null ? undefined : RoleRawAnalyticsEntityFromJSON(json['roleRaw']),
         'wasSeniorityLevelAcceptedByUser': json['wasSeniorityLevelAcceptedByUser'] == null ? undefined : json['wasSeniorityLevelAcceptedByUser'],
+        'wasSeniorityLevelModifiedByUser': json['wasSeniorityLevelModifiedByUser'] == null ? undefined : json['wasSeniorityLevelModifiedByUser'],
     };
 }
 
@@ -191,6 +198,7 @@ export function RoleAnalyticsEntityToJSONTyped(value?: RoleAnalyticsEntity | nul
         'jobClassification': JobClassificationAnalyticsEntityToJSON(value['jobClassification']),
         'roleRaw': RoleRawAnalyticsEntityToJSON(value['roleRaw']),
         'wasSeniorityLevelAcceptedByUser': value['wasSeniorityLevelAcceptedByUser'],
+        'wasSeniorityLevelModifiedByUser': value['wasSeniorityLevelModifiedByUser'],
     };
 }
 

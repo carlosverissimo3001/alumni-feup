@@ -36,7 +36,6 @@ import type {
   CreateCourseDto,
   CreateFacultyDto,
   CreateReviewDto,
-  DeleteUserDto,
   EvaluateClassificationDto,
   EvaluateSeniorityLevelDto,
   Faculty,
@@ -59,6 +58,7 @@ import type {
   SendFeedbackDto,
   SeniorityListResponseDto,
   UpdateClassificationDto,
+  UpdateSeniorityLevelDto,
   UploadExtractionDto,
   UserAuthResponse,
   VerifyEmailDto,
@@ -107,8 +107,6 @@ import {
     CreateFacultyDtoToJSON,
     CreateReviewDtoFromJSON,
     CreateReviewDtoToJSON,
-    DeleteUserDtoFromJSON,
-    DeleteUserDtoToJSON,
     EvaluateClassificationDtoFromJSON,
     EvaluateClassificationDtoToJSON,
     EvaluateSeniorityLevelDtoFromJSON,
@@ -153,6 +151,8 @@ import {
     SeniorityListResponseDtoToJSON,
     UpdateClassificationDtoFromJSON,
     UpdateClassificationDtoToJSON,
+    UpdateSeniorityLevelDtoFromJSON,
+    UpdateSeniorityLevelDtoToJSON,
     UploadExtractionDtoFromJSON,
     UploadExtractionDtoToJSON,
     UserAuthResponseFromJSON,
@@ -244,9 +244,18 @@ export interface AlumniControllerMarkAsReviewedRequest {
     markAsReviewedDto: MarkAsReviewedDto;
 }
 
+export interface AlumniControllerRequestDataUpdateRequest {
+    id: string;
+}
+
 export interface AlumniControllerUpdateClassificationRequest {
     id: string;
     updateClassificationDto: UpdateClassificationDto;
+}
+
+export interface AlumniControllerUpdateSeniorityLevelRequest {
+    id: string;
+    updateSeniorityLevelDto: UpdateSeniorityLevelDto;
 }
 
 export interface CompanyAnalyticsControllerGetCompaniesWithAlumniCountRequest {
@@ -594,7 +603,7 @@ export interface UserControllerCheckPermissionRequest {
 }
 
 export interface UserControllerDeleteUserRequest {
-    deleteUserDto: DeleteUserDto;
+    id: string;
 }
 
 export interface UserControllerLinkedinAuthRequest {
@@ -904,6 +913,21 @@ export interface V1ApiInterface {
     alumniControllerMarkAsReviewed(requestParameters: AlumniControllerMarkAsReviewedRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Alumni>;
 
     /**
+     * 
+     * @summary Request a data update for an alumni
+     * @param {string} id 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof V1ApiInterface
+     */
+    alumniControllerRequestDataUpdateRaw(requestParameters: AlumniControllerRequestDataUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>>;
+
+    /**
+     * Request a data update for an alumni
+     */
+    alumniControllerRequestDataUpdate(requestParameters: AlumniControllerRequestDataUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void>;
+
+    /**
      * Update the classification of a role
      * @summary Update the classification of a role
      * @param {string} id 
@@ -919,6 +943,23 @@ export interface V1ApiInterface {
      * Update the classification of a role
      */
     alumniControllerUpdateClassification(requestParameters: AlumniControllerUpdateClassificationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<RoleAnalyticsEntity>;
+
+    /**
+     * Update the seniority level of a role
+     * @summary Update the seniority level of a role
+     * @param {string} id 
+     * @param {UpdateSeniorityLevelDto} updateSeniorityLevelDto 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof V1ApiInterface
+     */
+    alumniControllerUpdateSeniorityLevelRaw(requestParameters: AlumniControllerUpdateSeniorityLevelRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<RoleAnalyticsEntity>>;
+
+    /**
+     * Update the seniority level of a role
+     * Update the seniority level of a role
+     */
+    alumniControllerUpdateSeniorityLevel(requestParameters: AlumniControllerUpdateSeniorityLevelRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<RoleAnalyticsEntity>;
 
     /**
      * 
@@ -1632,7 +1673,7 @@ export interface V1ApiInterface {
     /**
      * 
      * @summary Delete a user
-     * @param {DeleteUserDto} deleteUserDto 
+     * @param {string} id 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof V1ApiInterface
@@ -2410,6 +2451,38 @@ export class V1Api extends runtime.BaseAPI implements V1ApiInterface {
     }
 
     /**
+     * Request a data update for an alumni
+     */
+    async alumniControllerRequestDataUpdateRaw(requestParameters: AlumniControllerRequestDataUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+        if (requestParameters['id'] == null) {
+            throw new runtime.RequiredError(
+                'id',
+                'Required parameter "id" was null or undefined when calling alumniControllerRequestDataUpdate().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        const response = await this.request({
+            path: `/alumni/request-data-update/{id}`.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id']))),
+            method: 'POST',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        return new runtime.VoidApiResponse(response);
+    }
+
+    /**
+     * Request a data update for an alumni
+     */
+    async alumniControllerRequestDataUpdate(requestParameters: AlumniControllerRequestDataUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+        await this.alumniControllerRequestDataUpdateRaw(requestParameters, initOverrides);
+    }
+
+    /**
      * Update the classification of a role
      * Update the classification of a role
      */
@@ -2451,6 +2524,51 @@ export class V1Api extends runtime.BaseAPI implements V1ApiInterface {
      */
     async alumniControllerUpdateClassification(requestParameters: AlumniControllerUpdateClassificationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<RoleAnalyticsEntity> {
         const response = await this.alumniControllerUpdateClassificationRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Update the seniority level of a role
+     * Update the seniority level of a role
+     */
+    async alumniControllerUpdateSeniorityLevelRaw(requestParameters: AlumniControllerUpdateSeniorityLevelRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<RoleAnalyticsEntity>> {
+        if (requestParameters['id'] == null) {
+            throw new runtime.RequiredError(
+                'id',
+                'Required parameter "id" was null or undefined when calling alumniControllerUpdateSeniorityLevel().'
+            );
+        }
+
+        if (requestParameters['updateSeniorityLevelDto'] == null) {
+            throw new runtime.RequiredError(
+                'updateSeniorityLevelDto',
+                'Required parameter "updateSeniorityLevelDto" was null or undefined when calling alumniControllerUpdateSeniorityLevel().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
+
+        const response = await this.request({
+            path: `/alumni/role/update-seniority-level/{id}`.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id']))),
+            method: 'POST',
+            headers: headerParameters,
+            query: queryParameters,
+            body: UpdateSeniorityLevelDtoToJSON(requestParameters['updateSeniorityLevelDto']),
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => RoleAnalyticsEntityFromJSON(jsonValue));
+    }
+
+    /**
+     * Update the seniority level of a role
+     * Update the seniority level of a role
+     */
+    async alumniControllerUpdateSeniorityLevel(requestParameters: AlumniControllerUpdateSeniorityLevelRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<RoleAnalyticsEntity> {
+        const response = await this.alumniControllerUpdateSeniorityLevelRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -4487,10 +4605,10 @@ export class V1Api extends runtime.BaseAPI implements V1ApiInterface {
      * Delete a user
      */
     async userControllerDeleteUserRaw(requestParameters: UserControllerDeleteUserRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
-        if (requestParameters['deleteUserDto'] == null) {
+        if (requestParameters['id'] == null) {
             throw new runtime.RequiredError(
-                'deleteUserDto',
-                'Required parameter "deleteUserDto" was null or undefined when calling userControllerDeleteUser().'
+                'id',
+                'Required parameter "id" was null or undefined when calling userControllerDeleteUser().'
             );
         }
 
@@ -4498,14 +4616,11 @@ export class V1Api extends runtime.BaseAPI implements V1ApiInterface {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
-
         const response = await this.request({
-            path: `/user/delete-user`,
-            method: 'POST',
+            path: `/user/{id}`.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id']))),
+            method: 'DELETE',
             headers: headerParameters,
             query: queryParameters,
-            body: DeleteUserDtoToJSON(requestParameters['deleteUserDto']),
         }, initOverrides);
 
         return new runtime.VoidApiResponse(response);

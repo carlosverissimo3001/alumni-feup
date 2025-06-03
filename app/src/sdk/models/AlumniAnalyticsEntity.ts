@@ -13,6 +13,13 @@
  */
 
 import { mapValues } from '../runtime';
+import type { LocationAnalyticsEntity } from './LocationAnalyticsEntity';
+import {
+    LocationAnalyticsEntityFromJSON,
+    LocationAnalyticsEntityFromJSONTyped,
+    LocationAnalyticsEntityToJSON,
+    LocationAnalyticsEntityToJSONTyped,
+} from './LocationAnalyticsEntity';
 import type { RoleAnalyticsEntity } from './RoleAnalyticsEntity';
 import {
     RoleAnalyticsEntityFromJSON,
@@ -70,6 +77,12 @@ export interface AlumniAnalyticsEntity {
      * @memberof AlumniAnalyticsEntity
      */
     graduations: Array<GraduationAnalyticsEntity>;
+    /**
+     * The location of the alumni
+     * @type {LocationAnalyticsEntity}
+     * @memberof AlumniAnalyticsEntity
+     */
+    location?: LocationAnalyticsEntity;
 }
 
 /**
@@ -100,6 +113,7 @@ export function AlumniAnalyticsEntityFromJSONTyped(json: any, ignoreDiscriminato
         'profilePictureUrl': json['profilePictureUrl'],
         'roles': ((json['roles'] as Array<any>).map(RoleAnalyticsEntityFromJSON)),
         'graduations': ((json['graduations'] as Array<any>).map(GraduationAnalyticsEntityFromJSON)),
+        'location': json['location'] == null ? undefined : LocationAnalyticsEntityFromJSON(json['location']),
     };
 }
 
@@ -120,6 +134,7 @@ export function AlumniAnalyticsEntityToJSONTyped(value?: AlumniAnalyticsEntity |
         'profilePictureUrl': value['profilePictureUrl'],
         'roles': ((value['roles'] as Array<any>).map(RoleAnalyticsEntityToJSON)),
         'graduations': ((value['graduations'] as Array<any>).map(GraduationAnalyticsEntityToJSON)),
+        'location': LocationAnalyticsEntityToJSON(value['location']),
     };
 }
 
