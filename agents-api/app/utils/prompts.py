@@ -183,6 +183,7 @@ STANDARDIZATION RULES:
      - "London Area" → "London"
      - "Greater London" → "London"
      - "NYC Metro Area" → "New York"
+     - "New York City" → "New York"
      - "Bay Area" → "San Francisco"
      - "Silicon Valley" → "San Francisco"
      - "Greater Boston" → "Boston"
@@ -202,6 +203,19 @@ STANDARDIZATION RULES:
      - "Bangalore Tech Park" → "Bangalore"
      - "Hyderabad Hi-Tech City" → "Hyderabad"
 
+4. City and Country Share the Same Name:
+   • Some countries consist of a single city or have a city with the same name (e.g., "Luxembourg", "Singapore", "Monaco")
+   • In these cases:
+     - Use the city name directly
+     - Set the appropriate ISO alpha-2 country code
+   • If the location refers to a district within such a city (e.g., "Monte Carlo, Monaco"), resolve it to the main city
+   • Examples:
+     - "Luxembourg, Luxembourg" → city: "Luxembourg", country_code: "LU"
+     - "Singapore, Singapore" → city: "Singapore", country_code: "SG"
+     - "Monte Carlo, Monaco" → city: "Monaco", country_code: "MC"
+
+- Always resolve the city name to its most commonly recognized or standardized form.
+
 Use the return_geo_resolution tool to return:
 {
     "city": string or null,
@@ -218,6 +232,9 @@ TASK:
 2. If an exact match exists (same city and country_code), use it
 3. If no city can be determined but you have a country, use the country-only entry
 4. If no match exists and you can determine both city and country, create a new location object
+
+- Before creating a new location, thoroughly check that no equivalent or alternate name already exists in the database.
+   - Be exhaustive, but only match when it is an exact or standardized equivalence — do not force a match.
 
 MATCHING RULES:
 - Exact matches must have identical:
