@@ -5,15 +5,11 @@ from app.agents.location import location_agent
 from app.db import get_db
 from app.db.models import Location, Role
 from app.schemas.location import (
-    CompanyLocationInput,
     LocationType,
-    ResolveAlumniLocationParams,
-    ResolveCompanyLocationParams,
     ResolveRoleLocationParams,
     RoleLocationInput,
 )
 from app.services.coordinates import coordinates_service
-from app.utils.company_db import get_companies_by_ids
 from app.utils.role_db import (
     get_all_roles,
     get_role_raw_by_id,
@@ -60,13 +56,13 @@ class LocationService:
                 if not location:
                     continue
 
-                input = RoleLocationInput(
+                loc_input = RoleLocationInput(
                     type=LocationType.ROLE,
                     role_id=role.id,
                     location=role_raw.location,
                 )
 
-                task = asyncio.create_task(location_agent.process_location(input))
+                task = asyncio.create_task(location_agent.process_location(loc_input))
                 tasks.append(task)
 
             await asyncio.gather(*tasks)
@@ -82,13 +78,12 @@ class LocationService:
         role_ids = [role.id for role in roles]
         role_ids_str = ",".join(role_ids)
         await self.request_role_location(ResolveRoleLocationParams(role_ids=role_ids_str))
-    
+
     async def update_location_coordinates(self, location: Location):
         """
         Get the coordinates of a city from the Geocoding API and update the location object
         """
         await coordinates_service.update_location_coordinates(location)
-
 
 
 location_service = LocationService()

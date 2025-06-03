@@ -23,14 +23,14 @@ class CoordinatesService:
             },
             base_url=settings.GEOLOCATION_BASE_URL,
         )
-    
+
     async def update_location_coordinates(self, location: Location):
         """
         Updates the coordinates for a location using a geocoding service.
         This is an async background task.
         """
         try:
-            response = self.client.get_json(
+            response = await self.client.aget_json(
                 f"{location.city},{location.country_code}&limit=1&appid={settings.GEOLOCATION_API_KEY}"
             )
 
