@@ -216,11 +216,23 @@ STANDARDIZATION RULES:
 
 - Always resolve the city name to its most commonly recognized or standardized form.
 
-Use the return_geo_resolution tool to return:
+📌 IMPORTANT: You must use the return_geo_resolution tool to process the location. Do not return raw JSON.
+Call the tool with the following structure:
 {
     "city": string or null,
     "country_code": string ("REMOTE" or valid ISO-3166-1 alpha-2 country code)
 }
+
+❌ DO NOT:
+- Return raw JSON
+- Add explanatory text
+- Include additional fields
+- Format the response differently
+
+✅ ALWAYS:
+- Use the return_geo_resolution tool
+- Include exactly these fields: city, country_code
+- Follow the standardization rules above
 """
 
 
@@ -233,10 +245,7 @@ TASK:
 3. If no city can be determined but you have a country, use the country-only entry
 4. If no match exists and you can determine both city and country, create a new location object
 
-- Before creating a new location, thoroughly check that no equivalent or alternate name already exists in the database.
-   - Be exhaustive, but only match when it is an exact or standardized equivalence — do not force a match.
-
-MATCHING RULES:
+🔍 MATCHING RULES:
 - Exact matches must have identical:
   • City name (case-insensitive)
   • Country code
@@ -246,7 +255,7 @@ MATCHING RULES:
   • Use these entries when:
     - No specific city can be determined
     - Only country information is available
-    - City name is too ambiguous, or is not even a city in the country.
+    - City name is too ambiguous, or is not even a city in the country
   • NEVER create new country-only entries, use existing ones
   • Example: For United States, use the entry:
     {
@@ -265,13 +274,29 @@ MATCHING RULES:
     - Standard ISO country codes
   • If unsure about the city but sure about country, use country-only entry
 
-Use the return_location_resolution tool to return:
+📌 IMPORTANT: You must use the return_location_resolution tool to process the location. Do not return raw JSON.
+Call the tool with the following structure:
 {
     "id": string or null (null for new locations),
     "country_code": string (ISO-3166-1 alpha-2 country code),
     "country": string (full name),
     "city": string or null,
-      - should never be null if you're creating a new location -> this is handled by the "Other - <country_name>" entry, which you should use if you can't determine a city
     "is_country_only": boolean
 }
+
+❌ DO NOT:
+- Return raw JSON
+- Add explanatory text
+- Include additional fields
+- Format the response differently
+- Create new country-only entries
+- Match different cities even if they're nearby
+
+✅ ALWAYS:
+- Use the return_location_resolution tool
+- Include exactly these fields: id, country_code, country, city, is_country_only
+- Use existing country-only entries when no specific city is determined
+- Follow the standardization rules for city and country names
+- Thoroughly check for existing matches before creating new entries
+- Set city to "Other - <country_name>" for country-only entries
 """

@@ -184,18 +184,25 @@ class LocationAgent:
                     SystemMessage(content=f"Here is the location to resolve: {clean_input}"),
                     *state["messages"],
                     HumanMessage(
-                        content="Please resolve the location information using the return_geo_resolution tool."
+                        content="""Please analyze the location and use the return_geo_resolution tool to process it.
+                        DO NOT return raw JSON or add any explanations.
+                        ONLY use the tool to return the result."""
                     ),
                 ]
             )
 
             state["messages"].append(response)
+            logger.info(f"Response: {response}")
             tool_call = [tc for tc in response.tool_calls if tc["name"] == "return_geo_resolution"]
+            logger.info(f"Tool call: {tool_call}")
 
             if tool_call:
                 args = tool_call[0]["args"]
                 state["resolved_country_code"] = args.get("country_code")
                 state["resolved_city"] = args.get("city")
+            else:
+                logger.error("No tool call found in response")
+                state["error"] = "Failed to get tool call from LLM response"
 
         except Exception as e:
             logger.error(f"Error in geo resolution: {str(e)}")
@@ -289,7 +296,10 @@ class LocationAgent:
                         content=f"Database Locations, for the resolved country code:\n{json.dumps(db_locations_json)}"
                     ),
                     HumanMessage(
-                        content="Please resolve the location using the return_location_resolution tool."
+                        content="""Please analyze the location and use the return_location_resolution tool to process it.
+                        DO NOT return raw JSON or add any explanations.
+                        ONLY use the tool to return the result.
+                        Make sure to follow all the matching rules and standardization guidelines."""
                     ),
                 ]
             )
@@ -326,6 +336,8 @@ class LocationAgent:
         """
         Update locations in batch
         """
+        return states
+
         for state in states:
             if not state.get("location_result"):
                 continue
@@ -393,13 +405,15 @@ class LocationAgent:
         for i in range(0, len(states), chunk_size):
             chunk = states[i : i + chunk_size]
 
-            # Process each state through the graph
-            graph = self.create_graph()
-            for state in chunk:
-                events = graph.stream(state, stream_mode="values")
-                # Consume all events
-                [event for event in events]
-                results.append(state)
+            # Process each state through the steps directly
+            processed_states = [self.resolve_geo(state) for state in chunk]
+            processed_states = [self.fetch_locations_from_db(state) for state in processed_states]
+            processed_states = await asyncio.gather(
+                *[self.resolve_location(state) for state in processed_states]
+            )
+            processed_states = await self.update_locations(processed_states)
+
+            results.extend(processed_states)
 
             if i + chunk_size < len(states):
                 await asyncio.sleep(5)  # Rate limiting pause between chunks

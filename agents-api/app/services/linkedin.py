@@ -15,6 +15,7 @@ from app.schemas.location import AlumniLocationInput, LocationType
 from app.services.company import company_service
 from app.services.image_storage import image_storage_service
 from app.services.job_classification import job_classification_service
+from app.services.location import location_service
 from app.services.role import role_service
 from app.utils.alumni_db import (
     delete_profile_data,
@@ -98,8 +99,6 @@ class LinkedInService:
         profile_data: LinkedInProfileResponse,
         alumni_id: str,
     ) -> None:
-        # logger.info(f"Processing profile data for alumni with id {alumni_id}")
-
         # First, let's parse the roles, to understand if we need to extract company data
         for role in profile_data.experiences:
             if role.company_linkedin_profile_url:
@@ -109,10 +108,8 @@ class LinkedInService:
                 db_company = get_company_by_linkedin_url(sanitized_url, db)
                 # All good, no need to call the API
                 if db_company:
-                    # logger.info(f"Company {sanitized_url} found in the database")
                     company_id = db_company.id
                 else:
-                    # logger.info(f"Company {sanitized_url} not found in the database")
                     # We insert the company before we call the API, so that we can link the role to the company # noqa: E501
                     db_company = insert_company(
                         Company(
@@ -154,6 +151,7 @@ class LinkedInService:
         if city or country or country_code:
             location = get_location(city, country, country_code, db)
 
+            # Could not find a location in the database, let's use the agent to resolve it
             if not location:
                 input = AlumniLocationInput(
                     type=LocationType.ALUMNI,
@@ -173,7 +171,7 @@ class LinkedInService:
                 profile_data.profile_pic_url, alumni_id
             )
 
-        # Update the alumni table (Alumni was already created by our backend)
+        # Update the alumni table (Alumni was already created by our backend :))) )
         update_alumni(
             Alumni(
                 id=alumni_id,
@@ -192,7 +190,7 @@ class LinkedInService:
         )
 
         # We'll also use the location agent to update the alumni location
-        asyncio.create_task(role_service.resolve_role_location_for_alumni(alumni_id))
+        asyncio.create_task(location_service.resolve_role_location_for_alumni(alumni_id))
 
     async def update_profile_data(
         self,

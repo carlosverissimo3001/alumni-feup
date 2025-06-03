@@ -118,7 +118,6 @@ class JobClassificationAgent:
     def _get_from_cache(self, query: str) -> List | None:
         cached = self._redis_cache.get(self._get_cache_key(query))
         if cached:
-            self.cache_hits.inc()
             return json.loads(cached)
         return None
 

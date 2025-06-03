@@ -20,8 +20,6 @@ logger = logging.getLogger(__name__)
 # Get a database session for the service
 db = next(get_db())
 
-REMOTE_LOCATION_ID = "15045675-0782-458b-9bb7-02567ac246fd"
-
 
 class RoleService:
     async def resolve_role_location(self, params: RoleResolveLocationParams) -> None:
@@ -29,7 +27,6 @@ class RoleService:
         Resolves the location of the roles
         """
         role_ids = params.role_ids
-        # logger.info(f"Requesting role location resolution for {role_ids}")
 
         roles: list[Role] = []
 
