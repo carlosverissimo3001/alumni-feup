@@ -1,19 +1,19 @@
 import NestAPI from "@/api";
-import { AlumniControllerUpdateClassificationRequest } from "@/sdk";
+import { AlumniControllerUpdateSeniorityLevelRequest } from "@/sdk";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 type Input = {
   onSuccess?: () => void | Promise<void>;
 };
 
-export const useUpdateClassification = ({ onSuccess }: Input) => {
+export const useUpdateSeniority = ({ onSuccess }: Input) => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (dto: AlumniControllerUpdateClassificationRequest) => {
-      return NestAPI.alumniControllerUpdateClassification({
+    mutationFn: (dto: AlumniControllerUpdateSeniorityLevelRequest) => {
+      return NestAPI.alumniControllerUpdateSeniorityLevel({
         id: dto.id,
-        updateClassificationDto: dto.updateClassificationDto,
+        updateSeniorityLevelDto: dto.updateSeniorityLevelDto,
       });
     },
     onSuccess: (dto) => {
