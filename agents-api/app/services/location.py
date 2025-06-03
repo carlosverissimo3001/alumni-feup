@@ -42,8 +42,6 @@ class LocationService:
         # and newsflash, that user is me :))
         roles = list(set(roles))
 
-        # logger.info(f"Going to update {len(roles)} roles")
-
         batch_size = 30
         for i in range(0, len(roles), batch_size):
             batch = roles[i : i + batch_size]

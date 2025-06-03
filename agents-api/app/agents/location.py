@@ -171,14 +171,14 @@ class LocationAgent:
 
         return graph.compile()
 
-    def resolve_geo(self, state: LocationAgentState) -> LocationAgentState:
+    async def resolve_geo(self, state: LocationAgentState) -> LocationAgentState:
         """
         Resolve the country code and city for the location
         """
         clean_input = self._build_input_details(state["input"])
 
         try:
-            response = cold_llm.invoke(
+            response = await llm_with_tools.ainvoke(
                 [
                     SystemMessage(content=RESOLVE_GEO_PROMPT),
                     SystemMessage(content=f"Here is the location to resolve: {clean_input}"),
@@ -192,9 +192,7 @@ class LocationAgent:
             )
 
             state["messages"].append(response)
-            logger.info(f"Response: {response}")
             tool_call = [tc for tc in response.tool_calls if tc["name"] == "return_geo_resolution"]
-            logger.info(f"Tool call: {tool_call}")
 
             if tool_call:
                 args = tool_call[0]["args"]
@@ -336,8 +334,6 @@ class LocationAgent:
         """
         Update locations in batch
         """
-        return states
-
         for state in states:
             if not state.get("location_result"):
                 continue
@@ -346,6 +342,7 @@ class LocationAgent:
 
             # Create new location if needed
             if not location_result.id:
+                logger.info(f"Creating new location: {location_result}")
                 location = Location(
                     city=location_result.city,
                     country=location_result.country,
@@ -406,7 +403,7 @@ class LocationAgent:
             chunk = states[i : i + chunk_size]
 
             # Process each state through the steps directly
-            processed_states = [self.resolve_geo(state) for state in chunk]
+            processed_states = await asyncio.gather(*[self.resolve_geo(state) for state in chunk])
             processed_states = [self.fetch_locations_from_db(state) for state in processed_states]
             processed_states = await asyncio.gather(
                 *[self.resolve_location(state) for state in processed_states]
