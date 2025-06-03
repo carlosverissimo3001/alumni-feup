@@ -1,10 +1,26 @@
 import enum
 from typing import List, Optional
 
+from fastapi import Query
 from langgraph.graph import add_messages
 from pydantic import BaseModel, Field
 from typing_extensions import Annotated, TypedDict
 
+
+class ResolveRoleLocationParams(BaseModel):
+    role_ids: Optional[str] = Field(
+        Query(None, description="Comma-separated list of role IDs to update")
+    )
+
+class ResolveAlumniLocationParams(BaseModel):
+    alumni_ids: Optional[str] = Field(
+        Query(None, description="Comma-separated list of alumni IDs to update")
+    )
+
+class ResolveCompanyLocationParams(BaseModel):
+    company_ids: Optional[str] = Field(
+        Query(None, description="Comma-separated list of company IDs to update")
+    )
 
 class LocationType(str, enum.Enum):
     ALUMNI = "ALUMNI"

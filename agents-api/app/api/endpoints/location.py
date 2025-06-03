@@ -1,26 +1,36 @@
 import logging
-from typing import List
 
-from fastapi import APIRouter, BackgroundTasks, HTTPException, status
+from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, status
+
+from app.schemas.location import (
+    ResolveAlumniLocationParams,
+    ResolveCompanyLocationParams,
+    ResolveRoleLocationParams,
+)
+from app.services.location import location_service
 
 router = APIRouter()
 logger = logging.getLogger(__name__)
 
 
 @router.post(
-    "/",
+    "/role",
     status_code=status.HTTP_201_CREATED,
 )
-async def al(alumni_id: str, background_tasks: BackgroundTasks):
+async def resolve_role_location(
+    background_tasks: BackgroundTasks, params: ResolveRoleLocationParams = Depends()
+):
     """
-    Triggers the classification of all the roles of an alumni into the ESCO taxonomy.
+    Triggers the agent to resolve the location of a role.
+
+    If none are provided, it will update all roles.
     """
     try:
-        logger.info(f"Classifying roles for alumni {alumni_id}")
+        logger.info(f"Resolving location for roles {params.role_ids}")
 
         background_tasks.add_task(
-            job_classification_service.classify_roles_for_alumni,
-            alumni_id=alumni_id,
+            location_service.request_role_location,
+            params=params,
         )
 
     except Exception as e:
@@ -28,4 +38,55 @@ async def al(alumni_id: str, background_tasks: BackgroundTasks):
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Error classifying job title",
+        )
+
+
+@router.post(
+    "/alumni",
+    status_code=status.HTTP_201_CREATED,
+)
+async def resolve_alumni_location(
+    background_tasks: BackgroundTasks, params: ResolveAlumniLocationParams = Depends()
+):
+    """
+    Triggers the agent to resolve the location of an alumni.
+    
+    If none are provided, it will update all alumni.
+    """
+    try:
+        logger.info(f"Resolving location for alumni {params.alumni_ids}")
+
+        background_tasks.add_task(
+            location_service.request_alumni_location,
+            params=params,
+        )
+    except Exception as e:
+        logger.error(f"Error resolving location for alumni {params.alumni_ids}: {str(e)}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Error resolving location for alumni",
+        )
+
+@router.post(
+    "/company",
+    status_code=status.HTTP_201_CREATED,
+)
+async def resolve_company_location(background_tasks: BackgroundTasks, params: ResolveCompanyLocationParams = Depends()):
+    """
+    Triggers the agent to resolve the location of a company.
+    
+    If none are provided, it will update all companies.
+    """
+    try:
+        logger.info(f"Resolving location for company {params.company_ids}")
+
+        background_tasks.add_task(
+            location_service.request_company_location,
+            params=params,
+        )
+    except Exception as e:
+        logger.error(f"Error resolving location for company {params.company_ids}: {str(e)}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Error resolving location for company",
         )
