@@ -23,7 +23,7 @@ from app.core.config import settings
 from app.db import get_db
 from app.db.models import Location
 from app.schemas.location import LocationAgentState, LocationInput, LocationResult, LocationType
-from app.services.location import location_service
+from app.services.coordinates import coordinates_service
 from app.utils.alumni_db import find_by_id, update_alumni
 from app.utils.company_db import get_company_by_id, update_company
 from app.utils.location_db import create_location, get_locations_by_country_code
@@ -332,7 +332,6 @@ class LocationAgent:
 
             location_result = state["location_result"]
 
-            resolved_location_id = None
             # Create new location if needed
             if not location_result.id:
                 location = Location(
@@ -342,26 +341,24 @@ class LocationAgent:
                     is_country_only=location_result.is_country_only,
                 )
                 location = create_location(location, db)
-                resolved_location_id = location.id
+                location_result.id = location.id
 
-                # Trigger coordinates update
-                asyncio.create_task(location_service.update_location_coordinates(location))
-            else:
-                resolved_location_id = location_result.id
+                # Trigger coordinates update as a background task
+                asyncio.create_task(coordinates_service.update_location_coordinates(location))
 
             # Update the domain with the location
             try:
                 if state["input"].type == LocationType.COMPANY:
                     company = get_company_by_id(state["input"].company_id, db)
-                    company.hq_location_id = resolved_location_id
+                    company.hq_location_id = location_result.id
                     update_company(company, db)
                 elif state["input"].type == LocationType.ROLE:
                     role = get_role_by_id(state["input"].role_id, db)
-                    role.location_id = resolved_location_id
+                    role.location_id = location_result.id
                     update_role(role, db)
                 elif state["input"].type == LocationType.ALUMNI:
                     alumni = find_by_id(state["input"].alumni_id, db)
-                    alumni.current_location_id = resolved_location_id
+                    alumni.current_location_id = location_result.id
                     update_alumni(alumni, db)
 
                 # Cache the result
