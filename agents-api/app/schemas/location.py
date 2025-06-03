@@ -12,15 +12,18 @@ class ResolveRoleLocationParams(BaseModel):
         Query(None, description="Comma-separated list of role IDs to update")
     )
 
+
 class ResolveAlumniLocationParams(BaseModel):
     alumni_ids: Optional[str] = Field(
         Query(None, description="Comma-separated list of alumni IDs to update")
     )
 
+
 class ResolveCompanyLocationParams(BaseModel):
     company_ids: Optional[str] = Field(
         Query(None, description="Comma-separated list of company IDs to update")
     )
+
 
 class LocationType(str, enum.Enum):
     ALUMNI = "ALUMNI"

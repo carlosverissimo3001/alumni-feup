@@ -1,13 +1,23 @@
 import asyncio
 import json
 import logging
-from json.decoder import JSONDecodeError
-from typing import Literal
+import time
+from typing import List
 
+import openai
+from fastapi.encoders import jsonable_encoder
 from langchain_core.messages import HumanMessage, SystemMessage
+from langchain_core.tools import Tool
 from langchain_openai import ChatOpenAI
 from langgraph.graph import END, START, StateGraph
 from langgraph.prebuilt import ToolNode
+from redis import Redis
+from tenacity import (
+    before_sleep_log,
+    retry,
+    stop_after_attempt,
+    wait_random_exponential,
+)
 
 from app.core.config import settings
 from app.db import get_db
@@ -17,7 +27,7 @@ from app.services.location import location_service
 from app.utils.alumni_db import find_by_id, update_alumni
 from app.utils.company_db import get_company_by_id, update_company
 from app.utils.location_db import create_location, get_locations_by_country_code
-from app.utils.prompts import RESOLVE_LOCATION_PROMPT, get_resolve_geo_prompt
+from app.utils.prompts import RESOLVE_GEO_PROMPT, RESOLVE_LOCATION_PROMPT
 from app.utils.role_db import get_role_by_id, update_role
 
 REMOTE_LOCATION_ID = "15045675-0782-458b-9bb7-02567ac246fd"
@@ -28,350 +38,383 @@ logger = logging.getLogger(__name__)
 # Get a database session for the service
 db = next(get_db())
 
-# Initializes the LLMs
+# JSON schema for location resolution
+geo_resolution_schema = {
+    "type": "object",
+    "properties": {
+        "city": {
+            "type": ["string", "null"],
+            "description": "The standardized city name or null if not available/applicable",
+        },
+        "country_code": {
+            "type": "string",
+            "description": "The ISO 3166-1 alpha-2 country code, REMOTE for remote work, or null if unknown",
+        },
+    },
+    "required": ["city", "country_code"],
+}
+
+location_resolution_schema = {
+    "type": "object",
+    "properties": {
+        "id": {
+            "type": ["string", "null"],
+            "description": "The UUID of an existing location, or null for new locations",
+        },
+        "country_code": {
+            "type": "string",
+            "description": "The ISO 3166-1 alpha-2 country code",
+        },
+        "country": {
+            "type": "string",
+            "description": "The full country name",
+        },
+        "city": {
+            "type": ["string", "null"],
+            "description": "The standardized city name or null for country-only locations",
+        },
+        "is_country_only": {
+            "type": "boolean",
+            "description": "Whether this is a country-level location (no specific city)",
+        },
+    },
+    "required": ["country_code", "country", "city", "is_country_only"],
+}
+
+
+def return_geo_resolution(results: dict) -> dict:
+    return results
+
+
+def return_location_resolution(results: dict) -> dict:
+    return results
+
+
+# Tools for the agent
+geo_tool = Tool.from_function(
+    func=return_geo_resolution,
+    name="return_geo_resolution",
+    description="Return the resolved city and country code",
+    args_schema=geo_resolution_schema,
+)
+
+location_tool = Tool.from_function(
+    func=return_location_resolution,
+    name="return_location_resolution",
+    description="Return the resolved location object",
+    args_schema=location_resolution_schema,
+)
+
+tools = [geo_tool, location_tool]
+
 cold_llm = ChatOpenAI(
     model=settings.OPENAI_DEFAULT_MODEL,
     api_key=settings.OPENAI_API_KEY,
+    max_retries=3,
     temperature=0.0,
 )
 
-hot_llm = ChatOpenAI(
-    model=settings.OPENAI_DEFAULT_MODEL,
-    api_key=settings.OPENAI_API_KEY,
-    temperature=0.3,
-)
-
-# This agent doesn't need any tools, for now
-tools = []
 llm_with_tools = cold_llm.bind_tools(tools)
-
-tool_node = ToolNode(
-    tools=tools,
-)
+tool_node = ToolNode(tools=tools)
 
 
 class LocationAgent:
+    def __init__(self):
+        self._redis_cache = Redis(host="localhost", port=6379, db=0)
+        self.CACHE_TTL = 60 * 60 * 24  # 24 hours
+        self.MAX_RETRIES = 3
+
+    def _get_cache_key(self, location_input: LocationInput) -> str:
+        if location_input.type == LocationType.COMPANY:
+            return f"location:company:{location_input.headquarters}"
+        elif location_input.type == LocationType.ROLE:
+            return f"location:role:{location_input.location}"
+        else:
+            return f"location:alumni:{location_input.city}:{location_input.country}"
+
+    def _get_from_cache(self, location_input: LocationInput) -> LocationResult | None:
+        cached = self._redis_cache.get(self._get_cache_key(location_input))
+        if cached:
+            return LocationResult(**json.loads(cached))
+        return None
+
+    def _set_in_cache(self, location_input: LocationInput, result: LocationResult):
+        self._redis_cache.setex(
+            self._get_cache_key(location_input),
+            self.CACHE_TTL,
+            json.dumps(jsonable_encoder(result)),
+        )
+
+    def _build_input_details(self, location_input: LocationInput) -> str:
+        if location_input.type == LocationType.COMPANY:
+            return f'Company Headquarters: "{location_input.headquarters}"\nCountry Codes: "{location_input.country_codes}"'
+        elif location_input.type == LocationType.ROLE:
+            return f'Role Location: "{location_input.location}"'
+        elif location_input.type == LocationType.ALUMNI:
+            return f'Alumni City: "{location_input.city}"\nAlumni Country: "{location_input.country}"\nAlumni Country Code: "{location_input.country_code}"'
+
     def create_graph(self) -> StateGraph:
         graph = StateGraph(LocationAgentState)
 
-        # *** Nodes ***
+        # Add nodes
         graph.add_node("resolve_geo", self.resolve_geo)
         graph.add_node("fetch_locations_from_db", self.fetch_locations_from_db)
         graph.add_node("resolve_location", self.resolve_location)
-        graph.add_node("insert_location_into_db", self.insert_location_into_db)
-        graph.add_node("update_domain_with_location", self.update_domain_with_location)
+        graph.add_node("update_locations", self.update_locations)
 
-        # *** Edges ***
+        # Add edges
         graph.add_edge(START, "resolve_geo")
-
-        # Conditional branching after code resolver
-        def check_geo(
-            state: dict,
-        ) -> Literal["fetch_locations_from_db", "update_domain_with_location", "__end__"]:
-            # Cases:
-            # 1. No country code - End
-            # 2. Country code is REMOTE - Sets the location result to the remote location and goes to update_domain_with_location
-            # 3. Country code is not REMOTE - Go to fetch_locations_from_db
-            if not state.get("resolved_country_code"):
-                return END
-            if state.get("resolved_country_code") == REMOTE_COUNTRY_CODE:
-                state["location_result"] = LocationResult(
-                    id=REMOTE_LOCATION_ID,
-                    country_code=REMOTE_COUNTRY_CODE,
-                    # This is hacky, I know :))
-                    country="Remote",
-                    city="Remote",
-                    is_country_only=True,
-                )
-                return "update_domain_with_location"
-            return "fetch_locations_from_db"
-
-        graph.add_conditional_edges("resolve_geo", check_geo)
-
+        graph.add_edge("resolve_geo", "fetch_locations_from_db")
         graph.add_edge("fetch_locations_from_db", "resolve_location")
+        graph.add_edge("resolve_location", "update_locations")
+        graph.add_edge("update_locations", END)
 
-        # Conditional branching after location resolver
-        def check_location_result(
-            state: dict,
-        ) -> Literal["update_domain_with_location", "insert_location_into_db"]:
-            return (
-                "insert_location_into_db"
-                if self.is_new_location(state)
-                else "update_domain_with_location"
-            )
-
-        graph.add_conditional_edges("resolve_location", check_location_result)
-        graph.add_edge("insert_location_into_db", "update_domain_with_location")
-        graph.add_edge("update_domain_with_location", END)
-
-        # *** Compile the graph ***
-        compiled_graph = graph.compile()
-        # compiled_graph.get_graph().draw_mermaid_png(output_file_path="location_agent_graph.png")
-        return compiled_graph
-
-    def is_new_location(self, state: LocationAgentState) -> bool:
-        """
-        Return True if location_result has no 'id', meaning it's a new location.
-        """
-        location = state.get("location_result")
-        if not location:
-            return False
-        return (
-            getattr(location, "id", None) is None
-            if not isinstance(location, dict)
-            else location.get("id") is None
-        )
+        return graph.compile()
 
     def resolve_geo(self, state: LocationAgentState) -> LocationAgentState:
         """
-        Resolve the country code for the location
+        Resolve the country code and city for the location
         """
-        clean_input = ""
-        if state["input"].type == LocationType.COMPANY:
-            clean_input = f'Company Headquarters: "{state["input"].headquarters}"\nCountry Codes: "{state["input"].country_codes}"'  # noqa: E501
-        elif state["input"].type == LocationType.ROLE:
-            clean_input = f'Role Location: "{state["input"].location}"'
-        elif state["input"].type == LocationType.ALUMNI:
-            clean_input = f'Alumni City: "{state["input"].city}"\nAlumni Country: "{state["input"].country}"\nAlumni Country Code: "{state["input"].country_code}"'  # noqa: E501
+        clean_input = self._build_input_details(state["input"])
 
-        response = cold_llm.invoke(
-            [
-                SystemMessage(content=get_resolve_geo_prompt(state["input"].type)),
-                SystemMessage(content=f"Here is the location to resolve: {clean_input}"),
-                *state["messages"],
-                HumanMessage(
-                    content="""Please resolve the location information for the location above.
-                    Return ONLY the JSON object as described in the instructions.
-                    DO NOT include any explanations, quotes, or additional text.
-                    """  # noqa: E501
-                ),
-            ]
-        )
-
-        location_data = response.content.strip().replace("```json", "").replace("```", "").strip()
-
-        location = {}
         try:
-            location = json.loads(location_data)
-        except JSONDecodeError as e:
-            logger.error(f"Error parsing geo response: {str(e)}")
-            logger.error(f"Raw response: {location_data}")
+            response = cold_llm.invoke(
+                [
+                    SystemMessage(content=RESOLVE_GEO_PROMPT),
+                    SystemMessage(content=f"Here is the location to resolve: {clean_input}"),
+                    *state["messages"],
+                    HumanMessage(
+                        content="Please resolve the location information using the return_geo_resolution tool."
+                    ),
+                ]
+            )
 
-        state["messages"].append(response)
+            state["messages"].append(response)
+            tool_call = [tc for tc in response.tool_calls if tc["name"] == "return_geo_resolution"]
 
-        country_code = location.get("country_code")
-        city = location.get("city")
+            if tool_call:
+                args = tool_call[0]["args"]
+                state["resolved_country_code"] = args.get("country_code")
+                state["resolved_city"] = args.get("city")
 
-        state["resolved_country_code"] = (
-            country_code
-            if isinstance(country_code, str) and country_code.lower() != "null"
-            else None
-        )
-        state["resolved_city"] = city if isinstance(city, str) and city.lower() != "null" else None
+        except Exception as e:
+            logger.error(f"Error in geo resolution: {str(e)}")
+            state["error"] = str(e)
 
         return state
 
     def fetch_locations_from_db(self, state: LocationAgentState) -> LocationAgentState:
         """
-        Fetch the locations from the database
+        Fetch matching locations from the database
         """
-        db_locations = get_locations_by_country_code(state["resolved_country_code"], db)
-
-        locations = [
-            LocationResult(
-                id=location.id,
-                city=location.city,
-                country=location.country,
-                country_code=location.country_code,
-                is_country_only=location.is_country_only,
+        # The agent couldn't determine the country code, so we use the remote location
+        if state.get("resolved_country_code") == REMOTE_COUNTRY_CODE:
+            state["location_result"] = LocationResult(
+                id=REMOTE_LOCATION_ID,
+                country_code=REMOTE_COUNTRY_CODE,
+                country="Remote",
+                city="Other",
+                is_country_only=True,
             )
-            for location in db_locations
-        ]
+            return state
 
-        state["db_locations"] = locations
+        try:
+            # here, we'll fetch locations for the resolved country code
+            db_locations = get_locations_by_country_code(state["resolved_country_code"], db)
+            state["db_locations"] = [
+                LocationResult(
+                    id=location.id,
+                    city=location.city,
+                    country=location.country,
+                    country_code=location.country_code,
+                    is_country_only=location.is_country_only,
+                )
+                for location in db_locations
+            ]
+        except Exception as e:
+            logger.error(f"Error fetching locations: {str(e)}")
+            state["error"] = str(e)
+            state["db_locations"] = []
 
         return state
 
-    def resolve_location(self, state: LocationAgentState) -> LocationAgentState:
+    @retry(
+        wait=wait_random_exponential(min=5, max=60, exp_base=1),
+        stop=stop_after_attempt(3),
+        before_sleep=before_sleep_log(logger, logging.WARNING),
+    )
+    async def resolve_location_with_retry(self, state: LocationAgentState) -> LocationAgentState:
         """
-        Using the db locations, decide which one is the best match for the location, or create a new one
-        """  # noqa: E501
-        # Format database locations for prompt
-        db_locations_json = []
-        for loc in state.get("db_locations", []):
-            db_locations_json.append(
-                {
-                    "id": loc.id,
-                    "country_code": loc.country_code,
-                    "country": loc.country,
-                    "city": loc.city,
-                    "is_country_only": loc.is_country_only,
-                }
-            )
-
-        db_locations_str = str(db_locations_json) if db_locations_json else "[]"
-
-        # Check for exact matches before calling the LLM
-        extracted_city = state.get("resolved_city")
-        exact_match = None
-
-        if extracted_city:
+        Resolve location with retry mechanism
+        """
+        # Pre-LLM step: Manual matching
+        if state.get("resolved_city"):
             for loc in state.get("db_locations", []):
-                if loc.city and loc.city.lower() == extracted_city.lower():
-                    exact_match = loc
-                    logger.info(
-                        f"Found exact match for city: {extracted_city} -> {loc.city} (ID: {loc.id})"
-                    )
-                    break
+                if (
+                    loc.city
+                    and loc.city.lower() == state["resolved_city"].lower()
+                    and loc.country_code == state["resolved_country_code"]
+                ):
+                    state["location_result"] = loc
+                    return state
 
-        # Set the exact match in the state
-        if exact_match and exact_match.country_code == state.get("resolved_country_code"):
-            state["location_result"] = LocationResult(
-                id=exact_match.id,
-                country_code=exact_match.country_code,
-                country=exact_match.country,
-                city=exact_match.city,
-                is_country_only=exact_match.is_country_only,
-            )
+        # Format database locations for the prompt
+        db_locations_json = [
+            {
+                "id": loc.id,
+                "country_code": loc.country_code,
+                "country": loc.country,
+                "city": loc.city,
+                "is_country_only": loc.is_country_only,
+            }
+            for loc in state.get("db_locations", [])
+        ]
 
-            # Return early, we don't need to call the LLM
-            return state
-
-        # Prepare detailed information about the input location
-        location_details = ""
+        # Prepare location details
         location_input = state["input"]
+        location_details = ""
         if location_input.type == LocationType.COMPANY:
-            location_details = f'Company Headquarters: "{location_input.headquarters}"\nCountry Codes: "{location_input.country_codes}"'  # noqa: E501
+            location_details = f'Company Headquarters: "{location_input.headquarters}"\nCountry Codes: "{location_input.country_codes}"'
         elif location_input.type == LocationType.ROLE:
             location_details = f'Role Location: "{location_input.location}"'
         elif location_input.type == LocationType.ALUMNI:
-            location_details = f'Alumni City: "{location_input.city}"\nAlumni Country: "{location_input.country}"\nAlumni Country Code: "{location_input.country_code}"'  # noqa: E501
+            location_details = f'Alumni City: "{location_input.city}"\nAlumni Country: "{location_input.country}"\nAlumni Country Code: "{location_input.country_code}"'
 
-        # We only call the LLM if we don't have an exact match using the city and country code resolver
-        response = cold_llm.invoke(
-            [
-                SystemMessage(content=RESOLVE_LOCATION_PROMPT),
-                SystemMessage(content=f"Input Location Details:\n{location_details}"),
-                SystemMessage(content=f"Database Locations:\n{db_locations_str}"),
-                HumanMessage(
-                    content="""Parse the input location and either match it to a database location or create a new location. 
-                    Return ONLY the JSON object as specified in the instructions.
-                    DO NOT include any text or comments before or after the JSON object."""  # noqa: E501
-                ),
-            ]
-        )
-        location = response.content.strip()
-
-        # Store the raw response content
         try:
-            # Log the raw response for debugging
-            logger.debug(f"Raw LLM response for location resolution: {location}")
+            response = await llm_with_tools.ainvoke(
+                [
+                    SystemMessage(content=RESOLVE_LOCATION_PROMPT),
+                    SystemMessage(content=f"Input Location Details:\n{location_details}"),
+                    SystemMessage(
+                        content=f"Database Locations, for the resolved country code:\n{json.dumps(db_locations_json)}"
+                    ),
+                    HumanMessage(
+                        content="Please resolve the location using the return_location_resolution tool."
+                    ),
+                ]
+            )
 
-            # Pre-process the JSON string to fix any Python boolean literals
-            location = location.replace("True", "true").replace("False", "false")
+            state["messages"].append(response)
+            tool_call = [
+                tc for tc in response.tool_calls if tc["name"] == "return_location_resolution"
+            ]
 
-            parsed_location = json.loads(location)
-            state["location_result"] = parsed_location
-        except JSONDecodeError as e:
-            # Log detailed error information
-            logger.error(f"JSONDecodeError parsing location: {str(e)}")
-            logger.error(f"Raw location string: {location}")
+            if tool_call:
+                location_result = tool_call[0]["args"]
+                state["location_result"] = LocationResult(**location_result)
 
-            state["location_result"] = None
-
-        state["messages"].append(response)
-
-        return state
-
-    def insert_location_into_db(self, state: LocationAgentState) -> LocationAgentState:
-        """
-        Insert the location into the database;
-        Triggers a background task to extract the coordinates
-        """
-        location_result = state["location_result"]
-        logger.info(f"Inserting location into db: {location_result}")
-
-        # Helper to extract fields from dict or object
-        get = (
-            location_result.get
-            if isinstance(location_result, dict)
-            else lambda k: getattr(location_result, k, None)
-        )
-
-        city = get("city")
-        country = get("country")
-        country_code = get("country_code")
-        is_country_only = city is None
-
-        location = Location(
-            city=city,
-            country=country,
-            country_code=country_code,
-            is_country_only=is_country_only,
-        )
-
-        # Insert into DB and update ID
-        location = create_location(location, db)
-        if isinstance(location_result, dict):
-            location_result["id"] = location.id
-        else:
-            location_result.id = location.id
-
-        asyncio.create_task(location_service.update_location_coordinates(location))
+        except Exception as e:
+            if isinstance(e, openai.RateLimitError) or "429" in str(e):
+                raise e
+            logger.error(f"Error in location resolution: {str(e)}")
+            state["error"] = str(e)
 
         return state
 
-    def update_domain_with_location(self, state: LocationAgentState) -> LocationAgentState:
+    async def resolve_location(self, state: LocationAgentState) -> LocationAgentState:
         """
-        Update the location for a specific domain - e.g. company, role, alumni
+        Resolve the location using the LLM
         """
-        # Here, we know that the location is already in the database, so we have an ID
-        # We just need to update the domain with the location id
-        if not state.get("location_result"):
+
+        # Early return if the location result is already set
+        if state.get("location_result"):
             return state
 
-        get = (
-            state["location_result"].get
-            if isinstance(state["location_result"], dict)
-            else lambda k: getattr(state["location_result"], k, None)
-        )
-        location_id = get("id")
+        return await self.resolve_location_with_retry(state)
 
-        if state["input"].type == LocationType.COMPANY:
-            company = get_company_by_id(state["input"].company_id, db)
-            company.hq_location_id = location_id
-            update_company(company, db)
-        elif state["input"].type == LocationType.ROLE:
-            role = get_role_by_id(state["input"].role_id, db)
-            role.location_id = location_id
-            update_role(role, db)
-        elif state["input"].type == LocationType.ALUMNI:
-            alumni = find_by_id(state["input"].alumni_id, db)
-            alumni.current_location_id = location_id
-            update_alumni(alumni, db)
+    async def update_locations(self, states: List[LocationAgentState]) -> List[LocationAgentState]:
+        """
+        Update locations in batch
+        """
+        for state in states:
+            if not state.get("location_result"):
+                continue
 
-        return state
+            location_result = state["location_result"]
 
-    # This is the actual "Agent" code
+            resolved_location_id = None
+            # Create new location if needed
+            if not location_result.id:
+                location = Location(
+                    city=location_result.city,
+                    country=location_result.country,
+                    country_code=location_result.country_code,
+                    is_country_only=location_result.is_country_only,
+                )
+                location = create_location(location, db)
+                resolved_location_id = location.id
+
+                # Trigger coordinates update
+                asyncio.create_task(location_service.update_location_coordinates(location))
+            else:
+                resolved_location_id = location_result.id
+
+            # Update the domain with the location
+            try:
+                if state["input"].type == LocationType.COMPANY:
+                    company = get_company_by_id(state["input"].company_id, db)
+                    company.hq_location_id = resolved_location_id
+                    update_company(company, db)
+                elif state["input"].type == LocationType.ROLE:
+                    role = get_role_by_id(state["input"].role_id, db)
+                    role.location_id = resolved_location_id
+                    update_role(role, db)
+                elif state["input"].type == LocationType.ALUMNI:
+                    alumni = find_by_id(state["input"].alumni_id, db)
+                    alumni.current_location_id = resolved_location_id
+                    update_alumni(alumni, db)
+
+                # Cache the result
+                self._set_in_cache(state["input"], location_result)
+
+            except Exception as e:
+                logger.error(f"Error updating domain with location: {str(e)}")
+                state["error"] = str(e)
+
+        return states
+
+    async def process_locations(self, locations: List[LocationInput]):
+        """
+        Process multiple locations in batch
+        """
+        states = [
+            LocationAgentState(
+                input=location,
+                messages=[],
+                db_locations=[],
+                processing_time=time.time(),
+                model_used=settings.OPENAI_DEFAULT_MODEL,
+                error=None,
+            )
+            for location in locations
+        ]
+
+        # Process in smaller chunks to avoid overwhelming the API
+        chunk_size = 3
+        results = []
+
+        for i in range(0, len(states), chunk_size):
+            chunk = states[i : i + chunk_size]
+
+            # Process each state through the graph
+            graph = self.create_graph()
+            for state in chunk:
+                events = graph.stream(state, stream_mode="values")
+                # Consume all events
+                [event for event in events]
+                results.append(state)
+
+            if i + chunk_size < len(states):
+                await asyncio.sleep(5)  # Rate limiting pause between chunks
+
+        return results
+
     async def process_location(self, location_input: LocationInput):
         """
-        Async function that processes a location input into a structured location object
+        Process a single location (backward compatibility)
         """
-        # Initialize the state with all required fields
-        state = LocationAgentState(
-            input=location_input,
-            messages=[],
-            db_locations=[],
-            processing_time=0.0,
-            model_used=settings.OPENAI_DEFAULT_MODEL,
-        )
-
-        graph = self.create_graph()
-        events = graph.stream(state, stream_mode="values")
-
-        # Consume all events from the stream
-        # This ensures the graph execution completes
-        [event for event in events]
+        results = await self.process_locations([location_input])
+        return results[0] if results else None
 
 
 location_agent = LocationAgent()
