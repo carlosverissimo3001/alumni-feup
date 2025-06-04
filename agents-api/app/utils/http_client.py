@@ -1,5 +1,6 @@
 """HTTP client utility with retries, backoff, and logging."""
 
+import asyncio
 import logging
 import time
 from typing import Any, Dict, Optional
@@ -78,9 +79,12 @@ class HTTPClient:
             self.client.close()
         
         if hasattr(self, 'async_client') and self.async_client:
-            # We can't await here, so we just close it synchronously
-            # This might cause some warnings but is necessary for cleanup
-            self.async_client.aclose()
+            # Use the synchronous close if available to avoid dangling coroutine warnings
+            try:
+                self.async_client.close()
+            except AttributeError:
+                # Fallback for older versions of httpx
+                asyncio.run(self.async_client.aclose())
     
     @retry(
         retry=retry_if_exception_type((httpx.ConnectTimeout, httpx.ReadTimeout, httpx.ConnectError)),
