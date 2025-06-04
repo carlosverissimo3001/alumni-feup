@@ -1,5 +1,5 @@
 import { CourseAnalyticsEntity } from '@/analytics/entities';
-import { mapCourseFromPrisma } from '@/analytics/utils/alumni.mapper';
+import { mapCourseFromPrisma } from '@/analytics/utils/mapper';
 import { FindCoursesDto } from '@/course/dto/find-courses.dto';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';

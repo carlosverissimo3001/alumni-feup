@@ -2,7 +2,10 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from '@/prisma/prisma.service';
 import { RoleOptionDto } from '@/analytics/dto/role-option.dto';
 import { EscoClassificationAnalyticsEntity } from '../entities/esco-classification.entity';
-import { mapEscoClassificationFromPrisma, mapRoleFromPrisma } from '../utils/alumni.mapper';
+import {
+  mapEscoClassificationFromPrisma,
+  mapRoleFromPrisma,
+} from '../utils/mapper';
 import { RoleAnalyticsEntity } from '../entities/role.entity';
 import { roleSelect } from '../utils/selectors';
 

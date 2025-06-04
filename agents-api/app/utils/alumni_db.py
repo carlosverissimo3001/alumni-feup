@@ -8,6 +8,7 @@ from app.utils.role_db import delete_role
 
 logger = logging.getLogger(__name__)
 
+DEFAULT_UPDATED_BY = "agents-api"
 
 def update_alumni(alumni: Alumni, db: Session) -> None:
     """
@@ -30,6 +31,7 @@ def update_alumni(alumni: Alumni, db: Session) -> None:
                 setattr(existing_alumni, key, value)
 
         existing_alumni.updated_at = datetime.now(timezone.utc)
+        existing_alumni.updated_by = DEFAULT_UPDATED_BY
         db.commit()
         db.refresh(existing_alumni)
 

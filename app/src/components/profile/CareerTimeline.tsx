@@ -158,14 +158,18 @@ export default function CareerTimeline({ roles }: CareerTimelineProps) {
                         <ArrowUpRight className="w-4 h-4 ml-0.5 opacity-0 group-hover:opacity-100 transition-opacity" />
                       </Link>
                     </div>
-                    <div className="text-sm text-muted-foreground mt-1">
-                      {group.totalDuration} · {group.roles.length} role
-                      {group.roles.length !== 1 ? "s" : ""}
+                    <div className="text-sm text-muted-foreground mt-1 flex items-center flex-wrap gap-2">
+                      <span>{group.totalDuration}</span>
+                      <span className="w-1.5 h-1.5 rounded-full bg-primary/20" />
+                      <span>
+                        {group.roles.length} role
+                        {group.roles.length !== 1 ? "s" : ""}
+                      </span>
                       {group.companyIndustry && (
-                        <span className="inline-flex items-center">
-                          <span className="mx-2 w-1 h-1 rounded-full bg-primary/20" />
-                          {group.companyIndustry.name}
-                        </span>
+                        <>
+                          <span className="w-1.5 h-1.5 rounded-full bg-primary/20" />
+                          <span>{group.companyIndustry.name}</span>
+                        </>
                       )}
                     </div>
                   </div>

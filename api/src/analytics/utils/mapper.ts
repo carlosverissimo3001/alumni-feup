@@ -4,6 +4,7 @@ import {
   COURSE_STATUS,
   COURSE_TYPE,
   SENIORITY_LEVEL,
+  Prisma,
 } from '@prisma/client';
 import {
   AlumniAnalyticsEntity,
@@ -18,6 +19,7 @@ import {
   RoleRawAnalyticsEntity,
 } from '../entities';
 import { EscoClassificationAnalyticsEntity } from '../entities/esco-classification.entity';
+import { JobClassificationMetadataVo } from '../vos/job-classification.metadata.vo';
 
 // What a name lol
 type RawRoleRaw = {
@@ -39,6 +41,7 @@ type RawJobClassification = {
   EscoClassification: RawEscoClassification;
   wasAcceptedByUser?: boolean | null;
   wasModifiedByUser?: boolean | null;
+  metadata?: Prisma.JsonValue | null;
 };
 
 type RawRole = {
@@ -120,12 +123,16 @@ type RawGraduation = {
   Course: RawCourse;
 };
 
+/**
+ * Maps the company from the prisma model to a TypeScript object
+ * @param company - The company to map
+ * @returns The mapped company
+ */
 export const mapCompanyFromPrisma = (
   company: RawCompany,
 ): CompanyAnalyticsEntity => {
   return {
-    id: company.id,
-    name: company.name,
+    ...company,
     logo: company.logo ?? undefined,
     linkedinUrl: company.linkedinUrl ?? undefined,
     founded: company.founded ?? undefined,
@@ -138,50 +145,74 @@ export const mapCompanyFromPrisma = (
   };
 };
 
+/**
+ * Maps the industry from the prisma model to a TypeScript object
+ * @param industry - The industry to map
+ * @returns The mapped industry
+ */
 const mapIndustryFromPrisma = (
   industry: RawIndustry,
 ): IndustryAnalyticsEntity => {
   return {
-    id: industry.id,
-    name: industry.name,
+    ...industry,
   };
 };
 
+/**
+ * Maps the esco classification from the prisma model to a TypeScript object
+ * @param escoClassification - The esco classification to map
+ * @returns The mapped esco classification
+ */
 export const mapEscoClassificationFromPrisma = (
   escoClassification: RawEscoClassification,
 ): EscoClassificationAnalyticsEntity => {
   return {
-    titleEn: escoClassification.titleEn,
-    code: escoClassification.code,
-    level: escoClassification.level,
-    isLeaf: escoClassification.isLeaf,
+    ...escoClassification,
     escoUrl: escoClassification.escoUrl ?? undefined,
   };
 };
 
+/**
+ * Maps the job classification from the prisma model to a TypeScript object
+ * @param jobClassification - The job classification to map
+ * @returns The mapped job classification
+ */
 export const mapJobClassificationFromPrisma = (
   jobClassification?: RawJobClassification | null,
 ): JobClassificationAnalyticsEntity | undefined => {
   if (!jobClassification || !jobClassification.EscoClassification)
     return undefined;
+
+  const modelMetadata = jobClassification.metadata
+    ? (jobClassification.metadata as Prisma.JsonObject)
+    : undefined;
+
+  const metadata = modelMetadata
+    ? new JobClassificationMetadataVo({ ...modelMetadata })
+    : undefined;
+
   return {
-    escoClassificationId: jobClassification.escoClassificationId,
-    roleId: jobClassification.roleId,
-    confidence: jobClassification.confidence,
+    ...jobClassification,
     escoClassification: mapEscoClassificationFromPrisma(
       jobClassification.EscoClassification,
     ),
     wasAcceptedByUser: jobClassification.wasAcceptedByUser ?? undefined,
     wasModifiedByUser: jobClassification.wasModifiedByUser ?? undefined,
+    metadata,
   };
 };
 
+/**
+ * Maps the location from the prisma model to a TypeScript object
+ * @param location - The location to map
+ * @returns The mapped location
+ */
 export const mapLocationFromPrisma = (
   location?: RawLocation | null,
 ): LocationAnalyticsEntity | undefined => {
   if (!location) return undefined;
   return {
-    id: location.id,
+    ...location,
     country: location.country ?? '',
     countryCode: location.countryCode ?? '',
     city: location.city ?? '',
@@ -190,17 +221,18 @@ export const mapLocationFromPrisma = (
   };
 };
 
+/**
+ * Maps the role from the prisma model to a TypeScript object
+ * @param role - The role to map
+ * @returns The mapped role
+ */
 export const mapRoleFromPrisma = (role: RawRole): RoleAnalyticsEntity => {
   return {
-    id: role.id,
-    alumniId: role.alumniId,
-    startDate: role.startDate,
+    ...role,
     endDate: role.endDate ?? undefined,
-    isCurrent: role.isCurrent,
     jobClassification: mapJobClassificationFromPrisma(role.JobClassification),
     company: mapCompanyFromPrisma(role.Company),
     location: mapLocationFromPrisma(role.Location),
-    seniorityLevel: role.seniorityLevel,
     wasSeniorityLevelAcceptedByUser:
       role.wasSeniorityLevelAcceptedByUser ?? undefined,
     wasSeniorityLevelModifiedByUser:
@@ -209,6 +241,11 @@ export const mapRoleFromPrisma = (role: RawRole): RoleAnalyticsEntity => {
   };
 };
 
+/**
+ * Maps the role raw from the prisma model to a TypeScript object
+ * @param roleRaw - The role raw to map
+ * @returns The mapped role raw
+ */
 export const mapRoleRawFromPrisma = (
   roleRaw?: RawRoleRaw | null,
 ): RoleRawAnalyticsEntity | undefined => {
@@ -222,22 +259,21 @@ const mapGraduationFromPrisma = (
   graduation: RawGraduation,
 ): GraduationAnalyticsEntity => {
   return {
-    id: graduation.id,
-    alumniId: graduation.alumniId,
-    courseId: graduation.courseId,
-    conclusionYear: graduation.conclusionYear,
+    ...graduation,
     course: mapCourseFromPrisma(graduation.Course),
   };
 };
 
+/**
+ * Maps the course from the prisma model to a TypeScript object
+ * @param course - The course to map
+ * @returns The mapped course
+ */
 export const mapCourseFromPrisma = (
   course: RawCourse,
 ): CourseAnalyticsEntity => {
   return {
-    id: course.id,
-    name: course.name,
-    status: course.status,
-    acronym: course.acronym,
+    ...course,
     facultyId: course.Faculty.id,
     faculty: mapFacultyFromPrisma(course.Faculty),
     facultyAcronym: course.Faculty.acronym,
@@ -247,21 +283,27 @@ export const mapCourseFromPrisma = (
   };
 };
 
+/**
+ * Maps the faculty from the prisma model to a TypeScript object
+ * @param faculty - The faculty to map
+ * @returns The mapped faculty
+ */
 const mapFacultyFromPrisma = (faculty: RawFaculty): FacultyAnalyticsEntity => {
   return {
-    id: faculty.id,
-    name: faculty.name,
-    nameInt: faculty.nameInt,
-    acronym: faculty.acronym,
+    ...faculty,
   };
 };
 
+/**
+ * Maps the alumni from the prisma model to a TypeScript object
+ * @param alumni - The alumni to map
+ * @returns The mapped alumni
+ */
 export const mapAlumniFromPrisma = (
   alumni: RawAlumni,
 ): AlumniAnalyticsEntity => {
   return {
-    id: alumni.id,
-    fullName: alumni.fullName,
+    ...alumni,
     linkedinUrl: alumni.linkedinUrl ?? undefined,
     profilePictureUrl: alumni.profilePictureUrl ?? undefined,
     roles: alumni.Roles.map(mapRoleFromPrisma),

@@ -9,9 +9,9 @@ import { Location } from '@/entities';
 import { locationSelect, roleSelect } from '@/analytics/utils/selectors';
 import { graduationSelect } from '@/analytics/utils/selectors';
 import { AlumniAnalyticsEntity } from '@/analytics/entities/alumni.entity';
-import { mapAlumniFromPrisma } from '@/analytics/utils/alumni.mapper';
+import { mapAlumniFromPrisma } from '@/analytics/utils/mapper';
 import { RoleAnalyticsEntity } from '@/analytics/entities/role.entity';
-import { mapRoleFromPrisma } from '@/analytics/utils/alumni.mapper';
+import { mapRoleFromPrisma } from '@/analytics/utils/mapper';
 import {
   EvaluateSeniorityLevelDto,
   EvaluateClassificationDto,

@@ -205,8 +205,6 @@ class CompanyService:
             company_response: LinkedIn company data from the API
             company_id: ID of the company in our database
         """
-        # logger.info(f"Processing company data for {company_linkedin_url}")
-
         # *** Logo ***
         company_logo = None
         if company_response.logo:
@@ -214,6 +212,7 @@ class CompanyService:
             company_logo = image_storage_service.upload_image(company_response.logo, company_id)
 
         # Create a task for location processing to be executed after company update
+        # If we have headquarters and country code, we can process the location
         if company_response.headquarters and company_response.country_code:
             input = CompanyLocationInput(
                 type=LocationType.COMPANY,
@@ -247,7 +246,6 @@ class CompanyService:
 
         try:
             # Update the company
-            #logger.info(f"Updating company {company_id}")
             update_company(company, db)
 
             # Now that the company is updated, trigger location processing

@@ -1,5 +1,6 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { EscoClassificationAnalyticsEntity } from './esco-classification.entity';
+import { JobClassificationMetadataVo } from '../vos/job-classification.metadata.vo';
 
 export class JobClassificationAnalyticsEntity {
   @ApiProperty()
@@ -28,4 +29,10 @@ export class JobClassificationAnalyticsEntity {
     type: Boolean,
   })
   wasModifiedByUser?: boolean;
+
+  @ApiPropertyOptional({
+    description: 'The metadata of the job classification',
+    type: JobClassificationMetadataVo,
+  })
+  metadata?: JobClassificationMetadataVo;
 }
