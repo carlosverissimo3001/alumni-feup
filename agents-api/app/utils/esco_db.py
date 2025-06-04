@@ -1,5 +1,5 @@
 import logging
-from typing import List
+from typing import List, Optional
 
 from sqlalchemy import select
 from sqlalchemy.orm import Session
@@ -83,7 +83,7 @@ def update_role_with_classifications(db: Session, state: JobClassificationAgentS
         db.rollback()
 
 
-async def update_role_with_classifications_batch(db: Session, updates: List[dict]):
+async def update_role_with_classifications_batch(db: Session, updates: List[dict], action_by: Optional[str] = None):
     """
     Batch update role classifications in the database
     """
@@ -114,6 +114,8 @@ async def update_role_with_classifications_batch(db: Session, updates: List[dict
                     confidence=best_result.confidence,
                     model_used=settings.OPENAI_DEFAULT_MODEL,
                     metadata_=metadata_json,
+                    created_by=action_by,
+                    updated_by=action_by,
                 )
                 db.add(classification)
             except Exception as e:

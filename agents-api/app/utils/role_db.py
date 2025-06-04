@@ -1,8 +1,9 @@
 import logging
+from datetime import datetime
 
 from sqlalchemy.orm import Session
 
-from app.db.models import Role, RoleRaw
+from app.db.models import Role, RoleRaw, JobClassification
 from app.schemas.job_classification import JobClassificationInput, JobClassificationRoleInput
 
 logger = logging.getLogger(__name__)
@@ -46,7 +47,13 @@ def create_role_raw(role_raw: RoleRaw, db: Session) -> RoleRaw:
 
 
 def get_extended_roles_by_alumni_id(alumni_id: str, db: Session) -> JobClassificationInput:
-    roles = db.query(Role).filter(Role.alumni_id == alumni_id).all()
+    roles = (
+        db.query(Role)
+        .outerjoin(JobClassification, Role.id == JobClassification.role_id)
+        .filter(Role.alumni_id == alumni_id)
+        .filter(JobClassification.id.is_(None))
+        .all()
+    )
 
     return JobClassificationInput(
         alumni_id=alumni_id,
@@ -72,7 +79,7 @@ def update_role(role: Role, db: Session) -> Role:
         for key, value in vars(role).items():
             if not key.startswith("_") and key != "id" and value is not None:
                 setattr(existing_role, key, value)
-
+        existing_role.updated_at = datetime.now()
         db.commit()
         db.refresh(existing_role)
     return existing_role

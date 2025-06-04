@@ -50,6 +50,24 @@ class CompanyService:
             },
         )
 
+    async def __aenter__(self):
+        """Async context manager entry."""
+        return self
+
+    async def __aexit__(self, exc_type, exc_val, exc_tb):
+        """Async context manager exit."""
+        await self.close()
+
+    async def close(self):
+        """Close all HTTP clients."""
+        await self.client.aclose()
+        await self.levels_client.aclose()
+
+    def __del__(self):
+        """Ensure sync clients are closed when object is destroyed."""
+        self.client.close()
+        self.levels_client.close()
+
     async def validate_levels_fyi_url(self, company: Company) -> Optional[str]:
         """
         Construct and validate a Levels.fyi URL for the company.
@@ -96,7 +114,7 @@ class CompanyService:
         # and newsflash, that user is me :))
         companies = list(set(companies))
 
-        #logger.info(f"Going to update {len(companies)} companies")
+        # logger.info(f"Going to update {len(companies)} companies")
 
         # Process in batches of 10 to avoid overwhelming the system
         batch_size = 10
@@ -133,7 +151,7 @@ class CompanyService:
             company_url: URL of the LinkedIn company
             company_id: ID of the company in our database
         """
-        #logger.info(f"Extracting company data for {company_url} with BrightData")
+        # logger.info(f"Extracting company data for {company_url} with BrightData")
 
         params = {
             "dataset_id": settings.BRIGHTDATA_COMPANY_DATASET_ID,

@@ -126,6 +126,8 @@ class Company(Base):
     updated_at = Column(
         DateTime, nullable=False, server_default="now()", onupdate=datetime.now(timezone.utc)
     )
+    created_by = Column(String, nullable=True)
+    updated_by = Column(String, nullable=True)
 
     industry = relationship("Industry", back_populates="companies")
     roles = relationship("Role", back_populates="company")
@@ -191,6 +193,8 @@ class JobClassification(Base):
     updated_at = Column(
         DateTime, nullable=False, server_default="now()", onupdate=datetime.now(timezone.utc)
     )
+    created_by = Column(String, nullable=True)
+    updated_by = Column(String, nullable=True)
     model_used = Column(String, nullable=False)
     metadata_ = Column(JSONB, name="metadata", nullable=True)
 
@@ -245,6 +249,8 @@ class Role(Base):
     updated_at = Column(
         DateTime, nullable=False, server_default="now()", onupdate=datetime.now(timezone.utc)
     )
+    created_by = Column(String, nullable=True)
+    updated_by = Column(String, nullable=True)
     seniority_level = Column(Enum(SeniorityLevel), nullable=False, default=SeniorityLevel.ASSOCIATE)
     is_promotion = Column(Boolean, nullable=False, server_default="false")
     is_current = Column(Boolean, nullable=False, server_default="false")
@@ -289,6 +295,6 @@ class EscoClassification(Base):
     is_leaf = Column(Boolean, nullable=False, server_default="false", default=False)
     # Using 3072 dimensions for OpenAI's text-embedding-3-large model
     embedding = Column(Vector(3072), nullable=True)
-    
+
     job_classification = relationship("JobClassification", back_populates="esco_classification")
 

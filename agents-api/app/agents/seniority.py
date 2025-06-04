@@ -181,6 +181,7 @@ class SeniorityAgent:
                     "reasoning": entry["reasoning"],
                     "model": state["model_used"],
                 }
+                role.updated_by = "seniority-agent"
                 role.metadata_ = metadata
                 update_role(role, db)
             except Exception as e:
