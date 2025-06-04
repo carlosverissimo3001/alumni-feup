@@ -1,9 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { Alumni, AlumniExtended } from 'src/entities/alumni.entity';
-import {
-  alumniSelect,
-} from 'src/prisma/includes/alumni.include';
+import { alumniSelect } from 'src/prisma/includes/alumni.include';
 import { GetGeoJSONDto } from '@/dto/get-geojson.dto';
 import { Prisma } from '@prisma/client';
 import { GetReviewGeoJSONDto } from '@/reviews/dto/get-review-geojson.dto';
@@ -94,6 +92,12 @@ export class AlumniRepository {
       wasReviewed: true,
     };
 
+    const sanitizedAlumniWhere = {
+      wasReviewed: alumniWhere.wasReviewed,
+      hasLocation: alumniWhere.Location ? true : false,
+    };
+    this.logger.log(`Sanitized Alumni where: ${JSON.stringify(sanitizedAlumniWhere)}`);
+
     return this.prisma.alumni.findMany({
       where: alumniWhere,
       select: alumniSelect,
@@ -136,7 +140,6 @@ export class AlumniRepository {
           ReviewsLocation: {
             include: {
               Location: true,
-             
             },
             where: {
               ...ratingFilter,
