@@ -23,7 +23,7 @@ import {
 } from "lucide-react";
 import { mapSeniorityLevel } from "@/utils/mappings";
 import { useEvaluateClassifcation } from "@/hooks/profile/useEvaluateClassifcation";
-import { useEvaluateSeniority } from "@/hooks/profile/useEvalutateSeniority";
+import { useEvaluateSeniority } from "@/hooks/profile/useEvaluateSeniority";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { SENIORITY_COLORS } from "@/consts";
