@@ -5,6 +5,7 @@ import time
 from typing import List
 
 import openai
+import tiktoken
 from fastapi.encoders import jsonable_encoder
 from langchain_core.messages import HumanMessage, SystemMessage
 from langchain_core.tools import Tool
@@ -27,8 +28,13 @@ from app.services.coordinates import coordinates_service
 from app.utils.alumni_db import find_by_id, update_alumni
 from app.utils.company_db import get_company_by_id, update_company
 from app.utils.consts import REMOTE_COUNTRY_CODE, REMOTE_LOCATION_ID
-from app.utils.location_db import create_location, get_locations_by_country_code
+from app.utils.location_db import (
+    create_location,
+    get_location,
+    get_locations_by_country_code,
+)
 from app.utils.prompts import RESOLVE_GEO_PROMPT, RESOLVE_LOCATION_PROMPT
+from app.utils.rate_limiter import TokenRateLimiter
 from app.utils.role_db import get_role_by_id, update_role
 
 logger = logging.getLogger(__name__)
@@ -115,6 +121,16 @@ cold_llm = ChatOpenAI(
 llm_with_tools = cold_llm.bind_tools(tools)
 tool_node = ToolNode(tools=tools)
 
+# Rate limiter to avoid exceeding OpenAI's 200k tokens/minute cap
+rate_limiter = TokenRateLimiter()
+
+# Helper to estimate token usage
+encoding = tiktoken.encoding_for_model(settings.OPENAI_DEFAULT_MODEL)
+
+
+def count_tokens(messages: List[SystemMessage | HumanMessage]) -> int:
+    return sum(len(encoding.encode(m.content)) for m in messages)
+
 
 class LocationAgent:
     def __init__(self):
@@ -176,18 +192,18 @@ class LocationAgent:
         clean_input = self._build_input_details(state["input"])
 
         try:
-            response = await llm_with_tools.ainvoke(
-                [
-                    SystemMessage(content=RESOLVE_GEO_PROMPT),
-                    SystemMessage(content=f"Here is the location to resolve: {clean_input}"),
-                    *state["messages"],
-                    HumanMessage(
-                        content="""Please analyze the location and use the return_geo_resolution tool to process it.
+            messages = [
+                SystemMessage(content=RESOLVE_GEO_PROMPT),
+                SystemMessage(content=f"Here is the location to resolve: {clean_input}"),
+                *state["messages"],
+                HumanMessage(
+                    content="""Please analyze the location and use the return_geo_resolution tool to process it.
                         DO NOT return raw JSON or add any explanations.
-                        ONLY use the tool to return the result."""
-                    ),
-                ]
-            )
+                        ONLY use the tool to return the result.""",
+                ),
+            ]
+            await rate_limiter.acquire(count_tokens(messages) + 100)
+            response = await llm_with_tools.ainvoke(messages)
 
             state["messages"].append(response)
             tool_call = [tc for tc in response.tool_calls if tc["name"] == "return_geo_resolution"]
@@ -284,21 +300,21 @@ class LocationAgent:
             location_details = f'Alumni City: "{location_input.city}"\nAlumni Country: "{location_input.country}"\nAlumni Country Code: "{location_input.country_code}"'
 
         try:
-            response = await llm_with_tools.ainvoke(
-                [
-                    SystemMessage(content=RESOLVE_LOCATION_PROMPT),
-                    SystemMessage(content=f"Input Location Details:\n{location_details}"),
-                    SystemMessage(
-                        content=f"Database Locations, for the resolved country code:\n{json.dumps(db_locations_json)}"
-                    ),
-                    HumanMessage(
-                        content="""Please analyze the location and use the return_location_resolution tool to process it.
+            messages = [
+                SystemMessage(content=RESOLVE_LOCATION_PROMPT),
+                SystemMessage(content=f"Input Location Details:\n{location_details}"),
+                SystemMessage(
+                    content=f"Database Locations, for the resolved country code:\n{json.dumps(db_locations_json)}"
+                ),
+                HumanMessage(
+                    content="""Please analyze the location and use the return_location_resolution tool to process it.
                         DO NOT return raw JSON or add any explanations.
                         ONLY use the tool to return the result.
                         Make sure to follow all the matching rules and standardization guidelines."""
-                    ),
-                ]
-            )
+                ),
+            ]
+            await rate_limiter.acquire(count_tokens(messages) + 100)
+            response = await llm_with_tools.ainvoke(messages)
 
             state["messages"].append(response)
             tool_call = [
@@ -332,6 +348,7 @@ class LocationAgent:
         """
         Update locations in batch
         """
+        seen: dict[tuple, Location] = {}
         for state in states:
             if not state.get("location_result"):
                 continue
@@ -340,15 +357,33 @@ class LocationAgent:
 
             # Create new location if needed
             if not location_result.id:
-                logger.info(f"Creating new location: {location_result}")
-                location = Location(
-                    city=location_result.city,
-                    country=location_result.country,
-                    country_code=location_result.country_code,
-                    is_country_only=location_result.is_country_only,
+                key = (
+                    (location_result.city or "").lower(),
+                    location_result.country_code,
+                    location_result.is_country_only,
                 )
-                location = create_location(location, db)
-                location_result.id = location.id
+                location = seen.get(key)
+                if not location:
+                    location = get_location(
+                        location_result.city,
+                        location_result.country,
+                        location_result.country_code,
+                        db,
+                    )
+                if location:
+                    location_result.id = location.id
+                    seen[key] = location
+                else:
+                    logger.info(f"Creating new location: {location_result}")
+                    location = Location(
+                        city=location_result.city,
+                        country=location_result.country,
+                        country_code=location_result.country_code,
+                        is_country_only=location_result.is_country_only,
+                    )
+                    location = create_location(location, db)
+                    location_result.id = location.id
+                    seen[key] = location
 
                 # Trigger coordinates update as a background task
                 asyncio.create_task(coordinates_service.update_location_coordinates(location))
