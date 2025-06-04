@@ -54,6 +54,7 @@ export const jobClassificationSelect = {
   wasAcceptedByUser: true,
   wasModifiedByUser: true,
   metadata: true,
+  modelUsed: true,
 } satisfies Prisma.JobClassificationSelect;
 
 export const roleSelect = {

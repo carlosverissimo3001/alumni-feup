@@ -29,6 +29,7 @@ export { RoleListResponseDto, RoleListItemDto } from './role-list.dto';
 export { RoleOptionDto } from './role-option.dto';
 export { GetRoleHierarchyDto } from './get-role-hierarchy.dto';
 export { RoleHierarchyDto, RoleHierarchyItemDto } from './role-hierarchy.dto';
+export { GetRoleDto } from './get-role.dto';
 
 // Data point
 export { DataPointDto } from './data-point.dto';
