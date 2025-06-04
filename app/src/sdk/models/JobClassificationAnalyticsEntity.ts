@@ -59,6 +59,12 @@ export interface JobClassificationAnalyticsEntity {
      */
     escoClassification: EscoClassificationAnalyticsEntity;
     /**
+     * The model that was used to classify the job classification
+     * @type {string}
+     * @memberof JobClassificationAnalyticsEntity
+     */
+    modelUsed?: string;
+    /**
      * Whether the job classification was accepted by the user
      * @type {boolean}
      * @memberof JobClassificationAnalyticsEntity
@@ -102,6 +108,7 @@ export function JobClassificationAnalyticsEntityFromJSONTyped(json: any, ignoreD
         'roleId': json['roleId'],
         'confidence': json['confidence'] == null ? undefined : json['confidence'],
         'escoClassification': EscoClassificationAnalyticsEntityFromJSON(json['escoClassification']),
+        'modelUsed': json['modelUsed'] == null ? undefined : json['modelUsed'],
         'wasAcceptedByUser': json['wasAcceptedByUser'] == null ? undefined : json['wasAcceptedByUser'],
         'wasModifiedByUser': json['wasModifiedByUser'] == null ? undefined : json['wasModifiedByUser'],
         'metadata': json['metadata'] == null ? undefined : JobClassificationMetadataVoFromJSON(json['metadata']),
@@ -123,6 +130,7 @@ export function JobClassificationAnalyticsEntityToJSONTyped(value?: JobClassific
         'roleId': value['roleId'],
         'confidence': value['confidence'],
         'escoClassification': EscoClassificationAnalyticsEntityToJSON(value['escoClassification']),
+        'modelUsed': value['modelUsed'],
         'wasAcceptedByUser': value['wasAcceptedByUser'],
         'wasModifiedByUser': value['wasModifiedByUser'],
         'metadata': JobClassificationMetadataVoToJSON(value['metadata']),

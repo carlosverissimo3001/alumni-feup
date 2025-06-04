@@ -7,7 +7,8 @@ import {
   mapRoleFromPrisma,
 } from '../utils/mapper';
 import { RoleAnalyticsEntity } from '../entities/role.entity';
-import { roleSelect } from '../utils/selectors';
+import { jobClassificationSelect, roleSelect } from '../utils/selectors';
+import { GetRoleDto } from '../dto/get-role.dto';
 
 @Injectable()
 export class RoleRepository {
@@ -66,10 +67,19 @@ export class RoleRepository {
     return mapEscoClassificationFromPrisma(classification);
   }
 
-  async findById(id: string): Promise<RoleAnalyticsEntity> {
+  async findById(id: string, params: GetRoleDto): Promise<RoleAnalyticsEntity> {
     const role = await this.prisma.role.findUniqueOrThrow({
       where: { id },
-      select: roleSelect,
+      select: {
+        ...roleSelect,
+        metadata: params.includeMetadata,
+        JobClassification: {
+          select: {
+            ...jobClassificationSelect,
+            metadata: params.includeMetadata,
+          },
+        },
+      },
     });
     return mapRoleFromPrisma(role);
   }

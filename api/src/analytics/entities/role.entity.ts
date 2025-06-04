@@ -4,6 +4,7 @@ import { CompanyAnalyticsEntity } from './company.entity';
 import { JobClassificationAnalyticsEntity } from './job-classification.entity';
 import { SENIORITY_LEVEL } from '@prisma/client';
 import { RoleRawAnalyticsEntity } from './role-raw.entity';
+import { RoleMetadataVo } from '../vos/role-metadata.vo';
 
 export class RoleAnalyticsEntity {
   @ApiProperty()
@@ -54,4 +55,10 @@ export class RoleAnalyticsEntity {
     type: Boolean,
   })
   wasSeniorityLevelModifiedByUser?: boolean;
+
+  @ApiPropertyOptional({
+    description: 'The metadata of the role',
+    type: RoleMetadataVo,
+  })
+  metadata?: RoleMetadataVo;
 }

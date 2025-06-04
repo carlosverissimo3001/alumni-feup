@@ -530,6 +530,7 @@ export interface ReviewControllerFindAllGeoJSONRequest {
 
 export interface RoleAnalyticsControllerGetRoleRequest {
     id: string;
+    includeMetadata?: boolean;
 }
 
 export interface RoleAnalyticsControllerGetRoleHierarchyRequest {
@@ -1529,6 +1530,7 @@ export interface V1ApiInterface {
      * 
      * @summary Returns the role with the given id
      * @param {string} id 
+     * @param {boolean} [includeMetadata] Whether to include the metadata of the role
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof V1ApiInterface
@@ -4187,6 +4189,10 @@ export class V1Api extends runtime.BaseAPI implements V1ApiInterface {
         }
 
         const queryParameters: any = {};
+
+        if (requestParameters['includeMetadata'] != null) {
+            queryParameters['includeMetadata'] = requestParameters['includeMetadata'];
+        }
 
         const headerParameters: runtime.HTTPHeaders = {};
 

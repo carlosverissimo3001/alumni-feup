@@ -38,7 +38,7 @@ interface Props {
 }
 
 export function CareerTimelineItem({ roleId }: Props) {
-  const { data: role } = useFetchRole(roleId);
+  const { data: role } = useFetchRole({ id: roleId });
   const { user } = useAuth();
   const [tooltipOpen, setTooltipOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);

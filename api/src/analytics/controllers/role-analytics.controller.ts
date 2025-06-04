@@ -13,6 +13,7 @@ import {
   SeniorityListResponseDto,
 } from '@/analytics/dto';
 import { RoleAnalyticsEntity } from '../entities';
+import { GetRoleDto } from '../dto/get-role.dto';
 
 @ApiTags('V1')
 @Controller('analytics/roles')
@@ -88,7 +89,7 @@ export class RoleAnalyticsController {
     description: 'The role with the given id',
     type: RoleAnalyticsEntity,
   })
-  async getRole(@Param('id') id: string) {
-    return this.roleAnalyticsService.getRole(id);
+  async getRole(@Param('id') id: string, @Query() query: GetRoleDto) {
+    return this.roleAnalyticsService.getRole(id, query);
   }
 }
