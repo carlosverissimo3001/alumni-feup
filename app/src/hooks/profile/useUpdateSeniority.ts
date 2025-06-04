@@ -18,6 +18,7 @@ export const useUpdateSeniority = ({ onSuccess }: Input) => {
     },
     onSuccess: (dto) => {
       queryClient.invalidateQueries({ queryKey: ["role", dto.id] });
+      queryClient.invalidateQueries({ queryKey: ["profile", dto.alumniId] });
       onSuccess?.();
     },
   });

@@ -2,7 +2,7 @@ import logging
 
 from sqlalchemy.orm import Session
 
-from app.db.models import Role, RoleRaw, JobClassification
+from app.db.models import Role, RoleRaw
 from app.schemas.job_classification import JobClassificationInput, JobClassificationRoleInput
 
 logger = logging.getLogger(__name__)
@@ -46,11 +46,7 @@ def create_role_raw(role_raw: RoleRaw, db: Session) -> RoleRaw:
 
 
 def get_extended_roles_by_alumni_id(alumni_id: str, db: Session) -> JobClassificationInput:
-    roles = (
-        db.query(Role)
-        .filter(Role.alumni_id == alumni_id)
-        .all()
-    )
+    roles = db.query(Role).filter(Role.alumni_id == alumni_id).all()
 
     return JobClassificationInput(
         alumni_id=alumni_id,

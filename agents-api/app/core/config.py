@@ -15,7 +15,7 @@ class Settings(BaseSettings):
     HOST: str = "0.0.0.0"
     LOG_LEVEL: str = "info"
     ENVIRONMENT: str = "development"
-    CORS_ORIGINS: List[str] = ["http://localhost:3000", "http://localhost:8080"]
+    CORS_ORIGINS: List[str] = ["http://localhost:3010", "http://localhost:8080"]
 
     @field_validator("CORS_ORIGINS", mode="before")
     def parse_cors_origins(cls, v):
@@ -27,10 +27,11 @@ class Settings(BaseSettings):
     # Database Settings
     DATABASE_URL: PostgresDsn
 
-    
+    # OpenAI Settings
     OPENAI_DEFAULT_MODEL: str = "gpt-4o-mini"
     OPENAI_API_KEY: str = ""
     
+    # Agent Tracing Settings (disabled, as I've used all the free runs :/ )
     """
     LANGSMITH_TRACING: bool = False
     LANGSMITH_ENDPOINT: str = ""

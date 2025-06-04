@@ -126,26 +126,6 @@ export function CareerTimelineItem({ roleId }: Props) {
                             align="end"
                             className="w-[220px]"
                           >
-                            <UpdateSeniorityModal
-                              roleId={roleId}
-                              trigger={
-                                <DropdownMenuItem
-                                  onSelect={(e) => {
-                                    e.preventDefault();
-                                    setTooltipOpen(false);
-                                  }}
-                                  className="gap-2 py-2 cursor-pointer"
-                                >
-                                  <GaugeCircle className="h-4 w-4 text-amber-500" />
-                                  <div className="flex flex-col gap-0.5">
-                                    <span>Update Seniority Level</span>
-                                    <span className="text-xs text-muted-foreground">
-                                      Change your role&apos;s seniority
-                                    </span>
-                                  </div>
-                                </DropdownMenuItem>
-                              }
-                            />
                             <UpdateClassificationModal
                               roleId={roleId}
                               trigger={
@@ -161,6 +141,26 @@ export function CareerTimelineItem({ roleId }: Props) {
                                     <span>Update Classification</span>
                                     <span className="text-xs text-muted-foreground">
                                       Refine your ESCO classification
+                                    </span>
+                                  </div>
+                                </DropdownMenuItem>
+                              }
+                            />
+                            <UpdateSeniorityModal
+                              roleId={roleId}
+                              trigger={
+                                <DropdownMenuItem
+                                  onSelect={(e) => {
+                                    e.preventDefault();
+                                    setTooltipOpen(false);
+                                  }}
+                                  className="gap-2 py-2 cursor-pointer"
+                                >
+                                  <GaugeCircle className="h-4 w-4 text-amber-500" />
+                                  <div className="flex flex-col gap-0.5">
+                                    <span>Update Seniority Level</span>
+                                    <span className="text-xs text-muted-foreground">
+                                      Change your role&apos;s seniority
                                     </span>
                                   </div>
                                 </DropdownMenuItem>

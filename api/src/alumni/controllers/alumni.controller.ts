@@ -243,7 +243,7 @@ export class AlumniController {
     description: 'A success message',
   })
   @UseFilters(ThrottlerExceptionFilter)
-  @Throttle({ default: { limit: 5, ttl: UPDATE_REQUEST_THROTTLE_TTL } })
+  @Throttle({ default: { limit: 20, ttl: UPDATE_REQUEST_THROTTLE_TTL } })
   async requestDataUpdate(@Param('id') id: string): Promise<string> {
     return this.alumniProfileService.requestDataUpdate(id);
   }
