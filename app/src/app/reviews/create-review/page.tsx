@@ -300,15 +300,18 @@ const SubmitReview = () => {
                         )}
                       </SelectContent>
                     </Select>)}
-                
-                  {errors.selectedCompany ? 
-                  <p className="text-sm text-red-500">{errors.selectedCompany}</p> :
-                    <p className="text-sm text-muted-foreground">
-                    {reviewType === ReviewType.Company
-                      ? "Select the company you're reviewing"
-                      : "Select the location you're reviewing"}
-                  </p>
-                  }
+
+                    {reviewType === ReviewType.Company ? 
+                      errors.selectedCompany ? 
+                        <p className="text-sm text-red-500">{errors.selectedCompany}</p> :
+                        <p className="text-sm text-muted-foreground">
+                            Select the company you&apos;re reviewing
+                        </p>
+                      : errors.selectedLocation ? 
+                      <p className="text-sm text-red-500">{errors.selectedLocation}</p> :
+                      <p className="text-sm text-muted-foreground">
+                          Select the location you&apos;re reviewing
+                      </p>}
               </div>
             )}
   
@@ -401,7 +404,7 @@ const SubmitReview = () => {
             )}
             
 
-              <Button type="submit" className="w-full" disabled={!isFormValid}>
+              <Button type="submit" className="w-full" disabled={!reviewType}>
                 Submit Review
               </Button>
 
