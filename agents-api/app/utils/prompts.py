@@ -178,30 +178,14 @@ STANDARDIZATION RULES:
 3. Regional Variations → Standardize to main city:
    • Metropolitan Areas:
      - "São Paulo Area" → "Sao Paulo"
-     - "São Paulo Region" → "Sao Paulo"
-     - "Greater São Paulo" → "Sao Paulo"
      - "London Area" → "London"
      - "Greater London" → "London"
-     - "NYC Metro Area" → "New York"
      - "New York City" → "New York"
-     - "Bay Area" → "San Francisco"
-     - "Silicon Valley" → "San Francisco"
      - "Greater Boston" → "Boston"
-     - "Seattle Area" → "Seattle"
 
    • Districts/Neighborhoods:
      - "Manhattan, NY" → "New York"
-     - "Brooklyn, NY" → "New York"
      - "Parque das Nações, Lisboa" → "Lisboa"
-     - "Miraflores, Lima" → "Lima"
-     - "Pudong, Shanghai" → "Shanghai"
-     - "Silicon Oasis, Dubai" → "Dubai"
-
-   • Business/Tech Hubs:
-     - "Dubai Media City" → "Dubai"
-     - "Dubai Internet City" → "Dubai"
-     - "Bangalore Tech Park" → "Bangalore"
-     - "Hyderabad Hi-Tech City" → "Hyderabad"
 
 4. City and Country Share the Same Name:
    • Some countries consist of a single city or have a city with the same name (e.g., "Luxembourg", "Singapore", "Monaco")

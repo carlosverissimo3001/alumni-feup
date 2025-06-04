@@ -1,5 +1,5 @@
 import logging
-from typing import List
+from typing import List, Optional
 
 from sqlalchemy import select
 from sqlalchemy.orm import Session
@@ -35,6 +35,7 @@ def insert_classification(db: Session, classification: JobClassification):
 
 
 def delete_existing_classifications(db: Session, role_id: str):
+    """Delete existing classifications for a role."""
     db.query(JobClassification).filter(JobClassification.role_id == role_id).delete()
 
 
@@ -83,10 +84,21 @@ def update_role_with_classifications(db: Session, state: JobClassificationAgentS
         db.rollback()
 
 
-async def update_role_with_classifications_batch(db: Session, updates: List[dict]):
-    """
-    Batch update role classifications in the database
-    """
+def sanitize_json(obj):
+    """Remove NULL characters from strings in a JSON object."""
+    if isinstance(obj, dict):
+        return {k: sanitize_json(v) for k, v in obj.items()}
+    elif isinstance(obj, list):
+        return [sanitize_json(item) for item in obj]
+    elif isinstance(obj, str):
+        return obj.replace("\x00", "").replace("\u0000", "")
+    return obj
+
+
+async def update_role_with_classifications_batch(
+    db: Session, updates: List[dict], action_by: Optional[str] = None
+) -> None:
+    """Batch update role classifications in the database with sanitized data."""
     try:
         for update in updates:
             delete_existing_classifications(db, update["role_id"])
@@ -96,7 +108,8 @@ async def update_role_with_classifications_batch(db: Session, updates: List[dict
                 continue
 
             try:
-                results = [EscoResult(**result) for result in update["classifications"]]
+                sanitized_classifications = sanitize_json(update["classifications"])
+                results = [EscoResult(**result) for result in sanitized_classifications]
             except Exception as e:
                 logger.error(f"Error parsing ESCO results for role {update['role_id']}: {str(e)}")
                 continue
@@ -104,7 +117,7 @@ async def update_role_with_classifications_batch(db: Session, updates: List[dict
             best_result = results[0]
             metadata_json = {
                 "choices": [result.model_dump() for result in results],
-                "reasoning": update.get("reasoning", ""),
+                "reasoning": sanitize_json(update.get("reasoning", "")),
             }
 
             try:
@@ -114,6 +127,8 @@ async def update_role_with_classifications_batch(db: Session, updates: List[dict
                     confidence=best_result.confidence,
                     model_used=settings.OPENAI_DEFAULT_MODEL,
                     metadata_=metadata_json,
+                    created_by=action_by,
+                    updated_by=action_by,
                 )
                 db.add(classification)
             except Exception as e:
