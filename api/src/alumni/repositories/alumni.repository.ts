@@ -92,12 +92,6 @@ export class AlumniRepository {
       wasReviewed: true,
     };
 
-    const sanitizedAlumniWhere = {
-      wasReviewed: alumniWhere.wasReviewed,
-      hasLocation: alumniWhere.Location ? true : false,
-    };
-    this.logger.log(`Sanitized Alumni where: ${JSON.stringify(sanitizedAlumniWhere)}`);
-
     return this.prisma.alumni.findMany({
       where: alumniWhere,
       select: alumniSelect,
