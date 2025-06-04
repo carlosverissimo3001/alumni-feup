@@ -6,7 +6,7 @@ type Input = {
   onSuccess?: () => void | Promise<void>;
 };
 
-export const useEvaluateClassifcation = ({ onSuccess }: Input) => {
+export const useEvaluateClassification = ({ onSuccess }: Input) => {
   const qc = useQueryClient();
 
   const mutation = useMutation({
