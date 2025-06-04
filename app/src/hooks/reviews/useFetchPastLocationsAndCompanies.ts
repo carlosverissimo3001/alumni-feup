@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import NestAPI from "@/api";
-import { useJsonFromResponse } from "@/commom/use-json-from-response";
+import { useJsonFromResponse } from "@/common/use-json-from-response";
 import { AlumniPastLocationsAndCompaniesDto } from "@/sdk/models/AlumniPastLocationsAndCompaniesDto";
 
 interface UseFetchPastLocationsAndCompaniesReturn {

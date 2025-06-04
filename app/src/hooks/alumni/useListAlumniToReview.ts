@@ -1,5 +1,5 @@
 import { useQuery, QueryObserverResult } from "@tanstack/react-query";
-import { useJsonFromResponse } from "@/commom";
+import { useJsonFromResponse } from "@/common";
 import NestAPI from "@/api";
 import { Alumni } from "@/sdk";
 
