@@ -87,6 +87,8 @@ get_detailed_esco_classification = Tool.from_function(
     description="Get the detailed ESCO classification for the given id",
 )
 
+DEFAULT_ACTION_BY = "job-classification-agent"
+
 tools = [get_detailed_esco_classification, validate_tool]
 
 cold_llm = ChatOpenAI(
@@ -233,7 +235,7 @@ class JobClassificationAgent:
             ]
 
             if updates:
-                await update_role_with_classifications_batch(db, updates)
+                await update_role_with_classifications_batch(db, updates, DEFAULT_ACTION_BY)
 
         except Exception as e:
             logger.error(f"Error in batch update classifications: {str(e)}")

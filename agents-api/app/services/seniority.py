@@ -163,15 +163,15 @@ class SeniorityService:
             alumni = find_all(db)
 
         alumni = list(set(alumni))
-        logger.info(f"Going to process roles for {len(alumni)} alumni")
+        # logger.info(f"Going to process roles for {len(alumni)} alumni")
 
         # Process in batches
         for i in range(0, len(alumni), self.BATCH_SIZE):
             batch = alumni[i : i + self.BATCH_SIZE]
             batch_no = i // self.BATCH_SIZE + 1
-            logger.info(
-                f"Processing batch {batch_no} of {math.ceil(len(alumni) / self.BATCH_SIZE)}"
-            )
+            # logger.info(
+            #     f"Processing batch {batch_no} of {math.ceil(len(alumni) / self.BATCH_SIZE)}"
+            # )
             
             tasks = [
                 asyncio.create_task(self.process_alumni_roles(al.id))

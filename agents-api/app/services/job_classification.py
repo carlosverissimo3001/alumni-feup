@@ -18,7 +18,7 @@ db = next(get_db())
 
 class JobClassificationService:
     def __init__(self):
-        self.MAX_CONCURRENT = 10
+        self.MAX_CONCURRENT = 25
         self.BATCH_SIZE = 50
 
     async def classify_roles_for_alumni(self, alumni_id: str):
