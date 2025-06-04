@@ -91,11 +91,11 @@ export class AlumniService {
   async findAllGeoJSON(
     query: GetGeoJSONDto,
   ): Promise<GeoJSONFeatureCollection> {
-    this.logger.log('Got request to find all alumni geoJSON');
+    this.logger.debug('Got request to find all alumni geoJSON');
 
     let alumni = await this.alumniRepository.findAllGeoJSON(query);
 
-    this.logger.log(`Found ${alumni.length} alumni to be displayed in the map`);
+    this.logger.debug(`Found ${alumni.length} alumni to be displayed in the map`);
 
     //Swap selectedYear and compareYear if selectedYear is greater than compareYear
     if (
