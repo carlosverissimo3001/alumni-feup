@@ -152,7 +152,7 @@ class SeniorityAgent:
                 args = tool_call[0]["args"]
                 state["parsed_seniority_results"] = args["results"]
                 return state
-       
+
         except Exception as e:
             if isinstance(e, openai.RateLimitError) or "429" in str(e):
                 state["retry_count"] = retry_count + 1
@@ -161,7 +161,6 @@ class SeniorityAgent:
             logger.error(f"LLM validation failed for batch {state['batch']}: {e}")
             state["error"] = str(e)
             raise e
-
 
     def update_roles_with_seniority(self, state: SeniorityAgentState) -> SeniorityAgentState:
         for entry in state["parsed_seniority_results"]:

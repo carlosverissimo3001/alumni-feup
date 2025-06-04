@@ -42,8 +42,10 @@ class LocationService:
         # and newsflash, that user is me :))
         roles = list(set(roles))
 
-        batch_size = 30
+        batch_size = 300
         for i in range(0, len(roles), batch_size):
+            logger.info(f"Processing batch {i // batch_size + 1} of {len(roles) // batch_size}")
+            
             batch = roles[i : i + batch_size]
 
             tasks = []
@@ -66,7 +68,7 @@ class LocationService:
             await asyncio.gather(*tasks)
 
             if i + batch_size < len(roles):
-                await asyncio.sleep(0.5)
+                await asyncio.sleep(60)
 
     async def resolve_role_location_for_alumni(self, alumni_id: str) -> None:
         """

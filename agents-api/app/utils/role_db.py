@@ -3,17 +3,14 @@ from datetime import datetime
 
 from sqlalchemy.orm import Session
 
-from app.db.models import Role, RoleRaw, JobClassification
+from app.db.models import JobClassification, Role, RoleRaw
 from app.schemas.job_classification import JobClassificationInput, JobClassificationRoleInput
 
 logger = logging.getLogger(__name__)
 
 
 def get_all_roles(db: Session):
-    # temp
-    return db.query(Role).filter(Role.location_id.is_(None)).all()
-
-    # return db.query(Role).all()
+    return db.query(Role).all()
 
 
 def get_role_by_id(id: str, db: Session) -> Role:

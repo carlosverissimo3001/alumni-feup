@@ -124,7 +124,10 @@ llm_with_tools = cold_llm.bind_tools(tools)
 tool_node = ToolNode(tools=tools)
 
 # Rate limiter to avoid exceeding OpenAI's 200k tokens/minute cap
-rate_limiter = TokenRateLimiter()
+rate_limiter = TokenRateLimiter(
+    redis_client=Redis(host="localhost", port=6379, db=0),
+    distributed_key="openai_location_agent_rate_limiter",
+)
 
 # Helper to estimate token usage
 try:
@@ -209,8 +212,18 @@ class LocationAgent:
                         ONLY use the tool to return the result.""",
                 ),
             ]
-            await rate_limiter.acquire(count_tokens(messages) + 100)
-            response = await llm_with_tools.ainvoke(messages)
+
+            # Calculate token estimate with buffer
+            token_estimate = count_tokens(messages) + 100
+            try:
+                await rate_limiter.acquire(token_estimate)
+                response = await llm_with_tools.ainvoke(messages)
+            except Exception as e:
+                if "429" in str(e) or isinstance(e, openai.RateLimitError):
+                    logger.warning(f"Rate limit hit in resolve_geo: {e}")
+                    # Let the retry decorator handle it
+                    raise e
+                raise
 
             state["messages"].append(response)
             tool_call = [tc for tc in response.tool_calls if tc["name"] == "return_geo_resolution"]
@@ -226,6 +239,7 @@ class LocationAgent:
         except Exception as e:
             logger.error(f"Error in geo resolution: {str(e)}")
             state["error"] = str(e)
+            raise
 
         return state
 
@@ -320,8 +334,18 @@ class LocationAgent:
                         Make sure to follow all the matching rules and standardization guidelines."""
                 ),
             ]
-            await rate_limiter.acquire(count_tokens(messages) + 100)
-            response = await llm_with_tools.ainvoke(messages)
+
+            # Calculate token estimate with buffer
+            token_estimate = count_tokens(messages) + 100
+            try:
+                await rate_limiter.acquire(token_estimate)
+                response = await llm_with_tools.ainvoke(messages)
+            except Exception as e:
+                if "429" in str(e) or isinstance(e, openai.RateLimitError):
+                    logger.warning(f"Rate limit hit in resolve_location_with_retry: {e}")
+                    # Let the retry decorator handle it
+                    raise e
+                raise
 
             state["messages"].append(response)
             tool_call = [
@@ -337,6 +361,7 @@ class LocationAgent:
                 raise e
             logger.error(f"Error in location resolution: {str(e)}")
             state["error"] = str(e)
+            raise
 
         return state
 
