@@ -305,12 +305,12 @@ const SubmitReview = () => {
                       errors.selectedCompany ? 
                         <p className="text-sm text-red-500">{errors.selectedCompany}</p> :
                         <p className="text-sm text-muted-foreground">
-                            Select the company you're reviewing
+                            Select the company you&apos;re reviewing
                         </p>
                       : errors.selectedLocation ? 
                       <p className="text-sm text-red-500">{errors.selectedLocation}</p> :
                       <p className="text-sm text-muted-foreground">
-                          Select the location you're reviewing
+                          Select the location you&apos;re reviewing
                       </p>}
               </div>
             )}
@@ -407,7 +407,7 @@ const SubmitReview = () => {
               <Button type="submit" className="w-full" disabled={!reviewType}>
                 Submit Review
               </Button>
-              
+
               {anonymous && (
                 <div className="bg-blue-50 border border-blue-200 rounded-md p-3">
                   <p className="text-sm text-blue-800">
