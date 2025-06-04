@@ -24,6 +24,22 @@ class CoordinatesService:
             base_url=settings.GEOLOCATION_BASE_URL,
         )
 
+    async def __aenter__(self):
+        """Async context manager entry."""
+        return self
+
+    async def __aexit__(self, exc_type, exc_val, exc_tb):
+        """Async context manager exit."""
+        await self.close()
+
+    async def close(self):
+        """Close the HTTP client."""
+        await self.client.aclose()
+
+    def __del__(self):
+        """Ensure sync client is closed when object is destroyed."""
+        self.client.close()
+
     async def update_location_coordinates(self, location: Location):
         """
         Updates the coordinates for a location using a geocoding service.

@@ -2,15 +2,19 @@ import logging
 
 from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, status
 
+from app.db.session import get_db
 from app.schemas.location import (
     ResolveAlumniLocationParams,
     ResolveCompanyLocationParams,
     ResolveRoleLocationParams,
 )
 from app.services.location import location_service
+from app.utils.alumni_db import find_all
 
 router = APIRouter()
 logger = logging.getLogger(__name__)
+
+db = next(get_db())
 
 
 @router.post(
@@ -50,16 +54,20 @@ async def resolve_alumni_location(
 ):
     """
     Triggers the agent to resolve the location of an alumni.
-    
+
     If none are provided, it will update all alumni.
     """
     try:
         logger.info(f"Resolving location for alumni {params.alumni_ids}")
-
-        background_tasks.add_task(
-            location_service.request_alumni_location,
-            params=params,
+        alumni_ids = (
+            params.alumni_ids.split(",") if params.alumni_ids else [id for id in find_all(db)]
         )
+
+        for alumni_id in alumni_ids:
+            background_tasks.add_task(
+                location_service.resolve_role_location_for_alumni,
+                alumni_id=alumni_id,
+            )
     except Exception as e:
         logger.error(f"Error resolving location for alumni {params.alumni_ids}: {str(e)}")
         raise HTTPException(
@@ -67,14 +75,17 @@ async def resolve_alumni_location(
             detail="Error resolving location for alumni",
         )
 
+
 @router.post(
     "/company",
     status_code=status.HTTP_201_CREATED,
 )
-async def resolve_company_location(background_tasks: BackgroundTasks, params: ResolveCompanyLocationParams = Depends()):
+async def resolve_company_location(
+    background_tasks: BackgroundTasks, params: ResolveCompanyLocationParams = Depends()
+):
     """
     Triggers the agent to resolve the location of a company.
-    
+
     If none are provided, it will update all companies.
     """
     try:

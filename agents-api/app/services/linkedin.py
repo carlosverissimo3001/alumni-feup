@@ -1,5 +1,6 @@
 import asyncio
 import logging
+from datetime import datetime
 from typing import List, Optional
 
 from app.agents.location import location_agent
@@ -21,6 +22,7 @@ from app.utils.alumni_db import (
     delete_profile_data,
     find_all,
     find_by_id,
+    find_by_ids,
     update_alumni,
 )
 from app.utils.company_db import get_company_by_linkedin_url, insert_company
@@ -49,6 +51,34 @@ class LinkedInService:
             },
             base_url=settings.PROXYCURL_BASE_URL,
         )
+        self._background_tasks = set()
+
+    async def __aenter__(self):
+        """Async context manager entry."""
+        return self
+
+    async def __aexit__(self, exc_type, exc_val, exc_tb):
+        """Async context manager exit."""
+        await self.close()
+
+    async def close(self):
+        """Close the HTTP client and wait for background tasks."""
+        # Wait for all background tasks to complete
+        if self._background_tasks:
+            await asyncio.gather(*self._background_tasks, return_exceptions=True)
+        # Close the HTTP client
+        await self.client.aclose()
+
+    def _create_background_task(self, coro):
+        """Create and track a background task."""
+        task = asyncio.create_task(coro)
+        self._background_tasks.add(task)
+        task.add_done_callback(self._background_tasks.discard)
+        return task
+
+    def __del__(self):
+        """Ensure sync client is closed when object is destroyed."""
+        self.client.close()
 
     async def extract_profile_data(
         self,
@@ -123,7 +153,7 @@ class LinkedInService:
                     company_id = db_company.id
 
                     # Let's offload the company extraction to a background task
-                    asyncio.create_task(
+                    self._create_background_task(
                         company_service.extract_company_data(sanitized_url, company_id)
                     )
 
@@ -160,7 +190,7 @@ class LinkedInService:
                     country=country,
                     country_code=country_code,
                 )
-                asyncio.create_task(location_agent.process_location(input))
+                self._create_background_task(location_agent.process_location(input))
 
             else:
                 location_id = location.id
@@ -183,19 +213,19 @@ class LinkedInService:
 
         # We'll now offload the role classification to a background task, using the agent
         # Note that we do NOT wait for this to finish, as it can take a while
-        asyncio.create_task(
+        """self._create_background_task(
             job_classification_service.request_alumni_classification(
                 params=AlumniJobClassificationParams(alumni_ids=alumni_id)
             )
-        )
+        )"""
 
-        # We'll also use the location agent to update the alumni location
-        asyncio.create_task(location_service.resolve_role_location_for_alumni(alumni_id))
+        """# We'll also use the location agent to update the alumni location
+        self._create_background_task(location_service.resolve_role_location_for_alumni(alumni_id))"""
 
     async def update_profile_data(
         self,
         alumni_ids: Optional[List[str]] = None,
-        batch_size: int = 5,
+        batch_size: int = 20,
     ):
         """
         Update the profile data for specified alumni or all alumni if none specified.
@@ -205,44 +235,70 @@ class LinkedInService:
             alumni_ids: Optional list of alumni IDs to update. If None, updates all alumni.
             batch_size: Number of profiles to process concurrently. Defaults to 5.
         """
-        # Get alumni from database based on whether specific IDs were provided
-        ids = alumni_ids if alumni_ids else [alumni.id for alumni in find_all(db)]
+        try:
+            # Get alumni from database based on whether specific IDs were provided
+            alumni: List[Alumni] = []
+            if alumni_ids:
+                alumni = find_by_ids(alumni_ids, db)
+            else:
+                alumni = find_all(db)
+            # Only update those where .update_at is < '2025-06-01 03:00:00'
+            cutoff_date = datetime(2025, 6, 1, 3, 0, 0)  # Naive datetime to match database
+            alumni = [alumni for alumni in alumni if alumni.updated_at < cutoff_date]
+            raw_ids = [alumni.id for alumni in alumni]
 
-        async def process_single_alumni(alumni_id: str):
-            try:
-                # Delete existing data before extraction
-                logger.info(f"Deleting existing data for {alumni_id}")
-                delete_profile_data(alumni_id, db)
+            ids = raw_ids[:100]
 
-                # Extract new data
-                logger.info(f"Extracting LinkedIn data for {alumni_id}")
-                await self.extract_profile_data(alumni_id)
-            except Exception as e:
-                logger.error(f"Error processing alumni {alumni_id}: {str(e)}")
-                # Don't raise the exception to allow other profiles to continue processing
-                return False
+            logger.info(f"Going to update 100 alumni out of {len(raw_ids)}")
+
+            results = []
+            for i in range(0, len(ids), batch_size):
+                batch = ids[i : i + batch_size]
+                logger.info(f"Processing batch of {len(batch)} alumni")
+
+                tasks = []
+                for alumni_id in batch:
+                    task = self._create_background_task(self.process_single_alumni(alumni_id))
+                    tasks.append(task)
+
+                # Wait for all tasks in this batch to complete
+                batch_results = await asyncio.gather(*tasks, return_exceptions=True)
+                results.extend([isinstance(r, bool) and r for r in batch_results])
+
+                # Small delay between batches
+                if i + batch_size < len(ids):
+                    await asyncio.sleep(1)
+
+        finally:
+            # Ensure we wait for any remaining background tasks
+            if self._background_tasks:
+                await asyncio.gather(*self._background_tasks, return_exceptions=True)
+
+    async def process_single_alumni(self, alumni_id: str):
+        """Process a single alumni profile."""
+        try:
+            # Delete existing data before extraction
+            delete_profile_data(alumni_id, db)
+
+            # Extract new data
+            await self.extract_profile_data(alumni_id)
             return True
+        except Exception as e:
+            logger.error(f"Error processing alumni {alumni_id}: {str(e)}")
+            alumni = find_by_id(alumni_id, db)
+            existing_metadata = alumni.metadata_ or {}
 
-        # Process alumni in batches
-        results = []
-        for i in range(0, len(ids), batch_size):
-            batch = ids[i : i + batch_size]
-            logger.info(f"Processing batch of {len(batch)} alumni")
+            error_info = {
+                "linkedin_error": {
+                    "message": str(e),
+                    "timestamp": datetime.now().isoformat(),
+                    "type": e.__class__.__name__,
+                }
+            }
+            updated_metadata = {**existing_metadata, **error_info}
 
-            # Process batch concurrently
-            batch_results = await asyncio.gather(
-                *[process_single_alumni(alumni_id) for alumni_id in batch], return_exceptions=False
-            )
-            results.extend(batch_results)
-
-        # Log summary
-        successful = sum(1 for r in results if r)
-        failed = len(results) - successful
-        logger.info(
-            f"Profile update complete. Successfully updated {successful} profiles, {failed} failed."
-        )
-
-        return {"total": len(results), "successful": successful, "failed": failed}
+            update_alumni(Alumni(id=alumni_id, metadata_=updated_metadata), db)
+            return False
 
 
 linkedin_service = LinkedInService()
