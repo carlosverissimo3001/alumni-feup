@@ -9,7 +9,7 @@ import {
 } from "../ui/dialog";
 import { Button } from "../ui/button";
 import { TagIcon } from "lucide-react";
-import { Gauge } from "lucide-react";
+import { Gauge, BrainCircuit, Bot, ChevronDown, ChevronUp } from "lucide-react";
 import { Badge } from "../ui/badge";
 import { Progress } from "../ui/progress";
 import { Combobox } from "../ui/combobox";
@@ -22,6 +22,42 @@ import { useToast } from "@/hooks/misc/useToast";
 interface Props {
   roleId: string;
   trigger?: React.ReactNode;
+}
+
+function ReasoningSection({ reasoning }: { reasoning: string }) {
+  const [isExpanded, setIsExpanded] = useState(false);
+  const maxLength = 150;
+  const shouldTruncate = reasoning.length > maxLength;
+  const displayText =
+    shouldTruncate && !isExpanded
+      ? reasoning.slice(0, maxLength) + "..."
+      : reasoning;
+
+  return (
+    <div className="rounded border border-amber-200/50 bg-white/50 p-3">
+      <div className="space-y-2">
+        <p className="text-xs text-amber-800">
+          <span className="font-medium">Reasoning:</span> {displayText}
+        </p>
+        {shouldTruncate && (
+          <button
+            onClick={() => setIsExpanded(!isExpanded)}
+            className="text-xs font-medium text-amber-600 hover:text-amber-700 flex items-center gap-1"
+          >
+            {isExpanded ? (
+              <>
+                Show less <ChevronUp className="h-3 w-3" />
+              </>
+            ) : (
+              <>
+                Show more <ChevronDown className="h-3 w-3" />
+              </>
+            )}
+          </button>
+        )}
+      </div>
+    </div>
+  );
 }
 
 export function UpdateClassificationModal({ roleId, trigger }: Props) {
@@ -42,7 +78,7 @@ export function UpdateClassificationModal({ roleId, trigger }: Props) {
   });
 
   // Hooks
-  const { data: role } = useFetchRole(roleId);
+  const { data: role } = useFetchRole({ id: roleId, includeMetadata: true });
   const { data: escoOptionsData } = useRoleOptions({ enabled: open });
   const [selectedEsco, setSelectedEsco] = useState<string | null>(
     role?.jobClassification?.escoClassificationId || null
@@ -166,6 +202,58 @@ export function UpdateClassificationModal({ roleId, trigger }: Props) {
               </div>
             </div>
           </div>
+
+          {role.jobClassification?.metadata && (
+            <div className="space-y-3 rounded-lg border border-amber-200/50 bg-amber-50/30 p-4">
+              <div className="flex items-center gap-2">
+                <BrainCircuit className="h-4 w-4 text-amber-600" />
+                <p className="text-sm font-medium text-amber-900">
+                  AI Classification Details
+                </p>
+              </div>
+
+              <div className="space-y-3">
+                <div className="flex items-center gap-2">
+                  <Bot className="h-4 w-4 text-amber-500" />
+                  <span className="text-xs text-amber-700">
+                    Classified by {role.jobClassification.modelUsed}
+                  </span>
+                </div>
+
+                {role.jobClassification.metadata.choices && (
+                  <div className="space-y-2">
+                    <p className="text-xs font-medium text-amber-800">
+                      Alternative Classifications:
+                    </p>
+                    {role.jobClassification.metadata.choices
+                      .slice(1)
+                      .map((choice) => (
+                        <div
+                          key={choice.id}
+                          className="flex items-center justify-between rounded border border-amber-200/50 bg-white/50 px-3 py-2"
+                        >
+                          <span className="text-xs text-amber-800">
+                            {choice.title}
+                          </span>
+                          <Badge
+                            variant="outline"
+                            className="bg-amber-50 text-amber-800 hover:bg-amber-100 border-amber-200"
+                          >
+                            {Math.round((choice.confidence || 0) * 100)}%
+                          </Badge>
+                        </div>
+                      ))}
+                  </div>
+                )}
+
+                {role.jobClassification.metadata.reasoning && (
+                  <ReasoningSection
+                    reasoning={role.jobClassification.metadata.reasoning}
+                  />
+                )}
+              </div>
+            </div>
+          )}
 
           <div className="space-y-2">
             <p className="text-sm text-muted-foreground">

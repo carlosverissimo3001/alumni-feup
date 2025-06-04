@@ -4441,6 +4441,16 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "includeMetadata",
+            "required": false,
+            "in": "query",
+            "description": "Whether to include the metadata of the role",
+            "schema": {
+              "default": false,
+              "type": "boolean"
+            }
           }
         ],
         "responses": {
@@ -6215,6 +6225,10 @@
           "escoClassification": {
             "$ref": "#/components/schemas/EscoClassificationAnalyticsEntity"
           },
+          "modelUsed": {
+            "type": "string",
+            "description": "The model that was used to classify the job classification"
+          },
           "wasAcceptedByUser": {
             "type": "boolean",
             "description": "Whether the job classification was accepted by the user"
@@ -6248,6 +6262,39 @@
         "required": [
           "title"
         ]
+      },
+      "SeniorityClassificationVo": {
+        "type": "object",
+        "properties": {
+          "model": {
+            "type": "string",
+            "description": "The model that was used to classify the seniority level",
+            "example": "gpt-4o-mini"
+          },
+          "reasoning": {
+            "type": "string",
+            "description": "The reasoning behind the classification",
+            "example": "The user is a senior software engineer"
+          },
+          "confidence": {
+            "type": "number",
+            "description": "The confidence of the classification",
+            "example": 0.95
+          }
+        }
+      },
+      "RoleMetadataVo": {
+        "type": "object",
+        "properties": {
+          "seniority_classification": {
+            "description": "The seniority level classification metadata",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/SeniorityClassificationVo"
+              }
+            ]
+          }
+        }
       },
       "RoleAnalyticsEntity": {
         "type": "object",
@@ -6300,6 +6347,14 @@
           "wasSeniorityLevelModifiedByUser": {
             "type": "boolean",
             "description": "Whether the seniority level was modified by the user"
+          },
+          "metadata": {
+            "description": "The metadata of the role",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/RoleMetadataVo"
+              }
+            ]
           }
         },
         "required": [

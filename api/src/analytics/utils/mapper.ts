@@ -20,6 +20,7 @@ import {
 } from '../entities';
 import { EscoClassificationAnalyticsEntity } from '../entities/esco-classification.entity';
 import { JobClassificationMetadataVo } from '../vos/job-classification.metadata.vo';
+import { RoleMetadataVo } from '../vos/role-metadata.vo';
 
 // What a name lol
 type RawRoleRaw = {
@@ -42,6 +43,7 @@ type RawJobClassification = {
   wasAcceptedByUser?: boolean | null;
   wasModifiedByUser?: boolean | null;
   metadata?: Prisma.JsonValue | null;
+  modelUsed?: string | null;
 };
 
 type RawRole = {
@@ -57,6 +59,7 @@ type RawRole = {
   wasSeniorityLevelAcceptedByUser?: boolean | null;
   wasSeniorityLevelModifiedByUser?: boolean | null;
   RoleRaw: RawRoleRaw | null;
+  metadata?: Prisma.JsonValue | null;
 };
 
 type RawLocation = {
@@ -192,12 +195,15 @@ export const mapJobClassificationFromPrisma = (
     : undefined;
 
   return {
-    ...jobClassification,
+    roleId: jobClassification.roleId,
     escoClassification: mapEscoClassificationFromPrisma(
       jobClassification.EscoClassification,
     ),
+    confidence: jobClassification.confidence ?? undefined,
+    escoClassificationId: jobClassification.escoClassificationId,
     wasAcceptedByUser: jobClassification.wasAcceptedByUser ?? undefined,
     wasModifiedByUser: jobClassification.wasModifiedByUser ?? undefined,
+    modelUsed: jobClassification.modelUsed ?? undefined,
     metadata,
   };
 };
@@ -227,8 +233,21 @@ export const mapLocationFromPrisma = (
  * @returns The mapped role
  */
 export const mapRoleFromPrisma = (role: RawRole): RoleAnalyticsEntity => {
+  const modelMetadata = role.metadata
+    ? (role.metadata as Prisma.JsonObject)
+    : undefined;
+
+  const metadata = modelMetadata
+    ? new RoleMetadataVo({ ...modelMetadata })
+    : undefined;
+
   return {
-    ...role,
+    id: role.id,
+    alumniId: role.alumniId,
+    startDate: role.startDate,
+    isCurrent: role.isCurrent,
+    metadata,
+    seniorityLevel: role.seniorityLevel,
     endDate: role.endDate ?? undefined,
     jobClassification: mapJobClassificationFromPrisma(role.JobClassification),
     company: mapCompanyFromPrisma(role.Company),
@@ -303,7 +322,8 @@ export const mapAlumniFromPrisma = (
   alumni: RawAlumni,
 ): AlumniAnalyticsEntity => {
   return {
-    ...alumni,
+    id: alumni.id,
+    fullName: alumni.fullName,
     linkedinUrl: alumni.linkedinUrl ?? undefined,
     profilePictureUrl: alumni.profilePictureUrl ?? undefined,
     roles: alumni.Roles.map(mapRoleFromPrisma),

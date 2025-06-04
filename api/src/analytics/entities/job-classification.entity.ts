@@ -19,6 +19,12 @@ export class JobClassificationAnalyticsEntity {
   escoClassification: EscoClassificationAnalyticsEntity;
 
   @ApiPropertyOptional({
+    description: 'The model that was used to classify the job classification',
+    type: String,
+  })
+  modelUsed?: string;
+
+  @ApiPropertyOptional({
     description: 'Whether the job classification was accepted by the user',
     type: Boolean,
   })
