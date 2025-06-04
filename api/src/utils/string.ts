@@ -19,7 +19,10 @@ export const cleanWebsiteUrl = (website_url: string) => {
 };
 
 const ensureHttpsProtocol = (url: string): string => {
-  if (!url.startsWith('http://') && !url.startsWith('https://')) {
+  if (url.startsWith('http://')) {
+    return 'https://' + url.slice(7); // Remove 'http://'
+  }
+  if (!url.startsWith('https://')) {
     return 'https://' + url;
   }
   return url;
