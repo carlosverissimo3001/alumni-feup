@@ -2,13 +2,9 @@ import { PrismaService } from '@/prisma/prisma.service';
 import { QueryParamsDto } from '../dto/query-params.dto';
 import { buildWhereClause } from '../utils/query-builder';
 import { Injectable } from '@nestjs/common';
-import { mapAlumniFromPrisma } from '../utils/alumni.mapper';
+import { mapAlumniFromPrisma, mapRoleFromPrisma } from '../utils/mapper';
 import { AlumniAnalyticsEntity } from '../entities/alumni.entity';
-import {
-  graduationSelect,
-  locationSelect,
-  roleSelect,
-} from '../utils/selectors';
+import { graduationSelect, roleSelect } from '../utils/selectors';
 
 @Injectable()
 export class AlumniAnalyticsRepository {
@@ -56,7 +52,7 @@ export class AlumniAnalyticsRepository {
       select: roleSelect,
     });
 
-    return roles;
+    return roles.map(mapRoleFromPrisma);
   }
 
   /** For a given alumni, find the oldest role
@@ -71,7 +67,7 @@ export class AlumniAnalyticsRepository {
       take: 1,
     });
 
-    return roles[0];
+    return roles[0] ? mapRoleFromPrisma(roles[0]) : undefined;
   }
 
   async countAlumni(params?: QueryParamsDto) {

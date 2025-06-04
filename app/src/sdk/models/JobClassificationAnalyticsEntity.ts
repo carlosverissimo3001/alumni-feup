@@ -20,6 +20,13 @@ import {
     EscoClassificationAnalyticsEntityToJSON,
     EscoClassificationAnalyticsEntityToJSONTyped,
 } from './EscoClassificationAnalyticsEntity';
+import type { JobClassificationMetadataVo } from './JobClassificationMetadataVo';
+import {
+    JobClassificationMetadataVoFromJSON,
+    JobClassificationMetadataVoFromJSONTyped,
+    JobClassificationMetadataVoToJSON,
+    JobClassificationMetadataVoToJSONTyped,
+} from './JobClassificationMetadataVo';
 
 /**
  * 
@@ -63,6 +70,12 @@ export interface JobClassificationAnalyticsEntity {
      * @memberof JobClassificationAnalyticsEntity
      */
     wasModifiedByUser?: boolean;
+    /**
+     * The metadata of the job classification
+     * @type {JobClassificationMetadataVo}
+     * @memberof JobClassificationAnalyticsEntity
+     */
+    metadata?: JobClassificationMetadataVo;
 }
 
 /**
@@ -91,6 +104,7 @@ export function JobClassificationAnalyticsEntityFromJSONTyped(json: any, ignoreD
         'escoClassification': EscoClassificationAnalyticsEntityFromJSON(json['escoClassification']),
         'wasAcceptedByUser': json['wasAcceptedByUser'] == null ? undefined : json['wasAcceptedByUser'],
         'wasModifiedByUser': json['wasModifiedByUser'] == null ? undefined : json['wasModifiedByUser'],
+        'metadata': json['metadata'] == null ? undefined : JobClassificationMetadataVoFromJSON(json['metadata']),
     };
 }
 
@@ -111,6 +125,7 @@ export function JobClassificationAnalyticsEntityToJSONTyped(value?: JobClassific
         'escoClassification': EscoClassificationAnalyticsEntityToJSON(value['escoClassification']),
         'wasAcceptedByUser': value['wasAcceptedByUser'],
         'wasModifiedByUser': value['wasModifiedByUser'],
+        'metadata': JobClassificationMetadataVoToJSON(value['metadata']),
     };
 }
 

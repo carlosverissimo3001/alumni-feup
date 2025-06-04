@@ -58,6 +58,8 @@ models/IndustryListResponseDto.ts
 models/IndustryOptionDto.ts
 models/InviteUserDto.ts
 models/JobClassificationAnalyticsEntity.ts
+models/JobClassificationChoiceVo.ts
+models/JobClassificationMetadataVo.ts
 models/LinkedinAuthDto.ts
 models/Location.ts
 models/LocationAnalyticsEntity.ts

@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '@/prisma/prisma.service';
 import { LocationAnalyticsEntity } from '../entities';
-import { mapLocationFromPrisma } from '../utils/alumni.mapper';
+import { mapLocationFromPrisma } from '../utils/mapper';
 
 @Injectable()
 export class LocationRepository {
