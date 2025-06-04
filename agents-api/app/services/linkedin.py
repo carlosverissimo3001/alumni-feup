@@ -200,7 +200,6 @@ class LinkedInService:
             profile_picture_url = image_storage_service.upload_image(
                 profile_data.profile_pic_url, alumni_id
             )
-
         # Update the alumni table (Alumni was already created by our backend :))) )
         update_alumni(
             Alumni(
@@ -213,14 +212,14 @@ class LinkedInService:
 
         # We'll now offload the role classification to a background task, using the agent
         # Note that we do NOT wait for this to finish, as it can take a while
-        """self._create_background_task(
+        self._create_background_task(
             job_classification_service.request_alumni_classification(
                 params=AlumniJobClassificationParams(alumni_ids=alumni_id)
             )
-        )"""
+        )
 
-        """# We'll also use the location agent to update the alumni location
-        self._create_background_task(location_service.resolve_role_location_for_alumni(alumni_id))"""
+        # We'll also use the location agent to update the alumni location
+        self._create_background_task(location_service.resolve_role_location_for_alumni(alumni_id))
 
     async def update_profile_data(
         self,
@@ -237,19 +236,7 @@ class LinkedInService:
         """
         try:
             # Get alumni from database based on whether specific IDs were provided
-            alumni: List[Alumni] = []
-            if alumni_ids:
-                alumni = find_by_ids(alumni_ids, db)
-            else:
-                alumni = find_all(db)
-            # Only update those where .update_at is < '2025-06-01 03:00:00'
-            cutoff_date = datetime(2025, 6, 1, 3, 0, 0)  # Naive datetime to match database
-            alumni = [alumni for alumni in alumni if alumni.updated_at < cutoff_date]
-            raw_ids = [alumni.id for alumni in alumni]
-
-            ids = raw_ids[:100]
-
-            logger.info(f"Going to update 100 alumni out of {len(raw_ids)}")
+            ids = alumni_ids if alumni_ids else [alumni.id for alumni in find_all(db)]
 
             results = []
             for i in range(0, len(ids), batch_size):

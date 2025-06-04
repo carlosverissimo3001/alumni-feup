@@ -32,7 +32,7 @@ class ExperienceDate(BaseModel):
 class ExperienceBase(BaseModel):
     """Base schema for work experience."""
 
-    company: str
+    company: Optional[str] = None
     company_linkedin_profile_url: Optional[str] = None
     description: Optional[str] = None
     ends_at: Optional[ExperienceDate] = None
