@@ -63,8 +63,11 @@ model Company {
   website      String?
   companyType  COMPANY_TYPE? @map("company_type")
   companySize  COMPANY_SIZE? @map("company_size")
+
   createdAt    DateTime      @default(now()) @map("created_at") @db.Timestamp(6)
+  createdBy    String?       @map("created_by")
   updatedAt    DateTime      @default(now()) @map("updated_at") @db.Timestamp(6)
+  updatedBy    String?       @map("updated_by")
 
   Industry      Industry        @relation(fields: [industryId], references: [id])
   roles         Role[]
@@ -159,6 +162,9 @@ model JobClassification {
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamp(6)
   updatedAt DateTime @default(now()) @map("updated_at") @db.Timestamp(6)
 
+  createdBy String? @map("created_by")
+  updatedBy String? @map("updated_by")
+
   // We delete the job classification if the role is deleted
   Role               Role               @relation(fields: [roleId], references: [id], onDelete: Cascade)
   EscoClassification EscoClassification @relation(fields: [escoClassificationId], references: [id])
@@ -231,6 +237,9 @@ model Role {
 
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamp(6)
   updatedAt DateTime @default(now()) @map("updated_at") @db.Timestamp(6)
+
+  createdBy String? @map("created_by")
+  updatedBy String? @map("updated_by")
 
   isCurrent   Boolean @default(false) @map("is_current")
   isPromotion Boolean @default(false) @map("is_promotion")
