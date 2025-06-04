@@ -107,7 +107,7 @@ const ClusterInfo = ({
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: 10 }}
-          className="fixed z-50 w-[500px] bg-white/95 backdrop-blur-sm rounded-lg shadow-lg border border-gray-200 p-4"
+          className="fixed z-50 w-[550px] bg-white/95 backdrop-blur-sm rounded-lg shadow-lg border border-gray-200 p-4"
           style={{
             top: `${hoveredMouseCoords[1]}px`,
             left: `${hoveredMouseCoords[0]}px`,
