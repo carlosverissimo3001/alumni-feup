@@ -3,7 +3,7 @@ import { Injectable } from '@nestjs/common';
 import { CompanySummaryEntity, CompanyAnalyticsEntity } from '../entities';
 import { companySelect } from '../utils/selectors';
 import { Prisma } from '@prisma/client';
-import { mapCompanyFromPrisma } from '../utils/alumni.mapper';
+import { mapCompanyFromPrisma } from '../utils/mapper';
 const extendedSelect = {
   ...companySelect,
   founded: true,

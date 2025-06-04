@@ -1,9 +1,28 @@
 import enum
 from typing import List, Optional
 
+from fastapi import Query
 from langgraph.graph import add_messages
 from pydantic import BaseModel, Field
 from typing_extensions import Annotated, TypedDict
+
+
+class ResolveRoleLocationParams(BaseModel):
+    role_ids: Optional[str] = Field(
+        Query(None, description="Comma-separated list of role IDs to update")
+    )
+
+
+class ResolveAlumniLocationParams(BaseModel):
+    alumni_ids: Optional[str] = Field(
+        Query(None, description="Comma-separated list of alumni IDs to update")
+    )
+
+
+class ResolveCompanyLocationParams(BaseModel):
+    company_ids: Optional[str] = Field(
+        Query(None, description="Comma-separated list of company IDs to update")
+    )
 
 
 class LocationType(str, enum.Enum):
@@ -20,9 +39,9 @@ class AlumniLocationInput(LocationInput):
     type: LocationType = LocationType.ALUMNI
     # # https://nubela.co/proxycurl/docs#people-api-person-profile-endpoint
     alumni_id: str = Field(..., description="The alumni ID to resolved the location for")
-    country_code: str = Field(..., description="The country code of the location", example="PT")
-    city: str = Field(..., description="The city of the location", example="Porto")
-    country: str = Field(..., description="The country of the location", example="Portugal")
+    country_code: Optional[str] = Field(None, description="The country code of the location", example="PT")
+    city: Optional[str] = Field(None, description="The city of the location", example="Porto")
+    country: Optional[str] = Field(None, description="The country of the location", example="Portugal")
 
 
 class RoleLocationInput(LocationInput):

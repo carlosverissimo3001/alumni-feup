@@ -56,6 +56,8 @@ export * from './IndustryListResponseDto';
 export * from './IndustryOptionDto';
 export * from './InviteUserDto';
 export * from './JobClassificationAnalyticsEntity';
+export * from './JobClassificationChoiceVo';
+export * from './JobClassificationMetadataVo';
 export * from './LinkedinAuthDto';
 export * from './Location';
 export * from './LocationAnalyticsEntity';

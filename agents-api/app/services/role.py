@@ -7,6 +7,7 @@ from app.db.session import get_db
 from app.schemas.linkedin import ExperienceBase
 from app.schemas.location import LocationType, RoleLocationInput
 from app.schemas.role import RoleResolveLocationParams
+from app.utils.consts import REMOTE_LOCATION_ID
 from app.utils.misc.convert import linkedin_date_to_timestamp
 from app.utils.role_db import (
     get_all_roles,
@@ -20,8 +21,6 @@ logger = logging.getLogger(__name__)
 # Get a database session for the service
 db = next(get_db())
 
-REMOTE_LOCATION_ID = "15045675-0782-458b-9bb7-02567ac246fd"
-
 
 class RoleService:
     async def resolve_role_location(self, params: RoleResolveLocationParams) -> None:
@@ -29,7 +28,6 @@ class RoleService:
         Resolves the location of the roles
         """
         role_ids = params.role_ids
-        # logger.info(f"Requesting role location resolution for {role_ids}")
 
         roles: list[Role] = []
 
@@ -122,7 +120,7 @@ class RoleService:
             # Note: We'll have to leverage an agent to get the location from the role
             # As this is a free-text field, it's not always reliable like the general location
             # for the alumni
-            location_id=None,
+            location_id=REMOTE_LOCATION_ID,
             end_date=end_date,
             seniority_level=SeniorityLevel.ASSOCIATE,
             is_current=end_date is None,

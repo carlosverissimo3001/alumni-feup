@@ -6166,6 +6166,39 @@
           "isLeaf"
         ]
       },
+      "JobClassificationChoiceVo": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The id of the choice"
+          },
+          "title": {
+            "type": "string",
+            "description": "The title of the choice"
+          },
+          "confidence": {
+            "type": "number",
+            "description": "The confidence of the choice"
+          }
+        }
+      },
+      "JobClassificationMetadataVo": {
+        "type": "object",
+        "properties": {
+          "choices": {
+            "description": "The top 3 choices that the llm provided for the job classification",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/JobClassificationChoiceVo"
+            }
+          },
+          "reasoning": {
+            "type": "string",
+            "description": "The reasoning behind the choice"
+          }
+        }
+      },
       "JobClassificationAnalyticsEntity": {
         "type": "object",
         "properties": {
@@ -6189,6 +6222,14 @@
           "wasModifiedByUser": {
             "type": "boolean",
             "description": "Whether the job classification was modified by the user"
+          },
+          "metadata": {
+            "description": "The metadata of the job classification",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/JobClassificationMetadataVo"
+              }
+            ]
           }
         },
         "required": [

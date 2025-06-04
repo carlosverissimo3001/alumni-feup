@@ -15,6 +15,7 @@ from app.schemas.location import AlumniLocationInput, LocationType
 from app.services.company import company_service
 from app.services.image_storage import image_storage_service
 from app.services.job_classification import job_classification_service
+from app.services.location import location_service
 from app.services.role import role_service
 from app.utils.alumni_db import (
     delete_profile_data,
@@ -23,7 +24,7 @@ from app.utils.alumni_db import (
     update_alumni,
 )
 from app.utils.company_db import get_company_by_linkedin_url, insert_company
-from app.utils.consts import NULL_ISLAND_ID
+from app.utils.consts import REMOTE_LOCATION_ID
 from app.utils.http_client import HTTPClient
 from app.utils.location_db import get_location
 from app.utils.misc.string import sanitize_linkedin_url
@@ -98,8 +99,6 @@ class LinkedInService:
         profile_data: LinkedInProfileResponse,
         alumni_id: str,
     ) -> None:
-        # logger.info(f"Processing profile data for alumni with id {alumni_id}")
-
         # First, let's parse the roles, to understand if we need to extract company data
         for role in profile_data.experiences:
             if role.company_linkedin_profile_url:
@@ -109,10 +108,8 @@ class LinkedInService:
                 db_company = get_company_by_linkedin_url(sanitized_url, db)
                 # All good, no need to call the API
                 if db_company:
-                    # logger.info(f"Company {sanitized_url} found in the database")
                     company_id = db_company.id
                 else:
-                    # logger.info(f"Company {sanitized_url} not found in the database")
                     # We insert the company before we call the API, so that we can link the role to the company # noqa: E501
                     db_company = insert_company(
                         Company(
@@ -150,10 +147,11 @@ class LinkedInService:
         country_code = profile_data.country
 
         # All are fields null? Let's put this person in the middle of the oceandels
-        location_id = NULL_ISLAND_ID
+        location_id = REMOTE_LOCATION_ID
         if city or country or country_code:
             location = get_location(city, country, country_code, db)
 
+            # Could not find a location in the database, let's use the agent to resolve it
             if not location:
                 input = AlumniLocationInput(
                     type=LocationType.ALUMNI,
@@ -173,7 +171,7 @@ class LinkedInService:
                 profile_data.profile_pic_url, alumni_id
             )
 
-        # Update the alumni table (Alumni was already created by our backend)
+        # Update the alumni table (Alumni was already created by our backend :))) )
         update_alumni(
             Alumni(
                 id=alumni_id,
@@ -192,29 +190,59 @@ class LinkedInService:
         )
 
         # We'll also use the location agent to update the alumni location
-        asyncio.create_task(role_service.resolve_role_location_for_alumni(alumni_id))
+        asyncio.create_task(location_service.resolve_role_location_for_alumni(alumni_id))
 
     async def update_profile_data(
         self,
         alumni_ids: Optional[List[str]] = None,
+        batch_size: int = 5,
     ):
         """
         Update the profile data for specified alumni or all alumni if none specified.
+        Processes updates in parallel batches for better performance.
 
         Args:
             alumni_ids: Optional list of alumni IDs to update. If None, updates all alumni.
+            batch_size: Number of profiles to process concurrently. Defaults to 5.
         """
         # Get alumni from database based on whether specific IDs were provided
         ids = alumni_ids if alumni_ids else [alumni.id for alumni in find_all(db)]
 
-        for alumni_id in ids:
-            # Delete existing data before extraction
-            logger.info(f"Deleting existing data for {alumni_id}")
-            delete_profile_data(alumni_id, db)
+        async def process_single_alumni(alumni_id: str):
+            try:
+                # Delete existing data before extraction
+                logger.info(f"Deleting existing data for {alumni_id}")
+                delete_profile_data(alumni_id, db)
 
-            # Extract new data
-            logger.info(f"Extracting LinkedIn data for {alumni_id}")
-            await self.extract_profile_data(alumni_id)
+                # Extract new data
+                logger.info(f"Extracting LinkedIn data for {alumni_id}")
+                await self.extract_profile_data(alumni_id)
+            except Exception as e:
+                logger.error(f"Error processing alumni {alumni_id}: {str(e)}")
+                # Don't raise the exception to allow other profiles to continue processing
+                return False
+            return True
+
+        # Process alumni in batches
+        results = []
+        for i in range(0, len(ids), batch_size):
+            batch = ids[i : i + batch_size]
+            logger.info(f"Processing batch of {len(batch)} alumni")
+
+            # Process batch concurrently
+            batch_results = await asyncio.gather(
+                *[process_single_alumni(alumni_id) for alumni_id in batch], return_exceptions=False
+            )
+            results.extend(batch_results)
+
+        # Log summary
+        successful = sum(1 for r in results if r)
+        failed = len(results) - successful
+        logger.info(
+            f"Profile update complete. Successfully updated {successful} profiles, {failed} failed."
+        )
+
+        return {"total": len(results), "successful": successful, "failed": failed}
 
 
 linkedin_service = LinkedInService()
