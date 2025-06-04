@@ -9,14 +9,14 @@ class TokenRateLimiter:
         self.max_tokens_per_minute = max_tokens_per_minute
         self._tokens = max_tokens_per_minute
         self._last_check = time.monotonic()
-        self._lock = asyncio.Lock()
+        self._condition = asyncio.Condition()
 
     async def acquire(self, tokens: int) -> None:
-        async with self._lock:
+        async with self._condition:
             await self._refill()
             while self._tokens < tokens:
                 wait_time = (tokens - self._tokens) * 60 / self.max_tokens_per_minute
-                await asyncio.sleep(wait_time)
+                await self._condition.wait_for(lambda: self._tokens >= tokens or time.monotonic() - self._last_check >= wait_time)
                 await self._refill()
             self._tokens -= tokens
 
