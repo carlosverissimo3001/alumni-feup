@@ -91,11 +91,7 @@ export class AlumniService {
   async findAllGeoJSON(
     query: GetGeoJSONDto,
   ): Promise<GeoJSONFeatureCollection> {
-    this.logger.debug('Got request to find all alumni geoJSON');
-
     let alumni = await this.alumniRepository.findAllGeoJSON(query);
-
-    this.logger.debug(`Found ${alumni.length} alumni to be displayed in the map`);
 
     //Swap selectedYear and compareYear if selectedYear is greater than compareYear
     if (
@@ -222,8 +218,6 @@ export class AlumniService {
     }));
     totalAlumni = 0;
     totalAlumniPrev = 0;
-
-    this.logger.log(`Number of features: ${features.length}`);
 
     return {
       type: 'FeatureCollection',
