@@ -1,10 +1,10 @@
-# Alumni Feup
+# Alumni-FEUP
 
 ![Alumni Feup logo](https://github.com/user-attachments/assets/30b40ad6-b9af-477b-ba25-41d52922434f)
 
 ## Overview
 
-This repository combines several services that power the Alumni EI World
+This repository combines several services that power the Alumni-FEUP World
 platform. It includes backend APIs, LLM-driven agents, a Next.js frontend and
 supporting documentation.
 
@@ -32,7 +32,7 @@ supporting documentation.
    `app/src/components/analytics` together with `docs/d3-visualization-guide.md`.
 4. **Database Schema** – Inspect `api/prisma/schema.prisma` or
    `agents-api/app/db/models.py`.
-5. **Environment Configuration** – Check `.env` handling in the FastAPI service
+5. **Environment Configuration** – Check the example `.env` handling in the FastAPI service
    and Next.js application.
 
 ## How to run
