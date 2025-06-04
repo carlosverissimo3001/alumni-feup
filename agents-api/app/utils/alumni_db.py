@@ -37,9 +37,19 @@ def update_alumni(alumni: Alumni, db: Session) -> None:
 
 
 def find_all(db: Session) -> list[Alumni]:
+    return db.query(Alumni).all()
+
+def find_all_with_linkedin(db: Session) -> list[Alumni]:
+    """
+    Find all alumni records with a non-null LinkedIn URL.
+
+    Args:
+        db: Database session
+
+    Returns:
+        List of alumni records with non-null LinkedIn URLs
+    """
     return db.query(Alumni).filter(Alumni.linkedin_url.isnot(None)).all()
-
-
 def find_by_id(id: str, db: Session) -> Alumni:
     return db.query(Alumni).filter(Alumni.id == id).first()
 
