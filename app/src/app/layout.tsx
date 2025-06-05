@@ -5,9 +5,10 @@ import Layout from "@/components/navbar/layout";
 import { Providers } from "@/providers";
 import { Toaster } from "@/components/ui/toaster";
 
-// Vercel
-import { SpeedInsights } from "@vercel/speed-insights/next"
-import { Analytics } from "@vercel/analytics/next"
+// Vercel and Other Analytics
+import { SpeedInsights } from "@vercel/speed-insights/next";
+import { Analytics } from "@vercel/analytics/next";
+import { HotJar } from "@/lib/hotjar";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -53,6 +54,7 @@ export default function RootLayout({
           <Layout>{children}</Layout>
           <SpeedInsights />
           <Analytics />
+          <HotJar />
           <Toaster />
         </Providers>
       </body>
