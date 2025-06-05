@@ -119,6 +119,13 @@ export const AlumniTable = ({ filters, onAddToFilters }: AlumniTableProps) => {
     alumniSearch: searchQuery || undefined,
   });
 
+  const buildMapUrl = (latitude?: number, longitude?: number) : string | undefined => {
+    if (latitude == null || longitude == null) {
+      return undefined;
+    }
+    return `/?lat=${latitude}&lng=${longitude}&group_by=cities`;
+  };
+
   const alumnus = data?.alumni || [];
   const totalItems = data?.filteredCount || 0;
 
@@ -273,26 +280,20 @@ export const AlumniTable = ({ filters, onAddToFilters }: AlumniTableProps) => {
                                       <Earth
                                         className="h-4 w-4 text-gray-400 transition-opacity cursor-pointer hover:text-[#8C2D19]"
                                         onClick={() => {
-                                          const params = new URLSearchParams();
                                           if (
                                             alumni.currentRoleLocation
-                                              ?.latitude != null &&
+                                              ?.latitude &&
                                             alumni.currentRoleLocation
-                                              ?.longitude != null
+                                              ?.longitude
                                           ) {
-                                            params.set(
-                                              "lat",
-                                              alumni.currentRoleLocation.latitude.toString()
-                                            );
-                                            params.set(
-                                              "lng",
-                                              alumni.currentRoleLocation.longitude.toString()
+                                            window.open(
+                                              buildMapUrl(
+                                                alumni.currentRoleLocation.latitude,
+                                                alumni.currentRoleLocation.longitude
+                                              ),
+                                              "_blank"
                                             );
                                           }
-                                          window.open(
-                                            `/?${params.toString()}`,
-                                            "_blank"
-                                          );
                                         }}
                                       />
                                     </TooltipTrigger>
