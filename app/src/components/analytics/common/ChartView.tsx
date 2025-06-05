@@ -6,42 +6,33 @@ import * as d3 from "d3";
 import { Loader2 } from "lucide-react";
 import { EntityType } from "@/types/entityTypes";
 
-const getTitle = (entity: EntityType, items: number) => {
-  let title = `Top ${items} `;
-
+const getTitle = (entity: EntityType) => {
   switch (entity) {
     case EntityType.COMPANY:
-      title += "Companies";
-      break;
+      return "Companies";
     case EntityType.ROLE:
-      title += "Roles";
+      return "Roles";
       break;
     case EntityType.INDUSTRY:
-      title += "Industries";
-      break;
+      return "Industries";
     case EntityType.COUNTRY:
-      title += "Countries";
+      return "Countries";
       break;
     case EntityType.CITY:
-      title += "Cities";
-      break;
+      return "Cities";
     case EntityType.FACULTY:
-      title += "Faculties";
+      return "Faculties";
       break;
     case EntityType.MAJOR:
-      title += "Courses";
-      break;
+      return "Courses";
     case EntityType.YEAR:
-      title += "Graduation Years";
+      return "Graduation Years";
       break;
     case EntityType.SENIORITY:
-      title += "Seniority Levels";
-      break;
+      return "Seniority Levels";
     default:
-      return title;
+      return "";
   }
-
-  return title;
 };
 
 const getDistributionKey = (entity: EntityType) => {
