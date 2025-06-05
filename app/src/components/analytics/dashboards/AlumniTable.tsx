@@ -120,7 +120,7 @@ export const AlumniTable = ({ filters, onAddToFilters }: AlumniTableProps) => {
   });
 
   const buildMapUrl = (latitude?: number, longitude?: number) : string | undefined => {
-    if (!latitude || !longitude) {
+    if (latitude == null || longitude == null) {
       return undefined;
     }
     return `/?lat=${latitude}&lng=${longitude}&group_by=cities`;
