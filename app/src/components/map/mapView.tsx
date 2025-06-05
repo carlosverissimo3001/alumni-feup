@@ -234,9 +234,9 @@ const MapView = ({
 
       <MapGL
         initialViewState={{
-          latitude: 38.736946,
-          longitude: -9.142685,
-          zoom: 3,
+          latitude: 46.2276,
+          longitude: -2.2137,
+          zoom: 3.5,
         }}
         mapStyle="mapbox://styles/mapbox/dark-v11"
         mapboxAccessToken={TOKEN}
