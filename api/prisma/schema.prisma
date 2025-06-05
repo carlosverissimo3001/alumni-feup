@@ -370,6 +370,7 @@ model Invite {
   usedCount Int      @default(0)
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamp(6)
   updatedAt DateTime @default(now()) @map("updated_at") @db.Timestamp(6)
+  notes     String?  @map("notes")
 
   @@map("invite")
 }
