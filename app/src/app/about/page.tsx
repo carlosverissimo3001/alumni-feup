@@ -144,7 +144,7 @@ const AboutPage = () => {
             variants={titleVariants}
             className="text-center space-y-6"
           >
-            {Array.from("About 30EIC").map((letter, index) => (
+            {Array.from("About Alumni-FEUP").map((letter, index) => (
               <motion.span
                 key={index}
                 variants={letterVariants}
@@ -159,8 +159,8 @@ const AboutPage = () => {
               transition={{ delay: 0.6, duration: 0.6 }}
               className="text-base md:text-lg text-zinc-600 max-w-3xl mx-auto"
             >
-              30EIC is a comprehensive platform designed to connect and empower
-              FEUP Informatics Engineering alumni.
+              Alumni-FEUP is a comprehensive platform designed to connect and
+              empower FEUP Informatics and Software Engineering alumni.
             </motion.p>
           </motion.section>
 
@@ -295,7 +295,7 @@ const AboutPage = () => {
                   />
                 </div>
                 <p className="text-zinc-600 text-md">
-                  30EIC&apos;s alumni network visualization is made possible
+                  Alumni-FEUP&apos;s alumni network visualization is made possible
                   through LinkedIn data integration, enabling us to map career
                   trajectories and professional connections of FEUP Informatics
                   Engineering graduates.
@@ -414,16 +414,18 @@ const AboutPage = () => {
               </a>
             </h2>
             <p className="text-zinc-600">
-              30EIC is an open-source project. Check out our code and contribute
-              on GitHub.
+              Alumni-FEUP is an open-source project. Check out our code and
+              contribute on GitHub.
             </p>
             <Tooltip>
               <TooltipTrigger asChild>
                 <Link
-                  href="https://github.com/carlosverissimo3001/alumni-feup"
-                  target="_blank"
-                  className="inline-flex items-center gap-3 bg-gradient-to-r from-[#8C2D19] to-orange-500 text-white px-8 py-4 rounded-2xl transition-all hover:scale-105 hover:shadow-xl hover:shadow-[#8C2D19]/20 font-semibold text-lg group"
-                >
+                  href="#" //"https://github.com/carlosverissimo3001/alumni-feup"
+                  aria-disabled={true}
+                  tabIndex={-1}
+
+                  //target="_blank"
+                  className="inline-flex items-center gap-3 bg-gradient-to-r from-[#8C2D19] to-orange-500 text-white px-8 py-4 rounded-2xl transition-all font-semibold text-lg group opacity-50 cursor-not-allowed pointer-events-none"                >
                   <Github
                     size={28}
                     className="group-hover:rotate-12 transition-transform"
