@@ -220,8 +220,7 @@ const MapView = ({
     }
   };
 
-  const TOKEN =
-    "pk.eyJ1IjoiamVuaWZlcjEyMyIsImEiOiJjbHJndXUyNnAwamF1MmptamwwMjNqZm0xIn0.vUNEIrEka3ibQKmb8jzgFQ";
+  const TOKEN = process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN;
 
   return (
     <div className="fixed inset-0 w-screen h-screen">
