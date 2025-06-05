@@ -49,6 +49,6 @@ export class CreateReviewDto {
     description: 'Review anonymity',
   })
   @IsOptional()
-  @Transform(({ value }) => (Boolean(value)))
+  @Transform(({ value }) => Boolean(value))
   anonymous?: boolean;
 }

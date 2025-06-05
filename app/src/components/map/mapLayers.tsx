@@ -21,9 +21,9 @@ export const clusterLayer: LayerProps = {
         'interpolate',
         ['linear'],
         ['get', 'students'],
-        0, 10,
-        50, 20,
-        100, 30,
+        0, 20,
+        50, 30,
+        100, 40,
         500, 40
       ]
     }
@@ -34,11 +34,11 @@ export const clusterCountLayer: LayerProps = {
     type: 'symbol',
     source: SOURCE_ID,
     filter: ['>', ['get', 'students'], -1],
+    maxzoom: 15,
     layout: {
         'text-field': '{students}',
         'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Bold'],
         'text-size': 12,
-        //'text-allow-overlap': true,
     },
     paint: {
         'text-color': 'black'
@@ -64,10 +64,9 @@ export const statsLayer: LayerProps = {
         'interpolate',
         ['linear'],
         ['get', 'students'],
-        //0, 0,
-        0, 0.03,
-        50, 0.05,
-        100, 0.08,
+        0, 0.06,
+        50, 0.08,
+        100, 0.1,
         500, 0.1
       ],
       'icon-rotate': [
