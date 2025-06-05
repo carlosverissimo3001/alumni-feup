@@ -143,7 +143,7 @@ export const ChartView = ({
       .style("font-weight", "bold")
       .style("fill", "#333")
       .style("opacity", 0)
-      .text(`${getTitle(entityType, data.length)}`);
+      .text(`${getTitle(entityType)}`);
 
     title.transition().duration(700).style("opacity", 1);
 
