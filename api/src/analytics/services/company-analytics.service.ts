@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { LogExecutionTime } from '@/decorators/log-execution-time.decorator';
 import {
   CompanyListItemExtendedDto,
   CompanyListResponseDto,
@@ -39,6 +40,7 @@ export class CompanyAnalyticsService {
    * @param query - The filters to apply to the DB query
    * @returns A list of companies with the number of alumni they have
    */
+  @LogExecutionTime()
   async getCompaniesWithAlumniCount(
     query: QueryParamsDto,
   ): Promise<CompanyListResponseDto> {

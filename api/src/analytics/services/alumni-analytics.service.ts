@@ -1,6 +1,7 @@
 import { AlumniListResponseDto, AlumniOptionDto, QueryParamsDto } from '../dto';
 import { AlumniAnalyticsRepository } from '../repositories';
 import { Injectable } from '@nestjs/common';
+import { LogExecutionTime } from '@/decorators/log-execution-time.decorator';
 import {
   DEFAULT_QUERY_SORT_ORDER,
   DEFAULT_QUERY_LIMIT,
@@ -13,6 +14,7 @@ import { applyDateFilters } from '../utils/filters';
 export class AlumniAnalyticsService {
   constructor(private readonly alumniRepository: AlumniAnalyticsRepository) {}
 
+  @LogExecutionTime()
   async getAlumniOptions(): Promise<AlumniOptionDto[]> {
     const alumni = await this.alumniRepository.findAllAlumni();
     alumni.sort((a, b) => a.fullName.localeCompare(b.fullName));
@@ -22,6 +24,7 @@ export class AlumniAnalyticsService {
     }));
   }
 
+  @LogExecutionTime()
   async getAlumniList(query: QueryParamsDto): Promise<AlumniListResponseDto> {
     const [alumnusUnfiltered, alumniCount] = await Promise.all([
       this.alumniRepository.find(query),

@@ -1,6 +1,7 @@
 import { QueryParamsDto } from '../dto/query-params.dto';
 import { AlumniAnalyticsRepository, LocationRepository } from '../repositories';
 import { Injectable } from '@nestjs/common';
+import { LogExecutionTime } from '@/decorators/log-execution-time.decorator';
 import {
   CountryListResponseDto,
   CountryOptionDto,
@@ -37,6 +38,7 @@ export class GeoAnalyticsService {
     private readonly trendAnalyticsService: TrendAnalyticsService,
   ) {}
 
+  @LogExecutionTime()
   async getCountriesWithAlumniCount(
     query: QueryParamsDto,
   ): Promise<CountryListResponseDto> {
@@ -118,6 +120,7 @@ export class GeoAnalyticsService {
     };
   }
 
+  @LogExecutionTime()
   async getCitiesWithAlumniCount(
     query: QueryParamsDto,
   ): Promise<CityListResponseDto> {
@@ -187,6 +190,7 @@ export class GeoAnalyticsService {
     };
   }
 
+  @LogExecutionTime()
   async getCountriesOptions(): Promise<CountryOptionDto[]> {
     const locations = await this.locationRepository.findAll();
 
@@ -209,6 +213,7 @@ export class GeoAnalyticsService {
     return Array.from(uniqueCountries.values());
   }
 
+  @LogExecutionTime()
   async getCityOptions(query: GetCitiesDto): Promise<CityOptionDto[]> {
     const cities = await this.locationRepository.getCities(query.countryCodes);
 

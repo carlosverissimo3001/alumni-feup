@@ -12,6 +12,7 @@ import {
   RoleRepository,
 } from '@/analytics/repositories';
 import { Injectable, Logger } from '@nestjs/common';
+import { LogExecutionTime } from '@/decorators/log-execution-time.decorator';
 import {
   DEFAULT_QUERY_LIMIT,
   DEFAULT_QUERY_OFFSET,
@@ -34,6 +35,7 @@ export class RoleAnalyticsService {
     private readonly logger: Logger,
   ) {}
 
+  @LogExecutionTime()
   async getRolesWithCounts(
     query: QueryParamsDto,
   ): Promise<RoleListResponseDto> {
@@ -169,10 +171,12 @@ export class RoleAnalyticsService {
     };
   }
 
+  @LogExecutionTime()
   async findAllClassifications(): Promise<RoleOptionDto[]> {
     return this.roleRepository.findAllClassifications();
   }
 
+  @LogExecutionTime()
   async getRoleHierarchy(
     query: GetRoleHierarchyDto,
   ): Promise<RoleHierarchyDto> {
@@ -219,6 +223,7 @@ export class RoleAnalyticsService {
     };
   }
 
+  @LogExecutionTime()
   async getRole(id: string, params: GetRoleDto): Promise<RoleAnalyticsEntity> {
     return await this.roleRepository.findById(id, params);
   }

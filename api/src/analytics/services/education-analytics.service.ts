@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { LogExecutionTime } from '@/decorators/log-execution-time.decorator';
 import {
   AlumniAnalyticsRepository,
   EducationRepository,
@@ -31,6 +32,7 @@ export class EducationAnalyticsService {
     private readonly educationRepository: EducationRepository,
   ) {}
 
+  @LogExecutionTime()
   async getFaculties(query: QueryParamsDto): Promise<FacultyListDto> {
     const [alumnusUnfiltered, totalFaculties] = await Promise.all([
       this.alumniRepository.find(query),
@@ -86,6 +88,7 @@ export class EducationAnalyticsService {
     };
   }
 
+  @LogExecutionTime()
   async getMajors(query: QueryParamsDto): Promise<MajorListDto> {
     const [alumnusUnfiltered, totalMajors] = await Promise.all([
       this.alumniRepository.find(query),
@@ -142,6 +145,7 @@ export class EducationAnalyticsService {
     };
   }
 
+  @LogExecutionTime()
   async getGraduations(query: QueryParamsDto): Promise<GraduationListDto> {
     const [alumnusUnfiltered, totalGraduations] = await Promise.all([
       this.alumniRepository.find(query),

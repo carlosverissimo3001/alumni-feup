@@ -1,4 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
+import { LogExecutionTime } from '@/decorators/log-execution-time.decorator';
 import { TrendAnalyticsService } from './trend-analytics.service';
 import { AlumniAnalyticsRepository } from '../repositories';
 import { SeniorityListResponseDto, SeniorityListItemDto } from '../dto';
@@ -21,6 +22,7 @@ export class SeniorityAnalyticsService {
     private readonly logger: Logger,
   ) {}
 
+  @LogExecutionTime()
   async getSeniorityLevels(
     query: QueryParamsDto,
   ): Promise<SeniorityListResponseDto> {
