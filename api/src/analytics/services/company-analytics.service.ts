@@ -40,11 +40,10 @@ export class CompanyAnalyticsService {
    * @param query - The filters to apply to the DB query
    * @returns A list of companies with the number of alumni they have
    */
-  @LogExecutionTime()
-  async getCompaniesWithAlumniCount(
+  async getCompanyAnalytics(
+    alumnusUnfiltered: AlumniAnalyticsEntity[],
     query: QueryParamsDto,
   ): Promise<CompanyListResponseDto> {
-    const alumnusUnfiltered = await this.alumniRepository.find(query);
     const alumnus = applyDateFilters(alumnusUnfiltered, query);
 
     const companiesWithAlumniCount = this.getCompanyMap(alumnus);

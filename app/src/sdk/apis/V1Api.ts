@@ -18,18 +18,15 @@ import type {
   Alumni,
   AlumniAnalyticsEntity,
   AlumniExtended,
-  AlumniListResponseDto,
   AlumniOptionDto,
   AlumniPastLocationsAndCompaniesDto,
+  AnalyticsDto,
   ChangeReviewScoreDto,
   CheckPermissionDto,
   CheckPermissionResponse,
-  CityListResponseDto,
   CityOptionDto,
   CompanyInsightsDto,
-  CompanyListResponseDto,
   CompanyOptionDto,
-  CountryListResponseDto,
   CountryOptionDto,
   CourseAnalyticsEntity,
   CreateAlumniDto,
@@ -71,30 +68,24 @@ import {
     AlumniAnalyticsEntityToJSON,
     AlumniExtendedFromJSON,
     AlumniExtendedToJSON,
-    AlumniListResponseDtoFromJSON,
-    AlumniListResponseDtoToJSON,
     AlumniOptionDtoFromJSON,
     AlumniOptionDtoToJSON,
     AlumniPastLocationsAndCompaniesDtoFromJSON,
     AlumniPastLocationsAndCompaniesDtoToJSON,
+    AnalyticsDtoFromJSON,
+    AnalyticsDtoToJSON,
     ChangeReviewScoreDtoFromJSON,
     ChangeReviewScoreDtoToJSON,
     CheckPermissionDtoFromJSON,
     CheckPermissionDtoToJSON,
     CheckPermissionResponseFromJSON,
     CheckPermissionResponseToJSON,
-    CityListResponseDtoFromJSON,
-    CityListResponseDtoToJSON,
     CityOptionDtoFromJSON,
     CityOptionDtoToJSON,
     CompanyInsightsDtoFromJSON,
     CompanyInsightsDtoToJSON,
-    CompanyListResponseDtoFromJSON,
-    CompanyListResponseDtoToJSON,
     CompanyOptionDtoFromJSON,
     CompanyOptionDtoToJSON,
-    CountryListResponseDtoFromJSON,
-    CountryListResponseDtoToJSON,
     CountryOptionDtoFromJSON,
     CountryOptionDtoToJSON,
     CourseAnalyticsEntityFromJSON,
@@ -175,37 +166,6 @@ export interface AdminControllerMergeLocationsRequest {
     mergeLocationsDto: MergeLocationsDto;
 }
 
-export interface AlumniAnalyticsControllerGetAlumniListRequest {
-    includeTrend: boolean;
-    alumniIds?: Array<string>;
-    startDate?: string;
-    endDate?: string;
-    facultyIds?: Array<string>;
-    courseIds?: Array<string>;
-    graduationYears?: Array<string>;
-    companyIds?: Array<string>;
-    industryIds?: Array<string>;
-    roleCountryCodes?: Array<string>;
-    roleCityIds?: Array<string>;
-    companyHQsCountryCodes?: Array<string>;
-    companyHQsCityIds?: Array<string>;
-    currentRolesOnly?: boolean;
-    onlyCompaniesWithSalaryData?: boolean;
-    onlyInternational?: boolean;
-    excludeResearchAndHighEducation?: boolean;
-    alumniSearch?: string;
-    companySize?: Array<AlumniAnalyticsControllerGetAlumniListCompanySizeEnum>;
-    companyType?: Array<AlumniAnalyticsControllerGetAlumniListCompanyTypeEnum>;
-    seniorityLevel?: Array<AlumniAnalyticsControllerGetAlumniListSeniorityLevelEnum>;
-    escoCodes?: Array<string>;
-    escoClassificationLevel?: number;
-    limit?: number;
-    offset?: number;
-    search?: string;
-    sortBy?: AlumniAnalyticsControllerGetAlumniListSortByEnum;
-    sortOrder?: string;
-}
-
 export interface AlumniControllerCreateRequest {
     createAlumniDto: CreateAlumniDto;
 }
@@ -258,8 +218,14 @@ export interface AlumniControllerUpdateSeniorityLevelRequest {
     updateSeniorityLevelDto: UpdateSeniorityLevelDto;
 }
 
-export interface CompanyAnalyticsControllerGetCompaniesWithAlumniCountRequest {
+export interface AnalyticsControllerGetAnalyticsRequest {
     includeTrend: boolean;
+    includeCompanyTrend?: boolean;
+    includeRoleTrend?: boolean;
+    includeIndustryTrend?: boolean;
+    includeEducationTrend?: boolean;
+    includeSeniorityTrend?: boolean;
+    includeGeoTrend?: boolean;
     alumniIds?: Array<string>;
     startDate?: string;
     endDate?: string;
@@ -277,15 +243,16 @@ export interface CompanyAnalyticsControllerGetCompaniesWithAlumniCountRequest {
     onlyInternational?: boolean;
     excludeResearchAndHighEducation?: boolean;
     alumniSearch?: string;
-    companySize?: Array<CompanyAnalyticsControllerGetCompaniesWithAlumniCountCompanySizeEnum>;
-    companyType?: Array<CompanyAnalyticsControllerGetCompaniesWithAlumniCountCompanyTypeEnum>;
-    seniorityLevel?: Array<CompanyAnalyticsControllerGetCompaniesWithAlumniCountSeniorityLevelEnum>;
+    companySize?: Array<AnalyticsControllerGetAnalyticsCompanySizeEnum>;
+    companyType?: Array<AnalyticsControllerGetAnalyticsCompanyTypeEnum>;
+    seniorityLevel?: Array<AnalyticsControllerGetAnalyticsSeniorityLevelEnum>;
     escoCodes?: Array<string>;
     escoClassificationLevel?: number;
     limit?: number;
     offset?: number;
     search?: string;
-    sortBy?: CompanyAnalyticsControllerGetCompaniesWithAlumniCountSortByEnum;
+    sortBy?: AnalyticsControllerGetAnalyticsSortByEnum;
+    selectorType?: AnalyticsControllerGetAnalyticsSelectorTypeEnum;
     sortOrder?: string;
 }
 
@@ -312,6 +279,12 @@ export interface CourseControllerFindOneRequest {
 
 export interface EducationAnalyticsControllerGetFacultiesRequest {
     includeTrend: boolean;
+    includeCompanyTrend?: boolean;
+    includeRoleTrend?: boolean;
+    includeIndustryTrend?: boolean;
+    includeEducationTrend?: boolean;
+    includeSeniorityTrend?: boolean;
+    includeGeoTrend?: boolean;
     alumniIds?: Array<string>;
     startDate?: string;
     endDate?: string;
@@ -338,11 +311,18 @@ export interface EducationAnalyticsControllerGetFacultiesRequest {
     offset?: number;
     search?: string;
     sortBy?: EducationAnalyticsControllerGetFacultiesSortByEnum;
+    selectorType?: EducationAnalyticsControllerGetFacultiesSelectorTypeEnum;
     sortOrder?: string;
 }
 
 export interface EducationAnalyticsControllerGetGraduationsRequest {
     includeTrend: boolean;
+    includeCompanyTrend?: boolean;
+    includeRoleTrend?: boolean;
+    includeIndustryTrend?: boolean;
+    includeEducationTrend?: boolean;
+    includeSeniorityTrend?: boolean;
+    includeGeoTrend?: boolean;
     alumniIds?: Array<string>;
     startDate?: string;
     endDate?: string;
@@ -369,11 +349,18 @@ export interface EducationAnalyticsControllerGetGraduationsRequest {
     offset?: number;
     search?: string;
     sortBy?: EducationAnalyticsControllerGetGraduationsSortByEnum;
+    selectorType?: EducationAnalyticsControllerGetGraduationsSelectorTypeEnum;
     sortOrder?: string;
 }
 
 export interface EducationAnalyticsControllerGetMajorsRequest {
     includeTrend: boolean;
+    includeCompanyTrend?: boolean;
+    includeRoleTrend?: boolean;
+    includeIndustryTrend?: boolean;
+    includeEducationTrend?: boolean;
+    includeSeniorityTrend?: boolean;
+    includeGeoTrend?: boolean;
     alumniIds?: Array<string>;
     startDate?: string;
     endDate?: string;
@@ -400,6 +387,7 @@ export interface EducationAnalyticsControllerGetMajorsRequest {
     offset?: number;
     search?: string;
     sortBy?: EducationAnalyticsControllerGetMajorsSortByEnum;
+    selectorType?: EducationAnalyticsControllerGetMajorsSelectorTypeEnum;
     sortOrder?: string;
 }
 
@@ -419,70 +407,14 @@ export interface GeoAnalyticsControllerGetCitiesOptionsRequest {
     countryCodes?: Array<string>;
 }
 
-export interface GeoAnalyticsControllerGetCitiesWithAlumniCountRequest {
-    includeTrend: boolean;
-    alumniIds?: Array<string>;
-    startDate?: string;
-    endDate?: string;
-    facultyIds?: Array<string>;
-    courseIds?: Array<string>;
-    graduationYears?: Array<string>;
-    companyIds?: Array<string>;
-    industryIds?: Array<string>;
-    roleCountryCodes?: Array<string>;
-    roleCityIds?: Array<string>;
-    companyHQsCountryCodes?: Array<string>;
-    companyHQsCityIds?: Array<string>;
-    currentRolesOnly?: boolean;
-    onlyCompaniesWithSalaryData?: boolean;
-    onlyInternational?: boolean;
-    excludeResearchAndHighEducation?: boolean;
-    alumniSearch?: string;
-    companySize?: Array<GeoAnalyticsControllerGetCitiesWithAlumniCountCompanySizeEnum>;
-    companyType?: Array<GeoAnalyticsControllerGetCitiesWithAlumniCountCompanyTypeEnum>;
-    seniorityLevel?: Array<GeoAnalyticsControllerGetCitiesWithAlumniCountSeniorityLevelEnum>;
-    escoCodes?: Array<string>;
-    escoClassificationLevel?: number;
-    limit?: number;
-    offset?: number;
-    search?: string;
-    sortBy?: GeoAnalyticsControllerGetCitiesWithAlumniCountSortByEnum;
-    sortOrder?: string;
-}
-
-export interface GeoAnalyticsControllerGetCountriesWithAlumniCountRequest {
-    includeTrend: boolean;
-    alumniIds?: Array<string>;
-    startDate?: string;
-    endDate?: string;
-    facultyIds?: Array<string>;
-    courseIds?: Array<string>;
-    graduationYears?: Array<string>;
-    companyIds?: Array<string>;
-    industryIds?: Array<string>;
-    roleCountryCodes?: Array<string>;
-    roleCityIds?: Array<string>;
-    companyHQsCountryCodes?: Array<string>;
-    companyHQsCityIds?: Array<string>;
-    currentRolesOnly?: boolean;
-    onlyCompaniesWithSalaryData?: boolean;
-    onlyInternational?: boolean;
-    excludeResearchAndHighEducation?: boolean;
-    alumniSearch?: string;
-    companySize?: Array<GeoAnalyticsControllerGetCountriesWithAlumniCountCompanySizeEnum>;
-    companyType?: Array<GeoAnalyticsControllerGetCountriesWithAlumniCountCompanyTypeEnum>;
-    seniorityLevel?: Array<GeoAnalyticsControllerGetCountriesWithAlumniCountSeniorityLevelEnum>;
-    escoCodes?: Array<string>;
-    escoClassificationLevel?: number;
-    limit?: number;
-    offset?: number;
-    search?: string;
-    sortBy?: GeoAnalyticsControllerGetCountriesWithAlumniCountSortByEnum;
-    sortOrder?: string;
-}
-
 export interface IndustryAnalyticsControllerGetIndustryWithCountsRequest {
     includeTrend: boolean;
+    includeCompanyTrend?: boolean;
+    includeRoleTrend?: boolean;
+    includeIndustryTrend?: boolean;
+    includeEducationTrend?: boolean;
+    includeSeniorityTrend?: boolean;
+    includeGeoTrend?: boolean;
     alumniIds?: Array<string>;
     startDate?: string;
     endDate?: string;
@@ -509,6 +441,7 @@ export interface IndustryAnalyticsControllerGetIndustryWithCountsRequest {
     offset?: number;
     search?: string;
     sortBy?: IndustryAnalyticsControllerGetIndustryWithCountsSortByEnum;
+    selectorType?: IndustryAnalyticsControllerGetIndustryWithCountsSelectorTypeEnum;
     sortOrder?: string;
 }
 
@@ -539,6 +472,12 @@ export interface RoleAnalyticsControllerGetRoleHierarchyRequest {
 
 export interface RoleAnalyticsControllerGetRolesRequest {
     includeTrend: boolean;
+    includeCompanyTrend?: boolean;
+    includeRoleTrend?: boolean;
+    includeIndustryTrend?: boolean;
+    includeEducationTrend?: boolean;
+    includeSeniorityTrend?: boolean;
+    includeGeoTrend?: boolean;
     alumniIds?: Array<string>;
     startDate?: string;
     endDate?: string;
@@ -565,11 +504,18 @@ export interface RoleAnalyticsControllerGetRolesRequest {
     offset?: number;
     search?: string;
     sortBy?: RoleAnalyticsControllerGetRolesSortByEnum;
+    selectorType?: RoleAnalyticsControllerGetRolesSelectorTypeEnum;
     sortOrder?: string;
 }
 
 export interface RoleAnalyticsControllerGetSeniorityLevelsRequest {
     includeTrend: boolean;
+    includeCompanyTrend?: boolean;
+    includeRoleTrend?: boolean;
+    includeIndustryTrend?: boolean;
+    includeEducationTrend?: boolean;
+    includeSeniorityTrend?: boolean;
+    includeGeoTrend?: boolean;
     alumniIds?: Array<string>;
     startDate?: string;
     endDate?: string;
@@ -596,6 +542,7 @@ export interface RoleAnalyticsControllerGetSeniorityLevelsRequest {
     offset?: number;
     search?: string;
     sortBy?: RoleAnalyticsControllerGetSeniorityLevelsSortByEnum;
+    selectorType?: RoleAnalyticsControllerGetSeniorityLevelsSelectorTypeEnum;
     sortOrder?: string;
 }
 
@@ -702,48 +649,6 @@ export interface V1ApiInterface {
      * Merge locations
      */
     adminControllerMergeLocations(requestParameters: AdminControllerMergeLocationsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void>;
-
-    /**
-     * 
-     * @summary Get all alumni list
-     * @param {boolean} includeTrend Whether to include the trend data
-     * @param {Array<string>} [alumniIds] The alumni IDs to filter by
-     * @param {string} [startDate] The start date of the role
-     * @param {string} [endDate] The end date of the role
-     * @param {Array<string>} [facultyIds] The faculty IDs to filter by
-     * @param {Array<string>} [courseIds] The course IDs to filter by
-     * @param {Array<string>} [graduationYears] The graduation years to filter by
-     * @param {Array<string>} [companyIds] The company IDs to filter by
-     * @param {Array<string>} [industryIds] The industry IDs to filter by
-     * @param {Array<string>} [roleCountryCodes] The country codes where alumni exerced their roles
-     * @param {Array<string>} [roleCityIds] The city IDS where alumni exerced their roles
-     * @param {Array<string>} [companyHQsCountryCodes] The company HQs country codes to filter by
-     * @param {Array<string>} [companyHQsCityIds] The company HQs city ids to filter by
-     * @param {boolean} [currentRolesOnly] Filter for current roles only
-     * @param {boolean} [onlyCompaniesWithSalaryData] Include only companies with salary data
-     * @param {boolean} [onlyInternational] Whether to exclude roles in Portugal
-     * @param {boolean} [excludeResearchAndHighEducation] Exclude research and high education roles
-     * @param {string} [alumniSearch] Search query for companies
-     * @param {Array<'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G' | 'H' | 'I'>} [companySize] The company sizes to filter by
-     * @param {Array<'EDUCATIONAL' | 'GOVERNMENT_AGENCY' | 'NON_PROFIT' | 'PARTNERSHIP' | 'PRIVATELY_HELD' | 'PUBLIC_COMPANY' | 'SELF_EMPLOYED' | 'SELF_OWNED'>} [companyType] The company types to filter by
-     * @param {Array<'INTERN' | 'ENTRY_LEVEL' | 'ASSOCIATE' | 'MID_SENIOR_LEVEL' | 'DIRECTOR' | 'EXECUTIVE' | 'C_LEVEL'>} [seniorityLevel] The seniority levels to filter by
-     * @param {Array<string>} [escoCodes] The ESCO codes to filter by
-     * @param {number} [escoClassificationLevel] The ESCO classification level to filter by
-     * @param {number} [limit] The number of results to return
-     * @param {number} [offset] The offset of the query
-     * @param {string} [search] Broad search query
-     * @param {'count' | 'name' | 'year'} [sortBy] How to sort the results
-     * @param {string} [sortOrder] The order of the results
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof V1ApiInterface
-     */
-    alumniAnalyticsControllerGetAlumniListRaw(requestParameters: AlumniAnalyticsControllerGetAlumniListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<AlumniListResponseDto>>;
-
-    /**
-     * Get all alumni list
-     */
-    alumniAnalyticsControllerGetAlumniList(requestParameters: AlumniAnalyticsControllerGetAlumniListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<AlumniListResponseDto>;
 
     /**
      * 
@@ -964,8 +869,14 @@ export interface V1ApiInterface {
 
     /**
      * 
-     * @summary Get the companies, and the number of alumni working in them.
+     * @summary Gather all the data needed for the analytics page
      * @param {boolean} includeTrend Whether to include the trend data
+     * @param {boolean} [includeCompanyTrend] Whether to include the company trends data
+     * @param {boolean} [includeRoleTrend] Whether to include the role trends data
+     * @param {boolean} [includeIndustryTrend] Whether to include the industry trends data
+     * @param {boolean} [includeEducationTrend] Whether to include the education trends data
+     * @param {boolean} [includeSeniorityTrend] Whether to include the seniority trends data
+     * @param {boolean} [includeGeoTrend] Whether to include the geo trends data
      * @param {Array<string>} [alumniIds] The alumni IDs to filter by
      * @param {string} [startDate] The start date of the role
      * @param {string} [endDate] The end date of the role
@@ -992,17 +903,18 @@ export interface V1ApiInterface {
      * @param {number} [offset] The offset of the query
      * @param {string} [search] Broad search query
      * @param {'count' | 'name' | 'year'} [sortBy] How to sort the results
+     * @param {'ALL' | 'ALUMNI' | 'COMPANY' | 'EDUCATION' | 'GEO' | 'INDUSTRY' | 'ROLE' | 'SENIORITY'} [selectorType] The type of analytics to fetch
      * @param {string} [sortOrder] The order of the results
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof V1ApiInterface
      */
-    companyAnalyticsControllerGetCompaniesWithAlumniCountRaw(requestParameters: CompanyAnalyticsControllerGetCompaniesWithAlumniCountRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<CompanyListResponseDto>>;
+    analyticsControllerGetAnalyticsRaw(requestParameters: AnalyticsControllerGetAnalyticsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<AnalyticsDto>>;
 
     /**
-     * Get the companies, and the number of alumni working in them.
+     * Gather all the data needed for the analytics page
      */
-    companyAnalyticsControllerGetCompaniesWithAlumniCount(requestParameters: CompanyAnalyticsControllerGetCompaniesWithAlumniCountRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<CompanyListResponseDto>;
+    analyticsControllerGetAnalytics(requestParameters: AnalyticsControllerGetAnalyticsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<AnalyticsDto>;
 
     /**
      * 
@@ -1126,6 +1038,12 @@ export interface V1ApiInterface {
      * 
      * @summary Gets the faculties, and the number of alumni graduated from them.
      * @param {boolean} includeTrend Whether to include the trend data
+     * @param {boolean} [includeCompanyTrend] Whether to include the company trends data
+     * @param {boolean} [includeRoleTrend] Whether to include the role trends data
+     * @param {boolean} [includeIndustryTrend] Whether to include the industry trends data
+     * @param {boolean} [includeEducationTrend] Whether to include the education trends data
+     * @param {boolean} [includeSeniorityTrend] Whether to include the seniority trends data
+     * @param {boolean} [includeGeoTrend] Whether to include the geo trends data
      * @param {Array<string>} [alumniIds] The alumni IDs to filter by
      * @param {string} [startDate] The start date of the role
      * @param {string} [endDate] The end date of the role
@@ -1152,6 +1070,7 @@ export interface V1ApiInterface {
      * @param {number} [offset] The offset of the query
      * @param {string} [search] Broad search query
      * @param {'count' | 'name' | 'year'} [sortBy] How to sort the results
+     * @param {'ALL' | 'ALUMNI' | 'COMPANY' | 'EDUCATION' | 'GEO' | 'INDUSTRY' | 'ROLE' | 'SENIORITY'} [selectorType] The type of analytics to fetch
      * @param {string} [sortOrder] The order of the results
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -1168,6 +1087,12 @@ export interface V1ApiInterface {
      * 
      * @summary Get the graduations, and the number of alumni graduated from them.
      * @param {boolean} includeTrend Whether to include the trend data
+     * @param {boolean} [includeCompanyTrend] Whether to include the company trends data
+     * @param {boolean} [includeRoleTrend] Whether to include the role trends data
+     * @param {boolean} [includeIndustryTrend] Whether to include the industry trends data
+     * @param {boolean} [includeEducationTrend] Whether to include the education trends data
+     * @param {boolean} [includeSeniorityTrend] Whether to include the seniority trends data
+     * @param {boolean} [includeGeoTrend] Whether to include the geo trends data
      * @param {Array<string>} [alumniIds] The alumni IDs to filter by
      * @param {string} [startDate] The start date of the role
      * @param {string} [endDate] The end date of the role
@@ -1194,6 +1119,7 @@ export interface V1ApiInterface {
      * @param {number} [offset] The offset of the query
      * @param {string} [search] Broad search query
      * @param {'count' | 'name' | 'year'} [sortBy] How to sort the results
+     * @param {'ALL' | 'ALUMNI' | 'COMPANY' | 'EDUCATION' | 'GEO' | 'INDUSTRY' | 'ROLE' | 'SENIORITY'} [selectorType] The type of analytics to fetch
      * @param {string} [sortOrder] The order of the results
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -1210,6 +1136,12 @@ export interface V1ApiInterface {
      * 
      * @summary Get the majors, and the number of alumni graduated from them.
      * @param {boolean} includeTrend Whether to include the trend data
+     * @param {boolean} [includeCompanyTrend] Whether to include the company trends data
+     * @param {boolean} [includeRoleTrend] Whether to include the role trends data
+     * @param {boolean} [includeIndustryTrend] Whether to include the industry trends data
+     * @param {boolean} [includeEducationTrend] Whether to include the education trends data
+     * @param {boolean} [includeSeniorityTrend] Whether to include the seniority trends data
+     * @param {boolean} [includeGeoTrend] Whether to include the geo trends data
      * @param {Array<string>} [alumniIds] The alumni IDs to filter by
      * @param {string} [startDate] The start date of the role
      * @param {string} [endDate] The end date of the role
@@ -1236,6 +1168,7 @@ export interface V1ApiInterface {
      * @param {number} [offset] The offset of the query
      * @param {string} [search] Broad search query
      * @param {'count' | 'name' | 'year'} [sortBy] How to sort the results
+     * @param {'ALL' | 'ALUMNI' | 'COMPANY' | 'EDUCATION' | 'GEO' | 'INDUSTRY' | 'ROLE' | 'SENIORITY'} [selectorType] The type of analytics to fetch
      * @param {string} [sortOrder] The order of the results
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -1324,48 +1257,6 @@ export interface V1ApiInterface {
 
     /**
      * 
-     * @summary Get the cities, and the number of alumni working in them.
-     * @param {boolean} includeTrend Whether to include the trend data
-     * @param {Array<string>} [alumniIds] The alumni IDs to filter by
-     * @param {string} [startDate] The start date of the role
-     * @param {string} [endDate] The end date of the role
-     * @param {Array<string>} [facultyIds] The faculty IDs to filter by
-     * @param {Array<string>} [courseIds] The course IDs to filter by
-     * @param {Array<string>} [graduationYears] The graduation years to filter by
-     * @param {Array<string>} [companyIds] The company IDs to filter by
-     * @param {Array<string>} [industryIds] The industry IDs to filter by
-     * @param {Array<string>} [roleCountryCodes] The country codes where alumni exerced their roles
-     * @param {Array<string>} [roleCityIds] The city IDS where alumni exerced their roles
-     * @param {Array<string>} [companyHQsCountryCodes] The company HQs country codes to filter by
-     * @param {Array<string>} [companyHQsCityIds] The company HQs city ids to filter by
-     * @param {boolean} [currentRolesOnly] Filter for current roles only
-     * @param {boolean} [onlyCompaniesWithSalaryData] Include only companies with salary data
-     * @param {boolean} [onlyInternational] Whether to exclude roles in Portugal
-     * @param {boolean} [excludeResearchAndHighEducation] Exclude research and high education roles
-     * @param {string} [alumniSearch] Search query for companies
-     * @param {Array<'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G' | 'H' | 'I'>} [companySize] The company sizes to filter by
-     * @param {Array<'EDUCATIONAL' | 'GOVERNMENT_AGENCY' | 'NON_PROFIT' | 'PARTNERSHIP' | 'PRIVATELY_HELD' | 'PUBLIC_COMPANY' | 'SELF_EMPLOYED' | 'SELF_OWNED'>} [companyType] The company types to filter by
-     * @param {Array<'INTERN' | 'ENTRY_LEVEL' | 'ASSOCIATE' | 'MID_SENIOR_LEVEL' | 'DIRECTOR' | 'EXECUTIVE' | 'C_LEVEL'>} [seniorityLevel] The seniority levels to filter by
-     * @param {Array<string>} [escoCodes] The ESCO codes to filter by
-     * @param {number} [escoClassificationLevel] The ESCO classification level to filter by
-     * @param {number} [limit] The number of results to return
-     * @param {number} [offset] The offset of the query
-     * @param {string} [search] Broad search query
-     * @param {'count' | 'name' | 'year'} [sortBy] How to sort the results
-     * @param {string} [sortOrder] The order of the results
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof V1ApiInterface
-     */
-    geoAnalyticsControllerGetCitiesWithAlumniCountRaw(requestParameters: GeoAnalyticsControllerGetCitiesWithAlumniCountRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<CityListResponseDto>>;
-
-    /**
-     * Get the cities, and the number of alumni working in them.
-     */
-    geoAnalyticsControllerGetCitiesWithAlumniCount(requestParameters: GeoAnalyticsControllerGetCitiesWithAlumniCountRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<CityListResponseDto>;
-
-    /**
-     * 
      * @summary Get the countries options.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -1377,48 +1268,6 @@ export interface V1ApiInterface {
      * Get the countries options.
      */
     geoAnalyticsControllerGetCountriesOptions(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<CountryOptionDto>>;
-
-    /**
-     * 
-     * @summary Get the countries, and the number of alumni working in them.
-     * @param {boolean} includeTrend Whether to include the trend data
-     * @param {Array<string>} [alumniIds] The alumni IDs to filter by
-     * @param {string} [startDate] The start date of the role
-     * @param {string} [endDate] The end date of the role
-     * @param {Array<string>} [facultyIds] The faculty IDs to filter by
-     * @param {Array<string>} [courseIds] The course IDs to filter by
-     * @param {Array<string>} [graduationYears] The graduation years to filter by
-     * @param {Array<string>} [companyIds] The company IDs to filter by
-     * @param {Array<string>} [industryIds] The industry IDs to filter by
-     * @param {Array<string>} [roleCountryCodes] The country codes where alumni exerced their roles
-     * @param {Array<string>} [roleCityIds] The city IDS where alumni exerced their roles
-     * @param {Array<string>} [companyHQsCountryCodes] The company HQs country codes to filter by
-     * @param {Array<string>} [companyHQsCityIds] The company HQs city ids to filter by
-     * @param {boolean} [currentRolesOnly] Filter for current roles only
-     * @param {boolean} [onlyCompaniesWithSalaryData] Include only companies with salary data
-     * @param {boolean} [onlyInternational] Whether to exclude roles in Portugal
-     * @param {boolean} [excludeResearchAndHighEducation] Exclude research and high education roles
-     * @param {string} [alumniSearch] Search query for companies
-     * @param {Array<'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G' | 'H' | 'I'>} [companySize] The company sizes to filter by
-     * @param {Array<'EDUCATIONAL' | 'GOVERNMENT_AGENCY' | 'NON_PROFIT' | 'PARTNERSHIP' | 'PRIVATELY_HELD' | 'PUBLIC_COMPANY' | 'SELF_EMPLOYED' | 'SELF_OWNED'>} [companyType] The company types to filter by
-     * @param {Array<'INTERN' | 'ENTRY_LEVEL' | 'ASSOCIATE' | 'MID_SENIOR_LEVEL' | 'DIRECTOR' | 'EXECUTIVE' | 'C_LEVEL'>} [seniorityLevel] The seniority levels to filter by
-     * @param {Array<string>} [escoCodes] The ESCO codes to filter by
-     * @param {number} [escoClassificationLevel] The ESCO classification level to filter by
-     * @param {number} [limit] The number of results to return
-     * @param {number} [offset] The offset of the query
-     * @param {string} [search] Broad search query
-     * @param {'count' | 'name' | 'year'} [sortBy] How to sort the results
-     * @param {string} [sortOrder] The order of the results
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof V1ApiInterface
-     */
-    geoAnalyticsControllerGetCountriesWithAlumniCountRaw(requestParameters: GeoAnalyticsControllerGetCountriesWithAlumniCountRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<CountryListResponseDto>>;
-
-    /**
-     * Get the countries, and the number of alumni working in them.
-     */
-    geoAnalyticsControllerGetCountriesWithAlumniCount(requestParameters: GeoAnalyticsControllerGetCountriesWithAlumniCountRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<CountryListResponseDto>;
 
     /**
      * Returns a list of industries with their id and name.
@@ -1439,6 +1288,12 @@ export interface V1ApiInterface {
      * 
      * @summary Returns the number of alumni working in companies grouped by industry.
      * @param {boolean} includeTrend Whether to include the trend data
+     * @param {boolean} [includeCompanyTrend] Whether to include the company trends data
+     * @param {boolean} [includeRoleTrend] Whether to include the role trends data
+     * @param {boolean} [includeIndustryTrend] Whether to include the industry trends data
+     * @param {boolean} [includeEducationTrend] Whether to include the education trends data
+     * @param {boolean} [includeSeniorityTrend] Whether to include the seniority trends data
+     * @param {boolean} [includeGeoTrend] Whether to include the geo trends data
      * @param {Array<string>} [alumniIds] The alumni IDs to filter by
      * @param {string} [startDate] The start date of the role
      * @param {string} [endDate] The end date of the role
@@ -1465,6 +1320,7 @@ export interface V1ApiInterface {
      * @param {number} [offset] The offset of the query
      * @param {string} [search] Broad search query
      * @param {'count' | 'name' | 'year'} [sortBy] How to sort the results
+     * @param {'ALL' | 'ALUMNI' | 'COMPANY' | 'EDUCATION' | 'GEO' | 'INDUSTRY' | 'ROLE' | 'SENIORITY'} [selectorType] The type of analytics to fetch
      * @param {string} [sortOrder] The order of the results
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -1577,6 +1433,12 @@ export interface V1ApiInterface {
      * 
      * @summary Returns the number of roles classified with each ESCO classification
      * @param {boolean} includeTrend Whether to include the trend data
+     * @param {boolean} [includeCompanyTrend] Whether to include the company trends data
+     * @param {boolean} [includeRoleTrend] Whether to include the role trends data
+     * @param {boolean} [includeIndustryTrend] Whether to include the industry trends data
+     * @param {boolean} [includeEducationTrend] Whether to include the education trends data
+     * @param {boolean} [includeSeniorityTrend] Whether to include the seniority trends data
+     * @param {boolean} [includeGeoTrend] Whether to include the geo trends data
      * @param {Array<string>} [alumniIds] The alumni IDs to filter by
      * @param {string} [startDate] The start date of the role
      * @param {string} [endDate] The end date of the role
@@ -1603,6 +1465,7 @@ export interface V1ApiInterface {
      * @param {number} [offset] The offset of the query
      * @param {string} [search] Broad search query
      * @param {'count' | 'name' | 'year'} [sortBy] How to sort the results
+     * @param {'ALL' | 'ALUMNI' | 'COMPANY' | 'EDUCATION' | 'GEO' | 'INDUSTRY' | 'ROLE' | 'SENIORITY'} [selectorType] The type of analytics to fetch
      * @param {string} [sortOrder] The order of the results
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -1619,6 +1482,12 @@ export interface V1ApiInterface {
      * 
      * @summary Returns the number of roles classified with each seniority level
      * @param {boolean} includeTrend Whether to include the trend data
+     * @param {boolean} [includeCompanyTrend] Whether to include the company trends data
+     * @param {boolean} [includeRoleTrend] Whether to include the role trends data
+     * @param {boolean} [includeIndustryTrend] Whether to include the industry trends data
+     * @param {boolean} [includeEducationTrend] Whether to include the education trends data
+     * @param {boolean} [includeSeniorityTrend] Whether to include the seniority trends data
+     * @param {boolean} [includeGeoTrend] Whether to include the geo trends data
      * @param {Array<string>} [alumniIds] The alumni IDs to filter by
      * @param {string} [startDate] The start date of the role
      * @param {string} [endDate] The end date of the role
@@ -1645,6 +1514,7 @@ export interface V1ApiInterface {
      * @param {number} [offset] The offset of the query
      * @param {string} [search] Broad search query
      * @param {'count' | 'name' | 'year'} [sortBy] How to sort the results
+     * @param {'ALL' | 'ALUMNI' | 'COMPANY' | 'EDUCATION' | 'GEO' | 'INDUSTRY' | 'ROLE' | 'SENIORITY'} [selectorType] The type of analytics to fetch
      * @param {string} [sortOrder] The order of the results
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -1917,151 +1787,6 @@ export class V1Api extends runtime.BaseAPI implements V1ApiInterface {
      */
     async adminControllerMergeLocations(requestParameters: AdminControllerMergeLocationsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
         await this.adminControllerMergeLocationsRaw(requestParameters, initOverrides);
-    }
-
-    /**
-     * Get all alumni list
-     */
-    async alumniAnalyticsControllerGetAlumniListRaw(requestParameters: AlumniAnalyticsControllerGetAlumniListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<AlumniListResponseDto>> {
-        if (requestParameters['includeTrend'] == null) {
-            throw new runtime.RequiredError(
-                'includeTrend',
-                'Required parameter "includeTrend" was null or undefined when calling alumniAnalyticsControllerGetAlumniList().'
-            );
-        }
-
-        const queryParameters: any = {};
-
-        if (requestParameters['alumniIds'] != null) {
-            queryParameters['alumniIds'] = requestParameters['alumniIds'];
-        }
-
-        if (requestParameters['startDate'] != null) {
-            queryParameters['startDate'] = requestParameters['startDate'];
-        }
-
-        if (requestParameters['endDate'] != null) {
-            queryParameters['endDate'] = requestParameters['endDate'];
-        }
-
-        if (requestParameters['facultyIds'] != null) {
-            queryParameters['facultyIds'] = requestParameters['facultyIds'];
-        }
-
-        if (requestParameters['courseIds'] != null) {
-            queryParameters['courseIds'] = requestParameters['courseIds'];
-        }
-
-        if (requestParameters['graduationYears'] != null) {
-            queryParameters['graduationYears'] = requestParameters['graduationYears'];
-        }
-
-        if (requestParameters['companyIds'] != null) {
-            queryParameters['companyIds'] = requestParameters['companyIds'];
-        }
-
-        if (requestParameters['industryIds'] != null) {
-            queryParameters['industryIds'] = requestParameters['industryIds'];
-        }
-
-        if (requestParameters['roleCountryCodes'] != null) {
-            queryParameters['roleCountryCodes'] = requestParameters['roleCountryCodes'];
-        }
-
-        if (requestParameters['roleCityIds'] != null) {
-            queryParameters['roleCityIds'] = requestParameters['roleCityIds'];
-        }
-
-        if (requestParameters['companyHQsCountryCodes'] != null) {
-            queryParameters['companyHQsCountryCodes'] = requestParameters['companyHQsCountryCodes'];
-        }
-
-        if (requestParameters['companyHQsCityIds'] != null) {
-            queryParameters['companyHQsCityIds'] = requestParameters['companyHQsCityIds'];
-        }
-
-        if (requestParameters['currentRolesOnly'] != null) {
-            queryParameters['currentRolesOnly'] = requestParameters['currentRolesOnly'];
-        }
-
-        if (requestParameters['onlyCompaniesWithSalaryData'] != null) {
-            queryParameters['onlyCompaniesWithSalaryData'] = requestParameters['onlyCompaniesWithSalaryData'];
-        }
-
-        if (requestParameters['onlyInternational'] != null) {
-            queryParameters['onlyInternational'] = requestParameters['onlyInternational'];
-        }
-
-        if (requestParameters['excludeResearchAndHighEducation'] != null) {
-            queryParameters['excludeResearchAndHighEducation'] = requestParameters['excludeResearchAndHighEducation'];
-        }
-
-        if (requestParameters['alumniSearch'] != null) {
-            queryParameters['alumniSearch'] = requestParameters['alumniSearch'];
-        }
-
-        if (requestParameters['companySize'] != null) {
-            queryParameters['companySize'] = requestParameters['companySize'];
-        }
-
-        if (requestParameters['companyType'] != null) {
-            queryParameters['companyType'] = requestParameters['companyType'];
-        }
-
-        if (requestParameters['seniorityLevel'] != null) {
-            queryParameters['seniorityLevel'] = requestParameters['seniorityLevel'];
-        }
-
-        if (requestParameters['escoCodes'] != null) {
-            queryParameters['escoCodes'] = requestParameters['escoCodes'];
-        }
-
-        if (requestParameters['escoClassificationLevel'] != null) {
-            queryParameters['escoClassificationLevel'] = requestParameters['escoClassificationLevel'];
-        }
-
-        if (requestParameters['limit'] != null) {
-            queryParameters['limit'] = requestParameters['limit'];
-        }
-
-        if (requestParameters['offset'] != null) {
-            queryParameters['offset'] = requestParameters['offset'];
-        }
-
-        if (requestParameters['search'] != null) {
-            queryParameters['search'] = requestParameters['search'];
-        }
-
-        if (requestParameters['sortBy'] != null) {
-            queryParameters['sortBy'] = requestParameters['sortBy'];
-        }
-
-        if (requestParameters['sortOrder'] != null) {
-            queryParameters['sortOrder'] = requestParameters['sortOrder'];
-        }
-
-        if (requestParameters['includeTrend'] != null) {
-            queryParameters['includeTrend'] = requestParameters['includeTrend'];
-        }
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        const response = await this.request({
-            path: `/analytics/alumni`,
-            method: 'GET',
-            headers: headerParameters,
-            query: queryParameters,
-        }, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => AlumniListResponseDtoFromJSON(jsonValue));
-    }
-
-    /**
-     * Get all alumni list
-     */
-    async alumniAnalyticsControllerGetAlumniList(requestParameters: AlumniAnalyticsControllerGetAlumniListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<AlumniListResponseDto> {
-        const response = await this.alumniAnalyticsControllerGetAlumniListRaw(requestParameters, initOverrides);
-        return await response.value();
     }
 
     /**
@@ -2575,17 +2300,41 @@ export class V1Api extends runtime.BaseAPI implements V1ApiInterface {
     }
 
     /**
-     * Get the companies, and the number of alumni working in them.
+     * Gather all the data needed for the analytics page
      */
-    async companyAnalyticsControllerGetCompaniesWithAlumniCountRaw(requestParameters: CompanyAnalyticsControllerGetCompaniesWithAlumniCountRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<CompanyListResponseDto>> {
+    async analyticsControllerGetAnalyticsRaw(requestParameters: AnalyticsControllerGetAnalyticsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<AnalyticsDto>> {
         if (requestParameters['includeTrend'] == null) {
             throw new runtime.RequiredError(
                 'includeTrend',
-                'Required parameter "includeTrend" was null or undefined when calling companyAnalyticsControllerGetCompaniesWithAlumniCount().'
+                'Required parameter "includeTrend" was null or undefined when calling analyticsControllerGetAnalytics().'
             );
         }
 
         const queryParameters: any = {};
+
+        if (requestParameters['includeCompanyTrend'] != null) {
+            queryParameters['includeCompanyTrend'] = requestParameters['includeCompanyTrend'];
+        }
+
+        if (requestParameters['includeRoleTrend'] != null) {
+            queryParameters['includeRoleTrend'] = requestParameters['includeRoleTrend'];
+        }
+
+        if (requestParameters['includeIndustryTrend'] != null) {
+            queryParameters['includeIndustryTrend'] = requestParameters['includeIndustryTrend'];
+        }
+
+        if (requestParameters['includeEducationTrend'] != null) {
+            queryParameters['includeEducationTrend'] = requestParameters['includeEducationTrend'];
+        }
+
+        if (requestParameters['includeSeniorityTrend'] != null) {
+            queryParameters['includeSeniorityTrend'] = requestParameters['includeSeniorityTrend'];
+        }
+
+        if (requestParameters['includeGeoTrend'] != null) {
+            queryParameters['includeGeoTrend'] = requestParameters['includeGeoTrend'];
+        }
 
         if (requestParameters['alumniIds'] != null) {
             queryParameters['alumniIds'] = requestParameters['alumniIds'];
@@ -2691,6 +2440,10 @@ export class V1Api extends runtime.BaseAPI implements V1ApiInterface {
             queryParameters['sortBy'] = requestParameters['sortBy'];
         }
 
+        if (requestParameters['selectorType'] != null) {
+            queryParameters['selectorType'] = requestParameters['selectorType'];
+        }
+
         if (requestParameters['sortOrder'] != null) {
             queryParameters['sortOrder'] = requestParameters['sortOrder'];
         }
@@ -2702,20 +2455,20 @@ export class V1Api extends runtime.BaseAPI implements V1ApiInterface {
         const headerParameters: runtime.HTTPHeaders = {};
 
         const response = await this.request({
-            path: `/analytics/companies`,
+            path: `/analytics`,
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
         }, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => CompanyListResponseDtoFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) => AnalyticsDtoFromJSON(jsonValue));
     }
 
     /**
-     * Get the companies, and the number of alumni working in them.
+     * Gather all the data needed for the analytics page
      */
-    async companyAnalyticsControllerGetCompaniesWithAlumniCount(requestParameters: CompanyAnalyticsControllerGetCompaniesWithAlumniCountRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<CompanyListResponseDto> {
-        const response = await this.companyAnalyticsControllerGetCompaniesWithAlumniCountRaw(requestParameters, initOverrides);
+    async analyticsControllerGetAnalytics(requestParameters: AnalyticsControllerGetAnalyticsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<AnalyticsDto> {
+        const response = await this.analyticsControllerGetAnalyticsRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -2976,6 +2729,30 @@ export class V1Api extends runtime.BaseAPI implements V1ApiInterface {
 
         const queryParameters: any = {};
 
+        if (requestParameters['includeCompanyTrend'] != null) {
+            queryParameters['includeCompanyTrend'] = requestParameters['includeCompanyTrend'];
+        }
+
+        if (requestParameters['includeRoleTrend'] != null) {
+            queryParameters['includeRoleTrend'] = requestParameters['includeRoleTrend'];
+        }
+
+        if (requestParameters['includeIndustryTrend'] != null) {
+            queryParameters['includeIndustryTrend'] = requestParameters['includeIndustryTrend'];
+        }
+
+        if (requestParameters['includeEducationTrend'] != null) {
+            queryParameters['includeEducationTrend'] = requestParameters['includeEducationTrend'];
+        }
+
+        if (requestParameters['includeSeniorityTrend'] != null) {
+            queryParameters['includeSeniorityTrend'] = requestParameters['includeSeniorityTrend'];
+        }
+
+        if (requestParameters['includeGeoTrend'] != null) {
+            queryParameters['includeGeoTrend'] = requestParameters['includeGeoTrend'];
+        }
+
         if (requestParameters['alumniIds'] != null) {
             queryParameters['alumniIds'] = requestParameters['alumniIds'];
         }
@@ -3078,6 +2855,10 @@ export class V1Api extends runtime.BaseAPI implements V1ApiInterface {
 
         if (requestParameters['sortBy'] != null) {
             queryParameters['sortBy'] = requestParameters['sortBy'];
+        }
+
+        if (requestParameters['selectorType'] != null) {
+            queryParameters['selectorType'] = requestParameters['selectorType'];
         }
 
         if (requestParameters['sortOrder'] != null) {
@@ -3121,6 +2902,30 @@ export class V1Api extends runtime.BaseAPI implements V1ApiInterface {
 
         const queryParameters: any = {};
 
+        if (requestParameters['includeCompanyTrend'] != null) {
+            queryParameters['includeCompanyTrend'] = requestParameters['includeCompanyTrend'];
+        }
+
+        if (requestParameters['includeRoleTrend'] != null) {
+            queryParameters['includeRoleTrend'] = requestParameters['includeRoleTrend'];
+        }
+
+        if (requestParameters['includeIndustryTrend'] != null) {
+            queryParameters['includeIndustryTrend'] = requestParameters['includeIndustryTrend'];
+        }
+
+        if (requestParameters['includeEducationTrend'] != null) {
+            queryParameters['includeEducationTrend'] = requestParameters['includeEducationTrend'];
+        }
+
+        if (requestParameters['includeSeniorityTrend'] != null) {
+            queryParameters['includeSeniorityTrend'] = requestParameters['includeSeniorityTrend'];
+        }
+
+        if (requestParameters['includeGeoTrend'] != null) {
+            queryParameters['includeGeoTrend'] = requestParameters['includeGeoTrend'];
+        }
+
         if (requestParameters['alumniIds'] != null) {
             queryParameters['alumniIds'] = requestParameters['alumniIds'];
         }
@@ -3223,6 +3028,10 @@ export class V1Api extends runtime.BaseAPI implements V1ApiInterface {
 
         if (requestParameters['sortBy'] != null) {
             queryParameters['sortBy'] = requestParameters['sortBy'];
+        }
+
+        if (requestParameters['selectorType'] != null) {
+            queryParameters['selectorType'] = requestParameters['selectorType'];
         }
 
         if (requestParameters['sortOrder'] != null) {
@@ -3266,6 +3075,30 @@ export class V1Api extends runtime.BaseAPI implements V1ApiInterface {
 
         const queryParameters: any = {};
 
+        if (requestParameters['includeCompanyTrend'] != null) {
+            queryParameters['includeCompanyTrend'] = requestParameters['includeCompanyTrend'];
+        }
+
+        if (requestParameters['includeRoleTrend'] != null) {
+            queryParameters['includeRoleTrend'] = requestParameters['includeRoleTrend'];
+        }
+
+        if (requestParameters['includeIndustryTrend'] != null) {
+            queryParameters['includeIndustryTrend'] = requestParameters['includeIndustryTrend'];
+        }
+
+        if (requestParameters['includeEducationTrend'] != null) {
+            queryParameters['includeEducationTrend'] = requestParameters['includeEducationTrend'];
+        }
+
+        if (requestParameters['includeSeniorityTrend'] != null) {
+            queryParameters['includeSeniorityTrend'] = requestParameters['includeSeniorityTrend'];
+        }
+
+        if (requestParameters['includeGeoTrend'] != null) {
+            queryParameters['includeGeoTrend'] = requestParameters['includeGeoTrend'];
+        }
+
         if (requestParameters['alumniIds'] != null) {
             queryParameters['alumniIds'] = requestParameters['alumniIds'];
         }
@@ -3368,6 +3201,10 @@ export class V1Api extends runtime.BaseAPI implements V1ApiInterface {
 
         if (requestParameters['sortBy'] != null) {
             queryParameters['sortBy'] = requestParameters['sortBy'];
+        }
+
+        if (requestParameters['selectorType'] != null) {
+            queryParameters['selectorType'] = requestParameters['selectorType'];
         }
 
         if (requestParameters['sortOrder'] != null) {
@@ -3566,151 +3403,6 @@ export class V1Api extends runtime.BaseAPI implements V1ApiInterface {
     }
 
     /**
-     * Get the cities, and the number of alumni working in them.
-     */
-    async geoAnalyticsControllerGetCitiesWithAlumniCountRaw(requestParameters: GeoAnalyticsControllerGetCitiesWithAlumniCountRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<CityListResponseDto>> {
-        if (requestParameters['includeTrend'] == null) {
-            throw new runtime.RequiredError(
-                'includeTrend',
-                'Required parameter "includeTrend" was null or undefined when calling geoAnalyticsControllerGetCitiesWithAlumniCount().'
-            );
-        }
-
-        const queryParameters: any = {};
-
-        if (requestParameters['alumniIds'] != null) {
-            queryParameters['alumniIds'] = requestParameters['alumniIds'];
-        }
-
-        if (requestParameters['startDate'] != null) {
-            queryParameters['startDate'] = requestParameters['startDate'];
-        }
-
-        if (requestParameters['endDate'] != null) {
-            queryParameters['endDate'] = requestParameters['endDate'];
-        }
-
-        if (requestParameters['facultyIds'] != null) {
-            queryParameters['facultyIds'] = requestParameters['facultyIds'];
-        }
-
-        if (requestParameters['courseIds'] != null) {
-            queryParameters['courseIds'] = requestParameters['courseIds'];
-        }
-
-        if (requestParameters['graduationYears'] != null) {
-            queryParameters['graduationYears'] = requestParameters['graduationYears'];
-        }
-
-        if (requestParameters['companyIds'] != null) {
-            queryParameters['companyIds'] = requestParameters['companyIds'];
-        }
-
-        if (requestParameters['industryIds'] != null) {
-            queryParameters['industryIds'] = requestParameters['industryIds'];
-        }
-
-        if (requestParameters['roleCountryCodes'] != null) {
-            queryParameters['roleCountryCodes'] = requestParameters['roleCountryCodes'];
-        }
-
-        if (requestParameters['roleCityIds'] != null) {
-            queryParameters['roleCityIds'] = requestParameters['roleCityIds'];
-        }
-
-        if (requestParameters['companyHQsCountryCodes'] != null) {
-            queryParameters['companyHQsCountryCodes'] = requestParameters['companyHQsCountryCodes'];
-        }
-
-        if (requestParameters['companyHQsCityIds'] != null) {
-            queryParameters['companyHQsCityIds'] = requestParameters['companyHQsCityIds'];
-        }
-
-        if (requestParameters['currentRolesOnly'] != null) {
-            queryParameters['currentRolesOnly'] = requestParameters['currentRolesOnly'];
-        }
-
-        if (requestParameters['onlyCompaniesWithSalaryData'] != null) {
-            queryParameters['onlyCompaniesWithSalaryData'] = requestParameters['onlyCompaniesWithSalaryData'];
-        }
-
-        if (requestParameters['onlyInternational'] != null) {
-            queryParameters['onlyInternational'] = requestParameters['onlyInternational'];
-        }
-
-        if (requestParameters['excludeResearchAndHighEducation'] != null) {
-            queryParameters['excludeResearchAndHighEducation'] = requestParameters['excludeResearchAndHighEducation'];
-        }
-
-        if (requestParameters['alumniSearch'] != null) {
-            queryParameters['alumniSearch'] = requestParameters['alumniSearch'];
-        }
-
-        if (requestParameters['companySize'] != null) {
-            queryParameters['companySize'] = requestParameters['companySize'];
-        }
-
-        if (requestParameters['companyType'] != null) {
-            queryParameters['companyType'] = requestParameters['companyType'];
-        }
-
-        if (requestParameters['seniorityLevel'] != null) {
-            queryParameters['seniorityLevel'] = requestParameters['seniorityLevel'];
-        }
-
-        if (requestParameters['escoCodes'] != null) {
-            queryParameters['escoCodes'] = requestParameters['escoCodes'];
-        }
-
-        if (requestParameters['escoClassificationLevel'] != null) {
-            queryParameters['escoClassificationLevel'] = requestParameters['escoClassificationLevel'];
-        }
-
-        if (requestParameters['limit'] != null) {
-            queryParameters['limit'] = requestParameters['limit'];
-        }
-
-        if (requestParameters['offset'] != null) {
-            queryParameters['offset'] = requestParameters['offset'];
-        }
-
-        if (requestParameters['search'] != null) {
-            queryParameters['search'] = requestParameters['search'];
-        }
-
-        if (requestParameters['sortBy'] != null) {
-            queryParameters['sortBy'] = requestParameters['sortBy'];
-        }
-
-        if (requestParameters['sortOrder'] != null) {
-            queryParameters['sortOrder'] = requestParameters['sortOrder'];
-        }
-
-        if (requestParameters['includeTrend'] != null) {
-            queryParameters['includeTrend'] = requestParameters['includeTrend'];
-        }
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        const response = await this.request({
-            path: `/analytics/geo/cities`,
-            method: 'GET',
-            headers: headerParameters,
-            query: queryParameters,
-        }, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => CityListResponseDtoFromJSON(jsonValue));
-    }
-
-    /**
-     * Get the cities, and the number of alumni working in them.
-     */
-    async geoAnalyticsControllerGetCitiesWithAlumniCount(requestParameters: GeoAnalyticsControllerGetCitiesWithAlumniCountRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<CityListResponseDto> {
-        const response = await this.geoAnalyticsControllerGetCitiesWithAlumniCountRaw(requestParameters, initOverrides);
-        return await response.value();
-    }
-
-    /**
      * Get the countries options.
      */
     async geoAnalyticsControllerGetCountriesOptionsRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<CountryOptionDto>>> {
@@ -3733,151 +3425,6 @@ export class V1Api extends runtime.BaseAPI implements V1ApiInterface {
      */
     async geoAnalyticsControllerGetCountriesOptions(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<CountryOptionDto>> {
         const response = await this.geoAnalyticsControllerGetCountriesOptionsRaw(initOverrides);
-        return await response.value();
-    }
-
-    /**
-     * Get the countries, and the number of alumni working in them.
-     */
-    async geoAnalyticsControllerGetCountriesWithAlumniCountRaw(requestParameters: GeoAnalyticsControllerGetCountriesWithAlumniCountRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<CountryListResponseDto>> {
-        if (requestParameters['includeTrend'] == null) {
-            throw new runtime.RequiredError(
-                'includeTrend',
-                'Required parameter "includeTrend" was null or undefined when calling geoAnalyticsControllerGetCountriesWithAlumniCount().'
-            );
-        }
-
-        const queryParameters: any = {};
-
-        if (requestParameters['alumniIds'] != null) {
-            queryParameters['alumniIds'] = requestParameters['alumniIds'];
-        }
-
-        if (requestParameters['startDate'] != null) {
-            queryParameters['startDate'] = requestParameters['startDate'];
-        }
-
-        if (requestParameters['endDate'] != null) {
-            queryParameters['endDate'] = requestParameters['endDate'];
-        }
-
-        if (requestParameters['facultyIds'] != null) {
-            queryParameters['facultyIds'] = requestParameters['facultyIds'];
-        }
-
-        if (requestParameters['courseIds'] != null) {
-            queryParameters['courseIds'] = requestParameters['courseIds'];
-        }
-
-        if (requestParameters['graduationYears'] != null) {
-            queryParameters['graduationYears'] = requestParameters['graduationYears'];
-        }
-
-        if (requestParameters['companyIds'] != null) {
-            queryParameters['companyIds'] = requestParameters['companyIds'];
-        }
-
-        if (requestParameters['industryIds'] != null) {
-            queryParameters['industryIds'] = requestParameters['industryIds'];
-        }
-
-        if (requestParameters['roleCountryCodes'] != null) {
-            queryParameters['roleCountryCodes'] = requestParameters['roleCountryCodes'];
-        }
-
-        if (requestParameters['roleCityIds'] != null) {
-            queryParameters['roleCityIds'] = requestParameters['roleCityIds'];
-        }
-
-        if (requestParameters['companyHQsCountryCodes'] != null) {
-            queryParameters['companyHQsCountryCodes'] = requestParameters['companyHQsCountryCodes'];
-        }
-
-        if (requestParameters['companyHQsCityIds'] != null) {
-            queryParameters['companyHQsCityIds'] = requestParameters['companyHQsCityIds'];
-        }
-
-        if (requestParameters['currentRolesOnly'] != null) {
-            queryParameters['currentRolesOnly'] = requestParameters['currentRolesOnly'];
-        }
-
-        if (requestParameters['onlyCompaniesWithSalaryData'] != null) {
-            queryParameters['onlyCompaniesWithSalaryData'] = requestParameters['onlyCompaniesWithSalaryData'];
-        }
-
-        if (requestParameters['onlyInternational'] != null) {
-            queryParameters['onlyInternational'] = requestParameters['onlyInternational'];
-        }
-
-        if (requestParameters['excludeResearchAndHighEducation'] != null) {
-            queryParameters['excludeResearchAndHighEducation'] = requestParameters['excludeResearchAndHighEducation'];
-        }
-
-        if (requestParameters['alumniSearch'] != null) {
-            queryParameters['alumniSearch'] = requestParameters['alumniSearch'];
-        }
-
-        if (requestParameters['companySize'] != null) {
-            queryParameters['companySize'] = requestParameters['companySize'];
-        }
-
-        if (requestParameters['companyType'] != null) {
-            queryParameters['companyType'] = requestParameters['companyType'];
-        }
-
-        if (requestParameters['seniorityLevel'] != null) {
-            queryParameters['seniorityLevel'] = requestParameters['seniorityLevel'];
-        }
-
-        if (requestParameters['escoCodes'] != null) {
-            queryParameters['escoCodes'] = requestParameters['escoCodes'];
-        }
-
-        if (requestParameters['escoClassificationLevel'] != null) {
-            queryParameters['escoClassificationLevel'] = requestParameters['escoClassificationLevel'];
-        }
-
-        if (requestParameters['limit'] != null) {
-            queryParameters['limit'] = requestParameters['limit'];
-        }
-
-        if (requestParameters['offset'] != null) {
-            queryParameters['offset'] = requestParameters['offset'];
-        }
-
-        if (requestParameters['search'] != null) {
-            queryParameters['search'] = requestParameters['search'];
-        }
-
-        if (requestParameters['sortBy'] != null) {
-            queryParameters['sortBy'] = requestParameters['sortBy'];
-        }
-
-        if (requestParameters['sortOrder'] != null) {
-            queryParameters['sortOrder'] = requestParameters['sortOrder'];
-        }
-
-        if (requestParameters['includeTrend'] != null) {
-            queryParameters['includeTrend'] = requestParameters['includeTrend'];
-        }
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        const response = await this.request({
-            path: `/analytics/geo/countries`,
-            method: 'GET',
-            headers: headerParameters,
-            query: queryParameters,
-        }, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => CountryListResponseDtoFromJSON(jsonValue));
-    }
-
-    /**
-     * Get the countries, and the number of alumni working in them.
-     */
-    async geoAnalyticsControllerGetCountriesWithAlumniCount(requestParameters: GeoAnalyticsControllerGetCountriesWithAlumniCountRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<CountryListResponseDto> {
-        const response = await this.geoAnalyticsControllerGetCountriesWithAlumniCountRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -3922,6 +3469,30 @@ export class V1Api extends runtime.BaseAPI implements V1ApiInterface {
 
         const queryParameters: any = {};
 
+        if (requestParameters['includeCompanyTrend'] != null) {
+            queryParameters['includeCompanyTrend'] = requestParameters['includeCompanyTrend'];
+        }
+
+        if (requestParameters['includeRoleTrend'] != null) {
+            queryParameters['includeRoleTrend'] = requestParameters['includeRoleTrend'];
+        }
+
+        if (requestParameters['includeIndustryTrend'] != null) {
+            queryParameters['includeIndustryTrend'] = requestParameters['includeIndustryTrend'];
+        }
+
+        if (requestParameters['includeEducationTrend'] != null) {
+            queryParameters['includeEducationTrend'] = requestParameters['includeEducationTrend'];
+        }
+
+        if (requestParameters['includeSeniorityTrend'] != null) {
+            queryParameters['includeSeniorityTrend'] = requestParameters['includeSeniorityTrend'];
+        }
+
+        if (requestParameters['includeGeoTrend'] != null) {
+            queryParameters['includeGeoTrend'] = requestParameters['includeGeoTrend'];
+        }
+
         if (requestParameters['alumniIds'] != null) {
             queryParameters['alumniIds'] = requestParameters['alumniIds'];
         }
@@ -4024,6 +3595,10 @@ export class V1Api extends runtime.BaseAPI implements V1ApiInterface {
 
         if (requestParameters['sortBy'] != null) {
             queryParameters['sortBy'] = requestParameters['sortBy'];
+        }
+
+        if (requestParameters['selectorType'] != null) {
+            queryParameters['selectorType'] = requestParameters['selectorType'];
         }
 
         if (requestParameters['sortOrder'] != null) {
@@ -4294,6 +3869,30 @@ export class V1Api extends runtime.BaseAPI implements V1ApiInterface {
 
         const queryParameters: any = {};
 
+        if (requestParameters['includeCompanyTrend'] != null) {
+            queryParameters['includeCompanyTrend'] = requestParameters['includeCompanyTrend'];
+        }
+
+        if (requestParameters['includeRoleTrend'] != null) {
+            queryParameters['includeRoleTrend'] = requestParameters['includeRoleTrend'];
+        }
+
+        if (requestParameters['includeIndustryTrend'] != null) {
+            queryParameters['includeIndustryTrend'] = requestParameters['includeIndustryTrend'];
+        }
+
+        if (requestParameters['includeEducationTrend'] != null) {
+            queryParameters['includeEducationTrend'] = requestParameters['includeEducationTrend'];
+        }
+
+        if (requestParameters['includeSeniorityTrend'] != null) {
+            queryParameters['includeSeniorityTrend'] = requestParameters['includeSeniorityTrend'];
+        }
+
+        if (requestParameters['includeGeoTrend'] != null) {
+            queryParameters['includeGeoTrend'] = requestParameters['includeGeoTrend'];
+        }
+
         if (requestParameters['alumniIds'] != null) {
             queryParameters['alumniIds'] = requestParameters['alumniIds'];
         }
@@ -4396,6 +3995,10 @@ export class V1Api extends runtime.BaseAPI implements V1ApiInterface {
 
         if (requestParameters['sortBy'] != null) {
             queryParameters['sortBy'] = requestParameters['sortBy'];
+        }
+
+        if (requestParameters['selectorType'] != null) {
+            queryParameters['selectorType'] = requestParameters['selectorType'];
         }
 
         if (requestParameters['sortOrder'] != null) {
@@ -4439,6 +4042,30 @@ export class V1Api extends runtime.BaseAPI implements V1ApiInterface {
 
         const queryParameters: any = {};
 
+        if (requestParameters['includeCompanyTrend'] != null) {
+            queryParameters['includeCompanyTrend'] = requestParameters['includeCompanyTrend'];
+        }
+
+        if (requestParameters['includeRoleTrend'] != null) {
+            queryParameters['includeRoleTrend'] = requestParameters['includeRoleTrend'];
+        }
+
+        if (requestParameters['includeIndustryTrend'] != null) {
+            queryParameters['includeIndustryTrend'] = requestParameters['includeIndustryTrend'];
+        }
+
+        if (requestParameters['includeEducationTrend'] != null) {
+            queryParameters['includeEducationTrend'] = requestParameters['includeEducationTrend'];
+        }
+
+        if (requestParameters['includeSeniorityTrend'] != null) {
+            queryParameters['includeSeniorityTrend'] = requestParameters['includeSeniorityTrend'];
+        }
+
+        if (requestParameters['includeGeoTrend'] != null) {
+            queryParameters['includeGeoTrend'] = requestParameters['includeGeoTrend'];
+        }
+
         if (requestParameters['alumniIds'] != null) {
             queryParameters['alumniIds'] = requestParameters['alumniIds'];
         }
@@ -4541,6 +4168,10 @@ export class V1Api extends runtime.BaseAPI implements V1ApiInterface {
 
         if (requestParameters['sortBy'] != null) {
             queryParameters['sortBy'] = requestParameters['sortBy'];
+        }
+
+        if (requestParameters['selectorType'] != null) {
+            queryParameters['selectorType'] = requestParameters['selectorType'];
         }
 
         if (requestParameters['sortOrder'] != null) {
@@ -4786,57 +4417,6 @@ export class V1Api extends runtime.BaseAPI implements V1ApiInterface {
 /**
  * @export
  */
-export const AlumniAnalyticsControllerGetAlumniListCompanySizeEnum = {
-    A: 'A',
-    B: 'B',
-    C: 'C',
-    D: 'D',
-    E: 'E',
-    F: 'F',
-    G: 'G',
-    H: 'H',
-    I: 'I'
-} as const;
-export type AlumniAnalyticsControllerGetAlumniListCompanySizeEnum = typeof AlumniAnalyticsControllerGetAlumniListCompanySizeEnum[keyof typeof AlumniAnalyticsControllerGetAlumniListCompanySizeEnum];
-/**
- * @export
- */
-export const AlumniAnalyticsControllerGetAlumniListCompanyTypeEnum = {
-    Educational: 'EDUCATIONAL',
-    GovernmentAgency: 'GOVERNMENT_AGENCY',
-    NonProfit: 'NON_PROFIT',
-    Partnership: 'PARTNERSHIP',
-    PrivatelyHeld: 'PRIVATELY_HELD',
-    PublicCompany: 'PUBLIC_COMPANY',
-    SelfEmployed: 'SELF_EMPLOYED',
-    SelfOwned: 'SELF_OWNED'
-} as const;
-export type AlumniAnalyticsControllerGetAlumniListCompanyTypeEnum = typeof AlumniAnalyticsControllerGetAlumniListCompanyTypeEnum[keyof typeof AlumniAnalyticsControllerGetAlumniListCompanyTypeEnum];
-/**
- * @export
- */
-export const AlumniAnalyticsControllerGetAlumniListSeniorityLevelEnum = {
-    Intern: 'INTERN',
-    EntryLevel: 'ENTRY_LEVEL',
-    Associate: 'ASSOCIATE',
-    MidSeniorLevel: 'MID_SENIOR_LEVEL',
-    Director: 'DIRECTOR',
-    Executive: 'EXECUTIVE',
-    CLevel: 'C_LEVEL'
-} as const;
-export type AlumniAnalyticsControllerGetAlumniListSeniorityLevelEnum = typeof AlumniAnalyticsControllerGetAlumniListSeniorityLevelEnum[keyof typeof AlumniAnalyticsControllerGetAlumniListSeniorityLevelEnum];
-/**
- * @export
- */
-export const AlumniAnalyticsControllerGetAlumniListSortByEnum = {
-    Count: 'count',
-    Name: 'name',
-    Year: 'year'
-} as const;
-export type AlumniAnalyticsControllerGetAlumniListSortByEnum = typeof AlumniAnalyticsControllerGetAlumniListSortByEnum[keyof typeof AlumniAnalyticsControllerGetAlumniListSortByEnum];
-/**
- * @export
- */
 export const AlumniControllerFindAllGeoJSONGroupByEnum = {
     Countries: 'countries',
     Cities: 'cities'
@@ -4845,7 +4425,7 @@ export type AlumniControllerFindAllGeoJSONGroupByEnum = typeof AlumniControllerF
 /**
  * @export
  */
-export const CompanyAnalyticsControllerGetCompaniesWithAlumniCountCompanySizeEnum = {
+export const AnalyticsControllerGetAnalyticsCompanySizeEnum = {
     A: 'A',
     B: 'B',
     C: 'C',
@@ -4856,11 +4436,11 @@ export const CompanyAnalyticsControllerGetCompaniesWithAlumniCountCompanySizeEnu
     H: 'H',
     I: 'I'
 } as const;
-export type CompanyAnalyticsControllerGetCompaniesWithAlumniCountCompanySizeEnum = typeof CompanyAnalyticsControllerGetCompaniesWithAlumniCountCompanySizeEnum[keyof typeof CompanyAnalyticsControllerGetCompaniesWithAlumniCountCompanySizeEnum];
+export type AnalyticsControllerGetAnalyticsCompanySizeEnum = typeof AnalyticsControllerGetAnalyticsCompanySizeEnum[keyof typeof AnalyticsControllerGetAnalyticsCompanySizeEnum];
 /**
  * @export
  */
-export const CompanyAnalyticsControllerGetCompaniesWithAlumniCountCompanyTypeEnum = {
+export const AnalyticsControllerGetAnalyticsCompanyTypeEnum = {
     Educational: 'EDUCATIONAL',
     GovernmentAgency: 'GOVERNMENT_AGENCY',
     NonProfit: 'NON_PROFIT',
@@ -4870,11 +4450,11 @@ export const CompanyAnalyticsControllerGetCompaniesWithAlumniCountCompanyTypeEnu
     SelfEmployed: 'SELF_EMPLOYED',
     SelfOwned: 'SELF_OWNED'
 } as const;
-export type CompanyAnalyticsControllerGetCompaniesWithAlumniCountCompanyTypeEnum = typeof CompanyAnalyticsControllerGetCompaniesWithAlumniCountCompanyTypeEnum[keyof typeof CompanyAnalyticsControllerGetCompaniesWithAlumniCountCompanyTypeEnum];
+export type AnalyticsControllerGetAnalyticsCompanyTypeEnum = typeof AnalyticsControllerGetAnalyticsCompanyTypeEnum[keyof typeof AnalyticsControllerGetAnalyticsCompanyTypeEnum];
 /**
  * @export
  */
-export const CompanyAnalyticsControllerGetCompaniesWithAlumniCountSeniorityLevelEnum = {
+export const AnalyticsControllerGetAnalyticsSeniorityLevelEnum = {
     Intern: 'INTERN',
     EntryLevel: 'ENTRY_LEVEL',
     Associate: 'ASSOCIATE',
@@ -4883,16 +4463,30 @@ export const CompanyAnalyticsControllerGetCompaniesWithAlumniCountSeniorityLevel
     Executive: 'EXECUTIVE',
     CLevel: 'C_LEVEL'
 } as const;
-export type CompanyAnalyticsControllerGetCompaniesWithAlumniCountSeniorityLevelEnum = typeof CompanyAnalyticsControllerGetCompaniesWithAlumniCountSeniorityLevelEnum[keyof typeof CompanyAnalyticsControllerGetCompaniesWithAlumniCountSeniorityLevelEnum];
+export type AnalyticsControllerGetAnalyticsSeniorityLevelEnum = typeof AnalyticsControllerGetAnalyticsSeniorityLevelEnum[keyof typeof AnalyticsControllerGetAnalyticsSeniorityLevelEnum];
 /**
  * @export
  */
-export const CompanyAnalyticsControllerGetCompaniesWithAlumniCountSortByEnum = {
+export const AnalyticsControllerGetAnalyticsSortByEnum = {
     Count: 'count',
     Name: 'name',
     Year: 'year'
 } as const;
-export type CompanyAnalyticsControllerGetCompaniesWithAlumniCountSortByEnum = typeof CompanyAnalyticsControllerGetCompaniesWithAlumniCountSortByEnum[keyof typeof CompanyAnalyticsControllerGetCompaniesWithAlumniCountSortByEnum];
+export type AnalyticsControllerGetAnalyticsSortByEnum = typeof AnalyticsControllerGetAnalyticsSortByEnum[keyof typeof AnalyticsControllerGetAnalyticsSortByEnum];
+/**
+ * @export
+ */
+export const AnalyticsControllerGetAnalyticsSelectorTypeEnum = {
+    All: 'ALL',
+    Alumni: 'ALUMNI',
+    Company: 'COMPANY',
+    Education: 'EDUCATION',
+    Geo: 'GEO',
+    Industry: 'INDUSTRY',
+    Role: 'ROLE',
+    Seniority: 'SENIORITY'
+} as const;
+export type AnalyticsControllerGetAnalyticsSelectorTypeEnum = typeof AnalyticsControllerGetAnalyticsSelectorTypeEnum[keyof typeof AnalyticsControllerGetAnalyticsSelectorTypeEnum];
 /**
  * @export
  */
@@ -4947,6 +4541,20 @@ export type EducationAnalyticsControllerGetFacultiesSortByEnum = typeof Educatio
 /**
  * @export
  */
+export const EducationAnalyticsControllerGetFacultiesSelectorTypeEnum = {
+    All: 'ALL',
+    Alumni: 'ALUMNI',
+    Company: 'COMPANY',
+    Education: 'EDUCATION',
+    Geo: 'GEO',
+    Industry: 'INDUSTRY',
+    Role: 'ROLE',
+    Seniority: 'SENIORITY'
+} as const;
+export type EducationAnalyticsControllerGetFacultiesSelectorTypeEnum = typeof EducationAnalyticsControllerGetFacultiesSelectorTypeEnum[keyof typeof EducationAnalyticsControllerGetFacultiesSelectorTypeEnum];
+/**
+ * @export
+ */
 export const EducationAnalyticsControllerGetGraduationsCompanySizeEnum = {
     A: 'A',
     B: 'B',
@@ -4995,6 +4603,20 @@ export const EducationAnalyticsControllerGetGraduationsSortByEnum = {
     Year: 'year'
 } as const;
 export type EducationAnalyticsControllerGetGraduationsSortByEnum = typeof EducationAnalyticsControllerGetGraduationsSortByEnum[keyof typeof EducationAnalyticsControllerGetGraduationsSortByEnum];
+/**
+ * @export
+ */
+export const EducationAnalyticsControllerGetGraduationsSelectorTypeEnum = {
+    All: 'ALL',
+    Alumni: 'ALUMNI',
+    Company: 'COMPANY',
+    Education: 'EDUCATION',
+    Geo: 'GEO',
+    Industry: 'INDUSTRY',
+    Role: 'ROLE',
+    Seniority: 'SENIORITY'
+} as const;
+export type EducationAnalyticsControllerGetGraduationsSelectorTypeEnum = typeof EducationAnalyticsControllerGetGraduationsSelectorTypeEnum[keyof typeof EducationAnalyticsControllerGetGraduationsSelectorTypeEnum];
 /**
  * @export
  */
@@ -5049,105 +4671,17 @@ export type EducationAnalyticsControllerGetMajorsSortByEnum = typeof EducationAn
 /**
  * @export
  */
-export const GeoAnalyticsControllerGetCitiesWithAlumniCountCompanySizeEnum = {
-    A: 'A',
-    B: 'B',
-    C: 'C',
-    D: 'D',
-    E: 'E',
-    F: 'F',
-    G: 'G',
-    H: 'H',
-    I: 'I'
+export const EducationAnalyticsControllerGetMajorsSelectorTypeEnum = {
+    All: 'ALL',
+    Alumni: 'ALUMNI',
+    Company: 'COMPANY',
+    Education: 'EDUCATION',
+    Geo: 'GEO',
+    Industry: 'INDUSTRY',
+    Role: 'ROLE',
+    Seniority: 'SENIORITY'
 } as const;
-export type GeoAnalyticsControllerGetCitiesWithAlumniCountCompanySizeEnum = typeof GeoAnalyticsControllerGetCitiesWithAlumniCountCompanySizeEnum[keyof typeof GeoAnalyticsControllerGetCitiesWithAlumniCountCompanySizeEnum];
-/**
- * @export
- */
-export const GeoAnalyticsControllerGetCitiesWithAlumniCountCompanyTypeEnum = {
-    Educational: 'EDUCATIONAL',
-    GovernmentAgency: 'GOVERNMENT_AGENCY',
-    NonProfit: 'NON_PROFIT',
-    Partnership: 'PARTNERSHIP',
-    PrivatelyHeld: 'PRIVATELY_HELD',
-    PublicCompany: 'PUBLIC_COMPANY',
-    SelfEmployed: 'SELF_EMPLOYED',
-    SelfOwned: 'SELF_OWNED'
-} as const;
-export type GeoAnalyticsControllerGetCitiesWithAlumniCountCompanyTypeEnum = typeof GeoAnalyticsControllerGetCitiesWithAlumniCountCompanyTypeEnum[keyof typeof GeoAnalyticsControllerGetCitiesWithAlumniCountCompanyTypeEnum];
-/**
- * @export
- */
-export const GeoAnalyticsControllerGetCitiesWithAlumniCountSeniorityLevelEnum = {
-    Intern: 'INTERN',
-    EntryLevel: 'ENTRY_LEVEL',
-    Associate: 'ASSOCIATE',
-    MidSeniorLevel: 'MID_SENIOR_LEVEL',
-    Director: 'DIRECTOR',
-    Executive: 'EXECUTIVE',
-    CLevel: 'C_LEVEL'
-} as const;
-export type GeoAnalyticsControllerGetCitiesWithAlumniCountSeniorityLevelEnum = typeof GeoAnalyticsControllerGetCitiesWithAlumniCountSeniorityLevelEnum[keyof typeof GeoAnalyticsControllerGetCitiesWithAlumniCountSeniorityLevelEnum];
-/**
- * @export
- */
-export const GeoAnalyticsControllerGetCitiesWithAlumniCountSortByEnum = {
-    Count: 'count',
-    Name: 'name',
-    Year: 'year'
-} as const;
-export type GeoAnalyticsControllerGetCitiesWithAlumniCountSortByEnum = typeof GeoAnalyticsControllerGetCitiesWithAlumniCountSortByEnum[keyof typeof GeoAnalyticsControllerGetCitiesWithAlumniCountSortByEnum];
-/**
- * @export
- */
-export const GeoAnalyticsControllerGetCountriesWithAlumniCountCompanySizeEnum = {
-    A: 'A',
-    B: 'B',
-    C: 'C',
-    D: 'D',
-    E: 'E',
-    F: 'F',
-    G: 'G',
-    H: 'H',
-    I: 'I'
-} as const;
-export type GeoAnalyticsControllerGetCountriesWithAlumniCountCompanySizeEnum = typeof GeoAnalyticsControllerGetCountriesWithAlumniCountCompanySizeEnum[keyof typeof GeoAnalyticsControllerGetCountriesWithAlumniCountCompanySizeEnum];
-/**
- * @export
- */
-export const GeoAnalyticsControllerGetCountriesWithAlumniCountCompanyTypeEnum = {
-    Educational: 'EDUCATIONAL',
-    GovernmentAgency: 'GOVERNMENT_AGENCY',
-    NonProfit: 'NON_PROFIT',
-    Partnership: 'PARTNERSHIP',
-    PrivatelyHeld: 'PRIVATELY_HELD',
-    PublicCompany: 'PUBLIC_COMPANY',
-    SelfEmployed: 'SELF_EMPLOYED',
-    SelfOwned: 'SELF_OWNED'
-} as const;
-export type GeoAnalyticsControllerGetCountriesWithAlumniCountCompanyTypeEnum = typeof GeoAnalyticsControllerGetCountriesWithAlumniCountCompanyTypeEnum[keyof typeof GeoAnalyticsControllerGetCountriesWithAlumniCountCompanyTypeEnum];
-/**
- * @export
- */
-export const GeoAnalyticsControllerGetCountriesWithAlumniCountSeniorityLevelEnum = {
-    Intern: 'INTERN',
-    EntryLevel: 'ENTRY_LEVEL',
-    Associate: 'ASSOCIATE',
-    MidSeniorLevel: 'MID_SENIOR_LEVEL',
-    Director: 'DIRECTOR',
-    Executive: 'EXECUTIVE',
-    CLevel: 'C_LEVEL'
-} as const;
-export type GeoAnalyticsControllerGetCountriesWithAlumniCountSeniorityLevelEnum = typeof GeoAnalyticsControllerGetCountriesWithAlumniCountSeniorityLevelEnum[keyof typeof GeoAnalyticsControllerGetCountriesWithAlumniCountSeniorityLevelEnum];
-/**
- * @export
- */
-export const GeoAnalyticsControllerGetCountriesWithAlumniCountSortByEnum = {
-    Count: 'count',
-    Name: 'name',
-    Year: 'year'
-} as const;
-export type GeoAnalyticsControllerGetCountriesWithAlumniCountSortByEnum = typeof GeoAnalyticsControllerGetCountriesWithAlumniCountSortByEnum[keyof typeof GeoAnalyticsControllerGetCountriesWithAlumniCountSortByEnum];
+export type EducationAnalyticsControllerGetMajorsSelectorTypeEnum = typeof EducationAnalyticsControllerGetMajorsSelectorTypeEnum[keyof typeof EducationAnalyticsControllerGetMajorsSelectorTypeEnum];
 /**
  * @export
  */
@@ -5199,6 +4733,20 @@ export const IndustryAnalyticsControllerGetIndustryWithCountsSortByEnum = {
     Year: 'year'
 } as const;
 export type IndustryAnalyticsControllerGetIndustryWithCountsSortByEnum = typeof IndustryAnalyticsControllerGetIndustryWithCountsSortByEnum[keyof typeof IndustryAnalyticsControllerGetIndustryWithCountsSortByEnum];
+/**
+ * @export
+ */
+export const IndustryAnalyticsControllerGetIndustryWithCountsSelectorTypeEnum = {
+    All: 'ALL',
+    Alumni: 'ALUMNI',
+    Company: 'COMPANY',
+    Education: 'EDUCATION',
+    Geo: 'GEO',
+    Industry: 'INDUSTRY',
+    Role: 'ROLE',
+    Seniority: 'SENIORITY'
+} as const;
+export type IndustryAnalyticsControllerGetIndustryWithCountsSelectorTypeEnum = typeof IndustryAnalyticsControllerGetIndustryWithCountsSelectorTypeEnum[keyof typeof IndustryAnalyticsControllerGetIndustryWithCountsSelectorTypeEnum];
 /**
  * @export
  */
@@ -5261,6 +4809,20 @@ export type RoleAnalyticsControllerGetRolesSortByEnum = typeof RoleAnalyticsCont
 /**
  * @export
  */
+export const RoleAnalyticsControllerGetRolesSelectorTypeEnum = {
+    All: 'ALL',
+    Alumni: 'ALUMNI',
+    Company: 'COMPANY',
+    Education: 'EDUCATION',
+    Geo: 'GEO',
+    Industry: 'INDUSTRY',
+    Role: 'ROLE',
+    Seniority: 'SENIORITY'
+} as const;
+export type RoleAnalyticsControllerGetRolesSelectorTypeEnum = typeof RoleAnalyticsControllerGetRolesSelectorTypeEnum[keyof typeof RoleAnalyticsControllerGetRolesSelectorTypeEnum];
+/**
+ * @export
+ */
 export const RoleAnalyticsControllerGetSeniorityLevelsCompanySizeEnum = {
     A: 'A',
     B: 'B',
@@ -5309,3 +4871,17 @@ export const RoleAnalyticsControllerGetSeniorityLevelsSortByEnum = {
     Year: 'year'
 } as const;
 export type RoleAnalyticsControllerGetSeniorityLevelsSortByEnum = typeof RoleAnalyticsControllerGetSeniorityLevelsSortByEnum[keyof typeof RoleAnalyticsControllerGetSeniorityLevelsSortByEnum];
+/**
+ * @export
+ */
+export const RoleAnalyticsControllerGetSeniorityLevelsSelectorTypeEnum = {
+    All: 'ALL',
+    Alumni: 'ALUMNI',
+    Company: 'COMPANY',
+    Education: 'EDUCATION',
+    Geo: 'GEO',
+    Industry: 'INDUSTRY',
+    Role: 'ROLE',
+    Seniority: 'SENIORITY'
+} as const;
+export type RoleAnalyticsControllerGetSeniorityLevelsSelectorTypeEnum = typeof RoleAnalyticsControllerGetSeniorityLevelsSelectorTypeEnum[keyof typeof RoleAnalyticsControllerGetSeniorityLevelsSelectorTypeEnum];

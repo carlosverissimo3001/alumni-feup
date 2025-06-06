@@ -31,8 +31,8 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { COMPANY_SIZE, COMPANY_TYPE } from "@/types/company";
 import { SENIORITY_LEVEL_API_TO_ENUM } from "@/types/roles";
 import {
-  CompanyAnalyticsControllerGetCompaniesWithAlumniCountCompanySizeEnum as CompanySizeEnum,
-  CompanyAnalyticsControllerGetCompaniesWithAlumniCountCompanyTypeEnum as CompanyTypeEnum,
+  AnalyticsControllerGetAnalyticsCompanySizeEnum as CompanySizeEnum,
+  AnalyticsControllerGetAnalyticsCompanyTypeEnum as CompanyTypeEnum,
   RoleAnalyticsControllerGetRolesSeniorityLevelEnum as SeniorityLevelEnum,
 } from "@/sdk";
 import { motion, AnimatePresence } from "framer-motion";

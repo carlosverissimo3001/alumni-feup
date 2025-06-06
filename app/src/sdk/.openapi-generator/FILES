@@ -9,6 +9,7 @@ models/AlumniListItemDto.ts
 models/AlumniListResponseDto.ts
 models/AlumniOptionDto.ts
 models/AlumniPastLocationsAndCompaniesDto.ts
+models/AnalyticsDto.ts
 models/BasicAlumniDto.ts
 models/BasicCompanyDto.ts
 models/BasicGeoDto.ts

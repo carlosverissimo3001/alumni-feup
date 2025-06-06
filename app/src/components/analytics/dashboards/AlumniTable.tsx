@@ -20,7 +20,6 @@ import { SortBy, SortOrder, ITEMS_PER_PAGE } from "@/consts";
 import { ExternalLink, Filter, Users, Search, X, Earth } from "lucide-react";
 import TableTitle from "../common/TableTitle";
 import Image from "next/image";
-import { useAlumniList } from "@/hooks/analytics/useAlumniList";
 import { AlumniListItemDto } from "@/sdk";
 import {
   Tooltip,
@@ -31,6 +30,7 @@ import {
 import AlumniTableSkeleton from "../skeletons/AlumniTableSkeleton";
 import { useAuth } from "@/contexts/AuthContext";
 import { Input } from "@/components/ui/input";
+import { useFetchAnalytics } from "@/hooks/analytics/useFetchAnalytics";
 
 type AlumniTableProps = {
   filters: FilterState;
@@ -85,6 +85,9 @@ export const AlumniTable = ({ filters, onAddToFilters }: AlumniTableProps) => {
   const [sortOrder, setSortOrder] = useState<SortOrder>(SortOrder.ASC);
   const [searchQuery, setSearchQuery] = useState<string>("");
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [pageInput, setPageInput] = useState<string>(String(page));
+
   const calculateTableHeight = (itemCount: number) => {
     const rowHeight = 56;
     const headerHeight = 100;
@@ -102,24 +105,27 @@ export const AlumniTable = ({ filters, onAddToFilters }: AlumniTableProps) => {
     return Math.max(minHeight, Math.min(calculatedHeight, maxHeight));
   };
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [pageInput, setPageInput] = useState<string>(String(page));
-
   useEffect(() => {
     setPage(1);
   }, [filters]);
 
-  const { data, isLoading, isFetching } = useAlumniList({
-    ...filters,
-    limit: itemsPerPage,
-    sortBy: sortField,
-    sortOrder: sortOrder,
-    offset: (page - 1) * itemsPerPage,
-    includeTrend: false,
-    alumniSearch: searchQuery || undefined,
+  const { data, isLoading, isFetching } = useFetchAnalytics({
+    dashboardType: "alumni",
+    params: {
+      ...filters,
+      limit: itemsPerPage,
+      sortBy: sortField,
+      sortOrder: sortOrder,
+      offset: (page - 1) * itemsPerPage,
+      includeTrend: false,
+      alumniSearch: searchQuery || undefined,
+    },
   });
 
-  const buildMapUrl = (latitude?: number, longitude?: number) : string | undefined => {
+  const buildMapUrl = (
+    latitude?: number,
+    longitude?: number
+  ): string | undefined => {
     if (latitude == null || longitude == null) {
       return undefined;
     }
@@ -128,14 +134,6 @@ export const AlumniTable = ({ filters, onAddToFilters }: AlumniTableProps) => {
 
   const alumnus = data?.alumni || [];
   const totalItems = data?.filteredCount || 0;
-
-  useEffect(() => {
-    setPage(1);
-  }, [filters]);
-
-  useEffect(() => {
-    setPageInput(String(page));
-  }, [page]);
 
   const handleSort = (field: SortBy) => {
     if (sortField === field) {
@@ -288,8 +286,10 @@ export const AlumniTable = ({ filters, onAddToFilters }: AlumniTableProps) => {
                                           ) {
                                             window.open(
                                               buildMapUrl(
-                                                alumni.currentRoleLocation.latitude,
-                                                alumni.currentRoleLocation.longitude
+                                                alumni.currentRoleLocation
+                                                  .latitude,
+                                                alumni.currentRoleLocation
+                                                  .longitude
                                               ),
                                               "_blank"
                                             );

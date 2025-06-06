@@ -1,23 +1,24 @@
-import { QueryParamsDto } from '../dto/query-params.dto';
-import { AlumniAnalyticsRepository, LocationRepository } from '../repositories';
 import { Injectable } from '@nestjs/common';
 import { LogExecutionTime } from '@/decorators/log-execution-time.decorator';
-import {
-  CountryListResponseDto,
-  CountryOptionDto,
-  GetCitiesDto,
-  CityListResponseDto,
-  CityOptionDto,
-  CityListItemDto,
-  CountryListItemDto,
-} from '@/analytics/dto';
-import { TREND_TYPE } from '../consts';
 import {
   DEFAULT_QUERY_LIMIT,
   DEFAULT_QUERY_OFFSET,
   DEFAULT_QUERY_SORT_BY,
   DEFAULT_QUERY_SORT_ORDER,
+  TREND_TYPE,
 } from '../consts';
+import {
+  CityListItemDto,
+  CityListResponseDto,
+  CityOptionDto,
+  CountryListItemDto,
+  CountryListResponseDto,
+  CountryOptionDto,
+  GetCitiesDto,
+} from '../dto';
+import { QueryParamsDto } from '../dto/query-params.dto';
+import { AlumniAnalyticsEntity } from '../entities';
+import { AlumniAnalyticsRepository, LocationRepository } from '../repositories';
 import { sortData } from '../utils';
 import { applyDateFilters } from '../utils/filters';
 import { TrendAnalyticsService } from './trend-analytics.service';
@@ -38,11 +39,10 @@ export class GeoAnalyticsService {
     private readonly trendAnalyticsService: TrendAnalyticsService,
   ) {}
 
-  @LogExecutionTime()
-  async getCountriesWithAlumniCount(
+  async getCountryAnalytics(
+    alumnusUnfiltered: AlumniAnalyticsEntity[],
     query: QueryParamsDto,
   ): Promise<CountryListResponseDto> {
-    const alumnusUnfiltered = await this.alumniRepository.find(query);
     const alumnus = applyDateFilters(alumnusUnfiltered, query);
 
     // Extract unique country codes first
@@ -132,11 +132,10 @@ export class GeoAnalyticsService {
     };
   }
 
-  @LogExecutionTime()
-  async getCitiesWithAlumniCount(
+  async getCityAnalytics(
+    alumnusUnfiltered: AlumniAnalyticsEntity[],
     query: QueryParamsDto,
   ): Promise<CityListResponseDto> {
-    const alumnusUnfiltered = await this.alumniRepository.find(query);
     const alumnus = applyDateFilters(alumnusUnfiltered, query);
 
     // Extract all roles with valid city information

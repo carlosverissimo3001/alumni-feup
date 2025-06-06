@@ -24,13 +24,10 @@ export class AlumniAnalyticsService {
     }));
   }
 
-  @LogExecutionTime()
-  async getAlumniList(query: QueryParamsDto): Promise<AlumniListResponseDto> {
-    const [alumnusUnfiltered, alumniCount] = await Promise.all([
-      this.alumniRepository.find(query),
-      this.alumniRepository.countAlumni(),
-    ]);
-
+  getAlumniAnalytics(
+    alumnusUnfiltered: AlumniAnalyticsEntity[],
+    query: QueryParamsDto,
+  ): AlumniListResponseDto {
     const currentRoles = new Map(
       alumnusUnfiltered.map((alumni) => [
         alumni.id,
@@ -64,7 +61,7 @@ export class AlumniAnalyticsService {
 
     return {
       alumni: alumniMapped,
-      count: alumniCount,
+      count: 0, // TODO: alumniCount,
       filteredCount: alumnus.length,
     };
   }

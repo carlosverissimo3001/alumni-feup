@@ -10,7 +10,7 @@ export class AlumniAnalyticsController {
     private readonly alumniAnalyticsService: AlumniAnalyticsService,
   ) {}
 
-  @Get('/')
+  /* @Get('/')
   @ApiOperation({ summary: 'Get all alumni list' })
   @ApiResponse({
     status: 200,
@@ -19,7 +19,7 @@ export class AlumniAnalyticsController {
   })
   async getAlumniList(@Query() query: QueryParamsDto) {
     return this.alumniAnalyticsService.getAlumniList(query);
-  }
+  } */
 
   @Get('/options')
   @ApiOperation({ summary: 'Get all alumni options' })

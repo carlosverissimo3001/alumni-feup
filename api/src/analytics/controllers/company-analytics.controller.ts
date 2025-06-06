@@ -15,7 +15,7 @@ export class CompanyAnalyticsController {
     private readonly companyAnalyticsService: CompanyAnalyticsService,
   ) {}
 
-  @Get('/')
+  /* @Get('/')
   @ApiOperation({
     summary: 'Get the companies, and the number of alumni working in them.',
   })
@@ -26,7 +26,7 @@ export class CompanyAnalyticsController {
   })
   async getCompaniesWithAlumniCount(@Query() query: QueryParamsDto) {
     return this.companyAnalyticsService.getCompaniesWithAlumniCount(query);
-  }
+  } */
 
   @Get('/options')
   @ApiOperation({

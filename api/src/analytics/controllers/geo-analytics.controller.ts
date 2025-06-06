@@ -1,21 +1,14 @@
 import { Controller, Get, Query } from '@nestjs/common';
 import { GeoAnalyticsService } from '@/analytics/services';
 import { ApiOperation, ApiTags, ApiResponse } from '@nestjs/swagger';
-import {
-  QueryParamsDto,
-  CountryListResponseDto,
-  CountryOptionDto,
-  CityOptionDto,
-  GetCitiesDto,
-  CityListResponseDto,
-} from '@/analytics/dto';
+import { CountryOptionDto, CityOptionDto, GetCitiesDto } from '@/analytics/dto';
 
 @ApiTags('V1')
 @Controller('analytics/geo')
 export class GeoAnalyticsController {
   constructor(private readonly geoAnalyticsService: GeoAnalyticsService) {}
 
-  @Get('/countries')
+  /* @Get('/countries')
   @ApiOperation({
     summary: 'Get the countries, and the number of alumni working in them.',
   })
@@ -39,7 +32,7 @@ export class GeoAnalyticsController {
   })
   async getCitiesWithAlumniCount(@Query() query: QueryParamsDto) {
     return this.geoAnalyticsService.getCitiesWithAlumniCount(query);
-  }
+  } */
 
   @Get('/country-options')
   @ApiOperation({

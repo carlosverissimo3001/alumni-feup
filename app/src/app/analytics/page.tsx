@@ -25,17 +25,22 @@ import { Button } from "@/components/ui/button";
 import { useSearchParams, useRouter } from "next/navigation";
 import { useCompanyOptions } from "@/hooks/analytics/useCompanyOptions";
 import {
-  EducationDrillType,
-  GeoDrillType,
-  ClassificationLevel,
-} from "@/types/drillType";
-import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { RoleAnalyticsControllerGetSeniorityLevelsSeniorityLevelEnum as SeniorityLevel } from "@/sdk";
+import {
+  AnalyticsControllerGetAnalyticsSelectorTypeEnum as SelectorType,
+  RoleAnalyticsControllerGetSeniorityLevelsSeniorityLevelEnum as SeniorityLevel,
+} from "@/sdk";
+import { useFetchAnalytics } from "@/hooks/analytics/useFetchAnalytics";
+import { ITEMS_PER_PAGE, SortBy, SortOrder } from "@/consts";
+import {
+  EducationDrillType,
+  GeoDrillType,
+  ClassificationLevel,
+} from "@/types/drillType";
 
 const initialFilters: FilterState = {
   dateRange: undefined,
@@ -81,10 +86,8 @@ export default function Analytics() {
 }
 
 function AnalyticsContent() {
-  const router = useRouter();
-  const searchParams = useSearchParams();
-  const { data: companyOptions } = useCompanyOptions();
-
+  // State
+  const [showScrollButton, setShowScrollButton] = useState(false);
   const [stats, setStats] = useState<{
     alumniCount: number;
     companyCount: number;
@@ -96,15 +99,22 @@ function AnalyticsContent() {
     countryCount: 0,
     roleCount: 0,
   });
-
+  const [filters, setFilters] = useState<FilterState>(initialFilters);
+  const [initializedFromURL, setInitializedFromURL] = useState(false);
   const [geoMode, setGeoMode] = useState<GeoDrillType>(GeoDrillType.COUNTRY);
   const [educationMode, setEducationMode] = useState<EducationDrillType>(
-    EducationDrillType.MAJOR
+    EducationDrillType.FACULTY
   );
   const [classificationLevel, setClassificationLevel] =
-    useState<ClassificationLevel>(ClassificationLevel.LEVEL_4);
+    useState<ClassificationLevel>(ClassificationLevel.LEVEL_1);
 
-  const initializeFiltersFromURL = useCallback(() => {
+  // Hooks
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const { data: companyOptions } = useCompanyOptions();
+
+  // Getting companies from URL
+  const initializeCompaniesFromURL = useCallback(() => {
     const urlFilters: FilterState = { ...initialFilters };
 
     const companyNames = searchParams.get("company")?.toLowerCase().split(",");
@@ -124,25 +134,12 @@ function AnalyticsContent() {
     return urlFilters;
   }, [searchParams, companyOptions]);
 
-  const [filters, setFilters] = useState<FilterState>(initialFilters);
-  const [initializedFromURL, setInitializedFromURL] = useState(false);
-
   useEffect(() => {
     if (companyOptions && !initializedFromURL) {
-      setFilters(initializeFiltersFromURL());
+      setFilters(initializeCompaniesFromURL());
       setInitializedFromURL(true);
     }
-  }, [companyOptions, initializeFiltersFromURL]);
-
-  const handleFiltersChange = useCallback(
-    (newFilters: FilterState) => {
-      setFilters(newFilters);
-      if (searchParams.toString()) {
-        router.replace(window.location.pathname);
-      }
-    },
-    [router, searchParams]
-  );
+  }, [companyOptions, initializeCompaniesFromURL, initializedFromURL]);
 
   const processedDateRange = useMemo(() => {
     if (filters.dateRange) {
@@ -159,6 +156,59 @@ function AnalyticsContent() {
         filters.companySize.length > 0 && { companySize: filters.companySize }),
     };
   }, [filters, processedDateRange]);
+
+  const { data, isLoading } = useFetchAnalytics({
+    params: {
+      ...combinedFilters,
+      limit: ITEMS_PER_PAGE[1],
+      sortBy: SortBy.COUNT,
+      selectorType: SelectorType.All,
+      sortOrder: SortOrder.DESC,
+      offset: 0,
+      includeTrend: false,
+    },
+    options: {
+      isInitialLoad: true,
+    },
+  });
+
+  /*** Helper Functions ***/
+  const getClassificationLevel = (classificationLevel: ClassificationLevel) => {
+    return Number(classificationLevel.split(" ")[1]);
+  };
+
+  const getCodeLevel = (code: string) => {
+    if (code.length <= 5) {
+      return code.length;
+    }
+    const parts = code.split(".");
+    return parts.length + 4; // 4 as the first 4 digits are not seperated by a dot
+  };
+
+  // Scroll to top button
+  useEffect(() => {
+    const handleScroll = () => {
+      setShowScrollButton(window.scrollY > 700);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  /*** Filter Handlers ***/
+  const handleFiltersChange = useCallback(
+    (newFilters: FilterState) => {
+      setFilters(newFilters);
+      if (searchParams.toString()) {
+        router.replace(window.location.pathname);
+      }
+    },
+    [router, searchParams]
+  );
 
   const handleCompanyDataUpdate = useCallback(
     (alumniCount: number, companyCount: number) => {
@@ -262,18 +312,6 @@ function AnalyticsContent() {
       }
     });
   }, []);
-
-  const getClassificationLevel = (classificationLevel: ClassificationLevel) => {
-    return Number(classificationLevel.split(" ")[1]);
-  };
-
-  const getCodeLevel = (code: string) => {
-    if (code.length <= 5) {
-      return code.length;
-    }
-    const parts = code.split(".");
-    return parts.length + 4; // 4 as the first 4 digits are not seperated by a dot
-  };
 
   const handleAddRoleToFilters = useCallback(
     (escoCode: string) => {
@@ -443,21 +481,6 @@ function AnalyticsContent() {
     },
   ];
 
-  const [showScrollButton, setShowScrollButton] = useState(false);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setShowScrollButton(window.scrollY > 700);
-    };
-
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
-  const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  };
-
   return (
     <div className="p-6 space-y-3 bg-gray-100 min-h-screen relative">
       <div className="flex items-center gap-4">
@@ -480,17 +503,25 @@ function AnalyticsContent() {
 
       <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3 gap-4">
         <CompanyDashboard
+          globalData={data?.companyData}
+          isGlobalDataLoading={isLoading}
           onDataUpdate={handleCompanyDataUpdate}
           filters={combinedFilters}
           onAddToFilters={handleAddCompanyToFilters}
         />
-        <GeoDashboard
+        {/* <GeoDashboard
+          globalGeoData={{
+            countryData: data?.countryData,
+            cityData: data?.cityData,
+          }}
+          isGlobalDataLoading={isLoading}
           onDataUpdate={handleGeoDataUpdate}
           filters={combinedFilters}
           onAddToFilters={handleGeoAddToFilters}
           mode={geoMode}
           setMode={setGeoMode}
-        />
+        /> */}
+        {/*
         <RoleDashboard
           onDataUpdate={handleRoleDataUpdate}
           filters={combinedFilters}
@@ -513,13 +544,13 @@ function AnalyticsContent() {
         <SeniorityDashboard
           filters={combinedFilters}
           onAddToFilters={handleAddSeniorityToFilters}
-        />
+        /> */}
       </div>
 
-      <AlumniTable
+      {/* <AlumniTable
         filters={filters}
         onAddToFilters={handleAddAlumniToFilters}
-      />
+      /> */}
 
       <TooltipProvider>
         <Tooltip>

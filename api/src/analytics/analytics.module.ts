@@ -1,29 +1,31 @@
-import { Logger, Module } from '@nestjs/common';
-import { PrismaService } from '@/prisma/prisma.service';
 import {
+  AnalyticsController,
   CompanyAnalyticsController,
+  EducationAnalyticsController,
   GeoAnalyticsController,
   IndustryAnalyticsController,
-  EducationAnalyticsController,
   RoleAnalyticsController,
 } from '@/analytics/controllers';
 import {
   AlumniAnalyticsRepository,
   CompanyRepository,
+  EducationRepository,
   IndustryRepository,
   LocationRepository,
-  EducationRepository,
   RoleRepository,
 } from '@/analytics/repositories';
 import {
+  AlumniAnalyticsService,
+  AnalyticsService,
   CompanyAnalyticsService,
+  EducationAnalyticsService,
   GeoAnalyticsService,
   RoleAnalyticsService,
-  TrendAnalyticsService,
-  AlumniAnalyticsService,
-  EducationAnalyticsService,
   SeniorityAnalyticsService,
+  TrendAnalyticsService,
 } from '@/analytics/services';
+import { PrismaService } from '@/prisma/prisma.service';
+import { Logger, Module } from '@nestjs/common';
 import { AlumniAnalyticsController } from './controllers/alumni-analytics.controller';
 
 @Module({
@@ -34,23 +36,25 @@ import { AlumniAnalyticsController } from './controllers/alumni-analytics.contro
     EducationAnalyticsController,
     RoleAnalyticsController,
     AlumniAnalyticsController,
+    AnalyticsController,
   ],
   providers: [
-    CompanyAnalyticsService,
-    RoleAnalyticsService,
-    EducationAnalyticsService,
-    AlumniAnalyticsService,
-    GeoAnalyticsService,
     PrismaService,
+    Logger,
     AlumniAnalyticsRepository,
     LocationRepository,
     CompanyRepository,
     EducationRepository,
     IndustryRepository,
     RoleRepository,
-    Logger,
     TrendAnalyticsService,
+    CompanyAnalyticsService,
+    RoleAnalyticsService,
+    EducationAnalyticsService,
+    AlumniAnalyticsService,
+    GeoAnalyticsService,
     SeniorityAnalyticsService,
+    AnalyticsService,
   ],
 })
 export class AnalyticsModule {}
