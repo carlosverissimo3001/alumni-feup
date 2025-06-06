@@ -25,8 +25,8 @@ export class RoleAnalyticsEntity {
   @ApiPropertyOptional({ type: LocationAnalyticsEntity })
   location?: LocationAnalyticsEntity;
 
-  @ApiProperty()
-  company: CompanyAnalyticsEntity;
+  @ApiPropertyOptional({ type: CompanyAnalyticsEntity })
+  company?: CompanyAnalyticsEntity;
 
   @ApiProperty({
     type: 'string',

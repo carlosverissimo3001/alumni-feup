@@ -1,4 +1,4 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { CourseAnalyticsEntity } from './course.entity';
 
 export class GraduationAnalyticsEntity {
@@ -26,9 +26,9 @@ export class GraduationAnalyticsEntity {
   })
   conclusionYear: number;
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     description: 'The course of the graduation',
     type: CourseAnalyticsEntity,
   })
-  course: CourseAnalyticsEntity;
+  course?: CourseAnalyticsEntity;
 }

@@ -28,19 +28,19 @@ export class AlumniAnalyticsEntity {
   })
   profilePictureUrl?: string;
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     description: 'The roles of the alumni',
     type: RoleAnalyticsEntity,
     isArray: true,
   })
-  roles: RoleAnalyticsEntity[];
+  roles?: RoleAnalyticsEntity[];
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     description: 'The graduations of the alumni',
     type: GraduationAnalyticsEntity,
     isArray: true,
   })
-  graduations: GraduationAnalyticsEntity[];
+  graduations?: GraduationAnalyticsEntity[];
 
   @ApiPropertyOptional({
     description: 'The location of the alumni',

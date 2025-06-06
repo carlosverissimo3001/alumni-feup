@@ -6146,8 +6146,7 @@
         },
         "required": [
           "id",
-          "name",
-          "industry"
+          "name"
         ]
       },
       "EscoClassificationAnalyticsEntity": {
@@ -6362,35 +6361,7 @@
           "alumniId",
           "startDate",
           "isCurrent",
-          "company",
           "seniorityLevel"
-        ]
-      },
-      "FacultyAnalyticsEntity": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string",
-            "description": "The id of the faculty"
-          },
-          "name": {
-            "type": "string",
-            "description": "The name of the faculty"
-          },
-          "nameInt": {
-            "type": "string",
-            "description": "The international name of the faculty"
-          },
-          "acronym": {
-            "type": "string",
-            "description": "The acronym of the faculty"
-          }
-        },
-        "required": [
-          "id",
-          "name",
-          "nameInt",
-          "acronym"
         ]
       },
       "CourseAnalyticsEntity": {
@@ -6441,14 +6412,6 @@
           "facultyId": {
             "type": "string",
             "description": "The faculty id of the course"
-          },
-          "faculty": {
-            "description": "The faculty of the course",
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/FacultyAnalyticsEntity"
-              }
-            ]
           }
         },
         "required": [
@@ -6459,8 +6422,7 @@
           "courseType",
           "facultyAcronym",
           "startYear",
-          "facultyId",
-          "faculty"
+          "facultyId"
         ]
       },
       "GraduationAnalyticsEntity": {
@@ -6495,8 +6457,7 @@
           "id",
           "alumniId",
           "courseId",
-          "conclusionYear",
-          "course"
+          "conclusionYear"
         ]
       },
       "AlumniAnalyticsEntity": {
@@ -6544,9 +6505,7 @@
         "required": [
           "id",
           "fullName",
-          "profilePictureUrl",
-          "roles",
-          "graduations"
+          "profilePictureUrl"
         ]
       },
       "Location": {

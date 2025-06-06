@@ -17,8 +17,8 @@ export class CompanyAnalyticsEntity extends CompanySummaryEntity {
   @ApiPropertyOptional({ type: String })
   levelsFyiUrl?: string;
 
-  @ApiProperty()
-  industry: IndustryAnalyticsEntity;
+  @ApiPropertyOptional({ type: IndustryAnalyticsEntity })
+  industry?: IndustryAnalyticsEntity;
 
   @ApiPropertyOptional({ type: LocationAnalyticsEntity })
   location?: LocationAnalyticsEntity;

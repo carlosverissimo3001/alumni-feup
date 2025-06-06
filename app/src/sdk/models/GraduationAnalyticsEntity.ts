@@ -56,7 +56,7 @@ export interface GraduationAnalyticsEntity {
      * @type {CourseAnalyticsEntity}
      * @memberof GraduationAnalyticsEntity
      */
-    course: CourseAnalyticsEntity;
+    course?: CourseAnalyticsEntity;
 }
 
 /**
@@ -67,7 +67,6 @@ export function instanceOfGraduationAnalyticsEntity(value: object): value is Gra
     if (!('alumniId' in value) || value['alumniId'] === undefined) return false;
     if (!('courseId' in value) || value['courseId'] === undefined) return false;
     if (!('conclusionYear' in value) || value['conclusionYear'] === undefined) return false;
-    if (!('course' in value) || value['course'] === undefined) return false;
     return true;
 }
 
@@ -85,7 +84,7 @@ export function GraduationAnalyticsEntityFromJSONTyped(json: any, ignoreDiscrimi
         'alumniId': json['alumniId'],
         'courseId': json['courseId'],
         'conclusionYear': json['conclusionYear'],
-        'course': CourseAnalyticsEntityFromJSON(json['course']),
+        'course': json['course'] == null ? undefined : CourseAnalyticsEntityFromJSON(json['course']),
     };
 }
 

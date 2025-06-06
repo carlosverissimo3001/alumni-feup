@@ -13,14 +13,6 @@
  */
 
 import { mapValues } from '../runtime';
-import type { FacultyAnalyticsEntity } from './FacultyAnalyticsEntity';
-import {
-    FacultyAnalyticsEntityFromJSON,
-    FacultyAnalyticsEntityFromJSONTyped,
-    FacultyAnalyticsEntityToJSON,
-    FacultyAnalyticsEntityToJSONTyped,
-} from './FacultyAnalyticsEntity';
-
 /**
  * 
  * @export
@@ -81,12 +73,6 @@ export interface CourseAnalyticsEntity {
      * @memberof CourseAnalyticsEntity
      */
     facultyId: string;
-    /**
-     * The faculty of the course
-     * @type {FacultyAnalyticsEntity}
-     * @memberof CourseAnalyticsEntity
-     */
-    faculty: FacultyAnalyticsEntity;
 }
 
 
@@ -123,7 +109,6 @@ export function instanceOfCourseAnalyticsEntity(value: object): value is CourseA
     if (!('facultyAcronym' in value) || value['facultyAcronym'] === undefined) return false;
     if (!('startYear' in value) || value['startYear'] === undefined) return false;
     if (!('facultyId' in value) || value['facultyId'] === undefined) return false;
-    if (!('faculty' in value) || value['faculty'] === undefined) return false;
     return true;
 }
 
@@ -146,7 +131,6 @@ export function CourseAnalyticsEntityFromJSONTyped(json: any, ignoreDiscriminato
         'startYear': json['startYear'],
         'endYear': json['endYear'] == null ? undefined : json['endYear'],
         'facultyId': json['facultyId'],
-        'faculty': FacultyAnalyticsEntityFromJSON(json['faculty']),
     };
 }
 
@@ -170,7 +154,6 @@ export function CourseAnalyticsEntityToJSONTyped(value?: CourseAnalyticsEntity |
         'startYear': value['startYear'],
         'endYear': value['endYear'],
         'facultyId': value['facultyId'],
-        'faculty': FacultyAnalyticsEntityToJSON(value['faculty']),
     };
 }
 

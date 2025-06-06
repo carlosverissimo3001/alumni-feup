@@ -82,4 +82,25 @@ export class LocationRepository {
 
     return mapLocationFromPrisma(country);
   }
+
+  async getCountriesCoordinates(
+    countryCodes: string[],
+  ): Promise<Map<string, LocationAnalyticsEntity>> {
+    const countries = await this.prismaService.location.findMany({
+      where: {
+        isCountryOnly: true,
+        countryCode: { in: countryCodes },
+      },
+    });
+
+    const coordinatesMap = new Map();
+    countries.forEach((country) => {
+      const mapped = mapLocationFromPrisma(country);
+      if (mapped?.countryCode) {
+        coordinatesMap.set(mapped.countryCode, mapped);
+      }
+    });
+
+    return coordinatesMap;
+  }
 }
