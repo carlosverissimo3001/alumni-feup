@@ -31,7 +31,7 @@ class IncludeTrendDto {
   })
   @IsOptional()
   @IsBoolean()
-  @Transform(({ obj }) => toBoolean(obj.includeTrend))
+  @Transform(({ obj }) => toBoolean(obj.includeCompanyTrend))
   includeCompanyTrend?: boolean = false;
 
   @ApiPropertyOptional({

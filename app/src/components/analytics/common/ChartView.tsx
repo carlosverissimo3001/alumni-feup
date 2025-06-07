@@ -136,7 +136,7 @@ export const ChartView = ({
     const title = svg
       .append("text")
       .attr("class", "chart-title")
-      .attr("x", width / 1.25)
+      .attr("x", width - 140)
       .attr("y", 27)
       .attr("text-anchor", "middle")
       .style("font-size", "14px")
