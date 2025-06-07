@@ -41,8 +41,6 @@ export async function GET(req: NextRequest) {
           Authorization: `Bearer ${accessToken}`,
         },
       });
-      // console.log(accessToken);
-      // console.log(profileResponse);
 
       const profileData : ProfileResponse = await profileResponse.json() as ProfileResponse;
 

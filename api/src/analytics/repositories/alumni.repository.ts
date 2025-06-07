@@ -27,8 +27,6 @@ export class AlumniAnalyticsRepository {
       params.selectorType === SELECTOR_TYPE.EDUCATION ||
       params.selectorType === SELECTOR_TYPE.ALL;
 
-    console.log('Will include graduations', includeGraduations);
-
     const alumnus = (await this.prisma.alumni.findMany({
       where: alumniWhere,
       select: {
