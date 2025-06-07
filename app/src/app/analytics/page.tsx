@@ -17,7 +17,7 @@ import {
   AlumniTable,
   SeniorityDashboard,
 } from "@/components/analytics/dashboards";
-import { useState, useCallback, useMemo, useEffect } from "react";
+import { useState, useCallback, useMemo, useEffect, Suspense } from "react";
 import OverallStats from "@/components/analytics/OverallStats";
 import { GlobalFilters, FilterState } from "@/components/analytics/common";
 import { handleDateRange } from "@/utils/date";
@@ -43,6 +43,7 @@ import {
 } from "@/types/drillType";
 import { useDropdownContext } from "@/contexts/DropdownContext";
 import { useLoading } from "@/contexts/LoadingContext";
+import GlobalLoadingModal from "@/components/analytics/common/GlobalLoadingModal";
 
 const initialFilters: FilterState = {
   dateRange: undefined,
@@ -68,7 +69,11 @@ const initialFilters: FilterState = {
 };
 
 export default function Analytics() {
-  return <AnalyticsContent />;
+  return (
+    <Suspense fallback={<GlobalLoadingModal />}>
+      <AnalyticsContent />
+    </Suspense>
+  );
 }
 
 function AnalyticsContent() {

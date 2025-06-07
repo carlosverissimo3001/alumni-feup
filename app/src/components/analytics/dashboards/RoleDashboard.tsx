@@ -371,7 +371,6 @@ export const RoleDashboard = ({
                       key={item}
                       onClick={() => {
                         // Reset page to 1 when changing classification level
-                        setPage(1);
                         setClassificationLevel(item);
                       }}
                       className="hover:bg-gray-100 transition-colors"
