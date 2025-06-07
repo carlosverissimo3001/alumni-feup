@@ -15,10 +15,10 @@ import { Progress } from "../ui/progress";
 import { Combobox } from "../ui/combobox";
 import { useState } from "react";
 import { useFetchRole } from "@/hooks/role/useFetchRole";
-import { useRoleOptions } from "@/hooks/analytics/useRoleOptions";
+import { useFetchOptions } from "@/hooks/analytics/useFetchOptions";
 import { useUpdateClassification } from "@/hooks/profile/useUpdateClassification";
 import { useToast } from "@/hooks/misc/useToast";
-
+import { AnalyticsControllerGetOptionsSelectorTypeEnum as SELECTOR_TYPE } from "@/sdk";
 interface Props {
   roleId: string;
   trigger?: React.ReactNode;
@@ -79,7 +79,9 @@ export function UpdateClassificationModal({ roleId, trigger }: Props) {
 
   // Hooks
   const { data: role } = useFetchRole({ id: roleId, includeMetadata: true });
-  const { data: escoOptionsData } = useRoleOptions({ enabled: open });
+  const { data: escoOptionsData } = useFetchOptions({
+    selectorType: SELECTOR_TYPE.Role,
+  });
   const [selectedEsco, setSelectedEsco] = useState<string | null>(
     role?.jobClassification?.escoClassificationId || null
   );
@@ -102,10 +104,12 @@ export function UpdateClassificationModal({ roleId, trigger }: Props) {
     });
   };
 
-  const escoOptions = escoOptionsData?.map((option) => ({
-    label: option.title,
-    value: option.escoClassificationId,
-  }));
+  const escoOptions = escoOptionsData?.roles?.map((role) => {
+    return {
+      label: role.title,
+      value: role.escoClassificationId,
+    };
+  });
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>

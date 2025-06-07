@@ -8,7 +8,13 @@ import {
   TableContainer,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { DataPointDto } from "@/sdk";
+import {
+  DataPointDto,
+  FacultyListDto,
+  MajorListDto,
+  AnalyticsControllerGetAnalyticsSelectorTypeEnum as SelectorType,
+  GraduationListDto,
+} from "@/sdk";
 import { BookOpen, Building2, Filter, GraduationCap } from "lucide-react";
 import { DashboardSkeleton } from "../skeletons/DashboardSkeleton";
 import TableTitle from "../common/TableTitle";
@@ -36,16 +42,22 @@ import {
 import { ViewType } from "@/types/view";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { EntityType, TrendFrequency } from "@/types/entityTypes";
-import { useFacultyList } from "@/hooks/analytics/useFacultyList";
-import { useMajorsList } from "@/hooks/analytics/useMajorsList";
-import { useGraduationList } from "@/hooks/analytics/useGraduationList";
-import { EducationDrillType } from "@/types/drillType";
+import { EDUCATION_DRILL_TYPE } from "@/types/drillType";
+import { useFetchAnalytics } from "@/hooks/analytics/useFetchAnalytics";
+
+type EducationData = {
+  faculties?: FacultyListDto;
+  majors?: MajorListDto;
+  graduations?: GraduationListDto;
+};
 
 type EducationDashboardProps = {
+  globalData?: EducationData;
+  isGlobalDataLoading?: boolean;
   filters: FilterState;
   onAddToFilters?: (educationId: string, year?: number) => void;
-  mode: EducationDrillType;
-  setMode: (mode: EducationDrillType) => void;
+  mode: EDUCATION_DRILL_TYPE;
+  setMode: (mode: EDUCATION_DRILL_TYPE) => void;
 };
 
 type DataRowProps = {
@@ -58,6 +70,8 @@ type DataRowProps = {
 };
 
 export const EducationDashboard = ({
+  globalData,
+  isGlobalDataLoading,
   filters,
   onAddToFilters,
   mode,
@@ -79,71 +93,71 @@ export const EducationDashboard = ({
     setPage(1);
   }, [filters]);
 
-  const {
-    data: facultyData,
-    isLoading: isFacultyLoading,
-    isFetching: isFacultyFetching,
-  } = useFacultyList(
-    {
-      ...filters,
-      limit: itemsPerPage,
-      sortBy: sortField,
-      sortOrder: sortOrder,
-      offset: (page - 1) * itemsPerPage,
-      includeTrend: view === ViewType.TREND,
-    },
-    mode === EducationDrillType.FACULTY
-  );
+  const needsNewData =
+    page > 1 ||
+    view === ViewType.TREND ||
+    sortField !== SortBy.COUNT ||
+    sortOrder !== SortOrder.DESC ||
+    itemsPerPage !== ITEMS_PER_PAGE[1];
 
   const {
-    data: majorsData,
-    isLoading: isMajorsLoading,
-    isFetching: isMajorsFetching,
-  } = useMajorsList(
-    {
-      ...filters,
+    data,
+    isLoading: isEducationLoading,
+    isFetching: isEducationFetching,
+  } = useFetchAnalytics({
+    params: {
       limit: itemsPerPage,
-      sortBy: sortField,
-      sortOrder: sortOrder,
       offset: (page - 1) * itemsPerPage,
-      includeTrend: view === ViewType.TREND,
+      sortBy: mode === EDUCATION_DRILL_TYPE.FACULTY ? sortField : undefined,
+      sortOrder: mode === EDUCATION_DRILL_TYPE.FACULTY ? sortOrder : undefined,
+      selectorType: SelectorType.Education,
+      includeEducationTrend:
+        // No trend data for year view (doesn't make sense tbh)
+        mode === EDUCATION_DRILL_TYPE.YEAR ? undefined : view === ViewType.TREND,
     },
-    mode === EducationDrillType.MAJOR
-  );
+    options: {
+      enabled: needsNewData,
+      isInitialLoad: !needsNewData,
+    },
+  });
 
-  const {
-    data: graduationsData,
-    isLoading: isGraduationsLoading,
-    isFetching: isGraduationsFetching,
-  } = useGraduationList(
-    {
-      ...filters,
-      limit: itemsPerPage,
-      sortBy: sortField,
-      sortOrder: sortOrder,
-      offset: (page - 1) * itemsPerPage,
-      includeTrend: view === ViewType.TREND,
-    },
-    mode === EducationDrillType.YEAR
-  );
+  const shouldUseGlobalData =
+    !needsNewData &&
+    !data?.majorData &&
+    !data?.graduationData &&
+    !data?.facultyData;
+
+  const currentFacultiesData = shouldUseGlobalData
+    ? globalData?.faculties
+    : data?.facultyData;
+  const currentMajorsData = shouldUseGlobalData
+    ? globalData?.majors
+    : data?.majorData;
+  const currentGraduationsData = shouldUseGlobalData
+    ? globalData?.graduations
+    : data?.graduationData;
 
   /* Faculty */
-  const faculties = facultyData?.faculties || [];
+  const faculties = currentFacultiesData?.faculties || [];
   // useful if we add this info in the stats
   //const facultyCount = facultyData?.count || 0;
-  const facultyFilteredCount = facultyData?.filteredCount || 0;
+  const totalFaculties = currentFacultiesData?.count || 0;
 
   /* Majors */
-  const majors = majorsData?.majors || [];
+  const majors = currentMajorsData?.majors || [];
   // useful if we add this info in the stats
   //const majorCount = majorsData?.count || 0;
-  const majorFilteredCount = majorsData?.filteredCount || 0;
+  const totalMajors = currentMajorsData?.count || 0;
 
   /* Graduations */
-  const graduations = graduationsData?.graduations || [];
+  const graduations = currentGraduationsData?.graduations || [];
   // useful if we add this info in the stats
   //const graduationCount = graduationsData?.count || 0;
-  const graduationFilteredCount = graduationsData?.filteredCount || 0;
+  const totalGraduations = currentGraduationsData?.count || 0;
+
+  const isWaitingForData =
+    (shouldUseGlobalData && isGlobalDataLoading) ||
+    (!shouldUseGlobalData && (isEducationLoading || isEducationFetching));
 
   useEffect(() => {
     setPageInput(String(page));
@@ -161,63 +175,54 @@ export const EducationDashboard = ({
   };
 
   const getDataByMode = () => {
-    if (mode === EducationDrillType.FACULTY) {
+    if (mode === EDUCATION_DRILL_TYPE.FACULTY) {
       return faculties;
-    } else if (mode === EducationDrillType.MAJOR) {
+    } else if (mode === EDUCATION_DRILL_TYPE.MAJOR) {
       return majors;
     }
     return graduations;
   };
 
   const getTableTitle = () => {
-    if (mode === EducationDrillType.FACULTY) {
+    if (mode === EDUCATION_DRILL_TYPE.FACULTY) {
       return "Faculties";
-    } else if (mode === EducationDrillType.MAJOR) {
+    } else if (mode === EDUCATION_DRILL_TYPE.MAJOR) {
       return "Courses";
     }
     return "Graduation Years";
   };
 
   const getTableIcon = () => {
-    if (mode === EducationDrillType.FACULTY) {
+    if (mode === EDUCATION_DRILL_TYPE.FACULTY) {
       return <Building2 className="h-5 w-5 text-[#8C2D19]" />;
-    } else if (mode === EducationDrillType.MAJOR) {
+    } else if (mode === EDUCATION_DRILL_TYPE.MAJOR) {
       return <BookOpen className="h-5 w-5 text-[#8C2D19]" />;
     }
     return <GraduationCap className="h-5 w-5 text-[#8C2D19]" />;
   };
 
   const getTooltipMessage = () => {
-    if (mode === EducationDrillType.FACULTY) {
+    if (mode === EDUCATION_DRILL_TYPE.FACULTY) {
       return "Distribution of alumni by their graduation faculty.";
-    } else if (mode === EducationDrillType.MAJOR) {
+    } else if (mode === EDUCATION_DRILL_TYPE.MAJOR) {
       return "Distribution of alumni by their graduation major.";
     }
     return "Distribution of alumni by their graduation year.";
   };
 
-  const isDomainLoading = () => {
-    if (mode === EducationDrillType.FACULTY) {
-      return isFacultyLoading || isFacultyFetching;
-    } else if (mode === EducationDrillType.MAJOR) {
-      return isMajorsLoading || isMajorsFetching;
-    }
-    return isGraduationsLoading || isGraduationsFetching;
-  };
-
   const getTotalItems = () => {
-    if (mode === EducationDrillType.FACULTY) {
-      return facultyFilteredCount;
-    } else if (mode === EducationDrillType.MAJOR) {
-      return majorFilteredCount;
+    if (mode === EDUCATION_DRILL_TYPE.FACULTY) {
+      return totalFaculties;
+    } else if (mode === EDUCATION_DRILL_TYPE.MAJOR) {
+      return totalMajors;
     }
-    return graduationFilteredCount;
+    return totalGraduations;
   };
 
   const isRowInFilters = (row: DataRowProps): boolean => {
-    if (mode === EducationDrillType.FACULTY) {
+    if (mode === EDUCATION_DRILL_TYPE.FACULTY) {
       return filters.facultyIds?.includes(row.id) ?? false;
-    } else if (mode === EducationDrillType.MAJOR) {
+    } else if (mode === EDUCATION_DRILL_TYPE.MAJOR) {
       return filters.courseIds?.includes(row.id) ?? false;
     }
     return (
@@ -228,7 +233,7 @@ export const EducationDashboard = ({
   };
 
   const handleLocalAddToFilters = (row: DataRowProps) => {
-    if (mode === EducationDrillType.YEAR) {
+    if (mode === EDUCATION_DRILL_TYPE.YEAR) {
       // For year, we add both the yeaer and course id
       onAddToFilters?.(row.id, row.year);
     } else {
@@ -238,9 +243,9 @@ export const EducationDashboard = ({
   };
 
   const getHoverMessage = () => {
-    if (mode === EducationDrillType.FACULTY) {
+    if (mode === EDUCATION_DRILL_TYPE.FACULTY) {
       return "Alumni who have graduated from this faculty";
-    } else if (mode === EducationDrillType.MAJOR) {
+    } else if (mode === EDUCATION_DRILL_TYPE.MAJOR) {
       return "Alumni who have graduated from this course";
     }
     return "Alumni who have graduated in this year";
@@ -248,7 +253,6 @@ export const EducationDashboard = ({
 
   const renderTableView = () => {
     const data = getDataByMode();
-    const isLoading = isDomainLoading();
 
     return (
       <>
@@ -262,15 +266,15 @@ export const EducationDashboard = ({
                 showTrend={view === ViewType.TREND}
                 trendFrequency={trendFrequency}
                 extraHeaderName={
-                  mode === EducationDrillType.YEAR ? "Year" : undefined
+                  mode === EDUCATION_DRILL_TYPE.YEAR ? "Year" : undefined
                 }
                 customAlumniHeader="Graduates"
                 hoverMessage={getHoverMessage()}
               />
 
-              {isLoading ? (
+              {isWaitingForData ? (
                 <DashboardSkeleton
-                  hasExtraColumn={mode === EducationDrillType.YEAR}
+                  hasExtraColumn={mode === EDUCATION_DRILL_TYPE.YEAR}
                 />
               ) : (
                 <TableBody className="bg-white divide-y divide-gray-200">
@@ -281,7 +285,7 @@ export const EducationDashboard = ({
                         <CustomTableRow
                           index={index}
                           key={
-                            mode === EducationDrillType.YEAR
+                            mode === EDUCATION_DRILL_TYPE.YEAR
                               ? `${item.id}-${item.year}`
                               : item.id
                           }
@@ -292,7 +296,7 @@ export const EducationDashboard = ({
                             acronym={item.acronym}
                             isRowInFilters={!!isRowInFilters(item)}
                           />
-                          {mode === EducationDrillType.YEAR && (
+                          {mode === EDUCATION_DRILL_TYPE.YEAR && (
                             <TableCell
                               className={`w-[15%] px-3 py-1.5 text-sm text-[#000000] align-middle text-center ${
                                 isRowInFilters(item)
@@ -344,7 +348,7 @@ export const EducationDashboard = ({
                                           </Button>
                                         </TooltipTrigger>
                                         <TooltipContent>
-                                          {mode === EducationDrillType.YEAR ? (
+                                          {mode === EDUCATION_DRILL_TYPE.YEAR ? (
                                             <p>
                                               Filter on {item.acronym} -{" "}
                                               {item.year}
@@ -372,7 +376,7 @@ export const EducationDashboard = ({
                     <NotFoundComponent
                       message="No data available"
                       description="Try adjusting your filters to find data that match your criteria."
-                      colSpan={mode === EducationDrillType.YEAR ? 4 : 3}
+                      colSpan={mode === EDUCATION_DRILL_TYPE.YEAR ? 4 : 3}
                     />
                   )}
                 </TableBody>
@@ -400,8 +404,8 @@ export const EducationDashboard = ({
   const renderChartView = () => (
     <div className="flex-1 flex flex-col border-t border-b border-gray-200 overflow-hidden">
       <div className="flex-1 flex items-center justify-center">
-        {mode === EducationDrillType.FACULTY ? (
-          isDomainLoading() ? (
+        {mode === EDUCATION_DRILL_TYPE.FACULTY ? (
+          isWaitingForData ? (
             <LoadingChart message="Loading chart data..." />
           ) : faculties.length === 0 ? (
             <NotFoundComponent
@@ -412,12 +416,12 @@ export const EducationDashboard = ({
           ) : (
             <ChartView
               data={faculties}
-              isLoading={isDomainLoading()}
+              isLoading={isWaitingForData}
               entityType={EntityType.FACULTY}
             />
           )
-        ) : mode === EducationDrillType.MAJOR ? (
-          isDomainLoading() ? (
+        ) : mode === EDUCATION_DRILL_TYPE.MAJOR ? (
+          isWaitingForData ? (
             <LoadingChart message="Loading chart data..." />
           ) : majors.length === 0 ? (
             <NotFoundComponent
@@ -428,11 +432,11 @@ export const EducationDashboard = ({
           ) : (
             <ChartView
               data={majors}
-              isLoading={isDomainLoading()}
+              isLoading={isWaitingForData}
               entityType={EntityType.MAJOR}
             />
           )
-        ) : isDomainLoading() ? (
+        ) : isWaitingForData ? (
           <LoadingChart message="Loading chart data..." />
         ) : graduations.length === 0 ? (
           <NotFoundComponent
@@ -443,7 +447,7 @@ export const EducationDashboard = ({
         ) : (
           <ChartView
             data={graduations}
-            isLoading={isDomainLoading()}
+            isLoading={isWaitingForData}
             entityType={EntityType.YEAR}
           />
         )}
@@ -469,12 +473,12 @@ export const EducationDashboard = ({
             type="single"
             value={mode}
             onValueChange={(value: string) =>
-              value && setMode(value as EducationDrillType)
+              value && setMode(value as EDUCATION_DRILL_TYPE)
             }
             className="flex gap-1 group bg-gray-50 p-0.5 rounded-lg"
           >
             <ToggleGroupItem
-              value={EducationDrillType.FACULTY}
+              value={EDUCATION_DRILL_TYPE.FACULTY}
               aria-label="Faculty View"
               className="px-2 py-1 text-sm data-[state=on]:bg-gradient-to-r data-[state=on]:from-[#8C2D19] data-[state=on]:to-[#A13A28] data-[state=on]:text-white data-[state=on]:shadow-[0_0_8px_rgba(140,45,25,0.5)] hover:scale-105 transition-all duration-200 ease-in-out data-[state=off]:bg-white data-[state=off]:border data-[state=off]:border-gray-200 hover:data-[state=off]:bg-gray-100"
             >
@@ -488,7 +492,7 @@ export const EducationDashboard = ({
                   </TooltipTrigger>
                   <TooltipContent>
                     <p>
-                      {mode === EducationDrillType.FACULTY
+                      {mode === EDUCATION_DRILL_TYPE.FACULTY
                         ? "Distribution by Faculty"
                         : "Change to Faculty view"}
                     </p>
@@ -497,7 +501,7 @@ export const EducationDashboard = ({
               </TooltipProvider>
             </ToggleGroupItem>
             <ToggleGroupItem
-              value={EducationDrillType.MAJOR}
+              value={EDUCATION_DRILL_TYPE.MAJOR}
               aria-label="Major View"
               className="px-2 py-1 text-sm data-[state=on]:bg-gradient-to-r data-[state=on]:from-[#8C2D19] data-[state=on]:to-[#A13A28] data-[state=on]:text-white data-[state=on]:shadow-[0_0_8px_rgba(140,45,25,0.5)] hover:scale-105 transition-all duration-200 ease-in-out data-[state=off]:bg-white data-[state=off]:border data-[state=off]:border-gray-200 hover:data-[state=off]:bg-gray-100 disabled:opacity-50"
             >
@@ -511,7 +515,7 @@ export const EducationDashboard = ({
                   </TooltipTrigger>
                   <TooltipContent>
                     <p>
-                      {mode === EducationDrillType.MAJOR
+                      {mode === EDUCATION_DRILL_TYPE.MAJOR
                         ? "Distribution by Course"
                         : "Change to Course view"}
                     </p>
@@ -520,7 +524,7 @@ export const EducationDashboard = ({
               </TooltipProvider>
             </ToggleGroupItem>
             <ToggleGroupItem
-              value={EducationDrillType.YEAR}
+              value={EDUCATION_DRILL_TYPE.YEAR}
               disabled={view === ViewType.TREND}
               aria-label="Year View"
               className="px-2 py-1 text-sm data-[state=on]:bg-gradient-to-r data-[state=on]:from-[#8C2D19] data-[state=on]:to-[#A13A28] data-[state=on]:text-white data-[state=on]:shadow-[0_0_8px_rgba(140,45,25,0.5)] hover:scale-105 transition-all duration-200 ease-in-out data-[state=off]:bg-white data-[state=off]:border data-[state=off]:border-gray-200 hover:data-[state=off]:bg-gray-100 disabled:opacity-50"
@@ -535,7 +539,7 @@ export const EducationDashboard = ({
                   </TooltipTrigger>
                   <TooltipContent>
                     <p>
-                      {mode === EducationDrillType.YEAR
+                      {mode === EDUCATION_DRILL_TYPE.YEAR
                         ? "Distribution by Graduation Year"
                         : "Change to Graduation Year view"}
                     </p>
@@ -549,7 +553,7 @@ export const EducationDashboard = ({
           <ViewToggle
             view={view}
             setView={setView}
-            isTrendViewDisabled={mode === EducationDrillType.YEAR}
+            isTrendViewDisabled={mode === EDUCATION_DRILL_TYPE.YEAR}
           />
         </div>
       </div>

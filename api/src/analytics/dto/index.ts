@@ -56,3 +56,8 @@ export {
   SeniorityListResponseDto,
   SeniorityListItemDto,
 } from './seniority-list.dto';
+
+// Grouped Analytics
+export { AnalyticsDto } from './analytics-dto';
+export { AnalyticsOptionsDto } from './analytics-options.dto';
+export { OptionsParamDto } from './options-param.dto';
