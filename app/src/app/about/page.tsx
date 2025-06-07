@@ -4,7 +4,6 @@ import { motion } from "framer-motion";
 import { Github, ExternalLink } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState } from "react";
 import {
   Tooltip,
   TooltipContent,
@@ -29,48 +28,6 @@ const letterVariants = {
 };
 
 const AboutPage = () => {
-  const [activeSection, setActiveSection] = useState("team");
-
-  useEffect(() => {
-    const handleScroll = () => {
-      const sections = ["team", "acknowledgments", "open-source"];
-
-      let closestSection = sections[0];
-      let minDistance = Infinity;
-
-      sections.forEach((section) => {
-        const element = document.getElementById(section);
-        if (!element) return;
-
-        const rect = element.getBoundingClientRect();
-        const distance = Math.abs(rect.top);
-
-        if (distance < minDistance) {
-          minDistance = distance;
-          closestSection = section;
-        }
-      });
-
-      setActiveSection(closestSection);
-    };
-
-    let isThrottled = false;
-    const throttledScroll = () => {
-      if (!isThrottled) {
-        requestAnimationFrame(() => {
-          handleScroll();
-          isThrottled = false;
-        });
-        isThrottled = true;
-      }
-    };
-
-    window.addEventListener("scroll", throttledScroll);
-    handleScroll();
-
-    return () => window.removeEventListener("scroll", throttledScroll);
-  }, []);
-
   const developers = [
     {
       name: "Carlos Verissimo",
@@ -103,40 +60,6 @@ const AboutPage = () => {
         transition={{ duration: 0.5 }}
         className="min-h-screen bg-white"
       >
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.1 }}
-          className="sticky top-0 bg-white/80 backdrop-blur-sm z-50 border-b border-zinc-100 px-4"
-        >
-          <nav className="max-w-6xl mx-auto flex justify-center gap-8 py-6">
-            {[
-              { id: "team", label: "Team" },
-              { id: "acknowledgments", label: "Acknowledgments" },
-              { id: "open-source", label: "Open Source" },
-            ].map((item) => (
-              <a
-                key={item.id}
-                href={`#${item.id}`}
-                className={`relative px-3 py-2 transition-colors ${
-                  activeSection === item.id
-                    ? "text-[#8C2D19]"
-                    : "text-zinc-600 hover:text-[#8C2D19]"
-                }`}
-              >
-                {item.label}
-                {activeSection === item.id && (
-                  <motion.div
-                    layoutId="activeSection"
-                    className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#8C2D19]"
-                    transition={{ type: "spring", stiffness: 380, damping: 30 }}
-                  />
-                )}
-              </a>
-            ))}
-          </nav>
-        </motion.div>
-
         <div className="max-w-6xl mx-auto p-4 space-y-8">
           <motion.section
             initial="hidden"
@@ -144,15 +67,17 @@ const AboutPage = () => {
             variants={titleVariants}
             className="text-center space-y-6"
           >
-            {Array.from("About Alumni-FEUP").map((letter, index) => (
-              <motion.span
-                key={index}
-                variants={letterVariants}
-                className="inline-block bg-gradient-to-r from-[#8C2D19] to-orange-500 bg-clip-text text-transparent text-3xl md:text-4xl font-bold"
-              >
-                {letter}
-              </motion.span>
-            ))}
+            {Array.from("About Alumni-FEUP".replace(/ /g, "\u00A0")).map(
+              (letter, index) => (
+                <motion.span
+                  key={index}
+                  variants={letterVariants}
+                  className="inline-block bg-gradient-to-r from-[#8C2D19] to-orange-500 bg-clip-text text-transparent text-3xl md:text-4xl font-bold"
+                >
+                  {letter}
+                </motion.span>
+              )
+            )}
             <motion.p
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -295,10 +220,10 @@ const AboutPage = () => {
                   />
                 </div>
                 <p className="text-zinc-600 text-md">
-                  Alumni-FEUP&apos;s alumni network visualization is made possible
-                  through LinkedIn data integration, enabling us to map career
-                  trajectories and professional connections of FEUP Informatics
-                  Engineering graduates.
+                  Alumni-FEUP&apos;s alumni network visualization is made
+                  possible through LinkedIn data integration, enabling us to map
+                  career trajectories and professional connections of FEUP
+                  Informatics Engineering graduates.
                 </p>
               </motion.div>
 
@@ -423,9 +348,9 @@ const AboutPage = () => {
                   href="#" //"https://github.com/carlosverissimo3001/alumni-feup"
                   aria-disabled={true}
                   tabIndex={-1}
-
                   //target="_blank"
-                  className="inline-flex items-center gap-3 bg-gradient-to-r from-[#8C2D19] to-orange-500 text-white px-8 py-4 rounded-2xl transition-all font-semibold text-lg group opacity-50 cursor-not-allowed pointer-events-none"                >
+                  className="inline-flex items-center gap-3 bg-gradient-to-r from-[#8C2D19] to-orange-500 text-white px-8 py-4 rounded-2xl transition-all font-semibold text-lg group opacity-50 cursor-not-allowed pointer-events-none"
+                >
                   <Github
                     size={28}
                     className="group-hover:rotate-12 transition-transform"

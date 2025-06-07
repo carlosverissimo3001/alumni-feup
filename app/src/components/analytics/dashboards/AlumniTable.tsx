@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import {
   Table,
   TableBody,
@@ -20,7 +20,10 @@ import { SortBy, SortOrder, ITEMS_PER_PAGE } from "@/consts";
 import { ExternalLink, Filter, Users, Search, X, Earth } from "lucide-react";
 import TableTitle from "../common/TableTitle";
 import Image from "next/image";
-import { AlumniListItemDto, AnalyticsControllerGetAnalyticsSelectorTypeEnum as SelectorType } from "@/sdk";
+import {
+  AlumniListItemDto,
+  AnalyticsControllerGetAnalyticsSelectorTypeEnum as SelectorType,
+} from "@/sdk";
 import {
   Tooltip,
   TooltipContent,
@@ -31,6 +34,7 @@ import AlumniTableSkeleton from "../skeletons/AlumniTableSkeleton";
 import { useAuth } from "@/contexts/AuthContext";
 import { Input } from "@/components/ui/input";
 import { useFetchAnalytics } from "@/hooks/analytics/useFetchAnalytics";
+import { debounce } from "lodash";
 
 type AlumniTableProps = {
   filters: FilterState;
@@ -84,9 +88,25 @@ export const AlumniTable = ({ filters, onAddToFilters }: AlumniTableProps) => {
   const [sortField, setSortField] = useState<SortBy>(SortBy.NAME);
   const [sortOrder, setSortOrder] = useState<SortOrder>(SortOrder.ASC);
   const [searchQuery, setSearchQuery] = useState<string>("");
+  const [debouncedSearchQuery, setDebouncedSearchQuery] = useState<string>("");
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [pageInput, setPageInput] = useState<string>(String(page));
+
+  // TODO: Understand why this is needed
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const debouncedSetSearch = useCallback(
+    debounce((value: string) => {
+      setDebouncedSearchQuery(value);
+    }, 500),
+    []
+  );
+
+  useEffect(() => {
+    return () => {
+      debouncedSetSearch.cancel();
+    };
+  }, [debouncedSetSearch]);
 
   const calculateTableHeight = (itemCount: number) => {
     const rowHeight = 56;
@@ -109,7 +129,6 @@ export const AlumniTable = ({ filters, onAddToFilters }: AlumniTableProps) => {
     setPage(1);
   }, [filters]);
 
-
   const { data, isLoading, isFetching } = useFetchAnalytics({
     params: {
       ...filters,
@@ -117,7 +136,7 @@ export const AlumniTable = ({ filters, onAddToFilters }: AlumniTableProps) => {
       sortBy: sortField,
       sortOrder: sortOrder,
       offset: (page - 1) * itemsPerPage,
-      alumniSearch: searchQuery || undefined,
+      alumniSearch: debouncedSearchQuery || undefined,
       selectorType: SelectorType.Alumni,
     },
   });
@@ -125,8 +144,7 @@ export const AlumniTable = ({ filters, onAddToFilters }: AlumniTableProps) => {
   const alumnus = data?.alumniData?.alumni || [];
   const totalItems = data?.alumniData?.count || 0;
 
-  const isWaitingForData =
-    isLoading || isFetching;
+  const isWaitingForData = isLoading || isFetching;
 
   const buildMapUrl = (
     latitude?: number,
@@ -137,8 +155,6 @@ export const AlumniTable = ({ filters, onAddToFilters }: AlumniTableProps) => {
     }
     return `/?lat=${latitude}&lng=${longitude}&group_by=cities`;
   };
-
-
 
   const handleSort = (field: SortBy) => {
     if (sortField === field) {
@@ -152,11 +168,17 @@ export const AlumniTable = ({ filters, onAddToFilters }: AlumniTableProps) => {
   };
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchQuery(e.target.value);
+    const value = e.target.value;
+    setSearchQuery(value);
+
+    if (value !== debouncedSearchQuery) {
+      debouncedSetSearch(value);
+    }
   };
 
   const handleClearSearch = () => {
     setSearchQuery("");
+    setDebouncedSearchQuery("");
   };
 
   const isRowInFilters = (alumni: AlumniListItemDto) => {
