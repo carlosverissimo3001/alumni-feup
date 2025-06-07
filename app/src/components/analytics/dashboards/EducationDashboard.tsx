@@ -112,9 +112,8 @@ export const EducationDashboard = ({
       sortOrder: mode === EducationDrillType.FACULTY ? sortOrder : undefined,
       selectorType: SelectorType.Education,
       includeEducationTrend:
-        mode === EducationDrillType.FACULTY
-          ? view === ViewType.TREND
-          : undefined,
+        // No trend data for year view (doesn't make sense tbh)
+        mode === EducationDrillType.YEAR ? undefined : view === ViewType.TREND,
     },
     options: {
       enabled: needsNewData,
@@ -157,8 +156,8 @@ export const EducationDashboard = ({
   const totalGraduations = currentGraduationsData?.count || 0;
 
   const isWaitingForData =
-  (shouldUseGlobalData && isGlobalDataLoading) ||
-  (!shouldUseGlobalData && (isEducationLoading || isEducationFetching));
+    (shouldUseGlobalData && isGlobalDataLoading) ||
+    (!shouldUseGlobalData && (isEducationLoading || isEducationFetching));
 
   useEffect(() => {
     setPageInput(String(page));
