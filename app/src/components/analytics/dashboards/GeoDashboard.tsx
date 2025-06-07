@@ -8,7 +8,6 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { Switch } from "@/components/ui/switch";
 import {
   Table,
   TableBody,
@@ -50,6 +49,7 @@ import TrendLineComponent from "../common/TrendLineComponent";
 import { DashboardSkeleton } from "../skeletons/DashboardSkeleton";
 import { useFetchAnalytics } from "@/hooks/analytics/useFetchAnalytics";
 import { capitalize } from "lodash";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 
 // Types
 
@@ -92,7 +92,9 @@ export const GeoDashboard = ({
   const [sortField, setSortField] = useState<SortBy>(SortBy.COUNT);
   const [sortOrder, setSortOrder] = useState<SortOrder>(SortOrder.DESC);
   const [view, setView] = useState<ViewType>(ViewType.TABLE);
-  const [trendFrequency, setTrendFrequency] = useState<TrendFrequency>(TrendFrequency.Y5);
+  const [trendFrequency, setTrendFrequency] = useState<TrendFrequency>(
+    TrendFrequency.Y5
+  );
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [pageInput, setPageInput] = useState<string>(String(page));
@@ -128,10 +130,15 @@ export const GeoDashboard = ({
     },
   });
 
-  const shouldUseGlobalData = !needsNewData && !data?.countryData && !data?.cityData;
+  const shouldUseGlobalData =
+    !needsNewData && !data?.countryData && !data?.cityData;
 
-  const currentCountriesData = shouldUseGlobalData ? globalData?.countryData : data?.countryData;
-  const currentCitiesData = shouldUseGlobalData ? globalData?.cityData : data?.cityData;
+  const currentCountriesData = shouldUseGlobalData
+    ? globalData?.countryData
+    : data?.countryData;
+  const currentCitiesData = shouldUseGlobalData
+    ? globalData?.cityData
+    : data?.cityData;
 
   const countries = currentCountriesData?.countries || [];
   const cities = currentCitiesData?.cities || [];
@@ -153,7 +160,9 @@ export const GeoDashboard = ({
 
   const handleSort = (field: SortBy) => {
     if (sortField === field) {
-      setSortOrder(sortOrder === SortOrder.ASC ? SortOrder.DESC : SortOrder.ASC);
+      setSortOrder(
+        sortOrder === SortOrder.ASC ? SortOrder.DESC : SortOrder.ASC
+      );
     } else {
       setSortField(field);
       setSortOrder(SortOrder.DESC);
@@ -462,54 +471,107 @@ export const GeoDashboard = ({
           />
         </div>
 
-        <div className="flex items-center space-x-2 bg-gray-50 px-2 py-1 rounded-full">
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <span
-                  className={`text-sm font-medium cursor-pointer ${
-                    mode === GEO_DRILL_TYPE.COUNTRY
-                      ? "text-[#8C2D19] font-semibold"
-                      : "text-gray-500"
-                  }`}
-                  onClick={() => setMode(GEO_DRILL_TYPE.COUNTRY)}
-                >
-                  Countries
-                </span>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>View distribution by countries</p>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
+        {/* <div className="flex gap-1 bg-gray-50 px-2 py-1 rounded-full">
+          {[
+            {
+              mode: GEO_DRILL_TYPE.COUNTRY,
+              label: "Countries",
+              icon: <Flag className="h-4 w-4 sm:h-5 sm:w-5" />,
+              tooltip: "View distribution by countries",
+            },
+            {
+              mode: GEO_DRILL_TYPE.CITY,
+              label: "Cities",
+              icon: <MapPin className="h-4 w-4 sm:h-5 sm:w-5" />,
+              tooltip: "View distribution by cities",
+            },
+          ].map(({ mode: m, label, icon, tooltip }) => {
+            const isActive = m === mode;
+            return (
+              <TooltipProvider key={label}>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setMode(m)}
+                      className={`flex items-center gap-1 rounded-full px-2 sm:px-3 py-1.5 text-sm transition-all ${
+                        isActive
+                          ? "bg-[#8C2D19]/10 text-[#8C2D19] font-semibold"
+                          : "text-muted-foreground"
+                      }`}
+                      aria-label={`Toggle ${label}`}
+                    >
+                      {icon}
+                      <span className="hidden sm:inline">{label}</span>
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>{tooltip}</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            );
+          })}
+        </div> */}
 
-          <Switch
-            id="mode-toggle"
-            checked={mode === GEO_DRILL_TYPE.CITY}
-            onCheckedChange={(checked) =>
-              setMode(checked ? GEO_DRILL_TYPE.CITY : GEO_DRILL_TYPE.COUNTRY)
+        <div className="flex items-center space-x-2">
+          <ToggleGroup
+            type="single"
+            value={mode}
+            onValueChange={(value: string) =>
+              value && setMode(value as GEO_DRILL_TYPE)
             }
-          />
+            className="flex gap-1 group bg-gray-50 p-0.5 rounded-lg"
+          >
+            <ToggleGroupItem
+              value={GEO_DRILL_TYPE.COUNTRY}
+              aria-label="Country View"
+              className="px-2 py-1 text-sm data-[state=on]:bg-gradient-to-r data-[state=on]:from-[#8C2D19] data-[state=on]:to-[#A13A28] data-[state=on]:text-white data-[state=on]:shadow-[0_0_8px_rgba(140,45,25,0.5)] hover:scale-105 transition-all duration-200 ease-in-out data-[state=off]:bg-white data-[state=off]:border data-[state=off]:border-gray-200 hover:data-[state=off]:bg-gray-100"
+            >
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <div className="flex items-center">
+                      <Flag className="h-4 w-4 mr-1 inline-block transition-transform duration-200" />
+                      <span className="hidden sm:inline">Countries</span>
+                    </div>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>
+                      {mode === GEO_DRILL_TYPE.COUNTRY
+                        ? "Distribution by Country"
+                        : "Change to Country view"}
+                    </p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            </ToggleGroupItem>
 
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <span
-                  className={`text-sm font-medium cursor-pointer ${
-                    mode === GEO_DRILL_TYPE.CITY
-                      ? "text-[#8C2D19] font-semibold"
-                      : "text-gray-500"
-                  }`}
-                  onClick={() => setMode(GEO_DRILL_TYPE.CITY)}
-                >
-                  Cities
-                </span>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>View distribution by cities</p>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
+            <ToggleGroupItem
+              value={GEO_DRILL_TYPE.CITY}
+              aria-label="City View"
+              className="px-2 py-1 text-sm data-[state=on]:bg-gradient-to-r data-[state=on]:from-[#8C2D19] data-[state=on]:to-[#A13A28] data-[state=on]:text-white data-[state=on]:shadow-[0_0_8px_rgba(140,45,25,0.5)] hover:scale-105 transition-all duration-200 ease-in-out data-[state=off]:bg-white data-[state=off]:border data-[state=off]:border-gray-200 hover:data-[state=off]:bg-gray-100"
+            >
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <div className="flex items-center">
+                      <MapPin className="h-4 w-4 mr-1 inline-block transition-transform duration-200 group-hover:bounce" />
+                      <span className="hidden sm:inline">Cities</span>
+                    </div>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>
+                      {mode === GEO_DRILL_TYPE.CITY
+                        ? "Distribution by City"
+                        : "Change to City view"}
+                    </p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            </ToggleGroupItem>
+          </ToggleGroup>
         </div>
 
         <div className="border rounded-md overflow-hidden">
