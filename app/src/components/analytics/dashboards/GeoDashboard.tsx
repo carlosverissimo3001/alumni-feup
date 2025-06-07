@@ -533,7 +533,7 @@ export const GeoDashboard = ({
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <div className="flex items-center">
-                      <Flag className="h-4 w-4 mr-1 inline-block transition-transform duration-200 group-hover:rotate-12" />
+                      <Flag className="h-4 w-4 mr-1 inline-block transition-transform duration-200" />
                       <span className="hidden sm:inline">Countries</span>
                     </div>
                   </TooltipTrigger>
