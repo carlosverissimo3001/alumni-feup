@@ -1,13 +1,21 @@
 import { Injectable } from '@nestjs/common';
 import { SELECTOR_TYPE } from '../consts/enum';
-import { AnalyticsDto, QueryParamsDto } from '../dto';
+import {
+  AnalyticsDto,
+  AnalyticsOptionsDto,
+  OptionsParamDto,
+  QueryParamsDto,
+} from '../dto';
 import { AlumniAnalyticsRepository } from '../repositories';
 import { AlumniAnalyticsService } from './alumni-analytics.service';
 import { CompanyAnalyticsService } from './company-analytics.service';
 import { EducationAnalyticsService } from './education-analytics.service';
 import { GeoAnalyticsService } from './geo-analytics.service';
+import { IndustryAnalyticsService } from './industry-analytics.service';
 import { RoleAnalyticsService } from './role-analytics.service';
 import { SeniorityAnalyticsService } from './seniority-analytics.service';
+import { CourseService } from '@/course/services/course.service';
+import { FacultyService } from '@/faculty/services/faculty.service';
 
 @Injectable()
 export class AnalyticsService {
@@ -19,6 +27,9 @@ export class AnalyticsService {
     private readonly roleAnalyticsService: RoleAnalyticsService,
     private readonly seniorityAnalyticsService: SeniorityAnalyticsService,
     private readonly educationAnalyticsService: EducationAnalyticsService,
+    private readonly industryAnalyticsService: IndustryAnalyticsService,
+    private readonly facultyService: FacultyService,
+    private readonly courseService: CourseService,
   ) {}
 
   /**
@@ -51,7 +62,7 @@ export class AnalyticsService {
       seniorityData: () =>
         this.seniorityAnalyticsService.getSeniorityAnalytics(baseData, query),
       industryData: () =>
-        this.companyAnalyticsService.getIndustryAnalytics(baseData, query),
+        this.industryAnalyticsService.getIndustryAnalytics(baseData, query),
       facultyData: () =>
         this.educationAnalyticsService.getFaculties(baseData, query),
       majorData: () =>
@@ -68,7 +79,11 @@ export class AnalyticsService {
       [SELECTOR_TYPE.SENIORITY]: ['seniorityData'],
       [SELECTOR_TYPE.INDUSTRY]: ['industryData'],
       [SELECTOR_TYPE.EDUCATION]: ['facultyData', 'majorData', 'graduationData'],
-      [SELECTOR_TYPE.ALL]: Object.keys(allTasks) as (keyof typeof allTasks)[],
+
+      // AlumnIData uses different params, so we don't need to run it for the all selector
+      [SELECTOR_TYPE.ALL]: Object.keys(allTasks).filter(
+        (key) => !['alumniData'].includes(key),
+      ) as (keyof typeof allTasks)[],
     };
 
     const keysToRun = selectorMap[query.selectorType as SELECTOR_TYPE] ?? [];
@@ -82,5 +97,52 @@ export class AnalyticsService {
     console.timeEnd('process-analytics');
 
     return analytics as AnalyticsDto;
+  }
+
+  async getOptions(query: OptionsParamDto): Promise<AnalyticsOptionsDto> {
+    console.time('get-options');
+
+    const analyticsOptions: Partial<AnalyticsOptionsDto> = {};
+
+    const allTasks = {
+      countries: () => this.geoAnalyticsService.getCountryOptions(),
+      industries: () => this.industryAnalyticsService.getIndustryOptions(),
+      roles: () => this.roleAnalyticsService.getRoleOptions(),
+      companies: () => this.companyAnalyticsService.getCompanyOptions(),
+      alumni: () => this.alumniAnalyticsService.getAlumniOptions(),
+      cities: () => this.geoAnalyticsService.getCityOptions(query),
+      courses: () => this.courseService.find(query),
+      faculties: () => this.facultyService.findAll(),
+    };
+
+    const selectorMap: Record<
+      Partial<SELECTOR_TYPE>,
+      (keyof typeof allTasks)[]
+    > = {
+      [SELECTOR_TYPE.ALUMNI]: ['alumni'],
+      [SELECTOR_TYPE.COMPANY]: ['companies'],
+      [SELECTOR_TYPE.GEO]: ['cities'],
+      [SELECTOR_TYPE.ROLE]: ['roles'],
+      [SELECTOR_TYPE.SENIORITY]: [],
+      [SELECTOR_TYPE.INDUSTRY]: ['industries'],
+      [SELECTOR_TYPE.EDUCATION]: ['courses'],
+
+      // The ones we're excluding are handled separately, as they use params
+      [SELECTOR_TYPE.ALL]: Object.keys(allTasks).filter(
+        (key) => !['courses', 'companies', 'cities'].includes(key),
+      ) as (keyof typeof allTasks)[],
+    };
+
+    const keysToRun = selectorMap[query.selectorType] ?? [];
+
+    await Promise.all(
+      keysToRun.map(async (key) => {
+        (analyticsOptions as Record<string, any>)[key] = await allTasks[key]();
+      }),
+    );
+
+    console.timeEnd('get-options');
+
+    return analyticsOptions as AnalyticsOptionsDto;
   }
 }

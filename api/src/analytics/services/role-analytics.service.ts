@@ -169,7 +169,7 @@ export class RoleAnalyticsService {
     };
   }
 
-  async findAllClassifications(): Promise<RoleOptionDto[]> {
+  async getRoleOptions(): Promise<RoleOptionDto[]> {
     return this.roleRepository.findAllClassifications();
   }
 

@@ -2,7 +2,6 @@ import {
   AnalyticsController,
   CompanyAnalyticsController,
   GeoAnalyticsController,
-  IndustryAnalyticsController,
   RoleAnalyticsController,
 } from '@/analytics/controllers';
 import {
@@ -19,6 +18,7 @@ import {
   CompanyAnalyticsService,
   EducationAnalyticsService,
   GeoAnalyticsService,
+  IndustryAnalyticsService,
   RoleAnalyticsService,
   SeniorityAnalyticsService,
   TrendAnalyticsService,
@@ -26,12 +26,14 @@ import {
 import { PrismaService } from '@/prisma/prisma.service';
 import { Logger, Module } from '@nestjs/common';
 import { AlumniAnalyticsController } from './controllers/alumni-analytics.controller';
+import { CourseModule } from '@/course/course.module';
+import { FacultyModule } from '@/faculty/faculty.module';
 
 @Module({
+  imports: [CourseModule, FacultyModule],
   controllers: [
     CompanyAnalyticsController,
     GeoAnalyticsController,
-    IndustryAnalyticsController,
     RoleAnalyticsController,
     AlumniAnalyticsController,
     AnalyticsController,
@@ -51,6 +53,7 @@ import { AlumniAnalyticsController } from './controllers/alumni-analytics.contro
     EducationAnalyticsService,
     AlumniAnalyticsService,
     GeoAnalyticsService,
+    IndustryAnalyticsService,
     SeniorityAnalyticsService,
     AnalyticsService,
   ],

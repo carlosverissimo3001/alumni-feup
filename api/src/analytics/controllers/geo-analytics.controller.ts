@@ -8,32 +8,6 @@ import { CountryOptionDto, CityOptionDto, GetCitiesDto } from '@/analytics/dto';
 export class GeoAnalyticsController {
   constructor(private readonly geoAnalyticsService: GeoAnalyticsService) {}
 
-  /* @Get('/countries')
-  @ApiOperation({
-    summary: 'Get the countries, and the number of alumni working in them.',
-  })
-  @ApiResponse({
-    status: 200,
-    description: 'The countries with the number of alumni working in them.',
-    type: CountryListResponseDto,
-  })
-  async getCountriesWithAlumniCount(@Query() query: QueryParamsDto) {
-    return this.geoAnalyticsService.getCountriesWithAlumniCount(query);
-  }
-
-  @Get('/cities')
-  @ApiOperation({
-    summary: 'Get the cities, and the number of alumni working in them.',
-  })
-  @ApiResponse({
-    status: 200,
-    description: 'The countries with the number of alumni working in them.',
-    type: CityListResponseDto,
-  })
-  async getCitiesWithAlumniCount(@Query() query: QueryParamsDto) {
-    return this.geoAnalyticsService.getCitiesWithAlumniCount(query);
-  } */
-
   @Get('/country-options')
   @ApiOperation({
     summary: 'Get the countries options.',

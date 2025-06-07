@@ -41,7 +41,7 @@ import { DropdownMenuContent } from "@/components/ui/dropdown-menu";
 import { DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { DropdownMenu } from "@/components/ui/dropdown-menu";
 import { ESCO_INFO, ISCO_INFO } from "@/consts";
-import { ClassificationLevel } from "@/types/drillType";
+import { ESCO_CLASSIFICATION_LEVEL } from "@/types/drillType";
 import { RoleHierarchyInfo } from "../misc/RoleHierarchyInfo";
 import { useFetchAnalytics } from "@/hooks/analytics/useFetchAnalytics";
 import { AnalyticsControllerGetAnalyticsSelectorTypeEnum as SelectorType } from "@/sdk";
@@ -52,8 +52,8 @@ type RoleDashboardProps = {
   onDataUpdate: (roleCount: number) => void;
   filters: FilterState;
   onAddToFilters?: (roleId: string) => void;
-  classificationLevel: ClassificationLevel;
-  setClassificationLevel: (classificationLevel: ClassificationLevel) => void;
+  classificationLevel: ESCO_CLASSIFICATION_LEVEL;
+  setClassificationLevel: (classificationLevel: ESCO_CLASSIFICATION_LEVEL) => void;
 };
 
 export const RoleDashboard = ({
@@ -98,9 +98,10 @@ export const RoleDashboard = ({
       sortField === SortBy.COUNT &&
       sortOrder === SortOrder.DESC &&
       view === ViewType.TABLE &&
-      trendFrequency === TrendFrequency.Y5
+      trendFrequency === TrendFrequency.Y5 &&
+      classificationLevel === ESCO_CLASSIFICATION_LEVEL.LEVEL_5
     );
-  }, [page, itemsPerPage, sortField, sortOrder, view, trendFrequency]);
+  }, [page, itemsPerPage, sortField, sortOrder, view, trendFrequency, classificationLevel]);
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [pageInput, setPageInput] = useState<string>(String(page));
@@ -129,7 +130,6 @@ export const RoleDashboard = ({
 
   const currentData = shouldUseGlobalData ? globalData : data?.roleData;
   const roles = currentData?.roles || [];
-  const totalRoles = currentData?.count || 0;
   const totalItems = currentData?.distinctCount || 0;
 
   const isWaitingForData =
@@ -137,10 +137,10 @@ export const RoleDashboard = ({
   (!shouldUseGlobalData && (isLoading || isFetching));
 
   useEffect(() => {
-    if (totalRoles !== undefined) {
-      onDataUpdate(totalRoles);
+    if(currentData) {
+     onDataUpdate(currentData.count);
     }
-  }, [totalRoles, onDataUpdate]);
+  }, [currentData, onDataUpdate]);
 
   useEffect(() => {
     setPageInput(String(page));
@@ -210,7 +210,7 @@ export const RoleDashboard = ({
                               {view === ViewType.TABLE ? (
                                 <>
                                   {classificationLevel !==
-                                    ClassificationLevel.LEVEL_1 && (
+                                    ESCO_CLASSIFICATION_LEVEL.LEVEL_1 && (
                                     <div
                                       className={`${
                                         isRowInFilters(role)
@@ -365,11 +365,13 @@ export const RoleDashboard = ({
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent className="shadow-md rounded-lg border-gray-200">
-                {Object.values(ClassificationLevel).map(
-                  (item: ClassificationLevel) => (
+                {Object.values(ESCO_CLASSIFICATION_LEVEL).map(
+                  (item: ESCO_CLASSIFICATION_LEVEL) => (
                     <DropdownMenuItem
                       key={item}
                       onClick={() => {
+                        // Reset page to 1 when changing classification level
+                        setPage(1);
                         setClassificationLevel(item);
                       }}
                       className="hover:bg-gray-100 transition-colors"

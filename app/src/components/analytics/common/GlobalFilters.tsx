@@ -22,11 +22,6 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { useCompanyOptions } from "@/hooks/analytics/useCompanyOptions";
-import { useCountryOptions } from "@/hooks/analytics/useCountryOptions";
-import { useListCourses } from "@/hooks/courses/useListCourses";
-import { useCityOptions } from "@/hooks/analytics/useCityOptions";
-import { useIndustryOptions } from "@/hooks/analytics/useIndustryOptions";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { COMPANY_SIZE, COMPANY_TYPE } from "@/types/company";
 import { SENIORITY_LEVEL_API_TO_ENUM } from "@/types/roles";
@@ -34,12 +29,12 @@ import {
   AnalyticsControllerGetAnalyticsCompanySizeEnum as CompanySizeEnum,
   AnalyticsControllerGetAnalyticsCompanyTypeEnum as CompanyTypeEnum,
   AnalyticsControllerGetAnalyticsSeniorityLevelEnum as SeniorityLevelEnum,
+  AnalyticsControllerGetAnalyticsSelectorTypeEnum as SelectorType,
 } from "@/sdk";
 import { motion, AnimatePresence } from "framer-motion";
-import { useRoleOptions } from "@/hooks/analytics/useRoleOptions";
-import { useAlumniOptions } from "@/hooks/analytics/useAlumniOptions";
-import { useListFaculties } from "@/hooks/faculty/useListFaculties";
+import { useFetchOptions } from "@/hooks/analytics/useFetchOptions";
 import Link from "next/link";
+import { CompanyOptionDto } from "@/sdk";
 
 export type FilterState = {
   dateRange?: DateRange | undefined;
@@ -68,6 +63,7 @@ export type FilterState = {
 
 type GlobalFiltersProps = {
   filters: FilterState;
+  companyOptions: CompanyOptionDto[];
   onFiltersChange: (filters: FilterState) => void;
 };
 
@@ -100,84 +96,83 @@ export const GlobalFilters = ({
     setActiveFilterCount(activeFilters.length);
   }, [filters]);
 
-  const { data: companyOptions, isLoading: isCompanyOptionsLoading } =
-    useCompanyOptions();
-
-  const { data: countryOptions, isLoading: isCountryOptionsLoading } =
-    useCountryOptions();
-
-  const { data: roleCityOptions, isLoading: isRoleCityOptionsLoading } =
-    useCityOptions({
-      countryCodes: filters.roleCountryCodes,
+  // Static options - will never change
+  const { data: analyticsOptions, isLoading: isOptionsLoading } =
+    useFetchOptions({
+      selectorType: SelectorType.All,
     });
+
+  // Dynamic options - will change based on the filters
+  const { data: roleCityOptions, isLoading: isRoleCityOptionsLoading } =
+    useFetchOptions(
+      {
+        selectorType: SelectorType.Geo,
+        countryCodes: filters.roleCountryCodes,
+      },
+      (filters.roleCountryCodes ?? []).length > 0
+    );
+
+  console.log(filters.roleCountryCodes);
 
   const { data: companyCityOptions, isLoading: isCompanyCityOptionsLoading } =
-    useCityOptions({
-      countryCodes: filters.companyHQsCountryCodes,
-    });
+    useFetchOptions(
+      {
+        selectorType: SelectorType.Geo,
+        countryCodes: filters.companyHQsCountryCodes,
+      },
+      (filters.companyHQsCountryCodes ?? []).length > 0
+    );
 
-  const { data: roleOptions, isLoading: isRoleOptionsLoading } = useRoleOptions(
-    {}
-  );
-
-  const { data: industryOptions, isLoading: isIndustryOptionsLoading } =
-    useIndustryOptions();
-
-  const { data: alumniOptions, isLoading: isAlumniOptionsLoading } =
-    useAlumniOptions();
+  console.log(filters.companyHQsCountryCodes);
 
   const { data: courseOptions, isLoading: isCourseOptionsLoading } =
-    useListCourses({
-      params: {
-        facultyIds: filters.facultyIds?.length ? filters.facultyIds : undefined,
-      },
+    useFetchOptions({
+      selectorType: SelectorType.Education,
+      facultyIds: filters.facultyIds?.length ? filters.facultyIds : undefined,
     });
-
-  const { data: facultyOptions, isLoading: isFacultyOptionsLoading } =
-    useListFaculties();
 
   const options = useMemo(
     () => ({
-      companies: (companyOptions || []).map((company) => ({
+      companies: (analyticsOptions?.companies || []).map((company) => ({
         value: company.id,
         label: company.name,
       })),
-      industries: (industryOptions || []).map((industry) => ({
+      industries: (analyticsOptions?.industries || []).map((industry) => ({
         value: industry.id,
         label: industry.name,
       })),
-      countries: (countryOptions || []).map((country) => ({
+      countries: (analyticsOptions?.countries || []).map((country) => ({
         value: country.id,
         label: country.name,
       })),
-      coursesGrouped: (courseOptions || []).map((course) => ({
+      coursesGrouped: (courseOptions?.courses || []).map((course) => ({
         id: course.id,
         value: `(${course.acronym}) ${course.name}`,
         group: course.facultyAcronym,
       })),
-      faculties: (facultyOptions || []).map((faculty) => ({
+      faculties: (analyticsOptions?.faculties || []).map((faculty) => ({
         value: faculty.id,
         label: `(${faculty.acronym}) ${faculty.name} `,
       })),
-      roleCitiesGrouped: (roleCityOptions || []).map((city) => ({
+      roleCitiesGrouped: (roleCityOptions?.cities || []).map((city) => ({
         id: city.id,
         value: city.name,
         group: city.country,
       })),
-      roleCities: (roleCityOptions || []).map((city) => ({
+      roleCities: (roleCityOptions?.cities || []).map((city) => ({
         value: city.id,
         label: city.name,
       })),
-      companyCitiesGrouped: (companyCityOptions || []).map((city) => ({
+      companyCitiesGrouped: (companyCityOptions?.cities || []).map((city) => ({
         id: city.id,
         value: city.name,
         group: city.country,
       })),
-      companyCities: (companyCityOptions || []).map((city) => ({
+      companyCities: (companyCityOptions?.cities || []).map((city) => ({
         value: city.id,
         label: city.name,
       })),
-      alumni: (alumniOptions || []).map((alumni) => ({
+      alumni: (analyticsOptions?.alumni || []).map((alumni) => ({
         value: alumni.id,
         label: alumni.fullName,
       })),
@@ -205,21 +200,16 @@ export const GlobalFilters = ({
         value: value,
         label: SENIORITY_LEVEL_API_TO_ENUM[value],
       })),
-      roles: (roleOptions || []).map((role) => ({
+      roles: (analyticsOptions?.roles || []).map((role) => ({
         value: role.escoCode,
         label: `${role.title} `,
       })),
     }),
     [
-      companyOptions,
-      countryOptions,
+      analyticsOptions,
       courseOptions,
       roleCityOptions,
       companyCityOptions,
-      industryOptions,
-      roleOptions,
-      alumniOptions,
-      facultyOptions,
     ]
   );
 
@@ -280,7 +270,7 @@ export const GlobalFilters = ({
 
     if (filters.courseIds?.length && courseOptions) {
       const courseAcronyms = filters.courseIds
-        .map((id) => courseOptions.find((c) => c.id === id)?.acronym)
+        .map((id) => courseOptions?.courses?.find((c) => c.id === id)?.acronym)
         .filter((acronym): acronym is string => !!acronym)
         .map((acronym) => acronym.toLowerCase().replace(/\./g, "_"));
 
@@ -383,34 +373,6 @@ export const GlobalFilters = ({
               </Tooltip>
             </TooltipProvider>
           </div>
-
-          {/* <div
-            className="relative flex-1 mx-8 max-w-md"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="relative group">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400 transition-all duration-200 group-hover:text-[#8C2D19] group-hover:scale-110 group-focus-within:text-[#8C2D19] group-focus-within:scale-110" />
-              <Input
-                type="text"
-                placeholder="Search company or alumni..."
-                value={filters.search || ""}
-                onChange={handleSearchChange}
-                className="pl-10 pr-12 py-2 w-full bg-gradient-to-r from-gray-50 to-white border-gray-200 shadow-sm transition-all duration-200
-                         hover:border-[#8C2D19]/50 hover:shadow-md focus-visible:border-[#8C2D19]/70 focus-visible:ring-2 focus-visible:ring-[#8C2D19]/30
-                         placeholder:text-gray-400 placeholder:text-sm placeholder:italic rounded-lg"
-              />
-              {filters.search && (
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={handleClearSearch}
-                  className="absolute right-3 top-1/2 transform -translate-y-1/2 h-6 w-6 text-gray-400 hover:text-[#8C2D19] transition-colors"
-                >
-                  <X className="h-4 w-4" />
-                </Button>
-              )}
-            </div>
-          </div> */}
 
           {activeFilterCount > 0 && (
             <Button
@@ -545,7 +507,7 @@ export const GlobalFilters = ({
           </Label>
           <MultiSelect
             id="roleSelect"
-            isLoading={isRoleOptionsLoading}
+            isLoading={isOptionsLoading}
             options={options.roles}
             value={filters.escoCodes}
             onValueChange={(value) => handleFilterChange("escoCodes", value)}
@@ -648,8 +610,8 @@ export const GlobalFilters = ({
                   handleFilterChange("companyHQsCountryCodes", value)
                 }
                 placeholder="Select countries"
-                isLoading={isCountryOptionsLoading}
-                disabled={isCountryOptionsLoading}
+                isLoading={isOptionsLoading}
+                disabled={isOptionsLoading}
                 allowSelectAll={true}
                 maxCount={6}
               />
@@ -698,7 +660,7 @@ export const GlobalFilters = ({
             <div>
               <MultiSelect
                 id="roleCountryCodeSelect"
-                isLoading={isRoleOptionsLoading}
+                isLoading={isOptionsLoading}
                 options={options.countries}
                 value={filters.roleCountryCodes}
                 onValueChange={(value) =>
@@ -743,7 +705,7 @@ export const GlobalFilters = ({
           </Label>
           <MultiSelect
             id="companySelect"
-            isLoading={isCompanyOptionsLoading}
+            isLoading={isOptionsLoading}
             options={options.companies}
             value={filters.companyIds}
             onValueChange={(value) => handleFilterChange("companyIds", value)}
@@ -766,7 +728,7 @@ export const GlobalFilters = ({
             onValueChange={(value) => handleFilterChange("industryIds", value)}
             placeholder="Select industries"
             lazyLoading={true}
-            isLoading={isIndustryOptionsLoading}
+            isLoading={isOptionsLoading}
           />
         </div>
 
@@ -867,7 +829,7 @@ export const GlobalFilters = ({
             value={filters.alumniIds}
             onValueChange={(value) => handleFilterChange("alumniIds", value)}
             placeholder="Search and select alumni"
-            isLoading={isAlumniOptionsLoading}
+            isLoading={isOptionsLoading}
             maxCount={1}
           />
         </div>
@@ -886,7 +848,7 @@ export const GlobalFilters = ({
               value={filters.facultyIds}
               onValueChange={(value) => handleFilterChange("facultyIds", value)}
               placeholder="Select faculties"
-              isLoading={isFacultyOptionsLoading}
+              isLoading={isOptionsLoading}
               maxCount={1}
             />
           </div>

@@ -1,11 +1,7 @@
 import { RoleAnalyticsService } from '@/analytics/services';
 import { Controller, Get, Param, Query } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import {
-  RoleOptionDto,
-  GetRoleHierarchyDto,
-  RoleHierarchyDto,
-} from '@/analytics/dto';
+import { GetRoleHierarchyDto, RoleHierarchyDto } from '@/analytics/dto';
 import { RoleAnalyticsEntity } from '../entities';
 import { GetRoleDto } from '../dto/get-role.dto';
 
@@ -13,21 +9,6 @@ import { GetRoleDto } from '../dto/get-role.dto';
 @Controller('analytics/roles')
 export class RoleAnalyticsController {
   constructor(private readonly roleAnalyticsService: RoleAnalyticsService) {}
-
-  @Get('/options')
-  @ApiOperation({
-    summary: 'List of possible role titles to search for.',
-    description: 'Returns a list of roles with their ESCO code and title.',
-  })
-  @ApiResponse({
-    status: 200,
-    description: 'Roles with their ESCO code and title.',
-    type: RoleOptionDto,
-    isArray: true,
-  })
-  async getRoleOptions() {
-    return this.roleAnalyticsService.findAllClassifications();
-  }
 
   @Get('/hierarchy')
   @ApiOperation({

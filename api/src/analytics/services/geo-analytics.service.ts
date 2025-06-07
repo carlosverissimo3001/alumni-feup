@@ -201,7 +201,7 @@ export class GeoAnalyticsService {
     };
   }
 
-  async getCountriesOptions(): Promise<CountryOptionDto[]> {
+  async getCountryOptions(): Promise<CountryOptionDto[]> {
     const locations = await this.locationRepository.findAll();
 
     const uniqueCountries = new Map<string, { id: string; name: string }>();

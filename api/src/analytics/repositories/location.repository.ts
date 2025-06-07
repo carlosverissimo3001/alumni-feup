@@ -17,6 +17,9 @@ export class LocationRepository {
           not: null,
         },
       },
+      orderBy: {
+        country: 'asc',
+      },
     });
 
     const mappedLocations = locations.map(mapLocationFromPrisma);

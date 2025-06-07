@@ -1,12 +1,12 @@
-import { AlumniListResponseDto, AlumniOptionDto, QueryParamsDto } from '../dto';
-import { AlumniAnalyticsRepository } from '../repositories';
 import { Injectable } from '@nestjs/common';
 import {
-  DEFAULT_QUERY_SORT_ORDER,
   DEFAULT_QUERY_LIMIT,
   DEFAULT_QUERY_OFFSET,
-} from '../consts/';
-import { AlumniAnalyticsEntity, LocationAnalyticsEntity } from '../entities';
+  DEFAULT_QUERY_SORT_ORDER,
+} from '../consts';
+import { AlumniListResponseDto, AlumniOptionDto, QueryParamsDto } from '../dto';
+import { AlumniAnalyticsEntity } from '../entities';
+import { AlumniAnalyticsRepository } from '../repositories';
 import { applyDateFilters } from '../utils/filters';
 
 @Injectable()
@@ -75,11 +75,5 @@ export class AlumniAnalyticsService {
     });
 
     return sortedAlumnus;
-  }
-
-  private getCurrentRoleLocation(
-    alumni: AlumniAnalyticsEntity,
-  ): LocationAnalyticsEntity | undefined {
-    return alumni.roles?.find((role) => role.isCurrent)?.location;
   }
 }

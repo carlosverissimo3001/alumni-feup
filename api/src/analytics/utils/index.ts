@@ -5,3 +5,4 @@ export * from './frequency';
 export * from './query-builder';
 export * from './sorter';
 export * from './selectors';
+export * from './company';

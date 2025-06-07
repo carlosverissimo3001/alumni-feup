@@ -15,7 +15,7 @@ import { Progress } from "../ui/progress";
 import { Combobox } from "../ui/combobox";
 import { useState } from "react";
 import { useFetchRole } from "@/hooks/role/useFetchRole";
-import { useRoleOptions } from "@/hooks/analytics/useRoleOptions";
+import { useFetchOptions } from "@/hooks/analytics/useFetchOptions";
 import { useUpdateClassification } from "@/hooks/profile/useUpdateClassification";
 import { useToast } from "@/hooks/misc/useToast";
 

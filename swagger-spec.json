@@ -916,58 +916,6 @@
         ]
       }
     },
-    "/analytics/industries/options": {
-      "get": {
-        "description": "Returns a list of industries with their id and name.",
-        "operationId": "IndustryAnalyticsController_getIndustryOptions",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "Industries with their id and name.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/IndustryOptionDto"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "summary": "List of possible industries to search for.",
-        "tags": [
-          "V1"
-        ]
-      }
-    },
-    "/analytics/roles/options": {
-      "get": {
-        "description": "Returns a list of roles with their ESCO code and title.",
-        "operationId": "RoleAnalyticsController_getRoleOptions",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "Roles with their ESCO code and title.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/RoleOptionDto"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "summary": "List of possible role titles to search for.",
-        "tags": [
-          "V1"
-        ]
-      }
-    },
     "/analytics/roles/hierarchy": {
       "get": {
         "description": "Returns a list of roles with their ESCO code and title.",
@@ -1518,40 +1466,79 @@
         ]
       }
     },
-    "/company": {
+    "/analytics/options": {
       "get": {
-        "operationId": "CompanyController_findAll",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "All companies"
-          }
-        },
-        "summary": "Get all companies",
-        "tags": [
-          "V1"
-        ]
-      }
-    },
-    "/company/{id}": {
-      "get": {
-        "operationId": "CompanyController_findOne",
+        "operationId": "AnalyticsController_getOptions",
         "parameters": [
           {
-            "name": "id",
+            "name": "selectorType",
             "required": true,
-            "in": "path",
+            "in": "query",
+            "description": "The type of selector to get options for",
             "schema": {
-              "type": "string"
+              "type": "string",
+              "enum": [
+                "ALL",
+                "ALUMNI",
+                "COMPANY",
+                "EDUCATION",
+                "GEO",
+                "INDUSTRY",
+                "ROLE",
+                "SENIORITY"
+              ]
+            }
+          },
+          {
+            "name": "countryCodes",
+            "required": false,
+            "in": "query",
+            "description": "The country codes  to filter by",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "courseIds",
+            "required": false,
+            "in": "query",
+            "description": "The courses to filter by",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "facultyIds",
+            "required": false,
+            "in": "query",
+            "description": "The faculties to filter by",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
             }
           }
         ],
         "responses": {
           "200": {
-            "description": "Company by id"
+            "description": "Options for the analytics page",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AnalyticsOptionsDto"
+                }
+              }
+            }
           }
         },
-        "summary": "Get company by id",
+        "summary": "Get all the options for the analytics page",
         "tags": [
           "V1"
         ]
@@ -1718,6 +1705,45 @@
           }
         },
         "summary": "Create a faculty",
+        "tags": [
+          "V1"
+        ]
+      }
+    },
+    "/company": {
+      "get": {
+        "operationId": "CompanyController_findAll",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "All companies"
+          }
+        },
+        "summary": "Get all companies",
+        "tags": [
+          "V1"
+        ]
+      }
+    },
+    "/company/{id}": {
+      "get": {
+        "operationId": "CompanyController_findOne",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Company by id"
+          }
+        },
+        "summary": "Get company by id",
         "tags": [
           "V1"
         ]
@@ -3710,54 +3736,6 @@
           "country"
         ]
       },
-      "IndustryOptionDto": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string",
-            "description": "The ID of the industry"
-          },
-          "name": {
-            "type": "string",
-            "description": "The name of the industry"
-          }
-        },
-        "required": [
-          "id",
-          "name"
-        ]
-      },
-      "RoleOptionDto": {
-        "type": "object",
-        "properties": {
-          "escoClassificationId": {
-            "type": "string",
-            "description": "The id of the ESCO classification",
-            "example": "1"
-          },
-          "escoCode": {
-            "type": "string",
-            "description": "The ESCO code of the role",
-            "example": "2512"
-          },
-          "title": {
-            "type": "string",
-            "description": "The title of the role",
-            "example": "Software Engineer"
-          },
-          "level": {
-            "type": "number",
-            "description": "The classification level of the role",
-            "example": 1
-          }
-        },
-        "required": [
-          "escoClassificationId",
-          "escoCode",
-          "title",
-          "level"
-        ]
-      },
       "RoleHierarchyItemDto": {
         "type": "object",
         "properties": {
@@ -4480,6 +4458,115 @@
                 "$ref": "#/components/schemas/GraduationListDto"
               }
             ]
+          }
+        }
+      },
+      "IndustryOptionDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The ID of the industry"
+          },
+          "name": {
+            "type": "string",
+            "description": "The name of the industry"
+          }
+        },
+        "required": [
+          "id",
+          "name"
+        ]
+      },
+      "RoleOptionDto": {
+        "type": "object",
+        "properties": {
+          "escoClassificationId": {
+            "type": "string",
+            "description": "The id of the ESCO classification",
+            "example": "1"
+          },
+          "escoCode": {
+            "type": "string",
+            "description": "The ESCO code of the role",
+            "example": "2512"
+          },
+          "title": {
+            "type": "string",
+            "description": "The title of the role",
+            "example": "Software Engineer"
+          },
+          "level": {
+            "type": "number",
+            "description": "The classification level of the role",
+            "example": 1
+          }
+        },
+        "required": [
+          "escoClassificationId",
+          "escoCode",
+          "title",
+          "level"
+        ]
+      },
+      "AnalyticsOptionsDto": {
+        "type": "object",
+        "properties": {
+          "countries": {
+            "description": "The options for countries",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CountryOptionDto"
+            }
+          },
+          "cities": {
+            "description": "The options for cities",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CityOptionDto"
+            }
+          },
+          "industries": {
+            "description": "The options for industries",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/IndustryOptionDto"
+            }
+          },
+          "roles": {
+            "description": "The options for roles",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RoleOptionDto"
+            }
+          },
+          "companies": {
+            "description": "The options for companies",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CompanyOptionDto"
+            }
+          },
+          "alumni": {
+            "description": "The options for alumni",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AlumniOptionDto"
+            }
+          },
+          "courses": {
+            "description": "The options for courses",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CourseAnalyticsEntity"
+            }
+          },
+          "faculties": {
+            "description": "The options for faculties",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FacultyAnalyticsEntity"
+            }
           }
         }
       },

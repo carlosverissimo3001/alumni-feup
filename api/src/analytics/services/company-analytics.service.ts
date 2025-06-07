@@ -1,31 +1,28 @@
 import { Injectable } from '@nestjs/common';
+import { differenceInYears } from 'date-fns';
+import { formatYearsToHuman } from '../../utils/format';
 import {
-  CompanyListItemExtendedDto,
-  CompanyListResponseDto,
-  CompanyOptionDto,
-  IndustryListItemDto,
-  IndustryListResponseDto,
-  QueryParamsDto,
-  CompanyInsightsDto,
-} from '../dto';
-import { AlumniAnalyticsEntity } from '../entities/';
-import { AlumniAnalyticsRepository, CompanyRepository } from '../repositories';
-import {
+  COMPANY_SIZE,
+  COMPANY_TYPE,
   DEFAULT_QUERY_LIMIT,
   DEFAULT_QUERY_OFFSET,
   DEFAULT_QUERY_SORT_BY,
   DEFAULT_QUERY_SORT_ORDER,
 } from '../consts';
-import { sortData } from '../utils';
-import { formatYearsToHuman } from '../../utils/format';
-import { TrendAnalyticsService } from './trend-analytics.service';
+import {
+  CompanyInsightsDto,
+  CompanyListResponseDto,
+  CompanyOptionDto,
+  IndustryListItemDto,
+  IndustryListResponseDto,
+  QueryParamsDto,
+} from '../dto';
+import { AlumniAnalyticsEntity } from '../entities/';
+import { AlumniAnalyticsRepository, CompanyRepository } from '../repositories';
+import { getCompanyMap, sortData } from '../utils';
 import { applyDateFilters } from '../utils/filters';
-import { COMPANY_SIZE, COMPANY_TYPE } from '../consts';
-import { differenceInYears } from 'date-fns';
+import { TrendAnalyticsService } from './trend-analytics.service';
 
-/* Mental note: Try not to use prisma directly in services.
-Shouldd use be used in the DAL, ie. repositories.
-*/
 @Injectable()
 export class CompanyAnalyticsService {
   constructor(
@@ -45,7 +42,7 @@ export class CompanyAnalyticsService {
   ): Promise<CompanyListResponseDto> {
     const alumnus = applyDateFilters(alumnusUnfiltered, query);
 
-    const companiesWithAlumniCount = this.getCompanyMap(alumnus);
+    const companiesWithAlumniCount = getCompanyMap(alumnus);
     const companiesWithAlumniCountOrdered = sortData(companiesWithAlumniCount, {
       sortBy: query.sortBy || DEFAULT_QUERY_SORT_BY,
       direction: query.sortOrder || DEFAULT_QUERY_SORT_ORDER,
@@ -102,7 +99,7 @@ export class CompanyAnalyticsService {
     query: QueryParamsDto,
   ): Promise<IndustryListResponseDto> {
     const alumnus = applyDateFilters(alumnusUnfiltered, query);
-    const companiesWithAlumniCount = this.getCompanyMap(alumnus);
+    const companiesWithAlumniCount = getCompanyMap(alumnus);
 
     const industriesMap = new Map<string, { name: string; count: number }>();
     for (const company of companiesWithAlumniCount) {
@@ -155,6 +152,11 @@ export class CompanyAnalyticsService {
     };
   }
 
+  /**
+   * Given a company id, returns insights about the company
+   * @param id - The id of the company
+   * @returns Insights about the company such as average YOE, average YOC, etc.
+   */
   async getCompanyInsights(id: string): Promise<CompanyInsightsDto> {
     const [company, alumnus] = await Promise.all([
       this.companyRepository.findById(id),
@@ -253,64 +255,6 @@ export class CompanyAnalyticsService {
       industryTrend: [],
       migrations: [],
     };
-  }
-
-  /**
-   * Maps an alumni to a set of companies they've worked at.
-   * @param alumnus - The alumni to map
-   * @returns A list of companies with the number of alumni they have
-   */
-  getCompanyMap(
-    alumnus: AlumniAnalyticsEntity[],
-  ): CompanyListItemExtendedDto[] {
-    const companyMap = new Map<
-      string,
-      {
-        count: number;
-        name: string;
-        logo: string | undefined;
-        industry: string;
-        industryId: string;
-        levelsFyiUrl: string | undefined;
-      }
-    >();
-
-    for (const alumni of alumnus) {
-      const seenCompanies = new Set<string>();
-
-      for (const role of alumni.roles) {
-        const companyId = role.company.id;
-
-        if (!seenCompanies.has(companyId)) {
-          seenCompanies.add(companyId);
-
-          const existingCompany = companyMap.get(companyId);
-          if (existingCompany) {
-            existingCompany.count++;
-          } else {
-            companyMap.set(companyId, {
-              count: 1,
-              name: role.company.name,
-              logo: role.company.logo,
-              industry: role.company.industry.name,
-              industryId: role.company.industry.id,
-              levelsFyiUrl: role.company.levelsFyiUrl,
-            });
-          }
-        }
-      }
-    }
-
-    return Array.from(companyMap.entries()).map(([id, data]) => ({
-      id,
-      name: data.name,
-      count: data.count,
-      logo: data.logo,
-      industry: data.industry,
-      industryId: data.industryId,
-      levelsFyiUrl: data.levelsFyiUrl,
-      trend: [],
-    }));
   }
 
   /**

@@ -23,7 +23,7 @@ import { GlobalFilters, FilterState } from "@/components/analytics/common";
 import { handleDateRange } from "@/utils/date";
 import { Button } from "@/components/ui/button";
 import { useSearchParams, useRouter } from "next/navigation";
-import { useCompanyOptions } from "@/hooks/analytics/useCompanyOptions";
+import { useFetchOptions } from "@/hooks/analytics/useFetchOptions";
 import {
   Tooltip,
   TooltipContent,
@@ -37,9 +37,9 @@ import {
 import { useFetchAnalytics } from "@/hooks/analytics/useFetchAnalytics";
 import { ITEMS_PER_PAGE, SortBy, SortOrder } from "@/consts";
 import {
-  EducationDrillType,
-  GeoDrillType,
-  ClassificationLevel,
+  EDUCATION_DRILL_TYPE,
+  GEO_DRILL_TYPE,
+  ESCO_CLASSIFICATION_LEVEL,
 } from "@/types/drillType";
 import { useDropdownContext } from "@/contexts/DropdownContext";
 import { useLoading } from "@/contexts/LoadingContext";
@@ -91,27 +91,29 @@ function AnalyticsContent() {
   });
   const [filters, setFilters] = useState<FilterState>(initialFilters);
   const [initializedFromURL, setInitializedFromURL] = useState(false);
-  const [geoMode, setGeoMode] = useState<GeoDrillType>(GeoDrillType.COUNTRY);
-  const [educationMode, setEducationMode] = useState<EducationDrillType>(
-    EducationDrillType.MAJOR
+  const [geoMode, setGeoMode] = useState<GEO_DRILL_TYPE>(GEO_DRILL_TYPE.COUNTRY);
+  const [educationMode, setEducationMode] = useState<EDUCATION_DRILL_TYPE>(
+    EDUCATION_DRILL_TYPE.MAJOR
   );
   const [classificationLevel, setClassificationLevel] =
-    useState<ClassificationLevel>(ClassificationLevel.LEVEL_5);
+    useState<ESCO_CLASSIFICATION_LEVEL>(ESCO_CLASSIFICATION_LEVEL.LEVEL_5);
 
   // Hooks
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { data: companyOptions } = useCompanyOptions();
+  const { data: options } = useFetchOptions({
+    selectorType: SelectorType.Company,
+  });
 
   // Getting companies from URL
   const initializeCompaniesFromURL = useCallback(() => {
     const urlFilters: FilterState = { ...initialFilters };
 
     const companyNames = searchParams.get("company")?.toLowerCase().split(",");
-    if (companyNames && companyOptions) {
+    if (companyNames && options?.companies) {
       const companyIds = companyNames
         .map((name) =>
-          companyOptions.find((c) => c.name.toLowerCase() === name.trim())
+          options.companies?.find((c) => c.name.toLowerCase() === name.trim())
         )
         .filter((company) => company !== undefined)
         .map((company) => company!.id);
@@ -122,14 +124,14 @@ function AnalyticsContent() {
     }
 
     return urlFilters;
-  }, [searchParams, companyOptions]);
+  }, [searchParams, options]);
 
   useEffect(() => {
-    if (companyOptions && !initializedFromURL) {
+    if (options?.companies && !initializedFromURL) {
       setFilters(initializeCompaniesFromURL());
       setInitializedFromURL(true);
     }
-  }, [companyOptions, initializeCompaniesFromURL, initializedFromURL]);
+  }, [options?.companies, initializeCompaniesFromURL, initializedFromURL]);
 
   const processedDateRange = useMemo(() => {
     if (filters.dateRange) {
@@ -155,6 +157,7 @@ function AnalyticsContent() {
       selectorType: SelectorType.All,
       sortOrder: SortOrder.DESC,
       offset: 0,
+      escoClassificationLevel:  Number(ESCO_CLASSIFICATION_LEVEL.LEVEL_5.split(" ")[1]),
     },
     options: {
       isInitialLoad: true,
@@ -170,7 +173,7 @@ function AnalyticsContent() {
   }, []);
 
   /*** Helper Functions ***/
-  const getClassificationLevel = (classificationLevel: ClassificationLevel) => {
+  const getClassificationLevel = (classificationLevel: ESCO_CLASSIFICATION_LEVEL) => {
     return Number(classificationLevel.split(" ")[1]);
   };
 
@@ -251,7 +254,7 @@ function AnalyticsContent() {
 
   const handleGeoAddToFilters = useCallback(
     (geoId: string, type: "role" | "company") => {
-      if (geoMode === GeoDrillType.COUNTRY) {
+      if (geoMode === GEO_DRILL_TYPE.COUNTRY) {
         setFilters((prev) => {
           const key =
             type === "role" ? "roleCountryCodes" : "companyHQsCountryCodes";
@@ -259,7 +262,7 @@ function AnalyticsContent() {
           if (!current.includes(geoId)) {
             const updated = [...current, geoId];
             if (updated.length === 1) {
-              setTimeout(() => setGeoMode(GeoDrillType.CITY), 0);
+              setTimeout(() => setGeoMode(GEO_DRILL_TYPE.CITY), 0);
             }
             return {
               ...prev,
@@ -322,11 +325,11 @@ function AnalyticsContent() {
         // If we're adding a new code and not at level 8, increment the level
         if (
           !isAlreadySelected &&
-          classificationLevel !== ClassificationLevel.LEVEL_8 &&
+          classificationLevel !== ESCO_CLASSIFICATION_LEVEL.LEVEL_8 &&
           newCodeLevel >= getClassificationLevel(classificationLevel)
         ) {
           const currentLevel = Number(classificationLevel.split(" ")[1]);
-          const nextLevel = `Level ${currentLevel + 1}` as ClassificationLevel;
+          const nextLevel = `Level ${currentLevel + 1}` as ESCO_CLASSIFICATION_LEVEL;
           setClassificationLevel(nextLevel);
         }
 
@@ -377,13 +380,13 @@ function AnalyticsContent() {
 
   const handleAddEducationToFilters = useCallback(
     (id: string, year?: number) => {
-      if (educationMode === EducationDrillType.FACULTY) {
+      if (educationMode === EDUCATION_DRILL_TYPE.FACULTY) {
         setFilters((prev) => {
           const current = prev.facultyIds || [];
           if (!current.includes(id)) {
             const updated = [...current, id];
             if (updated.length === 1) {
-              setTimeout(() => setEducationMode(EducationDrillType.MAJOR), 0);
+              setTimeout(() => setEducationMode(EDUCATION_DRILL_TYPE.MAJOR), 0);
             }
             return {
               ...prev,
@@ -396,13 +399,13 @@ function AnalyticsContent() {
             };
           }
         });
-      } else if (educationMode === EducationDrillType.MAJOR) {
+      } else if (educationMode === EDUCATION_DRILL_TYPE.MAJOR) {
         setFilters((prev) => {
           const current = prev.courseIds || [];
           if (!current.includes(id)) {
             const updated = [...current, id];
             if (updated.length === 1) {
-              setTimeout(() => setEducationMode(EducationDrillType.YEAR), 0);
+              setTimeout(() => setEducationMode(EDUCATION_DRILL_TYPE.YEAR), 0);
             }
             return {
               ...prev,
@@ -415,7 +418,7 @@ function AnalyticsContent() {
             };
           }
         });
-      } else if (educationMode === EducationDrillType.YEAR) {
+      } else if (educationMode === EDUCATION_DRILL_TYPE.YEAR) {
         setFilters((prev) => {
           const currentYears = prev.graduationYears || [];
           const currentCourses = prev.courseIds || [];
@@ -496,6 +499,7 @@ function AnalyticsContent() {
           <GlobalFilters
             filters={filters}
             onFiltersChange={handleFiltersChange}
+            companyOptions={options?.companies || []}
           />
         </div>
 

@@ -21,6 +21,7 @@ import type {
   AlumniOptionDto,
   AlumniPastLocationsAndCompaniesDto,
   AnalyticsDto,
+  AnalyticsOptionsDto,
   ChangeReviewScoreDto,
   CheckPermissionDto,
   CheckPermissionResponse,
@@ -37,7 +38,6 @@ import type {
   EvaluateSeniorityLevelDto,
   Faculty,
   GeoJSONFeatureCollection,
-  IndustryOptionDto,
   InviteUserDto,
   LinkedinAuthDto,
   MarkAsReviewedDto,
@@ -46,7 +46,6 @@ import type {
   ReviewGeoJSONFeatureCollection,
   RoleAnalyticsEntity,
   RoleHierarchyDto,
-  RoleOptionDto,
   SendFeedbackDto,
   UpdateClassificationDto,
   UpdateSeniorityLevelDto,
@@ -68,6 +67,8 @@ import {
     AlumniPastLocationsAndCompaniesDtoToJSON,
     AnalyticsDtoFromJSON,
     AnalyticsDtoToJSON,
+    AnalyticsOptionsDtoFromJSON,
+    AnalyticsOptionsDtoToJSON,
     ChangeReviewScoreDtoFromJSON,
     ChangeReviewScoreDtoToJSON,
     CheckPermissionDtoFromJSON,
@@ -100,8 +101,6 @@ import {
     FacultyToJSON,
     GeoJSONFeatureCollectionFromJSON,
     GeoJSONFeatureCollectionToJSON,
-    IndustryOptionDtoFromJSON,
-    IndustryOptionDtoToJSON,
     InviteUserDtoFromJSON,
     InviteUserDtoToJSON,
     LinkedinAuthDtoFromJSON,
@@ -118,8 +117,6 @@ import {
     RoleAnalyticsEntityToJSON,
     RoleHierarchyDtoFromJSON,
     RoleHierarchyDtoToJSON,
-    RoleOptionDtoFromJSON,
-    RoleOptionDtoToJSON,
     SendFeedbackDtoFromJSON,
     SendFeedbackDtoToJSON,
     UpdateClassificationDtoFromJSON,
@@ -235,6 +232,13 @@ export interface AnalyticsControllerGetAnalyticsRequest {
     sortBy?: AnalyticsControllerGetAnalyticsSortByEnum;
     selectorType?: AnalyticsControllerGetAnalyticsSelectorTypeEnum;
     sortOrder?: string;
+}
+
+export interface AnalyticsControllerGetOptionsRequest {
+    selectorType: AnalyticsControllerGetOptionsSelectorTypeEnum;
+    countryCodes?: Array<string>;
+    courseIds?: Array<string>;
+    facultyIds?: Array<string>;
 }
 
 export interface CompanyAnalyticsControllerGetCompanyDetailsRequest {
@@ -670,6 +674,24 @@ export interface V1ApiInterface {
 
     /**
      * 
+     * @summary Get all the options for the analytics page
+     * @param {'ALL' | 'ALUMNI' | 'COMPANY' | 'EDUCATION' | 'GEO' | 'INDUSTRY' | 'ROLE' | 'SENIORITY'} selectorType The type of selector to get options for
+     * @param {Array<string>} [countryCodes] The country codes  to filter by
+     * @param {Array<string>} [courseIds] The courses to filter by
+     * @param {Array<string>} [facultyIds] The faculties to filter by
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof V1ApiInterface
+     */
+    analyticsControllerGetOptionsRaw(requestParameters: AnalyticsControllerGetOptionsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<AnalyticsOptionsDto>>;
+
+    /**
+     * Get all the options for the analytics page
+     */
+    analyticsControllerGetOptions(requestParameters: AnalyticsControllerGetOptionsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<AnalyticsOptionsDto>;
+
+    /**
+     * 
      * @summary Returns detailed information about a specific company.
      * @param {string} id 
      * @param {*} [options] Override http request option.
@@ -875,21 +897,6 @@ export interface V1ApiInterface {
     geoAnalyticsControllerGetCountriesOptions(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<CountryOptionDto>>;
 
     /**
-     * Returns a list of industries with their id and name.
-     * @summary List of possible industries to search for.
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof V1ApiInterface
-     */
-    industryAnalyticsControllerGetIndustryOptionsRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<IndustryOptionDto>>>;
-
-    /**
-     * Returns a list of industries with their id and name.
-     * List of possible industries to search for.
-     */
-    industryAnalyticsControllerGetIndustryOptions(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<IndustryOptionDto>>;
-
-    /**
      * 
      * @summary Update a review score
      * @param {ChangeReviewScoreDto} changeReviewScoreDto 
@@ -969,21 +976,6 @@ export interface V1ApiInterface {
      * Gets the hierarchy of a role
      */
     roleAnalyticsControllerGetRoleHierarchy(requestParameters: RoleAnalyticsControllerGetRoleHierarchyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<RoleHierarchyDto>;
-
-    /**
-     * Returns a list of roles with their ESCO code and title.
-     * @summary List of possible role titles to search for.
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof V1ApiInterface
-     */
-    roleAnalyticsControllerGetRoleOptionsRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<RoleOptionDto>>>;
-
-    /**
-     * Returns a list of roles with their ESCO code and title.
-     * List of possible role titles to search for.
-     */
-    roleAnalyticsControllerGetRoleOptions(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<RoleOptionDto>>;
 
     /**
      * 
@@ -1920,6 +1912,55 @@ export class V1Api extends runtime.BaseAPI implements V1ApiInterface {
     }
 
     /**
+     * Get all the options for the analytics page
+     */
+    async analyticsControllerGetOptionsRaw(requestParameters: AnalyticsControllerGetOptionsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<AnalyticsOptionsDto>> {
+        if (requestParameters['selectorType'] == null) {
+            throw new runtime.RequiredError(
+                'selectorType',
+                'Required parameter "selectorType" was null or undefined when calling analyticsControllerGetOptions().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        if (requestParameters['selectorType'] != null) {
+            queryParameters['selectorType'] = requestParameters['selectorType'];
+        }
+
+        if (requestParameters['countryCodes'] != null) {
+            queryParameters['countryCodes'] = requestParameters['countryCodes'];
+        }
+
+        if (requestParameters['courseIds'] != null) {
+            queryParameters['courseIds'] = requestParameters['courseIds'];
+        }
+
+        if (requestParameters['facultyIds'] != null) {
+            queryParameters['facultyIds'] = requestParameters['facultyIds'];
+        }
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        const response = await this.request({
+            path: `/analytics/options`,
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => AnalyticsOptionsDtoFromJSON(jsonValue));
+    }
+
+    /**
+     * Get all the options for the analytics page
+     */
+    async analyticsControllerGetOptions(requestParameters: AnalyticsControllerGetOptionsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<AnalyticsOptionsDto> {
+        const response = await this.analyticsControllerGetOptionsRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
      * Returns detailed information about a specific company.
      */
     async companyAnalyticsControllerGetCompanyDetailsRaw(requestParameters: CompanyAnalyticsControllerGetCompanyDetailsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<CompanyInsightsDto>> {
@@ -2357,34 +2398,6 @@ export class V1Api extends runtime.BaseAPI implements V1ApiInterface {
     }
 
     /**
-     * Returns a list of industries with their id and name.
-     * List of possible industries to search for.
-     */
-    async industryAnalyticsControllerGetIndustryOptionsRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<IndustryOptionDto>>> {
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        const response = await this.request({
-            path: `/analytics/industries/options`,
-            method: 'GET',
-            headers: headerParameters,
-            query: queryParameters,
-        }, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(IndustryOptionDtoFromJSON));
-    }
-
-    /**
-     * Returns a list of industries with their id and name.
-     * List of possible industries to search for.
-     */
-    async industryAnalyticsControllerGetIndustryOptions(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<IndustryOptionDto>> {
-        const response = await this.industryAnalyticsControllerGetIndustryOptionsRaw(initOverrides);
-        return await response.value();
-    }
-
-    /**
      * Update a review score
      */
     async reviewControllerChangeScoreRaw(requestParameters: ReviewControllerChangeScoreRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
@@ -2580,34 +2593,6 @@ export class V1Api extends runtime.BaseAPI implements V1ApiInterface {
      */
     async roleAnalyticsControllerGetRoleHierarchy(requestParameters: RoleAnalyticsControllerGetRoleHierarchyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<RoleHierarchyDto> {
         const response = await this.roleAnalyticsControllerGetRoleHierarchyRaw(requestParameters, initOverrides);
-        return await response.value();
-    }
-
-    /**
-     * Returns a list of roles with their ESCO code and title.
-     * List of possible role titles to search for.
-     */
-    async roleAnalyticsControllerGetRoleOptionsRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<RoleOptionDto>>> {
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        const response = await this.request({
-            path: `/analytics/roles/options`,
-            method: 'GET',
-            headers: headerParameters,
-            query: queryParameters,
-        }, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(RoleOptionDtoFromJSON));
-    }
-
-    /**
-     * Returns a list of roles with their ESCO code and title.
-     * List of possible role titles to search for.
-     */
-    async roleAnalyticsControllerGetRoleOptions(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<RoleOptionDto>> {
-        const response = await this.roleAnalyticsControllerGetRoleOptionsRaw(initOverrides);
         return await response.value();
     }
 
@@ -2896,6 +2881,20 @@ export const AnalyticsControllerGetAnalyticsSelectorTypeEnum = {
     Seniority: 'SENIORITY'
 } as const;
 export type AnalyticsControllerGetAnalyticsSelectorTypeEnum = typeof AnalyticsControllerGetAnalyticsSelectorTypeEnum[keyof typeof AnalyticsControllerGetAnalyticsSelectorTypeEnum];
+/**
+ * @export
+ */
+export const AnalyticsControllerGetOptionsSelectorTypeEnum = {
+    All: 'ALL',
+    Alumni: 'ALUMNI',
+    Company: 'COMPANY',
+    Education: 'EDUCATION',
+    Geo: 'GEO',
+    Industry: 'INDUSTRY',
+    Role: 'ROLE',
+    Seniority: 'SENIORITY'
+} as const;
+export type AnalyticsControllerGetOptionsSelectorTypeEnum = typeof AnalyticsControllerGetOptionsSelectorTypeEnum[keyof typeof AnalyticsControllerGetOptionsSelectorTypeEnum];
 /**
  * @export
  */

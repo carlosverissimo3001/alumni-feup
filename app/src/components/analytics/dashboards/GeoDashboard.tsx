@@ -28,7 +28,7 @@ import {
   DataPointDto,
   AnalyticsControllerGetAnalyticsSelectorTypeEnum as SelectorType,
 } from "@/sdk";
-import { GeoDrillType } from "@/types/drillType";
+import { GEO_DRILL_TYPE } from "@/types/drillType";
 import { EntityType, TrendFrequency } from "@/types/entityTypes";
 import { ViewType } from "@/types/view";
 import { Filter, Flag, MapPin } from "lucide-react";
@@ -49,6 +49,7 @@ import TableTitle from "../common/TableTitle";
 import TrendLineComponent from "../common/TrendLineComponent";
 import { DashboardSkeleton } from "../skeletons/DashboardSkeleton";
 import { useFetchAnalytics } from "@/hooks/analytics/useFetchAnalytics";
+import { capitalize } from "lodash";
 
 // Types
 
@@ -63,8 +64,8 @@ type GeoDashboardProps = {
   onDataUpdate: (countryCount: number) => void;
   filters: FilterState;
   onAddToFilters?: (id: string, type: "role" | "company") => void;
-  mode: GeoDrillType;
-  setMode: (mode: GeoDrillType) => void;
+  mode: GEO_DRILL_TYPE;
+  setMode: (mode: GEO_DRILL_TYPE) => void;
 };
 
 type DataRowProps = {
@@ -160,7 +161,7 @@ export const GeoDashboard = ({
   };
 
   const renderTable = () => {
-    const data = mode === GeoDrillType.COUNTRY ? countries : cities;
+    const data = mode === GEO_DRILL_TYPE.COUNTRY ? countries : cities;
 
     const isRowInFilters = (row: DataRowProps, type?: "role" | "company") => {
       if (type === "role") {
@@ -253,7 +254,7 @@ export const GeoDashboard = ({
                                               <Button
                                                 aria-label="Add/Remove from filters"
                                                 disabled={
-                                                  mode === GeoDrillType.CITY
+                                                  mode === GEO_DRILL_TYPE.CITY
                                                 }
                                                 variant="ghost"
                                                 size="sm"
@@ -387,7 +388,7 @@ export const GeoDashboard = ({
           itemsPerPage={itemsPerPage}
           setItemsPerPage={setItemsPerPage}
           totalItems={
-            mode === GeoDrillType.COUNTRY ? totalCountries : totalCities
+            mode === GEO_DRILL_TYPE.COUNTRY ? totalCountries : totalCities
           }
           visible={data.length > 0}
           currentCount={data.length}
@@ -402,7 +403,7 @@ export const GeoDashboard = ({
   const renderChartView = () => (
     <div className="flex-1 flex flex-col border-t border-b border-gray-200 overflow-hidden">
       <div className="flex-1 flex items-center justify-center">
-        {mode === GeoDrillType.COUNTRY ? (
+        {mode === GEO_DRILL_TYPE.COUNTRY ? (
           isGeoLoading || isGeoFetching ? (
             <LoadingChart message="Loading chart data..." />
           ) : countries.length === 0 ? (
@@ -444,9 +445,9 @@ export const GeoDashboard = ({
       <div className="flex items-center justify-between mb-2">
         <div className="flex items-center gap-2">
           <TableTitle
-            title={mode === GeoDrillType.COUNTRY ? "Countries" : "Cities"}
+            title={capitalize(mode)}
             icon={
-              mode === GeoDrillType.COUNTRY ? (
+              mode === GEO_DRILL_TYPE.COUNTRY ? (
                 <Flag className="h-5 w-5 text-[#8C2D19]" />
               ) : (
                 <MapPin className="h-5 w-5 text-[#8C2D19]" />
@@ -454,7 +455,7 @@ export const GeoDashboard = ({
             }
             className="pl-1"
             tooltipMessage={
-              mode === GeoDrillType.COUNTRY
+              mode === GEO_DRILL_TYPE.COUNTRY
                 ? "Distribution of alumni by the country of their role."
                 : "Distribution of alumni by the city of their role."
             }
@@ -467,11 +468,11 @@ export const GeoDashboard = ({
               <TooltipTrigger asChild>
                 <span
                   className={`text-sm font-medium cursor-pointer ${
-                    mode === GeoDrillType.COUNTRY
+                    mode === GEO_DRILL_TYPE.COUNTRY
                       ? "text-[#8C2D19] font-semibold"
                       : "text-gray-500"
                   }`}
-                  onClick={() => setMode(GeoDrillType.COUNTRY)}
+                  onClick={() => setMode(GEO_DRILL_TYPE.COUNTRY)}
                 >
                   Countries
                 </span>
@@ -484,9 +485,9 @@ export const GeoDashboard = ({
 
           <Switch
             id="mode-toggle"
-            checked={mode === GeoDrillType.CITY}
+            checked={mode === GEO_DRILL_TYPE.CITY}
             onCheckedChange={(checked) =>
-              setMode(checked ? GeoDrillType.CITY : GeoDrillType.COUNTRY)
+              setMode(checked ? GEO_DRILL_TYPE.CITY : GEO_DRILL_TYPE.COUNTRY)
             }
           />
 
@@ -495,11 +496,11 @@ export const GeoDashboard = ({
               <TooltipTrigger asChild>
                 <span
                   className={`text-sm font-medium cursor-pointer ${
-                    mode === GeoDrillType.CITY
+                    mode === GEO_DRILL_TYPE.CITY
                       ? "text-[#8C2D19] font-semibold"
                       : "text-gray-500"
                   }`}
-                  onClick={() => setMode(GeoDrillType.CITY)}
+                  onClick={() => setMode(GEO_DRILL_TYPE.CITY)}
                 >
                   Cities
                 </span>

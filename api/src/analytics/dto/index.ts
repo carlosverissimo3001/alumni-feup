@@ -59,3 +59,5 @@ export {
 
 // Grouped Analytics
 export { AnalyticsDto } from './analytics-dto';
+export { AnalyticsOptionsDto } from './analytics-options.dto';
+export { OptionsParamDto } from './options-param.dto';
