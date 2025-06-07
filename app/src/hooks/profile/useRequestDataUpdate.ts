@@ -2,7 +2,7 @@ import React from "react";
 import { useMutation } from "@tanstack/react-query";
 import NestAPI from "@/api";
 import { toast } from "@/hooks/misc/useToast";
-import { useJsonFromResponse } from "@/commom/use-json-from-response";
+import { useJsonFromResponse } from "@/common/use-json-from-response";
 
 type Input = {
   onSuccess?: () => void | Promise<void>;
