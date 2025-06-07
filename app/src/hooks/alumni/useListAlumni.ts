@@ -1,5 +1,5 @@
 import { useMutation } from "@tanstack/react-query";
-import { useJsonFromResponse } from "@/commom";
+import { useJsonFromResponse } from "@/common";
 import NestAPI from "@/api";
 
 type Input = {

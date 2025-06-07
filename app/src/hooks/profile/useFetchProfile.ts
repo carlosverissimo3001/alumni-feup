@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import NestAPI from "@/api";
 import { AlumniControllerGetProfileRequest, AlumniAnalyticsEntity } from "@/sdk";
-import { useJsonFromResponse } from "@/commom/use-json-from-response";
+import { useJsonFromResponse } from "@/common/use-json-from-response";
 
 interface UseFetchProfileReturn {
   data?: AlumniAnalyticsEntity;
