@@ -22,7 +22,7 @@ export class AlumniAnalyticsEntity {
   })
   linkedinUrl?: string;
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     description: 'The profile picture of the alumni',
     type: String,
   })
@@ -35,12 +35,12 @@ export class AlumniAnalyticsEntity {
   })
   roles: RoleAnalyticsEntity[];
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     description: 'The graduations of the alumni',
     type: GraduationAnalyticsEntity,
     isArray: true,
   })
-  graduations: GraduationAnalyticsEntity[];
+  graduations?: GraduationAnalyticsEntity[];
 
   @ApiPropertyOptional({
     description: 'The location of the alumni',

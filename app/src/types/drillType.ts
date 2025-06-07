@@ -1,15 +1,15 @@
-export enum EducationDrillType {
+export enum EDUCATION_DRILL_TYPE {
   FACULTY = "faculty",
   MAJOR = "major",
   YEAR = "year",
 }
 
-export enum GeoDrillType {
+export enum GEO_DRILL_TYPE {
   COUNTRY = "countries",
   CITY = "cities",
 }
 
-export enum ClassificationLevel {
+export enum ESCO_CLASSIFICATION_LEVEL {
   LEVEL_1 = "Level 1",
   LEVEL_2 = "Level 2",
   LEVEL_3 = "Level 3",

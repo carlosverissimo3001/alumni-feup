@@ -26,6 +26,8 @@ import {
   CommandList,
   CommandSeparator,
 } from "@/components/ui/command";
+import { useDropdownContext } from "@/contexts/DropdownContext";
+
 
 /**
  * Variants for the multi-select component to handle different styles.
@@ -172,6 +174,9 @@ export const MultiSelect = React.forwardRef<
     },
     ref
   ) => {
+    const { setIsAnyOpen } = useDropdownContext();
+
+
     // Internal state for selected values when uncontrolled
     const [internalSelectedValues, setInternalSelectedValues] =
       React.useState<string[]>(defaultValue);
@@ -218,6 +223,7 @@ export const MultiSelect = React.forwardRef<
 
     const handleTogglePopover = () => {
       if (!disabled) {
+        setIsAnyOpen(true);
         setIsPopoverOpen((prev) => !prev);
       }
     };

@@ -45,13 +45,7 @@ export class AlumniListResponseDto {
 
   @ApiProperty({
     description:
-      'The total number of alumni in the database before applying the filters',
-  })
-  count: number;
-
-  @ApiProperty({
-    description:
       'The total number of alumni in the database after applying the filters',
   })
-  filteredCount: number;
+  count: number;
 }

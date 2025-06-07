@@ -1,56 +1,57 @@
-import { Logger, Module } from '@nestjs/common';
-import { PrismaService } from '@/prisma/prisma.service';
 import {
+  AnalyticsController,
   CompanyAnalyticsController,
-  GeoAnalyticsController,
-  IndustryAnalyticsController,
-  EducationAnalyticsController,
   RoleAnalyticsController,
 } from '@/analytics/controllers';
 import {
   AlumniAnalyticsRepository,
   CompanyRepository,
+  EducationRepository,
   IndustryRepository,
   LocationRepository,
-  EducationRepository,
   RoleRepository,
 } from '@/analytics/repositories';
 import {
-  CompanyAnalyticsService,
-  GeoAnalyticsService,
-  RoleAnalyticsService,
-  TrendAnalyticsService,
   AlumniAnalyticsService,
+  AnalyticsService,
+  CompanyAnalyticsService,
   EducationAnalyticsService,
+  GeoAnalyticsService,
+  IndustryAnalyticsService,
+  RoleAnalyticsService,
   SeniorityAnalyticsService,
+  TrendAnalyticsService,
 } from '@/analytics/services';
-import { AlumniAnalyticsController } from './controllers/alumni-analytics.controller';
+import { PrismaService } from '@/prisma/prisma.service';
+import { Logger, Module } from '@nestjs/common';
+import { CourseModule } from '@/course/course.module';
+import { FacultyModule } from '@/faculty/faculty.module';
 
 @Module({
+  imports: [CourseModule, FacultyModule],
   controllers: [
     CompanyAnalyticsController,
-    GeoAnalyticsController,
-    IndustryAnalyticsController,
-    EducationAnalyticsController,
     RoleAnalyticsController,
-    AlumniAnalyticsController,
+    AnalyticsController,
   ],
   providers: [
-    CompanyAnalyticsService,
-    RoleAnalyticsService,
-    EducationAnalyticsService,
-    AlumniAnalyticsService,
-    GeoAnalyticsService,
     PrismaService,
+    Logger,
     AlumniAnalyticsRepository,
     LocationRepository,
     CompanyRepository,
     EducationRepository,
     IndustryRepository,
     RoleRepository,
-    Logger,
     TrendAnalyticsService,
+    CompanyAnalyticsService,
+    RoleAnalyticsService,
+    EducationAnalyticsService,
+    AlumniAnalyticsService,
+    GeoAnalyticsService,
+    IndustryAnalyticsService,
     SeniorityAnalyticsService,
+    AnalyticsService,
   ],
 })
 export class AnalyticsModule {}

@@ -1,8 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import {
-  AlumniAnalyticsRepository,
-  EducationRepository,
-} from '@/analytics/repositories';
+import { EducationRepository } from '@/analytics/repositories';
 import {
   QueryParamsDto,
   FacultyListItemDto,
@@ -22,22 +19,23 @@ import {
   SORT_BY,
 } from '../consts';
 import { sortData } from '../utils';
+import { AlumniAnalyticsEntity } from '../entities';
 
 @Injectable()
 export class EducationAnalyticsService {
   constructor(
-    private readonly alumniRepository: AlumniAnalyticsRepository,
     private readonly trendAnalyticsService: TrendAnalyticsService,
     private readonly educationRepository: EducationRepository,
   ) {}
 
-  async getFaculties(query: QueryParamsDto): Promise<FacultyListDto> {
-    const [alumnusUnfiltered, totalFaculties] = await Promise.all([
-      this.alumniRepository.find(query),
-      this.educationRepository.countFaculties(),
-    ]);
+  async getFaculties(
+    alumnusUnfiltered: AlumniAnalyticsEntity[],
+    query: QueryParamsDto,
+  ): Promise<FacultyListDto> {
+    const totalFaculties = await this.educationRepository.countFaculties();
 
     const alumnus = applyDateFilters(alumnusUnfiltered, query);
+
     const graduations = alumnus.flatMap((a) => a.graduations || []);
 
     const faculties = graduations.reduce((map, graduation) => {
@@ -56,7 +54,7 @@ export class EducationAnalyticsService {
     }, new Map<string, FacultyListItemDto>());
 
     const facultiesArray = Array.from(faculties.values());
-    if (query.includeTrend) {
+    if (query.includeEducationTrend) {
       const trends = await Promise.all(
         facultiesArray.map((faculty) =>
           this.trendAnalyticsService.getFacultyTrend({
@@ -86,11 +84,11 @@ export class EducationAnalyticsService {
     };
   }
 
-  async getMajors(query: QueryParamsDto): Promise<MajorListDto> {
-    const [alumnusUnfiltered, totalMajors] = await Promise.all([
-      this.alumniRepository.find(query),
-      this.educationRepository.countCourses(),
-    ]);
+  async getMajors(
+    alumnusUnfiltered: AlumniAnalyticsEntity[],
+    query: QueryParamsDto,
+  ): Promise<MajorListDto> {
+    const totalMajors = await this.educationRepository.countCourses();
 
     const alumnus = applyDateFilters(alumnusUnfiltered, query);
 
@@ -113,7 +111,7 @@ export class EducationAnalyticsService {
     }, new Map<string, MajorListItemDto>());
 
     const coursesArray = Array.from(courses.values());
-    if (query.includeTrend) {
+    if (query.includeEducationTrend) {
       const trends = await Promise.all(
         coursesArray.map((course) =>
           this.trendAnalyticsService.getMajorTrend({
@@ -142,11 +140,11 @@ export class EducationAnalyticsService {
     };
   }
 
-  async getGraduations(query: QueryParamsDto): Promise<GraduationListDto> {
-    const [alumnusUnfiltered, totalGraduations] = await Promise.all([
-      this.alumniRepository.find(query),
-      this.educationRepository.countGraduations(),
-    ]);
+  async getGraduations(
+    alumnusUnfiltered: AlumniAnalyticsEntity[],
+    query: QueryParamsDto,
+  ): Promise<GraduationListDto> {
+    const totalGraduations = await this.educationRepository.countGraduations();
 
     const alumnus = applyDateFilters(alumnusUnfiltered, query);
 

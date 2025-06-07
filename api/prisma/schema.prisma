@@ -256,6 +256,9 @@ model Role {
   @@index([alumniId])
   @@index([companyId])
   @@index([locationId])
+  @@index([seniorityLevel, companyId])
+  @@index([companyId, locationId])
+  @@index([isCurrent])
   @@map("role")
 }
 
