@@ -38,7 +38,6 @@ export const useFetchAnalytics = ({
     gcTime: options.gcTime ?? 10 * 60 * 1000,
     refetchOnWindowFocus: false,
     refetchOnReconnect: false,
-    retry: 1,
     placeholderData: undefined,
   });
 };

@@ -18,17 +18,13 @@ import type {
   Alumni,
   AlumniAnalyticsEntity,
   AlumniExtended,
-  AlumniOptionDto,
   AlumniPastLocationsAndCompaniesDto,
   AnalyticsDto,
   AnalyticsOptionsDto,
   ChangeReviewScoreDto,
   CheckPermissionDto,
   CheckPermissionResponse,
-  CityOptionDto,
   CompanyInsightsDto,
-  CompanyOptionDto,
-  CountryOptionDto,
   CourseAnalyticsEntity,
   CreateAlumniDto,
   CreateCourseDto,
@@ -61,8 +57,6 @@ import {
     AlumniAnalyticsEntityToJSON,
     AlumniExtendedFromJSON,
     AlumniExtendedToJSON,
-    AlumniOptionDtoFromJSON,
-    AlumniOptionDtoToJSON,
     AlumniPastLocationsAndCompaniesDtoFromJSON,
     AlumniPastLocationsAndCompaniesDtoToJSON,
     AnalyticsDtoFromJSON,
@@ -75,14 +69,8 @@ import {
     CheckPermissionDtoToJSON,
     CheckPermissionResponseFromJSON,
     CheckPermissionResponseToJSON,
-    CityOptionDtoFromJSON,
-    CityOptionDtoToJSON,
     CompanyInsightsDtoFromJSON,
     CompanyInsightsDtoToJSON,
-    CompanyOptionDtoFromJSON,
-    CompanyOptionDtoToJSON,
-    CountryOptionDtoFromJSON,
-    CountryOptionDtoToJSON,
     CourseAnalyticsEntityFromJSON,
     CourseAnalyticsEntityToJSON,
     CreateAlumniDtoFromJSON,
@@ -274,10 +262,6 @@ export interface FileUploadControllerCreateRequest {
     uploadExtractionDto: UploadExtractionDto;
 }
 
-export interface GeoAnalyticsControllerGetCitiesOptionsRequest {
-    countryCodes?: Array<string>;
-}
-
 export interface ReviewControllerChangeScoreRequest {
     changeReviewScoreDto: ChangeReviewScoreDto;
 }
@@ -406,20 +390,6 @@ export interface V1ApiInterface {
      * Merge locations
      */
     adminControllerMergeLocations(requestParameters: AdminControllerMergeLocationsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void>;
-
-    /**
-     * 
-     * @summary Get all alumni options
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof V1ApiInterface
-     */
-    alumniAnalyticsControllerGetAlumniOptionsRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<AlumniOptionDto>>>;
-
-    /**
-     * Get all alumni options
-     */
-    alumniAnalyticsControllerGetAlumniOptions(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<AlumniOptionDto>>;
 
     /**
      * 
@@ -707,34 +677,6 @@ export interface V1ApiInterface {
 
     /**
      * 
-     * @summary Returns company employment growth over time.
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof V1ApiInterface
-     */
-    companyAnalyticsControllerGetCompanyGrowthRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>>;
-
-    /**
-     * Returns company employment growth over time.
-     */
-    companyAnalyticsControllerGetCompanyGrowth(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void>;
-
-    /**
-     * 
-     * @summary List of possible companies to search for.
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof V1ApiInterface
-     */
-    companyAnalyticsControllerGetCompanyOptionsRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<CompanyOptionDto>>>;
-
-    /**
-     * List of possible companies to search for.
-     */
-    companyAnalyticsControllerGetCompanyOptions(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<CompanyOptionDto>>;
-
-    /**
-     * 
      * @summary Get all companies
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -866,35 +808,6 @@ export interface V1ApiInterface {
      * Upload a file
      */
     fileUploadControllerCreate(requestParameters: FileUploadControllerCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<string>;
-
-    /**
-     * 
-     * @summary Get the cities options.
-     * @param {Array<string>} [countryCodes] The country codes  to filter by
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof V1ApiInterface
-     */
-    geoAnalyticsControllerGetCitiesOptionsRaw(requestParameters: GeoAnalyticsControllerGetCitiesOptionsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<CityOptionDto>>>;
-
-    /**
-     * Get the cities options.
-     */
-    geoAnalyticsControllerGetCitiesOptions(requestParameters: GeoAnalyticsControllerGetCitiesOptionsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<CityOptionDto>>;
-
-    /**
-     * 
-     * @summary Get the countries options.
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof V1ApiInterface
-     */
-    geoAnalyticsControllerGetCountriesOptionsRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<CountryOptionDto>>>;
-
-    /**
-     * Get the countries options.
-     */
-    geoAnalyticsControllerGetCountriesOptions(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<CountryOptionDto>>;
 
     /**
      * 
@@ -1237,32 +1150,6 @@ export class V1Api extends runtime.BaseAPI implements V1ApiInterface {
      */
     async adminControllerMergeLocations(requestParameters: AdminControllerMergeLocationsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
         await this.adminControllerMergeLocationsRaw(requestParameters, initOverrides);
-    }
-
-    /**
-     * Get all alumni options
-     */
-    async alumniAnalyticsControllerGetAlumniOptionsRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<AlumniOptionDto>>> {
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        const response = await this.request({
-            path: `/analytics/alumni/options`,
-            method: 'GET',
-            headers: headerParameters,
-            query: queryParameters,
-        }, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(AlumniOptionDtoFromJSON));
-    }
-
-    /**
-     * Get all alumni options
-     */
-    async alumniAnalyticsControllerGetAlumniOptions(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<AlumniOptionDto>> {
-        const response = await this.alumniAnalyticsControllerGetAlumniOptionsRaw(initOverrides);
-        return await response.value();
     }
 
     /**
@@ -1994,57 +1881,6 @@ export class V1Api extends runtime.BaseAPI implements V1ApiInterface {
     }
 
     /**
-     * Returns company employment growth over time.
-     */
-    async companyAnalyticsControllerGetCompanyGrowthRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        const response = await this.request({
-            path: `/analytics/companies/growth`,
-            method: 'GET',
-            headers: headerParameters,
-            query: queryParameters,
-        }, initOverrides);
-
-        return new runtime.VoidApiResponse(response);
-    }
-
-    /**
-     * Returns company employment growth over time.
-     */
-    async companyAnalyticsControllerGetCompanyGrowth(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
-        await this.companyAnalyticsControllerGetCompanyGrowthRaw(initOverrides);
-    }
-
-    /**
-     * List of possible companies to search for.
-     */
-    async companyAnalyticsControllerGetCompanyOptionsRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<CompanyOptionDto>>> {
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        const response = await this.request({
-            path: `/analytics/companies/options`,
-            method: 'GET',
-            headers: headerParameters,
-            query: queryParameters,
-        }, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(CompanyOptionDtoFromJSON));
-    }
-
-    /**
-     * List of possible companies to search for.
-     */
-    async companyAnalyticsControllerGetCompanyOptions(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<CompanyOptionDto>> {
-        const response = await this.companyAnalyticsControllerGetCompanyOptionsRaw(initOverrides);
-        return await response.value();
-    }
-
-    /**
      * Get all companies
      */
     async companyControllerFindAllRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
@@ -2338,62 +2174,6 @@ export class V1Api extends runtime.BaseAPI implements V1ApiInterface {
      */
     async fileUploadControllerCreate(requestParameters: FileUploadControllerCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<string> {
         const response = await this.fileUploadControllerCreateRaw(requestParameters, initOverrides);
-        return await response.value();
-    }
-
-    /**
-     * Get the cities options.
-     */
-    async geoAnalyticsControllerGetCitiesOptionsRaw(requestParameters: GeoAnalyticsControllerGetCitiesOptionsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<CityOptionDto>>> {
-        const queryParameters: any = {};
-
-        if (requestParameters['countryCodes'] != null) {
-            queryParameters['countryCodes'] = requestParameters['countryCodes'];
-        }
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        const response = await this.request({
-            path: `/analytics/geo/city-options`,
-            method: 'GET',
-            headers: headerParameters,
-            query: queryParameters,
-        }, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(CityOptionDtoFromJSON));
-    }
-
-    /**
-     * Get the cities options.
-     */
-    async geoAnalyticsControllerGetCitiesOptions(requestParameters: GeoAnalyticsControllerGetCitiesOptionsRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<CityOptionDto>> {
-        const response = await this.geoAnalyticsControllerGetCitiesOptionsRaw(requestParameters, initOverrides);
-        return await response.value();
-    }
-
-    /**
-     * Get the countries options.
-     */
-    async geoAnalyticsControllerGetCountriesOptionsRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<CountryOptionDto>>> {
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        const response = await this.request({
-            path: `/analytics/geo/country-options`,
-            method: 'GET',
-            headers: headerParameters,
-            query: queryParameters,
-        }, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(CountryOptionDtoFromJSON));
-    }
-
-    /**
-     * Get the countries options.
-     */
-    async geoAnalyticsControllerGetCountriesOptions(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<CountryOptionDto>> {
-        const response = await this.geoAnalyticsControllerGetCountriesOptionsRaw(initOverrides);
         return await response.value();
     }
 

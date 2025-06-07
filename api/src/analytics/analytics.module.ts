@@ -1,7 +1,6 @@
 import {
   AnalyticsController,
   CompanyAnalyticsController,
-  GeoAnalyticsController,
   RoleAnalyticsController,
 } from '@/analytics/controllers';
 import {
@@ -25,7 +24,6 @@ import {
 } from '@/analytics/services';
 import { PrismaService } from '@/prisma/prisma.service';
 import { Logger, Module } from '@nestjs/common';
-import { AlumniAnalyticsController } from './controllers/alumni-analytics.controller';
 import { CourseModule } from '@/course/course.module';
 import { FacultyModule } from '@/faculty/faculty.module';
 
@@ -33,9 +31,7 @@ import { FacultyModule } from '@/faculty/faculty.module';
   imports: [CourseModule, FacultyModule],
   controllers: [
     CompanyAnalyticsController,
-    GeoAnalyticsController,
     RoleAnalyticsController,
-    AlumniAnalyticsController,
     AnalyticsController,
   ],
   providers: [

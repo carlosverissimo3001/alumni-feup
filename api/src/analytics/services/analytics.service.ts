@@ -99,9 +99,12 @@ export class AnalyticsService {
     return analytics as AnalyticsDto;
   }
 
+  /**
+   * Used for the front-end to fetch the options for the filters
+   * @param query - The query parameters for the options
+   * @returns - The options for the filters
+   */
   async getOptions(query: OptionsParamDto): Promise<AnalyticsOptionsDto> {
-    console.time('get-options');
-
     const analyticsOptions: Partial<AnalyticsOptionsDto> = {};
 
     const allTasks = {
@@ -110,6 +113,7 @@ export class AnalyticsService {
       roles: () => this.roleAnalyticsService.getRoleOptions(),
       companies: () => this.companyAnalyticsService.getCompanyOptions(),
       alumni: () => this.alumniAnalyticsService.getAlumniOptions(),
+      // Only courses and cities take params
       cities: () => this.geoAnalyticsService.getCityOptions(query),
       courses: () => this.courseService.find(query),
       faculties: () => this.facultyService.findAll(),
@@ -129,7 +133,7 @@ export class AnalyticsService {
 
       // The ones we're excluding are handled separately, as they use params
       [SELECTOR_TYPE.ALL]: Object.keys(allTasks).filter(
-        (key) => !['courses', 'companies', 'cities'].includes(key),
+        (key) => !['courses', 'cities'].includes(key),
       ) as (keyof typeof allTasks)[],
     };
 
@@ -140,9 +144,6 @@ export class AnalyticsService {
         (analyticsOptions as Record<string, any>)[key] = await allTasks[key]();
       }),
     );
-
-    console.timeEnd('get-options');
-
     return analyticsOptions as AnalyticsOptionsDto;
   }
 }

@@ -101,8 +101,8 @@ function AnalyticsContent() {
   // Hooks
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { data: options } = useFetchOptions({
-    selectorType: SelectorType.Company,
+  const { data: options, isLoading: isOptionsLoading } = useFetchOptions({
+    selectorType: SelectorType.All,
   });
 
   // Getting companies from URL
@@ -499,7 +499,8 @@ function AnalyticsContent() {
           <GlobalFilters
             filters={filters}
             onFiltersChange={handleFiltersChange}
-            companyOptions={options?.companies || []}
+            globalOptions={options}
+            isOptionsLoading={isOptionsLoading}
           />
         </div>
 

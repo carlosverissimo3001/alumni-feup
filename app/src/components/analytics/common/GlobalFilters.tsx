@@ -34,7 +34,7 @@ import {
 import { motion, AnimatePresence } from "framer-motion";
 import { useFetchOptions } from "@/hooks/analytics/useFetchOptions";
 import Link from "next/link";
-import { CompanyOptionDto } from "@/sdk";
+import { AnalyticsOptionsDto } from "@/sdk";
 
 export type FilterState = {
   dateRange?: DateRange | undefined;
@@ -63,12 +63,15 @@ export type FilterState = {
 
 type GlobalFiltersProps = {
   filters: FilterState;
-  companyOptions: CompanyOptionDto[];
+  globalOptions?: AnalyticsOptionsDto;
+  isOptionsLoading: boolean;
   onFiltersChange: (filters: FilterState) => void;
 };
 
 export const GlobalFilters = ({
   filters,
+  globalOptions,
+  isOptionsLoading,
   onFiltersChange,
 }: GlobalFiltersProps) => {
   const [isCollapsed, setIsCollapsed] = useState(true);
@@ -96,24 +99,8 @@ export const GlobalFilters = ({
     setActiveFilterCount(activeFilters.length);
   }, [filters]);
 
-  // Static options - will never change
-  const { data: analyticsOptions, isLoading: isOptionsLoading } =
-    useFetchOptions({
-      selectorType: SelectorType.All,
-    });
 
-  // Dynamic options - will change based on the filters
-  const { data: roleCityOptions, isLoading: isRoleCityOptionsLoading } =
-    useFetchOptions(
-      {
-        selectorType: SelectorType.Geo,
-        countryCodes: filters.roleCountryCodes,
-      },
-      (filters.roleCountryCodes ?? []).length > 0
-    );
-
-  console.log(filters.roleCountryCodes);
-
+  // Dynamic options - will change based on the filters, handled locally at the filter level
   const { data: companyCityOptions, isLoading: isCompanyCityOptionsLoading } =
     useFetchOptions(
       {
@@ -123,7 +110,15 @@ export const GlobalFilters = ({
       (filters.companyHQsCountryCodes ?? []).length > 0
     );
 
-  console.log(filters.companyHQsCountryCodes);
+    // Dynamic options - will change based on the filters, handled locally at the filter level
+    const { data: roleCitiesOptions, isLoading: isRoleCitiesOptionsLoading } =
+    useFetchOptions(
+      {
+        selectorType: SelectorType.Geo,
+        countryCodes: filters.roleCountryCodes,
+      },
+      (filters.roleCountryCodes ?? []).length > 0
+    );
 
   const { data: courseOptions, isLoading: isCourseOptionsLoading } =
     useFetchOptions({
@@ -133,15 +128,15 @@ export const GlobalFilters = ({
 
   const options = useMemo(
     () => ({
-      companies: (analyticsOptions?.companies || []).map((company) => ({
+      companies: (globalOptions?.companies || []).map((company) => ({
         value: company.id,
         label: company.name,
       })),
-      industries: (analyticsOptions?.industries || []).map((industry) => ({
+      industries: (globalOptions?.industries || []).map((industry) => ({
         value: industry.id,
         label: industry.name,
       })),
-      countries: (analyticsOptions?.countries || []).map((country) => ({
+      countries: (globalOptions?.countries || []).map((country) => ({
         value: country.id,
         label: country.name,
       })),
@@ -150,16 +145,16 @@ export const GlobalFilters = ({
         value: `(${course.acronym}) ${course.name}`,
         group: course.facultyAcronym,
       })),
-      faculties: (analyticsOptions?.faculties || []).map((faculty) => ({
+      faculties: (globalOptions?.faculties || []).map((faculty) => ({
         value: faculty.id,
         label: `(${faculty.acronym}) ${faculty.name} `,
       })),
-      roleCitiesGrouped: (roleCityOptions?.cities || []).map((city) => ({
+      roleCitiesGrouped: (roleCitiesOptions?.cities || []).map((city) => ({
         id: city.id,
         value: city.name,
         group: city.country,
       })),
-      roleCities: (roleCityOptions?.cities || []).map((city) => ({
+      roleCities: (roleCitiesOptions?.cities || []).map((city) => ({
         value: city.id,
         label: city.name,
       })),
@@ -172,7 +167,7 @@ export const GlobalFilters = ({
         value: city.id,
         label: city.name,
       })),
-      alumni: (analyticsOptions?.alumni || []).map((alumni) => ({
+      alumni: (globalOptions?.alumni || []).map((alumni) => ({
         value: alumni.id,
         label: alumni.fullName,
       })),
@@ -200,17 +195,12 @@ export const GlobalFilters = ({
         value: value,
         label: SENIORITY_LEVEL_API_TO_ENUM[value],
       })),
-      roles: (analyticsOptions?.roles || []).map((role) => ({
+      roles: (globalOptions?.roles || []).map((role) => ({
         value: role.escoCode,
         label: `${role.title} `,
       })),
     }),
-    [
-      analyticsOptions,
-      courseOptions,
-      roleCityOptions,
-      companyCityOptions,
-    ]
+    [globalOptions, courseOptions, roleCitiesOptions, companyCityOptions]
   );
 
   const handleFilterChange = <T extends FilterState[keyof FilterState]>(
@@ -684,7 +674,7 @@ export const GlobalFilters = ({
                   handleFilterChange("roleCityIds", value)
                 }
                 maxCount={3}
-                isLoading={isRoleCityOptionsLoading}
+                isLoading={isRoleCitiesOptionsLoading}
               />
             </div>
           </div>
