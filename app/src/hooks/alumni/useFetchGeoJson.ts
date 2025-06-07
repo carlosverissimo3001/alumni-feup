@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { useJsonFromResponse } from "@/commom";
+import { useJsonFromResponse } from "@/common";
 import { AlumniControllerFindAllGeoJSONGroupByEnum } from "@/sdk";
 import NestAPI from "@/api";
 
