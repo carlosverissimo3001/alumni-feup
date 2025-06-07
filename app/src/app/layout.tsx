@@ -4,6 +4,8 @@ import "./globals.css";
 import Layout from "@/components/navbar/layout";
 import { Providers } from "@/providers";
 import { Toaster } from "@/components/ui/toaster";
+import { LoadingProvider } from "@/contexts/LoadingContext";
+import GlobalLoadingModal from "@/components/analytics/common/GlobalLoadingModal";
 
 // Vercel and Other Analytics
 import { SpeedInsights } from "@vercel/speed-insights/next";
@@ -51,11 +53,14 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-zinc-900`}
       >
         <Providers>
-          <Layout>{children}</Layout>
-          <SpeedInsights />
-          <Analytics />
-          <HotJar />
-          <Toaster />
+          <LoadingProvider>
+            <Layout>{children}</Layout>
+            <GlobalLoadingModal />
+            <SpeedInsights />
+            <Analytics />
+            <HotJar />
+            <Toaster />
+          </LoadingProvider>
         </Providers>
       </body>
     </html>

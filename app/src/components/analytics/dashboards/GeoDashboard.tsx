@@ -22,10 +22,13 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { DASHBOARD_HEIGHT, ITEMS_PER_PAGE, SortBy, SortOrder } from "@/consts";
-import { useCityList } from "@/hooks/analytics/useCityList";
-import { useCountryList } from "@/hooks/analytics/useCountryList";
-import { DataPointDto } from "@/sdk";
-import { GeoDrillType } from "@/types/drillType";
+import {
+  CityListResponseDto,
+  CountryListResponseDto,
+  DataPointDto,
+  AnalyticsControllerGetAnalyticsSelectorTypeEnum as SelectorType,
+} from "@/sdk";
+import { GEO_DRILL_TYPE } from "@/types/drillType";
 import { EntityType, TrendFrequency } from "@/types/entityTypes";
 import { ViewType } from "@/types/view";
 import { Filter, Flag, MapPin } from "lucide-react";
@@ -45,13 +48,24 @@ import { FilterState } from "../common/GlobalFilters";
 import TableTitle from "../common/TableTitle";
 import TrendLineComponent from "../common/TrendLineComponent";
 import { DashboardSkeleton } from "../skeletons/DashboardSkeleton";
+import { useFetchAnalytics } from "@/hooks/analytics/useFetchAnalytics";
+import { capitalize } from "lodash";
+
+// Types
+
+type GeoData = {
+  countryData?: CountryListResponseDto;
+  cityData?: CityListResponseDto;
+};
 
 type GeoDashboardProps = {
+  globalData?: GeoData;
+  isGlobalDataLoading?: boolean;
   onDataUpdate: (countryCount: number) => void;
   filters: FilterState;
   onAddToFilters?: (id: string, type: "role" | "company") => void;
-  mode: GeoDrillType;
-  setMode: (mode: GeoDrillType) => void;
+  mode: GEO_DRILL_TYPE;
+  setMode: (mode: GEO_DRILL_TYPE) => void;
 };
 
 type DataRowProps = {
@@ -65,6 +79,8 @@ type DataRowProps = {
 };
 
 export const GeoDashboard = ({
+  globalData,
+  isGlobalDataLoading,
   onDataUpdate,
   filters,
   onAddToFilters,
@@ -76,50 +92,53 @@ export const GeoDashboard = ({
   const [sortField, setSortField] = useState<SortBy>(SortBy.COUNT);
   const [sortOrder, setSortOrder] = useState<SortOrder>(SortOrder.DESC);
   const [view, setView] = useState<ViewType>(ViewType.TABLE);
-  const [trendFrequency, setTrendFrequency] = useState<TrendFrequency>(
-    TrendFrequency.Y5
-  );
+  const [trendFrequency, setTrendFrequency] = useState<TrendFrequency>(TrendFrequency.Y5);
+
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [pageInput, setPageInput] = useState<string>(String(page));
   const [openPopoverId, setOpenPopoverId] = useState<string | null>(null);
 
-  // Reset page when filters change
   useEffect(() => {
     setPage(1);
   }, [filters]);
 
-  const {
-    data: countryData,
-    isLoading: isCountryLoading,
-    isFetching: isCountryFetching,
-  } = useCountryList({
-    ...filters,
-    limit: itemsPerPage,
-    sortBy: sortField,
-    sortOrder: sortOrder,
-    offset: (page - 1) * itemsPerPage,
-    includeTrend: view === ViewType.TREND,
-  });
+  const needsNewData =
+    page > 1 ||
+    view === ViewType.TREND ||
+    sortField !== SortBy.COUNT ||
+    sortOrder !== SortOrder.DESC ||
+    itemsPerPage !== ITEMS_PER_PAGE[1];
 
   const {
-    data: cityData,
-    isLoading: isCityLoading,
-    isFetching: isCityFetching,
-  } = useCityList({
-    ...filters,
-    limit: itemsPerPage,
-    sortBy: sortField,
-    sortOrder: sortOrder,
-    offset: (page - 1) * itemsPerPage,
-    includeTrend: view === ViewType.TREND,
+    data,
+    isLoading: isGeoLoading,
+    isFetching: isGeoFetching,
+  } = useFetchAnalytics({
+    params: {
+      ...filters,
+      limit: itemsPerPage,
+      sortBy: sortField,
+      sortOrder: sortOrder,
+      offset: (page - 1) * itemsPerPage,
+      includeGeoTrend: view === ViewType.TREND,
+      selectorType: SelectorType.Geo,
+    },
+    options: {
+      enabled: needsNewData,
+    },
   });
 
-  const countries = countryData?.countries || [];
-  const totalCountries = countryData?.count || 0;
+  const shouldUseGlobalData = !needsNewData && !data?.countryData && !data?.cityData;
 
-  const cities = cityData?.cities || [];
-  const totalCities = cityData?.count || 0;
-  // Update parent only when total changes
+  const currentCountriesData = shouldUseGlobalData ? globalData?.countryData : data?.countryData;
+  const currentCitiesData = shouldUseGlobalData ? globalData?.cityData : data?.cityData;
+
+  const countries = currentCountriesData?.countries || [];
+  const cities = currentCitiesData?.cities || [];
+
+  const totalCountries = currentCountriesData?.count || 0;
+  const totalCities = currentCitiesData?.count || 0;
+
   useEffect(() => {
     onDataUpdate(totalCountries);
   }, [totalCountries, onDataUpdate]);
@@ -128,25 +147,21 @@ export const GeoDashboard = ({
     setPageInput(String(page));
   }, [page]);
 
+  const isWaitingForData =
+    (shouldUseGlobalData && isGlobalDataLoading) ||
+    (!shouldUseGlobalData && (isGeoLoading || isGeoFetching));
+
   const handleSort = (field: SortBy) => {
     if (sortField === field) {
-      setSortOrder(
-        sortOrder === SortOrder.ASC ? SortOrder.DESC : SortOrder.ASC
-      );
+      setSortOrder(sortOrder === SortOrder.ASC ? SortOrder.DESC : SortOrder.ASC);
     } else {
       setSortField(field);
       setSortOrder(SortOrder.DESC);
     }
-    // Not sure if we should reset the page when sorting changes
-    // setPage(1);
   };
 
   const renderTable = () => {
-    const data = mode === GeoDrillType.COUNTRY ? countries : cities;
-    const isLoading =
-      mode === GeoDrillType.COUNTRY
-        ? isCountryLoading || isCountryFetching
-        : isCityLoading || isCityFetching;
+    const data = mode === GEO_DRILL_TYPE.COUNTRY ? countries : cities;
 
     const isRowInFilters = (row: DataRowProps, type?: "role" | "company") => {
       if (type === "role") {
@@ -161,13 +176,15 @@ export const GeoDashboard = ({
       );
     };
 
-    const buildMapUrl = (latitude?: number, longitude?: number) : string | undefined => {
+    const buildMapUrl = (
+      latitude?: number,
+      longitude?: number
+    ): string | undefined => {
       if (!latitude || !longitude) {
         return undefined;
       }
       return `/?lat=${latitude}&lng=${longitude}&group_by=${mode}`;
     };
-    
 
     return (
       <>
@@ -183,7 +200,7 @@ export const GeoDashboard = ({
                 hoverMessage="Alumni that have had at least a role in this location"
               />
 
-              {isLoading ? (
+              {isWaitingForData ? (
                 <DashboardSkeleton />
               ) : (
                 <TableBody className="bg-white divide-y divide-gray-200">
@@ -237,7 +254,7 @@ export const GeoDashboard = ({
                                               <Button
                                                 aria-label="Add/Remove from filters"
                                                 disabled={
-                                                  mode === GeoDrillType.CITY
+                                                  mode === GEO_DRILL_TYPE.CITY
                                                 }
                                                 variant="ghost"
                                                 size="sm"
@@ -370,7 +387,9 @@ export const GeoDashboard = ({
           setPage={setPage}
           itemsPerPage={itemsPerPage}
           setItemsPerPage={setItemsPerPage}
-          totalItems={mode === GeoDrillType.COUNTRY ? totalCountries : totalCities}
+          totalItems={
+            mode === GEO_DRILL_TYPE.COUNTRY ? totalCountries : totalCities
+          }
           visible={data.length > 0}
           currentCount={data.length}
           showTrendFrequency={view === ViewType.TREND}
@@ -384,8 +403,8 @@ export const GeoDashboard = ({
   const renderChartView = () => (
     <div className="flex-1 flex flex-col border-t border-b border-gray-200 overflow-hidden">
       <div className="flex-1 flex items-center justify-center">
-        {mode === GeoDrillType.COUNTRY ? (
-          isCountryLoading || isCountryFetching ? (
+        {mode === GEO_DRILL_TYPE.COUNTRY ? (
+          isGeoLoading || isGeoFetching ? (
             <LoadingChart message="Loading chart data..." />
           ) : countries.length === 0 ? (
             <NotFoundComponent
@@ -396,11 +415,11 @@ export const GeoDashboard = ({
           ) : (
             <ChartView
               data={countries}
-              isLoading={isCountryLoading || isCountryFetching}
+              isLoading={isGeoLoading || isGeoFetching}
               entityType={EntityType.COUNTRY}
             />
           )
-        ) : isCityLoading || isCityFetching ? (
+        ) : isGeoLoading || isGeoFetching ? (
           <LoadingChart message="Loading chart data..." />
         ) : cities.length === 0 ? (
           <NotFoundComponent
@@ -411,7 +430,7 @@ export const GeoDashboard = ({
         ) : (
           <ChartView
             data={cities}
-            isLoading={isCityLoading || isCityFetching}
+            isLoading={isGeoLoading || isGeoFetching}
             entityType={EntityType.CITY}
           />
         )}
@@ -426,9 +445,9 @@ export const GeoDashboard = ({
       <div className="flex items-center justify-between mb-2">
         <div className="flex items-center gap-2">
           <TableTitle
-            title={mode === GeoDrillType.COUNTRY ? "Countries" : "Cities"}
+            title={capitalize(mode)}
             icon={
-              mode === GeoDrillType.COUNTRY ? (
+              mode === GEO_DRILL_TYPE.COUNTRY ? (
                 <Flag className="h-5 w-5 text-[#8C2D19]" />
               ) : (
                 <MapPin className="h-5 w-5 text-[#8C2D19]" />
@@ -436,7 +455,7 @@ export const GeoDashboard = ({
             }
             className="pl-1"
             tooltipMessage={
-              mode === GeoDrillType.COUNTRY
+              mode === GEO_DRILL_TYPE.COUNTRY
                 ? "Distribution of alumni by the country of their role."
                 : "Distribution of alumni by the city of their role."
             }
@@ -449,11 +468,11 @@ export const GeoDashboard = ({
               <TooltipTrigger asChild>
                 <span
                   className={`text-sm font-medium cursor-pointer ${
-                    mode === GeoDrillType.COUNTRY
+                    mode === GEO_DRILL_TYPE.COUNTRY
                       ? "text-[#8C2D19] font-semibold"
                       : "text-gray-500"
                   }`}
-                  onClick={() => setMode(GeoDrillType.COUNTRY)}
+                  onClick={() => setMode(GEO_DRILL_TYPE.COUNTRY)}
                 >
                   Countries
                 </span>
@@ -466,9 +485,9 @@ export const GeoDashboard = ({
 
           <Switch
             id="mode-toggle"
-            checked={mode === GeoDrillType.CITY}
+            checked={mode === GEO_DRILL_TYPE.CITY}
             onCheckedChange={(checked) =>
-              setMode(checked ? GeoDrillType.CITY : GeoDrillType.COUNTRY)
+              setMode(checked ? GEO_DRILL_TYPE.CITY : GEO_DRILL_TYPE.COUNTRY)
             }
           />
 
@@ -477,11 +496,11 @@ export const GeoDashboard = ({
               <TooltipTrigger asChild>
                 <span
                   className={`text-sm font-medium cursor-pointer ${
-                    mode === GeoDrillType.CITY
+                    mode === GEO_DRILL_TYPE.CITY
                       ? "text-[#8C2D19] font-semibold"
                       : "text-gray-500"
                   }`}
-                  onClick={() => setMode(GeoDrillType.CITY)}
+                  onClick={() => setMode(GEO_DRILL_TYPE.CITY)}
                 >
                   Cities
                 </span>

@@ -13,9 +13,9 @@ import {
   Min,
 } from 'class-validator';
 
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { ApiPropertyOptional } from '@nestjs/swagger';
 import { Transform, Type } from 'class-transformer';
-import { SORT_BY } from '../consts';
+import { SORT_BY, SELECTOR_TYPE } from '../consts';
 import {
   IsNotNullableOptional,
   toBoolean,
@@ -23,7 +23,69 @@ import {
 } from '@/validators';
 import { COMPANY_SIZE, COMPANY_TYPE, SENIORITY_LEVEL } from '@prisma/client';
 
-export class QueryParamsDto {
+class IncludeTrendDto {
+  @ApiPropertyOptional({
+    description: 'Whether to include the company trends data',
+    example: true,
+    type: 'boolean',
+  })
+  @IsOptional()
+  @IsBoolean()
+  @Transform(({ obj }) => toBoolean(obj.includeTrend))
+  includeCompanyTrend?: boolean = false;
+
+  @ApiPropertyOptional({
+    description: 'Whether to include the role trends data',
+    example: true,
+    type: 'boolean',
+  })
+  @IsOptional()
+  @IsBoolean()
+  @Transform(({ obj }) => toBoolean(obj.includeRoleTrend))
+  includeRoleTrend?: boolean = false;
+
+  @ApiPropertyOptional({
+    description: 'Whether to include the industry trends data',
+    example: true,
+    type: 'boolean',
+  })
+  @IsOptional()
+  @IsBoolean()
+  @Transform(({ obj }) => toBoolean(obj.includeIndustryTrend))
+  includeIndustryTrend?: boolean = false;
+
+  @ApiPropertyOptional({
+    description: 'Whether to include the education trends data',
+    example: true,
+    type: 'boolean',
+  })
+  @IsOptional()
+  @IsBoolean()
+  @Transform(({ obj }) => toBoolean(obj.includeEducationTrend))
+  includeEducationTrend?: boolean = false;
+
+  @ApiPropertyOptional({
+    description: 'Whether to include the seniority trends data',
+    example: true,
+    type: 'boolean',
+  })
+  @IsOptional()
+  @IsBoolean()
+  @Transform(({ obj }) => toBoolean(obj.includeSeniorityTrend))
+  includeSeniorityTrend?: boolean = false;
+
+  @ApiPropertyOptional({
+    description: 'Whether to include the geo trends data',
+    example: true,
+    type: 'boolean',
+  })
+  @IsOptional()
+  @IsBoolean()
+  @Transform(({ obj }) => toBoolean(obj.includeGeoTrend))
+  includeGeoTrend?: boolean = false;
+}
+
+export class QueryParamsDto extends IncludeTrendDto {
   @ApiPropertyOptional({
     description: 'The alumni IDs to filter by',
     example: ['1', '2', '3'],
@@ -336,8 +398,8 @@ export class QueryParamsDto {
 
   @ApiPropertyOptional({
     description: 'The ESCO classification level to filter by',
-    example: 1,
-    default: 1,
+    example: 5,
+    default: 5,
   })
   @IsOptional()
   @IsNumber()
@@ -388,6 +450,16 @@ export class QueryParamsDto {
   sortBy?: SORT_BY;
 
   @ApiPropertyOptional({
+    description: 'The type of analytics to fetch',
+    default: SELECTOR_TYPE.ALL,
+    type: 'string',
+    enum: SELECTOR_TYPE,
+  })
+  @IsOptional()
+  @IsEnum(SELECTOR_TYPE)
+  selectorType?: SELECTOR_TYPE = SELECTOR_TYPE.ALL;
+
+  @ApiPropertyOptional({
     description: 'The order of the results',
     example: 'asc',
     default: 'desc',
@@ -395,14 +467,4 @@ export class QueryParamsDto {
   @IsOptional()
   @IsString()
   sortOrder?: 'asc' | 'desc';
-
-  @ApiProperty({
-    description: 'Whether to include the trend data',
-    example: true,
-    type: 'boolean',
-  })
-  @IsNotNullableOptional()
-  @IsBoolean()
-  @Transform(({ obj }) => toBoolean(obj.includeTrend))
-  includeTrend?: boolean = false;
 }

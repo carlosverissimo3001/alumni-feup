@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import {
   Table,
   TableBody,
@@ -20,8 +20,10 @@ import { SortBy, SortOrder, ITEMS_PER_PAGE } from "@/consts";
 import { ExternalLink, Filter, Users, Search, X, Earth } from "lucide-react";
 import TableTitle from "../common/TableTitle";
 import Image from "next/image";
-import { useAlumniList } from "@/hooks/analytics/useAlumniList";
-import { AlumniListItemDto } from "@/sdk";
+import {
+  AlumniListItemDto,
+  AnalyticsControllerGetAnalyticsSelectorTypeEnum as SelectorType,
+} from "@/sdk";
 import {
   Tooltip,
   TooltipContent,
@@ -31,6 +33,8 @@ import {
 import AlumniTableSkeleton from "../skeletons/AlumniTableSkeleton";
 import { useAuth } from "@/contexts/AuthContext";
 import { Input } from "@/components/ui/input";
+import { useFetchAnalytics } from "@/hooks/analytics/useFetchAnalytics";
+import { debounce } from "lodash";
 
 type AlumniTableProps = {
   filters: FilterState;
@@ -84,6 +88,25 @@ export const AlumniTable = ({ filters, onAddToFilters }: AlumniTableProps) => {
   const [sortField, setSortField] = useState<SortBy>(SortBy.NAME);
   const [sortOrder, setSortOrder] = useState<SortOrder>(SortOrder.ASC);
   const [searchQuery, setSearchQuery] = useState<string>("");
+  const [debouncedSearchQuery, setDebouncedSearchQuery] = useState<string>("");
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [pageInput, setPageInput] = useState<string>(String(page));
+
+  // TODO: Understand why this is needed
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const debouncedSetSearch = useCallback(
+    debounce((value: string) => {
+      setDebouncedSearchQuery(value);
+    }, 500),
+    []
+  );
+
+  useEffect(() => {
+    return () => {
+      debouncedSetSearch.cancel();
+    };
+  }, [debouncedSetSearch]);
 
   const calculateTableHeight = (itemCount: number) => {
     const rowHeight = 56;
@@ -102,40 +125,36 @@ export const AlumniTable = ({ filters, onAddToFilters }: AlumniTableProps) => {
     return Math.max(minHeight, Math.min(calculatedHeight, maxHeight));
   };
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [pageInput, setPageInput] = useState<string>(String(page));
-
   useEffect(() => {
     setPage(1);
   }, [filters]);
 
-  const { data, isLoading, isFetching } = useAlumniList({
-    ...filters,
-    limit: itemsPerPage,
-    sortBy: sortField,
-    sortOrder: sortOrder,
-    offset: (page - 1) * itemsPerPage,
-    includeTrend: false,
-    alumniSearch: searchQuery || undefined,
+  const { data, isLoading, isFetching } = useFetchAnalytics({
+    params: {
+      ...filters,
+      limit: itemsPerPage,
+      sortBy: sortField,
+      sortOrder: sortOrder,
+      offset: (page - 1) * itemsPerPage,
+      alumniSearch: debouncedSearchQuery || undefined,
+      selectorType: SelectorType.Alumni,
+    },
   });
 
-  const buildMapUrl = (latitude?: number, longitude?: number) : string | undefined => {
+  const alumnus = data?.alumniData?.alumni || [];
+  const totalItems = data?.alumniData?.count || 0;
+
+  const isWaitingForData = isLoading || isFetching;
+
+  const buildMapUrl = (
+    latitude?: number,
+    longitude?: number
+  ): string | undefined => {
     if (latitude == null || longitude == null) {
       return undefined;
     }
     return `/?lat=${latitude}&lng=${longitude}&group_by=cities`;
   };
-
-  const alumnus = data?.alumni || [];
-  const totalItems = data?.filteredCount || 0;
-
-  useEffect(() => {
-    setPage(1);
-  }, [filters]);
-
-  useEffect(() => {
-    setPageInput(String(page));
-  }, [page]);
 
   const handleSort = (field: SortBy) => {
     if (sortField === field) {
@@ -149,11 +168,17 @@ export const AlumniTable = ({ filters, onAddToFilters }: AlumniTableProps) => {
   };
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchQuery(e.target.value);
+    const value = e.target.value;
+    setSearchQuery(value);
+
+    if (value !== debouncedSearchQuery) {
+      debouncedSetSearch(value);
+    }
   };
 
   const handleClearSearch = () => {
     setSearchQuery("");
+    setDebouncedSearchQuery("");
   };
 
   const isRowInFilters = (alumni: AlumniListItemDto) => {
@@ -182,7 +207,7 @@ export const AlumniTable = ({ filters, onAddToFilters }: AlumniTableProps) => {
                 customAlumniHeader="LinkedIn"
               />
 
-              {isLoading || isFetching ? (
+              {isWaitingForData ? (
                 <AlumniTableSkeleton className="animate-pulse bg-gradient-to-r from-gray-200 to-gray-100" />
               ) : (
                 <TableBody className="bg-white divide-y divide-gray-200">
@@ -288,8 +313,10 @@ export const AlumniTable = ({ filters, onAddToFilters }: AlumniTableProps) => {
                                           ) {
                                             window.open(
                                               buildMapUrl(
-                                                alumni.currentRoleLocation.latitude,
-                                                alumni.currentRoleLocation.longitude
+                                                alumni.currentRoleLocation
+                                                  .latitude,
+                                                alumni.currentRoleLocation
+                                                  .longitude
                                               ),
                                               "_blank"
                                             );

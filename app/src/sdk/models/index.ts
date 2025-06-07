@@ -7,6 +7,8 @@ export * from './AlumniListItemDto';
 export * from './AlumniListResponseDto';
 export * from './AlumniOptionDto';
 export * from './AlumniPastLocationsAndCompaniesDto';
+export * from './AnalyticsDto';
+export * from './AnalyticsOptionsDto';
 export * from './BasicAlumniDto';
 export * from './BasicCompanyDto';
 export * from './BasicGeoDto';
