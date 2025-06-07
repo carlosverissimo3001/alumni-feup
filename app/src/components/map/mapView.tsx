@@ -67,7 +67,6 @@ const MapView = ({
   const searchParams = useSearchParams();
 
   const onMapLoad = useCallback(() => {
-    console.log("Map loaded1");
     mapRef.current.loadImage(
       "logos/arrow.png",
       (error: Error | null, image: HTMLImageElement | undefined) => {
