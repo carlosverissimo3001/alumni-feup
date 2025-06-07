@@ -41,7 +41,8 @@ import {
   GeoDrillType,
   ClassificationLevel,
 } from "@/types/drillType";
-import GlobalLoadingModal from "@/components/analytics/common/GlobalLoadingModal";
+import { useDropdownContext } from "@/contexts/DropdownContext";
+import { useLoading } from "@/contexts/LoadingContext";
 
 const initialFilters: FilterState = {
   dateRange: undefined,
@@ -71,6 +72,9 @@ export default function Analytics() {
 }
 
 function AnalyticsContent() {
+  const { isAnyOpen } = useDropdownContext();
+  const { setIsLoading } = useLoading();
+
   // State
   const [showScrollButton, setShowScrollButton] = useState(false);
   const [stats, setStats] = useState<{
@@ -142,7 +146,7 @@ function AnalyticsContent() {
     };
   }, [filters, processedDateRange]);
 
-  const { data, isLoading } = useFetchAnalytics({
+  const { data, isLoading, isFetching } = useFetchAnalytics({
     params: {
       ...combinedFilters,
       limit: ITEMS_PER_PAGE[1],
@@ -155,6 +159,10 @@ function AnalyticsContent() {
       isInitialLoad: true,
     },
   });
+
+  useEffect(() => {
+    setIsLoading((isLoading || isFetching) && !isAnyOpen);
+  }, [isLoading, isFetching, isAnyOpen, setIsLoading]);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -470,109 +478,110 @@ function AnalyticsContent() {
   ];
 
   return (
-    <div className="p-6 space-y-3 bg-gray-100 min-h-screen relative">
-      <GlobalLoadingModal show={isLoading && !data} />
-      <div className="flex items-center gap-4">
-        <ChartSpline className="h-8 w-8 text-[#8C2D19]" />
-        <div>
-          <h1 className="text-3xl font-extrabold text-[#8C2D19]">
-            Alumni Analytics
-          </h1>
+    <>
+      <div className="p-6 space-y-3 bg-gray-100 min-h-screen relative">
+        <div className="flex items-center gap-4">
+          <ChartSpline className="h-8 w-8 text-[#8C2D19]" />
+          <div>
+            <h1 className="text-3xl font-extrabold text-[#8C2D19]">
+              Alumni Analytics
+            </h1>
+          </div>
         </div>
+
+        <OverallStats stats={statsConfig} />
+
+        <div className="bg-white rounded-xl shadow-lg border border-gray-200">
+          <GlobalFilters
+            filters={filters}
+            onFiltersChange={handleFiltersChange}
+          />
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3 gap-4">
+          <CompanyDashboard
+            globalData={data?.companyData}
+            isGlobalDataLoading={isLoading}
+            onDataUpdate={handleCompanyDataUpdate}
+            filters={combinedFilters}
+            onAddToFilters={handleAddCompanyToFilters}
+          />
+          <GeoDashboard
+            globalData={{
+              countryData: data?.countryData,
+              cityData: data?.cityData,
+            }}
+            isGlobalDataLoading={isLoading}
+            onDataUpdate={handleGeoDataUpdate}
+            filters={combinedFilters}
+            onAddToFilters={handleGeoAddToFilters}
+            mode={geoMode}
+            setMode={setGeoMode}
+          />
+          <RoleDashboard
+            globalData={data?.roleData}
+            isGlobalDataLoading={isLoading}
+            onDataUpdate={handleRoleDataUpdate}
+            filters={combinedFilters}
+            onAddToFilters={handleAddRoleToFilters}
+            classificationLevel={classificationLevel}
+            setClassificationLevel={setClassificationLevel}
+          />
+
+          <IndustryDashboard
+            globalData={data?.industryData}
+            isGlobalDataLoading={isLoading}
+            filters={combinedFilters}
+            onAddToFilters={handleAddIndustryToFilters}
+          />
+          <EducationDashboard
+            globalData={{
+              faculties: data?.facultyData,
+              majors: data?.majorData,
+              graduations: data?.graduationData,
+            }}
+            isGlobalDataLoading={isLoading}
+            filters={combinedFilters}
+            mode={educationMode}
+            setMode={setEducationMode}
+            onAddToFilters={handleAddEducationToFilters}
+          />
+
+          <SeniorityDashboard
+            globalData={data?.seniorityData}
+            isGlobalDataLoading={isLoading}
+            filters={combinedFilters}
+            onAddToFilters={handleAddSeniorityToFilters}
+          />
+        </div>
+
+        <AlumniTable
+          globalData={data?.alumniData}
+          isGlobalDataLoading={isLoading}
+          filters={combinedFilters}
+          onAddToFilters={handleAddAlumniToFilters}
+        />
+
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                onClick={scrollToTop}
+                className={`fixed bottom-24 z-20 right-8 bg-[#8C2D19] hover:bg-[#A13A23] text-white p-3 rounded-full shadow-lg transition-all duration-300 ${
+                  showScrollButton
+                    ? "opacity-100 translate-y-0"
+                    : "opacity-0 translate-y-16"
+                } focus:outline-none focus:ring-2 focus:ring-[#8C2D19] focus:ring-opacity-50`}
+                aria-label="Scroll to top"
+                size="lg"
+              >
+                <ArrowUp className="h-12 w-12" />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent align="end">Scroll to top</TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
       </div>
-
-      <OverallStats stats={statsConfig} />
-
-      <div className="bg-white rounded-xl shadow-lg border border-gray-200">
-        <GlobalFilters
-          filters={filters}
-          onFiltersChange={handleFiltersChange}
-        />
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3 gap-4">
-        <CompanyDashboard
-          globalData={data?.companyData}
-          isGlobalDataLoading={isLoading}
-          onDataUpdate={handleCompanyDataUpdate}
-          filters={combinedFilters}
-          onAddToFilters={handleAddCompanyToFilters}
-        />
-        <GeoDashboard
-          globalData={{
-            countryData: data?.countryData,
-            cityData: data?.cityData,
-          }}
-          isGlobalDataLoading={isLoading}
-          onDataUpdate={handleGeoDataUpdate}
-          filters={combinedFilters}
-          onAddToFilters={handleGeoAddToFilters}
-          mode={geoMode}
-          setMode={setGeoMode}
-        />
-        <RoleDashboard
-          globalData={data?.roleData}
-          isGlobalDataLoading={isLoading}
-          onDataUpdate={handleRoleDataUpdate}
-          filters={combinedFilters}
-          onAddToFilters={handleAddRoleToFilters}
-          classificationLevel={classificationLevel}
-          setClassificationLevel={setClassificationLevel}
-        />
-
-        <IndustryDashboard
-          globalData={data?.industryData}
-          isGlobalDataLoading={isLoading}
-          filters={combinedFilters}
-          onAddToFilters={handleAddIndustryToFilters}
-        />
-        <EducationDashboard
-          globalData={{
-            faculties: data?.facultyData,
-            majors: data?.majorData,
-            graduations: data?.graduationData,
-          }}
-          isGlobalDataLoading={isLoading}
-          filters={combinedFilters}
-          mode={educationMode}
-          setMode={setEducationMode}
-          onAddToFilters={handleAddEducationToFilters}
-        />
-
-        <SeniorityDashboard
-          globalData={data?.seniorityData}
-          isGlobalDataLoading={isLoading}
-          filters={combinedFilters}
-          onAddToFilters={handleAddSeniorityToFilters}
-        />
-      </div>
-
-      <AlumniTable
-        globalData={data?.alumniData}
-        isGlobalDataLoading={isLoading}
-        filters={combinedFilters}
-        onAddToFilters={handleAddAlumniToFilters}
-      />
-
-      <TooltipProvider>
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <Button
-              onClick={scrollToTop}
-              className={`fixed bottom-24 z-20 right-8 bg-[#8C2D19] hover:bg-[#A13A23] text-white p-3 rounded-full shadow-lg transition-all duration-300 ${
-                showScrollButton
-                  ? "opacity-100 translate-y-0"
-                  : "opacity-0 translate-y-16"
-              } focus:outline-none focus:ring-2 focus:ring-[#8C2D19] focus:ring-opacity-50`}
-              aria-label="Scroll to top"
-              size="lg"
-            >
-              <ArrowUp className="h-12 w-12" />
-            </Button>
-          </TooltipTrigger>
-          <TooltipContent align="end">Scroll to top</TooltipContent>
-        </Tooltip>
-      </TooltipProvider>
-    </div>
+    </>
   );
 }

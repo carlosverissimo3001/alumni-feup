@@ -16,7 +16,7 @@ import { useState } from "react";
 import { useFetchRole } from "@/hooks/role/useFetchRole";
 import { SENIORITY_COLORS } from "@/consts";
 import { mapSeniorityLevel } from "@/utils/mappings";
-import { RoleAnalyticsControllerGetSeniorityLevelsSeniorityLevelEnum as SeniorityLevelEnum } from "@/sdk";
+import { AnalyticsControllerGetAnalyticsSeniorityLevelEnum as SeniorityLevelEnum } from "@/sdk";
 import clsx from "clsx";
 import { SENIORITY_LEVEL_API_TO_ENUM } from "@/types/roles";
 import { useToast } from "@/hooks/misc/useToast";
