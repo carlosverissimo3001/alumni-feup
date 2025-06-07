@@ -782,46 +782,6 @@
         ]
       }
     },
-    "/analytics/companies/options": {
-      "get": {
-        "operationId": "CompanyAnalyticsController_getCompanyOptions",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "Companies id and name.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/CompanyOptionDto"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "summary": "List of possible companies to search for.",
-        "tags": [
-          "V1"
-        ]
-      }
-    },
-    "/analytics/companies/growth": {
-      "get": {
-        "operationId": "CompanyAnalyticsController_getCompanyGrowth",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "summary": "Returns company employment growth over time.",
-        "tags": [
-          "V1"
-        ]
-      }
-    },
     "/analytics/companies/{id}": {
       "get": {
         "operationId": "CompanyAnalyticsController_getCompanyDetails",
@@ -848,69 +808,6 @@
           }
         },
         "summary": "Returns detailed information about a specific company.",
-        "tags": [
-          "V1"
-        ]
-      }
-    },
-    "/analytics/geo/country-options": {
-      "get": {
-        "operationId": "GeoAnalyticsController_getCountriesOptions",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "The countries options.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/CountryOptionDto"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "summary": "Get the countries options.",
-        "tags": [
-          "V1"
-        ]
-      }
-    },
-    "/analytics/geo/city-options": {
-      "get": {
-        "operationId": "GeoAnalyticsController_getCitiesOptions",
-        "parameters": [
-          {
-            "name": "countryCodes",
-            "required": false,
-            "in": "query",
-            "description": "The country codes  to filter by",
-            "schema": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "The cities options.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/CityOptionDto"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "summary": "Get the cities options.",
         "tags": [
           "V1"
         ]
@@ -985,31 +882,6 @@
           }
         },
         "summary": "Returns the role with the given id",
-        "tags": [
-          "V1"
-        ]
-      }
-    },
-    "/analytics/alumni/options": {
-      "get": {
-        "operationId": "AlumniAnalyticsController_getAlumniOptions",
-        "parameters": [],
-        "responses": {
-          "default": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/AlumniOptionDto"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "summary": "Get all alumni options",
         "tags": [
           "V1"
         ]
@@ -3373,21 +3245,6 @@
           "seniorityLevel"
         ]
       },
-      "CompanyOptionDto": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string"
-          },
-          "name": {
-            "type": "string"
-          }
-        },
-        "required": [
-          "id",
-          "name"
-        ]
-      },
       "COMPANY_SIZE": {
         "type": "string",
         "enum": [
@@ -3693,49 +3550,6 @@
           "migrations"
         ]
       },
-      "CountryOptionDto": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string",
-            "description": "The unique country ISO code",
-            "example": "US"
-          },
-          "name": {
-            "type": "string",
-            "description": "The name of the country",
-            "example": "United States"
-          }
-        },
-        "required": [
-          "id",
-          "name"
-        ]
-      },
-      "CityOptionDto": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string",
-            "description": "The unique ID of the city"
-          },
-          "name": {
-            "type": "string",
-            "description": "The name of the city",
-            "example": "San Francisco"
-          },
-          "country": {
-            "type": "string",
-            "description": "The country of the city",
-            "example": "United States"
-          }
-        },
-        "required": [
-          "id",
-          "name",
-          "country"
-        ]
-      },
       "RoleHierarchyItemDto": {
         "type": "object",
         "properties": {
@@ -3770,24 +3584,6 @@
         },
         "required": [
           "hierarchy"
-        ]
-      },
-      "AlumniOptionDto": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string",
-            "description": "The unique ID of the alumni"
-          },
-          "fullName": {
-            "type": "string",
-            "description": "The name of the alumni",
-            "example": "John Smith"
-          }
-        },
-        "required": [
-          "id",
-          "fullName"
         ]
       },
       "AlumniListItemDto": {
@@ -4461,6 +4257,49 @@
           }
         }
       },
+      "CountryOptionDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The unique country ISO code",
+            "example": "US"
+          },
+          "name": {
+            "type": "string",
+            "description": "The name of the country",
+            "example": "United States"
+          }
+        },
+        "required": [
+          "id",
+          "name"
+        ]
+      },
+      "CityOptionDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The unique ID of the city"
+          },
+          "name": {
+            "type": "string",
+            "description": "The name of the city",
+            "example": "San Francisco"
+          },
+          "country": {
+            "type": "string",
+            "description": "The country of the city",
+            "example": "United States"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "country"
+        ]
+      },
       "IndustryOptionDto": {
         "type": "object",
         "properties": {
@@ -4507,6 +4346,39 @@
           "escoCode",
           "title",
           "level"
+        ]
+      },
+      "CompanyOptionDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "name"
+        ]
+      },
+      "AlumniOptionDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The unique ID of the alumni"
+          },
+          "fullName": {
+            "type": "string",
+            "description": "The name of the alumni",
+            "example": "John Smith"
+          }
+        },
+        "required": [
+          "id",
+          "fullName"
         ]
       },
       "AnalyticsOptionsDto": {
