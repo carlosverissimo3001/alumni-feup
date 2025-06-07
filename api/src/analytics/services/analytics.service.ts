@@ -40,11 +40,17 @@ export class AnalyticsService {
    * 2. Optimized query params handling
    */
   async getAnalytics(query: QueryParamsDto): Promise<AnalyticsDto> {
-    console.time('alumni-repository-find');
+    if (process.env.NODE_ENV === 'development') {
+      console.time('alumni-repository-find');
+    }
     const baseData = await this.alumniRepository.find(query);
-    console.timeEnd('alumni-repository-find');
+    if (process.env.NODE_ENV === 'development') {
+      console.timeEnd('alumni-repository-find');
+    }
 
-    console.time('process-analytics');
+    if (process.env.NODE_ENV === 'development') {
+      console.time('process-analytics');
+    }
 
     const analytics: Partial<AnalyticsDto> = {};
 
@@ -94,7 +100,9 @@ export class AnalyticsService {
       }),
     );
 
-    console.timeEnd('process-analytics');
+    if (process.env.NODE_ENV === 'development') {
+      console.timeEnd('process-analytics');
+    }
 
     return analytics as AnalyticsDto;
   }
