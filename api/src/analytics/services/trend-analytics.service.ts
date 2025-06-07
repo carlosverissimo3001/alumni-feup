@@ -173,7 +173,7 @@ export class TrendAnalyticsService {
     // Here, we get all the graduations from the faculty (the entity)
     const graduations = data
       .flatMap((alumni) => alumni.graduations || [])
-      .filter((graduation) => graduation?.course.facultyId === entityId)
+      .filter((graduation) => graduation?.course?.facultyId === entityId)
       .filter((graduation) => {
         const conclusionYearDate = new Date(graduation.conclusionYear, 0, 1);
         return (

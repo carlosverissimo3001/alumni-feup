@@ -3083,9 +3083,7 @@
         "required": [
           "id",
           "fullName",
-          "profilePictureUrl",
-          "roles",
-          "graduations"
+          "roles"
         ]
       },
       "Location": {

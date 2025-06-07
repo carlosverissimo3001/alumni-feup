@@ -64,7 +64,7 @@ export interface AlumniAnalyticsEntity {
      * @type {string}
      * @memberof AlumniAnalyticsEntity
      */
-    profilePictureUrl: string;
+    profilePictureUrl?: string;
     /**
      * The roles of the alumni
      * @type {Array<RoleAnalyticsEntity>}
@@ -76,7 +76,7 @@ export interface AlumniAnalyticsEntity {
      * @type {Array<GraduationAnalyticsEntity>}
      * @memberof AlumniAnalyticsEntity
      */
-    graduations: Array<GraduationAnalyticsEntity>;
+    graduations?: Array<GraduationAnalyticsEntity>;
     /**
      * The location of the alumni
      * @type {LocationAnalyticsEntity}
@@ -91,9 +91,7 @@ export interface AlumniAnalyticsEntity {
 export function instanceOfAlumniAnalyticsEntity(value: object): value is AlumniAnalyticsEntity {
     if (!('id' in value) || value['id'] === undefined) return false;
     if (!('fullName' in value) || value['fullName'] === undefined) return false;
-    if (!('profilePictureUrl' in value) || value['profilePictureUrl'] === undefined) return false;
     if (!('roles' in value) || value['roles'] === undefined) return false;
-    if (!('graduations' in value) || value['graduations'] === undefined) return false;
     return true;
 }
 
@@ -110,9 +108,9 @@ export function AlumniAnalyticsEntityFromJSONTyped(json: any, ignoreDiscriminato
         'id': json['id'],
         'fullName': json['fullName'],
         'linkedinUrl': json['linkedinUrl'] == null ? undefined : json['linkedinUrl'],
-        'profilePictureUrl': json['profilePictureUrl'],
+        'profilePictureUrl': json['profilePictureUrl'] == null ? undefined : json['profilePictureUrl'],
         'roles': ((json['roles'] as Array<any>).map(RoleAnalyticsEntityFromJSON)),
-        'graduations': ((json['graduations'] as Array<any>).map(GraduationAnalyticsEntityFromJSON)),
+        'graduations': json['graduations'] == null ? undefined : ((json['graduations'] as Array<any>).map(GraduationAnalyticsEntityFromJSON)),
         'location': json['location'] == null ? undefined : LocationAnalyticsEntityFromJSON(json['location']),
     };
 }
@@ -133,7 +131,7 @@ export function AlumniAnalyticsEntityToJSONTyped(value?: AlumniAnalyticsEntity |
         'linkedinUrl': value['linkedinUrl'],
         'profilePictureUrl': value['profilePictureUrl'],
         'roles': ((value['roles'] as Array<any>).map(RoleAnalyticsEntityToJSON)),
-        'graduations': ((value['graduations'] as Array<any>).map(GraduationAnalyticsEntityToJSON)),
+        'graduations': value['graduations'] == null ? undefined : ((value['graduations'] as Array<any>).map(GraduationAnalyticsEntityToJSON)),
         'location': LocationAnalyticsEntityToJSON(value['location']),
     };
 }
