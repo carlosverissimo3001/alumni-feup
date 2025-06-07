@@ -286,8 +286,8 @@ export const RoleDashboard = ({
                   ) : (
                     <NotFoundComponent
                       message="No role data available"
-                      description="Try adjusting your filters to find roles that match your criteria."
-                      colSpan={4}
+                      description="Try selecting a different classification level or adjusting your filters."
+                      colSpan={3}
                     />
                   )}
                 </TableBody>
