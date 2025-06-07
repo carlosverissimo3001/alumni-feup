@@ -96,7 +96,6 @@ export function EvaluateClassificationModal({ role, trigger }: Props) {
   };
 
   const handleSeniorityEvaluation = (wasAccepted: boolean) => {
-    console.log("wasAccepted", wasAccepted);
     evaluateSeniority({
       id: role.id,
       evaluateSeniorityLevelDto: {

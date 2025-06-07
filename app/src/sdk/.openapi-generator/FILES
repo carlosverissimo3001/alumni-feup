@@ -9,6 +9,8 @@ models/AlumniListItemDto.ts
 models/AlumniListResponseDto.ts
 models/AlumniOptionDto.ts
 models/AlumniPastLocationsAndCompaniesDto.ts
+models/AnalyticsDto.ts
+models/AnalyticsOptionsDto.ts
 models/BasicAlumniDto.ts
 models/BasicCompanyDto.ts
 models/BasicGeoDto.ts
@@ -79,9 +81,11 @@ models/RoleHierarchyDto.ts
 models/RoleHierarchyItemDto.ts
 models/RoleListItemDto.ts
 models/RoleListResponseDto.ts
+models/RoleMetadataVo.ts
 models/RoleOptionDto.ts
 models/RoleRawAnalyticsEntity.ts
 models/SendFeedbackDto.ts
+models/SeniorityClassificationVo.ts
 models/SeniorityListItemDto.ts
 models/SeniorityListResponseDto.ts
 models/UpdateClassificationDto.ts

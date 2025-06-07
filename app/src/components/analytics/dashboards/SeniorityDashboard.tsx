@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   Table,
   TableBody,
@@ -35,17 +35,22 @@ import {
 } from "@/components/ui/tooltip";
 import { ViewType } from "@/types/view";
 import { EntityType, TrendFrequency } from "@/types/entityTypes";
-import { useSeniorityList } from "@/hooks/analytics/useSeniorityList";
-import { SeniorityListItemDto } from "@/sdk";
+import { SeniorityListItemDto, SeniorityListResponseDto } from "@/sdk";
 import { SENIORITY_LEVEL, SENIORITY_LEVEL_API_TO_ENUM } from "@/types/roles";
-import { RoleAnalyticsControllerGetSeniorityLevelsSeniorityLevelEnum as SeniorityLevel } from "@/sdk";
+import { AnalyticsControllerGetAnalyticsSeniorityLevelEnum as SeniorityLevel } from "@/sdk";
+import { useFetchAnalytics } from "@/hooks/analytics/useFetchAnalytics";
+import { AnalyticsControllerGetAnalyticsSelectorTypeEnum as SelectorType } from "@/sdk";
 
 type SeniorityDashboardProps = {
+  globalData?: SeniorityListResponseDto;
+  isGlobalDataLoading?: boolean;
   filters: FilterState;
   onAddToFilters?: (seniorityLevel: SeniorityLevel) => void;
 };
 
 export const SeniorityDashboard = ({
+  globalData,
+  isGlobalDataLoading,
   filters,
   onAddToFilters,
 }: SeniorityDashboardProps) => {
@@ -66,18 +71,40 @@ export const SeniorityDashboard = ({
     setPage(1);
   }, [filters]);
 
-  const { data, isLoading, isFetching } = useSeniorityList({
-    ...filters,
-    limit: itemsPerPage,
-    sortBy: sortField,
-    sortOrder: sortOrder,
-    offset: (page - 1) * itemsPerPage,
-    includeTrend: view === ViewType.TREND,
+  const shouldUseGlobalData = useMemo(() => {
+    return (
+      page === 1 &&
+      itemsPerPage === ITEMS_PER_PAGE[1] &&
+      sortField === SortBy.COUNT &&
+      sortOrder === SortOrder.DESC &&
+      view === ViewType.TABLE &&
+      trendFrequency === TrendFrequency.Y5
+    );
+  }, [page, itemsPerPage, sortField, sortOrder, view, trendFrequency]);
+
+  const { data, isLoading, isFetching } = useFetchAnalytics({
+    params: {
+      ...filters,
+      limit: itemsPerPage,
+      sortBy: sortField,
+      sortOrder: sortOrder,
+      offset: (page - 1) * itemsPerPage,
+      includeSeniorityTrend: view === ViewType.TREND,
+      selectorType: SelectorType.Seniority,
+    },
+    options: {
+      enabled: !shouldUseGlobalData,
+      isInitialLoad: shouldUseGlobalData,
+    },
   });
 
-  const seniorityLevels = data?.seniorityLevels || [];
-  const totalItems = data?.count || 0;
+  const currentData = shouldUseGlobalData ? globalData : data?.seniorityData;
+  const seniorityLevels = currentData?.seniorityLevels || [];
+  const totalItems = currentData?.count || 0;
 
+  const isWaitingForData =
+    (shouldUseGlobalData && isGlobalDataLoading) ||
+    (!shouldUseGlobalData && (isLoading || isFetching));
 
   useEffect(() => {
     setPageInput(String(page));
@@ -108,87 +135,97 @@ export const SeniorityDashboard = ({
                 sortField={sortField}
                 sortOrder={sortOrder}
                 onSort={handleSort}
-                showTrend={view === ViewType.TREND} 
+                showTrend={view === ViewType.TREND}
                 trendFrequency={trendFrequency}
                 customAlumniHeader="Roles"
                 hoverMessage="The total of alumni roles that match this seniority level"
               />
 
-              {isLoading || isFetching ? (
+              {isWaitingForData ? (
                 <DashboardSkeleton />
               ) : (
                 <TableBody className="bg-white divide-y divide-gray-200">
-                  {seniorityLevels.length > 0 ? (   
-                    seniorityLevels.map((seniorityLevel: SeniorityListItemDto, index: number) => {
-                      const rowNumber = (page - 1) * itemsPerPage + index + 1;
-                      const name = SENIORITY_LEVEL_API_TO_ENUM[seniorityLevel.name] || seniorityLevel.name;
+                  {seniorityLevels.length > 0 ? (
+                    seniorityLevels.map(
+                      (seniorityLevel: SeniorityListItemDto, index: number) => {
+                        const rowNumber = (page - 1) * itemsPerPage + index + 1;
+                        const name =
+                          SENIORITY_LEVEL_API_TO_ENUM[seniorityLevel.name] ||
+                          seniorityLevel.name;
 
-                      return (
-                        <CustomTableRow
-                          key={seniorityLevel.name}
-                          index={index}
-                          className="group"
-                        >
-                          <TableNumberCell rowNumber={rowNumber} />
-                          <TableNameCell
-                            name={name}
-                            isRowInFilters={!!isRowInFilters(seniorityLevel)}
-                          />
-                          <TableCell
-                            className={`w-[12%] px-4 ${
-                              view === ViewType.TABLE ? "py-1" : "z"
-                            } text-sm ${
-                              isRowInFilters(seniorityLevel)
-                                ? "font-bold text-[#8C2D19]"
-                                : "text-[#000000]"
-                            } align-middle hover:text-[#8C2D19] transition-colors relative`}
+                        return (
+                          <CustomTableRow
+                            key={seniorityLevel.name}
+                            index={index}
+                            className="group"
                           >
-                            <div className="flex items-center gap-0 justify-center">
-                              {view === ViewType.TABLE ? (
-                                <>
-                                  <CountComponent count={seniorityLevel.count} />
-                                  <div
-                                    className={`${
-                                      isRowInFilters(seniorityLevel)
-                                        ? "opacity-100"
-                                        : "opacity-0 group-hover:opacity-100"
-                                    } transition-opacity ${
-                                      view === ViewType.TABLE ? "ml-2" : "ml-0"
-                                    }`}
-                                  >
-                                    <TooltipProvider>
-                                      <Tooltip>
-                                        <TooltipTrigger asChild>
-                                          <Button
-                                            aria-label="Add to filters"
-                                            variant="ghost"
-                                            size="sm"
-                                            className="p-1 h-6 w-6 rounded-full bg-gray-100 hover:bg-gray-200"
-                                            onClick={() =>
-                                              onAddToFilters?.(seniorityLevel.name)
-                                            }
-                                          >
-                                            <Filter className="h-4 w-4 text-[#8C2D19]" />
-                                          </Button>
-                                        </TooltipTrigger>
-                                        <TooltipContent>
-                                          <p>Filter on {name}</p>
-                                        </TooltipContent>
-                                      </Tooltip>
-                                    </TooltipProvider>
-                                  </div>
-                                </>
-                              ) : (
-                                <TrendLineComponent
-                                  dataPoints={seniorityLevel.trend}
-                                  trendFrequency={trendFrequency}
-                                />
-                              )}
-                            </div>
-                          </TableCell>
-                        </CustomTableRow>
-                      );
-                    })
+                            <TableNumberCell rowNumber={rowNumber} />
+                            <TableNameCell
+                              name={name}
+                              isRowInFilters={!!isRowInFilters(seniorityLevel)}
+                            />
+                            <TableCell
+                              className={`w-[12%] px-4 ${
+                                view === ViewType.TABLE ? "py-1" : "z"
+                              } text-sm ${
+                                isRowInFilters(seniorityLevel)
+                                  ? "font-bold text-[#8C2D19]"
+                                  : "text-[#000000]"
+                              } align-middle hover:text-[#8C2D19] transition-colors relative`}
+                            >
+                              <div className="flex items-center gap-0 justify-center">
+                                {view === ViewType.TABLE ? (
+                                  <>
+                                    <CountComponent
+                                      count={seniorityLevel.count}
+                                    />
+                                    <div
+                                      className={`${
+                                        isRowInFilters(seniorityLevel)
+                                          ? "opacity-100"
+                                          : "opacity-0 group-hover:opacity-100"
+                                      } transition-opacity ${
+                                        view === ViewType.TABLE
+                                          ? "ml-2"
+                                          : "ml-0"
+                                      }`}
+                                    >
+                                      <TooltipProvider>
+                                        <Tooltip>
+                                          <TooltipTrigger asChild>
+                                            <Button
+                                              aria-label="Add to filters"
+                                              variant="ghost"
+                                              size="sm"
+                                              className="p-1 h-6 w-6 rounded-full bg-gray-100 hover:bg-gray-200"
+                                              onClick={() =>
+                                                onAddToFilters?.(
+                                                  seniorityLevel.name
+                                                )
+                                              }
+                                            >
+                                              <Filter className="h-4 w-4 text-[#8C2D19]" />
+                                            </Button>
+                                          </TooltipTrigger>
+                                          <TooltipContent>
+                                            <p>Filter on {name}</p>
+                                          </TooltipContent>
+                                        </Tooltip>
+                                      </TooltipProvider>
+                                    </div>
+                                  </>
+                                ) : (
+                                  <TrendLineComponent
+                                    dataPoints={seniorityLevel.trend}
+                                    trendFrequency={trendFrequency}
+                                  />
+                                )}
+                              </div>
+                            </TableCell>
+                          </CustomTableRow>
+                        );
+                      }
+                    )
                   ) : (
                     <NotFoundComponent
                       message="No seniority level data available"
@@ -221,7 +258,7 @@ export const SeniorityDashboard = ({
   const renderChartView = () => (
     <div className="flex-1 flex flex-col border-t border-b border-gray-200 overflow-hidden">
       <div className="flex-1 flex items-center justify-center">
-        {isLoading || isFetching ? (
+        {isWaitingForData ? (
           <LoadingChart message="Loading chart data..." />
         ) : seniorityLevels.length === 0 ? (
           <NotFoundComponent
@@ -232,11 +269,14 @@ export const SeniorityDashboard = ({
         ) : (
           <ChartView
             data={seniorityLevels.map((seniorityLevel) => ({
-              name: SENIORITY_LEVEL[seniorityLevel.name as keyof typeof SENIORITY_LEVEL] || seniorityLevel.name,
+              name:
+                SENIORITY_LEVEL[
+                  seniorityLevel.name as keyof typeof SENIORITY_LEVEL
+                ] || seniorityLevel.name,
               id: seniorityLevel.name,
               count: seniorityLevel.count,
             }))}
-            isLoading={isLoading || isFetching}
+            isLoading={isWaitingForData}
             entityType={EntityType.SENIORITY}
           />
         )}

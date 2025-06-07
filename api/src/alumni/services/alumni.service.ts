@@ -218,6 +218,7 @@ export class AlumniService {
     }));
     totalAlumni = 0;
     totalAlumniPrev = 0;
+
     return {
       type: 'FeatureCollection',
       features,

@@ -4,10 +4,13 @@ import "./globals.css";
 import Layout from "@/components/navbar/layout";
 import { Providers } from "@/providers";
 import { Toaster } from "@/components/ui/toaster";
+import { LoadingProvider } from "@/contexts/LoadingContext";
+import GlobalLoadingModal from "@/components/analytics/common/GlobalLoadingModal";
 
-// Vercel
-import { SpeedInsights } from "@vercel/speed-insights/next"
-import { Analytics } from "@vercel/analytics/next"
+// Vercel and Other Analytics
+import { SpeedInsights } from "@vercel/speed-insights/next";
+import { Analytics } from "@vercel/analytics/next";
+import { HotJar } from "@/lib/hotjar";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -50,10 +53,14 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-zinc-900`}
       >
         <Providers>
-          <Layout>{children}</Layout>
-          <SpeedInsights />
-          <Analytics />
-          <Toaster />
+          <LoadingProvider>
+            <Layout>{children}</Layout>
+            <GlobalLoadingModal />
+            <SpeedInsights />
+            <Analytics />
+            <HotJar />
+            <Toaster />
+          </LoadingProvider>
         </Providers>
       </body>
     </html>

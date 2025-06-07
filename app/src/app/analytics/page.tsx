@@ -23,19 +23,27 @@ import { GlobalFilters, FilterState } from "@/components/analytics/common";
 import { handleDateRange } from "@/utils/date";
 import { Button } from "@/components/ui/button";
 import { useSearchParams, useRouter } from "next/navigation";
-import { useCompanyOptions } from "@/hooks/analytics/useCompanyOptions";
-import {
-  EducationDrillType,
-  GeoDrillType,
-  ClassificationLevel,
-} from "@/types/drillType";
+import { useFetchOptions } from "@/hooks/analytics/useFetchOptions";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { RoleAnalyticsControllerGetSeniorityLevelsSeniorityLevelEnum as SeniorityLevel } from "@/sdk";
+import {
+  AnalyticsControllerGetAnalyticsSelectorTypeEnum as SelectorType,
+  AnalyticsControllerGetAnalyticsSeniorityLevelEnum as SeniorityLevel,
+} from "@/sdk";
+import { useFetchAnalytics } from "@/hooks/analytics/useFetchAnalytics";
+import { ITEMS_PER_PAGE, SortBy, SortOrder } from "@/consts";
+import {
+  EDUCATION_DRILL_TYPE,
+  GEO_DRILL_TYPE,
+  ESCO_CLASSIFICATION_LEVEL,
+} from "@/types/drillType";
+import { useDropdownContext } from "@/contexts/DropdownContext";
+import { useLoading } from "@/contexts/LoadingContext";
+import GlobalLoadingModal from "@/components/analytics/common/GlobalLoadingModal";
 
 const initialFilters: FilterState = {
   dateRange: undefined,
@@ -53,6 +61,7 @@ const initialFilters: FilterState = {
   excludeResearchAndHighEducation: false,
   search: undefined,
   hideUnknownRoles: false,
+  escoClassificationLevel: undefined,
   companySize: [],
   escoCodes: [],
   alumniIds: [],
@@ -61,30 +70,19 @@ const initialFilters: FilterState = {
 
 export default function Analytics() {
   return (
-    <Suspense
-      fallback={
-        <div className="p-6 space-y-3 bg-gray-100 min-h-screen">
-          <div className="flex items-center gap-4">
-            <ChartSpline className="h-8 w-8 text-[#8C2D19]" />
-            <div>
-              <h1 className="text-3xl font-extrabold text-[#8C2D19]">
-                Loading Analytics...
-              </h1>
-            </div>
-          </div>
-        </div>
-      }
-    >
+    <Suspense fallback={<GlobalLoadingModal />}>
       <AnalyticsContent />
     </Suspense>
   );
 }
 
 function AnalyticsContent() {
-  const router = useRouter();
-  const searchParams = useSearchParams();
-  const { data: companyOptions } = useCompanyOptions();
+  const { isAnyOpen } = useDropdownContext();
+  const { setIsLoading } = useLoading();
 
+
+  // State
+  const [showScrollButton, setShowScrollButton] = useState(false);
   const [stats, setStats] = useState<{
     alumniCount: number;
     companyCount: number;
@@ -96,22 +94,31 @@ function AnalyticsContent() {
     countryCount: 0,
     roleCount: 0,
   });
-
-  const [geoMode, setGeoMode] = useState<GeoDrillType>(GeoDrillType.COUNTRY);
-  const [educationMode, setEducationMode] = useState<EducationDrillType>(
-    EducationDrillType.MAJOR
+  const [filters, setFilters] = useState<FilterState>(initialFilters);
+  const [initializedFromURL, setInitializedFromURL] = useState(false);
+  const [geoMode, setGeoMode] = useState<GEO_DRILL_TYPE>(GEO_DRILL_TYPE.COUNTRY);
+  const [educationMode, setEducationMode] = useState<EDUCATION_DRILL_TYPE>(
+    EDUCATION_DRILL_TYPE.MAJOR
   );
   const [classificationLevel, setClassificationLevel] =
-    useState<ClassificationLevel>(ClassificationLevel.LEVEL_4);
+    useState<ESCO_CLASSIFICATION_LEVEL>(ESCO_CLASSIFICATION_LEVEL.LEVEL_5);
 
-  const initializeFiltersFromURL = useCallback(() => {
+  // Hooks
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const { data: options, isLoading: isOptionsLoading } = useFetchOptions({
+    selectorType: SelectorType.All,
+  });
+
+  // Getting companies from URL
+  const initializeCompaniesFromURL = useCallback(() => {
     const urlFilters: FilterState = { ...initialFilters };
 
     const companyNames = searchParams.get("company")?.toLowerCase().split(",");
-    if (companyNames && companyOptions) {
+    if (companyNames && options?.companies) {
       const companyIds = companyNames
         .map((name) =>
-          companyOptions.find((c) => c.name.toLowerCase() === name.trim())
+          options.companies?.find((c) => c.name.toLowerCase() === name.trim())
         )
         .filter((company) => company !== undefined)
         .map((company) => company!.id);
@@ -122,27 +129,14 @@ function AnalyticsContent() {
     }
 
     return urlFilters;
-  }, [searchParams, companyOptions]);
-
-  const [filters, setFilters] = useState<FilterState>(initialFilters);
-  const [initializedFromURL, setInitializedFromURL] = useState(false);
+  }, [searchParams, options]);
 
   useEffect(() => {
-    if (companyOptions && !initializedFromURL) {
-      setFilters(initializeFiltersFromURL());
+    if (options?.companies && !initializedFromURL) {
+      setFilters(initializeCompaniesFromURL());
       setInitializedFromURL(true);
     }
-  }, [companyOptions, initializeFiltersFromURL]);
-
-  const handleFiltersChange = useCallback(
-    (newFilters: FilterState) => {
-      setFilters(newFilters);
-      if (searchParams.toString()) {
-        router.replace(window.location.pathname);
-      }
-    },
-    [router, searchParams]
-  );
+  }, [options?.companies, initializeCompaniesFromURL, initializedFromURL]);
 
   const processedDateRange = useMemo(() => {
     if (filters.dateRange) {
@@ -159,6 +153,67 @@ function AnalyticsContent() {
         filters.companySize.length > 0 && { companySize: filters.companySize }),
     };
   }, [filters, processedDateRange]);
+
+  const { data, isLoading, isFetching } = useFetchAnalytics({
+    params: {
+      ...combinedFilters,
+      limit: ITEMS_PER_PAGE[1],
+      sortBy: SortBy.COUNT,
+      selectorType: SelectorType.All,
+      sortOrder: SortOrder.DESC,
+      offset: 0,
+      escoClassificationLevel:  Number(ESCO_CLASSIFICATION_LEVEL.LEVEL_5.split(" ")[1]),
+    },
+    options: {
+      isInitialLoad: true,
+    },
+  });
+
+  useEffect(() => {
+    setIsLoading((isLoading || isFetching) && !isAnyOpen);
+  }, [isLoading, isFetching, isAnyOpen, setIsLoading]);
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
+  /*** Helper Functions ***/
+  const getClassificationLevel = (classificationLevel: ESCO_CLASSIFICATION_LEVEL) => {
+    return Number(classificationLevel.split(" ")[1]);
+  };
+
+  const getCodeLevel = (code: string) => {
+    if (code.length <= 5) {
+      return code.length;
+    }
+    const parts = code.split(".");
+    return parts.length + 4; // 4 as the first 4 digits are not seperated by a dot
+  };
+
+  // Scroll to top button
+  useEffect(() => {
+    const handleScroll = () => {
+      setShowScrollButton(window.scrollY > 700);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  /*** Filter Handlers ***/
+  const handleFiltersChange = useCallback(
+    (newFilters: FilterState) => {
+      setFilters(newFilters);
+      if (searchParams.toString()) {
+        router.replace(window.location.pathname);
+      }
+    },
+    [router, searchParams]
+  );
 
   const handleCompanyDataUpdate = useCallback(
     (alumniCount: number, companyCount: number) => {
@@ -204,7 +259,7 @@ function AnalyticsContent() {
 
   const handleGeoAddToFilters = useCallback(
     (geoId: string, type: "role" | "company") => {
-      if (geoMode === GeoDrillType.COUNTRY) {
+      if (geoMode === GEO_DRILL_TYPE.COUNTRY) {
         setFilters((prev) => {
           const key =
             type === "role" ? "roleCountryCodes" : "companyHQsCountryCodes";
@@ -212,7 +267,7 @@ function AnalyticsContent() {
           if (!current.includes(geoId)) {
             const updated = [...current, geoId];
             if (updated.length === 1) {
-              setTimeout(() => setGeoMode(GeoDrillType.CITY), 0);
+              setTimeout(() => setGeoMode(GEO_DRILL_TYPE.CITY), 0);
             }
             return {
               ...prev,
@@ -263,18 +318,6 @@ function AnalyticsContent() {
     });
   }, []);
 
-  const getClassificationLevel = (classificationLevel: ClassificationLevel) => {
-    return Number(classificationLevel.split(" ")[1]);
-  };
-
-  const getCodeLevel = (code: string) => {
-    if (code.length <= 5) {
-      return code.length;
-    }
-    const parts = code.split(".");
-    return parts.length + 4; // 4 as the first 4 digits are not seperated by a dot
-  };
-
   const handleAddRoleToFilters = useCallback(
     (escoCode: string) => {
       setFilters((prev) => {
@@ -287,11 +330,11 @@ function AnalyticsContent() {
         // If we're adding a new code and not at level 8, increment the level
         if (
           !isAlreadySelected &&
-          classificationLevel !== ClassificationLevel.LEVEL_8 &&
+          classificationLevel !== ESCO_CLASSIFICATION_LEVEL.LEVEL_8 &&
           newCodeLevel >= getClassificationLevel(classificationLevel)
         ) {
           const currentLevel = Number(classificationLevel.split(" ")[1]);
-          const nextLevel = `Level ${currentLevel + 1}` as ClassificationLevel;
+          const nextLevel = `Level ${currentLevel + 1}` as ESCO_CLASSIFICATION_LEVEL;
           setClassificationLevel(nextLevel);
         }
 
@@ -342,13 +385,13 @@ function AnalyticsContent() {
 
   const handleAddEducationToFilters = useCallback(
     (id: string, year?: number) => {
-      if (educationMode === EducationDrillType.FACULTY) {
+      if (educationMode === EDUCATION_DRILL_TYPE.FACULTY) {
         setFilters((prev) => {
           const current = prev.facultyIds || [];
           if (!current.includes(id)) {
             const updated = [...current, id];
             if (updated.length === 1) {
-              setTimeout(() => setEducationMode(EducationDrillType.MAJOR), 0);
+              setTimeout(() => setEducationMode(EDUCATION_DRILL_TYPE.MAJOR), 0);
             }
             return {
               ...prev,
@@ -361,13 +404,13 @@ function AnalyticsContent() {
             };
           }
         });
-      } else if (educationMode === EducationDrillType.MAJOR) {
+      } else if (educationMode === EDUCATION_DRILL_TYPE.MAJOR) {
         setFilters((prev) => {
           const current = prev.courseIds || [];
           if (!current.includes(id)) {
             const updated = [...current, id];
             if (updated.length === 1) {
-              setTimeout(() => setEducationMode(EducationDrillType.YEAR), 0);
+              setTimeout(() => setEducationMode(EDUCATION_DRILL_TYPE.YEAR), 0);
             }
             return {
               ...prev,
@@ -380,7 +423,7 @@ function AnalyticsContent() {
             };
           }
         });
-      } else if (educationMode === EducationDrillType.YEAR) {
+      } else if (educationMode === EDUCATION_DRILL_TYPE.YEAR) {
         setFilters((prev) => {
           const currentYears = prev.graduationYears || [];
           const currentCourses = prev.courseIds || [];
@@ -443,103 +486,108 @@ function AnalyticsContent() {
     },
   ];
 
-  const [showScrollButton, setShowScrollButton] = useState(false);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setShowScrollButton(window.scrollY > 700);
-    };
-
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
-  const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  };
-
   return (
-    <div className="p-6 space-y-3 bg-gray-100 min-h-screen relative">
-      <div className="flex items-center gap-4">
-        <ChartSpline className="h-8 w-8 text-[#8C2D19]" />
-        <div>
-          <h1 className="text-3xl font-extrabold text-[#8C2D19]">
-            Alumni Analytics
-          </h1>
+    <>
+      <div className="p-6 space-y-3 bg-gray-100 min-h-screen relative">
+        <div className="flex items-center gap-4">
+          <ChartSpline className="h-8 w-8 text-[#8C2D19]" />
+          <div>
+            <h1 className="text-3xl font-extrabold text-[#8C2D19]">
+              Alumni Analytics
+            </h1>
+          </div>
         </div>
+
+        <OverallStats stats={statsConfig} />
+
+        <div className="bg-white rounded-xl shadow-lg border border-gray-200">
+          <GlobalFilters
+            filters={filters}
+            onFiltersChange={handleFiltersChange}
+            globalOptions={options}
+            isOptionsLoading={isOptionsLoading}
+          />
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3 gap-4">
+          <CompanyDashboard
+            globalData={data?.companyData}
+            isGlobalDataLoading={isLoading}
+            onDataUpdate={handleCompanyDataUpdate}
+            filters={combinedFilters}
+            onAddToFilters={handleAddCompanyToFilters}
+          />
+          <GeoDashboard
+            globalData={{
+              countryData: data?.countryData,
+              cityData: data?.cityData,
+            }}
+            isGlobalDataLoading={isLoading}
+            onDataUpdate={handleGeoDataUpdate}
+            filters={combinedFilters}
+            onAddToFilters={handleGeoAddToFilters}
+            mode={geoMode}
+            setMode={setGeoMode}
+          />
+          <RoleDashboard
+            globalData={data?.roleData}
+            isGlobalDataLoading={isLoading}
+            onDataUpdate={handleRoleDataUpdate}
+            filters={combinedFilters}
+            onAddToFilters={handleAddRoleToFilters}
+            classificationLevel={classificationLevel}
+            setClassificationLevel={setClassificationLevel}
+          />
+
+          <IndustryDashboard
+            globalData={data?.industryData}
+            isGlobalDataLoading={isLoading}
+            filters={combinedFilters}
+            onAddToFilters={handleAddIndustryToFilters}
+          />
+          <EducationDashboard
+            globalData={{
+              faculties: data?.facultyData,
+              majors: data?.majorData,
+              graduations: data?.graduationData,
+            }}
+            isGlobalDataLoading={isLoading}
+            filters={combinedFilters}
+            mode={educationMode}
+            setMode={setEducationMode}
+            onAddToFilters={handleAddEducationToFilters}
+          />
+
+          <SeniorityDashboard
+            globalData={data?.seniorityData}
+            isGlobalDataLoading={isLoading}
+            filters={combinedFilters}
+            onAddToFilters={handleAddSeniorityToFilters}
+          />
+        </div>
+
+        <AlumniTable filters={combinedFilters} onAddToFilters={handleAddAlumniToFilters} />
+
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                onClick={scrollToTop}
+                className={`fixed bottom-24 z-20 right-8 bg-[#8C2D19] hover:bg-[#A13A23] text-white p-3 rounded-full shadow-lg transition-all duration-300 ${
+                  showScrollButton
+                    ? "opacity-100 translate-y-0"
+                    : "opacity-0 translate-y-16"
+                } focus:outline-none focus:ring-2 focus:ring-[#8C2D19] focus:ring-opacity-50`}
+                aria-label="Scroll to top"
+                size="lg"
+              >
+                <ArrowUp className="h-12 w-12" />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent align="end">Scroll to top</TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
       </div>
-
-      <OverallStats stats={statsConfig} />
-
-      <div className="bg-white rounded-xl shadow-lg border border-gray-200">
-        <GlobalFilters
-          filters={filters}
-          onFiltersChange={handleFiltersChange}
-        />
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3 gap-4">
-        <CompanyDashboard
-          onDataUpdate={handleCompanyDataUpdate}
-          filters={combinedFilters}
-          onAddToFilters={handleAddCompanyToFilters}
-        />
-        <GeoDashboard
-          onDataUpdate={handleGeoDataUpdate}
-          filters={combinedFilters}
-          onAddToFilters={handleGeoAddToFilters}
-          mode={geoMode}
-          setMode={setGeoMode}
-        />
-        <RoleDashboard
-          onDataUpdate={handleRoleDataUpdate}
-          filters={combinedFilters}
-          onAddToFilters={handleAddRoleToFilters}
-          classificationLevel={classificationLevel}
-          setClassificationLevel={setClassificationLevel}
-        />
-        <IndustryDashboard
-          filters={combinedFilters}
-          onAddToFilters={handleAddIndustryToFilters}
-        />
-
-        <EducationDashboard
-          filters={combinedFilters}
-          mode={educationMode}
-          setMode={setEducationMode}
-          onAddToFilters={handleAddEducationToFilters}
-        />
-
-        <SeniorityDashboard
-          filters={combinedFilters}
-          onAddToFilters={handleAddSeniorityToFilters}
-        />
-      </div>
-
-      <AlumniTable
-        filters={filters}
-        onAddToFilters={handleAddAlumniToFilters}
-      />
-
-      <TooltipProvider>
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <Button
-              onClick={scrollToTop}
-              className={`fixed bottom-24 z-20 right-8 bg-[#8C2D19] hover:bg-[#A13A23] text-white p-3 rounded-full shadow-lg transition-all duration-300 ${
-                showScrollButton
-                  ? "opacity-100 translate-y-0"
-                  : "opacity-0 translate-y-16"
-              } focus:outline-none focus:ring-2 focus:ring-[#8C2D19] focus:ring-opacity-50`}
-              aria-label="Scroll to top"
-              size="lg"
-            >
-              <ArrowUp className="h-12 w-12" />
-            </Button>
-          </TooltipTrigger>
-          <TooltipContent align="end">Scroll to top</TooltipContent>
-        </Tooltip>
-      </TooltipProvider>
-    </div>
+    </>
   );
 }

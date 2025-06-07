@@ -1,31 +1,29 @@
-import { Injectable, Logger } from '@nestjs/common';
-import { TrendAnalyticsService } from './trend-analytics.service';
-import { AlumniAnalyticsRepository } from '../repositories';
-import { SeniorityListResponseDto, SeniorityListItemDto } from '../dto';
-import { applyDateFilters } from '../utils/filters';
-import { QueryParamsDto } from '../dto';
+import { Injectable } from '@nestjs/common';
 import { SENIORITY_LEVEL } from '@prisma/client';
-import { sortData } from '../utils';
 import {
   DEFAULT_QUERY_LIMIT,
   DEFAULT_QUERY_OFFSET,
   DEFAULT_QUERY_SORT_BY,
   DEFAULT_QUERY_SORT_ORDER,
 } from '../consts';
+import {
+  QueryParamsDto,
+  SeniorityListItemDto,
+  SeniorityListResponseDto,
+} from '../dto';
+import { AlumniAnalyticsEntity } from '../entities';
+import { sortData } from '../utils';
+import { applyDateFilters } from '../utils/filters';
+import { TrendAnalyticsService } from './trend-analytics.service';
 
 @Injectable()
 export class SeniorityAnalyticsService {
-  constructor(
-    private readonly alumniRepository: AlumniAnalyticsRepository,
-    private readonly trendAnalyticsService: TrendAnalyticsService,
-    private readonly logger: Logger,
-  ) {}
+  constructor(private readonly trendAnalyticsService: TrendAnalyticsService) {}
 
-  async getSeniorityLevels(
+  async getSeniorityAnalytics(
+    alumnusUnfiltered: AlumniAnalyticsEntity[],
     query: QueryParamsDto,
   ): Promise<SeniorityListResponseDto> {
-    const alumnusUnfiltered = await this.alumniRepository.find(query);
-
     const alumnus = applyDateFilters(alumnusUnfiltered, query);
 
     const allSeniorityLevels = alumnus
@@ -48,7 +46,7 @@ export class SeniorityAnalyticsService {
       trend: [],
     }));
 
-    if (query.includeTrend) {
+    if (query.includeSeniorityTrend) {
       const trends = await Promise.all(
         seniorityLevels.map((level) =>
           this.trendAnalyticsService.getSeniorityTrend({

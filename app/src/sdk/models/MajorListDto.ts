@@ -34,17 +34,11 @@ export interface MajorListDto {
      */
     majors: Array<MajorListItemDto>;
     /**
-     * The number of majors
+     * The number of majors(courses) after applying the filters
      * @type {number}
      * @memberof MajorListDto
      */
     count: number;
-    /**
-     * The number of majors, after applying the filters
-     * @type {number}
-     * @memberof MajorListDto
-     */
-    filteredCount: number;
 }
 
 /**
@@ -53,7 +47,6 @@ export interface MajorListDto {
 export function instanceOfMajorListDto(value: object): value is MajorListDto {
     if (!('majors' in value) || value['majors'] === undefined) return false;
     if (!('count' in value) || value['count'] === undefined) return false;
-    if (!('filteredCount' in value) || value['filteredCount'] === undefined) return false;
     return true;
 }
 
@@ -69,7 +62,6 @@ export function MajorListDtoFromJSONTyped(json: any, ignoreDiscriminator: boolea
         
         'majors': ((json['majors'] as Array<any>).map(MajorListItemDtoFromJSON)),
         'count': json['count'],
-        'filteredCount': json['filteredCount'],
     };
 }
 
@@ -86,7 +78,6 @@ export function MajorListDtoToJSONTyped(value?: MajorListDto | null, ignoreDiscr
         
         'majors': ((value['majors'] as Array<any>).map(MajorListItemDtoToJSON)),
         'count': value['count'],
-        'filteredCount': value['filteredCount'],
     };
 }
 

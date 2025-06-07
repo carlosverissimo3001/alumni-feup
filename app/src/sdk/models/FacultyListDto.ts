@@ -34,13 +34,7 @@ export interface FacultyListDto {
      */
     faculties: Array<FacultyListItemDto>;
     /**
-     * The number of faculties, after applying the filters
-     * @type {number}
-     * @memberof FacultyListDto
-     */
-    filteredCount: number;
-    /**
-     * The total number of faculties, regardless of filters
+     * The total number of faculties, after applying the filters
      * @type {number}
      * @memberof FacultyListDto
      */
@@ -52,7 +46,6 @@ export interface FacultyListDto {
  */
 export function instanceOfFacultyListDto(value: object): value is FacultyListDto {
     if (!('faculties' in value) || value['faculties'] === undefined) return false;
-    if (!('filteredCount' in value) || value['filteredCount'] === undefined) return false;
     if (!('count' in value) || value['count'] === undefined) return false;
     return true;
 }
@@ -68,7 +61,6 @@ export function FacultyListDtoFromJSONTyped(json: any, ignoreDiscriminator: bool
     return {
         
         'faculties': ((json['faculties'] as Array<any>).map(FacultyListItemDtoFromJSON)),
-        'filteredCount': json['filteredCount'],
         'count': json['count'],
     };
 }
@@ -85,7 +77,6 @@ export function FacultyListDtoToJSONTyped(value?: FacultyListDto | null, ignoreD
     return {
         
         'faculties': ((value['faculties'] as Array<any>).map(FacultyListItemDtoToJSON)),
-        'filteredCount': value['filteredCount'],
         'count': value['count'],
     };
 }

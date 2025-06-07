@@ -16,11 +16,13 @@ import { useState } from "react";
 import { useFetchRole } from "@/hooks/role/useFetchRole";
 import { SENIORITY_COLORS } from "@/consts";
 import { mapSeniorityLevel } from "@/utils/mappings";
-import { RoleAnalyticsControllerGetSeniorityLevelsSeniorityLevelEnum as SeniorityLevelEnum } from "@/sdk";
+import { AnalyticsControllerGetAnalyticsSeniorityLevelEnum as SeniorityLevelEnum } from "@/sdk";
 import clsx from "clsx";
 import { SENIORITY_LEVEL_API_TO_ENUM } from "@/types/roles";
 import { useToast } from "@/hooks/misc/useToast";
 import { useUpdateSeniority } from "@/hooks/profile/useUpdateSeniority";
+import { BrainCircuit, Bot } from "lucide-react";
+import { Progress } from "../ui/progress";
 
 interface Props {
   roleId: string;
@@ -45,7 +47,7 @@ export function UpdateSeniorityModal({ roleId, trigger }: Props) {
   });
 
   // Hooks
-  const { data: role } = useFetchRole(roleId);
+  const { data: role } = useFetchRole({ id: roleId, includeMetadata: true });
   const [selectedSeniorityLevel, setSelectedSeniorityLevel] =
     useState<SeniorityLevelEnum | null>(role?.seniorityLevel || null);
 
@@ -118,6 +120,54 @@ export function UpdateSeniorityModal({ roleId, trigger }: Props) {
               </Badge>
             </div>
           </div>
+
+          {role.metadata?.seniorityClassification && (
+            <div className="space-y-3 rounded-lg border border-amber-200/50 bg-amber-50/30 p-4">
+              <div className="flex items-center gap-2">
+                <BrainCircuit className="h-4 w-4 text-amber-600" />
+                <p className="text-sm font-medium text-amber-900">
+                  AI Classification Details
+                </p>
+              </div>
+
+              <div className="space-y-2">
+                <div className="flex items-center gap-2">
+                  <Bot className="h-4 w-4 text-amber-500" />
+                  <span className="text-xs text-amber-700">
+                    Classified by {role.metadata.seniorityClassification.model}
+                  </span>
+                </div>
+
+                {role.metadata.seniorityClassification.confidence !==
+                  undefined && (
+                  <div className="space-y-1">
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs text-amber-700">Confidence</span>
+                      <span className="text-xs font-medium text-amber-900">
+                        {Math.round(
+                          role.metadata.seniorityClassification.confidence * 100
+                        )}
+                        %
+                      </span>
+                    </div>
+                    <Progress
+                      value={
+                        role.metadata.seniorityClassification.confidence * 100
+                      }
+                      className="h-1.5 [&>div]:bg-amber-500 bg-amber-200"
+                    />
+                  </div>
+                )}
+
+                <div className="rounded border border-amber-200/50 bg-white/50 p-3">
+                  <p className="text-xs text-amber-800">
+                    <span className="font-medium">Reasoning:</span>{" "}
+                    {role.metadata.seniorityClassification.reasoning}
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
 
           <div className="space-y-2">
             <p className="text-sm text-muted-foreground">

@@ -23,6 +23,8 @@ import { TrendAnalyticsService } from './trend-analytics.service';
 import { applyDateFilters } from '../utils/filters';
 import { EscoClassificationAnalyticsEntity } from '../entities/esco-classification.entity';
 import { RoleAnalyticsEntity } from '../entities/role.entity';
+import { GetRoleDto } from '../dto/get-role.dto';
+import { AlumniAnalyticsEntity } from '../entities';
 
 @Injectable()
 export class RoleAnalyticsService {
@@ -33,11 +35,10 @@ export class RoleAnalyticsService {
     private readonly logger: Logger,
   ) {}
 
-  async getRolesWithCounts(
+  async getRoleAnalytics(
+    alumnusUnfiltered: AlumniAnalyticsEntity[],
     query: QueryParamsDto,
   ): Promise<RoleListResponseDto> {
-    const alumnusUnfiltered = await this.alumniRepository.find(query);
-
     const alumnus = applyDateFilters(alumnusUnfiltered, query);
     const requestedLevel = query.escoClassificationLevel;
     const isGranular = requestedLevel && requestedLevel >= 5;
@@ -134,7 +135,7 @@ export class RoleAnalyticsService {
 
     const roles = Array.from(roleMap.values());
 
-    if (query.includeTrend) {
+    if (query.includeRoleTrend) {
       const trends = await Promise.all(
         roles.map((role) =>
           this.trendAnalyticsService.getRoleTrend({
@@ -168,7 +169,7 @@ export class RoleAnalyticsService {
     };
   }
 
-  async findAllClassifications(): Promise<RoleOptionDto[]> {
+  async getRoleOptions(): Promise<RoleOptionDto[]> {
     return this.roleRepository.findAllClassifications();
   }
 
@@ -218,7 +219,7 @@ export class RoleAnalyticsService {
     };
   }
 
-  async getRole(id: string): Promise<RoleAnalyticsEntity> {
-    return await this.roleRepository.findById(id);
+  async getRole(id: string, params: GetRoleDto): Promise<RoleAnalyticsEntity> {
+    return await this.roleRepository.findById(id, params);
   }
 }

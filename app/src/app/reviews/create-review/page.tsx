@@ -135,7 +135,6 @@ const SubmitReview = () => {
         setErrors(validationErrors);
         return;
       }else{
-        console.log("Submitting review:", createReviewDto.anonymous);
         sendReviewSubmit();
         if(error){
           alert("Failed to submit review. Please try again.")

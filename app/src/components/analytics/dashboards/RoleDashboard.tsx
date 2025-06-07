@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   Table,
   TableBody,
@@ -8,7 +8,7 @@ import {
   TableContainer,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { RoleListItemDto } from "@/sdk";
+import { RoleListItemDto, RoleListResponseDto } from "@/sdk";
 import { Briefcase, Filter, Info, CheckIcon, ChevronDown } from "lucide-react";
 
 import { DashboardSkeleton } from "../skeletons/DashboardSkeleton";
@@ -34,7 +34,6 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { useRoleList } from "@/hooks/analytics/useRoleList";
 import { ViewType } from "@/types/view";
 import { EntityType, TrendFrequency } from "@/types/entityTypes";
 import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
@@ -42,18 +41,24 @@ import { DropdownMenuContent } from "@/components/ui/dropdown-menu";
 import { DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { DropdownMenu } from "@/components/ui/dropdown-menu";
 import { ESCO_INFO, ISCO_INFO } from "@/consts";
-import { ClassificationLevel } from "@/types/drillType";
+import { ESCO_CLASSIFICATION_LEVEL } from "@/types/drillType";
 import { RoleHierarchyInfo } from "../misc/RoleHierarchyInfo";
+import { useFetchAnalytics } from "@/hooks/analytics/useFetchAnalytics";
+import { AnalyticsControllerGetAnalyticsSelectorTypeEnum as SelectorType } from "@/sdk";
 
 type RoleDashboardProps = {
+  globalData?: RoleListResponseDto;
+  isGlobalDataLoading?: boolean;
   onDataUpdate: (roleCount: number) => void;
   filters: FilterState;
   onAddToFilters?: (roleId: string) => void;
-  classificationLevel: ClassificationLevel;
-  setClassificationLevel: (classificationLevel: ClassificationLevel) => void;
+  classificationLevel: ESCO_CLASSIFICATION_LEVEL;
+  setClassificationLevel: (classificationLevel: ESCO_CLASSIFICATION_LEVEL) => void;
 };
 
 export const RoleDashboard = ({
+  globalData,
+  isGlobalDataLoading,
   filters,
   onAddToFilters,
   onDataUpdate,
@@ -69,6 +74,35 @@ export const RoleDashboard = ({
     TrendFrequency.Y5
   );
 
+  const filtersRef = useRef<FilterState>(filters);
+
+  useEffect(() => {
+    const changed =
+      JSON.stringify(filtersRef.current) !== JSON.stringify(filters);
+    if (changed) {
+      filtersRef.current = filters;
+      setPage(1);
+      setItemsPerPage(ITEMS_PER_PAGE[1]);
+      setSortField(SortBy.COUNT);
+      setSortOrder(SortOrder.DESC);
+      setView(ViewType.TABLE);
+      setTrendFrequency(TrendFrequency.Y5);
+    }
+  }, [filters]);
+
+  // Determine if globalData is valid to use
+  const shouldUseGlobalData = useMemo(() => {
+    return (
+      page === 1 &&
+      itemsPerPage === ITEMS_PER_PAGE[1] &&
+      sortField === SortBy.COUNT &&
+      sortOrder === SortOrder.DESC &&
+      view === ViewType.TABLE &&
+      trendFrequency === TrendFrequency.Y5 &&
+      classificationLevel === ESCO_CLASSIFICATION_LEVEL.LEVEL_5
+    );
+  }, [page, itemsPerPage, sortField, sortOrder, view, trendFrequency, classificationLevel]);
+
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [pageInput, setPageInput] = useState<string>(String(page));
 
@@ -77,25 +111,36 @@ export const RoleDashboard = ({
     setPage(1);
   }, [filters]);
 
-  const { data, isLoading, isFetching } = useRoleList({
-    ...filters,
-    limit: itemsPerPage,
-    sortBy: sortField,
-    sortOrder: sortOrder,
-    offset: (page - 1) * itemsPerPage,
-    includeTrend: view === ViewType.TREND,
-    escoClassificationLevel: Number(classificationLevel.split(" ")[1]),
+  const { data, isLoading, isFetching } = useFetchAnalytics({
+    params: {
+      ...filters,
+      limit: itemsPerPage,
+      sortBy: sortField,
+      sortOrder,
+      offset: (page - 1) * itemsPerPage,
+      includeRoleTrend: view === ViewType.TREND,
+      selectorType: SelectorType.Role,
+      escoClassificationLevel: Number(classificationLevel.split(" ")[1]),
+    },
+    options: {
+      enabled: !shouldUseGlobalData,
+      isInitialLoad: shouldUseGlobalData,
+    },
   });
 
-  const roles = data?.roles || [];
-  const totalRoles = data?.count || 0;
-  const totalItems = data?.distinctCount || 0;
+  const currentData = shouldUseGlobalData ? globalData : data?.roleData;
+  const roles = currentData?.roles || [];
+  const totalItems = currentData?.distinctCount || 0;
+
+  const isWaitingForData =
+  (shouldUseGlobalData && isGlobalDataLoading) ||
+  (!shouldUseGlobalData && (isLoading || isFetching));
 
   useEffect(() => {
-    if (totalRoles !== undefined) {
-      onDataUpdate(totalRoles);
+    if(currentData) {
+     onDataUpdate(currentData.count);
     }
-  }, [totalRoles, onDataUpdate]);
+  }, [currentData, onDataUpdate]);
 
   useEffect(() => {
     setPageInput(String(page));
@@ -132,7 +177,7 @@ export const RoleDashboard = ({
                 hoverMessage="The total of alumni roles classified with this title"
               />
 
-              {isLoading || isFetching ? (
+              {isWaitingForData ? (
                 <DashboardSkeleton />
               ) : (
                 <TableBody className="bg-white divide-y divide-gray-200">
@@ -165,35 +210,37 @@ export const RoleDashboard = ({
                               {view === ViewType.TABLE ? (
                                 <>
                                   {classificationLevel !==
-                                    ClassificationLevel.LEVEL_1 && (
-                                      <div
+                                    ESCO_CLASSIFICATION_LEVEL.LEVEL_1 && (
+                                    <div
                                       className={`${
                                         isRowInFilters(role)
                                           ? "opacity-100"
                                           : "opacity-0 group-hover:opacity-100"
                                       } transition-opacity mr-2`}
                                     >
-                                    <TooltipProvider>
-                                      <Tooltip>
-                                        <TooltipTrigger asChild>
-                                          <Button
-                                            variant="ghost"
-                                            size="icon"
-                                            className="p-0 h-6 w-6 rounded-full bg-gray-100 hover:bg-gray-200 group-hover:opacity-100 opacity-0 transition-opacity"
-                                            aria-label="Show hierarchy"
+                                      <TooltipProvider>
+                                        <Tooltip>
+                                          <TooltipTrigger asChild>
+                                            <Button
+                                              variant="ghost"
+                                              size="icon"
+                                              className="p-0 h-6 w-6 rounded-full bg-gray-100 hover:bg-gray-200 group-hover:opacity-100 opacity-0 transition-opacity"
+                                              aria-label="Show hierarchy"
+                                            >
+                                              <Info className="h-4 w-4 text-[#8C2D19]" />
+                                            </Button>
+                                          </TooltipTrigger>
+                                          <TooltipContent
+                                            align="end"
+                                            className="max-w-md p-2 text-sm text-gray-800 bg-white border shadow-md rounded-md"
                                           >
-                                            <Info className="h-4 w-4 text-[#8C2D19]" />
-                                          </Button>
-                                        </TooltipTrigger>
-                                        <TooltipContent
-                                          align="end"
-                                          className="max-w-md p-2 text-sm text-gray-800 bg-white border shadow-md rounded-md"
-                                        >
-                                          <RoleHierarchyInfo code={role.code} />
-                                        </TooltipContent>
-                                      </Tooltip>
-                                    </TooltipProvider>
-                                  </div>
+                                            <RoleHierarchyInfo
+                                              code={role.code}
+                                            />
+                                          </TooltipContent>
+                                        </Tooltip>
+                                      </TooltipProvider>
+                                    </div>
                                   )}
                                   <CountComponent count={role.count} />
                                   <div
@@ -239,8 +286,8 @@ export const RoleDashboard = ({
                   ) : (
                     <NotFoundComponent
                       message="No role data available"
-                      description="Try adjusting your filters to find roles that match your criteria."
-                      colSpan={4}
+                      description="Try selecting a different classification level or adjusting your filters."
+                      colSpan={3}
                     />
                   )}
                 </TableBody>
@@ -268,7 +315,7 @@ export const RoleDashboard = ({
   const renderChartView = () => (
     <div className="flex-1 flex flex-col border-t border-b border-gray-200 overflow-hidden">
       <div className="flex-1 flex items-center justify-center">
-        {isLoading || isFetching ? (
+        {isWaitingForData ? (
           <LoadingChart message="Loading chart data..." />
         ) : roles.length === 0 ? (
           <NotFoundComponent
@@ -283,7 +330,7 @@ export const RoleDashboard = ({
               id: role.code,
               count: role.count,
             }))}
-            isLoading={isLoading || isFetching}
+            isLoading={isWaitingForData}
             entityType={EntityType.ROLE}
           />
         )}
@@ -318,11 +365,12 @@ export const RoleDashboard = ({
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent className="shadow-md rounded-lg border-gray-200">
-                {Object.values(ClassificationLevel).map(
-                  (item: ClassificationLevel) => (
+                {Object.values(ESCO_CLASSIFICATION_LEVEL).map(
+                  (item: ESCO_CLASSIFICATION_LEVEL) => (
                     <DropdownMenuItem
                       key={item}
                       onClick={() => {
+                        // Reset page to 1 when changing classification level
                         setClassificationLevel(item);
                       }}
                       className="hover:bg-gray-100 transition-colors"
