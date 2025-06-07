@@ -116,8 +116,9 @@ export const GlobalFilters = ({
       countryCodes: filters.companyHQsCountryCodes,
     });
 
-  const { data: roleOptions, isLoading: isRoleOptionsLoading } =
-    useRoleOptions({});
+  const { data: roleOptions, isLoading: isRoleOptionsLoading } = useRoleOptions(
+    {}
+  );
 
   const { data: industryOptions, isLoading: isIndustryOptionsLoading } =
     useIndustryOptions();
@@ -270,7 +271,6 @@ export const GlobalFilters = ({
 
     onFiltersChange(emptyFilters);
   };
-
 
   const buildMapUrl = useCallback(() => {
     const params = new URLSearchParams();

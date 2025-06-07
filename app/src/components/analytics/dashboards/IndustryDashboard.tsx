@@ -79,8 +79,6 @@ export const IndustryDashboard = ({
     );
   }, [page, itemsPerPage, sortField, sortOrder, view, trendFrequency]);
 
-
-
   const { data, isLoading, isFetching } = useFetchAnalytics({
     params: {
       ...filters,
@@ -94,17 +92,16 @@ export const IndustryDashboard = ({
     },
     options: {
       enabled: !shouldUseGlobalData,
-      isInitialLoad: shouldUseGlobalData,
     },
   });
 
   const currentData = shouldUseGlobalData ? globalData : data?.industryData;
-    const industries = currentData?.industries || [];
+  const industries = currentData?.industries || [];
   const totalItems = currentData?.count || 0;
 
   const isWaitingForData =
-  (shouldUseGlobalData && isGlobalDataLoading) ||
-  (!shouldUseGlobalData && (isLoading || isFetching));
+    (shouldUseGlobalData && isGlobalDataLoading) ||
+    (!shouldUseGlobalData && (isLoading || isFetching));
 
   useEffect(() => {
     setPageInput(String(page));

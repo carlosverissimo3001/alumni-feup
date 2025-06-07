@@ -75,6 +75,7 @@ function AnalyticsContent() {
   const { isAnyOpen } = useDropdownContext();
   const { setIsLoading } = useLoading();
 
+
   // State
   const [showScrollButton, setShowScrollButton] = useState(false);
   const [stats, setStats] = useState<{
@@ -92,7 +93,7 @@ function AnalyticsContent() {
   const [initializedFromURL, setInitializedFromURL] = useState(false);
   const [geoMode, setGeoMode] = useState<GeoDrillType>(GeoDrillType.COUNTRY);
   const [educationMode, setEducationMode] = useState<EducationDrillType>(
-    EducationDrillType.FACULTY
+    EducationDrillType.MAJOR
   );
   const [classificationLevel, setClassificationLevel] =
     useState<ClassificationLevel>(ClassificationLevel.LEVEL_5);
@@ -555,12 +556,7 @@ function AnalyticsContent() {
           />
         </div>
 
-        <AlumniTable
-          globalData={data?.alumniData}
-          isGlobalDataLoading={isLoading}
-          filters={combinedFilters}
-          onAddToFilters={handleAddAlumniToFilters}
-        />
+        <AlumniTable filters={combinedFilters} onAddToFilters={handleAddAlumniToFilters} />
 
         <TooltipProvider>
           <Tooltip>

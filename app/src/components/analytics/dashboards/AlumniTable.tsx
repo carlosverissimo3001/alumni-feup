@@ -20,7 +20,7 @@ import { SortBy, SortOrder, ITEMS_PER_PAGE } from "@/consts";
 import { ExternalLink, Filter, Users, Search, X, Earth } from "lucide-react";
 import TableTitle from "../common/TableTitle";
 import Image from "next/image";
-import { AlumniListItemDto, AlumniListResponseDto, AnalyticsControllerGetAnalyticsSelectorTypeEnum as SelectorType } from "@/sdk";
+import { AlumniListItemDto, AnalyticsControllerGetAnalyticsSelectorTypeEnum as SelectorType } from "@/sdk";
 import {
   Tooltip,
   TooltipContent,
@@ -33,8 +33,6 @@ import { Input } from "@/components/ui/input";
 import { useFetchAnalytics } from "@/hooks/analytics/useFetchAnalytics";
 
 type AlumniTableProps = {
-  globalData?: AlumniListResponseDto;
-  isGlobalDataLoading?: boolean;
   filters: FilterState;
   onAddToFilters?: (alumniId: string) => void;
 };
@@ -77,7 +75,7 @@ const PaginationDisplay = ({
   );
 };
 
-export const AlumniTable = ({ globalData, isGlobalDataLoading, filters, onAddToFilters }: AlumniTableProps) => {
+export const AlumniTable = ({ filters, onAddToFilters }: AlumniTableProps) => {
   const { user } = useAuth();
   const userId = user?.id;
 
@@ -111,15 +109,6 @@ export const AlumniTable = ({ globalData, isGlobalDataLoading, filters, onAddToF
     setPage(1);
   }, [filters]);
 
-  const shouldUseGlobalData = useMemo(() => {
-    return (
-      page === 1 &&
-      itemsPerPage === ITEMS_PER_PAGE[1] &&
-      sortField === SortBy.NAME &&
-      sortOrder === SortOrder.ASC &&
-      searchQuery === ""
-    );
-  }, [page, itemsPerPage, sortField, sortOrder, searchQuery]);
 
   const { data, isLoading, isFetching } = useFetchAnalytics({
     params: {
@@ -133,12 +122,11 @@ export const AlumniTable = ({ globalData, isGlobalDataLoading, filters, onAddToF
     },
   });
 
-  const currentData = shouldUseGlobalData ? globalData : data?.alumniData;
+  const alumnus = data?.alumniData?.alumni || [];
+  const totalItems = data?.alumniData?.count || 0;
 
   const isWaitingForData =
-  (shouldUseGlobalData && isGlobalDataLoading) ||
-  (!shouldUseGlobalData && (isLoading || isFetching));
-
+    isLoading || isFetching;
 
   const buildMapUrl = (
     latitude?: number,
@@ -150,8 +138,7 @@ export const AlumniTable = ({ globalData, isGlobalDataLoading, filters, onAddToF
     return `/?lat=${latitude}&lng=${longitude}&group_by=cities`;
   };
 
-  const alumnus = currentData?.alumni || [];
-  const totalItems = currentData?.count || 0;
+
 
   const handleSort = (field: SortBy) => {
     if (sortField === field) {

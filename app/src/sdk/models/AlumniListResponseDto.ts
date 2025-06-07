@@ -34,17 +34,11 @@ export interface AlumniListResponseDto {
      */
     alumni: Array<AlumniListItemDto>;
     /**
-     * The total number of alumni in the database before applying the filters
-     * @type {number}
-     * @memberof AlumniListResponseDto
-     */
-    count: number;
-    /**
      * The total number of alumni in the database after applying the filters
      * @type {number}
      * @memberof AlumniListResponseDto
      */
-    filteredCount: number;
+    count: number;
 }
 
 /**
@@ -53,7 +47,6 @@ export interface AlumniListResponseDto {
 export function instanceOfAlumniListResponseDto(value: object): value is AlumniListResponseDto {
     if (!('alumni' in value) || value['alumni'] === undefined) return false;
     if (!('count' in value) || value['count'] === undefined) return false;
-    if (!('filteredCount' in value) || value['filteredCount'] === undefined) return false;
     return true;
 }
 
@@ -69,7 +62,6 @@ export function AlumniListResponseDtoFromJSONTyped(json: any, ignoreDiscriminato
         
         'alumni': ((json['alumni'] as Array<any>).map(AlumniListItemDtoFromJSON)),
         'count': json['count'],
-        'filteredCount': json['filteredCount'],
     };
 }
 
@@ -86,7 +78,6 @@ export function AlumniListResponseDtoToJSONTyped(value?: AlumniListResponseDto |
         
         'alumni': ((value['alumni'] as Array<any>).map(AlumniListItemDtoToJSON)),
         'count': value['count'],
-        'filteredCount': value['filteredCount'],
     };
 }
 

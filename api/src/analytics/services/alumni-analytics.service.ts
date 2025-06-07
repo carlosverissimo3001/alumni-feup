@@ -59,8 +59,7 @@ export class AlumniAnalyticsService {
 
     return {
       alumni: alumniMapped,
-      count: 0, // TODO: alumniCount,
-      filteredCount: alumnus.length,
+      count: alumnus.length,
     };
   }
 

@@ -3856,17 +3856,12 @@
           },
           "count": {
             "type": "number",
-            "description": "The total number of alumni in the database before applying the filters"
-          },
-          "filteredCount": {
-            "type": "number",
             "description": "The total number of alumni in the database after applying the filters"
           }
         },
         "required": [
           "alumni",
-          "count",
-          "filteredCount"
+          "count"
         ]
       },
       "CompanyListItemDto": {
