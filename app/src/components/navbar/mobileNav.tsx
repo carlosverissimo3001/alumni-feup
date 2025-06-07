@@ -7,6 +7,8 @@ import {
   FormInputIcon,
   MessageCircleCode,
   Menu,
+  UserPlus,
+  LogOut,
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -20,7 +22,7 @@ import {
 import { motion } from "framer-motion";
 
 const MobileNav = () => {
-  const { isAuthenticated, user } = useAuth();
+  const { isAuthenticated, user, logout } = useAuth();
   const pathname = usePathname();
 
   const mainRoutes = [
@@ -39,6 +41,12 @@ const MobileNav = () => {
       icon: <UserIcon size={24} />,
       href: user ? `/profile/${user.id}` : "/",
       disabled: !isAuthenticated,
+    },
+    {
+      label: "Join Us",
+      icon: <UserPlus size={24} />,
+      href: "/join-us",
+      disabled: isAuthenticated,
     },
   ];
 
@@ -62,75 +70,97 @@ const MobileNav = () => {
   ];
 
   return (
-    <div className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t w-full overflow-x-hidden z-[90]">
-      <div className="flex items-center justify-around p-2 max-w-full">
+    <div className="md:hidden fixed bottom-0 left-0 right-0 z-[90] bg-white/90 backdrop-blur-md shadow-[0_-1px_4px_rgba(0,0,0,0.06)]">
+      <div className="flex items-center justify-around py-2 px-3 max-w-full">
         {mainRoutes
           .filter((route) => !route.disabled)
-          .map((route) => (
-            <Link
-              key={route.label}
-              href={route.href}
-              className={cn(
-                "flex flex-col items-center p-2 rounded-lg transition-colors",
-                pathname === route.href
-                  ? "text-[#8C2D19]"
-                  : "text-zinc-400 hover:text-[#8C2D19]"
-              )}
-            >
-              <motion.div
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.95 }}
+          .map((route) => {
+            const isActive = pathname === route.href;
+            return (
+              <Link
+                key={route.label}
+                href={route.href}
+                className={cn(
+                  "flex flex-col items-center justify-center px-3 py-2 rounded-xl transition-all duration-200",
+                  isActive
+                    ? "bg-[#8C2D19]/10 text-[#8C2D19] font-medium"
+                    : "text-zinc-400 hover:text-[#8C2D19]"
+                )}
               >
-                {route.icon}
-              </motion.div>
-              <span className="text-xs mt-1">{route.label}</span>
-            </Link>
-          ))}
+                <motion.div
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="mb-0.5"
+                >
+                  {route.icon}
+                </motion.div>
+                <span className="text-[12px]">{route.label}</span>
+              </Link>
+            );
+          })}
+
         <Drawer>
           <DrawerTrigger asChild>
-            <button className="flex flex-col items-center p-2 text-zinc-400 hover:text-[#8C2D19] rounded-lg transition-colors">
+            <button className="flex flex-col items-center justify-center px-3 py-2 text-zinc-400 hover:text-[#8C2D19] rounded-xl transition-all duration-200">
               <motion.div
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.95 }}
+                className="mb-0.5"
               >
                 <Menu size={24} />
               </motion.div>
-              <span className="text-xs mt-1">More</span>
+              <span className="text-[12px]">More</span>
             </button>
           </DrawerTrigger>
-          <DrawerContent className="h-[40vh]">
-            <div className="bg-white h-full w-[90%] max-w-md mx-auto rounded-t-lg">
-            <div className="flex justify-between items-center px-4 pt-4 border-b pb-4">
-                <DrawerTitle className="text-lg font-semibold text-zinc-900">
-                  More Options
-                </DrawerTitle>
-              </div>
-              <div className="p-2">
-                <div className="space-y-2">
-                  {moreRoutes
-                    .filter((route) => !route.disabled)
-                    .map((route) => (
-                      <Link
-                        key={route.label}
-                        href={route.href}
-                        className={cn(
-                          "flex items-center p-3 rounded-lg transition-all duration-200",
-                          pathname === route.href
-                            ? "bg-[#8C2D19]/10 text-[#8C2D19]"
-                            : "text-zinc-600 hover:text-[#8C2D19] hover:bg-[#8C2D19]/5"
-                        )}
+
+          <DrawerContent className="h-[45vh]">
+            <div className="bg-white h-full w-full max-w-md mx-auto rounded-t-2xl px-4 pt-3 pb-4 flex flex-col">
+              <DrawerTitle className="text-base font-semibold text-zinc-900 mb-3">
+                More Options
+              </DrawerTitle>
+              <div className="flex-1 space-y-1 overflow-y-auto">
+                {moreRoutes
+                  .filter((route) => !route.disabled)
+                  .map((route) => (
+                    <Link
+                      key={route.label}
+                      href={route.href}
+                      className={cn(
+                        "flex items-center p-3 rounded-xl transition-all duration-200",
+                        pathname === route.href
+                          ? "bg-[#8C2D19]/10 text-[#8C2D19]"
+                          : "text-zinc-600 hover:text-[#8C2D19] hover:bg-[#8C2D19]/5"
+                      )}
+                    >
+                      <motion.div
+                        whileHover={{ scale: 1.1 }}
+                        whileTap={{ scale: 0.95 }}
+                        className="mr-3"
                       >
-                        <motion.div
-                          whileHover={{ scale: 1.1 }}
-                          whileTap={{ scale: 0.95 }}
-                          className="mr-3"
-                        >
-                          {route.icon}
-                        </motion.div>
-                        <span className="font-medium">{route.label}</span>
-                      </Link>
-                    ))}
-                </div>
+                        {route.icon}
+                      </motion.div>
+                      <span className="font-medium">{route.label}</span>
+                    </Link>
+                  ))}
+
+                {isAuthenticated && (
+                  <>
+                    <div className="h-px bg-zinc-200 my-2" />
+                    <button
+                      onClick={logout}
+                      className="flex items-center p-3 w-full rounded-xl transition-all duration-200 text-red-500/80 hover:text-red-500 hover:bg-red-100"
+                    >
+                      <motion.div
+                        whileHover={{ scale: 1.1 }}
+                        whileTap={{ scale: 0.95 }}
+                        className="mr-3"
+                      >
+                        <LogOut size={24} />
+                      </motion.div>
+                      <span className="font-medium">Logout</span>
+                    </button>
+                  </>
+                )}
               </div>
             </div>
           </DrawerContent>
