@@ -253,7 +253,6 @@ export const EducationDashboard = ({
 
   const renderTableView = () => {
     const data = getDataByMode();
-    console.log("data", data);
 
     return (
       <>

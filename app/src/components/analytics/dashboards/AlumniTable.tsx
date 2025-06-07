@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   Table,
   TableBody,
@@ -20,7 +20,7 @@ import { SortBy, SortOrder, ITEMS_PER_PAGE } from "@/consts";
 import { ExternalLink, Filter, Users, Search, X, Earth } from "lucide-react";
 import TableTitle from "../common/TableTitle";
 import Image from "next/image";
-import { AlumniListItemDto } from "@/sdk";
+import { AlumniListItemDto, AlumniListResponseDto, AnalyticsControllerGetAnalyticsSelectorTypeEnum as SelectorType } from "@/sdk";
 import {
   Tooltip,
   TooltipContent,
@@ -33,6 +33,8 @@ import { Input } from "@/components/ui/input";
 import { useFetchAnalytics } from "@/hooks/analytics/useFetchAnalytics";
 
 type AlumniTableProps = {
+  globalData?: AlumniListResponseDto;
+  isGlobalDataLoading?: boolean;
   filters: FilterState;
   onAddToFilters?: (alumniId: string) => void;
 };
@@ -75,7 +77,7 @@ const PaginationDisplay = ({
   );
 };
 
-export const AlumniTable = ({ filters, onAddToFilters }: AlumniTableProps) => {
+export const AlumniTable = ({ globalData, isGlobalDataLoading, filters, onAddToFilters }: AlumniTableProps) => {
   const { user } = useAuth();
   const userId = user?.id;
 
@@ -109,18 +111,34 @@ export const AlumniTable = ({ filters, onAddToFilters }: AlumniTableProps) => {
     setPage(1);
   }, [filters]);
 
+  const shouldUseGlobalData = useMemo(() => {
+    return (
+      page === 1 &&
+      itemsPerPage === ITEMS_PER_PAGE[1] &&
+      sortField === SortBy.NAME &&
+      sortOrder === SortOrder.ASC &&
+      searchQuery === ""
+    );
+  }, [page, itemsPerPage, sortField, sortOrder, searchQuery]);
+
   const { data, isLoading, isFetching } = useFetchAnalytics({
-    dashboardType: "alumni",
     params: {
       ...filters,
       limit: itemsPerPage,
       sortBy: sortField,
       sortOrder: sortOrder,
       offset: (page - 1) * itemsPerPage,
-      includeTrend: false,
       alumniSearch: searchQuery || undefined,
+      selectorType: SelectorType.Alumni,
     },
   });
+
+  const currentData = shouldUseGlobalData ? globalData : data?.alumniData;
+
+  const isWaitingForData =
+  (shouldUseGlobalData && isGlobalDataLoading) ||
+  (!shouldUseGlobalData && (isLoading || isFetching));
+
 
   const buildMapUrl = (
     latitude?: number,
@@ -132,8 +150,8 @@ export const AlumniTable = ({ filters, onAddToFilters }: AlumniTableProps) => {
     return `/?lat=${latitude}&lng=${longitude}&group_by=cities`;
   };
 
-  const alumnus = data?.alumni || [];
-  const totalItems = data?.filteredCount || 0;
+  const alumnus = currentData?.alumni || [];
+  const totalItems = currentData?.count || 0;
 
   const handleSort = (field: SortBy) => {
     if (sortField === field) {
@@ -180,7 +198,7 @@ export const AlumniTable = ({ filters, onAddToFilters }: AlumniTableProps) => {
                 customAlumniHeader="LinkedIn"
               />
 
-              {isLoading || isFetching ? (
+              {isWaitingForData ? (
                 <AlumniTableSkeleton className="animate-pulse bg-gradient-to-r from-gray-200 to-gray-100" />
               ) : (
                 <TableBody className="bg-white divide-y divide-gray-200">

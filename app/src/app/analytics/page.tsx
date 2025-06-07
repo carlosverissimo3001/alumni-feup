@@ -17,7 +17,7 @@ import {
   AlumniTable,
   SeniorityDashboard,
 } from "@/components/analytics/dashboards";
-import { useState, useCallback, useMemo, useEffect, Suspense } from "react";
+import { useState, useCallback, useMemo, useEffect } from "react";
 import OverallStats from "@/components/analytics/OverallStats";
 import { GlobalFilters, FilterState } from "@/components/analytics/common";
 import { handleDateRange } from "@/utils/date";
@@ -41,6 +41,7 @@ import {
   GeoDrillType,
   ClassificationLevel,
 } from "@/types/drillType";
+import GlobalLoadingModal from "@/components/analytics/common/GlobalLoadingModal";
 
 const initialFilters: FilterState = {
   dateRange: undefined,
@@ -66,24 +67,7 @@ const initialFilters: FilterState = {
 };
 
 export default function Analytics() {
-  return (
-    <Suspense
-      fallback={
-        <div className="p-6 space-y-3 bg-gray-100 min-h-screen">
-          <div className="flex items-center gap-4">
-            <ChartSpline className="h-8 w-8 text-[#8C2D19]" />
-            <div>
-              <h1 className="text-3xl font-extrabold text-[#8C2D19]">
-                Loading Analytics...
-              </h1>
-            </div>
-          </div>
-        </div>
-      }
-    >
-      <AnalyticsContent />
-    </Suspense>
-  );
+  return <AnalyticsContent />;
 }
 
 function AnalyticsContent() {
@@ -171,6 +155,10 @@ function AnalyticsContent() {
       isInitialLoad: true,
     },
   });
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   /*** Helper Functions ***/
   const getClassificationLevel = (classificationLevel: ClassificationLevel) => {
@@ -483,6 +471,7 @@ function AnalyticsContent() {
 
   return (
     <div className="p-6 space-y-3 bg-gray-100 min-h-screen relative">
+      <GlobalLoadingModal show={isLoading && !data} />
       <div className="flex items-center gap-4">
         <ChartSpline className="h-8 w-8 text-[#8C2D19]" />
         <div>
@@ -558,10 +547,12 @@ function AnalyticsContent() {
         />
       </div>
 
-      {/* <AlumniTable
-        filters={filters}
+      <AlumniTable
+        globalData={data?.alumniData}
+        isGlobalDataLoading={isLoading}
+        filters={combinedFilters}
         onAddToFilters={handleAddAlumniToFilters}
-      /> */}
+      />
 
       <TooltipProvider>
         <Tooltip>
