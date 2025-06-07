@@ -34,17 +34,11 @@ export interface GraduationListDto {
      */
     graduations: Array<GraduationListItemDto>;
     /**
-     * The number of graduations
+     * The number of cohorts, after applying the filters
      * @type {number}
      * @memberof GraduationListDto
      */
     count: number;
-    /**
-     * The number of graduations, after applying the filters
-     * @type {number}
-     * @memberof GraduationListDto
-     */
-    filteredCount: number;
 }
 
 /**
@@ -53,7 +47,6 @@ export interface GraduationListDto {
 export function instanceOfGraduationListDto(value: object): value is GraduationListDto {
     if (!('graduations' in value) || value['graduations'] === undefined) return false;
     if (!('count' in value) || value['count'] === undefined) return false;
-    if (!('filteredCount' in value) || value['filteredCount'] === undefined) return false;
     return true;
 }
 
@@ -69,7 +62,6 @@ export function GraduationListDtoFromJSONTyped(json: any, ignoreDiscriminator: b
         
         'graduations': ((json['graduations'] as Array<any>).map(GraduationListItemDtoFromJSON)),
         'count': json['count'],
-        'filteredCount': json['filteredCount'],
     };
 }
 
@@ -86,7 +78,6 @@ export function GraduationListDtoToJSONTyped(value?: GraduationListDto | null, i
         
         'graduations': ((value['graduations'] as Array<any>).map(GraduationListItemDtoToJSON)),
         'count': value['count'],
-        'filteredCount': value['filteredCount'],
     };
 }
 

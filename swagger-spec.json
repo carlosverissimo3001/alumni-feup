@@ -4033,18 +4033,13 @@
               "$ref": "#/components/schemas/FacultyListItemDto"
             }
           },
-          "filteredCount": {
-            "type": "number",
-            "description": "The number of faculties, after applying the filters"
-          },
           "count": {
             "type": "number",
-            "description": "The total number of faculties, regardless of filters"
+            "description": "The total number of faculties, after applying the filters"
           }
         },
         "required": [
           "faculties",
-          "filteredCount",
           "count"
         ]
       },
@@ -4100,17 +4095,12 @@
           },
           "count": {
             "type": "number",
-            "description": "The number of majors"
-          },
-          "filteredCount": {
-            "type": "number",
-            "description": "The number of majors, after applying the filters"
+            "description": "The number of majors(courses) after applying the filters"
           }
         },
         "required": [
           "majors",
-          "count",
-          "filteredCount"
+          "count"
         ]
       },
       "GraduationListItemDto": {
@@ -4157,17 +4147,12 @@
           },
           "count": {
             "type": "number",
-            "description": "The number of graduations"
-          },
-          "filteredCount": {
-            "type": "number",
-            "description": "The number of graduations, after applying the filters"
+            "description": "The number of cohorts, after applying the filters"
           }
         },
         "required": [
           "graduations",
-          "count",
-          "filteredCount"
+          "count"
         ]
       },
       "AnalyticsDto": {
