@@ -7,8 +7,6 @@ import {
   TooltipTrigger,
 } from "../ui/tooltip";
 import { motion } from "framer-motion";
-import { useEffect, useState } from "react";
-import { useSpring, animated } from "@react-spring/web";
 
 export type StatsCardProps = {
   icon: React.ReactNode;
@@ -23,36 +21,14 @@ export default function StatsCard({
   values,
   infoMessage,
 }: StatsCardProps) {
-  const [isLoaded, setIsLoaded] = useState(false);
-
-  const { number } = useSpring({
-    from: { number: 0 },
-    number: isLoaded && values ? values : 0,
-    delay: 150,
-    config: { mass: 1, tension: 20, friction: 10, duration: 1000 },
-  });
-
-  useEffect(() => {
-    if (values && values > 0) {
-      const timer = setTimeout(() => {
-        setIsLoaded(true);
-      }, 300);
-      return () => clearTimeout(timer);
-    }
-  }, [values]);
-
-
   if (!values || values === 0) {
     return (
-      <Card className="p-2.5 h-full bg-gray-100 animate-pulse rounded-xl border border-[#8C2D19]/20">
+      <Card className="p-2.5 h-full bg-white/50 rounded-xl border border-[#8C2D19]/10">
         <div className="flex items-center gap-3">
-          <div className="p-2.5 rounded-full bg-gray-200 h-10 w-10"></div>
-          <div className="w-full">
-            <div className="flex items-center justify-between">
-              <div className="h-4 bg-gray-200 rounded w-24"></div>
-              <div className="h-5 bg-gray-200 rounded w-10"></div>
-            </div>
-            <div className="h-6 bg-gray-200 rounded w-16 mt-1"></div>
+          <div className="p-2.5 rounded-full bg-[#8C2D19]/5 h-10 w-10 animate-pulse"></div>
+          <div className="w-full space-y-2">
+            <div className="h-4 bg-[#8C2D19]/5 rounded w-24 animate-pulse"></div>
+            <div className="h-6 bg-[#8C2D19]/5 rounded w-16 animate-pulse"></div>
           </div>
         </div>
       </Card>
@@ -63,45 +39,60 @@ export default function StatsCard({
     <motion.div
       initial={{ opacity: 0.8 }}
       animate={{ opacity: 1 }}
-      transition={{ duration: 0.4 }}
-      whileHover={{ scale: 1.02 }}
+      transition={{ duration: 0.2 }}
+      whileHover={{ scale: 1.01 }}
       className="h-full"
     >
-      <Card className="p-2.5 h-full bg-gradient-to-br from-white via-[#FCEFEA] to-[#8C2D19]/15 hover:shadow-lg hover:shadow-[#8C2D19]/20 hover:border-[#8C2D19]/50 transition-all duration-300 rounded-xl border border-[#8C2D19]/20 hover:scale-105">
-        <div className="flex items-center gap-3">
-          <div className="p-2.5 rounded-full bg-[#8C2D19]/20 hover:bg-[#8C2D19]/30 transition-colors shadow-sm flex-shrink-0 group">
-            <div className="group-hover:animate-pulse">{icon}</div>
-          </div>
-          <div className="w-full">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-1">
-                <p className="text-sm font-semibold text-[#000000] truncate max-w-[100px] sm:max-w-full">
-                  {name}
-                </p>
-                {infoMessage && (
-                  <TooltipProvider>
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <Info className="h-4 w-4 text-[#8C2D19]" />
-                      </TooltipTrigger>
-                      <TooltipContent
-                        side="top"
-                        align="center"
-                        className="max-w-xs"
-                      >
-                        <p className="text-sm">{infoMessage}</p>
-                      </TooltipContent>
-                    </Tooltip>
-                  </TooltipProvider>
-                )}
+      <TooltipProvider>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Card 
+              className="p-2.5 h-full bg-gradient-to-br from-white via-[#FCEFEA] to-[#8C2D19]/15 hover:shadow-lg hover:shadow-[#8C2D19]/20 hover:border-[#8C2D19]/50 transition-all duration-300 rounded-xl border border-[#8C2D19]/20 cursor-pointer"
+              role="article"
+              aria-label={`${name}: ${values.toLocaleString("pt-PT")}`}
+            >
+              <div className="flex items-center gap-3">
+                <div className="p-2.5 rounded-full bg-[#8C2D19]/20 hover:bg-[#8C2D19]/30 transition-colors shadow-sm flex-shrink-0 group">
+                  <div className="group-hover:animate-pulse">{icon}</div>
+                </div>
+                <div className="w-full">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-1">
+                      <p className="text-sm font-semibold text-[#000000] truncate max-w-[100px] sm:max-w-full">
+                        {name}
+                      </p>
+                      {infoMessage && (
+                        <TooltipProvider>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <Info className="h-4 w-4 text-[#8C2D19]" />
+                            </TooltipTrigger>
+                            <TooltipContent
+                              side="top"
+                              align="center"
+                              className="max-w-xs"
+                            >
+                              <p className="text-sm">{infoMessage}</p>
+                            </TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider>
+                      )}
+                    </div>
+                  </div>
+                  <h3 className="text-xl font-extrabold text-[#8C2D19] tracking-tight">
+                    {values.toLocaleString("pt-PT")}
+                  </h3>
+                </div>
               </div>
-            </div>
-            <motion.h3 className="text-xl font-extrabold text-[#8C2D19] tracking-tight">
-              <animated.span>{number.to((n) => Math.floor(n))}</animated.span>
-            </motion.h3>
-          </div>
-        </div>
-      </Card>
+            </Card>
+          </TooltipTrigger>
+          <TooltipContent side="top" className="text-sm">
+            <p>
+              {name}: <strong>{values.toLocaleString("pt-PT")}</strong>
+            </p>
+          </TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
     </motion.div>
   );
 }
