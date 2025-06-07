@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Table,
   TableBody,
@@ -71,16 +71,12 @@ export const SeniorityDashboard = ({
     setPage(1);
   }, [filters]);
 
-  const shouldUseGlobalData = useMemo(() => {
-    return (
-      page === 1 &&
-      itemsPerPage === ITEMS_PER_PAGE[1] &&
-      sortField === SortBy.COUNT &&
-      sortOrder === SortOrder.DESC &&
-      view === ViewType.TABLE &&
-      trendFrequency === TrendFrequency.Y5
-    );
-  }, [page, itemsPerPage, sortField, sortOrder, view, trendFrequency]);
+  const needsNewData =
+    page > 1 ||
+    view === ViewType.TREND ||
+    sortField !== SortBy.COUNT ||
+    sortOrder !== SortOrder.DESC ||
+    itemsPerPage !== ITEMS_PER_PAGE[1];
 
   const { data, isLoading, isFetching } = useFetchAnalytics({
     params: {
@@ -93,10 +89,12 @@ export const SeniorityDashboard = ({
       selectorType: SelectorType.Seniority,
     },
     options: {
-      enabled: !shouldUseGlobalData,
-      isInitialLoad: shouldUseGlobalData,
+      enabled: needsNewData,
     },
   });
+
+  const shouldUseGlobalData =
+  !needsNewData && !data?.seniorityData;
 
   const currentData = shouldUseGlobalData ? globalData : data?.seniorityData;
   const seniorityLevels = currentData?.seniorityLevels || [];
