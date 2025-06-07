@@ -2,18 +2,32 @@ import { PrismaService } from '@/prisma/prisma.service';
 import { QueryParamsDto } from '../dto/query-params.dto';
 import { buildWhereClause } from '../utils/query-builder';
 import { Injectable } from '@nestjs/common';
-import { mapAlumniFromPrisma, mapRoleFromPrisma } from '../utils/mapper';
+import {
+  mapAlumniFromPrisma,
+  mapRoleFromPrisma,
+  RawAlumni,
+} from '../utils/mapper';
 import { AlumniAnalyticsEntity } from '../entities/alumni.entity';
 import { graduationSelect, roleSelect } from '../utils/selectors';
+import { SELECTOR_TYPE } from '../consts/enum';
 
 @Injectable()
 export class AlumniAnalyticsRepository {
   constructor(private prisma: PrismaService) {}
 
+  /**
+   * The most important method of this whole thing - fetches all the data
+   * @param params - The parameters for the query
+   * @returns The alumni analytics entities
+   */
   async find(params: QueryParamsDto): Promise<AlumniAnalyticsEntity[]> {
     const { alumniWhere, roleWhere } = buildWhereClause(params);
 
-    const alumnus = await this.prisma.alumni.findMany({
+    const includeGraduations =
+      params.selectorType === SELECTOR_TYPE.EDUCATION ||
+      params.selectorType === SELECTOR_TYPE.ALL;
+
+    const alumnus = (await this.prisma.alumni.findMany({
       where: alumniWhere,
       select: {
         id: true,
@@ -24,11 +38,15 @@ export class AlumniAnalyticsRepository {
           where: roleWhere,
           select: roleSelect,
         },
-        Graduations: {
-          select: graduationSelect,
-        },
+        ...(includeGraduations && {
+          Graduations: {
+            select: graduationSelect,
+          },
+        }),
       },
-    });
+      // Need this as prisma can't infer nested relations when the
+      // graduation select is optional
+    })) as unknown as RawAlumni[];
 
     return alumnus.map(mapAlumniFromPrisma);
   }

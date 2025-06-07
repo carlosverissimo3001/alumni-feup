@@ -34,6 +34,13 @@ import {
     LocationAnalyticsEntityToJSON,
     LocationAnalyticsEntityToJSONTyped,
 } from './LocationAnalyticsEntity';
+import type { RoleMetadataVo } from './RoleMetadataVo';
+import {
+    RoleMetadataVoFromJSON,
+    RoleMetadataVoFromJSONTyped,
+    RoleMetadataVoToJSON,
+    RoleMetadataVoToJSONTyped,
+} from './RoleMetadataVo';
 import type { RoleRawAnalyticsEntity } from './RoleRawAnalyticsEntity';
 import {
     RoleRawAnalyticsEntityFromJSON,
@@ -120,6 +127,12 @@ export interface RoleAnalyticsEntity {
      * @memberof RoleAnalyticsEntity
      */
     wasSeniorityLevelModifiedByUser?: boolean;
+    /**
+     * The metadata of the role
+     * @type {RoleMetadataVo}
+     * @memberof RoleAnalyticsEntity
+     */
+    metadata?: RoleMetadataVo;
 }
 
 
@@ -173,6 +186,7 @@ export function RoleAnalyticsEntityFromJSONTyped(json: any, ignoreDiscriminator:
         'roleRaw': json['roleRaw'] == null ? undefined : RoleRawAnalyticsEntityFromJSON(json['roleRaw']),
         'wasSeniorityLevelAcceptedByUser': json['wasSeniorityLevelAcceptedByUser'] == null ? undefined : json['wasSeniorityLevelAcceptedByUser'],
         'wasSeniorityLevelModifiedByUser': json['wasSeniorityLevelModifiedByUser'] == null ? undefined : json['wasSeniorityLevelModifiedByUser'],
+        'metadata': json['metadata'] == null ? undefined : RoleMetadataVoFromJSON(json['metadata']),
     };
 }
 
@@ -199,6 +213,7 @@ export function RoleAnalyticsEntityToJSONTyped(value?: RoleAnalyticsEntity | nul
         'roleRaw': RoleRawAnalyticsEntityToJSON(value['roleRaw']),
         'wasSeniorityLevelAcceptedByUser': value['wasSeniorityLevelAcceptedByUser'],
         'wasSeniorityLevelModifiedByUser': value['wasSeniorityLevelModifiedByUser'],
+        'metadata': RoleMetadataVoToJSON(value['metadata']),
     };
 }
 

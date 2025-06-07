@@ -42,14 +42,9 @@ export class GraduationListDto {
   graduations: GraduationListItemDto[];
 
   @ApiProperty({
-    description: 'The number of graduations',
+    description: 'The number of cohorts, after applying the filters',
   })
   count: number;
-
-  @ApiProperty({
-    description: 'The number of graduations, after applying the filters',
-  })
-  filteredCount: number;
 }
 
 export class MajorListItemDto {
@@ -95,14 +90,9 @@ export class MajorListDto {
   majors: MajorListItemDto[];
 
   @ApiProperty({
-    description: 'The number of majors',
+    description: 'The number of majors(courses) after applying the filters',
   })
   count: number;
-
-  @ApiProperty({
-    description: 'The number of majors, after applying the filters',
-  })
-  filteredCount: number;
 }
 
 export class FacultyListItemDto {
@@ -143,12 +133,7 @@ export class FacultyListDto {
   faculties: FacultyListItemDto[];
 
   @ApiProperty({
-    description: 'The number of faculties, after applying the filters',
-  })
-  filteredCount: number;
-
-  @ApiProperty({
-    description: 'The total number of faculties, regardless of filters',
+    description: 'The total number of faculties, after applying the filters',
   })
   count: number;
 }

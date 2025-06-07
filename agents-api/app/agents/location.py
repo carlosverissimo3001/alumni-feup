@@ -39,6 +39,8 @@ from app.utils.role_db import get_role_by_id, update_role
 
 logger = logging.getLogger(__name__)
 
+DEFAULT_UPDATED_BY = "location-agent"
+
 # Get a database session for the service
 db = next(get_db())
 
@@ -122,10 +124,17 @@ llm_with_tools = cold_llm.bind_tools(tools)
 tool_node = ToolNode(tools=tools)
 
 # Rate limiter to avoid exceeding OpenAI's 200k tokens/minute cap
-rate_limiter = TokenRateLimiter()
+rate_limiter = TokenRateLimiter(
+    redis_client=Redis(host="localhost", port=6379, db=0),
+    distributed_key="openai_location_agent_rate_limiter",
+)
 
 # Helper to estimate token usage
-encoding = tiktoken.encoding_for_model(settings.OPENAI_DEFAULT_MODEL)
+try:
+    encoding = tiktoken.encoding_for_model(settings.OPENAI_DEFAULT_MODEL)
+except KeyError:
+    # Fallback to cl100k_base which is used by GPT-4 and newer models
+    encoding = tiktoken.get_encoding("cl100k_base")
 
 
 def count_tokens(messages: List[SystemMessage | HumanMessage]) -> int:
@@ -137,6 +146,7 @@ class LocationAgent:
         self._redis_cache = Redis(host="localhost", port=6379, db=0)
         self.CACHE_TTL = 60 * 60 * 24  # 24 hours
         self.MAX_RETRIES = 3
+        self._background_tasks = set()
 
     def _get_cache_key(self, location_input: LocationInput) -> str:
         if location_input.type == LocationType.COMPANY:
@@ -202,8 +212,18 @@ class LocationAgent:
                         ONLY use the tool to return the result.""",
                 ),
             ]
-            await rate_limiter.acquire(count_tokens(messages) + 100)
-            response = await llm_with_tools.ainvoke(messages)
+
+            # Calculate token estimate with buffer
+            token_estimate = count_tokens(messages) + 100
+            try:
+                await rate_limiter.acquire(token_estimate)
+                response = await llm_with_tools.ainvoke(messages)
+            except Exception as e:
+                if "429" in str(e) or isinstance(e, openai.RateLimitError):
+                    logger.warning(f"Rate limit hit in resolve_geo: {e}")
+                    # Let the retry decorator handle it
+                    raise e
+                raise
 
             state["messages"].append(response)
             tool_call = [tc for tc in response.tool_calls if tc["name"] == "return_geo_resolution"]
@@ -219,6 +239,7 @@ class LocationAgent:
         except Exception as e:
             logger.error(f"Error in geo resolution: {str(e)}")
             state["error"] = str(e)
+            raise
 
         return state
 
@@ -313,8 +334,18 @@ class LocationAgent:
                         Make sure to follow all the matching rules and standardization guidelines."""
                 ),
             ]
-            await rate_limiter.acquire(count_tokens(messages) + 100)
-            response = await llm_with_tools.ainvoke(messages)
+
+            # Calculate token estimate with buffer
+            token_estimate = count_tokens(messages) + 100
+            try:
+                await rate_limiter.acquire(token_estimate)
+                response = await llm_with_tools.ainvoke(messages)
+            except Exception as e:
+                if "429" in str(e) or isinstance(e, openai.RateLimitError):
+                    logger.warning(f"Rate limit hit in resolve_location_with_retry: {e}")
+                    # Let the retry decorator handle it
+                    raise e
+                raise
 
             state["messages"].append(response)
             tool_call = [
@@ -330,6 +361,7 @@ class LocationAgent:
                 raise e
             logger.error(f"Error in location resolution: {str(e)}")
             state["error"] = str(e)
+            raise
 
         return state
 
@@ -386,21 +418,26 @@ class LocationAgent:
                     seen[key] = location
 
                 # Trigger coordinates update as a background task
-                asyncio.create_task(coordinates_service.update_location_coordinates(location))
+                self._create_background_task(
+                    coordinates_service.update_location_coordinates(location)
+                )
 
             # Update the domain with the location
             try:
                 if state["input"].type == LocationType.COMPANY:
                     company = get_company_by_id(state["input"].company_id, db)
                     company.hq_location_id = location_result.id
+                    company.updated_by = DEFAULT_UPDATED_BY
                     update_company(company, db)
                 elif state["input"].type == LocationType.ROLE:
                     role = get_role_by_id(state["input"].role_id, db)
                     role.location_id = location_result.id
+                    role.updated_by = DEFAULT_UPDATED_BY
                     update_role(role, db)
                 elif state["input"].type == LocationType.ALUMNI:
                     alumni = find_by_id(state["input"].alumni_id, db)
                     alumni.current_location_id = location_result.id
+                    alumni.updated_by = DEFAULT_UPDATED_BY
                     update_alumni(alumni, db)
 
                 # Cache the result
@@ -456,6 +493,26 @@ class LocationAgent:
         """
         results = await self.process_locations([location_input])
         return results[0] if results else None
+
+    def _create_background_task(self, coro):
+        """Create and track a background task."""
+        task = asyncio.create_task(coro)
+        self._background_tasks.add(task)
+        task.add_done_callback(self._background_tasks.discard)
+        return task
+
+    async def close(self):
+        """Wait for all background tasks to complete."""
+        if self._background_tasks:
+            await asyncio.gather(*self._background_tasks, return_exceptions=True)
+
+    async def __aenter__(self):
+        """Async context manager entry."""
+        return self
+
+    async def __aexit__(self, exc_type, exc_val, exc_tb):
+        """Async context manager exit."""
+        await self.close()
 
 
 location_agent = LocationAgent()

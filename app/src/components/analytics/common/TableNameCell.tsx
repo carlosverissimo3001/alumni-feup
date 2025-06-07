@@ -176,14 +176,14 @@ export const TableNameCell = ({
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <div
-                      className="h-4 w-4 ml-1 text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer hover:text-[#8C2D19] shrink-0"
+                      className="h-4 w-4 ml-1 text-gray-400 transition-opacity cursor-pointer hover:text-[#8C2D19] shrink-0"
                       onClick={() => window.open(salaryDataUrl, "_blank")}
                     >
                       <DollarSign className="h-4 w-4 animate-pulse  bg-clip-text bg-gradient-to-r from-green-400 to-yellow-400" />{" "}
                     </div>
                   </TooltipTrigger>
                   <TooltipContent>
-                    <p>View Salary Insights on Levels.fyi for {name}</p>
+                    <p>View Salary Insights on Levels.fyi</p>
                   </TooltipContent>
                 </Tooltip>
               </TooltipProvider>

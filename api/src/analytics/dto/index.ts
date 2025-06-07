@@ -29,6 +29,7 @@ export { RoleListResponseDto, RoleListItemDto } from './role-list.dto';
 export { RoleOptionDto } from './role-option.dto';
 export { GetRoleHierarchyDto } from './get-role-hierarchy.dto';
 export { RoleHierarchyDto, RoleHierarchyItemDto } from './role-hierarchy.dto';
+export { GetRoleDto } from './get-role.dto';
 
 // Data point
 export { DataPointDto } from './data-point.dto';
@@ -55,3 +56,8 @@ export {
   SeniorityListResponseDto,
   SeniorityListItemDto,
 } from './seniority-list.dto';
+
+// Grouped Analytics
+export { AnalyticsDto } from './analytics-dto';
+export { AnalyticsOptionsDto } from './analytics-options.dto';
+export { OptionsParamDto } from './options-param.dto';

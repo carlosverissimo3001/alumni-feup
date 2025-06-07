@@ -22,6 +22,16 @@ export class CompanyRepository {
       select: {
         id: true,
         name: true,
+        _count: {
+          select: {
+            roles: true,
+          },
+        },
+      },
+      orderBy: {
+        roles: {
+          _count: 'desc',
+        },
       },
     });
   }

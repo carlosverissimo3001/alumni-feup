@@ -28,16 +28,20 @@ import { useState } from "react";
 import { Button } from "../ui/button";
 import { useToast } from "@/hooks/misc/useToast";
 import { cn } from "@/lib/utils";
+import LoadingSkeleton from "./LoadingSkeleton";
+import CompanyNotFound from "./CompanyNotFound";
+import ComingSoonSection from "./ComingSoonSection";
 
 type props = {
-  data: CompanyInsightsDto & { levelsFyiUrl?: string };
+  data?: CompanyInsightsDto;
+  isLoading?: boolean;
 };
 
-export default function CompanyOverview({ data }: props) {
-  const companyType = data.companyType
+export default function CompanyOverview({ data, isLoading = false }: props) {
+  const companyType = data?.companyType
     ? companyTypeConfig[data.companyType]
     : null;
-  const companySize = data.companySize
+  const companySize = data?.companySize
     ? companySizeConfig[data.companySize]
     : null;
   const { toast } = useToast();
@@ -62,9 +66,15 @@ export default function CompanyOverview({ data }: props) {
     }
   };
 
+  if (isLoading) {
+    return <LoadingSkeleton />;
+  }
+
+  if (!data) return <CompanyNotFound />;
+
   return (
     <div className="relative">
-      <Card className="w-[95%] md:w-4/5 lg:w-3/5 mx-auto bg-gradient-to-br from-white via-[#FCEFEA] to-[#8C2D19]/10 hover:shadow-xl hover:shadow-[#8C2D19]/20 hover:scale-101 transition-all duration-300 rounded-xl border border-[#8C2D19]/20">
+      <Card className="w-[95%] mt-40 sm:w-full md:w-4/5 lg:w-3/5 mx-auto bg-gradient-to-br from-white via-[#FCEFEA] to-[#8C2D19]/10 hover:shadow-xl hover:shadow-[#8C2D19]/20 hover:scale-101 transition-all duration-300 rounded-xl border border-[#8C2D19]/20">
         <CardHeader className="responsive-card-header flex flex-col sm:flex-row items-start gap-4 sm:gap-6 pb-4">
           <Avatar className="h-24 w-24 border-2 border-[#8C2D19]/20 shadow-sm hover:border-[#8C2D19]/50 hover:ring-2 hover:ring-[#8C2D19]/30 transition-all duration-300">
             <AvatarImage src={data.logo || ""} alt={data.name} />
@@ -87,13 +97,13 @@ export default function CompanyOverview({ data }: props) {
                   )}
                 </div>
 
-                <div className="flex flex-col items-end gap-2">
-                  <div className="flex flex-col sm:flex-row items-end sm:items-center gap-2 flex-wrap">
+                <div className="flex flex-col items-end gap-1">
+                  <div className="flex flex-col sm:flex-row items-end sm:items-center flex-wrap">
                     {data.website && (
                       <Link
                         href={data.website}
                         target="_blank"
-                        className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm text-muted-foreground hover:text-foreground hover:bg-gradient-to-r from-[#8C2D19]/10 to-gray-100 hover:scale-105 transition-all duration-200 rounded-md"
+                        className="inline-flex items-center gap-1.5 px-2 py-1.5 text-sm text-muted-foreground hover:text-foreground hover:bg-gradient-to-r from-[#8C2D19]/10 to-gray-100 hover:scale-105 transition-all duration-200 rounded-md"
                       >
                         <Globe2Icon className="h-4 w-4" />
                         Visit Website
@@ -103,7 +113,7 @@ export default function CompanyOverview({ data }: props) {
                       <Link
                         href={data.linkedinUrl}
                         target="_blank"
-                        className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm text-muted-foreground hover:text-foreground hover:bg-gradient-to-r from-[#8C2D19]/10 to-gray-100 hover:scale-105 transition-all duration-200 rounded-md"
+                        className="inline-flex items-center gap-1.5 px-2 py-1.5 text-sm text-muted-foreground hover:text-foreground hover:bg-gradient-to-r from-[#8C2D19]/10 to-gray-100 hover:scale-105 transition-all duration-200 rounded-md"
                       >
                         <Image
                           src="/logos/linkedin-icon.svg"
@@ -119,10 +129,10 @@ export default function CompanyOverview({ data }: props) {
                         <Link
                           href={data.levelsFyiUrl}
                           target="_blank"
-                          className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm text-muted-foreground hover:text-foreground hover:bg-gradient-to-r from-[#8C2D19]/10 to-gray-100 hover:scale-105 transition-all duration-200 rounded-md"
+                          className="inline-flex items-center gap-1.5 px-2 py-1.5 text-sm text-muted-foreground hover:text-foreground hover:bg-gradient-to-r from-[#8C2D19]/10 to-gray-100 hover:scale-105 transition-all duration-200 rounded-md"
                         >
                           <Image
-                            src="/logos/levels-fyi-logo.png"
+                            src="/logos/levels-fyi-simple.svg"
                             alt="Levels.fyi"
                             width={20}
                             height={20}
@@ -271,6 +281,8 @@ export default function CompanyOverview({ data }: props) {
           </motion.div>
         </CardContent>
       </Card>
+
+      <ComingSoonSection />
 
       <AnimatePresence>
         <motion.div

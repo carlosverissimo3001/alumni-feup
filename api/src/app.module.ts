@@ -53,6 +53,12 @@ import { AppController } from './app.controller';
       provide: APP_GUARD,
       useClass: ThrottlerGuard,
     },
+    /* 
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: LoggingInterceptor,
+    },
+     */
   ],
 })
 export class AppModule {}

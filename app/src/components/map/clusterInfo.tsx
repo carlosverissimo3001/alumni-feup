@@ -260,7 +260,7 @@ const ClusterInfo = ({
                   <ChevronRight></ChevronRight>
                   <div className="text-4xl font-bold mb-1">{(students - compareYearStudents)} of {totalAlumniPrev}</div>
                   <div
-                    className={`ml-auto px-3 py-1 rounded-full text-center bg-green-100 text-green-800}`}>
+                    className={`ml-auto px-3 py-1 rounded-full text-center ${((students - compareYearStudents) / totalAlumniPrev) > (students / totalAlumni) ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}}`}>
                     <p className="text-lg font-medium">
                       {(((students - compareYearStudents) / totalAlumniPrev) * 100).toFixed(2)}%
                     </p>
@@ -278,7 +278,7 @@ const ClusterInfo = ({
                   <ChevronRight></ChevronRight>
                   <div className="text-4xl font-bold mb-1">{students} of {totalAlumni }</div>
                   <div
-                  className={`ml-auto mb-1 text-center px-3 py-1 rounded-full bg-green-100 text-green-800}`}
+                  className={`ml-auto mb-1 text-center px-3 py-1 rounded-full ${((students - compareYearStudents) / totalAlumniPrev) < (students / totalAlumni) ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}}`}
                 >
                   <p className="text-lg font-medium">
                     {((students / totalAlumni) * 100).toFixed(2)}%

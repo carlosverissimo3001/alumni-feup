@@ -20,6 +20,9 @@ import {
 } from '../entities';
 import { EscoClassificationAnalyticsEntity } from '../entities/esco-classification.entity';
 import { JobClassificationMetadataVo } from '../vos/job-classification.metadata.vo';
+import { RoleMetadataVo } from '../vos/role-metadata.vo';
+
+const toNotNullableOptional = <T>(value: T | null) => value ?? undefined;
 
 // What a name lol
 type RawRoleRaw = {
@@ -42,6 +45,7 @@ type RawJobClassification = {
   wasAcceptedByUser?: boolean | null;
   wasModifiedByUser?: boolean | null;
   metadata?: Prisma.JsonValue | null;
+  modelUsed?: string | null;
 };
 
 type RawRole = {
@@ -57,6 +61,7 @@ type RawRole = {
   wasSeniorityLevelAcceptedByUser?: boolean | null;
   wasSeniorityLevelModifiedByUser?: boolean | null;
   RoleRaw: RawRoleRaw | null;
+  metadata?: Prisma.JsonValue | null;
 };
 
 type RawLocation = {
@@ -68,13 +73,13 @@ type RawLocation = {
   longitude?: number | null;
 };
 
-type RawAlumni = {
+export type RawAlumni = {
   id: string;
   fullName: string;
   linkedinUrl: string | null;
   profilePictureUrl: string | null;
   Roles: RawRole[];
-  Graduations: RawGraduation[];
+  Graduations?: RawGraduation[] | null;
   Location?: RawLocation | null;
 };
 
@@ -133,15 +138,15 @@ export const mapCompanyFromPrisma = (
 ): CompanyAnalyticsEntity => {
   return {
     ...company,
-    logo: company.logo ?? undefined,
-    linkedinUrl: company.linkedinUrl ?? undefined,
-    founded: company.founded ?? undefined,
-    levelsFyiUrl: company.levelsFyiUrl ?? undefined,
+    logo: toNotNullableOptional(company.logo),
+    linkedinUrl: toNotNullableOptional(company.linkedinUrl),
+    founded: toNotNullableOptional(company.founded),
+    levelsFyiUrl: toNotNullableOptional(company.levelsFyiUrl),
     industry: mapIndustryFromPrisma(company.Industry),
     location: mapLocationFromPrisma(company.Location),
-    companySize: company.companySize ?? undefined,
-    companyType: company.companyType ?? undefined,
-    website: company.website ?? undefined,
+    companySize: toNotNullableOptional(company.companySize),
+    companyType: toNotNullableOptional(company.companyType),
+    website: toNotNullableOptional(company.website),
   };
 };
 
@@ -168,7 +173,7 @@ export const mapEscoClassificationFromPrisma = (
 ): EscoClassificationAnalyticsEntity => {
   return {
     ...escoClassification,
-    escoUrl: escoClassification.escoUrl ?? undefined,
+    escoUrl: toNotNullableOptional(escoClassification.escoUrl),
   };
 };
 
@@ -192,12 +197,19 @@ export const mapJobClassificationFromPrisma = (
     : undefined;
 
   return {
-    ...jobClassification,
+    roleId: jobClassification.roleId,
     escoClassification: mapEscoClassificationFromPrisma(
       jobClassification.EscoClassification,
     ),
-    wasAcceptedByUser: jobClassification.wasAcceptedByUser ?? undefined,
-    wasModifiedByUser: jobClassification.wasModifiedByUser ?? undefined,
+    confidence: toNotNullableOptional(jobClassification.confidence),
+    escoClassificationId: jobClassification.escoClassificationId,
+    wasAcceptedByUser: toNotNullableOptional(
+      jobClassification.wasAcceptedByUser,
+    ),
+    wasModifiedByUser: toNotNullableOptional(
+      jobClassification.wasModifiedByUser,
+    ),
+    modelUsed: toNotNullableOptional(jobClassification.modelUsed),
     metadata,
   };
 };
@@ -216,8 +228,8 @@ export const mapLocationFromPrisma = (
     country: location.country ?? '',
     countryCode: location.countryCode ?? '',
     city: location.city ?? '',
-    latitude: location.latitude ?? undefined,
-    longitude: location.longitude ?? undefined,
+    latitude: toNotNullableOptional(location.latitude),
+    longitude: toNotNullableOptional(location.longitude),
   };
 };
 
@@ -227,16 +239,31 @@ export const mapLocationFromPrisma = (
  * @returns The mapped role
  */
 export const mapRoleFromPrisma = (role: RawRole): RoleAnalyticsEntity => {
+  const modelMetadata = role.metadata
+    ? (role.metadata as Prisma.JsonObject)
+    : undefined;
+
+  const metadata = modelMetadata
+    ? new RoleMetadataVo({ ...modelMetadata })
+    : undefined;
+
   return {
-    ...role,
-    endDate: role.endDate ?? undefined,
+    id: role.id,
+    alumniId: role.alumniId,
+    startDate: role.startDate,
+    isCurrent: role.isCurrent,
+    metadata,
+    seniorityLevel: role.seniorityLevel,
+    endDate: toNotNullableOptional(role.endDate),
     jobClassification: mapJobClassificationFromPrisma(role.JobClassification),
     company: mapCompanyFromPrisma(role.Company),
     location: mapLocationFromPrisma(role.Location),
-    wasSeniorityLevelAcceptedByUser:
-      role.wasSeniorityLevelAcceptedByUser ?? undefined,
-    wasSeniorityLevelModifiedByUser:
-      role.wasSeniorityLevelModifiedByUser ?? undefined,
+    wasSeniorityLevelAcceptedByUser: toNotNullableOptional(
+      role.wasSeniorityLevelAcceptedByUser,
+    ),
+    wasSeniorityLevelModifiedByUser: toNotNullableOptional(
+      role.wasSeniorityLevelModifiedByUser,
+    ),
     roleRaw: mapRoleRawFromPrisma(role.RoleRaw),
   };
 };
@@ -303,11 +330,12 @@ export const mapAlumniFromPrisma = (
   alumni: RawAlumni,
 ): AlumniAnalyticsEntity => {
   return {
-    ...alumni,
-    linkedinUrl: alumni.linkedinUrl ?? undefined,
-    profilePictureUrl: alumni.profilePictureUrl ?? undefined,
+    id: alumni.id,
+    fullName: alumni.fullName,
+    linkedinUrl: toNotNullableOptional(alumni.linkedinUrl),
+    profilePictureUrl: toNotNullableOptional(alumni.profilePictureUrl),
     roles: alumni.Roles.map(mapRoleFromPrisma),
-    graduations: alumni.Graduations.map(mapGraduationFromPrisma),
+    graduations: alumni.Graduations?.map(mapGraduationFromPrisma) ?? [],
     location: mapLocationFromPrisma(alumni.Location),
   };
 };

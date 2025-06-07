@@ -1,4 +1,4 @@
-import { RoleAnalyticsControllerGetSeniorityLevelsSeniorityLevelEnum as SeniorityLevel } from "@/sdk";
+import { AnalyticsControllerGetAnalyticsSeniorityLevelEnum as SeniorityLevel } from "@/sdk";
 
 
 export const mapSeniorityLevel = (seniorityLevel: SeniorityLevel) => {

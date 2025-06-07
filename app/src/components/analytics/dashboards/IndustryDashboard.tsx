@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   Table,
   TableBody,
@@ -8,10 +8,9 @@ import {
   TableContainer,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { IndustryListItemDto } from "@/sdk";
+import { IndustryListItemDto, IndustryListResponseDto } from "@/sdk";
 import { Factory, Filter, TrendingUp, TrendingDown, Info } from "lucide-react";
 import { DashboardSkeleton } from "../skeletons/DashboardSkeleton";
-import { useIndustryList } from "@/hooks/analytics/useIndustryList";
 import {
   PaginationControls,
   TableTitle,
@@ -36,13 +35,19 @@ import {
 } from "@/components/ui/tooltip";
 import { ViewType } from "@/types/view";
 import { TrendFrequency, EntityType } from "@/types/entityTypes";
+import { useFetchAnalytics } from "@/hooks/analytics/useFetchAnalytics";
+import { AnalyticsControllerGetAnalyticsSelectorTypeEnum as SelectorType } from "@/sdk";
 
 type IndustryDashboardProps = {
+  globalData?: IndustryListResponseDto;
+  isGlobalDataLoading?: boolean;
   filters: FilterState;
   onAddToFilters?: (industryId: string) => void;
 };
 
 export const IndustryDashboard = ({
+  globalData,
+  isGlobalDataLoading,
   filters,
   onAddToFilters,
 }: IndustryDashboardProps) => {
@@ -63,17 +68,40 @@ export const IndustryDashboard = ({
     setPage(1);
   }, [filters]);
 
-  const { data, isLoading, isFetching } = useIndustryList({
-    ...filters,
-    limit: itemsPerPage,
-    sortBy: sortField,
-    sortOrder: sortOrder,
-    offset: (page - 1) * itemsPerPage,
-    includeTrend: view === ViewType.TREND,
+  const shouldUseGlobalData = useMemo(() => {
+    return (
+      page === 1 &&
+      itemsPerPage === ITEMS_PER_PAGE[1] &&
+      sortField === SortBy.COUNT &&
+      sortOrder === SortOrder.DESC &&
+      view === ViewType.TABLE &&
+      trendFrequency === TrendFrequency.Y5
+    );
+  }, [page, itemsPerPage, sortField, sortOrder, view, trendFrequency]);
+
+  const { data, isLoading, isFetching } = useFetchAnalytics({
+    params: {
+      ...filters,
+      limit: itemsPerPage,
+      sortBy: sortField,
+      sortOrder: sortOrder,
+      offset: (page - 1) * itemsPerPage,
+      includeIndustryTrend: view === ViewType.TREND,
+      selectorType: SelectorType.Industry,
+      industryIds: filters.industryIds,
+    },
+    options: {
+      enabled: !shouldUseGlobalData,
+    },
   });
 
-  const industries = data?.industries || [];
-  const totalItems = data?.count || 0;
+  const currentData = shouldUseGlobalData ? globalData : data?.industryData;
+  const industries = currentData?.industries || [];
+  const totalItems = currentData?.count || 0;
+
+  const isWaitingForData =
+    (shouldUseGlobalData && isGlobalDataLoading) ||
+    (!shouldUseGlobalData && (isLoading || isFetching));
 
   useEffect(() => {
     setPageInput(String(page));
@@ -109,7 +137,7 @@ export const IndustryDashboard = ({
               hoverMessage="Alumni who have worked in this industry"
             />
 
-            {isLoading || isFetching ? (
+            {isWaitingForData ? (
               <DashboardSkeleton />
             ) : (
               <TableBody className="bg-white divide-y divide-gray-200">
@@ -207,7 +235,7 @@ export const IndustryDashboard = ({
   const renderChartView = () => (
     <div className="flex-1 flex flex-col border-t border-b border-gray-200 overflow-hidden">
       <div className="flex-1 flex items-center justify-center">
-        {isLoading || isFetching ? (
+        {isWaitingForData ? (
           <LoadingChart message="Loading chart data..." />
         ) : industries.length === 0 ? (
           <NotFoundComponent
@@ -218,7 +246,7 @@ export const IndustryDashboard = ({
         ) : (
           <ChartView
             data={industries}
-            isLoading={isLoading || isFetching}
+            isLoading={isWaitingForData}
             entityType={EntityType.INDUSTRY}
           />
         )}

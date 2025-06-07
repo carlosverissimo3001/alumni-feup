@@ -21,7 +21,7 @@ import "mapbox-gl/dist/mapbox-gl.css";
 import { GeoJSONProperties } from "./mapFilters";
 import { AlumniData } from "@/types/alumni";
 import { useSearchParams } from "next/navigation";
-import { GeoDrillType } from "@/types/drillType";
+import { GEO_DRILL_TYPE } from "@/types/drillType";
 
 type MapViewProps = {
   loading: boolean;
@@ -67,7 +67,6 @@ const MapView = ({
   const searchParams = useSearchParams();
 
   const onMapLoad = useCallback(() => {
-    console.log("Map loaded1");
     mapRef.current.loadImage(
       "logos/arrow.png",
       (error: Error | null, image: HTMLImageElement | undefined) => {
@@ -98,7 +97,7 @@ const MapView = ({
       const lat = searchParams.get("lat");
       const lng = searchParams.get("lng");
       const groupBy = searchParams.get("group_by");
-      if (groupBy && groupBy === GeoDrillType.COUNTRY) {
+      if (groupBy && groupBy === GEO_DRILL_TYPE.COUNTRY) {
         zoom = 5.5;
       }
 
@@ -220,8 +219,7 @@ const MapView = ({
     }
   };
 
-  const TOKEN =
-    "pk.eyJ1IjoiamVuaWZlcjEyMyIsImEiOiJjbHJndXUyNnAwamF1MmptamwwMjNqZm0xIn0.vUNEIrEka3ibQKmb8jzgFQ";
+  const TOKEN = process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN;
 
   return (
     <div className="fixed inset-0 w-screen h-screen">
@@ -234,9 +232,9 @@ const MapView = ({
 
       <MapGL
         initialViewState={{
-          latitude: 38.736946,
-          longitude: -9.142685,
-          zoom: 3,
+          latitude: 46.2276,
+          longitude: -2.2137,
+          zoom: 3.5,
         }}
         mapStyle="mapbox://styles/mapbox/dark-v11"
         mapboxAccessToken={TOKEN}
