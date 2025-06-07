@@ -32,8 +32,6 @@ export class EducationAnalyticsService {
     alumnusUnfiltered: AlumniAnalyticsEntity[],
     query: QueryParamsDto,
   ): Promise<FacultyListDto> {
-    const totalFaculties = await this.educationRepository.countFaculties();
-
     const alumnus = applyDateFilters(alumnusUnfiltered, query);
 
     const graduations = alumnus.flatMap((a) => a.graduations || []);
@@ -79,8 +77,7 @@ export class EducationAnalyticsService {
 
     return {
       faculties: sortedFaculties.slice(offset, offset + limit),
-      count: totalFaculties,
-      filteredCount: faculties.size,
+      count: faculties.size,
     };
   }
 
@@ -88,8 +85,6 @@ export class EducationAnalyticsService {
     alumnusUnfiltered: AlumniAnalyticsEntity[],
     query: QueryParamsDto,
   ): Promise<MajorListDto> {
-    const totalMajors = await this.educationRepository.countCourses();
-
     const alumnus = applyDateFilters(alumnusUnfiltered, query);
 
     const graduations = alumnus.flatMap((a) => a.graduations || []);
@@ -135,17 +130,14 @@ export class EducationAnalyticsService {
 
     return {
       majors: sortedCourses.slice(offset, offset + limit),
-      count: totalMajors,
-      filteredCount: courses.size,
+      count: courses.size,
     };
   }
 
-  async getGraduations(
+  getGraduations(
     alumnusUnfiltered: AlumniAnalyticsEntity[],
     query: QueryParamsDto,
-  ): Promise<GraduationListDto> {
-    const totalGraduations = await this.educationRepository.countGraduations();
-
+  ): GraduationListDto {
     const alumnus = applyDateFilters(alumnusUnfiltered, query);
 
     const graduations = alumnus.flatMap((a) => a.graduations || []);
@@ -177,8 +169,7 @@ export class EducationAnalyticsService {
 
     return {
       graduations: sortedGraduations.slice(offset, offset + limit),
-      count: totalGraduations,
-      filteredCount: graduationMap.size,
+      count: graduationMap.size,
     };
   }
 
