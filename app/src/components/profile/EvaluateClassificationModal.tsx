@@ -22,7 +22,7 @@ import {
   ArrowUpRight,
 } from "lucide-react";
 import { mapSeniorityLevel } from "@/utils/mappings";
-import { useEvaluateClassifcation } from "@/hooks/profile/useEvaluateClassifcation";
+import { useEvaluateClassification } from "@/hooks/profile/useEvaluateClassification";
 import { useEvaluateSeniority } from "@/hooks/profile/useEvaluateSeniority";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
@@ -72,7 +72,7 @@ export function EvaluateClassificationModal({ role, trigger }: Props) {
   );
 
   const { mutate: evaluateClassification, isPending: classifPending } =
-    useEvaluateClassifcation({
+    useEvaluateClassification({
       onSuccess: () => {
         setClassificationEvaluated(true);
       },
