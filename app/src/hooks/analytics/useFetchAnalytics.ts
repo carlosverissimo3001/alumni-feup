@@ -21,7 +21,11 @@ export const useFetchAnalytics = ({
 }: UseFetchAnalyticsProps) => {
   const filteredParams = {
     ...filterApiRequestParams(params),
-    includeTrend: params.includeTrend ?? false,
+    includeCompanyTrend: params.includeCompanyTrend ?? false,
+    includeRoleTrend: params.includeRoleTrend ?? false,
+    includeIndustryTrend: params.includeIndustryTrend ?? false,
+    includeGeoTrend: params.includeGeoTrend ?? false,
+    includeSeniorityTrend: params.includeSeniorityTrend ?? false,
   };
 
   const isInitial = options.isInitialLoad ?? false;
@@ -29,7 +33,7 @@ export const useFetchAnalytics = ({
     ? ["analytics", "initial", filteredParams]
     : ["analytics", params.selectorType, filteredParams];
 
-  console.log("queryKey", queryKey);
+  //console.log("queryKey", queryKey);
 
   return useQuery({
     queryKey,

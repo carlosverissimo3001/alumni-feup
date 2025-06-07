@@ -10,6 +10,7 @@ import {
   AlumniAnalyticsEntity,
   CompanyAnalyticsEntity,
   CourseAnalyticsEntity,
+  FacultyAnalyticsEntity,
   IndustryAnalyticsEntity,
   JobClassificationAnalyticsEntity,
   LocationAnalyticsEntity,
@@ -38,7 +39,7 @@ type RawJobClassification = {
   roleId: string;
   escoClassificationId: string;
   confidence?: number | null;
-  EscoClassification?: RawEscoClassification;
+  EscoClassification: RawEscoClassification;
   wasAcceptedByUser?: boolean | null;
   wasModifiedByUser?: boolean | null;
   metadata?: Prisma.JsonValue | null;
@@ -54,10 +55,10 @@ type RawRole = {
   seniorityLevel: SENIORITY_LEVEL;
   Location?: RawLocation | null;
   JobClassification?: RawJobClassification | null;
-  Company?: RawCompany | null;
+  Company: RawCompany;
   wasSeniorityLevelAcceptedByUser?: boolean | null;
   wasSeniorityLevelModifiedByUser?: boolean | null;
-  RoleRaw?: RawRoleRaw | null;
+  RoleRaw: RawRoleRaw | null;
   metadata?: Prisma.JsonValue | null;
 };
 
@@ -75,8 +76,8 @@ type RawAlumni = {
   fullName: string;
   linkedinUrl: string | null;
   profilePictureUrl: string | null;
-  Roles?: RawRole[];
-  Graduations?: RawGraduation[];
+  Roles: RawRole[];
+  Graduations: RawGraduation[];
   Location?: RawLocation | null;
 };
 
@@ -88,7 +89,7 @@ type RawCompany = {
   linkedinUrl?: string | null;
   website?: string | null;
   founded?: number | null;
-  Industry?: RawIndustry | null;
+  Industry: RawIndustry;
   Location?: RawLocation | null;
   companySize?: COMPANY_SIZE | null;
   companyType?: COMPANY_TYPE | null;
@@ -110,7 +111,7 @@ type RawCourse = {
   id: string;
   name: string;
   acronym: string;
-  Faculty?: RawFaculty | null;
+  Faculty: RawFaculty;
   status: COURSE_STATUS;
   courseType: COURSE_TYPE;
   startYear: number;
@@ -122,7 +123,7 @@ type RawGraduation = {
   alumniId: string;
   courseId: string;
   conclusionYear: number;
-  Course?: RawCourse | null;
+  Course: RawCourse;
 };
 
 /**
@@ -139,12 +140,8 @@ export const mapCompanyFromPrisma = (
     linkedinUrl: company.linkedinUrl ?? undefined,
     founded: company.founded ?? undefined,
     levelsFyiUrl: company.levelsFyiUrl ?? undefined,
-    industry: company.Industry
-      ? mapIndustryFromPrisma(company.Industry)
-      : undefined,
-    location: company.Location
-      ? mapLocationFromPrisma(company.Location)
-      : undefined,
+    industry: mapIndustryFromPrisma(company.Industry),
+    location: mapLocationFromPrisma(company.Location),
     companySize: company.companySize ?? undefined,
     companyType: company.companyType ?? undefined,
     website: company.website ?? undefined,
@@ -157,9 +154,8 @@ export const mapCompanyFromPrisma = (
  * @returns The mapped industry
  */
 const mapIndustryFromPrisma = (
-  industry?: RawIndustry | null,
-): IndustryAnalyticsEntity | undefined => {
-  if (!industry) return undefined;
+  industry: RawIndustry,
+): IndustryAnalyticsEntity => {
   return {
     ...industry,
   };
@@ -254,7 +250,7 @@ export const mapRoleFromPrisma = (role: RawRole): RoleAnalyticsEntity => {
     seniorityLevel: role.seniorityLevel,
     endDate: role.endDate ?? undefined,
     jobClassification: mapJobClassificationFromPrisma(role.JobClassification),
-    company: role.Company ? mapCompanyFromPrisma(role.Company) : undefined,
+    company: mapCompanyFromPrisma(role.Company),
     location: mapLocationFromPrisma(role.Location),
     wasSeniorityLevelAcceptedByUser:
       role.wasSeniorityLevelAcceptedByUser ?? undefined,
@@ -283,9 +279,7 @@ const mapGraduationFromPrisma = (
 ): GraduationAnalyticsEntity => {
   return {
     ...graduation,
-    course: graduation.Course
-      ? mapCourseFromPrisma(graduation.Course)
-      : undefined,
+    course: mapCourseFromPrisma(graduation.Course),
   };
 };
 
@@ -299,11 +293,23 @@ export const mapCourseFromPrisma = (
 ): CourseAnalyticsEntity => {
   return {
     ...course,
-    facultyId: course.Faculty?.id ?? '',
-    facultyAcronym: course.Faculty?.acronym ?? '',
+    facultyId: course.Faculty.id,
+    faculty: mapFacultyFromPrisma(course.Faculty),
+    facultyAcronym: course.Faculty.acronym,
     courseType: course.courseType,
     startYear: course.startYear,
     endYear: course.endYear ?? undefined,
+  };
+};
+
+/**
+ * Maps the faculty from the prisma model to a TypeScript object
+ * @param faculty - The faculty to map
+ * @returns The mapped faculty
+ */
+const mapFacultyFromPrisma = (faculty: RawFaculty): FacultyAnalyticsEntity => {
+  return {
+    ...faculty,
   };
 };
 
@@ -320,8 +326,9 @@ export const mapAlumniFromPrisma = (
     fullName: alumni.fullName,
     linkedinUrl: alumni.linkedinUrl ?? undefined,
     profilePictureUrl: alumni.profilePictureUrl ?? undefined,
-    roles: alumni.Roles?.map(mapRoleFromPrisma) ?? [],
-    graduations: alumni.Graduations?.map(mapGraduationFromPrisma) ?? [],
+    roles: alumni.Roles.map(mapRoleFromPrisma),
+    graduations: alumni.Graduations.map(mapGraduationFromPrisma),
     location: mapLocationFromPrisma(alumni.Location),
   };
 };
+

@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { LogExecutionTime } from '@/decorators/log-execution-time.decorator';
 import {
   DEFAULT_QUERY_LIMIT,
   DEFAULT_QUERY_OFFSET,
@@ -22,6 +21,7 @@ import { AlumniAnalyticsRepository, LocationRepository } from '../repositories';
 import { sortData } from '../utils';
 import { applyDateFilters } from '../utils/filters';
 import { TrendAnalyticsService } from './trend-analytics.service';
+import { LocationAnalyticsEntity } from '../entities';
 
 type GeoEntityMap = {
   name: string;
@@ -57,7 +57,7 @@ export class GeoAnalyticsService {
     });
 
     // Fetch all country coordinates in a single query
-    const countryCoordinatesMap =
+    const countryCoordinatesMap: Map<string, LocationAnalyticsEntity> =
       await this.locationRepository.getCountriesCoordinates(
         Array.from(uniqueCountryCodes),
       );
@@ -102,7 +102,7 @@ export class GeoAnalyticsService {
         longitude: data.longitude,
       }));
 
-    if (query.includeTrend) {
+    if (query.includeGeoTrend) {
       const trends = await Promise.all(
         countries.map((country) =>
           this.trendAnalyticsService.getCountryTrend({
@@ -173,7 +173,7 @@ export class GeoAnalyticsService {
         longitude: data.longitude,
       }));
 
-    if (query.includeTrend) {
+    if (query.includeGeoTrend) {
       const trends = await Promise.all(
         cities.map((city) =>
           this.trendAnalyticsService.getCityTrend({
@@ -201,7 +201,6 @@ export class GeoAnalyticsService {
     };
   }
 
-  @LogExecutionTime()
   async getCountriesOptions(): Promise<CountryOptionDto[]> {
     const locations = await this.locationRepository.findAll();
 
@@ -224,7 +223,6 @@ export class GeoAnalyticsService {
     return Array.from(uniqueCountries.values());
   }
 
-  @LogExecutionTime()
   async getCityOptions(query: GetCitiesDto): Promise<CityOptionDto[]> {
     const cities = await this.locationRepository.getCities(query.countryCodes);
 

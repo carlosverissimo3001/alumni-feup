@@ -1,16 +1,10 @@
-import {
-  RoleAnalyticsService,
-  SeniorityAnalyticsService,
-} from '@/analytics/services';
+import { RoleAnalyticsService } from '@/analytics/services';
 import { Controller, Get, Param, Query } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import {
-  QueryParamsDto,
-  RoleListResponseDto,
   RoleOptionDto,
   GetRoleHierarchyDto,
   RoleHierarchyDto,
-  SeniorityListResponseDto,
 } from '@/analytics/dto';
 import { RoleAnalyticsEntity } from '../entities';
 import { GetRoleDto } from '../dto/get-role.dto';
@@ -18,25 +12,7 @@ import { GetRoleDto } from '../dto/get-role.dto';
 @ApiTags('V1')
 @Controller('analytics/roles')
 export class RoleAnalyticsController {
-  constructor(
-    private readonly roleAnalyticsService: RoleAnalyticsService,
-    private readonly seniorityAnalyticsService: SeniorityAnalyticsService,
-  ) {}
-
-  @Get('/')
-  @ApiOperation({
-    summary:
-      'Returns the number of roles classified with each ESCO classification',
-  })
-  @ApiResponse({
-    status: 200,
-    description:
-      'The number of roles classified with each ESCO classification, and the level of classification of the role',
-    type: RoleListResponseDto,
-  })
-  async getRoles(@Query() query: QueryParamsDto) {
-    return this.roleAnalyticsService.getRolesWithCounts(query);
-  }
+  constructor(private readonly roleAnalyticsService: RoleAnalyticsService) {}
 
   @Get('/options')
   @ApiOperation({
@@ -65,19 +41,6 @@ export class RoleAnalyticsController {
   })
   async getRoleHierarchy(@Query() query: GetRoleHierarchyDto) {
     return this.roleAnalyticsService.getRoleHierarchy(query);
-  }
-
-  @Get('/seniority')
-  @ApiOperation({
-    summary: 'Returns the number of roles classified with each seniority level',
-  })
-  @ApiResponse({
-    status: 200,
-    description: 'The number of roles classified with each seniority level',
-    type: SeniorityListResponseDto,
-  })
-  async getSeniorityLevels(@Query() query: QueryParamsDto) {
-    return this.seniorityAnalyticsService.getSeniorityLevels(query);
   }
 
   @Get('/:id')

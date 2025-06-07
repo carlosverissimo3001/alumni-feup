@@ -32,7 +32,7 @@ import {
 } from "@/components/ui/tooltip";
 import {
   AnalyticsControllerGetAnalyticsSelectorTypeEnum as SelectorType,
-  RoleAnalyticsControllerGetSeniorityLevelsSeniorityLevelEnum as SeniorityLevel,
+  AnalyticsControllerGetAnalyticsSeniorityLevelEnum as SeniorityLevel,
 } from "@/sdk";
 import { useFetchAnalytics } from "@/hooks/analytics/useFetchAnalytics";
 import { ITEMS_PER_PAGE, SortBy, SortOrder } from "@/consts";
@@ -58,6 +58,7 @@ const initialFilters: FilterState = {
   excludeResearchAndHighEducation: false,
   search: undefined,
   hideUnknownRoles: false,
+  escoClassificationLevel: undefined,
   companySize: [],
   escoCodes: [],
   alumniIds: [],
@@ -106,7 +107,7 @@ function AnalyticsContent() {
     EducationDrillType.FACULTY
   );
   const [classificationLevel, setClassificationLevel] =
-    useState<ClassificationLevel>(ClassificationLevel.LEVEL_1);
+    useState<ClassificationLevel>(ClassificationLevel.LEVEL_5);
 
   // Hooks
   const router = useRouter();
@@ -165,7 +166,6 @@ function AnalyticsContent() {
       selectorType: SelectorType.All,
       sortOrder: SortOrder.DESC,
       offset: 0,
-      includeTrend: false,
     },
     options: {
       isInitialLoad: true,
@@ -509,8 +509,8 @@ function AnalyticsContent() {
           filters={combinedFilters}
           onAddToFilters={handleAddCompanyToFilters}
         />
-        {/* <GeoDashboard
-          globalGeoData={{
+        <GeoDashboard
+          globalData={{
             countryData: data?.countryData,
             cityData: data?.cityData,
           }}
@@ -520,21 +520,30 @@ function AnalyticsContent() {
           onAddToFilters={handleGeoAddToFilters}
           mode={geoMode}
           setMode={setGeoMode}
-        /> */}
-        {/*
+        />
         <RoleDashboard
+          globalData={data?.roleData}
+          isGlobalDataLoading={isLoading}
           onDataUpdate={handleRoleDataUpdate}
           filters={combinedFilters}
           onAddToFilters={handleAddRoleToFilters}
           classificationLevel={classificationLevel}
           setClassificationLevel={setClassificationLevel}
         />
+
         <IndustryDashboard
+          globalData={data?.industryData}
+          isGlobalDataLoading={isLoading}
           filters={combinedFilters}
           onAddToFilters={handleAddIndustryToFilters}
         />
-
         <EducationDashboard
+          globalData={{
+            faculties: data?.facultyData,
+            majors: data?.majorData,
+            graduations: data?.graduationData,
+          }}
+          isGlobalDataLoading={isLoading}
           filters={combinedFilters}
           mode={educationMode}
           setMode={setEducationMode}
@@ -542,9 +551,11 @@ function AnalyticsContent() {
         />
 
         <SeniorityDashboard
+          globalData={data?.seniorityData}
+          isGlobalDataLoading={isLoading}
           filters={combinedFilters}
           onAddToFilters={handleAddSeniorityToFilters}
-        /> */}
+        />
       </div>
 
       {/* <AlumniTable

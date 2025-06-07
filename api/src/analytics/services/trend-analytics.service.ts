@@ -6,7 +6,6 @@ import {
 } from '../entities';
 import { FREQUENCY, TREND_TYPE } from '../consts';
 import { Injectable } from '@nestjs/common';
-import { LogExecutionTime } from '@/decorators/log-execution-time.decorator';
 import { subYears } from 'date-fns';
 import { DataPointDto } from '../dto';
 import { getLabelForDate } from '../utils/date';
@@ -23,7 +22,6 @@ const THIRTY_YEARS_AGO = subYears(new Date(), 30);
 export class TrendAnalyticsService {
   constructor() {}
 
-  @LogExecutionTime()
   getCompanyTrend(params: TrendParams): DataPointDto[] {
     const { data, entityId } = params;
 
@@ -70,7 +68,6 @@ export class TrendAnalyticsService {
     return dataPoints;
   }
 
-  @LogExecutionTime()
   getCountryTrend(params: TrendParams): DataPointDto[] {
     const { data, entityId } = params;
 
@@ -90,7 +87,6 @@ export class TrendAnalyticsService {
     return this.aggregateActiveRoles(roles);
   }
 
-  @LogExecutionTime()
   getCityTrend(params: TrendParams): DataPointDto[] {
     const { data, entityId } = params;
 
@@ -110,7 +106,6 @@ export class TrendAnalyticsService {
     return this.aggregateActiveRoles(roles);
   }
 
-  @LogExecutionTime()
   getRoleTrend(params: TrendParams): DataPointDto[] {
     const { data, entityId } = params;
 
@@ -135,7 +130,6 @@ export class TrendAnalyticsService {
     return this.aggregateActiveRoles(roles);
   }
 
-  @LogExecutionTime()
   getSeniorityTrend(params: TrendParams): DataPointDto[] {
     const { data, entityId } = params;
 
@@ -154,7 +148,6 @@ export class TrendAnalyticsService {
     return this.aggregateActiveRoles(roles);
   }
 
-  @LogExecutionTime()
   getIndustryTrend(params: TrendParams): DataPointDto[] {
     const { data, entityId } = params;
 
@@ -174,7 +167,6 @@ export class TrendAnalyticsService {
     return this.aggregateActiveRoles(roles);
   }
 
-  @LogExecutionTime()
   getFacultyTrend(params: TrendParams): DataPointDto[] {
     const { data, entityId } = params;
 
@@ -193,7 +185,6 @@ export class TrendAnalyticsService {
     return this.aggregateActiveGraduations(graduations);
   }
 
-  @LogExecutionTime()
   getMajorTrend(params: TrendParams): DataPointDto[] {
     const { data, entityId } = params;
 

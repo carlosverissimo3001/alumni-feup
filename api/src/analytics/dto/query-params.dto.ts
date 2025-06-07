@@ -13,7 +13,7 @@ import {
   Min,
 } from 'class-validator';
 
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { ApiPropertyOptional } from '@nestjs/swagger';
 import { Transform, Type } from 'class-transformer';
 import { SORT_BY, SELECTOR_TYPE } from '../consts';
 import {
@@ -398,8 +398,8 @@ export class QueryParamsDto extends IncludeTrendDto {
 
   @ApiPropertyOptional({
     description: 'The ESCO classification level to filter by',
-    example: 1,
-    default: 1,
+    example: 5,
+    default: 5,
   })
   @IsOptional()
   @IsNumber()
@@ -467,14 +467,4 @@ export class QueryParamsDto extends IncludeTrendDto {
   @IsOptional()
   @IsString()
   sortOrder?: 'asc' | 'desc';
-
-  @ApiProperty({
-    description: 'Whether to include the trend data',
-    example: true,
-    type: 'boolean',
-  })
-  @IsNotNullableOptional()
-  @IsBoolean()
-  @Transform(({ obj }) => toBoolean(obj.includeTrend))
-  includeTrend?: boolean = false;
 }

@@ -1,7 +1,6 @@
 import {
   AnalyticsController,
   CompanyAnalyticsController,
-  EducationAnalyticsController,
   GeoAnalyticsController,
   IndustryAnalyticsController,
   RoleAnalyticsController,
@@ -33,7 +32,6 @@ import { AlumniAnalyticsController } from './controllers/alumni-analytics.contro
     CompanyAnalyticsController,
     GeoAnalyticsController,
     IndustryAnalyticsController,
-    EducationAnalyticsController,
     RoleAnalyticsController,
     AlumniAnalyticsController,
     AnalyticsController,

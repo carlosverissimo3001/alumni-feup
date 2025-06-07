@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
+import { APP_GUARD } from '@nestjs/core';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { AdminModule } from './admin/admin.module';
 import { AgentsApiModule } from './agents-api/agents-api.module';
@@ -17,7 +17,6 @@ import { ReviewModule } from './reviews/review.module';
 import { UserModule } from './user/user.module';
 import { EmailModule } from './email/email.module';
 import { AppController } from './app.controller';
-import { LoggingInterceptor } from './interceptors/logging.interceptor';
 
 @Module({
   imports: [
@@ -54,10 +53,12 @@ import { LoggingInterceptor } from './interceptors/logging.interceptor';
       provide: APP_GUARD,
       useClass: ThrottlerGuard,
     },
+    /* 
     {
       provide: APP_INTERCEPTOR,
       useClass: LoggingInterceptor,
     },
+     */
   ],
 })
 export class AppModule {}

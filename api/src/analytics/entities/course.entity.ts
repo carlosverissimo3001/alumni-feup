@@ -56,4 +56,10 @@ export class CourseAnalyticsEntity {
     type: String,
   })
   facultyId: string;
+
+  @ApiProperty({
+    description: 'The faculty of the course',
+    type: FacultyAnalyticsEntity,
+  })
+  faculty: FacultyAnalyticsEntity;
 }

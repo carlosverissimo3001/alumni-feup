@@ -42,6 +42,7 @@ export * from './EvaluateClassificationDto';
 export * from './EvaluateSeniorityLevelDto';
 export * from './ExtendedCompanyDto';
 export * from './Faculty';
+export * from './FacultyAnalyticsEntity';
 export * from './FacultyListDto';
 export * from './FacultyListItemDto';
 export * from './GeoJSONFeature';

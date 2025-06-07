@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { LogExecutionTime } from '@/decorators/log-execution-time.decorator';
 import {
   CompanyListItemExtendedDto,
   CompanyListResponseDto,
@@ -59,7 +58,7 @@ export class CompanyAnalyticsService {
       offset + limit,
     );
 
-    if (query.includeTrend) {
+    if (query.includeCompanyTrend) {
       const trends = await Promise.all(
         companies.map((company) =>
           this.trendAnalyticsService.getCompanyTrend({
@@ -98,11 +97,10 @@ export class CompanyAnalyticsService {
    * @param query - The filters to apply to the DB query
    * @returns A list of industries with the number of companies and alumni they have
    */
-  async getIndustryWithCounts(
+  async getIndustryAnalytics(
+    alumnusUnfiltered: AlumniAnalyticsEntity[],
     query: QueryParamsDto,
   ): Promise<IndustryListResponseDto> {
-    const alumnusUnfiltered = await this.alumniRepository.find(query);
-
     const alumnus = applyDateFilters(alumnusUnfiltered, query);
     const companiesWithAlumniCount = this.getCompanyMap(alumnus);
 
@@ -128,7 +126,7 @@ export class CompanyAnalyticsService {
       trend: [],
     }));
 
-    if (query.includeTrend) {
+    if (query.includeIndustryTrend) {
       const trends = await Promise.all(
         industries.map((industry) =>
           this.trendAnalyticsService.getIndustryTrend({

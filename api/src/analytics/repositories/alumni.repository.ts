@@ -5,48 +5,29 @@ import { Injectable } from '@nestjs/common';
 import { mapAlumniFromPrisma, mapRoleFromPrisma } from '../utils/mapper';
 import { AlumniAnalyticsEntity } from '../entities/alumni.entity';
 import { graduationSelect, roleSelect } from '../utils/selectors';
-import { Prisma } from '@prisma/client';
-
-export type AnalyticsSelect = {
-  includeRoles?: boolean;
-  includeGraduations?: boolean;
-  roleSelect?: Prisma.RoleSelect;
-  graduationSelect?: Prisma.GraduationSelect;
-};
 
 @Injectable()
 export class AlumniAnalyticsRepository {
   constructor(private prisma: PrismaService) {}
 
-  async find(
-    params: QueryParamsDto,
-    select?: AnalyticsSelect,
-  ): Promise<AlumniAnalyticsEntity[]> {
+  async find(params: QueryParamsDto): Promise<AlumniAnalyticsEntity[]> {
     const { alumniWhere, roleWhere } = buildWhereClause(params);
-
-    const selectObj: Prisma.AlumniSelect = {
-      id: true,
-      fullName: true,
-      linkedinUrl: true,
-      profilePictureUrl: true,
-    };
-
-    if (select?.includeRoles) {
-      selectObj.Roles = {
-        where: roleWhere,
-        select: select.roleSelect || roleSelect,
-      };
-    }
-
-    if (select?.includeGraduations) {
-      selectObj.Graduations = {
-        select: select.graduationSelect || graduationSelect,
-      };
-    }
 
     const alumnus = await this.prisma.alumni.findMany({
       where: alumniWhere,
-      select: selectObj,
+      select: {
+        id: true,
+        fullName: true,
+        linkedinUrl: true,
+        profilePictureUrl: true,
+        Roles: {
+          where: roleWhere,
+          select: roleSelect,
+        },
+        Graduations: {
+          select: graduationSelect,
+        },
+      },
     });
 
     return alumnus.map(mapAlumniFromPrisma);

@@ -26,6 +26,7 @@ import {
   CityListResponseDto,
   CountryListResponseDto,
   DataPointDto,
+  AnalyticsControllerGetAnalyticsSelectorTypeEnum as SelectorType,
 } from "@/sdk";
 import { GeoDrillType } from "@/types/drillType";
 import { EntityType, TrendFrequency } from "@/types/entityTypes";
@@ -48,7 +49,8 @@ import TableTitle from "../common/TableTitle";
 import TrendLineComponent from "../common/TrendLineComponent";
 import { DashboardSkeleton } from "../skeletons/DashboardSkeleton";
 import { useFetchAnalytics } from "@/hooks/analytics/useFetchAnalytics";
-import { AnalyticsControllerGetAnalyticsSelectorTypeEnum as SelectorType } from "@/sdk";
+
+// Types
 
 type GeoData = {
   countryData?: CountryListResponseDto;
@@ -89,29 +91,22 @@ export const GeoDashboard = ({
   const [sortField, setSortField] = useState<SortBy>(SortBy.COUNT);
   const [sortOrder, setSortOrder] = useState<SortOrder>(SortOrder.DESC);
   const [view, setView] = useState<ViewType>(ViewType.TABLE);
-  const [trendFrequency, setTrendFrequency] = useState<TrendFrequency>(
-    TrendFrequency.Y5
-  );
+  const [trendFrequency, setTrendFrequency] = useState<TrendFrequency>(TrendFrequency.Y5);
+
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [pageInput, setPageInput] = useState<string>(String(page));
   const [openPopoverId, setOpenPopoverId] = useState<string | null>(null);
-  const [hasLoadedInitialData, setHasLoadedInitialData] = useState(false);
-  const [needsNewData, setNeedsNewData] = useState(false);
 
-  // Reset page when filters change
   useEffect(() => {
     setPage(1);
   }, [filters]);
 
-  useEffect(() => {
-      setNeedsNewData(
-        page > 1 ||
-          view === ViewType.TREND ||
-          sortField !== SortBy.COUNT ||
-          sortOrder !== SortOrder.DESC ||
-          itemsPerPage !== ITEMS_PER_PAGE[1]
-      );
-  }, [page, view, sortField, sortOrder, itemsPerPage]);
+  const needsNewData =
+    page > 1 ||
+    view === ViewType.TREND ||
+    sortField !== SortBy.COUNT ||
+    sortOrder !== SortOrder.DESC ||
+    itemsPerPage !== ITEMS_PER_PAGE[1];
 
   const {
     data,
@@ -124,7 +119,7 @@ export const GeoDashboard = ({
       sortBy: sortField,
       sortOrder: sortOrder,
       offset: (page - 1) * itemsPerPage,
-      includeTrend: view === ViewType.TREND,
+      includeGeoTrend: view === ViewType.TREND,
       selectorType: SelectorType.Geo,
     },
     options: {
@@ -132,25 +127,10 @@ export const GeoDashboard = ({
     },
   });
 
-  // Set hasLoadedInitialData to true once the component's own fetch completes and data is available
-  useEffect(() => {
-    if (
-      !isGeoLoading &&
-      !isGeoFetching &&
-      (data?.countryData || data?.cityData)
-    ) {
-      setHasLoadedInitialData(true);
-    }
-  }, [isGeoLoading, isGeoFetching, data]);
+  const shouldUseGlobalData = !needsNewData && !data?.countryData && !data?.cityData;
 
-  const currentCountriesData =
-    hasLoadedInitialData || !isGlobalDataLoading
-      ? data?.countryData
-      : globalData?.countryData;
-  const currentCitiesData =
-    hasLoadedInitialData || !isGlobalDataLoading
-      ? data?.cityData
-      : globalData?.cityData;
+  const currentCountriesData = shouldUseGlobalData ? globalData?.countryData : data?.countryData;
+  const currentCitiesData = shouldUseGlobalData ? globalData?.cityData : data?.cityData;
 
   const countries = currentCountriesData?.countries || [];
   const cities = currentCitiesData?.cities || [];
@@ -158,7 +138,6 @@ export const GeoDashboard = ({
   const totalCountries = currentCountriesData?.count || 0;
   const totalCities = currentCitiesData?.count || 0;
 
-  // Update parent only when total changes
   useEffect(() => {
     onDataUpdate(totalCountries);
   }, [totalCountries, onDataUpdate]);
@@ -167,21 +146,21 @@ export const GeoDashboard = ({
     setPageInput(String(page));
   }, [page]);
 
+  const isWaitingForData =
+    (shouldUseGlobalData && isGlobalDataLoading) ||
+    (!shouldUseGlobalData && (isGeoLoading || isGeoFetching));
+
   const handleSort = (field: SortBy) => {
     if (sortField === field) {
-      setSortOrder(
-        sortOrder === SortOrder.ASC ? SortOrder.DESC : SortOrder.ASC
-      );
+      setSortOrder(sortOrder === SortOrder.ASC ? SortOrder.DESC : SortOrder.ASC);
     } else {
       setSortField(field);
       setSortOrder(SortOrder.DESC);
     }
-
   };
 
   const renderTable = () => {
     const data = mode === GeoDrillType.COUNTRY ? countries : cities;
-    const isLoading = isGeoLoading || isGeoFetching || isGlobalDataLoading;
 
     const isRowInFilters = (row: DataRowProps, type?: "role" | "company") => {
       if (type === "role") {
@@ -220,7 +199,7 @@ export const GeoDashboard = ({
                 hoverMessage="Alumni that have had at least a role in this location"
               />
 
-              {isLoading ? (
+              {isWaitingForData ? (
                 <DashboardSkeleton />
               ) : (
                 <TableBody className="bg-white divide-y divide-gray-200">

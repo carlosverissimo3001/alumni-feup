@@ -8,7 +8,13 @@ import {
   TableContainer,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { DataPointDto } from "@/sdk";
+import {
+  DataPointDto,
+  FacultyListDto,
+  MajorListDto,
+  AnalyticsControllerGetAnalyticsSelectorTypeEnum as SelectorType,
+  GraduationListDto,
+} from "@/sdk";
 import { BookOpen, Building2, Filter, GraduationCap } from "lucide-react";
 import { DashboardSkeleton } from "../skeletons/DashboardSkeleton";
 import TableTitle from "../common/TableTitle";
@@ -36,12 +42,18 @@ import {
 import { ViewType } from "@/types/view";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { EntityType, TrendFrequency } from "@/types/entityTypes";
-import { useFacultyList } from "@/hooks/analytics/useFacultyList";
-import { useMajorsList } from "@/hooks/analytics/useMajorsList";
-import { useGraduationList } from "@/hooks/analytics/useGraduationList";
 import { EducationDrillType } from "@/types/drillType";
+import { useFetchAnalytics } from "@/hooks/analytics/useFetchAnalytics";
+
+type EducationData = {
+  faculties?: FacultyListDto;
+  majors?: MajorListDto;
+  graduations?: GraduationListDto;
+};
 
 type EducationDashboardProps = {
+  globalData?: EducationData;
+  isGlobalDataLoading?: boolean;
   filters: FilterState;
   onAddToFilters?: (educationId: string, year?: number) => void;
   mode: EducationDrillType;
@@ -58,6 +70,8 @@ type DataRowProps = {
 };
 
 export const EducationDashboard = ({
+  globalData,
+  isGlobalDataLoading,
   filters,
   onAddToFilters,
   mode,
@@ -79,71 +93,72 @@ export const EducationDashboard = ({
     setPage(1);
   }, [filters]);
 
-  const {
-    data: facultyData,
-    isLoading: isFacultyLoading,
-    isFetching: isFacultyFetching,
-  } = useFacultyList(
-    {
-      ...filters,
-      limit: itemsPerPage,
-      sortBy: sortField,
-      sortOrder: sortOrder,
-      offset: (page - 1) * itemsPerPage,
-      includeTrend: view === ViewType.TREND,
-    },
-    mode === EducationDrillType.FACULTY
-  );
+  const needsNewData =
+    page > 1 ||
+    view === ViewType.TREND ||
+    sortField !== SortBy.COUNT ||
+    sortOrder !== SortOrder.DESC ||
+    itemsPerPage !== ITEMS_PER_PAGE[1];
 
   const {
-    data: majorsData,
-    isLoading: isMajorsLoading,
-    isFetching: isMajorsFetching,
-  } = useMajorsList(
-    {
-      ...filters,
+    data,
+    isLoading: isEducationLoading,
+    isFetching: isEducationFetching,
+  } = useFetchAnalytics({
+    params: {
       limit: itemsPerPage,
-      sortBy: sortField,
-      sortOrder: sortOrder,
       offset: (page - 1) * itemsPerPage,
-      includeTrend: view === ViewType.TREND,
+      sortBy: mode === EducationDrillType.FACULTY ? sortField : undefined,
+      sortOrder: mode === EducationDrillType.FACULTY ? sortOrder : undefined,
+      selectorType: SelectorType.Education,
+      includeEducationTrend:
+        mode === EducationDrillType.FACULTY
+          ? view === ViewType.TREND
+          : undefined,
     },
-    mode === EducationDrillType.MAJOR
-  );
+    options: {
+      enabled: needsNewData,
+      isInitialLoad: !needsNewData,
+    },
+  });
 
-  const {
-    data: graduationsData,
-    isLoading: isGraduationsLoading,
-    isFetching: isGraduationsFetching,
-  } = useGraduationList(
-    {
-      ...filters,
-      limit: itemsPerPage,
-      sortBy: sortField,
-      sortOrder: sortOrder,
-      offset: (page - 1) * itemsPerPage,
-      includeTrend: view === ViewType.TREND,
-    },
-    mode === EducationDrillType.YEAR
-  );
+  const shouldUseGlobalData =
+    !needsNewData &&
+    !data?.majorData &&
+    !data?.graduationData &&
+    !data?.facultyData;
+
+  const currentFacultiesData = shouldUseGlobalData
+    ? globalData?.faculties
+    : data?.facultyData;
+  const currentMajorsData = shouldUseGlobalData
+    ? globalData?.majors
+    : data?.majorData;
+  const currentGraduationsData = shouldUseGlobalData
+    ? globalData?.graduations
+    : data?.graduationData;
 
   /* Faculty */
-  const faculties = facultyData?.faculties || [];
+  const faculties = currentFacultiesData?.faculties || [];
   // useful if we add this info in the stats
   //const facultyCount = facultyData?.count || 0;
-  const facultyFilteredCount = facultyData?.filteredCount || 0;
+  const totalFaculties = currentFacultiesData?.count || 0;
 
   /* Majors */
-  const majors = majorsData?.majors || [];
+  const majors = currentMajorsData?.majors || [];
   // useful if we add this info in the stats
   //const majorCount = majorsData?.count || 0;
-  const majorFilteredCount = majorsData?.filteredCount || 0;
+  const totalMajors = currentMajorsData?.count || 0;
 
   /* Graduations */
-  const graduations = graduationsData?.graduations || [];
+  const graduations = currentGraduationsData?.graduations || [];
   // useful if we add this info in the stats
   //const graduationCount = graduationsData?.count || 0;
-  const graduationFilteredCount = graduationsData?.filteredCount || 0;
+  const totalGraduations = currentGraduationsData?.count || 0;
+
+  const isWaitingForData =
+  (shouldUseGlobalData && isGlobalDataLoading) ||
+  (!shouldUseGlobalData && (isEducationLoading || isEducationFetching));
 
   useEffect(() => {
     setPageInput(String(page));
@@ -196,22 +211,13 @@ export const EducationDashboard = ({
     return "Distribution of alumni by their graduation year.";
   };
 
-  const isDomainLoading = () => {
-    if (mode === EducationDrillType.FACULTY) {
-      return isFacultyLoading || isFacultyFetching;
-    } else if (mode === EducationDrillType.MAJOR) {
-      return isMajorsLoading || isMajorsFetching;
-    }
-    return isGraduationsLoading || isGraduationsFetching;
-  };
-
   const getTotalItems = () => {
     if (mode === EducationDrillType.FACULTY) {
-      return facultyFilteredCount;
+      return totalFaculties;
     } else if (mode === EducationDrillType.MAJOR) {
-      return majorFilteredCount;
+      return totalMajors;
     }
-    return graduationFilteredCount;
+    return totalGraduations;
   };
 
   const isRowInFilters = (row: DataRowProps): boolean => {
@@ -248,7 +254,7 @@ export const EducationDashboard = ({
 
   const renderTableView = () => {
     const data = getDataByMode();
-    const isLoading = isDomainLoading();
+    console.log("data", data);
 
     return (
       <>
@@ -268,7 +274,7 @@ export const EducationDashboard = ({
                 hoverMessage={getHoverMessage()}
               />
 
-              {isLoading ? (
+              {isWaitingForData ? (
                 <DashboardSkeleton
                   hasExtraColumn={mode === EducationDrillType.YEAR}
                 />
@@ -401,7 +407,7 @@ export const EducationDashboard = ({
     <div className="flex-1 flex flex-col border-t border-b border-gray-200 overflow-hidden">
       <div className="flex-1 flex items-center justify-center">
         {mode === EducationDrillType.FACULTY ? (
-          isDomainLoading() ? (
+          isWaitingForData ? (
             <LoadingChart message="Loading chart data..." />
           ) : faculties.length === 0 ? (
             <NotFoundComponent
@@ -412,12 +418,12 @@ export const EducationDashboard = ({
           ) : (
             <ChartView
               data={faculties}
-              isLoading={isDomainLoading()}
+              isLoading={isWaitingForData}
               entityType={EntityType.FACULTY}
             />
           )
         ) : mode === EducationDrillType.MAJOR ? (
-          isDomainLoading() ? (
+          isWaitingForData ? (
             <LoadingChart message="Loading chart data..." />
           ) : majors.length === 0 ? (
             <NotFoundComponent
@@ -428,11 +434,11 @@ export const EducationDashboard = ({
           ) : (
             <ChartView
               data={majors}
-              isLoading={isDomainLoading()}
+              isLoading={isWaitingForData}
               entityType={EntityType.MAJOR}
             />
           )
-        ) : isDomainLoading() ? (
+        ) : isWaitingForData ? (
           <LoadingChart message="Loading chart data..." />
         ) : graduations.length === 0 ? (
           <NotFoundComponent
@@ -443,7 +449,7 @@ export const EducationDashboard = ({
         ) : (
           <ChartView
             data={graduations}
-            isLoading={isDomainLoading()}
+            isLoading={isWaitingForData}
             entityType={EntityType.YEAR}
           />
         )}

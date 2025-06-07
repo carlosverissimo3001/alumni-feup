@@ -63,7 +63,7 @@ export interface CompanyAnalyticsEntity {
      * @type {IndustryAnalyticsEntity}
      * @memberof CompanyAnalyticsEntity
      */
-    industry?: IndustryAnalyticsEntity;
+    industry: IndustryAnalyticsEntity;
     /**
      * 
      * @type {LocationAnalyticsEntity}
@@ -108,6 +108,7 @@ export interface CompanyAnalyticsEntity {
 export function instanceOfCompanyAnalyticsEntity(value: object): value is CompanyAnalyticsEntity {
     if (!('id' in value) || value['id'] === undefined) return false;
     if (!('name' in value) || value['name'] === undefined) return false;
+    if (!('industry' in value) || value['industry'] === undefined) return false;
     return true;
 }
 
@@ -125,7 +126,7 @@ export function CompanyAnalyticsEntityFromJSONTyped(json: any, ignoreDiscriminat
         'name': json['name'],
         'logo': json['logo'] == null ? undefined : json['logo'],
         'levelsFyiUrl': json['levelsFyiUrl'] == null ? undefined : json['levelsFyiUrl'],
-        'industry': json['industry'] == null ? undefined : IndustryAnalyticsEntityFromJSON(json['industry']),
+        'industry': IndustryAnalyticsEntityFromJSON(json['industry']),
         'location': json['location'] == null ? undefined : LocationAnalyticsEntityFromJSON(json['location']),
         'website': json['website'] == null ? undefined : json['website'],
         'founded': json['founded'] == null ? undefined : json['founded'],

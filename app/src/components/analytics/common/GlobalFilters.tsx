@@ -33,7 +33,7 @@ import { SENIORITY_LEVEL_API_TO_ENUM } from "@/types/roles";
 import {
   AnalyticsControllerGetAnalyticsCompanySizeEnum as CompanySizeEnum,
   AnalyticsControllerGetAnalyticsCompanyTypeEnum as CompanyTypeEnum,
-  RoleAnalyticsControllerGetRolesSeniorityLevelEnum as SeniorityLevelEnum,
+  AnalyticsControllerGetAnalyticsSeniorityLevelEnum as SeniorityLevelEnum,
 } from "@/sdk";
 import { motion, AnimatePresence } from "framer-motion";
 import { useRoleOptions } from "@/hooks/analytics/useRoleOptions";

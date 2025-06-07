@@ -96,7 +96,7 @@ export interface RoleAnalyticsEntity {
      * @type {CompanyAnalyticsEntity}
      * @memberof RoleAnalyticsEntity
      */
-    company?: CompanyAnalyticsEntity;
+    company: CompanyAnalyticsEntity;
     /**
      * 
      * @type {string}
@@ -159,6 +159,7 @@ export function instanceOfRoleAnalyticsEntity(value: object): value is RoleAnaly
     if (!('alumniId' in value) || value['alumniId'] === undefined) return false;
     if (!('startDate' in value) || value['startDate'] === undefined) return false;
     if (!('isCurrent' in value) || value['isCurrent'] === undefined) return false;
+    if (!('company' in value) || value['company'] === undefined) return false;
     if (!('seniorityLevel' in value) || value['seniorityLevel'] === undefined) return false;
     return true;
 }
@@ -179,7 +180,7 @@ export function RoleAnalyticsEntityFromJSONTyped(json: any, ignoreDiscriminator:
         'endDate': json['endDate'] == null ? undefined : (new Date(json['endDate'])),
         'isCurrent': json['isCurrent'],
         'location': json['location'] == null ? undefined : LocationAnalyticsEntityFromJSON(json['location']),
-        'company': json['company'] == null ? undefined : CompanyAnalyticsEntityFromJSON(json['company']),
+        'company': CompanyAnalyticsEntityFromJSON(json['company']),
         'seniorityLevel': json['seniorityLevel'],
         'jobClassification': json['jobClassification'] == null ? undefined : JobClassificationAnalyticsEntityFromJSON(json['jobClassification']),
         'roleRaw': json['roleRaw'] == null ? undefined : RoleRawAnalyticsEntityFromJSON(json['roleRaw']),

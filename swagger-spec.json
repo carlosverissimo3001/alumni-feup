@@ -916,467 +916,6 @@
         ]
       }
     },
-    "/analytics/industries": {
-      "get": {
-        "operationId": "IndustryAnalyticsController_getIndustryWithCounts",
-        "parameters": [
-          {
-            "name": "includeCompanyTrend",
-            "required": false,
-            "in": "query",
-            "description": "Whether to include the company trends data",
-            "schema": {
-              "example": true,
-              "type": "boolean"
-            }
-          },
-          {
-            "name": "includeRoleTrend",
-            "required": false,
-            "in": "query",
-            "description": "Whether to include the role trends data",
-            "schema": {
-              "example": true,
-              "type": "boolean"
-            }
-          },
-          {
-            "name": "includeIndustryTrend",
-            "required": false,
-            "in": "query",
-            "description": "Whether to include the industry trends data",
-            "schema": {
-              "example": true,
-              "type": "boolean"
-            }
-          },
-          {
-            "name": "includeEducationTrend",
-            "required": false,
-            "in": "query",
-            "description": "Whether to include the education trends data",
-            "schema": {
-              "example": true,
-              "type": "boolean"
-            }
-          },
-          {
-            "name": "includeSeniorityTrend",
-            "required": false,
-            "in": "query",
-            "description": "Whether to include the seniority trends data",
-            "schema": {
-              "example": true,
-              "type": "boolean"
-            }
-          },
-          {
-            "name": "includeGeoTrend",
-            "required": false,
-            "in": "query",
-            "description": "Whether to include the geo trends data",
-            "schema": {
-              "example": true,
-              "type": "boolean"
-            }
-          },
-          {
-            "name": "alumniIds",
-            "required": false,
-            "in": "query",
-            "description": "The alumni IDs to filter by",
-            "schema": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
-            }
-          },
-          {
-            "name": "startDate",
-            "required": false,
-            "in": "query",
-            "description": "The start date of the role",
-            "schema": {
-              "example": "2023-11-16",
-              "type": "string"
-            }
-          },
-          {
-            "name": "endDate",
-            "required": false,
-            "in": "query",
-            "description": "The end date of the role",
-            "schema": {
-              "example": "2025-04-20",
-              "type": "string"
-            }
-          },
-          {
-            "name": "facultyIds",
-            "required": false,
-            "in": "query",
-            "description": "The faculty IDs to filter by",
-            "schema": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
-            }
-          },
-          {
-            "name": "courseIds",
-            "required": false,
-            "in": "query",
-            "description": "The course IDs to filter by",
-            "schema": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
-            }
-          },
-          {
-            "name": "graduationYears",
-            "required": false,
-            "in": "query",
-            "description": "The graduation years to filter by",
-            "schema": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
-            }
-          },
-          {
-            "name": "companyIds",
-            "required": false,
-            "in": "query",
-            "description": "The company IDs to filter by",
-            "schema": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
-            }
-          },
-          {
-            "name": "industryIds",
-            "required": false,
-            "in": "query",
-            "description": "The industry IDs to filter by",
-            "schema": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
-            }
-          },
-          {
-            "name": "roleCountryCodes",
-            "required": false,
-            "in": "query",
-            "description": "The country codes where alumni exerced their roles",
-            "schema": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
-            }
-          },
-          {
-            "name": "roleCityIds",
-            "required": false,
-            "in": "query",
-            "description": "The city IDS where alumni exerced their roles",
-            "schema": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
-            }
-          },
-          {
-            "name": "companyHQsCountryCodes",
-            "required": false,
-            "in": "query",
-            "description": "The company HQs country codes to filter by",
-            "schema": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
-            }
-          },
-          {
-            "name": "companyHQsCityIds",
-            "required": false,
-            "in": "query",
-            "description": "The company HQs city ids to filter by",
-            "schema": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
-            }
-          },
-          {
-            "name": "currentRolesOnly",
-            "required": false,
-            "in": "query",
-            "description": "Filter for current roles only",
-            "schema": {
-              "example": true,
-              "type": "boolean"
-            }
-          },
-          {
-            "name": "onlyCompaniesWithSalaryData",
-            "required": false,
-            "in": "query",
-            "description": "Include only companies with salary data",
-            "schema": {
-              "example": true,
-              "type": "boolean"
-            }
-          },
-          {
-            "name": "onlyInternational",
-            "required": false,
-            "in": "query",
-            "description": "Whether to exclude roles in Portugal",
-            "schema": {
-              "example": true,
-              "type": "boolean"
-            }
-          },
-          {
-            "name": "excludeResearchAndHighEducation",
-            "required": false,
-            "in": "query",
-            "description": "Exclude research and high education roles",
-            "schema": {
-              "example": true,
-              "type": "boolean"
-            }
-          },
-          {
-            "name": "alumniSearch",
-            "required": false,
-            "in": "query",
-            "description": "Search query for companies",
-            "schema": {
-              "example": "search query",
-              "type": "string"
-            }
-          },
-          {
-            "name": "companySize",
-            "required": false,
-            "in": "query",
-            "description": "The company sizes to filter by",
-            "schema": {
-              "example": [
-                "A",
-                "B"
-              ],
-              "type": "array",
-              "items": {
-                "type": "string",
-                "enum": [
-                  "A",
-                  "B",
-                  "C",
-                  "D",
-                  "E",
-                  "F",
-                  "G",
-                  "H",
-                  "I"
-                ]
-              }
-            }
-          },
-          {
-            "name": "companyType",
-            "required": false,
-            "in": "query",
-            "description": "The company types to filter by",
-            "schema": {
-              "example": [
-                "PUBLIC_COMPANY",
-                "PRIVATELY_HELD"
-              ],
-              "type": "array",
-              "items": {
-                "type": "string",
-                "enum": [
-                  "EDUCATIONAL",
-                  "GOVERNMENT_AGENCY",
-                  "NON_PROFIT",
-                  "PARTNERSHIP",
-                  "PRIVATELY_HELD",
-                  "PUBLIC_COMPANY",
-                  "SELF_EMPLOYED",
-                  "SELF_OWNED"
-                ]
-              }
-            }
-          },
-          {
-            "name": "seniorityLevel",
-            "required": false,
-            "in": "query",
-            "description": "The seniority levels to filter by",
-            "schema": {
-              "example": [
-                "INTERN",
-                "ENTRY_LEVEL"
-              ],
-              "type": "array",
-              "items": {
-                "type": "string",
-                "enum": [
-                  "INTERN",
-                  "ENTRY_LEVEL",
-                  "ASSOCIATE",
-                  "MID_SENIOR_LEVEL",
-                  "DIRECTOR",
-                  "EXECUTIVE",
-                  "C_LEVEL"
-                ]
-              }
-            }
-          },
-          {
-            "name": "escoCodes",
-            "required": false,
-            "in": "query",
-            "description": "The ESCO codes to filter by",
-            "schema": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
-            }
-          },
-          {
-            "name": "escoClassificationLevel",
-            "required": false,
-            "in": "query",
-            "description": "The ESCO classification level to filter by",
-            "schema": {
-              "default": 1,
-              "example": 1,
-              "type": "number"
-            }
-          },
-          {
-            "name": "limit",
-            "required": false,
-            "in": "query",
-            "description": "The number of results to return",
-            "schema": {
-              "example": 10,
-              "type": "number"
-            }
-          },
-          {
-            "name": "offset",
-            "required": false,
-            "in": "query",
-            "description": "The offset of the query",
-            "schema": {
-              "default": 0,
-              "example": 0,
-              "type": "number"
-            }
-          },
-          {
-            "name": "search",
-            "required": false,
-            "in": "query",
-            "description": "Broad search query",
-            "schema": {
-              "example": "search query",
-              "type": "string"
-            }
-          },
-          {
-            "name": "sortBy",
-            "required": false,
-            "in": "query",
-            "description": "How to sort the results",
-            "schema": {
-              "default": "count",
-              "type": "string",
-              "enum": [
-                "count",
-                "name",
-                "year"
-              ]
-            }
-          },
-          {
-            "name": "selectorType",
-            "required": false,
-            "in": "query",
-            "description": "The type of analytics to fetch",
-            "schema": {
-              "default": "ALL",
-              "type": "string",
-              "enum": [
-                "ALL",
-                "ALUMNI",
-                "COMPANY",
-                "EDUCATION",
-                "GEO",
-                "INDUSTRY",
-                "ROLE",
-                "SENIORITY"
-              ]
-            }
-          },
-          {
-            "name": "sortOrder",
-            "required": false,
-            "in": "query",
-            "description": "The order of the results",
-            "schema": {
-              "default": "desc",
-              "example": "asc",
-              "type": "string"
-            }
-          },
-          {
-            "name": "includeTrend",
-            "required": true,
-            "in": "query",
-            "description": "Whether to include the trend data",
-            "schema": {
-              "example": true,
-              "type": "boolean"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "The industries with the number of alumni working in them, and the number of companies in each industry.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/IndustryListResponseDto"
-                }
-              }
-            }
-          }
-        },
-        "summary": "Returns the number of alumni working in companies grouped by industry.",
-        "tags": [
-          "V1"
-        ]
-      }
-    },
     "/analytics/industries/options": {
       "get": {
         "description": "Returns a list of industries with their id and name.",
@@ -1398,1850 +937,6 @@
           }
         },
         "summary": "List of possible industries to search for.",
-        "tags": [
-          "V1"
-        ]
-      }
-    },
-    "/analytics/education/faculties": {
-      "get": {
-        "operationId": "EducationAnalyticsController_getFaculties",
-        "parameters": [
-          {
-            "name": "includeCompanyTrend",
-            "required": false,
-            "in": "query",
-            "description": "Whether to include the company trends data",
-            "schema": {
-              "example": true,
-              "type": "boolean"
-            }
-          },
-          {
-            "name": "includeRoleTrend",
-            "required": false,
-            "in": "query",
-            "description": "Whether to include the role trends data",
-            "schema": {
-              "example": true,
-              "type": "boolean"
-            }
-          },
-          {
-            "name": "includeIndustryTrend",
-            "required": false,
-            "in": "query",
-            "description": "Whether to include the industry trends data",
-            "schema": {
-              "example": true,
-              "type": "boolean"
-            }
-          },
-          {
-            "name": "includeEducationTrend",
-            "required": false,
-            "in": "query",
-            "description": "Whether to include the education trends data",
-            "schema": {
-              "example": true,
-              "type": "boolean"
-            }
-          },
-          {
-            "name": "includeSeniorityTrend",
-            "required": false,
-            "in": "query",
-            "description": "Whether to include the seniority trends data",
-            "schema": {
-              "example": true,
-              "type": "boolean"
-            }
-          },
-          {
-            "name": "includeGeoTrend",
-            "required": false,
-            "in": "query",
-            "description": "Whether to include the geo trends data",
-            "schema": {
-              "example": true,
-              "type": "boolean"
-            }
-          },
-          {
-            "name": "alumniIds",
-            "required": false,
-            "in": "query",
-            "description": "The alumni IDs to filter by",
-            "schema": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
-            }
-          },
-          {
-            "name": "startDate",
-            "required": false,
-            "in": "query",
-            "description": "The start date of the role",
-            "schema": {
-              "example": "2023-11-16",
-              "type": "string"
-            }
-          },
-          {
-            "name": "endDate",
-            "required": false,
-            "in": "query",
-            "description": "The end date of the role",
-            "schema": {
-              "example": "2025-04-20",
-              "type": "string"
-            }
-          },
-          {
-            "name": "facultyIds",
-            "required": false,
-            "in": "query",
-            "description": "The faculty IDs to filter by",
-            "schema": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
-            }
-          },
-          {
-            "name": "courseIds",
-            "required": false,
-            "in": "query",
-            "description": "The course IDs to filter by",
-            "schema": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
-            }
-          },
-          {
-            "name": "graduationYears",
-            "required": false,
-            "in": "query",
-            "description": "The graduation years to filter by",
-            "schema": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
-            }
-          },
-          {
-            "name": "companyIds",
-            "required": false,
-            "in": "query",
-            "description": "The company IDs to filter by",
-            "schema": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
-            }
-          },
-          {
-            "name": "industryIds",
-            "required": false,
-            "in": "query",
-            "description": "The industry IDs to filter by",
-            "schema": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
-            }
-          },
-          {
-            "name": "roleCountryCodes",
-            "required": false,
-            "in": "query",
-            "description": "The country codes where alumni exerced their roles",
-            "schema": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
-            }
-          },
-          {
-            "name": "roleCityIds",
-            "required": false,
-            "in": "query",
-            "description": "The city IDS where alumni exerced their roles",
-            "schema": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
-            }
-          },
-          {
-            "name": "companyHQsCountryCodes",
-            "required": false,
-            "in": "query",
-            "description": "The company HQs country codes to filter by",
-            "schema": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
-            }
-          },
-          {
-            "name": "companyHQsCityIds",
-            "required": false,
-            "in": "query",
-            "description": "The company HQs city ids to filter by",
-            "schema": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
-            }
-          },
-          {
-            "name": "currentRolesOnly",
-            "required": false,
-            "in": "query",
-            "description": "Filter for current roles only",
-            "schema": {
-              "example": true,
-              "type": "boolean"
-            }
-          },
-          {
-            "name": "onlyCompaniesWithSalaryData",
-            "required": false,
-            "in": "query",
-            "description": "Include only companies with salary data",
-            "schema": {
-              "example": true,
-              "type": "boolean"
-            }
-          },
-          {
-            "name": "onlyInternational",
-            "required": false,
-            "in": "query",
-            "description": "Whether to exclude roles in Portugal",
-            "schema": {
-              "example": true,
-              "type": "boolean"
-            }
-          },
-          {
-            "name": "excludeResearchAndHighEducation",
-            "required": false,
-            "in": "query",
-            "description": "Exclude research and high education roles",
-            "schema": {
-              "example": true,
-              "type": "boolean"
-            }
-          },
-          {
-            "name": "alumniSearch",
-            "required": false,
-            "in": "query",
-            "description": "Search query for companies",
-            "schema": {
-              "example": "search query",
-              "type": "string"
-            }
-          },
-          {
-            "name": "companySize",
-            "required": false,
-            "in": "query",
-            "description": "The company sizes to filter by",
-            "schema": {
-              "example": [
-                "A",
-                "B"
-              ],
-              "type": "array",
-              "items": {
-                "type": "string",
-                "enum": [
-                  "A",
-                  "B",
-                  "C",
-                  "D",
-                  "E",
-                  "F",
-                  "G",
-                  "H",
-                  "I"
-                ]
-              }
-            }
-          },
-          {
-            "name": "companyType",
-            "required": false,
-            "in": "query",
-            "description": "The company types to filter by",
-            "schema": {
-              "example": [
-                "PUBLIC_COMPANY",
-                "PRIVATELY_HELD"
-              ],
-              "type": "array",
-              "items": {
-                "type": "string",
-                "enum": [
-                  "EDUCATIONAL",
-                  "GOVERNMENT_AGENCY",
-                  "NON_PROFIT",
-                  "PARTNERSHIP",
-                  "PRIVATELY_HELD",
-                  "PUBLIC_COMPANY",
-                  "SELF_EMPLOYED",
-                  "SELF_OWNED"
-                ]
-              }
-            }
-          },
-          {
-            "name": "seniorityLevel",
-            "required": false,
-            "in": "query",
-            "description": "The seniority levels to filter by",
-            "schema": {
-              "example": [
-                "INTERN",
-                "ENTRY_LEVEL"
-              ],
-              "type": "array",
-              "items": {
-                "type": "string",
-                "enum": [
-                  "INTERN",
-                  "ENTRY_LEVEL",
-                  "ASSOCIATE",
-                  "MID_SENIOR_LEVEL",
-                  "DIRECTOR",
-                  "EXECUTIVE",
-                  "C_LEVEL"
-                ]
-              }
-            }
-          },
-          {
-            "name": "escoCodes",
-            "required": false,
-            "in": "query",
-            "description": "The ESCO codes to filter by",
-            "schema": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
-            }
-          },
-          {
-            "name": "escoClassificationLevel",
-            "required": false,
-            "in": "query",
-            "description": "The ESCO classification level to filter by",
-            "schema": {
-              "default": 1,
-              "example": 1,
-              "type": "number"
-            }
-          },
-          {
-            "name": "limit",
-            "required": false,
-            "in": "query",
-            "description": "The number of results to return",
-            "schema": {
-              "example": 10,
-              "type": "number"
-            }
-          },
-          {
-            "name": "offset",
-            "required": false,
-            "in": "query",
-            "description": "The offset of the query",
-            "schema": {
-              "default": 0,
-              "example": 0,
-              "type": "number"
-            }
-          },
-          {
-            "name": "search",
-            "required": false,
-            "in": "query",
-            "description": "Broad search query",
-            "schema": {
-              "example": "search query",
-              "type": "string"
-            }
-          },
-          {
-            "name": "sortBy",
-            "required": false,
-            "in": "query",
-            "description": "How to sort the results",
-            "schema": {
-              "default": "count",
-              "type": "string",
-              "enum": [
-                "count",
-                "name",
-                "year"
-              ]
-            }
-          },
-          {
-            "name": "selectorType",
-            "required": false,
-            "in": "query",
-            "description": "The type of analytics to fetch",
-            "schema": {
-              "default": "ALL",
-              "type": "string",
-              "enum": [
-                "ALL",
-                "ALUMNI",
-                "COMPANY",
-                "EDUCATION",
-                "GEO",
-                "INDUSTRY",
-                "ROLE",
-                "SENIORITY"
-              ]
-            }
-          },
-          {
-            "name": "sortOrder",
-            "required": false,
-            "in": "query",
-            "description": "The order of the results",
-            "schema": {
-              "default": "desc",
-              "example": "asc",
-              "type": "string"
-            }
-          },
-          {
-            "name": "includeTrend",
-            "required": true,
-            "in": "query",
-            "description": "Whether to include the trend data",
-            "schema": {
-              "example": true,
-              "type": "boolean"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "The faculties with the number of alumni graduated from them.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/FacultyListDto"
-                }
-              }
-            }
-          }
-        },
-        "summary": "Gets the faculties, and the number of alumni graduated from them.",
-        "tags": [
-          "V1"
-        ]
-      }
-    },
-    "/analytics/education/majors": {
-      "get": {
-        "operationId": "EducationAnalyticsController_getMajors",
-        "parameters": [
-          {
-            "name": "includeCompanyTrend",
-            "required": false,
-            "in": "query",
-            "description": "Whether to include the company trends data",
-            "schema": {
-              "example": true,
-              "type": "boolean"
-            }
-          },
-          {
-            "name": "includeRoleTrend",
-            "required": false,
-            "in": "query",
-            "description": "Whether to include the role trends data",
-            "schema": {
-              "example": true,
-              "type": "boolean"
-            }
-          },
-          {
-            "name": "includeIndustryTrend",
-            "required": false,
-            "in": "query",
-            "description": "Whether to include the industry trends data",
-            "schema": {
-              "example": true,
-              "type": "boolean"
-            }
-          },
-          {
-            "name": "includeEducationTrend",
-            "required": false,
-            "in": "query",
-            "description": "Whether to include the education trends data",
-            "schema": {
-              "example": true,
-              "type": "boolean"
-            }
-          },
-          {
-            "name": "includeSeniorityTrend",
-            "required": false,
-            "in": "query",
-            "description": "Whether to include the seniority trends data",
-            "schema": {
-              "example": true,
-              "type": "boolean"
-            }
-          },
-          {
-            "name": "includeGeoTrend",
-            "required": false,
-            "in": "query",
-            "description": "Whether to include the geo trends data",
-            "schema": {
-              "example": true,
-              "type": "boolean"
-            }
-          },
-          {
-            "name": "alumniIds",
-            "required": false,
-            "in": "query",
-            "description": "The alumni IDs to filter by",
-            "schema": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
-            }
-          },
-          {
-            "name": "startDate",
-            "required": false,
-            "in": "query",
-            "description": "The start date of the role",
-            "schema": {
-              "example": "2023-11-16",
-              "type": "string"
-            }
-          },
-          {
-            "name": "endDate",
-            "required": false,
-            "in": "query",
-            "description": "The end date of the role",
-            "schema": {
-              "example": "2025-04-20",
-              "type": "string"
-            }
-          },
-          {
-            "name": "facultyIds",
-            "required": false,
-            "in": "query",
-            "description": "The faculty IDs to filter by",
-            "schema": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
-            }
-          },
-          {
-            "name": "courseIds",
-            "required": false,
-            "in": "query",
-            "description": "The course IDs to filter by",
-            "schema": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
-            }
-          },
-          {
-            "name": "graduationYears",
-            "required": false,
-            "in": "query",
-            "description": "The graduation years to filter by",
-            "schema": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
-            }
-          },
-          {
-            "name": "companyIds",
-            "required": false,
-            "in": "query",
-            "description": "The company IDs to filter by",
-            "schema": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
-            }
-          },
-          {
-            "name": "industryIds",
-            "required": false,
-            "in": "query",
-            "description": "The industry IDs to filter by",
-            "schema": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
-            }
-          },
-          {
-            "name": "roleCountryCodes",
-            "required": false,
-            "in": "query",
-            "description": "The country codes where alumni exerced their roles",
-            "schema": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
-            }
-          },
-          {
-            "name": "roleCityIds",
-            "required": false,
-            "in": "query",
-            "description": "The city IDS where alumni exerced their roles",
-            "schema": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
-            }
-          },
-          {
-            "name": "companyHQsCountryCodes",
-            "required": false,
-            "in": "query",
-            "description": "The company HQs country codes to filter by",
-            "schema": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
-            }
-          },
-          {
-            "name": "companyHQsCityIds",
-            "required": false,
-            "in": "query",
-            "description": "The company HQs city ids to filter by",
-            "schema": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
-            }
-          },
-          {
-            "name": "currentRolesOnly",
-            "required": false,
-            "in": "query",
-            "description": "Filter for current roles only",
-            "schema": {
-              "example": true,
-              "type": "boolean"
-            }
-          },
-          {
-            "name": "onlyCompaniesWithSalaryData",
-            "required": false,
-            "in": "query",
-            "description": "Include only companies with salary data",
-            "schema": {
-              "example": true,
-              "type": "boolean"
-            }
-          },
-          {
-            "name": "onlyInternational",
-            "required": false,
-            "in": "query",
-            "description": "Whether to exclude roles in Portugal",
-            "schema": {
-              "example": true,
-              "type": "boolean"
-            }
-          },
-          {
-            "name": "excludeResearchAndHighEducation",
-            "required": false,
-            "in": "query",
-            "description": "Exclude research and high education roles",
-            "schema": {
-              "example": true,
-              "type": "boolean"
-            }
-          },
-          {
-            "name": "alumniSearch",
-            "required": false,
-            "in": "query",
-            "description": "Search query for companies",
-            "schema": {
-              "example": "search query",
-              "type": "string"
-            }
-          },
-          {
-            "name": "companySize",
-            "required": false,
-            "in": "query",
-            "description": "The company sizes to filter by",
-            "schema": {
-              "example": [
-                "A",
-                "B"
-              ],
-              "type": "array",
-              "items": {
-                "type": "string",
-                "enum": [
-                  "A",
-                  "B",
-                  "C",
-                  "D",
-                  "E",
-                  "F",
-                  "G",
-                  "H",
-                  "I"
-                ]
-              }
-            }
-          },
-          {
-            "name": "companyType",
-            "required": false,
-            "in": "query",
-            "description": "The company types to filter by",
-            "schema": {
-              "example": [
-                "PUBLIC_COMPANY",
-                "PRIVATELY_HELD"
-              ],
-              "type": "array",
-              "items": {
-                "type": "string",
-                "enum": [
-                  "EDUCATIONAL",
-                  "GOVERNMENT_AGENCY",
-                  "NON_PROFIT",
-                  "PARTNERSHIP",
-                  "PRIVATELY_HELD",
-                  "PUBLIC_COMPANY",
-                  "SELF_EMPLOYED",
-                  "SELF_OWNED"
-                ]
-              }
-            }
-          },
-          {
-            "name": "seniorityLevel",
-            "required": false,
-            "in": "query",
-            "description": "The seniority levels to filter by",
-            "schema": {
-              "example": [
-                "INTERN",
-                "ENTRY_LEVEL"
-              ],
-              "type": "array",
-              "items": {
-                "type": "string",
-                "enum": [
-                  "INTERN",
-                  "ENTRY_LEVEL",
-                  "ASSOCIATE",
-                  "MID_SENIOR_LEVEL",
-                  "DIRECTOR",
-                  "EXECUTIVE",
-                  "C_LEVEL"
-                ]
-              }
-            }
-          },
-          {
-            "name": "escoCodes",
-            "required": false,
-            "in": "query",
-            "description": "The ESCO codes to filter by",
-            "schema": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
-            }
-          },
-          {
-            "name": "escoClassificationLevel",
-            "required": false,
-            "in": "query",
-            "description": "The ESCO classification level to filter by",
-            "schema": {
-              "default": 1,
-              "example": 1,
-              "type": "number"
-            }
-          },
-          {
-            "name": "limit",
-            "required": false,
-            "in": "query",
-            "description": "The number of results to return",
-            "schema": {
-              "example": 10,
-              "type": "number"
-            }
-          },
-          {
-            "name": "offset",
-            "required": false,
-            "in": "query",
-            "description": "The offset of the query",
-            "schema": {
-              "default": 0,
-              "example": 0,
-              "type": "number"
-            }
-          },
-          {
-            "name": "search",
-            "required": false,
-            "in": "query",
-            "description": "Broad search query",
-            "schema": {
-              "example": "search query",
-              "type": "string"
-            }
-          },
-          {
-            "name": "sortBy",
-            "required": false,
-            "in": "query",
-            "description": "How to sort the results",
-            "schema": {
-              "default": "count",
-              "type": "string",
-              "enum": [
-                "count",
-                "name",
-                "year"
-              ]
-            }
-          },
-          {
-            "name": "selectorType",
-            "required": false,
-            "in": "query",
-            "description": "The type of analytics to fetch",
-            "schema": {
-              "default": "ALL",
-              "type": "string",
-              "enum": [
-                "ALL",
-                "ALUMNI",
-                "COMPANY",
-                "EDUCATION",
-                "GEO",
-                "INDUSTRY",
-                "ROLE",
-                "SENIORITY"
-              ]
-            }
-          },
-          {
-            "name": "sortOrder",
-            "required": false,
-            "in": "query",
-            "description": "The order of the results",
-            "schema": {
-              "default": "desc",
-              "example": "asc",
-              "type": "string"
-            }
-          },
-          {
-            "name": "includeTrend",
-            "required": true,
-            "in": "query",
-            "description": "Whether to include the trend data",
-            "schema": {
-              "example": true,
-              "type": "boolean"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "The majors with the number of alumni graduated from them.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/MajorListDto"
-                }
-              }
-            }
-          }
-        },
-        "summary": "Get the majors, and the number of alumni graduated from them.",
-        "tags": [
-          "V1"
-        ]
-      }
-    },
-    "/analytics/education/graduations": {
-      "get": {
-        "operationId": "EducationAnalyticsController_getGraduations",
-        "parameters": [
-          {
-            "name": "includeCompanyTrend",
-            "required": false,
-            "in": "query",
-            "description": "Whether to include the company trends data",
-            "schema": {
-              "example": true,
-              "type": "boolean"
-            }
-          },
-          {
-            "name": "includeRoleTrend",
-            "required": false,
-            "in": "query",
-            "description": "Whether to include the role trends data",
-            "schema": {
-              "example": true,
-              "type": "boolean"
-            }
-          },
-          {
-            "name": "includeIndustryTrend",
-            "required": false,
-            "in": "query",
-            "description": "Whether to include the industry trends data",
-            "schema": {
-              "example": true,
-              "type": "boolean"
-            }
-          },
-          {
-            "name": "includeEducationTrend",
-            "required": false,
-            "in": "query",
-            "description": "Whether to include the education trends data",
-            "schema": {
-              "example": true,
-              "type": "boolean"
-            }
-          },
-          {
-            "name": "includeSeniorityTrend",
-            "required": false,
-            "in": "query",
-            "description": "Whether to include the seniority trends data",
-            "schema": {
-              "example": true,
-              "type": "boolean"
-            }
-          },
-          {
-            "name": "includeGeoTrend",
-            "required": false,
-            "in": "query",
-            "description": "Whether to include the geo trends data",
-            "schema": {
-              "example": true,
-              "type": "boolean"
-            }
-          },
-          {
-            "name": "alumniIds",
-            "required": false,
-            "in": "query",
-            "description": "The alumni IDs to filter by",
-            "schema": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
-            }
-          },
-          {
-            "name": "startDate",
-            "required": false,
-            "in": "query",
-            "description": "The start date of the role",
-            "schema": {
-              "example": "2023-11-16",
-              "type": "string"
-            }
-          },
-          {
-            "name": "endDate",
-            "required": false,
-            "in": "query",
-            "description": "The end date of the role",
-            "schema": {
-              "example": "2025-04-20",
-              "type": "string"
-            }
-          },
-          {
-            "name": "facultyIds",
-            "required": false,
-            "in": "query",
-            "description": "The faculty IDs to filter by",
-            "schema": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
-            }
-          },
-          {
-            "name": "courseIds",
-            "required": false,
-            "in": "query",
-            "description": "The course IDs to filter by",
-            "schema": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
-            }
-          },
-          {
-            "name": "graduationYears",
-            "required": false,
-            "in": "query",
-            "description": "The graduation years to filter by",
-            "schema": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
-            }
-          },
-          {
-            "name": "companyIds",
-            "required": false,
-            "in": "query",
-            "description": "The company IDs to filter by",
-            "schema": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
-            }
-          },
-          {
-            "name": "industryIds",
-            "required": false,
-            "in": "query",
-            "description": "The industry IDs to filter by",
-            "schema": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
-            }
-          },
-          {
-            "name": "roleCountryCodes",
-            "required": false,
-            "in": "query",
-            "description": "The country codes where alumni exerced their roles",
-            "schema": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
-            }
-          },
-          {
-            "name": "roleCityIds",
-            "required": false,
-            "in": "query",
-            "description": "The city IDS where alumni exerced their roles",
-            "schema": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
-            }
-          },
-          {
-            "name": "companyHQsCountryCodes",
-            "required": false,
-            "in": "query",
-            "description": "The company HQs country codes to filter by",
-            "schema": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
-            }
-          },
-          {
-            "name": "companyHQsCityIds",
-            "required": false,
-            "in": "query",
-            "description": "The company HQs city ids to filter by",
-            "schema": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
-            }
-          },
-          {
-            "name": "currentRolesOnly",
-            "required": false,
-            "in": "query",
-            "description": "Filter for current roles only",
-            "schema": {
-              "example": true,
-              "type": "boolean"
-            }
-          },
-          {
-            "name": "onlyCompaniesWithSalaryData",
-            "required": false,
-            "in": "query",
-            "description": "Include only companies with salary data",
-            "schema": {
-              "example": true,
-              "type": "boolean"
-            }
-          },
-          {
-            "name": "onlyInternational",
-            "required": false,
-            "in": "query",
-            "description": "Whether to exclude roles in Portugal",
-            "schema": {
-              "example": true,
-              "type": "boolean"
-            }
-          },
-          {
-            "name": "excludeResearchAndHighEducation",
-            "required": false,
-            "in": "query",
-            "description": "Exclude research and high education roles",
-            "schema": {
-              "example": true,
-              "type": "boolean"
-            }
-          },
-          {
-            "name": "alumniSearch",
-            "required": false,
-            "in": "query",
-            "description": "Search query for companies",
-            "schema": {
-              "example": "search query",
-              "type": "string"
-            }
-          },
-          {
-            "name": "companySize",
-            "required": false,
-            "in": "query",
-            "description": "The company sizes to filter by",
-            "schema": {
-              "example": [
-                "A",
-                "B"
-              ],
-              "type": "array",
-              "items": {
-                "type": "string",
-                "enum": [
-                  "A",
-                  "B",
-                  "C",
-                  "D",
-                  "E",
-                  "F",
-                  "G",
-                  "H",
-                  "I"
-                ]
-              }
-            }
-          },
-          {
-            "name": "companyType",
-            "required": false,
-            "in": "query",
-            "description": "The company types to filter by",
-            "schema": {
-              "example": [
-                "PUBLIC_COMPANY",
-                "PRIVATELY_HELD"
-              ],
-              "type": "array",
-              "items": {
-                "type": "string",
-                "enum": [
-                  "EDUCATIONAL",
-                  "GOVERNMENT_AGENCY",
-                  "NON_PROFIT",
-                  "PARTNERSHIP",
-                  "PRIVATELY_HELD",
-                  "PUBLIC_COMPANY",
-                  "SELF_EMPLOYED",
-                  "SELF_OWNED"
-                ]
-              }
-            }
-          },
-          {
-            "name": "seniorityLevel",
-            "required": false,
-            "in": "query",
-            "description": "The seniority levels to filter by",
-            "schema": {
-              "example": [
-                "INTERN",
-                "ENTRY_LEVEL"
-              ],
-              "type": "array",
-              "items": {
-                "type": "string",
-                "enum": [
-                  "INTERN",
-                  "ENTRY_LEVEL",
-                  "ASSOCIATE",
-                  "MID_SENIOR_LEVEL",
-                  "DIRECTOR",
-                  "EXECUTIVE",
-                  "C_LEVEL"
-                ]
-              }
-            }
-          },
-          {
-            "name": "escoCodes",
-            "required": false,
-            "in": "query",
-            "description": "The ESCO codes to filter by",
-            "schema": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
-            }
-          },
-          {
-            "name": "escoClassificationLevel",
-            "required": false,
-            "in": "query",
-            "description": "The ESCO classification level to filter by",
-            "schema": {
-              "default": 1,
-              "example": 1,
-              "type": "number"
-            }
-          },
-          {
-            "name": "limit",
-            "required": false,
-            "in": "query",
-            "description": "The number of results to return",
-            "schema": {
-              "example": 10,
-              "type": "number"
-            }
-          },
-          {
-            "name": "offset",
-            "required": false,
-            "in": "query",
-            "description": "The offset of the query",
-            "schema": {
-              "default": 0,
-              "example": 0,
-              "type": "number"
-            }
-          },
-          {
-            "name": "search",
-            "required": false,
-            "in": "query",
-            "description": "Broad search query",
-            "schema": {
-              "example": "search query",
-              "type": "string"
-            }
-          },
-          {
-            "name": "sortBy",
-            "required": false,
-            "in": "query",
-            "description": "How to sort the results",
-            "schema": {
-              "default": "count",
-              "type": "string",
-              "enum": [
-                "count",
-                "name",
-                "year"
-              ]
-            }
-          },
-          {
-            "name": "selectorType",
-            "required": false,
-            "in": "query",
-            "description": "The type of analytics to fetch",
-            "schema": {
-              "default": "ALL",
-              "type": "string",
-              "enum": [
-                "ALL",
-                "ALUMNI",
-                "COMPANY",
-                "EDUCATION",
-                "GEO",
-                "INDUSTRY",
-                "ROLE",
-                "SENIORITY"
-              ]
-            }
-          },
-          {
-            "name": "sortOrder",
-            "required": false,
-            "in": "query",
-            "description": "The order of the results",
-            "schema": {
-              "default": "desc",
-              "example": "asc",
-              "type": "string"
-            }
-          },
-          {
-            "name": "includeTrend",
-            "required": true,
-            "in": "query",
-            "description": "Whether to include the trend data",
-            "schema": {
-              "example": true,
-              "type": "boolean"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "The graduations with the number of alumni graduated from them.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/GraduationListDto"
-                }
-              }
-            }
-          }
-        },
-        "summary": "Get the graduations, and the number of alumni graduated from them.",
-        "tags": [
-          "V1"
-        ]
-      }
-    },
-    "/analytics/roles": {
-      "get": {
-        "operationId": "RoleAnalyticsController_getRoles",
-        "parameters": [
-          {
-            "name": "includeCompanyTrend",
-            "required": false,
-            "in": "query",
-            "description": "Whether to include the company trends data",
-            "schema": {
-              "example": true,
-              "type": "boolean"
-            }
-          },
-          {
-            "name": "includeRoleTrend",
-            "required": false,
-            "in": "query",
-            "description": "Whether to include the role trends data",
-            "schema": {
-              "example": true,
-              "type": "boolean"
-            }
-          },
-          {
-            "name": "includeIndustryTrend",
-            "required": false,
-            "in": "query",
-            "description": "Whether to include the industry trends data",
-            "schema": {
-              "example": true,
-              "type": "boolean"
-            }
-          },
-          {
-            "name": "includeEducationTrend",
-            "required": false,
-            "in": "query",
-            "description": "Whether to include the education trends data",
-            "schema": {
-              "example": true,
-              "type": "boolean"
-            }
-          },
-          {
-            "name": "includeSeniorityTrend",
-            "required": false,
-            "in": "query",
-            "description": "Whether to include the seniority trends data",
-            "schema": {
-              "example": true,
-              "type": "boolean"
-            }
-          },
-          {
-            "name": "includeGeoTrend",
-            "required": false,
-            "in": "query",
-            "description": "Whether to include the geo trends data",
-            "schema": {
-              "example": true,
-              "type": "boolean"
-            }
-          },
-          {
-            "name": "alumniIds",
-            "required": false,
-            "in": "query",
-            "description": "The alumni IDs to filter by",
-            "schema": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
-            }
-          },
-          {
-            "name": "startDate",
-            "required": false,
-            "in": "query",
-            "description": "The start date of the role",
-            "schema": {
-              "example": "2023-11-16",
-              "type": "string"
-            }
-          },
-          {
-            "name": "endDate",
-            "required": false,
-            "in": "query",
-            "description": "The end date of the role",
-            "schema": {
-              "example": "2025-04-20",
-              "type": "string"
-            }
-          },
-          {
-            "name": "facultyIds",
-            "required": false,
-            "in": "query",
-            "description": "The faculty IDs to filter by",
-            "schema": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
-            }
-          },
-          {
-            "name": "courseIds",
-            "required": false,
-            "in": "query",
-            "description": "The course IDs to filter by",
-            "schema": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
-            }
-          },
-          {
-            "name": "graduationYears",
-            "required": false,
-            "in": "query",
-            "description": "The graduation years to filter by",
-            "schema": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
-            }
-          },
-          {
-            "name": "companyIds",
-            "required": false,
-            "in": "query",
-            "description": "The company IDs to filter by",
-            "schema": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
-            }
-          },
-          {
-            "name": "industryIds",
-            "required": false,
-            "in": "query",
-            "description": "The industry IDs to filter by",
-            "schema": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
-            }
-          },
-          {
-            "name": "roleCountryCodes",
-            "required": false,
-            "in": "query",
-            "description": "The country codes where alumni exerced their roles",
-            "schema": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
-            }
-          },
-          {
-            "name": "roleCityIds",
-            "required": false,
-            "in": "query",
-            "description": "The city IDS where alumni exerced their roles",
-            "schema": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
-            }
-          },
-          {
-            "name": "companyHQsCountryCodes",
-            "required": false,
-            "in": "query",
-            "description": "The company HQs country codes to filter by",
-            "schema": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
-            }
-          },
-          {
-            "name": "companyHQsCityIds",
-            "required": false,
-            "in": "query",
-            "description": "The company HQs city ids to filter by",
-            "schema": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
-            }
-          },
-          {
-            "name": "currentRolesOnly",
-            "required": false,
-            "in": "query",
-            "description": "Filter for current roles only",
-            "schema": {
-              "example": true,
-              "type": "boolean"
-            }
-          },
-          {
-            "name": "onlyCompaniesWithSalaryData",
-            "required": false,
-            "in": "query",
-            "description": "Include only companies with salary data",
-            "schema": {
-              "example": true,
-              "type": "boolean"
-            }
-          },
-          {
-            "name": "onlyInternational",
-            "required": false,
-            "in": "query",
-            "description": "Whether to exclude roles in Portugal",
-            "schema": {
-              "example": true,
-              "type": "boolean"
-            }
-          },
-          {
-            "name": "excludeResearchAndHighEducation",
-            "required": false,
-            "in": "query",
-            "description": "Exclude research and high education roles",
-            "schema": {
-              "example": true,
-              "type": "boolean"
-            }
-          },
-          {
-            "name": "alumniSearch",
-            "required": false,
-            "in": "query",
-            "description": "Search query for companies",
-            "schema": {
-              "example": "search query",
-              "type": "string"
-            }
-          },
-          {
-            "name": "companySize",
-            "required": false,
-            "in": "query",
-            "description": "The company sizes to filter by",
-            "schema": {
-              "example": [
-                "A",
-                "B"
-              ],
-              "type": "array",
-              "items": {
-                "type": "string",
-                "enum": [
-                  "A",
-                  "B",
-                  "C",
-                  "D",
-                  "E",
-                  "F",
-                  "G",
-                  "H",
-                  "I"
-                ]
-              }
-            }
-          },
-          {
-            "name": "companyType",
-            "required": false,
-            "in": "query",
-            "description": "The company types to filter by",
-            "schema": {
-              "example": [
-                "PUBLIC_COMPANY",
-                "PRIVATELY_HELD"
-              ],
-              "type": "array",
-              "items": {
-                "type": "string",
-                "enum": [
-                  "EDUCATIONAL",
-                  "GOVERNMENT_AGENCY",
-                  "NON_PROFIT",
-                  "PARTNERSHIP",
-                  "PRIVATELY_HELD",
-                  "PUBLIC_COMPANY",
-                  "SELF_EMPLOYED",
-                  "SELF_OWNED"
-                ]
-              }
-            }
-          },
-          {
-            "name": "seniorityLevel",
-            "required": false,
-            "in": "query",
-            "description": "The seniority levels to filter by",
-            "schema": {
-              "example": [
-                "INTERN",
-                "ENTRY_LEVEL"
-              ],
-              "type": "array",
-              "items": {
-                "type": "string",
-                "enum": [
-                  "INTERN",
-                  "ENTRY_LEVEL",
-                  "ASSOCIATE",
-                  "MID_SENIOR_LEVEL",
-                  "DIRECTOR",
-                  "EXECUTIVE",
-                  "C_LEVEL"
-                ]
-              }
-            }
-          },
-          {
-            "name": "escoCodes",
-            "required": false,
-            "in": "query",
-            "description": "The ESCO codes to filter by",
-            "schema": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
-            }
-          },
-          {
-            "name": "escoClassificationLevel",
-            "required": false,
-            "in": "query",
-            "description": "The ESCO classification level to filter by",
-            "schema": {
-              "default": 1,
-              "example": 1,
-              "type": "number"
-            }
-          },
-          {
-            "name": "limit",
-            "required": false,
-            "in": "query",
-            "description": "The number of results to return",
-            "schema": {
-              "example": 10,
-              "type": "number"
-            }
-          },
-          {
-            "name": "offset",
-            "required": false,
-            "in": "query",
-            "description": "The offset of the query",
-            "schema": {
-              "default": 0,
-              "example": 0,
-              "type": "number"
-            }
-          },
-          {
-            "name": "search",
-            "required": false,
-            "in": "query",
-            "description": "Broad search query",
-            "schema": {
-              "example": "search query",
-              "type": "string"
-            }
-          },
-          {
-            "name": "sortBy",
-            "required": false,
-            "in": "query",
-            "description": "How to sort the results",
-            "schema": {
-              "default": "count",
-              "type": "string",
-              "enum": [
-                "count",
-                "name",
-                "year"
-              ]
-            }
-          },
-          {
-            "name": "selectorType",
-            "required": false,
-            "in": "query",
-            "description": "The type of analytics to fetch",
-            "schema": {
-              "default": "ALL",
-              "type": "string",
-              "enum": [
-                "ALL",
-                "ALUMNI",
-                "COMPANY",
-                "EDUCATION",
-                "GEO",
-                "INDUSTRY",
-                "ROLE",
-                "SENIORITY"
-              ]
-            }
-          },
-          {
-            "name": "sortOrder",
-            "required": false,
-            "in": "query",
-            "description": "The order of the results",
-            "schema": {
-              "default": "desc",
-              "example": "asc",
-              "type": "string"
-            }
-          },
-          {
-            "name": "includeTrend",
-            "required": true,
-            "in": "query",
-            "description": "Whether to include the trend data",
-            "schema": {
-              "example": true,
-              "type": "boolean"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "The number of roles classified with each ESCO classification, and the level of classification of the role",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/RoleListResponseDto"
-                }
-              }
-            }
-          }
-        },
-        "summary": "Returns the number of roles classified with each ESCO classification",
         "tags": [
           "V1"
         ]
@@ -3301,467 +996,6 @@
           }
         },
         "summary": "Gets the hierarchy of a role",
-        "tags": [
-          "V1"
-        ]
-      }
-    },
-    "/analytics/roles/seniority": {
-      "get": {
-        "operationId": "RoleAnalyticsController_getSeniorityLevels",
-        "parameters": [
-          {
-            "name": "includeCompanyTrend",
-            "required": false,
-            "in": "query",
-            "description": "Whether to include the company trends data",
-            "schema": {
-              "example": true,
-              "type": "boolean"
-            }
-          },
-          {
-            "name": "includeRoleTrend",
-            "required": false,
-            "in": "query",
-            "description": "Whether to include the role trends data",
-            "schema": {
-              "example": true,
-              "type": "boolean"
-            }
-          },
-          {
-            "name": "includeIndustryTrend",
-            "required": false,
-            "in": "query",
-            "description": "Whether to include the industry trends data",
-            "schema": {
-              "example": true,
-              "type": "boolean"
-            }
-          },
-          {
-            "name": "includeEducationTrend",
-            "required": false,
-            "in": "query",
-            "description": "Whether to include the education trends data",
-            "schema": {
-              "example": true,
-              "type": "boolean"
-            }
-          },
-          {
-            "name": "includeSeniorityTrend",
-            "required": false,
-            "in": "query",
-            "description": "Whether to include the seniority trends data",
-            "schema": {
-              "example": true,
-              "type": "boolean"
-            }
-          },
-          {
-            "name": "includeGeoTrend",
-            "required": false,
-            "in": "query",
-            "description": "Whether to include the geo trends data",
-            "schema": {
-              "example": true,
-              "type": "boolean"
-            }
-          },
-          {
-            "name": "alumniIds",
-            "required": false,
-            "in": "query",
-            "description": "The alumni IDs to filter by",
-            "schema": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
-            }
-          },
-          {
-            "name": "startDate",
-            "required": false,
-            "in": "query",
-            "description": "The start date of the role",
-            "schema": {
-              "example": "2023-11-16",
-              "type": "string"
-            }
-          },
-          {
-            "name": "endDate",
-            "required": false,
-            "in": "query",
-            "description": "The end date of the role",
-            "schema": {
-              "example": "2025-04-20",
-              "type": "string"
-            }
-          },
-          {
-            "name": "facultyIds",
-            "required": false,
-            "in": "query",
-            "description": "The faculty IDs to filter by",
-            "schema": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
-            }
-          },
-          {
-            "name": "courseIds",
-            "required": false,
-            "in": "query",
-            "description": "The course IDs to filter by",
-            "schema": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
-            }
-          },
-          {
-            "name": "graduationYears",
-            "required": false,
-            "in": "query",
-            "description": "The graduation years to filter by",
-            "schema": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
-            }
-          },
-          {
-            "name": "companyIds",
-            "required": false,
-            "in": "query",
-            "description": "The company IDs to filter by",
-            "schema": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
-            }
-          },
-          {
-            "name": "industryIds",
-            "required": false,
-            "in": "query",
-            "description": "The industry IDs to filter by",
-            "schema": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
-            }
-          },
-          {
-            "name": "roleCountryCodes",
-            "required": false,
-            "in": "query",
-            "description": "The country codes where alumni exerced their roles",
-            "schema": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
-            }
-          },
-          {
-            "name": "roleCityIds",
-            "required": false,
-            "in": "query",
-            "description": "The city IDS where alumni exerced their roles",
-            "schema": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
-            }
-          },
-          {
-            "name": "companyHQsCountryCodes",
-            "required": false,
-            "in": "query",
-            "description": "The company HQs country codes to filter by",
-            "schema": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
-            }
-          },
-          {
-            "name": "companyHQsCityIds",
-            "required": false,
-            "in": "query",
-            "description": "The company HQs city ids to filter by",
-            "schema": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
-            }
-          },
-          {
-            "name": "currentRolesOnly",
-            "required": false,
-            "in": "query",
-            "description": "Filter for current roles only",
-            "schema": {
-              "example": true,
-              "type": "boolean"
-            }
-          },
-          {
-            "name": "onlyCompaniesWithSalaryData",
-            "required": false,
-            "in": "query",
-            "description": "Include only companies with salary data",
-            "schema": {
-              "example": true,
-              "type": "boolean"
-            }
-          },
-          {
-            "name": "onlyInternational",
-            "required": false,
-            "in": "query",
-            "description": "Whether to exclude roles in Portugal",
-            "schema": {
-              "example": true,
-              "type": "boolean"
-            }
-          },
-          {
-            "name": "excludeResearchAndHighEducation",
-            "required": false,
-            "in": "query",
-            "description": "Exclude research and high education roles",
-            "schema": {
-              "example": true,
-              "type": "boolean"
-            }
-          },
-          {
-            "name": "alumniSearch",
-            "required": false,
-            "in": "query",
-            "description": "Search query for companies",
-            "schema": {
-              "example": "search query",
-              "type": "string"
-            }
-          },
-          {
-            "name": "companySize",
-            "required": false,
-            "in": "query",
-            "description": "The company sizes to filter by",
-            "schema": {
-              "example": [
-                "A",
-                "B"
-              ],
-              "type": "array",
-              "items": {
-                "type": "string",
-                "enum": [
-                  "A",
-                  "B",
-                  "C",
-                  "D",
-                  "E",
-                  "F",
-                  "G",
-                  "H",
-                  "I"
-                ]
-              }
-            }
-          },
-          {
-            "name": "companyType",
-            "required": false,
-            "in": "query",
-            "description": "The company types to filter by",
-            "schema": {
-              "example": [
-                "PUBLIC_COMPANY",
-                "PRIVATELY_HELD"
-              ],
-              "type": "array",
-              "items": {
-                "type": "string",
-                "enum": [
-                  "EDUCATIONAL",
-                  "GOVERNMENT_AGENCY",
-                  "NON_PROFIT",
-                  "PARTNERSHIP",
-                  "PRIVATELY_HELD",
-                  "PUBLIC_COMPANY",
-                  "SELF_EMPLOYED",
-                  "SELF_OWNED"
-                ]
-              }
-            }
-          },
-          {
-            "name": "seniorityLevel",
-            "required": false,
-            "in": "query",
-            "description": "The seniority levels to filter by",
-            "schema": {
-              "example": [
-                "INTERN",
-                "ENTRY_LEVEL"
-              ],
-              "type": "array",
-              "items": {
-                "type": "string",
-                "enum": [
-                  "INTERN",
-                  "ENTRY_LEVEL",
-                  "ASSOCIATE",
-                  "MID_SENIOR_LEVEL",
-                  "DIRECTOR",
-                  "EXECUTIVE",
-                  "C_LEVEL"
-                ]
-              }
-            }
-          },
-          {
-            "name": "escoCodes",
-            "required": false,
-            "in": "query",
-            "description": "The ESCO codes to filter by",
-            "schema": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
-            }
-          },
-          {
-            "name": "escoClassificationLevel",
-            "required": false,
-            "in": "query",
-            "description": "The ESCO classification level to filter by",
-            "schema": {
-              "default": 1,
-              "example": 1,
-              "type": "number"
-            }
-          },
-          {
-            "name": "limit",
-            "required": false,
-            "in": "query",
-            "description": "The number of results to return",
-            "schema": {
-              "example": 10,
-              "type": "number"
-            }
-          },
-          {
-            "name": "offset",
-            "required": false,
-            "in": "query",
-            "description": "The offset of the query",
-            "schema": {
-              "default": 0,
-              "example": 0,
-              "type": "number"
-            }
-          },
-          {
-            "name": "search",
-            "required": false,
-            "in": "query",
-            "description": "Broad search query",
-            "schema": {
-              "example": "search query",
-              "type": "string"
-            }
-          },
-          {
-            "name": "sortBy",
-            "required": false,
-            "in": "query",
-            "description": "How to sort the results",
-            "schema": {
-              "default": "count",
-              "type": "string",
-              "enum": [
-                "count",
-                "name",
-                "year"
-              ]
-            }
-          },
-          {
-            "name": "selectorType",
-            "required": false,
-            "in": "query",
-            "description": "The type of analytics to fetch",
-            "schema": {
-              "default": "ALL",
-              "type": "string",
-              "enum": [
-                "ALL",
-                "ALUMNI",
-                "COMPANY",
-                "EDUCATION",
-                "GEO",
-                "INDUSTRY",
-                "ROLE",
-                "SENIORITY"
-              ]
-            }
-          },
-          {
-            "name": "sortOrder",
-            "required": false,
-            "in": "query",
-            "description": "The order of the results",
-            "schema": {
-              "default": "desc",
-              "example": "asc",
-              "type": "string"
-            }
-          },
-          {
-            "name": "includeTrend",
-            "required": true,
-            "in": "query",
-            "description": "Whether to include the trend data",
-            "schema": {
-              "example": true,
-              "type": "boolean"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "The number of roles classified with each seniority level",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/SeniorityListResponseDto"
-                }
-              }
-            }
-          }
-        },
-        "summary": "Returns the number of roles classified with each seniority level",
         "tags": [
           "V1"
         ]
@@ -4183,8 +1417,8 @@
             "in": "query",
             "description": "The ESCO classification level to filter by",
             "schema": {
-              "default": 1,
-              "example": 1,
+              "default": 5,
+              "example": 5,
               "type": "number"
             }
           },
@@ -4263,16 +1497,6 @@
               "default": "desc",
               "example": "asc",
               "type": "string"
-            }
-          },
-          {
-            "name": "includeTrend",
-            "required": true,
-            "in": "query",
-            "description": "Whether to include the trend data",
-            "schema": {
-              "example": true,
-              "type": "boolean"
             }
           }
         ],
@@ -5563,7 +2787,8 @@
         },
         "required": [
           "id",
-          "name"
+          "name",
+          "industry"
         ]
       },
       "EscoClassificationAnalyticsEntity": {
@@ -5778,7 +3003,35 @@
           "alumniId",
           "startDate",
           "isCurrent",
+          "company",
           "seniorityLevel"
+        ]
+      },
+      "FacultyAnalyticsEntity": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The id of the faculty"
+          },
+          "name": {
+            "type": "string",
+            "description": "The name of the faculty"
+          },
+          "nameInt": {
+            "type": "string",
+            "description": "The international name of the faculty"
+          },
+          "acronym": {
+            "type": "string",
+            "description": "The acronym of the faculty"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "nameInt",
+          "acronym"
         ]
       },
       "CourseAnalyticsEntity": {
@@ -5829,6 +3082,14 @@
           "facultyId": {
             "type": "string",
             "description": "The faculty id of the course"
+          },
+          "faculty": {
+            "description": "The faculty of the course",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/FacultyAnalyticsEntity"
+              }
+            ]
           }
         },
         "required": [
@@ -5839,7 +3100,8 @@
           "courseType",
           "facultyAcronym",
           "startYear",
-          "facultyId"
+          "facultyId",
+          "faculty"
         ]
       },
       "GraduationAnalyticsEntity": {
@@ -5874,7 +3136,8 @@
           "id",
           "alumniId",
           "courseId",
-          "conclusionYear"
+          "conclusionYear",
+          "course"
         ]
       },
       "AlumniAnalyticsEntity": {
@@ -5922,7 +3185,9 @@
         "required": [
           "id",
           "fullName",
-          "profilePictureUrl"
+          "profilePictureUrl",
+          "roles",
+          "graduations"
         ]
       },
       "Location": {
@@ -6445,57 +3710,6 @@
           "country"
         ]
       },
-      "IndustryListItemDto": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string",
-            "description": "The ID of the industry"
-          },
-          "name": {
-            "type": "string",
-            "description": "The name of the industry",
-            "example": "Financial Services"
-          },
-          "count": {
-            "type": "number",
-            "description": "The number of alumni working in the industry",
-            "example": 100
-          },
-          "trend": {
-            "description": "The alumni trend of the industry",
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/DataPointDto"
-            }
-          }
-        },
-        "required": [
-          "id",
-          "name",
-          "count",
-          "trend"
-        ]
-      },
-      "IndustryListResponseDto": {
-        "type": "object",
-        "properties": {
-          "industries": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/IndustryListItemDto"
-            }
-          },
-          "count": {
-            "type": "number",
-            "description": "The total number of industries in the database"
-          }
-        },
-        "required": [
-          "industries",
-          "count"
-        ]
-      },
       "IndustryOptionDto": {
         "type": "object",
         "properties": {
@@ -6511,251 +3725,6 @@
         "required": [
           "id",
           "name"
-        ]
-      },
-      "FacultyListItemDto": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string",
-            "description": "The faculty ID"
-          },
-          "name": {
-            "type": "string",
-            "description": "The faculty name"
-          },
-          "acronym": {
-            "type": "string",
-            "description": "The faculty acronym"
-          },
-          "trend": {
-            "description": "The graduations trend of the faculty",
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/DataPointDto"
-            }
-          },
-          "count": {
-            "type": "number",
-            "description": "The number of alumni that graduated from the faculty"
-          }
-        },
-        "required": [
-          "id",
-          "name",
-          "acronym",
-          "trend",
-          "count"
-        ]
-      },
-      "FacultyListDto": {
-        "type": "object",
-        "properties": {
-          "faculties": {
-            "description": "The faculty list",
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/FacultyListItemDto"
-            }
-          },
-          "filteredCount": {
-            "type": "number",
-            "description": "The number of faculties, after applying the filters"
-          },
-          "count": {
-            "type": "number",
-            "description": "The total number of faculties, regardless of filters"
-          }
-        },
-        "required": [
-          "faculties",
-          "filteredCount",
-          "count"
-        ]
-      },
-      "MajorListItemDto": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string",
-            "description": "The major ID"
-          },
-          "name": {
-            "type": "string",
-            "description": "The major name"
-          },
-          "acronym": {
-            "type": "string",
-            "description": "The major acronym"
-          },
-          "facultyAcronym": {
-            "type": "string",
-            "description": "The faculty acronym"
-          },
-          "count": {
-            "type": "number",
-            "description": "The number of alumni that graduated from the major"
-          },
-          "trend": {
-            "description": "The alumni count trend of the country",
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/DataPointDto"
-            }
-          }
-        },
-        "required": [
-          "id",
-          "name",
-          "acronym",
-          "facultyAcronym",
-          "count",
-          "trend"
-        ]
-      },
-      "MajorListDto": {
-        "type": "object",
-        "properties": {
-          "majors": {
-            "description": "The major list",
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/MajorListItemDto"
-            }
-          },
-          "count": {
-            "type": "number",
-            "description": "The number of majors"
-          },
-          "filteredCount": {
-            "type": "number",
-            "description": "The number of majors, after applying the filters"
-          }
-        },
-        "required": [
-          "majors",
-          "count",
-          "filteredCount"
-        ]
-      },
-      "GraduationListItemDto": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string",
-            "description": "The course ID"
-          },
-          "name": {
-            "type": "string",
-            "description": "For viz purposes"
-          },
-          "year": {
-            "type": "number",
-            "description": "The year of graduation"
-          },
-          "acronym": {
-            "type": "string",
-            "description": "The major acronym"
-          },
-          "count": {
-            "type": "number",
-            "description": "The number of alumni that graduated from the major in the year"
-          }
-        },
-        "required": [
-          "id",
-          "name",
-          "year",
-          "acronym",
-          "count"
-        ]
-      },
-      "GraduationListDto": {
-        "type": "object",
-        "properties": {
-          "graduations": {
-            "description": "The graduation list",
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/GraduationListItemDto"
-            }
-          },
-          "count": {
-            "type": "number",
-            "description": "The number of graduations"
-          },
-          "filteredCount": {
-            "type": "number",
-            "description": "The number of graduations, after applying the filters"
-          }
-        },
-        "required": [
-          "graduations",
-          "count",
-          "filteredCount"
-        ]
-      },
-      "RoleListItemDto": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string",
-            "description": "The name of the role"
-          },
-          "level": {
-            "type": "number",
-            "description": "The level of classification of the role, 1-4 being ISCO-08 and 5+ being ESCO"
-          },
-          "escoUrl": {
-            "type": "string",
-            "description": "The URL of the role in the ESCO classification tree"
-          },
-          "code": {
-            "type": "string",
-            "description": "The ESCO code of the role"
-          },
-          "count": {
-            "type": "number",
-            "description": "The number of roles classified with this role"
-          },
-          "trend": {
-            "description": "The trend of the role",
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/DataPointDto"
-            }
-          }
-        },
-        "required": [
-          "name",
-          "level",
-          "code",
-          "count",
-          "trend"
-        ]
-      },
-      "RoleListResponseDto": {
-        "type": "object",
-        "properties": {
-          "roles": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/RoleListItemDto"
-            }
-          },
-          "count": {
-            "type": "number",
-            "description": "The total number of roles in the database"
-          },
-          "distinctCount": {
-            "type": "number",
-            "description": "The total number of distinct roles in the database"
-          }
-        },
-        "required": [
-          "roles",
-          "count",
-          "distinctCount"
         ]
       },
       "RoleOptionDto": {
@@ -6823,59 +3792,6 @@
         },
         "required": [
           "hierarchy"
-        ]
-      },
-      "SeniorityListItemDto": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string",
-            "description": "The name of the seniority level",
-            "enum": [
-              "INTERN",
-              "ENTRY_LEVEL",
-              "ASSOCIATE",
-              "MID_SENIOR_LEVEL",
-              "DIRECTOR",
-              "EXECUTIVE",
-              "C_LEVEL"
-            ]
-          },
-          "count": {
-            "type": "number",
-            "description": "The number of roles with this seniority level"
-          },
-          "trend": {
-            "description": "The trend of the seniority level",
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/DataPointDto"
-            }
-          }
-        },
-        "required": [
-          "name",
-          "count",
-          "trend"
-        ]
-      },
-      "SeniorityListResponseDto": {
-        "type": "object",
-        "properties": {
-          "seniorityLevels": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/SeniorityListItemDto"
-            }
-          },
-          "count": {
-            "type": "number",
-            "description": "The total number of seniority levels in the database after applying the filters"
-          }
-        },
-        "required": [
-          "seniorityLevels",
-          "count"
         ]
       },
       "AlumniOptionDto": {
@@ -7138,6 +4054,355 @@
           "count"
         ]
       },
+      "RoleListItemDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "The name of the role"
+          },
+          "level": {
+            "type": "number",
+            "description": "The level of classification of the role, 1-4 being ISCO-08 and 5+ being ESCO"
+          },
+          "escoUrl": {
+            "type": "string",
+            "description": "The URL of the role in the ESCO classification tree"
+          },
+          "code": {
+            "type": "string",
+            "description": "The ESCO code of the role"
+          },
+          "count": {
+            "type": "number",
+            "description": "The number of roles classified with this role"
+          },
+          "trend": {
+            "description": "The trend of the role",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DataPointDto"
+            }
+          }
+        },
+        "required": [
+          "name",
+          "level",
+          "code",
+          "count",
+          "trend"
+        ]
+      },
+      "RoleListResponseDto": {
+        "type": "object",
+        "properties": {
+          "roles": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RoleListItemDto"
+            }
+          },
+          "count": {
+            "type": "number",
+            "description": "The total number of roles in the database"
+          },
+          "distinctCount": {
+            "type": "number",
+            "description": "The total number of distinct roles in the database"
+          }
+        },
+        "required": [
+          "roles",
+          "count",
+          "distinctCount"
+        ]
+      },
+      "SeniorityListItemDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "The name of the seniority level",
+            "enum": [
+              "INTERN",
+              "ENTRY_LEVEL",
+              "ASSOCIATE",
+              "MID_SENIOR_LEVEL",
+              "DIRECTOR",
+              "EXECUTIVE",
+              "C_LEVEL"
+            ]
+          },
+          "count": {
+            "type": "number",
+            "description": "The number of roles with this seniority level"
+          },
+          "trend": {
+            "description": "The trend of the seniority level",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DataPointDto"
+            }
+          }
+        },
+        "required": [
+          "name",
+          "count",
+          "trend"
+        ]
+      },
+      "SeniorityListResponseDto": {
+        "type": "object",
+        "properties": {
+          "seniorityLevels": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SeniorityListItemDto"
+            }
+          },
+          "count": {
+            "type": "number",
+            "description": "The total number of seniority levels in the database after applying the filters"
+          }
+        },
+        "required": [
+          "seniorityLevels",
+          "count"
+        ]
+      },
+      "IndustryListItemDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The ID of the industry"
+          },
+          "name": {
+            "type": "string",
+            "description": "The name of the industry",
+            "example": "Financial Services"
+          },
+          "count": {
+            "type": "number",
+            "description": "The number of alumni working in the industry",
+            "example": 100
+          },
+          "trend": {
+            "description": "The alumni trend of the industry",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DataPointDto"
+            }
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "count",
+          "trend"
+        ]
+      },
+      "IndustryListResponseDto": {
+        "type": "object",
+        "properties": {
+          "industries": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/IndustryListItemDto"
+            }
+          },
+          "count": {
+            "type": "number",
+            "description": "The total number of industries in the database"
+          }
+        },
+        "required": [
+          "industries",
+          "count"
+        ]
+      },
+      "FacultyListItemDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The faculty ID"
+          },
+          "name": {
+            "type": "string",
+            "description": "The faculty name"
+          },
+          "acronym": {
+            "type": "string",
+            "description": "The faculty acronym"
+          },
+          "trend": {
+            "description": "The graduations trend of the faculty",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DataPointDto"
+            }
+          },
+          "count": {
+            "type": "number",
+            "description": "The number of alumni that graduated from the faculty"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "acronym",
+          "trend",
+          "count"
+        ]
+      },
+      "FacultyListDto": {
+        "type": "object",
+        "properties": {
+          "faculties": {
+            "description": "The faculty list",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FacultyListItemDto"
+            }
+          },
+          "filteredCount": {
+            "type": "number",
+            "description": "The number of faculties, after applying the filters"
+          },
+          "count": {
+            "type": "number",
+            "description": "The total number of faculties, regardless of filters"
+          }
+        },
+        "required": [
+          "faculties",
+          "filteredCount",
+          "count"
+        ]
+      },
+      "MajorListItemDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The major ID"
+          },
+          "name": {
+            "type": "string",
+            "description": "The major name"
+          },
+          "acronym": {
+            "type": "string",
+            "description": "The major acronym"
+          },
+          "facultyAcronym": {
+            "type": "string",
+            "description": "The faculty acronym"
+          },
+          "count": {
+            "type": "number",
+            "description": "The number of alumni that graduated from the major"
+          },
+          "trend": {
+            "description": "The alumni count trend of the country",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DataPointDto"
+            }
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "acronym",
+          "facultyAcronym",
+          "count",
+          "trend"
+        ]
+      },
+      "MajorListDto": {
+        "type": "object",
+        "properties": {
+          "majors": {
+            "description": "The major list",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MajorListItemDto"
+            }
+          },
+          "count": {
+            "type": "number",
+            "description": "The number of majors"
+          },
+          "filteredCount": {
+            "type": "number",
+            "description": "The number of majors, after applying the filters"
+          }
+        },
+        "required": [
+          "majors",
+          "count",
+          "filteredCount"
+        ]
+      },
+      "GraduationListItemDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The course ID"
+          },
+          "name": {
+            "type": "string",
+            "description": "For viz purposes"
+          },
+          "year": {
+            "type": "number",
+            "description": "The year of graduation"
+          },
+          "acronym": {
+            "type": "string",
+            "description": "The major acronym"
+          },
+          "count": {
+            "type": "number",
+            "description": "The number of alumni that graduated from the major in the year"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "year",
+          "acronym",
+          "count"
+        ]
+      },
+      "GraduationListDto": {
+        "type": "object",
+        "properties": {
+          "graduations": {
+            "description": "The graduation list",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/GraduationListItemDto"
+            }
+          },
+          "count": {
+            "type": "number",
+            "description": "The number of graduations"
+          },
+          "filteredCount": {
+            "type": "number",
+            "description": "The number of graduations, after applying the filters"
+          }
+        },
+        "required": [
+          "graduations",
+          "count",
+          "filteredCount"
+        ]
+      },
       "AnalyticsDto": {
         "type": "object",
         "properties": {
@@ -7170,6 +4435,54 @@
             "allOf": [
               {
                 "$ref": "#/components/schemas/CityListResponseDto"
+              }
+            ]
+          },
+          "roleData": {
+            "description": "The role analytics data",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/RoleListResponseDto"
+              }
+            ]
+          },
+          "seniorityData": {
+            "description": "The seniority analytics data",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/SeniorityListResponseDto"
+              }
+            ]
+          },
+          "industryData": {
+            "description": "The industry analytics data",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/IndustryListResponseDto"
+              }
+            ]
+          },
+          "facultyData": {
+            "description": "The faculty analytics data",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/FacultyListDto"
+              }
+            ]
+          },
+          "majorData": {
+            "description": "The major analytics data",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/MajorListDto"
+              }
+            ]
+          },
+          "graduationData": {
+            "description": "The graduation analytics data",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/GraduationListDto"
               }
             ]
           }

@@ -65,7 +65,6 @@ export const CompanyDashboard = ({
 
   const filtersRef = useRef<FilterState>(filters);
 
-  // Reset dashboard state when global filters change
   useEffect(() => {
     const changed =
       JSON.stringify(filtersRef.current) !== JSON.stringify(filters);
@@ -99,7 +98,7 @@ export const CompanyDashboard = ({
       sortBy: sortField,
       sortOrder,
       offset: (page - 1) * itemsPerPage,
-      includeTrend: view === ViewType.TREND,
+      includeCompanyTrend: view === ViewType.TREND,
       selectorType: SelectorType.Company,
     },
     options: {

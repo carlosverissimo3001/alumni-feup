@@ -13,6 +13,13 @@
  */
 
 import { mapValues } from '../runtime';
+import type { SeniorityListResponseDto } from './SeniorityListResponseDto';
+import {
+    SeniorityListResponseDtoFromJSON,
+    SeniorityListResponseDtoFromJSONTyped,
+    SeniorityListResponseDtoToJSON,
+    SeniorityListResponseDtoToJSONTyped,
+} from './SeniorityListResponseDto';
 import type { CityListResponseDto } from './CityListResponseDto';
 import {
     CityListResponseDtoFromJSON,
@@ -20,6 +27,20 @@ import {
     CityListResponseDtoToJSON,
     CityListResponseDtoToJSONTyped,
 } from './CityListResponseDto';
+import type { RoleListResponseDto } from './RoleListResponseDto';
+import {
+    RoleListResponseDtoFromJSON,
+    RoleListResponseDtoFromJSONTyped,
+    RoleListResponseDtoToJSON,
+    RoleListResponseDtoToJSONTyped,
+} from './RoleListResponseDto';
+import type { GraduationListDto } from './GraduationListDto';
+import {
+    GraduationListDtoFromJSON,
+    GraduationListDtoFromJSONTyped,
+    GraduationListDtoToJSON,
+    GraduationListDtoToJSONTyped,
+} from './GraduationListDto';
 import type { CountryListResponseDto } from './CountryListResponseDto';
 import {
     CountryListResponseDtoFromJSON,
@@ -34,6 +55,13 @@ import {
     CompanyListResponseDtoToJSON,
     CompanyListResponseDtoToJSONTyped,
 } from './CompanyListResponseDto';
+import type { IndustryListResponseDto } from './IndustryListResponseDto';
+import {
+    IndustryListResponseDtoFromJSON,
+    IndustryListResponseDtoFromJSONTyped,
+    IndustryListResponseDtoToJSON,
+    IndustryListResponseDtoToJSONTyped,
+} from './IndustryListResponseDto';
 import type { AlumniListResponseDto } from './AlumniListResponseDto';
 import {
     AlumniListResponseDtoFromJSON,
@@ -41,6 +69,20 @@ import {
     AlumniListResponseDtoToJSON,
     AlumniListResponseDtoToJSONTyped,
 } from './AlumniListResponseDto';
+import type { MajorListDto } from './MajorListDto';
+import {
+    MajorListDtoFromJSON,
+    MajorListDtoFromJSONTyped,
+    MajorListDtoToJSON,
+    MajorListDtoToJSONTyped,
+} from './MajorListDto';
+import type { FacultyListDto } from './FacultyListDto';
+import {
+    FacultyListDtoFromJSON,
+    FacultyListDtoFromJSONTyped,
+    FacultyListDtoToJSON,
+    FacultyListDtoToJSONTyped,
+} from './FacultyListDto';
 
 /**
  * 
@@ -72,6 +114,42 @@ export interface AnalyticsDto {
      * @memberof AnalyticsDto
      */
     cityData?: CityListResponseDto;
+    /**
+     * The role analytics data
+     * @type {RoleListResponseDto}
+     * @memberof AnalyticsDto
+     */
+    roleData?: RoleListResponseDto;
+    /**
+     * The seniority analytics data
+     * @type {SeniorityListResponseDto}
+     * @memberof AnalyticsDto
+     */
+    seniorityData?: SeniorityListResponseDto;
+    /**
+     * The industry analytics data
+     * @type {IndustryListResponseDto}
+     * @memberof AnalyticsDto
+     */
+    industryData?: IndustryListResponseDto;
+    /**
+     * The faculty analytics data
+     * @type {FacultyListDto}
+     * @memberof AnalyticsDto
+     */
+    facultyData?: FacultyListDto;
+    /**
+     * The major analytics data
+     * @type {MajorListDto}
+     * @memberof AnalyticsDto
+     */
+    majorData?: MajorListDto;
+    /**
+     * The graduation analytics data
+     * @type {GraduationListDto}
+     * @memberof AnalyticsDto
+     */
+    graduationData?: GraduationListDto;
 }
 
 /**
@@ -95,6 +173,12 @@ export function AnalyticsDtoFromJSONTyped(json: any, ignoreDiscriminator: boolea
         'companyData': json['companyData'] == null ? undefined : CompanyListResponseDtoFromJSON(json['companyData']),
         'countryData': json['countryData'] == null ? undefined : CountryListResponseDtoFromJSON(json['countryData']),
         'cityData': json['cityData'] == null ? undefined : CityListResponseDtoFromJSON(json['cityData']),
+        'roleData': json['roleData'] == null ? undefined : RoleListResponseDtoFromJSON(json['roleData']),
+        'seniorityData': json['seniorityData'] == null ? undefined : SeniorityListResponseDtoFromJSON(json['seniorityData']),
+        'industryData': json['industryData'] == null ? undefined : IndustryListResponseDtoFromJSON(json['industryData']),
+        'facultyData': json['facultyData'] == null ? undefined : FacultyListDtoFromJSON(json['facultyData']),
+        'majorData': json['majorData'] == null ? undefined : MajorListDtoFromJSON(json['majorData']),
+        'graduationData': json['graduationData'] == null ? undefined : GraduationListDtoFromJSON(json['graduationData']),
     };
 }
 
@@ -113,6 +197,12 @@ export function AnalyticsDtoToJSONTyped(value?: AnalyticsDto | null, ignoreDiscr
         'companyData': CompanyListResponseDtoToJSON(value['companyData']),
         'countryData': CountryListResponseDtoToJSON(value['countryData']),
         'cityData': CityListResponseDtoToJSON(value['cityData']),
+        'roleData': RoleListResponseDtoToJSON(value['roleData']),
+        'seniorityData': SeniorityListResponseDtoToJSON(value['seniorityData']),
+        'industryData': IndustryListResponseDtoToJSON(value['industryData']),
+        'facultyData': FacultyListDtoToJSON(value['facultyData']),
+        'majorData': MajorListDtoToJSON(value['majorData']),
+        'graduationData': GraduationListDtoToJSON(value['graduationData']),
     };
 }
 
