@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Table,
   TableBody,
@@ -74,34 +74,13 @@ export const RoleDashboard = ({
     TrendFrequency.Y5
   );
 
-  const filtersRef = useRef<FilterState>(filters);
-
-  useEffect(() => {
-    const changed =
-      JSON.stringify(filtersRef.current) !== JSON.stringify(filters);
-    if (changed) {
-      filtersRef.current = filters;
-      setPage(1);
-      setItemsPerPage(ITEMS_PER_PAGE[1]);
-      setSortField(SortBy.COUNT);
-      setSortOrder(SortOrder.DESC);
-      setView(ViewType.TABLE);
-      setTrendFrequency(TrendFrequency.Y5);
-    }
-  }, [filters]);
-
-  // Determine if globalData is valid to use
-  const shouldUseGlobalData = useMemo(() => {
-    return (
-      page === 1 &&
-      itemsPerPage === ITEMS_PER_PAGE[1] &&
-      sortField === SortBy.COUNT &&
-      sortOrder === SortOrder.DESC &&
-      view === ViewType.TABLE &&
-      trendFrequency === TrendFrequency.Y5 &&
-      classificationLevel === ESCO_CLASSIFICATION_LEVEL.LEVEL_5
-    );
-  }, [page, itemsPerPage, sortField, sortOrder, view, trendFrequency, classificationLevel]);
+  const needsNewData =
+  page > 1 ||
+  view === ViewType.TREND ||
+  sortField !== SortBy.COUNT ||
+  sortOrder !== SortOrder.DESC ||
+  itemsPerPage !== ITEMS_PER_PAGE[1] ||
+  classificationLevel !== ESCO_CLASSIFICATION_LEVEL.LEVEL_5
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [pageInput, setPageInput] = useState<string>(String(page));
@@ -123,10 +102,11 @@ export const RoleDashboard = ({
       escoClassificationLevel: Number(classificationLevel.split(" ")[1]),
     },
     options: {
-      enabled: !shouldUseGlobalData,
-      isInitialLoad: shouldUseGlobalData,
+      enabled: needsNewData,
     },
   });
+
+  const shouldUseGlobalData = !needsNewData && !data?.roleData;
 
   const currentData = shouldUseGlobalData ? globalData : data?.roleData;
   const roles = currentData?.roles || [];
