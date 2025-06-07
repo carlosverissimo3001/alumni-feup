@@ -28,8 +28,6 @@ export const useFetchAnalytics = ({
     ? ["analytics", "initial", filteredParams]
     : ["analytics", params.selectorType, filteredParams];
 
-  //console.log("queryKey", queryKey);
-
   return useQuery({
     queryKey,
     queryFn: () => NestAPI.analyticsControllerGetAnalytics(filteredParams),
