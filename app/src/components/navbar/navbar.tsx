@@ -73,11 +73,6 @@ const Navbar = () => {
       icon: <ChartSpline size={20} />,
       href: "/analytics",
     },
-    /* {
-      label: "Insights",
-      icon: <BrainIcon size={20} />,
-      href: "/insights",
-    }, */
     {
       label: "Reviews",
       icon: <MessageCircleCode size={20} />,

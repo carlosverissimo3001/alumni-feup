@@ -28,16 +28,20 @@ import { useState } from "react";
 import { Button } from "../ui/button";
 import { useToast } from "@/hooks/misc/useToast";
 import { cn } from "@/lib/utils";
+import LoadingSkeleton from "./LoadingSkeleton";
+import CompanyNotFound from "./CompanyNotFound";
+import ComingSoonSection from "./ComingSoonSection";
 
 type props = {
-  data: CompanyInsightsDto & { levelsFyiUrl?: string };
+  data?: CompanyInsightsDto;
+  isLoading?: boolean;
 };
 
-export default function CompanyOverview({ data }: props) {
-  const companyType = data.companyType
+export default function CompanyOverview({ data, isLoading = false }: props) {
+  const companyType = data?.companyType
     ? companyTypeConfig[data.companyType]
     : null;
-  const companySize = data.companySize
+  const companySize = data?.companySize
     ? companySizeConfig[data.companySize]
     : null;
   const { toast } = useToast();
@@ -61,6 +65,12 @@ export default function CompanyOverview({ data }: props) {
       });
     }
   };
+
+  if (isLoading) {
+    return <LoadingSkeleton />;
+  }
+
+  if (!data) return <CompanyNotFound />;
 
   return (
     <div className="relative">
@@ -122,7 +132,7 @@ export default function CompanyOverview({ data }: props) {
                           className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm text-muted-foreground hover:text-foreground hover:bg-gradient-to-r from-[#8C2D19]/10 to-gray-100 hover:scale-105 transition-all duration-200 rounded-md"
                         >
                           <Image
-                            src="/logos/levels-fyi-logo.png"
+                            src="/logos/levels-fyi-simple.svg"
                             alt="Levels.fyi"
                             width={20}
                             height={20}
@@ -271,6 +281,8 @@ export default function CompanyOverview({ data }: props) {
           </motion.div>
         </CardContent>
       </Card>
+
+      <ComingSoonSection />
 
       <AnimatePresence>
         <motion.div

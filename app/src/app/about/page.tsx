@@ -283,10 +283,10 @@ const AboutPage = () => {
                     Salary Data
                   </h3>
                   <Image
-                    src="/logos/levels-fyi-logo.png"
+                    src="/logos/levels-fyi.svg"
                     alt="Levels.fyi"
-                    width={28}
-                    height={28}
+                    width={100}
+                    height={20}
                     className="opacity-80"
                   />
                 </div>
