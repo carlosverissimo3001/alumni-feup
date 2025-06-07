@@ -1,37 +1,68 @@
-import { Metadata } from "next";
-import { getCompanyInsights } from "@/lib/api/insights";
-import CompanyPageClient from "./client";
+"use client";
 
-export async function generateMetadata({
-  params,
-}: {
-  params: { id: string };
-}): Promise<Metadata> {
-  const id = await params.id;
-    const data = await getCompanyInsights(id);
-    return {
-      title: data?.name
-        ? `${data.name} Insights`
-        : "Company Insights",
-      description: data?.name
-        ? `View detailed analytics and insights about ${data.name}.`
-        : "View detailed company analytics and insights.",
-      openGraph: {
-        title: data?.name
-          ? `${data.name} Insights`
-          : "Company Insights",
-        description: data?.name
-          ? `View detailed analytics and insights about ${data.name}.`
-          : "View detailed company analytics and insights.",
-    },
-  };
+import { useParams, useRouter } from 'next/navigation';
+import { useCompanyInsights } from '@/hooks/insights/useCompanyInsights';
+import CompanyNotFound from '@/components/company/CompanyNotFound';
+import CompanyOverview from '@/components/company/CompanyOverview';
+import { Skeleton } from '@/components/ui/skeleton';
+
+export default function CompanyPage() {
+  const params = useParams();
+  const router = useRouter();
+  const companyId = params.id as string;
+  const { data, isLoading } = useCompanyInsights(companyId);
+
+  if (!companyId) {
+    router.push('/analytics');
+    return null;
+  }
+
+  if (isLoading) {
+    return <CompanyPageSkeleton />;
+  }
+
+  if (!data) {
+    return <CompanyNotFound />;
+  }
+
+
+  return (
+    <div className="p-4 space-y-8 bg-gray-50 min-h-screen">
+      {/* Company Overview */}
+      <CompanyOverview data={data} />
+    </div>
+  );
 }
 
-export default async function CompanyPage({
-  params,
-}: {
-  params: { id: string };
-}) {
-  const id = await params.id;
-  return <CompanyPageClient params={{ id }} />;
+function CompanyPageSkeleton() {
+  // TODO: update to match new layout
+  return (
+    <div className="p-6 space-y-8 bg-gray-50 min-h-screen">
+      {/* Company Overview Skeleton */}
+      <div className="w-3/4 rounded-xl border bg-card text-card-foreground shadow">
+        <div className="flex flex-row items-center gap-4 p-6">
+          <Skeleton className="h-24 w-24 rounded-full" />
+          <div className="space-y-2">
+            <Skeleton className="h-8 w-64" />
+            <Skeleton className="h-4 w-40" />
+          </div>
+        </div>
+        <div className="p-6 pt-0">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <Skeleton className="h-16 w-full" />
+            <Skeleton className="h-16 w-full" />
+            <Skeleton className="h-16 w-full" />
+            <Skeleton className="h-16 w-full" />
+          </div>
+        </div>
+      </div>
+
+      {/* Tabs Skeleton */}
+      <div className="w-full">
+        <Skeleton className="h-10 w-72 mb-6" />
+        <Skeleton className="h-80 w-full mb-6" />
+        <Skeleton className="h-64 w-full" />
+      </div>
+    </div>
+  );
 }
