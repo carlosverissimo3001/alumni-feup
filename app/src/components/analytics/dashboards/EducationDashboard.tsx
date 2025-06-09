@@ -187,7 +187,7 @@ export const EducationDashboard = ({
     if (mode === EDUCATION_DRILL_TYPE.FACULTY) {
       return "Faculties";
     } else if (mode === EDUCATION_DRILL_TYPE.MAJOR) {
-      return "Courses";
+      return "Degrees";
     }
     return "Graduation Years";
   };
@@ -203,9 +203,9 @@ export const EducationDashboard = ({
 
   const getTooltipMessage = () => {
     if (mode === EDUCATION_DRILL_TYPE.FACULTY) {
-      return "Distribution of alumni by their graduation faculty.";
+      return "Distribution of alumni by their faculty.";
     } else if (mode === EDUCATION_DRILL_TYPE.MAJOR) {
-      return "Distribution of alumni by their graduation major.";
+      return "Distribution of alumni by their degree.";
     }
     return "Distribution of alumni by their graduation year.";
   };
@@ -246,7 +246,7 @@ export const EducationDashboard = ({
     if (mode === EDUCATION_DRILL_TYPE.FACULTY) {
       return "Alumni who have graduated from this faculty";
     } else if (mode === EDUCATION_DRILL_TYPE.MAJOR) {
-      return "Alumni who have graduated from this course";
+      return "Alumni who have graduated with this degree";
     }
     return "Alumni who have graduated in this year";
   };
@@ -510,14 +510,14 @@ export const EducationDashboard = ({
                   <TooltipTrigger asChild>
                     <div className="flex items-center">
                       <BookOpen className="h-4 w-4 mr-1 inline-block transition-transform duration-200 hover:bounce" />
-                      <span>C</span>
+                      <span>D</span>
                     </div>
                   </TooltipTrigger>
                   <TooltipContent>
                     <p>
                       {mode === EDUCATION_DRILL_TYPE.MAJOR
-                        ? "Distribution by Course"
-                        : "Change to Course view"}
+                        ? "Distribution by Degree"
+                        : "Change to Degree view"}
                     </p>
                   </TooltipContent>
                 </Tooltip>
