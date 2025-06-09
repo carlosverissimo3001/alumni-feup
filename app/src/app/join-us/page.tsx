@@ -54,7 +54,7 @@ const JoinPage = () => {
             transition={{ duration: 0.5, delay: 0.2 }}
             className="text-3xl font-bold text-gray-900"
           >
-            Join 30EIC
+            Join Alumni FEUP
           </motion.h2>
           <motion.p
             initial={{ opacity: 0, y: -20 }}

@@ -185,7 +185,7 @@ const ManualSubmissionForm = ({ onBack }: ManualSubmissionFormProps) => {
     ) {
       setCoursesWithYears(updatedCoursesWithYears);
     }
-  }, [selectedCourseIds, courses, coursesWithYears]); // Added coursesWithYears dependency
+  }, [selectedCourseIds, courses, coursesWithYears]);
 
   const handleYearChange = (courseId: string, year: string) => {
     setCoursesWithYears((prev) =>
@@ -441,7 +441,7 @@ const ManualSubmissionForm = ({ onBack }: ManualSubmissionFormProps) => {
 
                       <div>
                         <Label className="text-sm font-medium">
-                          Completed Courses <span className="text-destructive">*</span>
+                          Completed Degrees <span className="text-destructive">*</span>
                         </Label>
                         <div className="mt-1.5">
                           <MultiSelect
@@ -453,7 +453,7 @@ const ManualSubmissionForm = ({ onBack }: ManualSubmissionFormProps) => {
                                 label: `${course.acronym} - ${course.name}`,
                               })) || []
                             }
-                            placeholder="Select your courses"
+                            placeholder="Select your degrees"
                             disabled={!selectedFaculty || isLoadingCourses}
                           />
                         </div>
@@ -464,8 +464,8 @@ const ManualSubmissionForm = ({ onBack }: ManualSubmissionFormProps) => {
                   {coursesWithYears.length > 0 && (
                     <div className="space-y-2 bg-gray-50 p-3 rounded-xl border border-gray-100">
                       <div>
-                        <h3 className="font-medium text-gray-900">Course(s) Completion</h3>
-                        <p className="text-sm text-gray-500">Select the year you completed each course</p>
+                        <h3 className="font-medium text-gray-900">Degree(s) Completion</h3>
+                        <p className="text-sm text-gray-500">Select the year you completed each degree</p>
                       </div>
                       
                       <div className="space-y-2">
