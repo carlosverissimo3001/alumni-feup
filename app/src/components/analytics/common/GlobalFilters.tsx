@@ -850,14 +850,14 @@ export const GlobalFilters = ({
               htmlFor="courseSelect"
               className="text-xs font-medium text-gray-700 mb-1 block"
             >
-              Course
+              Degree
             </Label>
             <GroupedMultiSelect
               id="courseSelect"
               options={options.coursesGrouped}
               value={filters.courseIds}
               onValueChange={(value) => handleFilterChange("courseIds", value)}
-              placeholder="Select courses"
+              placeholder="Select degrees"
               isLoading={isCourseOptionsLoading}
               maxCount={1}
             />
