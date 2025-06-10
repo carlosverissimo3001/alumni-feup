@@ -1,3 +1,5 @@
+// Note: One day, rename this to DegreeSelect to avoid confusion
+
 import { MultiSelect } from "../ui/multi-select";
 import { Course } from "@/sdk";
 
@@ -17,7 +19,7 @@ export const CourseSelect = ({ courses, setCourseIds, isLoadingCourses, courseId
       })) : []}
         onValueChange={(values) => setCourseIds(values || [])}
         value={courseIds}
-        placeholder={isLoadingCourses ? "Loading courses..." : "Select course"}
+        placeholder={isLoadingCourses ? "Loading degrees..." : "Select degree"}
         variant="inverted"
         maxCount={4}
         disabled={isLoadingCourses}

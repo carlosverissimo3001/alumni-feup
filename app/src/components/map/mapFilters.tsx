@@ -530,7 +530,7 @@ const MapFilters = ({
               }
               value={courseIds}
               placeholder={
-                isLoadingCourses ? "Loading courses..." : "Select course"
+                isLoadingCourses ? "Loading degrees..." : "Select degree"
               }
               variant="inverted"
               maxCount={4}
