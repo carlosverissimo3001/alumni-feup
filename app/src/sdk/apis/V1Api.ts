@@ -44,6 +44,7 @@ import type {
   RoleHierarchyDto,
   SendFeedbackDto,
   UpdateClassificationDto,
+  UpdateRoleVisibilityDto,
   UpdateSeniorityLevelDto,
   UploadExtractionDto,
   UserAuthResponse,
@@ -109,6 +110,8 @@ import {
     SendFeedbackDtoToJSON,
     UpdateClassificationDtoFromJSON,
     UpdateClassificationDtoToJSON,
+    UpdateRoleVisibilityDtoFromJSON,
+    UpdateRoleVisibilityDtoToJSON,
     UpdateSeniorityLevelDtoFromJSON,
     UpdateSeniorityLevelDtoToJSON,
     UploadExtractionDtoFromJSON,
@@ -167,6 +170,10 @@ export interface AlumniControllerGetProfileRequest {
     id: string;
 }
 
+export interface AlumniControllerMarkAsMainRoleRequest {
+    id: string;
+}
+
 export interface AlumniControllerMarkAsReviewedRequest {
     markAsReviewedDto: MarkAsReviewedDto;
 }
@@ -178,6 +185,10 @@ export interface AlumniControllerRequestDataUpdateRequest {
 export interface AlumniControllerUpdateClassificationRequest {
     id: string;
     updateClassificationDto: UpdateClassificationDto;
+}
+
+export interface AlumniControllerUpdateRoleVisibilityRequest {
+    updateRoleVisibilityDto: UpdateRoleVisibilityDto;
 }
 
 export interface AlumniControllerUpdateSeniorityLevelRequest {
@@ -532,6 +543,21 @@ export interface V1ApiInterface {
 
     /**
      * 
+     * @summary Mark a role as the main role of the user
+     * @param {string} id 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof V1ApiInterface
+     */
+    alumniControllerMarkAsMainRoleRaw(requestParameters: AlumniControllerMarkAsMainRoleRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<RoleAnalyticsEntity>>;
+
+    /**
+     * Mark a role as the main role of the user
+     */
+    alumniControllerMarkAsMainRole(requestParameters: AlumniControllerMarkAsMainRoleRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<RoleAnalyticsEntity>;
+
+    /**
+     * 
      * @summary Mark an alumni as reviewed
      * @param {MarkAsReviewedDto} markAsReviewedDto 
      * @param {*} [options] Override http request option.
@@ -576,6 +602,21 @@ export interface V1ApiInterface {
      * Update the classification of a role
      */
     alumniControllerUpdateClassification(requestParameters: AlumniControllerUpdateClassificationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<RoleAnalyticsEntity>;
+
+    /**
+     * 
+     * @summary Hide a role in the user profile
+     * @param {UpdateRoleVisibilityDto} updateRoleVisibilityDto 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof V1ApiInterface
+     */
+    alumniControllerUpdateRoleVisibilityRaw(requestParameters: AlumniControllerUpdateRoleVisibilityRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<RoleAnalyticsEntity>>;
+
+    /**
+     * Hide a role in the user profile
+     */
+    alumniControllerUpdateRoleVisibility(requestParameters: AlumniControllerUpdateRoleVisibilityRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<RoleAnalyticsEntity>;
 
     /**
      * Update the seniority level of a role
@@ -1479,6 +1520,39 @@ export class V1Api extends runtime.BaseAPI implements V1ApiInterface {
     }
 
     /**
+     * Mark a role as the main role of the user
+     */
+    async alumniControllerMarkAsMainRoleRaw(requestParameters: AlumniControllerMarkAsMainRoleRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<RoleAnalyticsEntity>> {
+        if (requestParameters['id'] == null) {
+            throw new runtime.RequiredError(
+                'id',
+                'Required parameter "id" was null or undefined when calling alumniControllerMarkAsMainRole().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        const response = await this.request({
+            path: `/alumni/role/mark-as-main/{id}`.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id']))),
+            method: 'POST',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => RoleAnalyticsEntityFromJSON(jsonValue));
+    }
+
+    /**
+     * Mark a role as the main role of the user
+     */
+    async alumniControllerMarkAsMainRole(requestParameters: AlumniControllerMarkAsMainRoleRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<RoleAnalyticsEntity> {
+        const response = await this.alumniControllerMarkAsMainRoleRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
      * Mark an alumni as reviewed
      */
     async alumniControllerMarkAsReviewedRaw(requestParameters: AlumniControllerMarkAsReviewedRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Alumni>> {
@@ -1588,6 +1662,42 @@ export class V1Api extends runtime.BaseAPI implements V1ApiInterface {
      */
     async alumniControllerUpdateClassification(requestParameters: AlumniControllerUpdateClassificationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<RoleAnalyticsEntity> {
         const response = await this.alumniControllerUpdateClassificationRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Hide a role in the user profile
+     */
+    async alumniControllerUpdateRoleVisibilityRaw(requestParameters: AlumniControllerUpdateRoleVisibilityRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<RoleAnalyticsEntity>> {
+        if (requestParameters['updateRoleVisibilityDto'] == null) {
+            throw new runtime.RequiredError(
+                'updateRoleVisibilityDto',
+                'Required parameter "updateRoleVisibilityDto" was null or undefined when calling alumniControllerUpdateRoleVisibility().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
+
+        const response = await this.request({
+            path: `/alumni/role/hide-in-profile`,
+            method: 'POST',
+            headers: headerParameters,
+            query: queryParameters,
+            body: UpdateRoleVisibilityDtoToJSON(requestParameters['updateRoleVisibilityDto']),
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => RoleAnalyticsEntityFromJSON(jsonValue));
+    }
+
+    /**
+     * Hide a role in the user profile
+     */
+    async alumniControllerUpdateRoleVisibility(requestParameters: AlumniControllerUpdateRoleVisibilityRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<RoleAnalyticsEntity> {
+        const response = await this.alumniControllerUpdateRoleVisibilityRaw(requestParameters, initOverrides);
         return await response.value();
     }
 

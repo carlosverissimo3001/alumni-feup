@@ -60,6 +60,8 @@ type RawRole = {
   Company: RawCompany;
   wasSeniorityLevelAcceptedByUser?: boolean | null;
   wasSeniorityLevelModifiedByUser?: boolean | null;
+  isMainRole?: boolean | null;
+  isHiddenInProfile?: boolean | null;
   RoleRaw: RawRoleRaw | null;
   metadata?: Prisma.JsonValue | null;
 };
@@ -137,7 +139,8 @@ export const mapCompanyFromPrisma = (
   company: RawCompany,
 ): CompanyAnalyticsEntity => {
   return {
-    ...company,
+    id: company.id,
+    name: company.name,
     logo: toNotNullableOptional(company.logo),
     linkedinUrl: toNotNullableOptional(company.linkedinUrl),
     founded: toNotNullableOptional(company.founded),
@@ -265,6 +268,8 @@ export const mapRoleFromPrisma = (role: RawRole): RoleAnalyticsEntity => {
       role.wasSeniorityLevelModifiedByUser,
     ),
     roleRaw: mapRoleRawFromPrisma(role.RoleRaw),
+    isMainRole: toNotNullableOptional(role.isMainRole),
+    isHiddenInProfile: toNotNullableOptional(role.isHiddenInProfile),
   };
 };
 

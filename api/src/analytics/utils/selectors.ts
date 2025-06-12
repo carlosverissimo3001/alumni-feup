@@ -66,6 +66,8 @@ export const roleSelect = {
   seniorityLevel: true,
   wasSeniorityLevelAcceptedByUser: true,
   wasSeniorityLevelModifiedByUser: true,
+  isMainRole: true,
+  isHiddenInProfile: true,
   Location: {
     select: locationSelect,
   },

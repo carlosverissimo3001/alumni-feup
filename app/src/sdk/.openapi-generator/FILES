@@ -89,6 +89,7 @@ models/SeniorityClassificationVo.ts
 models/SeniorityListItemDto.ts
 models/SeniorityListResponseDto.ts
 models/UpdateClassificationDto.ts
+models/UpdateRoleVisibilityDto.ts
 models/UpdateSeniorityLevelDto.ts
 models/UploadExtractionDto.ts
 models/User.ts

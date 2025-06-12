@@ -1,9 +1,10 @@
-export { CreateAlumniDto } from './create-alumni.dto';
-export { MarkAsReviewedDto } from './mark-alumni-as-reviewed.dto';
-export { NameDto } from './name-dto';
 export { GetGeoJSONDto } from '../../dto/get-geojson.dto';
 export { AlumniGeoJSONResponse } from './alumni-geojson.dto';
-export { EvaluateSeniorityLevelDto } from './evaluate-seniority-level.dto';
+export { CreateAlumniDto } from './create-alumni.dto';
 export { EvaluateClassificationDto } from './evaluate-classification.dto';
+export { EvaluateSeniorityLevelDto } from './evaluate-seniority-level.dto';
+export { MarkAsReviewedDto } from './mark-alumni-as-reviewed.dto';
+export { NameDto } from './name-dto';
 export { UpdateClassificationDto } from './update-classification.dto';
+export { UpdateRoleVisibilityDto } from './update-role-visibility.dto';
 export { UpdateSeniorityLevelDto } from './update-seniority.dto';
