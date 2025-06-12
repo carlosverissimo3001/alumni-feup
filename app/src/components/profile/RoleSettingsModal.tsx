@@ -97,7 +97,6 @@ export function RoleSettingsModal({ roles }: RoleSettingsModalProps) {
           description: "The role visibility has been updated",
           duration: 2000,
         });
-        setOpen(false);
       },
     });
 
