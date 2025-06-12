@@ -30,6 +30,7 @@ import {
   GetGeoJSONDto,
   MarkAsReviewedDto,
   UpdateClassificationDto,
+  UpdateRoleVisibilityDto,
   UpdateSeniorityLevelDto,
 } from '../dto';
 import { AlumniPastLocationsAndCompaniesDto } from '../dto/alumni-profile.dto';
@@ -246,5 +247,33 @@ export class AlumniController {
   @Throttle({ default: { limit: 20, ttl: UPDATE_REQUEST_THROTTLE_TTL } })
   async requestDataUpdate(@Param('id') id: string): Promise<string> {
     return this.alumniProfileService.requestDataUpdate(id);
+  }
+
+  @Post('role/hide-in-profile')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({
+    summary: 'Hide a role in the user profile',
+  })
+  @ApiResponse({
+    description: 'Returns the role with the hidden role',
+    type: RoleAnalyticsEntity,
+  })
+  async updateRoleVisibility(
+    @Body() body: UpdateRoleVisibilityDto,
+  ): Promise<RoleAnalyticsEntity> {
+    return this.alumniProfileService.updateRoleVisibility(body);
+  }
+
+  @Post('role/mark-as-main/:id')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({
+    summary: 'Mark a role as the main role of the user',
+  })
+  @ApiResponse({
+    description: 'Returns the role with the marked as main role',
+    type: RoleAnalyticsEntity,
+  })
+  async markAsMainRole(@Param('id') id: string): Promise<RoleAnalyticsEntity> {
+    return this.alumniProfileService.markAsMainRole(id);
   }
 }

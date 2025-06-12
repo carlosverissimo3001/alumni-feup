@@ -57,6 +57,18 @@ export class RoleAnalyticsEntity {
   wasSeniorityLevelModifiedByUser?: boolean;
 
   @ApiPropertyOptional({
+    description: 'Whether the role is the main role of the user',
+    type: Boolean,
+  })
+  isMainRole?: boolean;
+
+  @ApiPropertyOptional({
+    description: 'Whether the role is hidden in the user profile',
+    type: Boolean,
+  })
+  isHiddenInProfile?: boolean;
+
+  @ApiPropertyOptional({
     description: 'The metadata of the role',
     type: RoleMetadataVo,
   })

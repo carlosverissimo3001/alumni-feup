@@ -16,8 +16,8 @@ export const useEvaluateSeniority = ({ onSuccess }: Input) => {
         evaluateSeniorityLevelDto: dto.evaluateSeniorityLevelDto,
       });
     },
-    onSuccess: (dto) => {
-      queryClient.invalidateQueries({ queryKey: ["role", dto.id] });
+    onSuccess: (role) => {
+      queryClient.invalidateQueries({ queryKey: ['role', role.id] });
       onSuccess?.();
     },
   });
