@@ -69,7 +69,7 @@ export default function StatsCard({
                             </TooltipTrigger>
                             <TooltipContent
                               side="top"
-                              align="center"
+                              align="start"
                               className="max-w-xs"
                             >
                               <p className="text-sm">{infoMessage}</p>
@@ -86,11 +86,6 @@ export default function StatsCard({
               </div>
             </Card>
           </TooltipTrigger>
-          <TooltipContent side="top" className="text-sm">
-            <p>
-              {name}: <strong>{values.toLocaleString("pt-PT")}</strong>
-            </p>
-          </TooltipContent>
         </Tooltip>
       </TooltipProvider>
     </motion.div>

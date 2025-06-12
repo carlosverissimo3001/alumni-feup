@@ -782,6 +782,69 @@
         ]
       }
     },
+    "/alumni/role/hide-in-profile": {
+      "post": {
+        "operationId": "AlumniController_updateRoleVisibility",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateRoleVisibilityDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "default": {
+            "description": "Returns the role with the hidden role",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RoleAnalyticsEntity"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Hide a role in the user profile",
+        "tags": [
+          "V1"
+        ]
+      }
+    },
+    "/alumni/role/mark-as-main/{id}": {
+      "post": {
+        "operationId": "AlumniController_markAsMainRole",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": "Returns the role with the marked as main role",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RoleAnalyticsEntity"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Mark a role as the main role of the user",
+        "tags": [
+          "V1"
+        ]
+      }
+    },
     "/analytics/companies/{id}": {
       "get": {
         "operationId": "CompanyAnalyticsController_getCompanyDetails",
@@ -2887,6 +2950,14 @@
             "type": "boolean",
             "description": "Whether the seniority level was modified by the user"
           },
+          "isMainRole": {
+            "type": "boolean",
+            "description": "Whether the role is the main role of the user"
+          },
+          "isHiddenInProfile": {
+            "type": "boolean",
+            "description": "Whether the role is hidden in the user profile"
+          },
           "metadata": {
             "description": "The metadata of the role",
             "allOf": [
@@ -3241,6 +3312,23 @@
         },
         "required": [
           "seniorityLevel"
+        ]
+      },
+      "UpdateRoleVisibilityDto": {
+        "type": "object",
+        "properties": {
+          "shouldHide": {
+            "type": "boolean",
+            "description": "Whether the role should be hidden in the user profile"
+          },
+          "id": {
+            "type": "string",
+            "description": "The role to update"
+          }
+        },
+        "required": [
+          "shouldHide",
+          "id"
         ]
       },
       "COMPANY_SIZE": {

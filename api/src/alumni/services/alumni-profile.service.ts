@@ -17,6 +17,7 @@ import {
   EvaluateClassificationDto,
   UpdateClassificationDto,
   UpdateSeniorityLevelDto,
+  UpdateRoleVisibilityDto,
 } from '../dto';
 import { AgentsApiService } from '@/agents-api/services/agents-api.service';
 import { LINKEDIN_OPERATION } from '@/consts';
@@ -232,5 +233,51 @@ export class AlumniProfileService {
       where: { id },
     });
     return 'Alumni deleted';
+  }
+
+  /**
+   * Updates the visibility of a role in the user profile
+   * @param id - The ID of the role to update
+   * @param params - The parameters to update the role visibility
+   * @returns The updated role
+   */
+  async updateRoleVisibility(
+    params: UpdateRoleVisibilityDto,
+  ): Promise<RoleAnalyticsEntity> {
+    const { id, shouldHide } = params;
+
+    const role = await this.prisma.role.update({
+      where: { id },
+      data: { isHiddenInProfile: shouldHide },
+      select: roleSelect,
+    });
+
+    return mapRoleFromPrisma(role);
+  }
+
+  /**
+   * Marks a role as the main role of the user
+   * @param id - The ID of the role to mark as main
+   * @returns The updated role
+   */
+  async markAsMainRole(id: string): Promise<RoleAnalyticsEntity> {
+    // Find the current main role
+    const currentMainRole = await this.prisma.role.findFirst({
+      where: { isMainRole: true },
+    });
+
+    if (currentMainRole) {
+      await this.prisma.role.update({
+        where: { id: currentMainRole.id },
+        data: { isMainRole: false },
+      });
+    }
+
+    const role = await this.prisma.role.update({
+      where: { id },
+      data: { isMainRole: true },
+      select: roleSelect,
+    });
+    return mapRoleFromPrisma(role);
   }
 }

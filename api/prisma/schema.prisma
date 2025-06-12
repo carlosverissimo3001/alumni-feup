@@ -232,6 +232,12 @@ model Role {
   wasSeniorityLevelAcceptedByUser Boolean?        @map("was_seniority_level_accepted_by_user")
   wasSeniorityLevelModifiedByUser Boolean?        @map("was_seniority_level_modified_by_user")
 
+  // If the user wants a certain role to be hidden in their profile
+  isHiddenInProfile Boolean? @map("is_hidden_in_profile") @default(false)
+
+  // The role that should be the main focus of the profile
+  isMainRole Boolean? @map("is_main_role") @default(false)
+
   startDate DateTime  @map("start_date") @db.Timestamptz(6)
   endDate   DateTime? @map("end_date") @db.Timestamptz(6)
 
