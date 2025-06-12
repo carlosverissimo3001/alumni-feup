@@ -128,6 +128,18 @@ export interface RoleAnalyticsEntity {
      */
     wasSeniorityLevelModifiedByUser?: boolean;
     /**
+     * Whether the role is the main role of the user
+     * @type {boolean}
+     * @memberof RoleAnalyticsEntity
+     */
+    isMainRole?: boolean;
+    /**
+     * Whether the role is hidden in the user profile
+     * @type {boolean}
+     * @memberof RoleAnalyticsEntity
+     */
+    isHiddenInProfile?: boolean;
+    /**
      * The metadata of the role
      * @type {RoleMetadataVo}
      * @memberof RoleAnalyticsEntity
@@ -186,6 +198,8 @@ export function RoleAnalyticsEntityFromJSONTyped(json: any, ignoreDiscriminator:
         'roleRaw': json['roleRaw'] == null ? undefined : RoleRawAnalyticsEntityFromJSON(json['roleRaw']),
         'wasSeniorityLevelAcceptedByUser': json['wasSeniorityLevelAcceptedByUser'] == null ? undefined : json['wasSeniorityLevelAcceptedByUser'],
         'wasSeniorityLevelModifiedByUser': json['wasSeniorityLevelModifiedByUser'] == null ? undefined : json['wasSeniorityLevelModifiedByUser'],
+        'isMainRole': json['isMainRole'] == null ? undefined : json['isMainRole'],
+        'isHiddenInProfile': json['isHiddenInProfile'] == null ? undefined : json['isHiddenInProfile'],
         'metadata': json['metadata'] == null ? undefined : RoleMetadataVoFromJSON(json['metadata']),
     };
 }
@@ -213,6 +227,8 @@ export function RoleAnalyticsEntityToJSONTyped(value?: RoleAnalyticsEntity | nul
         'roleRaw': RoleRawAnalyticsEntityToJSON(value['roleRaw']),
         'wasSeniorityLevelAcceptedByUser': value['wasSeniorityLevelAcceptedByUser'],
         'wasSeniorityLevelModifiedByUser': value['wasSeniorityLevelModifiedByUser'],
+        'isMainRole': value['isMainRole'],
+        'isHiddenInProfile': value['isHiddenInProfile'],
         'metadata': RoleMetadataVoToJSON(value['metadata']),
     };
 }

@@ -87,6 +87,7 @@ export * from './SeniorityClassificationVo';
 export * from './SeniorityListItemDto';
 export * from './SeniorityListResponseDto';
 export * from './UpdateClassificationDto';
+export * from './UpdateRoleVisibilityDto';
 export * from './UpdateSeniorityLevelDto';
 export * from './UploadExtractionDto';
 export * from './User';

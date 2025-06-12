@@ -23,7 +23,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useAuth } from "@/contexts/AuthContext";
 import CareerTimeline from "@/components/profile/CareerTimeline";
-import { LocationAnalyticsEntity, RoleAnalyticsEntity } from "@/sdk";
+import { LocationAnalyticsEntity } from "@/sdk";
 import { motion } from "framer-motion";
 import { SENIORITY_COLORS } from "@/consts";
 import clsx from "clsx";
@@ -48,6 +48,7 @@ import { useDeleteProfile } from "@/hooks/profile/useDeleteProfile";
 import { useRequestDataUpdate } from "@/hooks/profile/useRequestDataUpdate";
 import { toast } from "@/hooks/misc/useToast";
 import ProfileSkeleton from "@/components/profile/ProfileSkeleton";
+import { RoleSettingsModal } from "@/components/profile/RoleSettingsModal";
 
 export default function Profile() {
   const { id } = useParams();
@@ -58,29 +59,10 @@ export default function Profile() {
   } = useFetchProfile({ id: id as string });
   const { user } = useAuth();
 
-  let focusedRole: RoleAnalyticsEntity | undefined;
-
-  // Get current roles
-  const currentRoles = profile?.roles?.filter((role) => role.isCurrent);
+  // Get the main role
+  const focusedRole = profile?.roles?.find((role) => role.isMainRole);
 
   const isRequestingDataUpdateEnabled = false;
-
-  if (currentRoles && currentRoles.length === 1) {
-    // Case 1: Single current role
-    focusedRole = currentRoles[0];
-  } else if (currentRoles && currentRoles.length > 1) {
-    // Case 2: Multiple current roles - use the one that started first
-    focusedRole = [...currentRoles].sort(
-      (a, b) =>
-        new Date(a.startDate).getTime() - new Date(b.startDate).getTime()
-    )[0];
-  } else if (profile?.roles && profile.roles.length > 0) {
-    // Case 3: No current roles - use the most recent role (last to start)
-    focusedRole = [...profile.roles].sort(
-      (a, b) =>
-        new Date(b.startDate).getTime() - new Date(a.startDate).getTime()
-    )[0];
-  }
 
   const buildMapUrl = (
     location: LocationAnalyticsEntity
@@ -114,6 +96,7 @@ export default function Profile() {
         });
       },
     });
+
   const handleRequestDataUpdate = () => {
     requestDataUpdate(id as string);
   };
@@ -172,26 +155,35 @@ export default function Profile() {
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.5, delay: 0.2 }}
+            className="flex-1"
           >
-            <h2 className="text-3xl font-bold flex items-center bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-transparent">
-              {profile?.fullName}
-              {profile?.linkedinUrl && (
-                <Link
-                  href={profile.linkedinUrl}
-                  target="_blank"
-                  className="ml-3 flex items-center text-primary hover:scale-110 transition-transform"
-                  title="View LinkedIn Profile"
-                >
-                  <Image
-                    src="/logos/linkedin-icon.svg"
-                    alt="LinkedIn"
-                    width={20}
-                    height={20}
-                    className="hover:opacity-80 transition-opacity"
+            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2">
+              <h2 className="text-3xl font-bold flex items-center bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-transparent">
+                {profile?.fullName}
+                {profile?.linkedinUrl && (
+                  <Link
+                    href={profile.linkedinUrl}
+                    target="_blank"
+                    className="ml-3 flex items-center text-primary hover:scale-110 transition-transform"
+                    title="View LinkedIn Profile"
+                  >
+                    <Image
+                      src="/logos/linkedin-icon.svg"
+                      alt="LinkedIn"
+                      width={20}
+                      height={20}
+                      className="hover:opacity-80 transition-opacity"
+                    />
+                  </Link>
+                )}
+              </h2>
+              {profile?.roles &&
+                profile.roles.length > 0 &&
+                user?.id === profile?.id && (
+                  <RoleSettingsModal roles={profile.roles}
                   />
-                </Link>
-              )}
-            </h2>
+                )}
+            </div>
             {profile?.graduations && profile.graduations.length > 0 && (
               <motion.div
                 initial={{ opacity: 0, y: 10 }}
@@ -259,7 +251,7 @@ export default function Profile() {
                           year: "numeric",
                         }
                       )}`
-                    : " - Present"}
+                    : ""}
                 </span>
               </div>
               <div className="flex items-center justify-between p-3 bg-white/70 rounded-lg border border-gray-200 mt-auto">
@@ -441,14 +433,14 @@ export default function Profile() {
 
                 <div className="flex-1"></div>
 
-                {focusedRole?.location && buildMapUrl(focusedRole.location) && (
+                {profile?.location && buildMapUrl(profile.location) && (
                   <TooltipProvider>
                     <Tooltip>
                       <TooltipTrigger>
                         <div
                           className="inline-flex w-1/2 items-center justify-center whitespace-nowrap rounded-md text-sm font-medium border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 gap-2 cursor-pointer"
                           onClick={() => {
-                            const mapUrl = buildMapUrl(focusedRole.location!);
+                            const mapUrl = buildMapUrl(profile.location!);
                             if (mapUrl) {
                               window.open(mapUrl, "_blank");
                             }
@@ -474,7 +466,7 @@ export default function Profile() {
 
         {/* Role History Section */}
         {profile?.roles && profile.roles.length > 1 && (
-          <CareerTimeline roles={profile.roles} />
+          <CareerTimeline roles={profile.roles.filter((role) => !role.isHiddenInProfile)} />
         )}
 
         {user?.id === profile?.id && (
@@ -483,9 +475,11 @@ export default function Profile() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.6 }}
           >
-            <h3 className="text-2xl font-bold mb-4 text-gray-800">
-              Profile Actions
-            </h3>
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-2xl font-bold text-gray-800">
+                Profile Actions
+              </h3>
+            </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-stretch">
               <motion.div
                 whileHover={{ y: -5 }}
