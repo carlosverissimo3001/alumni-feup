@@ -63,6 +63,8 @@ export default function Profile() {
   // Get current roles
   const currentRoles = profile?.roles?.filter((role) => role.isCurrent);
 
+  const isRequestingDataUpdateEnabled = false;
+
   if (currentRoles && currentRoles.length === 1) {
     // Case 1: Single current role
     focusedRole = currentRoles[0];
@@ -510,7 +512,7 @@ export default function Profile() {
                           <Button
                             className="w-full bg-primary hover:bg-primary/90 shadow-md hover:shadow-lg transition-all"
                             size="lg"
-                            disabled={isRequestingDataUpdate}
+                            disabled={!isRequestingDataUpdateEnabled}
                           >
                             <RefreshCw className="mr-2 h-4 w-4" />
                             Request Profile Update
