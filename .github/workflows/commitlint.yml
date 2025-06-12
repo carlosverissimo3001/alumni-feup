@@ -1,25 +1,13 @@
-name: PR Title Lint
-
+name: pr-name-linter
 on:
   pull_request:
-    types: [opened, edited, synchronize]
+    types: ['opened', 'edited', 'reopened', 'synchronize']
 
 jobs:
-  commitlint:
+  lint:
     runs-on: ubuntu-latest
-
     steps:
-      - uses: actions/checkout@v3
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: 18
-
-      - name: Install dependencies
-        run: yarn install --frozen-lockfile
-
-      - name: Lint PR Title
-        run: |
-          yarn add -D @commitlint/cli @commitlint/config-conventional
-          echo "${{ github.event.pull_request.title }}" | npx commitlint
+    - uses: actions/checkout@v2
+    - name: Install Dependencies
+      run: npm install @commitlint/config-conventional
+    - uses: cognitedata/lint-pr-title-action@v0.2.0
