@@ -251,7 +251,7 @@ export default function Profile() {
                           year: "numeric",
                         }
                       )}`
-                    : "- Present"}
+                    : " - Present"}
                 </span>
               </div>
               <div className="flex items-center justify-between p-3 bg-white/70 rounded-lg border border-gray-200 mt-auto">
