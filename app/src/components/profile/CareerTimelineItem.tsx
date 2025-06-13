@@ -187,9 +187,11 @@ export function CareerTimelineItem({ roleId }: Props) {
             {endDate ? formatDate(endDate) : "Present"}
           </span>
           <span className="w-1 h-1 rounded-full bg-primary/20" />
-          <span>
-            {role.location?.city}, {role.location?.country}
-          </span>
+          {role.location?.city && role.location?.country && (
+            <span>
+              {role.location?.city}, {role.location?.country}
+            </span>
+          )}
         </div>
 
         {/* ESCO classification */}
