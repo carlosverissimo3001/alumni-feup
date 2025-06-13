@@ -143,6 +143,7 @@ class SeniorityService:
                 return
 
             batch_input = self._prepare_batch_input(alumni_id, roles)
+        
 
             async with self.semaphore:
                 await seniority_agent.process_role_batch(batch_input)
