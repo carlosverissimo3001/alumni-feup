@@ -3,30 +3,25 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
-import {
-  Injectable,
-  NotFoundException,
-  HttpException,
-  HttpStatus,
-  Logger,
-} from '@nestjs/common';
+import { AgentsApiService } from '@/agents-api/services/agents-api.service';
+import { GROUP_BY, LINKEDIN_OPERATION } from '@/consts';
+import { GetGeoJSONDto } from '@/dto/get-geojson.dto';
+import { AlumniExtended } from '@/entities/alumni.entity';
+import { GeolocationService } from '@/geolocation/services/geolocation.service';
+import { sanitizeLinkedinUrl } from '@/utils/string';
+import { Injectable, Logger, NotFoundException } from '@nestjs/common';
+import { Source } from '@prisma/client';
+import { Feature, Point } from 'geojson';
 import {
   Alumni,
   GeoJSONFeatureCollection,
-  Graduation,
   GeoJSONProperties,
-} from 'src/entities/';
-import { PrismaService } from 'src/prisma/prisma.service';
+  Graduation,
+} from '@/entities/';
+import { PrismaService } from '@/prisma/prisma.service';
 import { CreateAlumniDto } from '../dto/create-alumni.dto';
 import { AlumniRepository } from '../repositories/alumni.repository';
-import { GetGeoJSONDto } from '@/dto/get-geojson.dto';
-import { Feature, Point } from 'geojson';
-import { GROUP_BY, LINKEDIN_OPERATION } from '@/consts';
-import { GeolocationService } from '@/geolocation/services/geolocation.service';
-import { AgentsApiService } from '@/agents-api/services/agents-api.service';
-import { parseNameParts, sanitizeLinkedinUrl } from '../utils';
-import { AlumniExtended } from '@/entities/alumni.entity';
-import { Source } from '@prisma/client';
+import { parseNameParts } from '../utils';
 
 const DEFAULT_CREATED_BY = 'api';
 
@@ -315,46 +310,60 @@ export class AlumniService {
       ? { linkedinUrl }
       : { fullName: body.fullName };
 
-    const alumni = await this.alumniRepository.find(uniqueParam);
-    if (alumni) {
-      this.logger.error(
-        `Alumni with ${linkedinUrl ? 'linkedinUrl' : 'fullName'} "${linkedinUrl || body.fullName}" already exists`,
+    let existingAlumni: Alumni | null = null;
+    let alumni: Alumni;
+
+    existingAlumni = await this.alumniRepository.find(uniqueParam);
+
+    /**
+     * If the alumni already exists, we update it
+     * From my observations, this happens for alumni with multiple courses
+     * And now we're expanding the courses, so we need to update the alumni
+     */
+    if (existingAlumni) {
+      this.logger.log(
+        `Alumni with ${linkedinUrl ? 'linkedinUrl' : 'fullName'} "${linkedinUrl || body.fullName}" already exists. will update it.`,
       );
-      throw new HttpException(
-        `Oops! Seems like we already have your data in our system. If this is not the case, ` +
-          `${linkedinUrl ? 'double-check your LinkedIn URL' : 'verify your full name'}`,
-        HttpStatus.CONFLICT,
-      );
+
+      await this.prisma.alumni.update({
+        where: { id: existingAlumni.id },
+        data: {
+          updatedBy: body.createdBy ?? DEFAULT_CREATED_BY,
+          updatedAt: new Date(),
+        },
+      });
+
+      alumni = existingAlumni;
+    } else {
+      const { firstName, lastName } = parseNameParts(body.fullName);
+
+      alumni = await this.prisma.alumni.create({
+        data: {
+          firstName,
+          lastName,
+          fullName: body.fullName,
+          linkedinUrl,
+          // If the alumni had to manually add their data, they 99.99% don't have a sigarra match
+          hasSigarraMatch: fromUpload ? true : false,
+          // If the admin uploaded the data, we should trust it
+          wasReviewed: fromUpload ? true : false,
+          createdBy: body.createdBy ?? DEFAULT_CREATED_BY,
+          source: fromUpload ? Source.ADMIN_IMPORT : Source.FORM_SUBMISSION,
+        },
+      });
     }
-
-    const { firstName, lastName } = parseNameParts(body.fullName);
-
-    const newAlumni = await this.prisma.alumni.create({
-      data: {
-        firstName,
-        lastName,
-        fullName: body.fullName,
-        linkedinUrl,
-        // If the alumni had to manually add their data, they 99.99% don't have a sigarra match
-        hasSigarraMatch: fromUpload ? true : false,
-        // If the admin uploaded the data, we should trust it
-        wasReviewed: fromUpload ? true : false,
-        createdBy: body.createdBy ?? DEFAULT_CREATED_BY,
-        source: fromUpload ? Source.ADMIN_IMPORT : Source.FORM_SUBMISSION,
-      },
-    });
 
     for (const graduation of body.courses) {
       await this.prisma.graduation.create({
         data: {
-          alumniId: newAlumni.id,
+          alumniId: alumni.id,
           courseId: graduation.courseId,
           conclusionYear: graduation.conclusionYear,
         },
       });
     }
 
-    return newAlumni;
+    return alumni;
   }
 
   async requestProfileExtraction(alumniId: string) {

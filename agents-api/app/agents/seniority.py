@@ -121,12 +121,19 @@ class SeniorityAgent:
         batch = state["batch"]
 
         prompt = SENIORITY_CLASSIFICATION_PROMPT
-        roles_context = "\n".join(
-            f"- {r.title} at {r.company} ({r.start_date} to {r.end_date or 'Present'})"
+        roles_context = [
+            {
+                "role_id": r.role_id,
+                "title": r.title,
+                "company": r.company,
+                "start_date": r.start_date,
+                "end_date": r.end_date or "Present",
+            }
             for r in batch.roles
+        ]
+        career_context = (
+            f"Total Experience: {batch.total_experience}\n{json.dumps(roles_context, indent=2)}"
         )
-        career_context = f"Total Experience: {batch.total_experience}\n{roles_context}"
-        role_ids_str = ", ".join(f'"{r.role_id}"' for r in batch.roles)
 
         try:
             response = llm_with_tools.invoke(
@@ -135,11 +142,14 @@ class SeniorityAgent:
                     SystemMessage(content=career_context),
                     HumanMessage(
                         content=f"""
-                Classify seniority levels for roles [{role_ids_str}] based on the following schema. Return valid JSON only.
+Classify seniority levels for the following roles. For each, return the `role_id` and the classification as per the schema. Return valid JSON only.
 
-                Schema:
-                {json.dumps(json_schema, indent=2)}
-                """
+Roles:
+{json.dumps(roles_context, indent=2)}
+
+Schema:
+{json.dumps(json_schema, indent=2)}
+"""
                     ),
                 ]
             )
@@ -164,6 +174,7 @@ class SeniorityAgent:
 
     def update_roles_with_seniority(self, state: SeniorityAgentState) -> SeniorityAgentState:
         for entry in state["parsed_seniority_results"]:
+
             role_id = entry["role_id"]
             try:
                 role = get_role_by_id(role_id, db)
@@ -173,15 +184,18 @@ class SeniorityAgent:
 
                 new_seniority = SeniorityLevel[entry["seniority"]]
                 role.seniority_level = new_seniority
-                metadata = role.metadata_ or {}
-                metadata["seniority_classification"] = {
-                    "seniority": new_seniority.value,
-                    "confidence": entry["confidence"],
-                    "reasoning": entry["reasoning"],
-                    "model": state["model_used"],
+                
+                role.metadata_ = {
+                    **(role.metadata_ or {}),
+                    "seniority_classification": {
+                        "role_id": entry["role_id"],
+                        "seniority": new_seniority.value,
+                        "confidence": entry["confidence"],
+                        "reasoning": entry["reasoning"],
+                        "model": state["model_used"],
+                    },
                 }
                 role.updated_by = "seniority-agent"
-                role.metadata_ = metadata
                 update_role(role, db)
             except Exception as e:
                 logger.error(f"Failed to update role {role_id}: {e}", exc_info=True)
