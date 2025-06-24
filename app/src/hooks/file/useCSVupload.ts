@@ -65,7 +65,7 @@ export const useCSVUpload = () => {
       formData.append("courseId", courseId);
 
       // TODO: Change this to use the SDK
-      const response = await fetch("http://localhost:3000/api/files", {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/files`, {
         method: "POST",
         body: formData,
       });

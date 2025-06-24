@@ -40,6 +40,9 @@ export const sanitizeLinkedinUrl = (linkedin_url: string): string => {
     return linkedin_url;
   }
 
+  // Remove query parameters
+  linkedin_url = linkedin_url.split('?')[0];
+
   // Removes www and country prefixes
   if (linkedin_url.includes(LINKEDIN_URL_DOMAIN)) {
     const parts = linkedin_url.split(LINKEDIN_URL_DOMAIN);
