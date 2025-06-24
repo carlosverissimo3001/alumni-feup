@@ -1,15 +1,6 @@
 import { PORTUGUESE_NAME_CONNECTORS } from './consts';
 import { NameDto } from './dto/name-dto';
 
-/**
- * In the DB, we don't use the 'www' subdomain, so in order to match the user, we need to remove it.
- * @param url - The LinkedIn URL to sanitize
- * @returns The sanitized LinkedIn URL
- */
-export const sanitizeLinkedinUrl = (url: string): string => {
-  const sanitizedUrl = url.replace('www.', '');
-  return sanitizedUrl.endsWith('/') ? sanitizedUrl : `${sanitizedUrl}/`;
-};
 
 /**
  * Removes accents (diacritics) from a string
