@@ -10,7 +10,7 @@ import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { OtpService } from '../../otp/otp.service';
 import { UserStatus } from '@/user/consts/enum';
-import { sanitizeLinkedinUrl } from '@/alumni/utils';
+import { sanitizeLinkedinUrl } from '@/utils/string';
 import { Permission } from '@prisma/client';
 import { EmailService } from '@/email/services/email.service';
 import { UserRepository, InviteRepository } from '../repositories';

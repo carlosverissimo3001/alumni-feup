@@ -111,7 +111,7 @@ class LinkedInService:
 
             params = {
                 "linkedin_profile_url": profile_url,
-                "use_cache": "if-present",
+                "use_cache": "if-recent",
                 "fallback_to_cache": "on-error",
             }
 
