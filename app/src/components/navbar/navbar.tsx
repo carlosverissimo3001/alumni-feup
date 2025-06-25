@@ -89,9 +89,9 @@ const Navbar = () => {
       disabled: !isAuthenticated,
     },
     {
-      label: "Join Us",
+      label: "Login",
       icon: <UserPlus size={20} />,
-      href: "/join-us",
+      href: "/login",
       disabled: isAuthenticated,
     },
     {
