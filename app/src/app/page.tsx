@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, Suspense } from "react";
+import React, { useState, Suspense, useEffect } from "react";
 import MapFilters from "@/components/map/mapFilters";
 import MapView from "@/components/map/mapView";
 import { useNavbar } from "@/contexts/NavbarContext";
@@ -44,6 +44,15 @@ const MapComponent = () => {
 };
 
 function MapContent() {
+  useEffect(() => {
+    const prev = document.body.style.overflow;  
+    document.body.style.overflow = "hidden"; 
+
+    return () => {
+      document.body.style.overflow = prev || ""; 
+    };
+  }, []);
+
   const [alumniGeoJSON, setAlumniGeoJSON] =
     useState<GeoJSONFeatureCollection | null>(null);
 

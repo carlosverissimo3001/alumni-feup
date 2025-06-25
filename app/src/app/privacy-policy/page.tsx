@@ -10,7 +10,7 @@ const sections = [
     title: "Information We Collect",
     icon: <BarChart3 className="w-5 h-5" />,
     content: [
-      "Basic profile information from LinkedIn (name, email, profile URL)",
+      "Basic profile information from LinkedIn (name, email, profile picture)",
       "Information you choose to provide in your profile",
     ],
   },
@@ -46,7 +46,7 @@ const sections = [
     icon: <Mail className="w-5 h-5" />,
     content: [
       <>
-        For any questions about this privacy policy, please contact:{" "}
+        For any questions about this privacy policy, please contact {" "}
         <a
           href="mailto:carlos.verissimo3001@gmail.com"
           className="text-[#8C2D19] hover:text-[#A13A23] underline transition-colors"
