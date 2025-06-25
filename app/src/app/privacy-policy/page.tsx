@@ -51,7 +51,7 @@ const sections = [
           href="mailto:carlos.verissimo3001@gmail.com"
           className="text-[#8C2D19] hover:text-[#A13A23] underline transition-colors"
         >
-          carlos.verissimo3001@gmail.com
+          carlosverissimo3001@gmail.com
         </a>
       </>,
     ],
