@@ -15,6 +15,7 @@ import {
   Trash2,
   TagIcon,
   Factory,
+  ClockIcon,
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -49,6 +50,7 @@ import { useRequestDataUpdate } from "@/hooks/profile/useRequestDataUpdate";
 import { toast } from "@/hooks/misc/useToast";
 import ProfileSkeleton from "@/components/profile/ProfileSkeleton";
 import { RoleSettingsModal } from "@/components/profile/RoleSettingsModal";
+import { format } from "date-fns";
 
 export default function Profile() {
   const { id } = useParams();
@@ -158,53 +160,72 @@ export default function Profile() {
             className="flex-1"
           >
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2">
-              <h2 className="text-3xl font-bold flex items-center bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-transparent">
-                {profile?.fullName}
-                {profile?.linkedinUrl && (
-                  <Link
-                    href={profile.linkedinUrl}
-                    target="_blank"
-                    className="ml-3 flex items-center text-primary hover:scale-110 transition-transform"
-                    title="View LinkedIn Profile"
-                  >
-                    <Image
-                      src="/logos/linkedin-icon.svg"
-                      alt="LinkedIn"
-                      width={20}
-                      height={20}
-                      className="hover:opacity-80 transition-opacity"
-                    />
-                  </Link>
-                )}
-              </h2>
-              {profile?.roles &&
-                profile.roles.length > 0 &&
-                user?.id === profile?.id && (
-                  <RoleSettingsModal roles={profile.roles}
-                  />
-                )}
-            </div>
-            {profile?.graduations && profile.graduations.length > 0 && (
-              <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 0.3 }}
-                className="text-sm text-muted-foreground mt-2 space-y-1"
-              >
-                <span className="text-primary/80 mr-2">Graduated from</span>
-                {profile.graduations.map((graduation, index) => (
-                  <div
-                    key={index}
-                    className="font-medium bg-primary/5 px-3 py-1 rounded-full inline-block mr-2"
-                  >
-                    {graduation.course.acronym} ({graduation.conclusionYear}) @
-                    <span className="font-semibold text-primary ml-1">
-                      {graduation.course.faculty.acronym}
+              <div className="flex flex-col">
+                <div className="flex items-center">
+                  <h2 className="text-3xl font-bold bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-transparent">
+                    {profile?.fullName}
+                  </h2>
+                  {profile?.linkedinUrl && (
+                    <Link
+                      href={profile.linkedinUrl}
+                      target="_blank"
+                      className="ml-2 flex items-center text-primary hover:scale-110 transition-transform"
+                      title="View LinkedIn Profile"
+                    >
+                      <Image
+                        src="/logos/linkedin-icon.svg"
+                        alt="LinkedIn"
+                        width={20}
+                        height={20}
+                        className="hover:opacity-80 transition-opacity"
+                      />
+                    </Link>
+                  )}
+                </div>
+                {profile?.updatedAt && (
+                  <div className="flex items-center gap-1 text-xs text-gray-400 mt-2 md:mt-1 md:ml-0">
+                    <ClockIcon className="h-4 w-4" />
+                    <span>
+                      Last updated:{" "}
+                      <span className="font-medium text-gray-500">
+                        {format(profile.updatedAt, "MMM do, yyyy")}
+                      </span>
                     </span>
                   </div>
-                ))}
-              </motion.div>
-            )}
+                )}
+                {profile?.graduations && profile.graduations.length > 0 && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5, delay: 0.3 }}
+                    className="text-sm text-muted-foreground mt-2 space-y-1"
+                  >
+                    <span className="text-primary/80 mr-2">Graduated from</span>
+                    {profile.graduations.map((graduation, index) => (
+                      <div
+                        key={index}
+                        className="font-medium bg-primary/5 px-3 py-1 rounded-full inline-block mr-2"
+                      >
+                        {graduation.course.acronym} ({graduation.conclusionYear}
+                        ) @
+                        <span className="font-semibold text-primary ml-1">
+                          {graduation.course.faculty.acronym}
+                        </span>
+                      </div>
+                    ))}
+                  </motion.div>
+                )}
+              </div>
+              {/* Settings and other controls */}
+              <div className="flex items-center gap-2 mt-2 md:mt-0">
+                {profile?.roles &&
+                  profile.roles.length > 0 &&
+                  user?.id === profile?.id && (
+                    <RoleSettingsModal roles={profile.roles} />
+                  )}
+                {/* Settings button, if not already elsewhere */}
+              </div>
+            </div>
           </motion.div>
         </div>
 
@@ -466,7 +487,9 @@ export default function Profile() {
 
         {/* Role History Section */}
         {profile?.roles && profile.roles.length > 1 && (
-          <CareerTimeline roles={profile.roles.filter((role) => !role.isHiddenInProfile)} />
+          <CareerTimeline
+            roles={profile.roles.filter((role) => !role.isHiddenInProfile)}
+          />
         )}
 
         {user?.id === profile?.id && (

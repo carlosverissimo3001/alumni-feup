@@ -83,6 +83,7 @@ export type RawAlumni = {
   Roles: RawRole[];
   Graduations?: RawGraduation[] | null;
   Location?: RawLocation | null;
+  updatedAt: Date;
 };
 
 type RawCompany = {
@@ -342,5 +343,6 @@ export const mapAlumniFromPrisma = (
     roles: alumni.Roles.map(mapRoleFromPrisma),
     graduations: alumni.Graduations?.map(mapGraduationFromPrisma) ?? [],
     location: mapLocationFromPrisma(alumni.Location),
+    updatedAt: alumni.updatedAt,
   };
 };
