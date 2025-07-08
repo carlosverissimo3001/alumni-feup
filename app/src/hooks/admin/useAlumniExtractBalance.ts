@@ -1,10 +1,10 @@
 import { useQuery } from "@tanstack/react-query";
 import NestAPI from "@/api";
 
-export const useProxyCurlBalance = () => {
+export const useAlumniExtractBalance = () => {
   const { data, isLoading, error } = useQuery({
-    queryKey: ['proxycurl-balance'],
-    queryFn: () => NestAPI.adminControllerGetProxyCurlBalance(),
+    queryKey: ['alumni-extract-balance'],
+    queryFn: () => NestAPI.adminControllerGetAlumniExtractBalance(),
     staleTime: 30000,
   });
 

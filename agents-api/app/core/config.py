@@ -39,9 +39,9 @@ class Settings(BaseSettings):
     LANGSMITH_PROJECT: str = ""
     """
 
-    # Proxycurl API Settings
-    PROXYCURL_API_KEY: str = ""
-    PROXYCURL_BASE_URL: str = "https://nubela.co/proxycurl/api"
+    # Alumini Extract Service API Settings
+    ALUMNI_EXTRACT_API_KEY: str = ""
+    ALUMNI_EXTRACT_BASE_URL: str = "https://enrichlayer.com/api/v2"
 
     # Bright Data Settings
     BRIGHTDATA_API_KEY: str = ""

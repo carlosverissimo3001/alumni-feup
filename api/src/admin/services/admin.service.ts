@@ -6,7 +6,7 @@ import { InviteUserDto, MergeCompaniesDto, MergeLocationsDto } from '../dto';
 import { UserService } from '@/user/services/user.service';
 import { InviteEntity } from '@/user/entities/invite.entity';
 
-type ProxyCurlBalanceResponse = {
+type AlumniExtractBalanceResponse = {
   // This is an interger value
   credit_balance: number;
 };
@@ -21,8 +21,9 @@ type BrightDataBalanceResponse = {
 
 @Injectable()
 export class AdminService {
-  private readonly proxycurlBaseUrl: string;
-  private readonly proxycurlApiKey: string;
+  // URLs & API Keys from the scraping services
+  private readonly alumniExtractBaseUrl: string;
+  private readonly alumniExtractApiKey: string;
   private readonly brightdataBaseUrl: string;
   private readonly brightdataApiKey: string;
 
@@ -32,32 +33,37 @@ export class AdminService {
     private readonly locationService: LocationService,
     private readonly userService: UserService,
   ) {
-    this.proxycurlBaseUrl = this.config.get<string>('PROXYCURL_BASE_URL') || '';
-    this.proxycurlApiKey = this.config.get<string>('PROXYCURL_API_KEY') || '';
+    this.alumniExtractBaseUrl =
+      this.config.get<string>('ALUMNI_EXTRACT_BASE_URL') || '';
+    this.alumniExtractApiKey =
+      this.config.get<string>('ALUMNI_EXTRACT_API_KEY') || '';
     this.brightdataBaseUrl =
       this.config.get<string>('BRIGHTDATA_BASE_URL') || '';
     this.brightdataApiKey = this.config.get<string>('BRIGHTDATA_API_KEY') || '';
   }
 
-  async getProxyCurlBalance(): Promise<number> {
-    if (!this.proxycurlBaseUrl || !this.proxycurlApiKey) {
-      throw new Error('ProxyCurl base URL or API key is not set');
+  async getAlumniExtractBalance(): Promise<number> {
+    if (!this.alumniExtractBaseUrl || !this.alumniExtractApiKey) {
+      throw new Error('Alumni Extract base URL or API key is not set');
     }
 
-    const response = await fetch(`${this.proxycurlBaseUrl}/credit-balance`, {
-      headers: {
-        Authorization: `Bearer ${this.proxycurlApiKey}`,
+    const response = await fetch(
+      `${this.alumniExtractBaseUrl}/credit-balance`,
+      {
+        headers: {
+          Authorization: `Bearer ${this.alumniExtractApiKey}`,
+        },
       },
-    });
+    );
     let balance = 0;
 
     try {
-      const data = (await response.json()) as ProxyCurlBalanceResponse;
+      const data = (await response.json()) as AlumniExtractBalanceResponse;
       balance = data.credit_balance;
     } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message : 'Unknown error';
-      throw new Error(`Error fetching ProxyCurl balance: ${errorMessage}`);
+      throw new Error(`Error fetching Alumni Extract balance: ${errorMessage}`);
     }
 
     return balance;

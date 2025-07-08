@@ -37,7 +37,7 @@ class LocationInput(BaseModel):
 
 class AlumniLocationInput(LocationInput):
     type: LocationType = LocationType.ALUMNI
-    # # https://nubela.co/proxycurl/docs#people-api-person-profile-endpoint
+    # https://enrichlayer.com/docs/pc/#people-api
     alumni_id: str = Field(..., description="The alumni ID to resolved the location for")
     country_code: Optional[str] = Field(None, description="The country code of the location", example="PT")
     city: Optional[str] = Field(None, description="The city of the location", example="Porto")
@@ -46,7 +46,7 @@ class AlumniLocationInput(LocationInput):
 
 class RoleLocationInput(LocationInput):
     type: LocationType = LocationType.ROLE
-    # # https://nubela.co/proxycurl/docs#people-api-person-profile-endpoint
+    # https://enrichlayer.com/docs/pc/#people-api
     role_id: str = Field(..., description="The role ID to resolved the location for")
     location: str = Field(
         ..., description="The location of the role, in free-form text", example="Porto, Portugal"

@@ -16,13 +16,13 @@
         ]
       }
     },
-    "/admin/proxycurl-balance": {
+    "/admin/alumni-extract-balance": {
       "get": {
-        "operationId": "AdminController_getProxyCurlBalance",
+        "operationId": "AdminController_getAlumniExtractBalance",
         "parameters": [],
         "responses": {
           "200": {
-            "description": "ProxyCurl balance",
+            "description": "Alumni Extract balance",
             "content": {
               "application/json": {
                 "schema": {
@@ -32,7 +32,7 @@
             }
           }
         },
-        "summary": "Get ProxyCurl balance",
+        "summary": "Get the credit balance of the Alumni Extract service",
         "tags": [
           "V1"
         ]
