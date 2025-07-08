@@ -39,7 +39,7 @@ class Settings(BaseSettings):
     LANGSMITH_PROJECT: str = ""
     """
 
-    # Alumini Extract Service API Settings
+    # Alumni Extract Service API Settings
     ALUMNI_EXTRACT_API_KEY: str = ""
     ALUMNI_EXTRACT_BASE_URL: str = "https://enrichlayer.com/api/v2"
 
