@@ -1,0 +1,520 @@
+body {
+    background-color: #EDEDEC;
+}
+
+p {
+    margin-top: 15px;
+    margin-bottom: 10px;
+}
+
+.letter-style {
+    font-family: 'Inter', sans-serif;
+}
+
+.scrollable {
+    max-height: 200px; 
+    overflow-y: auto;
+}
+
+.text {
+    font-weight: 700;
+    size: 19px;
+    line-height: 20px;
+    color: #515150;
+    margin: 0px;
+}
+
+/*---- Map ----*/
+
+.mapCmpDiv{
+    height: 100vh;
+    position: relative;
+    background-color: #515150;
+}
+
+.attnetion-message {
+    font-size: 55%;
+}
+
+/*----- Loading -----*/
+
+.loading-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    backdrop-filter: blur(5px); /* This will blur the background */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10;
+}
+  
+.loading-icon {
+    width: 50px;
+    height: 50px;
+    border: 8px solid rgba(255, 255, 255, 0.3);
+    border-top: 8px solid #fff;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+  
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/*---- Menu Buttons ----*/
+
+.menu-buttons-container {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    z-index: 20;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.button-group {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.icon-show-menu {
+    cursor: pointer;
+    background: white;
+    padding: 5px;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.text-distribution {
+    margin-top: 5px;
+    padding-left: 3px;
+}
+
+.text-conclusion-search{
+    padding-bottom: 5px;
+    margin-top: 5px;
+}
+
+.text-conclusion-year {
+    padding-bottom: 5px;
+    margin-top: 8px;
+}
+
+.custom-radio{
+    display: none;
+}
+
+.radio-buttons {
+    display: flex;
+    padding-top: 5px;
+    padding-bottom: 8px;
+}
+
+.custom-radio-label {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    width: 138px;
+    height: 40px; 
+    border-top: 2px solid #CACAC9; 
+    border-bottom: 2px solid #CACAC9; 
+    background-color: white;
+    color: #515150;
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.custom-radio-label-left-button {
+    border-radius: 5px 0px 0px 5px;
+    border-left: 2px solid #CACAC9; 
+    border-right: 2px solid #CACAC9; 
+}
+
+.custom-radio-label-right-button {
+    border-radius: 0px 5px 5px 0px;
+    border-right: 2px solid #CACAC9; 
+}
+
+.custom-radio:checked + .custom-radio-label {
+    background-color: #A02D20;
+    border: 2px solid #A02D20;
+    color: #FAFAFA;
+}
+
+.search-bar {
+    width: 100%;
+    height: 40px;
+    border: 1px solid #CACAC9;
+    border-radius: 5px; 
+    box-shadow: none; 
+    padding: 0px 8px; 
+    outline: none; 
+    color: #969695;
+    gap: 8px;
+}
+
+
+/* Additional styles for the dropdown options */
+.search-bar option {
+    background-color: white;
+    color: black; 
+    padding: 5px;
+    transition: background-color 0.3s ease;
+}
+
+.search-bar-alumni {
+    margin-bottom: 10px;
+    width: 94%;
+}
+
+.search-bar-alumni::placeholder {
+    color: #999; /* Change placeholder text color */
+}
+
+.dropdown-search-names {
+    width: 95%;
+    padding-left: 8px; 
+    color: #515150;
+}
+
+.search-results div {
+    cursor: pointer;
+}
+
+.filter-course-alumni {
+    margin-top: 3px;
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+.content-filter-course {
+    color: #CACAC9;
+}
+
+.content-filter-options {
+    color: #515150;
+}
+
+.button{
+    position: absolute;
+    z-index: 2;
+}
+
+.butnPopAlumni{
+    top: 120px;
+    left: 20px;
+}
+.butnBackAlumni{
+    top: 150px;
+    left: 20px;
+}
+.butnBackAlumniWFile{
+    top: 180px;
+    left: 20px;
+}
+.btnMissingLinkedinLinks{
+    top: 210px;
+    left: 20px;
+}
+
+.butnPopCountry{
+    top: 270px;
+    left: 20px;
+}
+.butnPopCity{
+    top: 300px;
+    left: 20px;
+}
+.butnPopAlumniEIC{
+    top: 330px;
+    left: 20px;
+}
+
+.butnGenCountryGeoJason{
+    top: 390px;
+    left: 20px;
+}
+.butnGenCityGeoJason{
+    top: 420px;
+    left: 20px;
+}
+
+.butnUseCitiesGeoJson{
+    top: 480px;
+    left: 20px;
+}
+.butnUseCountriesGeoJson{
+    top: 510px;
+    left: 20px;
+}
+.btnExcelAlumniTableToExcel{
+    top: 550px;
+    left: 20px;
+}
+
+.year-filter-container {
+    display: flex;
+    margin-bottom: 10px;
+}
+
+.search-container-year {
+    width: 100%;
+    display: inline-block;
+}
+
+.fileInput{
+    position: absolute;
+    top: 30px;
+    left: 20px;
+    z-index: 3;
+    color: white;
+}
+
+.button-container {
+    display: flex;
+    justify-content: space-between;
+}
+
+.button-group {
+    display: flex;
+    align-items: center;
+    margin-top: 10px;
+}
+
+.disabled {
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+.forms-button {
+    color: #A02D20;
+    font-weight: 700;
+    padding-right: 7px;
+    size: 14px;
+    line-height: 20px;
+    cursor: pointer;
+}
+
+.icon-apply{
+    color: #A02D20; 
+    font-size: 15px;
+    padding-right: 3px;
+    cursor: pointer;
+}
+
+.icon-delete {
+    color: #A02D20;
+    font-size: 24px;
+    cursor: pointer;
+}
+
+.alumnis-total-number {
+    display: flex;
+    color: #515150;
+    padding: 10px 0px  2px 0px;
+}
+
+.text-num-alumnus {
+    font-weight: 400px;
+    size: 16px;
+    line-height: 24px;
+    padding-right: 5px;
+}
+
+.feedback-links {
+    margin-right: 10px;
+    font-size: 13px; 
+}
+
+/*------ Cluster Rectangle Content ------*/
+
+.clusterRectangle {
+    height: 45%;
+    background-color: #EDEDEC;
+    padding-top: 10px;
+    padding-left: 10px;
+    padding-right: 10px;
+    border-radius: 5px;
+    z-index: 999; 
+    max-width: 30%; 
+}
+
+.titles-letter {
+    font-variant: small-caps;
+    font-weight: 700;
+    size: 14px;
+    line-height: 20px;
+    color: #A02D20;
+    letter-spacing: 5%;
+    width: 77px;
+    height: 20px;
+}
+
+.table-titles {
+    text-align: left;
+}
+
+.sticky-header {
+    position: -webkit-sticky; 
+    position: sticky;
+    top: 0;
+    background-color: #EDEDEC; 
+    z-index: 1; 
+}
+
+.places-name {
+    font-weight: 400;
+    size: 16px;
+    line-height: 24px;
+    color: #18180A;
+}
+
+.content-table {
+    font-weight: 400px;
+    size: 16px;
+    line-height: 24px;
+    color: #515150;
+    padding-right: 30px;
+}
+
+.link {
+    text-decoration: none;
+}
+
+.alumni-cell {
+    display: flex; 
+    align-items: center; 
+}
+
+.alumni-cell-name {
+    width: 190px;
+}
+
+.profile-picture {
+    max-height: 30px;
+    border-radius: 100%; 
+    margin-right: 10px;
+} 
+
+.listing-image-profile-picture {
+    display: flex;
+    align-items: center;
+}
+
+
+.my-button-pagination-prev {
+    margin-right: 10px;
+    margin-top: 10px;
+}
+
+.my-button-pagination-more {
+    margin-top: 10px;
+}
+
+.list-alumni {
+    list-style-type: none;
+    padding: 0;
+}
+.list-alumni.scrollable {
+    max-height: 250px; 
+    overflow-y: auto;
+}
+
+.logo-picture {
+    max-height: 25px;
+    margin-right: 10px;
+} 
+
+.logos{
+    margin-top: 5px;
+}
+
+/*----------- Warning -----------*/
+.warning-icon {
+    padding-right: 2%;
+}
+
+.warning-title {
+    color: #2E231D;
+    padding: 0;
+    margin: 0;
+}
+
+.warning-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.warning-content {
+    background-color: white;
+    padding: 20px;
+    border-radius: 5px;
+    text-align: center;
+    width: 30%;
+}
+
+.warning-button {
+    padding: 10px 20px;
+    margin: 0 10px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s ease;
+}
+.warning-button.disabled {
+    background-color: #515150;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+.warning-button:disabled {
+    background-color: #515150;
+    cursor: not-allowed;
+}
+
+.warning-button:first-of-type {
+    background-color: #4CAF50; /* Green color */
+    color: white;
+}
+
+.warning-button:last-of-type {
+    background-color: #f44336; /* Red color */
+    color: white;
+}
+
+.warning-button:hover {
+    opacity: 0.8;
+}
+
+.message {
+    padding-top: 5px;
+    padding-bottom: 14px;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+    display: none;
+}
+
+.timeline-width-collap {
+    width: calc(100vw - 26rem);
+}
+
+.timeline-width-nocollap {
+    width: calc(100vw - 15rem);
+}

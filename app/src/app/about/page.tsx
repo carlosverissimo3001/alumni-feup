@@ -345,11 +345,9 @@ const AboutPage = () => {
             <Tooltip>
               <TooltipTrigger asChild>
                 <Link
-                  href="#" //"https://github.com/carlosverissimo3001/alumni-feup"
-                  aria-disabled={true}
-                  tabIndex={-1}
-                  //target="_blank"
-                  className="inline-flex items-center gap-3 bg-gradient-to-r from-[#8C2D19] to-orange-500 text-white px-8 py-4 rounded-2xl transition-all font-semibold text-lg group opacity-50 cursor-not-allowed pointer-events-none"
+                  href="https://github.com/carlosverissimo3001/alumni-feup"
+                  target="_blank"
+                  className="inline-flex items-center gap-3 bg-gradient-to-r from-[#8C2D19] to-orange-500 text-white px-8 py-4 rounded-2xl transition-all font-semibold text-lg group"
                 >
                   <Github
                     size={28}

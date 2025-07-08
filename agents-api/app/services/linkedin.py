@@ -49,7 +49,7 @@ class LinkedInService:
                 "Accept": "application/json",
                 "Content-Type": "application/json",
             },
-            base_url=settings.PROXYCURL_BASE_URL,
+            base_url=settings.ALUMNI_EXTRACT_BASE_URL,
         )
         self._background_tasks = set()
 
@@ -105,7 +105,7 @@ class LinkedInService:
         try:
             self.client.set_headers(
                 {
-                    "Authorization": f"Bearer {settings.PROXYCURL_API_KEY}",
+                    "Authorization": f"Bearer {settings.ALUMNI_EXTRACT_API_KEY}",
                 }
             )
 
@@ -115,7 +115,7 @@ class LinkedInService:
                 "fallback_to_cache": "on-error",
             }
 
-            raw_response = self.client.get_json("/v2/linkedin", params=params)
+            raw_response = self.client.get_json("/profile", params=params)
 
             response = convert_to_linkedin_profile_response(raw_response)
             await self.process_profile_data(response, alumni_id)

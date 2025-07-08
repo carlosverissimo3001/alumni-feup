@@ -47,4 +47,10 @@ export class AlumniAnalyticsEntity {
     type: LocationAnalyticsEntity,
   })
   location?: LocationAnalyticsEntity;
+
+  @ApiProperty({
+    description: 'The updated at date of the alumni',
+    type: Date,
+  })
+  updatedAt: Date;
 }
