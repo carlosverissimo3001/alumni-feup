@@ -331,6 +331,20 @@ export interface UserControllerVerifyEmailTokenRequest {
 export interface V1ApiInterface {
     /**
      * 
+     * @summary Get the credit balance of the Alumni Extract service
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof V1ApiInterface
+     */
+    adminControllerGetAlumniExtractBalanceRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<number>>;
+
+    /**
+     * Get the credit balance of the Alumni Extract service
+     */
+    adminControllerGetAlumniExtractBalance(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<number>;
+
+    /**
+     * 
      * @summary Get BrightData balance
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -342,20 +356,6 @@ export interface V1ApiInterface {
      * Get BrightData balance
      */
     adminControllerGetBrightDataBalance(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<number>;
-
-    /**
-     * 
-     * @summary Get ProxyCurl balance
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof V1ApiInterface
-     */
-    adminControllerGetProxyCurlBalanceRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<number>>;
-
-    /**
-     * Get ProxyCurl balance
-     */
-    adminControllerGetProxyCurlBalance(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<number>;
 
     /**
      * 
@@ -1029,6 +1029,36 @@ export interface V1ApiInterface {
 export class V1Api extends runtime.BaseAPI implements V1ApiInterface {
 
     /**
+     * Get the credit balance of the Alumni Extract service
+     */
+    async adminControllerGetAlumniExtractBalanceRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<number>> {
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        const response = await this.request({
+            path: `/admin/alumni-extract-balance`,
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        if (this.isJsonMime(response.headers.get('content-type'))) {
+            return new runtime.JSONApiResponse<number>(response);
+        } else {
+            return new runtime.TextApiResponse(response) as any;
+        }
+    }
+
+    /**
+     * Get the credit balance of the Alumni Extract service
+     */
+    async adminControllerGetAlumniExtractBalance(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<number> {
+        const response = await this.adminControllerGetAlumniExtractBalanceRaw(initOverrides);
+        return await response.value();
+    }
+
+    /**
      * Get BrightData balance
      */
     async adminControllerGetBrightDataBalanceRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<number>> {
@@ -1055,36 +1085,6 @@ export class V1Api extends runtime.BaseAPI implements V1ApiInterface {
      */
     async adminControllerGetBrightDataBalance(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<number> {
         const response = await this.adminControllerGetBrightDataBalanceRaw(initOverrides);
-        return await response.value();
-    }
-
-    /**
-     * Get ProxyCurl balance
-     */
-    async adminControllerGetProxyCurlBalanceRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<number>> {
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        const response = await this.request({
-            path: `/admin/proxycurl-balance`,
-            method: 'GET',
-            headers: headerParameters,
-            query: queryParameters,
-        }, initOverrides);
-
-        if (this.isJsonMime(response.headers.get('content-type'))) {
-            return new runtime.JSONApiResponse<number>(response);
-        } else {
-            return new runtime.TextApiResponse(response) as any;
-        }
-    }
-
-    /**
-     * Get ProxyCurl balance
-     */
-    async adminControllerGetProxyCurlBalance(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<number> {
-        const response = await this.adminControllerGetProxyCurlBalanceRaw(initOverrides);
         return await response.value();
     }
 

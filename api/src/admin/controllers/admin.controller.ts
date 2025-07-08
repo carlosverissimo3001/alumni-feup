@@ -12,16 +12,18 @@ import { AdminService } from '../services/admin.service';
 export class AdminController {
   constructor(private readonly adminService: AdminService) {}
 
-  @Get('proxycurl-balance')
+  @Get('alumni-extract-balance')
   @RequirePermission('admin', 'read')
-  @ApiOperation({ summary: 'Get ProxyCurl balance' })
+  @ApiOperation({
+    summary: 'Get the credit balance of the Alumni Extract service',
+  })
   @ApiResponse({
     status: 200,
-    description: 'ProxyCurl balance',
+    description: 'Alumni Extract balance',
     type: Number,
   })
-  async getProxyCurlBalance() {
-    return this.adminService.getProxyCurlBalance();
+  async getAlumniExtractBalance() {
+    return this.adminService.getAlumniExtractBalance();
   }
 
   @Get('brightdata-balance')

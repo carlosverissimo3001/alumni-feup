@@ -83,6 +83,12 @@ export interface AlumniAnalyticsEntity {
      * @memberof AlumniAnalyticsEntity
      */
     location?: LocationAnalyticsEntity;
+    /**
+     * The updated at date of the alumni
+     * @type {Date}
+     * @memberof AlumniAnalyticsEntity
+     */
+    updatedAt: Date;
 }
 
 /**
@@ -92,6 +98,7 @@ export function instanceOfAlumniAnalyticsEntity(value: object): value is AlumniA
     if (!('id' in value) || value['id'] === undefined) return false;
     if (!('fullName' in value) || value['fullName'] === undefined) return false;
     if (!('roles' in value) || value['roles'] === undefined) return false;
+    if (!('updatedAt' in value) || value['updatedAt'] === undefined) return false;
     return true;
 }
 
@@ -112,6 +119,7 @@ export function AlumniAnalyticsEntityFromJSONTyped(json: any, ignoreDiscriminato
         'roles': ((json['roles'] as Array<any>).map(RoleAnalyticsEntityFromJSON)),
         'graduations': json['graduations'] == null ? undefined : ((json['graduations'] as Array<any>).map(GraduationAnalyticsEntityFromJSON)),
         'location': json['location'] == null ? undefined : LocationAnalyticsEntityFromJSON(json['location']),
+        'updatedAt': (new Date(json['updatedAt'])),
     };
 }
 
@@ -133,6 +141,7 @@ export function AlumniAnalyticsEntityToJSONTyped(value?: AlumniAnalyticsEntity |
         'roles': ((value['roles'] as Array<any>).map(RoleAnalyticsEntityToJSON)),
         'graduations': value['graduations'] == null ? undefined : ((value['graduations'] as Array<any>).map(GraduationAnalyticsEntityToJSON)),
         'location': LocationAnalyticsEntityToJSON(value['location']),
+        'updatedAt': ((value['updatedAt']).toISOString()),
     };
 }
 

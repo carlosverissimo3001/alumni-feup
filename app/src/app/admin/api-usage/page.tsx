@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowLeft, ExternalLink } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useBrightDataBalance } from "@/hooks/admin/useBrighDataBalance";
-import { useProxyCurlBalance } from "@/hooks/admin/useProxyCurlBalance";
+import { useAlumniExtractBalance } from "@/hooks/admin/useAlumniExtractBalance";
 import { Skeleton } from "@/components/ui/skeleton";
 import Link from "next/link";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
@@ -24,12 +24,12 @@ const formatCredits = (amount: number | undefined): string => {
 };
 
 const isLowBrightDataBalance = (amount: number | undefined): boolean => {
-  if (amount === undefined || amount <= 0) return false;
+  if (amount === undefined) return false;
   return amount < 2;
 };
 
-const isLowProxyCurlBalance = (amount: number | undefined): boolean => {
-  if (amount === undefined || amount <= 0) return false;
+const isLowAlumniExtractBalance = (amount: number | undefined): boolean => {
+  if (amount === undefined) return false;
   return amount < 10;
 };
 
@@ -37,8 +37,8 @@ const ApiUsagePage = () => {
   const router = useRouter();
   const { data: brightDataBalance, isLoading: isLoadingBrightData } =
     useBrightDataBalance();
-  const { data: proxyCurlBalance, isLoading: isLoadingProxyCurl } =
-    useProxyCurlBalance();
+  const { data: alumniExtractBalance, isLoading: isLoadingAlumniExtract } =
+    useAlumniExtractBalance();
 
   return (
     <div className="container mx-auto py-8">
@@ -107,10 +107,10 @@ const ApiUsagePage = () => {
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-lg font-semibold flex items-center">
-                ProxyCurl Credits
+                Alumni Extract Service Credits
               </CardTitle>
               <Link
-                href="https://nubela.co/proxycurl/dashboard/proxycurl-api/api-key/"
+                href="https://enrichlayer.com/dashboard/api-key/"
                 target="_blank"
                 className="flex items-center text-primary hover:text-primary/80"
               >
@@ -118,20 +118,20 @@ const ApiUsagePage = () => {
               </Link>
             </CardHeader>
             <CardContent>
-              {isLoadingProxyCurl ? (
+              {isLoadingAlumniExtract ? (
                 <Skeleton className="h-10 w-3/4" />
               ) : (
                 <div
                   className={`text-3xl font-bold ${
-                    isLowProxyCurlBalance(proxyCurlBalance)
+                    isLowAlumniExtractBalance(alumniExtractBalance)
                       ? "text-red-300"
                       : "text-green-600"
                   }`}
                 >
-                  {formatCredits(proxyCurlBalance)}
+                  {formatCredits(alumniExtractBalance)}
                 </div>
               )}
-              {isLowProxyCurlBalance(proxyCurlBalance) && (
+              {isLowAlumniExtractBalance(alumniExtractBalance) && (
                 <Alert variant="destructive" className="mt-4 py-2">
                   <AlertTitle className="text-sm font-medium">Low balance</AlertTitle>
                   <AlertDescription className="text-xs">

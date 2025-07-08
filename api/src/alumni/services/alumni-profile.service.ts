@@ -37,6 +37,7 @@ export class AlumniProfileService {
         fullName: true,
         linkedinUrl: true,
         profilePictureUrl: true,
+        updatedAt: true,
         Roles: {
           select: roleSelect,
         },
