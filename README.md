@@ -1,60 +1,154 @@
-# Alumni-FEUP
+<p align="center">
+  <img src="docs/README/alumni-feup-banner.png" alt="Alumni-FEUP Banner" width="100%" />
+</p>
 
-![Alumni Feup logo](https://github.com/user-attachments/assets/30b40ad6-b9af-477b-ba25-41d52922434f)
+# Alumni‑FEUP 🌍📊
 
-## Overview
+[![Build Backend](https://img.shields.io/github/actions/workflow/status/carlosverissimo3001/alumni-feup/.github/workflows/deploy-backend.yml)]() [![Vercel](https://vercelbadge.vercel.app/api/carlosverissimo3001/alumni-feup)]() 
+[![PRs Welcome ✨](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)]() [![Frontier: FEUP MSc](https://img.shields.io/badge/FEUP–MSc-blue)]()
 
-This repository combines several services that power the Alumni-FEUP World
-platform. It includes backend APIs, LLM-driven agents, a Next.js frontend and
-supporting documentation.
+[![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)]()
 
-### Repository Structure
+## 🎓 Overview
 
-1. **api** – NestJS backend using Prisma for Postgres. This service contains
-   modules for analytics, companies, alumni management and authentication.
-2. **agents-api** – Python FastAPI service with LangChain agents for job
-   classification, location resolution and LinkedIn extraction. Configuration is
-   handled in `app/core/config.py`.
-3. **app** – Next.js frontend containing React components and generated SDK
-   clients under `src`. Pages such as the analytics dashboard live here.
-4. **docs** – Guides and specifications including analytics dashboard strategy,
-   API endpoints and a D3 visualization guide.
-5. **Infrastructure** – `docker-compose-dev.yml` for local Postgres and Redis,
-   and `swagger-spec.json` providing the OpenAPI specification.
+**Alumni‑FEUP** is a full‑stack data analytics platform displaying alumni career insights, developed as part of two MSc thesis at FEUP.  
+Built by **Carlos Veríssimo** and **José Pessoa**, it extends the original [alumniei-world](https://eic30anos.fe.up.pt/alumnieiworld/) by [Jénifer Constantino](https://www.linkedin.com/in/jenifer-constantino/).
 
-### Pointers for Further Exploration
+## ✨ Features
 
-1. **Backend Analytics** – See `api/src/analytics` for DTOs, services and
-   controllers.
-2. **LLM Agents** – Explore `agents-api/app/agents` to learn how data
-   classification and extraction is implemented.
-3. **Frontend Visualizations** – Review components under
-   `app/src/components/analytics` together with `docs/d3-visualization-guide.md`.
-4. **Database Schema** – Inspect `api/prisma/schema.prisma` or
-   `agents-api/app/db/models.py`.
-5. **Environment Configuration** – Check the example `.env` handling in the FastAPI service
-   and Next.js application.
+- 🔍 Alumni search & filters: degree, year, location, career path
+- 🌍 Map visualization of alumni locations
+- 📈 Dynamic dashboards: tables,charts, stats (React + D3)
+- 🤖 AI/ML Enrichment: job classification, seniority inference, geo resolution (FastAPI agents, LangChain)
+- 🛠️ Admin tools: secure CSV imports, faculty/degree creation, and more to come
+- ⚙️ Modern backend: Nest.js, Prisma, PostgreSQL
+- 🚢 DevOps-ready: Docker, Vercel deployment, CI on PRs
 
-## How to run
+**Repository structure:**
 
-<!-- TODO: Write this section -->
-
-## Caveats
-
-## Feature Roadmap
-
-## Testing the API
-
-1. Navigate to the API package and install dependencies:
-
-```bash
-cd api && yarn install
+```text
+├── api                       # NestJS + Prisma backend (analytics, auth, alumni, companies)
+├── agents-api                # FastAPI + LangChain agents (classification, enrichment, LinkedIn data enrichment)
+├── app                       # Next.js frontend with analytics dashboard & SDK
+├── docs                      # Documentation: API, visualization guide, feature specs
+├── docker-compose-dev.yml    # local development docker-compose file
+├── swagger-spec.json         # OpenAPI spec (swagger)
+└── README.md                 # You are here!
 ```
 
-2. Run the unit test suite:
+## 🧩 Tech Stack
+
+| Layer | Technologies |
+| --- | --- |
+| Frontend | Next.js, React, Tailwind, D3.js, shadcn/ui |
+| Backend(s) | Nest.js (TypeScript), Prisma ORM |
+| AI-Agents Infrastructure | FastAPI, LangChain, OpenAI |
+| Database(s) | PostgreSQL, Redis |
+
+Frontend is deployed on Vercel.
+
+## 🏁 Get Started
+
+This section explains how to set up a local development environment.
+
+### ✅ Prerequisites
+
+- Node.js ≥ 18 & Yarn
+- Python ≥ 3.10 & uv or venv
+- PostgreSQL & Redis
+
+### 🔧 Local Setup
 
 ```bash
+# Clone the repo
+git clone https://github.com/carlosverissimo3001/alumni-feup.git
+cd alumni-feup
+
+# Frontend
+cd app
+yarn install
+
+# Backend API
+cd ../api
+yarn install
+
+# Data Enrichment Infrastructure
+cd agents-api
+uv venv
+source .venv/bin/activate
+uv sync
+
+# Launch a local development environment (PostgreSQL and Redis)
+cd ..
+docker-compose -f docker-compose-dev.yml up -d
+```
+
+### ⚙️ Environment Variables
+
+Copy and fill in `.env.example` in each folder (app, api, agents-api).
+
+### 🚀 Running the application
+
+```bash
+# Start the frontend
+cd app
+npm run dev
+
+# or
+npm run dev:watch # if you want to automatically generate the SDK if the spec changes
+
+# Start the backend
+cd api
+npm run start:dev
+
+# Start the agents-api
+cd agents-api
+uv run app.main:app --reload
+
+# or
+uvicorn app.main:app --reload
+```
+
+### 🧪 Testing
+
+#### Backend API (NestJS)
+
+> Coverage is laughably low.
+
+```bash
+cd api
 yarn test
 ```
 
-The API uses Jest with TypeScript via `ts-jest`. Ensure dependencies are installed before running the tests.
+Uses Jest + ts-jest.
+
+#### Agents & Frontend
+
+> To be added.
+
+
+## 📚 About This Project
+
+This project is an open-source, extended version of [alumniei-world](https://eic30anos.fe.up.pt/alumnieiworld/) by Jénifer Constantino.
+
+**Alumni-Feup** was developed by Carlos Veríssimo and José Pessoa as part of the MSc dissertation in Informatics and Computing Engineering and Software Engineering, respectively, at [FEUP](https://sigarra.up.pt/feup/en/WEB_PAGE.INICIAL), University of Porto, 2025.
+
+Special thanks to Jénifer Constantino for the original platform and inspiration.
+
+<!-- Read Carlos's thesis here: https://www.overleaf.com/read/jzjzjzjzjzjz -->
+<!-- Read José's thesis here: https://www.overleaf.com/read/jzjzjzjzjzjz -->
+
+---
+
+## 💼 Commercial & Support
+
+Interested in adopting this project at your institution, getting a commercial license, enterprise integration, or dedicated support?  
+Reach out via [email](mailto:carlosverissimo3001@gmail.com) or [LinkedIn](https://www.linkedin.com/in/carlosverissimo3001/).
+
+## 📝 License
+
+MIT License – see the [LICENSE](LICENSE) file for details.
+
+## 🤝 Contribution
+
+PRs are welcome!
