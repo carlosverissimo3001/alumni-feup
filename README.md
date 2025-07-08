@@ -113,7 +113,7 @@ uvicorn app.main:app --reload
 
 #### Backend API (NestJS)
 
-> Coverage is laughably low.
+> Test coverage is currently low, and improvements are planned.
 
 ```bash
 cd api
