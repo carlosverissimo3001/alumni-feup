@@ -1,18 +1,20 @@
-<p align="center">
-  <img src="docs/README/alumni-feup-banner.png" alt="Alumni-FEUP Banner" width="100%" />
-</p>
 
 # Alumni‑FEUP 🌍📊
 
-[![Build Backend](https://img.shields.io/github/actions/workflow/status/carlosverissimo3001/alumni-feup/.github/workflows/deploy-backend.yml)]() [![Vercel](https://vercelbadge.vercel.app/api/carlosverissimo3001/alumni-feup)]() 
-[![PRs Welcome ✨](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)]() [![Frontier: FEUP MSc](https://img.shields.io/badge/FEUP–MSc-blue)]()
+🔗[alumni-feup.com](https://www.alumni-feup.com/)
 
+[![Build Backend](https://img.shields.io/github/actions/workflow/status/carlosverissimo3001/alumni-feup/.github/workflows/deploy-backend.yml)]() [![Vercel](https://vercelbadge.vercel.app/api/carlosverissimo3001/alumni-feup)]() 
+[![PRs Welcome ✨](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)]()
 [![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)]()
 
 ## 🎓 Overview
 
 **Alumni‑FEUP** is a full‑stack data analytics platform displaying alumni career insights, developed as part of two MSc thesis at FEUP.  
 Built by **Carlos Veríssimo** and **José Pessoa**, it extends the original [alumniei-world](https://eic30anos.fe.up.pt/alumnieiworld/) by [Jénifer Constantino](https://www.linkedin.com/in/jenifer-constantino/).
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/2bb404ed-cd8b-4664-bdb7-b4678cd1d003" alt="Alumni-FEUP" width="80%" />
+</p>
 
 ## ✨ Features
 
