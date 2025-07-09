@@ -74,10 +74,6 @@ export const RoleDashboard = ({
     TrendFrequency.Y5
   );
 
-  useEffect(() => {
-    setPage(1);
-  }, [filters]);
-
   const needsNewData =
   page > 1 ||
   view === ViewType.TREND ||
