@@ -38,7 +38,7 @@ type ReviewsGrouped = {
     timeSincePosted: number;
     timeSincePostedType: string;
     createdAt: Date | null;
-    anonymous: Boolean;
+    anonymous: boolean;
   }>;
 };
 

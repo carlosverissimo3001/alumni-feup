@@ -47,6 +47,7 @@ import type {
   UpdateRoleVisibilityDto,
   UpdateSeniorityLevelDto,
   UploadExtractionDto,
+  UpsertPermissionDto,
   UserAuthResponse,
   VerifyEmailDto,
   VerifyEmailTokenDto,
@@ -116,6 +117,8 @@ import {
     UpdateSeniorityLevelDtoToJSON,
     UploadExtractionDtoFromJSON,
     UploadExtractionDtoToJSON,
+    UpsertPermissionDtoFromJSON,
+    UpsertPermissionDtoToJSON,
     UserAuthResponseFromJSON,
     UserAuthResponseToJSON,
     VerifyEmailDtoFromJSON,
@@ -123,6 +126,10 @@ import {
     VerifyEmailTokenDtoFromJSON,
     VerifyEmailTokenDtoToJSON,
 } from '../models/index';
+
+export interface AdminControllerGetPermissionsRequest {
+    userId: string;
+}
 
 export interface AdminControllerInviteUserRequest {
     inviteUserDto: InviteUserDto;
@@ -134,6 +141,14 @@ export interface AdminControllerMergeCompaniesRequest {
 
 export interface AdminControllerMergeLocationsRequest {
     mergeLocationsDto: MergeLocationsDto;
+}
+
+export interface AdminControllerSearchUsersRequest {
+    q: string;
+}
+
+export interface AdminControllerUpsertPermissionRequest {
+    upsertPermissionDto: UpsertPermissionDto;
 }
 
 export interface AlumniControllerCreateRequest {
@@ -359,6 +374,21 @@ export interface V1ApiInterface {
 
     /**
      * 
+     * @summary Get all permissions for a user
+     * @param {string} userId 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof V1ApiInterface
+     */
+    adminControllerGetPermissionsRaw(requestParameters: AdminControllerGetPermissionsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>>;
+
+    /**
+     * Get all permissions for a user
+     */
+    adminControllerGetPermissions(requestParameters: AdminControllerGetPermissionsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void>;
+
+    /**
+     * 
      * @summary Invite user
      * @param {InviteUserDto} inviteUserDto 
      * @param {*} [options] Override http request option.
@@ -401,6 +431,36 @@ export interface V1ApiInterface {
      * Merge locations
      */
     adminControllerMergeLocations(requestParameters: AdminControllerMergeLocationsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void>;
+
+    /**
+     * 
+     * @summary Search alumni by name
+     * @param {string} q Search query matched against alumni full name
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof V1ApiInterface
+     */
+    adminControllerSearchUsersRaw(requestParameters: AdminControllerSearchUsersRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>>;
+
+    /**
+     * Search alumni by name
+     */
+    adminControllerSearchUsers(requestParameters: AdminControllerSearchUsersRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void>;
+
+    /**
+     * 
+     * @summary Create or update permissions for an alumni
+     * @param {UpsertPermissionDto} upsertPermissionDto 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof V1ApiInterface
+     */
+    adminControllerUpsertPermissionRaw(requestParameters: AdminControllerUpsertPermissionRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>>;
+
+    /**
+     * Create or update permissions for an alumni
+     */
+    adminControllerUpsertPermission(requestParameters: AdminControllerUpsertPermissionRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void>;
 
     /**
      * 
@@ -1089,6 +1149,38 @@ export class V1Api extends runtime.BaseAPI implements V1ApiInterface {
     }
 
     /**
+     * Get all permissions for a user
+     */
+    async adminControllerGetPermissionsRaw(requestParameters: AdminControllerGetPermissionsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+        if (requestParameters['userId'] == null) {
+            throw new runtime.RequiredError(
+                'userId',
+                'Required parameter "userId" was null or undefined when calling adminControllerGetPermissions().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        const response = await this.request({
+            path: `/admin/permissions/{userId}`.replace(`{${"userId"}}`, encodeURIComponent(String(requestParameters['userId']))),
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        return new runtime.VoidApiResponse(response);
+    }
+
+    /**
+     * Get all permissions for a user
+     */
+    async adminControllerGetPermissions(requestParameters: AdminControllerGetPermissionsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+        await this.adminControllerGetPermissionsRaw(requestParameters, initOverrides);
+    }
+
+    /**
      * Invite user
      */
     async adminControllerInviteUserRaw(requestParameters: AdminControllerInviteUserRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
@@ -1191,6 +1283,77 @@ export class V1Api extends runtime.BaseAPI implements V1ApiInterface {
      */
     async adminControllerMergeLocations(requestParameters: AdminControllerMergeLocationsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
         await this.adminControllerMergeLocationsRaw(requestParameters, initOverrides);
+    }
+
+    /**
+     * Search alumni by name
+     */
+    async adminControllerSearchUsersRaw(requestParameters: AdminControllerSearchUsersRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+        if (requestParameters['q'] == null) {
+            throw new runtime.RequiredError(
+                'q',
+                'Required parameter "q" was null or undefined when calling adminControllerSearchUsers().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        if (requestParameters['q'] != null) {
+            queryParameters['q'] = requestParameters['q'];
+        }
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        const response = await this.request({
+            path: `/admin/users`,
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        return new runtime.VoidApiResponse(response);
+    }
+
+    /**
+     * Search alumni by name
+     */
+    async adminControllerSearchUsers(requestParameters: AdminControllerSearchUsersRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+        await this.adminControllerSearchUsersRaw(requestParameters, initOverrides);
+    }
+
+    /**
+     * Create or update permissions for an alumni
+     */
+    async adminControllerUpsertPermissionRaw(requestParameters: AdminControllerUpsertPermissionRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+        if (requestParameters['upsertPermissionDto'] == null) {
+            throw new runtime.RequiredError(
+                'upsertPermissionDto',
+                'Required parameter "upsertPermissionDto" was null or undefined when calling adminControllerUpsertPermission().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
+
+        const response = await this.request({
+            path: `/admin/permissions`,
+            method: 'PUT',
+            headers: headerParameters,
+            query: queryParameters,
+            body: UpsertPermissionDtoToJSON(requestParameters['upsertPermissionDto']),
+        }, initOverrides);
+
+        return new runtime.VoidApiResponse(response);
+    }
+
+    /**
+     * Create or update permissions for an alumni
+     */
+    async adminControllerUpsertPermission(requestParameters: AdminControllerUpsertPermissionRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+        await this.adminControllerUpsertPermissionRaw(requestParameters, initOverrides);
     }
 
     /**

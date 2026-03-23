@@ -1,8 +1,21 @@
 import { RequirePermission, UserAuthGuard } from '@/auth';
-import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Post,
+  Put,
+  Query,
+  UseGuards,
+} from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { SkipThrottle } from '@nestjs/throttler';
-import { MergeCompaniesDto, MergeLocationsDto, InviteUserDto } from '../dto';
+import { MergeCompaniesDto } from '../dto/merge-companies.dto';
+import { MergeLocationsDto } from '../dto/merge-locations.dto';
+import { InviteUserDto } from '../dto/invite-user.dto';
+import { UpsertPermissionDto } from '../dto/upsert-permission.dto';
+import { SearchUsersDto } from '../dto/search-users.dto';
 import { AdminService } from '../services/admin.service';
 
 @ApiTags('V1')
@@ -11,6 +24,14 @@ import { AdminService } from '../services/admin.service';
 @UseGuards(UserAuthGuard)
 export class AdminController {
   constructor(private readonly adminService: AdminService) {}
+
+  @Get('users')
+  @RequirePermission('admin', 'read')
+  @ApiOperation({ summary: 'Search alumni by name' })
+  @ApiResponse({ status: 200, description: 'Matching alumni (max 20)' })
+  async searchUsers(@Query() query: SearchUsersDto) {
+    return this.adminService.searchUsers(query);
+  }
 
   @Get('alumni-extract-balance')
   @RequirePermission('admin', 'read')
@@ -69,5 +90,24 @@ export class AdminController {
   })
   async inviteUser(@Body() inviteUserDto: InviteUserDto) {
     return this.adminService.inviteUser(inviteUserDto);
+  }
+
+  @Get('permissions/:userId')
+  @RequirePermission('admin', 'read')
+  @ApiOperation({ summary: 'Get all permissions for a user' })
+  @ApiResponse({ status: 200, description: 'User permissions' })
+  async getPermissions(@Param('userId') userId: string) {
+    return this.adminService.getPermissions(userId);
+  }
+
+  @Put('permissions')
+  @RequirePermission('admin', 'write')
+  @ApiOperation({ summary: 'Create or update permissions for an alumni' })
+  @ApiResponse({
+    status: 200,
+    description: 'Permission upserted',
+  })
+  async upsertPermission(@Body() upsertPermissionDto: UpsertPermissionDto) {
+    return this.adminService.upsertPermission(upsertPermissionDto);
   }
 }

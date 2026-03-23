@@ -9,7 +9,7 @@ import {
   BookOpenIcon,
   CreditCardIcon,
   FileSpreadsheetIcon,
-  UsersIcon,
+  ShieldCheckIcon,
 } from "lucide-react";
 
 const AdminDashboard = () => {
@@ -20,7 +20,7 @@ const AdminDashboard = () => {
       icon: <FileSpreadsheetIcon className="h-6 w-6" />,
       href: "/admin/upload-csv",
     },
-    {
+    /* {
       title: "Review Alumni",
       description: "Review and approve Alumni submissions",
       icon: <UsersIcon className="h-6 w-6" />,
@@ -33,7 +33,7 @@ const AdminDashboard = () => {
       icon: <UsersIcon className="h-6 w-6" />,
       href: "/admin/alumni-management",
       disabled: true,
-    },
+    }, */
     {
       title: "API Usage",
       description: "View API usage and balance",
@@ -47,11 +47,17 @@ const AdminDashboard = () => {
       href: "/admin/faculty-management",
     },
     {
+      title: "Manage Permissions",
+      description: "Search users and assign resource-level permissions",
+      icon: <ShieldCheckIcon className="h-6 w-6" />,
+      href: "/admin/manage-permissions",
+    },
+    /* {
       title: "Invite User",
       description: "Invite a user to early access the platform",
       icon: <UsersIcon className="h-6 w-6" />,
       href: "/admin/invite-user",
-    },
+    }, */
   ];
 
   return (
