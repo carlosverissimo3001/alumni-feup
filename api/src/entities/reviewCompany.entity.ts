@@ -34,7 +34,7 @@ export class ReviewCompany {
     description: 'The review anonymity',
     type: Boolean,
   })
-  anonymous: Boolean;
+  anonymous: boolean;
 
   constructor(data: ReviewCompany) {
     this.id = data.id;

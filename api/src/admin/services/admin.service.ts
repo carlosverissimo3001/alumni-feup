@@ -2,9 +2,15 @@ import { CompanyService } from '@/company/services/company.service';
 import { LocationService } from '@/location/location.service';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { InviteUserDto, MergeCompaniesDto, MergeLocationsDto } from '../dto';
+import { MergeCompaniesDto } from '../dto/merge-companies.dto';
+import { MergeLocationsDto } from '../dto/merge-locations.dto';
+import { InviteUserDto } from '../dto/invite-user.dto';
+import { UpsertPermissionDto } from '../dto/upsert-permission.dto';
+import { SearchUsersDto } from '../dto/search-users.dto';
 import { UserService } from '@/user/services/user.service';
 import { InviteEntity } from '@/user/entities/invite.entity';
+import { Permission } from '@prisma/client';
+import { PermissionRepository } from '../repositories/permission.repository';
 
 type AlumniExtractBalanceResponse = {
   // This is an interger value
@@ -32,6 +38,7 @@ export class AdminService {
     private readonly companyService: CompanyService,
     private readonly locationService: LocationService,
     private readonly userService: UserService,
+    private readonly permissionRepository: PermissionRepository,
   ) {
     this.alumniExtractBaseUrl =
       this.config.get<string>('ALUMNI_EXTRACT_BASE_URL') || '';
@@ -136,5 +143,18 @@ export class AdminService {
     const invite = await this.userService.inviteUser(email);
 
     return invite;
+  }
+
+  async searchUsers(dto: SearchUsersDto) {
+    return this.permissionRepository.searchUsers(dto.q);
+  }
+
+  async getPermissions(userId: string) {
+    return this.permissionRepository.findByUser(userId);
+  }
+
+  async upsertPermission(dto: UpsertPermissionDto): Promise<Permission> {
+    const { userId, resource, actions } = dto;
+    return this.permissionRepository.upsert(userId, resource, actions);
   }
 }

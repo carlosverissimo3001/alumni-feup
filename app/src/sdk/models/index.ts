@@ -90,6 +90,7 @@ export * from './UpdateClassificationDto';
 export * from './UpdateRoleVisibilityDto';
 export * from './UpdateSeniorityLevelDto';
 export * from './UploadExtractionDto';
+export * from './UpsertPermissionDto';
 export * from './User';
 export * from './UserAuthResponse';
 export * from './VerifyEmailDto';

@@ -9,10 +9,11 @@ export function LogExecutionTime() {
     const original = descriptor.value as (...args: unknown[]) => unknown;
 
     descriptor.value = async function (...args: unknown[]) {
-      const logger = new Logger((target as Record<string, unknown>).constructor.name);
+      const logger = new Logger(
+        (target as Record<string, unknown>).constructor.name,
+      );
       const start = Date.now();
       try {
-        // eslint-disable-next-line @typescript-eslint/return-await
         return await original.apply(this, args);
       } finally {
         const duration = Date.now() - start;

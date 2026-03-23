@@ -92,6 +92,7 @@ models/UpdateClassificationDto.ts
 models/UpdateRoleVisibilityDto.ts
 models/UpdateSeniorityLevelDto.ts
 models/UploadExtractionDto.ts
+models/UpsertPermissionDto.ts
 models/User.ts
 models/UserAuthResponse.ts
 models/VerifyEmailDto.ts

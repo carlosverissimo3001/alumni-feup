@@ -1,7 +1,6 @@
 import { PORTUGUESE_NAME_CONNECTORS } from './consts';
 import { NameDto } from './dto/name-dto';
 
-
 /**
  * Removes accents (diacritics) from a string
  * @param str The string to remove accents from

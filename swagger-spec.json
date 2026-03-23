@@ -16,6 +16,32 @@
         ]
       }
     },
+    "/admin/users": {
+      "get": {
+        "operationId": "AdminController_searchUsers",
+        "parameters": [
+          {
+            "name": "q",
+            "required": true,
+            "in": "query",
+            "description": "Search query matched against alumni full name",
+            "schema": {
+              "example": "João Silva",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Matching alumni (max 20)"
+          }
+        },
+        "summary": "Search alumni by name",
+        "tags": [
+          "V1"
+        ]
+      }
+    },
     "/admin/alumni-extract-balance": {
       "get": {
         "operationId": "AdminController_getAlumniExtractBalance",
@@ -130,6 +156,55 @@
           }
         },
         "summary": "Invite user",
+        "tags": [
+          "V1"
+        ]
+      }
+    },
+    "/admin/permissions/{userId}": {
+      "get": {
+        "operationId": "AdminController_getPermissions",
+        "parameters": [
+          {
+            "name": "userId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User permissions"
+          }
+        },
+        "summary": "Get all permissions for a user",
+        "tags": [
+          "V1"
+        ]
+      }
+    },
+    "/admin/permissions": {
+      "put": {
+        "operationId": "AdminController_upsertPermission",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpsertPermissionDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Permission upserted"
+          }
+        },
+        "summary": "Create or update permissions for an alumni",
         "tags": [
           "V1"
         ]
@@ -1949,6 +2024,37 @@
         },
         "required": [
           "email"
+        ]
+      },
+      "UpsertPermissionDto": {
+        "type": "object",
+        "properties": {
+          "userId": {
+            "type": "string",
+            "description": "The ID of the alumni to assign permissions to",
+            "example": "123e4567-e89b-12d3-a456-426614174000"
+          },
+          "resource": {
+            "type": "string",
+            "description": "The resource the permission applies to",
+            "example": "admin"
+          },
+          "actions": {
+            "description": "The actions to grant on the resource",
+            "example": [
+              "read",
+              "write"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "userId",
+          "resource",
+          "actions"
         ]
       },
       "LinkedinAuthDto": {
