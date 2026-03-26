@@ -3,7 +3,7 @@
   "private": true,
   "scripts": {
     "dev": "pnpm --parallel -r dev",
-    "dev:api": "pnpm --filter api start:dev",
+    "dev:api": "pnpm --filter api dev",
     "dev:app": "pnpm --filter app dev",
     "build": "pnpm -r build",
     "test": "pnpm -r test",
@@ -13,7 +13,7 @@
     "db:migrate:prod": "pnpm --filter api prisma:migrate:prod",
     "db:studio": "pnpm --filter api prisma:studio",
     "gen:json": "pnpm --filter api run swagger",
-    "gen:sdk": "pnpm exec openapi-generator-cli generate -i ./swagger-spec.json -g typescript-fetch -o ./app/sdk --additional-properties=typescriptThreePlus=true",
+    "gen:sdk": "pnpm exec openapi-generator-cli generate -i ./swagger-spec.json -g typescript-fetch -o ./app/src/sdk --additional-properties=typescriptThreePlus=true",
     "build:sdk": "pnpm run gen:json && pnpm run gen:sdk",
     "lint": "pnpm -r lint",
     "format": "pnpm -r format"

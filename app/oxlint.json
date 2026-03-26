@@ -7,5 +7,5 @@
   "rules": {
     "no-unused-vars": "warn"
   },
-  "ignore": [".next/", "node_modules/", "sdk/"]
+  "ignore": [".next/", "node_modules/", "src/sdk/"]
 }
