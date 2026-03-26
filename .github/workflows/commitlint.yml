@@ -13,6 +13,4 @@ jobs:
 
       - uses: wagoid/commitlint-github-action@v6
         with:
-          firstParent: false
           failOnWarnings: false
-          helpURL: ''
