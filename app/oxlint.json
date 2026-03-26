@@ -1,0 +1,11 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "env": {
+    "browser": true
+  },
+  "plugins": ["react", "nextjs"],
+  "rules": {
+    "no-unused-vars": "warn"
+  },
+  "ignore": [".next/", "node_modules/", "sdk/"]
+}

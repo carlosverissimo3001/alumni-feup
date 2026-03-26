@@ -1,8 +1,5 @@
-import { IsOptional } from '@nestjs/class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { IsNotEmpty } from 'class-validator';
-
-import { IsString } from 'class-validator';
+import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
 // Docs: https://learn.microsoft.com/en-us/linkedin/shared/references/v2/profile/basic-profile
 export class LinkedinAuthDto {
