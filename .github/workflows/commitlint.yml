@@ -11,5 +11,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Lint PR Title
-        run: echo "${{ github.event.pull_request.title }}" | npx --yes commitlint --config commitlint.config.js
+      - uses: wagoid/commitlint-github-action@v6
+        with:
+          firstParent: false
+          failOnWarnings: false
+          helpURL: ''
