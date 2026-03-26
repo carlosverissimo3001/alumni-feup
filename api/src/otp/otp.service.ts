@@ -1,13 +1,10 @@
-import { Inject, Injectable } from '@nestjs/common';
-import Redis from 'ioredis';
+import { Injectable } from '@nestjs/common';
 import * as crypto from 'crypto';
+import { RedisService } from '../redis/redis.service';
 
 @Injectable()
 export class OtpService {
-  constructor(
-    @Inject('REDIS_CLIENT')
-    private readonly redis: Redis,
-  ) {}
+  constructor(private readonly redisService: RedisService) {}
 
   private hash(code: string) {
     return crypto.createHash('sha256').update(code).digest('hex');
@@ -17,17 +14,17 @@ export class OtpService {
     const otp = crypto.randomInt(100000, 999999).toString();
     const hashed = this.hash(otp);
 
-    await this.redis.set(`otp:${email}`, hashed, 'EX', 600); // 10 min
+    await this.redisService.set(`otp:${email}`, hashed, 600); // 10 min
 
     return otp;
   }
 
   async verifyOTP(email: string, code: string): Promise<boolean> {
     const hashed = this.hash(code);
-    const stored = await this.redis.get(`otp:${email}`);
+    const stored = await this.redisService.get(`otp:${email}`);
 
     if (stored && stored === hashed) {
-      await this.redis.del(`otp:${email}`);
+      await this.redisService.del(`otp:${email}`);
       return true;
     }
     return false;
