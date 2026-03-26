@@ -9,17 +9,17 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
+      - uses: amannn/action-semantic-pull-request@v5
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          node-version: 18
-
-      - name: Install dependencies
-        run: yarn install --frozen-lockfile
-
-      - name: Lint PR Title
-        run: |
-          yarn add -D @commitlint/cli @commitlint/config-conventional
-          echo "${{ github.event.pull_request.title }}" | npx commitlint
+          types: |
+            feat
+            fix
+            docs
+            chore
+            ci
+            refactor
+            test
+            style
+            revert

@@ -1,0 +1,41 @@
+{
+  "name": "alumni-feup",
+  "private": true,
+  "scripts": {
+    "dev": "pnpm --parallel -r dev",
+    "dev:api": "pnpm --filter api dev",
+    "dev:app": "pnpm --filter app dev",
+    "build": "pnpm -r build",
+    "test": "pnpm -r test",
+    "test:api": "pnpm --filter api test",
+    "db:generate": "pnpm --filter api prisma:generate",
+    "db:migrate": "pnpm --filter api prisma:migrate",
+    "db:migrate:prod": "pnpm --filter api prisma:migrate:prod",
+    "db:studio": "pnpm --filter api prisma:studio",
+    "gen:json": "pnpm --filter api run swagger",
+    "gen:sdk": "pnpm exec openapi-generator-cli generate -i ./swagger-spec.json -g typescript-fetch -o ./app/src/sdk --additional-properties=typescriptThreePlus=true",
+    "build:sdk": "pnpm run gen:json && pnpm run gen:sdk",
+    "lint": "pnpm -r lint",
+    "format": "pnpm -r format"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^19.8.1",
+    "@commitlint/config-conventional": "^19.8.1"
+  },
+  "engines": {
+    "node": ">=20",
+    "pnpm": ">=10"
+  },
+  "packageManager": "pnpm@10.28.2",
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "@nestjs/core",
+      "@prisma/client",
+      "@prisma/engines",
+      "esbuild",
+      "prisma",
+      "sharp",
+      "unrs-resolver"
+    ]
+  }
+}
