@@ -68,8 +68,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     setToken(newToken);
     setUser(newUser);
     setIsAuthenticated(true);
-    Cookies.set('auth_token', newToken, { expires: 7 });
-    Cookies.set('user', encodeURIComponent(JSON.stringify(newUser)), { expires: 7 });
+    Cookies.set('auth_token', newToken, { expires: 7, secure: true, sameSite: 'lax' });
+    Cookies.set('user', encodeURIComponent(JSON.stringify(newUser)), { expires: 7, secure: true, sameSite: 'lax' });
     
     // Store userId in localStorage for API middleware
     if (typeof window !== 'undefined' && newUser.id) {
