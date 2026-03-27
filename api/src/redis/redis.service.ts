@@ -17,7 +17,7 @@ export class RedisService implements OnModuleDestroy {
   }
 
   async set(key: string, value: string, ttlSeconds?: number): Promise<void> {
-    if (ttlSeconds) {
+    if (ttlSeconds !== undefined) {
       await this.client.setex(key, ttlSeconds, value);
     } else {
       await this.client.set(key, value);
