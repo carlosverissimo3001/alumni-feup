@@ -64,7 +64,7 @@ export async function GET(req: NextRequest) {
           const tempCookieOpts = {
             path: '/',
             maxAge: 300,
-            httpOnly: true,
+            httpOnly: false, // must be readable by js-cookie on /auth/linkedin-confirm
             secure: process.env.NODE_ENV === 'production',
             sameSite: 'lax' as const,
           };
