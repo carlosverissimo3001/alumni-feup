@@ -121,8 +121,6 @@ export class UserService {
     }
 
     const code = await this.otpService.generateOTP(email);
-    const hashed = this.otpService['hash'](code);
-    await this.otpService['redis'].set(`otp:${email}`, hashed, 'EX', 600);
 
     await this.emailService.sendOtpEmail(email, code);
   }
