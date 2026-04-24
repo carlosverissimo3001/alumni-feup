@@ -29,8 +29,8 @@ export const useAuthenticateWithLinkedin = ({
   >({
     mutationFn: (authData) => NestApi.userControllerLinkedinAuth(authData),
     onSuccess: (response) => {
-      if (response?.accessToken && response.user) {
-        login(response.accessToken, response.user);
+      if (response.user) {
+        login(response.user);
       }
       onSuccess();
     },
@@ -92,8 +92,8 @@ export const useLinkedinConfirm = ({
   const mutation = useMutation({
     mutationFn: () => NestApi.userControllerLinkedinConfirm(data),
     onSuccess: (response) => {
-      if (response?.accessToken && response.user) {
-        login(response.accessToken, response.user);
+      if (response.user) {
+        login(response.user);
       }
       onSuccess();
     },

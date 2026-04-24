@@ -19,8 +19,9 @@ import {
 } from "@/components/ui/tooltip";
 import { useAuth } from "@/contexts/AuthContext";
 import { validateLinkedInUrl } from "@/utils/validation";
-import Cookies from "js-cookie";
 import { useToast } from "@/hooks/misc/useToast";
+
+const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 export default function LinkedInConfirmPage() {
   const router = useRouter();
@@ -99,22 +100,36 @@ export default function LinkedInConfirmPage() {
       return;
     }
 
-    setPersonId(Cookies.get("linkedin_person_id") ?? undefined);
-    setFirstName(Cookies.get("linkedin_first_name") ?? undefined);
-    setLastName(Cookies.get("linkedin_last_name") ?? undefined);
-    setProfilePictureUrl(
-      Cookies.get("linkedin_profile_picture_url") ?? undefined
-    );
-    const email = Cookies.get("linkedin_personal_email") ?? undefined;
-    setPersonalEmail(email);
-    if (email) {
-      setMaskedEmail(maskEmail(email));
-      if (!initialCodeSent.current) {
-        handleSendVerificationEmail();
+    const fetchPendingProfile = async () => {
+      try {
+        const res = await fetch(`${API_URL}/auth/linkedin/pending`, {
+          credentials: 'include',
+        });
+        if (!res.ok) {
+          router.replace("/login");
+          return;
+        }
+        const data = await res.json();
+        setPersonId(data.personId);
+        setFirstName(data.firstName);
+        setLastName(data.lastName);
+        setProfilePictureUrl(data.profilePictureUrl);
+        const email = data.personalEmail;
+        setPersonalEmail(email);
+        if (email) {
+          setMaskedEmail(maskEmail(email));
+          if (!initialCodeSent.current) {
+            handleSendVerificationEmail();
+          }
+        } else {
+          setShowEmailInput(true);
+        }
+      } catch {
+        router.replace("/login");
       }
-    } else {
-      setShowEmailInput(true);
-    }
+    };
+
+    fetchPendingProfile();
   }, [isAuthenticated, router, user, handleSendVerificationEmail]);
 
   useEffect(() => {

@@ -4,11 +4,12 @@ import { AdminController } from './controllers/admin.controller';
 import { PrismaService } from '@/prisma/prisma.service';
 import { CompanyService } from '@/company/services/company.service';
 import { LocationService } from '@/location/location.service';
+import { AuthModule } from '@/auth/auth.module';
 import { UserModule } from '@/user/user.module';
 import { PermissionRepository } from './repositories/permission.repository';
 
 @Module({
-  imports: [UserModule],
+  imports: [UserModule, AuthModule],
   controllers: [AdminController],
   providers: [
     AdminService,
