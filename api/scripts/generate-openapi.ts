@@ -13,9 +13,9 @@ async function generate() {
   const app = await NestFactory.create(AppModule, { logger: false });
   
   const config = new DocumentBuilder()
-    .setTitle('API')
+    .setTitle('Alumni Feup API')
     .setVersion('1.0')
-    .addBearerAuth()
+    .addCookieAuth('alumniFeup_session')
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
