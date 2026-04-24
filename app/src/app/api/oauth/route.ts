@@ -61,12 +61,19 @@ export async function GET(req: NextRequest) {
           const redirectUrl = new URL('/auth/linkedin-confirm', process.env.NEXT_PUBLIC_APP_URL);
           const response = NextResponse.redirect(redirectUrl.toString());
         
-          response.cookies.set('linkedin_person_id', profileData.sub, { path: '/', maxAge: 300 });
-          response.cookies.set('linkedin_first_name', profileData.given_name, { path: '/', maxAge: 300 });
-          response.cookies.set('linkedin_last_name', profileData.family_name, { path: '/', maxAge: 300 });
-          response.cookies.set('linkedin_profile_picture_url', profileData.picture, { path: '/', maxAge: 300 });
+          const tempCookieOpts = {
+            path: '/',
+            maxAge: 300,
+            httpOnly: false, // must be readable by js-cookie on /auth/linkedin-confirm
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'lax' as const,
+          };
+          response.cookies.set('linkedin_person_id', profileData.sub, tempCookieOpts);
+          response.cookies.set('linkedin_first_name', profileData.given_name, tempCookieOpts);
+          response.cookies.set('linkedin_last_name', profileData.family_name, tempCookieOpts);
+          response.cookies.set('linkedin_profile_picture_url', profileData.picture, tempCookieOpts);
           if (profileData.email) {
-            response.cookies.set('linkedin_personal_email', profileData.email, { path: '/', maxAge: 300 });
+            response.cookies.set('linkedin_personal_email', profileData.email, tempCookieOpts);
           }
         
           return response;

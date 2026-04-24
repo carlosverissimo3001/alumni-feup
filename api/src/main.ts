@@ -25,9 +25,15 @@ async function bootstrap() {
     JSON.stringify(document, null, 2),
   );
 
-  // Add CORS configuration
+  // Add CORS configuration — restrict to explicit allowlist via CORS_ORIGINS env var
+  // e.g. CORS_ORIGINS=https://alumni.fe.up.pt,https://staging.alumni.fe.up.pt
+  const allowedOrigins = (process.env.CORS_ORIGINS ?? '')
+    .split(',')
+    .map((o) => o.trim())
+    .filter(Boolean);
+
   app.enableCors({
-    origin: true,
+    origin: allowedOrigins.length > 0 ? allowedOrigins : false,
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true,
   });
