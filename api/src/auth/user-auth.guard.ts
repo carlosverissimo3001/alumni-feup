@@ -6,14 +6,10 @@ import {
   SetMetadata,
 } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { ConfigService } from '@nestjs/config';
 import { Request } from 'express';
 import { Permission } from '@prisma/client';
 import { Reflector } from '@nestjs/core';
-
-// Create metadata keys for permission checking
-export const RESOURCE_KEY = 'resource';
-export const ACTION_KEY = 'action';
+import { SessionService, SESSION_COOKIE_NAME } from './session.service';
 
 // Decorator for setting required permissions on routes
 export const RequirePermission = (resource: string, action: string) =>
@@ -23,12 +19,11 @@ export const RequirePermission = (resource: string, action: string) =>
 export class UserAuthGuard implements CanActivate {
   constructor(
     private readonly prisma: PrismaService,
-    private readonly configService: ConfigService,
     private readonly reflector: Reflector,
+    private readonly sessionService: SessionService,
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    // Get the required permission from route metadata
     const permission = this.reflector.get<{ resource: string; action: string }>(
       'permission',
       context.getHandler(),
@@ -40,15 +35,23 @@ export class UserAuthGuard implements CanActivate {
     }
 
     const request = context.switchToHttp().getRequest<Request>();
-    const userId = request.headers['x-user-id'] as string;
+    const sessionId = request.cookies?.[SESSION_COOKIE_NAME] as
+      | string
+      | undefined;
 
-    if (!userId) {
-      throw new UnauthorizedException('User ID is missing');
+    if (!sessionId) {
+      throw new UnauthorizedException('Not authenticated');
     }
+
+    // Resolve user from session (server-side — no client-supplied identity)
+    const session = await this.sessionService.getSession(sessionId);
+
+    // Refresh TTL on activity
+    await this.sessionService.refreshSession(sessionId);
 
     // Get the user with permissions from database
     const user = await this.prisma.alumni.findUnique({
-      where: { id: userId },
+      where: { id: session.userId },
       include: {
         Permissions: true,
       },
