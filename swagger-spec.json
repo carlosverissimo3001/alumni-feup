@@ -1,21 +1,6 @@
 {
   "openapi": "3.0.0",
   "paths": {
-    "/health": {
-      "get": {
-        "operationId": "AppController_getHealth",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "API is healthy"
-          }
-        },
-        "summary": "Health check",
-        "tags": [
-          "System"
-        ]
-      }
-    },
     "/admin/users": {
       "get": {
         "operationId": "AdminController_searchUsers",
@@ -378,6 +363,96 @@
           }
         },
         "summary": "Delete a user",
+        "tags": [
+          "V1"
+        ]
+      }
+    },
+    "/auth/linkedin/login": {
+      "get": {
+        "operationId": "LinkedinOAuthController_login",
+        "parameters": [],
+        "responses": {
+          "302": {
+            "description": "Redirects to LinkedIn authorization"
+          }
+        },
+        "summary": "Start LinkedIn OAuth flow",
+        "tags": [
+          "V1"
+        ]
+      }
+    },
+    "/auth/linkedin/callback": {
+      "get": {
+        "operationId": "LinkedinOAuthController_callback",
+        "parameters": [
+          {
+            "name": "code",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "state",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "302": {
+            "description": "Redirects to frontend after auth"
+          }
+        },
+        "summary": "Handle LinkedIn OAuth callback",
+        "tags": [
+          "V1"
+        ]
+      }
+    },
+    "/auth/linkedin/pending": {
+      "get": {
+        "operationId": "LinkedinOAuthController_getPendingProfile",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Pending LinkedIn profile data"
+          },
+          "401": {
+            "description": "Not authenticated or no pending profile"
+          }
+        },
+        "security": [
+          {
+            "cookie": []
+          }
+        ],
+        "summary": "Get pending LinkedIn profile for unmatched users",
+        "tags": [
+          "V1"
+        ]
+      }
+    },
+    "/auth/logout": {
+      "post": {
+        "operationId": "AuthController_logout",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Successfully logged out"
+          }
+        },
+        "security": [
+          {
+            "cookie": []
+          }
+        ],
+        "summary": "Logout and clear session",
         "tags": [
           "V1"
         ]
@@ -1945,8 +2020,8 @@
     }
   },
   "info": {
-    "title": "API",
-    "description": "API description",
+    "title": "Alumni Feup API",
+    "description": "",
     "version": "1.0",
     "contact": {}
   },
@@ -1954,10 +2029,10 @@
   "servers": [],
   "components": {
     "securitySchemes": {
-      "bearer": {
-        "scheme": "bearer",
-        "bearerFormat": "JWT",
-        "type": "http"
+      "cookie": {
+        "type": "apiKey",
+        "in": "cookie",
+        "name": "alumniFeup_session"
       }
     },
     "schemas": {

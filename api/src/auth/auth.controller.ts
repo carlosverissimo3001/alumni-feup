@@ -11,7 +11,7 @@ import { SessionService, SESSION_COOKIE_NAME } from './session.service';
 import { SessionId } from './session-id.decorator';
 import { getClearCookieOptions } from './cookie-options';
 
-@ApiTags('Auth')
+@ApiTags('V1')
 @Controller('auth')
 export class AuthController {
   constructor(private readonly sessionService: SessionService) {}

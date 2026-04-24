@@ -18,7 +18,7 @@ import { useListCourses } from "@/hooks/courses/useListCourses";
 import { Card, CardContent } from "@/components/ui/card";
 import { useManualSubmission } from "@/hooks/alumni/useManualSubmission";
 import { useToast } from "@/hooks/misc/useToast";
-import { CreateAlumniDto } from "@/sdk/api";
+import { CreateAlumniDto } from "@/sdk/models";
 import { Alert, AlertDescription, AlertTitle } from "../ui/alert";
 import { CourseAnalyticsEntity as Course } from "@/sdk";
 import { Button } from "@/components/ui/button";

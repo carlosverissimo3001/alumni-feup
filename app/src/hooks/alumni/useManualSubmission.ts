@@ -1,5 +1,5 @@
 import { useMutation } from "@tanstack/react-query";
-import { CreateAlumniDto } from "@/sdk/api";
+import { CreateAlumniDto } from "@/sdk/models";
 import NestAPI from "@/api";
 import { AxiosError } from "axios";
 

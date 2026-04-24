@@ -16,7 +16,7 @@ import { getCookieOptions } from './cookie-options';
 import { UserService } from '../user/services/user.service';
 import { UserStatus } from '../user/consts/enum';
 
-@ApiTags('Auth')
+@ApiTags('V1')
 @Controller('auth/linkedin')
 export class LinkedinOAuthController {
   private readonly frontendUrl: string;
