@@ -1,44 +1,21 @@
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-call */
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import * as fs from 'fs';
-import * as path from 'path';
+import cookieParser from 'cookie-parser';
 import { VALIDATION_CONFIG } from './validators';
 declare const module: any;
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  const config = new DocumentBuilder()
-    .setTitle('API')
-    .setDescription('API description')
-    .setVersion('1.0')
-    .addBearerAuth()
-    .build();
+  app.use(cookieParser())
 
-  const document = SwaggerModule.createDocument(app, config);
-
-  fs.writeFileSync(
-    path.join(__dirname, '../..', 'swagger-spec.json'),
-    JSON.stringify(document, null, 2),
-  );
-
-  // Add CORS configuration — restrict to explicit allowlist via CORS_ORIGINS env var
-  // e.g. CORS_ORIGINS=https://alumni.fe.up.pt,https://staging.alumni.fe.up.pt
-  const allowedOrigins = (process.env.CORS_ORIGINS ?? '')
-    .split(',')
-    .map((o) => o.trim())
-    .filter(Boolean);
-
+  const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
   app.enableCors({
-    origin: allowedOrigins.length > 0 ? allowedOrigins : false,
+    origin: frontendUrl,
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true,
   });
 
-  SwaggerModule.setup('docs', app, document);
 
   app.useGlobalPipes(VALIDATION_CONFIG);
   await app.listen(process.env.PORT ?? 3010);
