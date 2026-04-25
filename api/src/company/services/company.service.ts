@@ -30,13 +30,21 @@ export class CompanyService {
   }
 
   async merge(sourceIds: string[], targetId: string): Promise<void> {
+    const mergeSourceIds = [...new Set(sourceIds)].filter(
+      (id) => id !== targetId,
+    );
+
+    if (mergeSourceIds.length === 0) {
+      return;
+    }
+
     await this.prisma.$transaction([
       this.prisma.role.updateMany({
-        where: { companyId: { in: sourceIds } },
+        where: { companyId: { in: mergeSourceIds } },
         data: { companyId: targetId },
       }),
       this.prisma.company.deleteMany({
-        where: { id: { in: sourceIds } },
+        where: { id: { in: mergeSourceIds } },
       }),
     ]);
   }

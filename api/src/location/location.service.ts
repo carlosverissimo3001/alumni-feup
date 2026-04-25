@@ -34,21 +34,29 @@ export class LocationService {
   }
 
   async merge(sourceIds: string[], targetId: string): Promise<void> {
+    const mergeSourceIds = [...new Set(sourceIds)].filter(
+      (id) => id !== targetId,
+    );
+
+    if (mergeSourceIds.length === 0) {
+      return;
+    }
+
     await this.prisma.$transaction([
       this.prisma.role.updateMany({
-        where: { locationId: { in: sourceIds } },
+        where: { locationId: { in: mergeSourceIds } },
         data: { locationId: targetId },
       }),
       this.prisma.alumni.updateMany({
-        where: { currentLocationId: { in: sourceIds } },
+        where: { currentLocationId: { in: mergeSourceIds } },
         data: { currentLocationId: targetId },
       }),
       this.prisma.company.updateMany({
-        where: { hqLocationId: { in: sourceIds } },
+        where: { hqLocationId: { in: mergeSourceIds } },
         data: { hqLocationId: targetId },
       }),
       this.prisma.location.deleteMany({
-        where: { id: { in: sourceIds } },
+        where: { id: { in: mergeSourceIds } },
       }),
     ]);
   }

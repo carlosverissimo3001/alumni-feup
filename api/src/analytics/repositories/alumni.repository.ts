@@ -141,7 +141,7 @@ export class AlumniAnalyticsRepository {
     // This query fetches companies that have at least one role matching the filters,
     // and returns the count of matching roles per company.
     // This is much more memory efficient than fetching all alumni.
-    return this.prisma.company.findMany({
+    const companies = await this.prisma.company.findMany({
       where: {
         roles: {
           some: {
@@ -162,24 +162,31 @@ export class AlumniAnalyticsRepository {
             name: true,
           },
         },
-        _count: {
-          select: {
-            roles: {
-              where: {
-                ...roleWhere,
-                Alumni: alumniWhere,
-              },
-            },
+        roles: {
+          where: {
+            ...roleWhere,
+            Alumni: alumniWhere,
           },
+          select: { alumniId: true },
         },
       },
+    });
+
+    return companies.map((c) => {
+      const { roles, ...rest } = c;
+      return {
+        ...rest,
+        _count: {
+          roles: new Set(roles.map((r) => r.alumniId)).size,
+        },
+      };
     });
   }
 
   async getLocationAggregates(params: QueryParamsDto) {
     const { alumniWhere, roleWhere } = buildWhereClause(params);
 
-    return this.prisma.location.findMany({
+    const locations = await this.prisma.location.findMany({
       where: {
         Role: {
           some: {
@@ -195,17 +202,24 @@ export class AlumniAnalyticsRepository {
         countryCode: true,
         latitude: true,
         longitude: true,
-        _count: {
-          select: {
-            Role: {
-              where: {
-                ...roleWhere,
-                Alumni: alumniWhere,
-              },
-            },
+        Role: {
+          where: {
+            ...roleWhere,
+            Alumni: alumniWhere,
           },
+          select: { alumniId: true },
         },
       },
+    });
+
+    return locations.map((loc) => {
+      const { Role, ...rest } = loc;
+      return {
+        ...rest,
+        _count: {
+          Role: new Set(Role.map((r) => r.alumniId)).size,
+        },
+      };
     });
   }
 

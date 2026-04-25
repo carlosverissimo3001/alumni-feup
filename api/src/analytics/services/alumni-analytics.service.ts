@@ -1,9 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import {
-  DEFAULT_QUERY_LIMIT,
-  DEFAULT_QUERY_OFFSET,
-  DEFAULT_QUERY_SORT_ORDER,
-} from '../consts';
+
 import { AlumniListResponseDto, AlumniOptionDto, QueryParamsDto } from '../dto';
 import { AlumniAnalyticsEntity } from '../entities';
 import { AlumniAnalyticsRepository } from '../repositories';

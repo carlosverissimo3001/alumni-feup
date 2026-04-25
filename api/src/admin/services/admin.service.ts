@@ -104,16 +104,12 @@ export class AdminService {
     const { companyIds, mergeIntoCompanyId } = mergeCompaniesDto;
 
     return this.companyService.merge(companyIds, mergeIntoCompanyId);
-
-    return;
   }
 
   async mergeLocations(mergeLocationsDto: MergeLocationsDto) {
     const { locationIds, mergeIntoLocationId } = mergeLocationsDto;
 
     return this.locationService.merge(locationIds, mergeIntoLocationId);
-
-    return;
   }
 
   async inviteUser(inviteUserDto: InviteUserDto): Promise<InviteEntity> {

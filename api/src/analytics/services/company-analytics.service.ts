@@ -87,7 +87,7 @@ export class CompanyAnalyticsService {
     return {
       companies: companiesPaginated,
       companyCount: companies.length,
-      alumniCount: 0,
+      alumniCount: await this.alumniRepository.countAlumni(query),
     };
   }
 

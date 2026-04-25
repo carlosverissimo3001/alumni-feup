@@ -20,8 +20,6 @@ import {
 } from '../consts';
 import { sortData } from '../utils';
 import { TrendAnalyticsService } from './trend-analytics.service';
-import { applyDateFilters } from '../utils/filters';
-import { EscoClassificationAnalyticsEntity } from '../entities/esco-classification.entity';
 import { RoleAnalyticsEntity } from '../entities/role.entity';
 import { GetRoleDto } from '../dto/get-role.dto';
 import { AlumniAnalyticsEntity } from '../entities';
@@ -39,12 +37,11 @@ export class RoleAnalyticsService {
     alumnusUnfiltered: AlumniAnalyticsEntity[],
     query: QueryParamsDto,
   ): Promise<RoleListResponseDto> {
-    const requestedLevel = query.escoClassificationLevel;
+    const requestedLevel = query.escoClassificationLevel ?? 5;
     const isGranular = requestedLevel && requestedLevel >= 5;
 
     const classificationAggregates = await this.alumniRepository.getJobClassificationAggregates(query);
 
-    const hierarchyMap = new Map<string, EscoClassificationAnalyticsEntity>();
     const roleMap = new Map<string, RoleListItemDto>();
     const uniqueCodesToFetch = new Set<string>();
 

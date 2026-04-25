@@ -1,10 +1,6 @@
 // Note: For brevity, we're only supporting trend analysis for the past 30 years
-import {
-  AlumniAnalyticsEntity,
-  RoleAnalyticsEntity,
-  GraduationAnalyticsEntity,
-} from '../entities';
-import { FREQUENCY, TREND_TYPE } from '../consts';
+import { RoleAnalyticsEntity, GraduationAnalyticsEntity } from '../entities';
+import { FREQUENCY } from '../consts';
 import { Injectable } from '@nestjs/common';
 import { subYears } from 'date-fns';
 import { DataPointDto, QueryParamsDto } from '../dto';
@@ -12,13 +8,16 @@ import { getLabelForDate } from '../utils/date';
 import { PrismaService } from '@/prisma/prisma.service';
 import { buildWhereClause } from '../utils';
 
-type TrendParams = {
-  data: AlumniAnalyticsEntity[];
-  entityId: string;
-  type?: TREND_TYPE;
-};
-
 const THIRTY_YEARS_AGO = subYears(new Date(), 30);
+
+
+const getTrendDateClauses = () => {
+  const now = new Date();
+  return {
+    startDate: { lte: now },
+    OR: [{ endDate: null }, { endDate: { gte: THIRTY_YEARS_AGO } }]
+  };
+};
 
 @Injectable()
 export class TrendAnalyticsService {
@@ -33,9 +32,14 @@ export class TrendAnalyticsService {
 
     const roles = await this.prisma.role.findMany({
       where: {
-        ...roleWhere,
-        companyId: entityId,
-        Alumni: alumniWhere,
+        AND: [
+          ...(roleWhere ? [roleWhere] : []),
+          getTrendDateClauses(),
+          {
+            companyId: entityId,
+        Alumni: alumniWhere
+          }
+        ]
       },
       select: {
         startDate: true,
@@ -55,9 +59,14 @@ export class TrendAnalyticsService {
 
     const roles = await this.prisma.role.findMany({
       where: {
-        ...roleWhere,
-        Alumni: alumniWhere,
-        Location: { countryCode: entityId },
+        AND: [
+          ...(roleWhere ? [roleWhere] : []),
+          getTrendDateClauses(),
+          {
+            Alumni: alumniWhere,
+        Location: { countryCode: entityId }
+          }
+        ]
       },
       select: {
         startDate: true,
@@ -77,9 +86,14 @@ export class TrendAnalyticsService {
 
     const roles = await this.prisma.role.findMany({
       where: {
-        ...roleWhere,
-        Alumni: alumniWhere,
-        locationId: entityId,
+        AND: [
+          ...(roleWhere ? [roleWhere] : []),
+          getTrendDateClauses(),
+          {
+            Alumni: alumniWhere,
+        locationId: entityId
+          }
+        ]
       },
       select: {
         startDate: true,
@@ -99,15 +113,20 @@ export class TrendAnalyticsService {
 
     const roles = await this.prisma.role.findMany({
       where: {
-        ...roleWhere,
-        Alumni: alumniWhere,
+        AND: [
+          ...(roleWhere ? [roleWhere] : []),
+          getTrendDateClauses(),
+          {
+            Alumni: alumniWhere,
         JobClassification: {
           EscoClassification: {
             code: {
               startsWith: entityId,
             },
           },
-        },
+        }
+          }
+        ]
       },
       select: {
         startDate: true,
@@ -127,9 +146,14 @@ export class TrendAnalyticsService {
 
     const roles = await this.prisma.role.findMany({
       where: {
-        ...roleWhere,
-        Alumni: alumniWhere,
-        seniorityLevel: entityId as any,
+        AND: [
+          ...(roleWhere ? [roleWhere] : []),
+          getTrendDateClauses(),
+          {
+            Alumni: alumniWhere,
+        seniorityLevel: entityId as any
+          }
+        ]
       },
       select: {
         startDate: true,
@@ -149,9 +173,14 @@ export class TrendAnalyticsService {
 
     const roles = await this.prisma.role.findMany({
       where: {
-        ...roleWhere,
-        Alumni: alumniWhere,
-        Company: { Industry: { id: entityId } },
+        AND: [
+          ...(roleWhere ? [roleWhere] : []),
+          getTrendDateClauses(),
+          {
+            Alumni: alumniWhere,
+        Company: { Industry: { id: entityId } }
+          }
+        ]
       },
       select: {
         startDate: true,
