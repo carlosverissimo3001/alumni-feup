@@ -75,6 +75,10 @@ model Company {
   Location      Location?       @relation(fields: [hqLocationId], references: [id])
 
   @@index([industryId])
+  @@index([hqLocationId])
+  @@index([levelsFyiUrl])
+  @@index([companySize])
+  @@index([companyType])
   @@map("company")
 }
 
@@ -196,6 +200,7 @@ model EscoClassification {
 
   JobClassification JobClassification[]
 
+  @@index([code])
   @@map("esco_classification")
 }
 

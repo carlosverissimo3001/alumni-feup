@@ -210,14 +210,14 @@ export class CompanyAnalyticsService {
       roles.filter((role) => role.isCurrent).map((role) => role.alumniId),
     );
 
-    const yoes = await Promise.all(
-      Array.from(currentAlumniIds).map(async (alumniId) => {
-        const oldestRole =
-          await this.alumniRepository.findOldestAlumniRole(alumniId);
-        return oldestRole
-          ? differenceInYears(new Date(), new Date(oldestRole.startDate))
-          : 0;
-      }),
+    const oldestRoles = await this.alumniRepository.findOldestRolesStartDates(
+      Array.from(currentAlumniIds),
+    );
+
+    const yoes = oldestRoles.map((role) =>
+      role.startDate
+        ? differenceInYears(new Date(), new Date(role.startDate))
+        : 0,
     );
 
     const yoe =

@@ -88,6 +88,24 @@ export class AlumniAnalyticsRepository {
     return roles[0] ? mapRoleFromPrisma(roles[0]) : undefined;
   }
 
+  async findOldestRolesStartDates(alumniIds: string[]) {
+    // Get the earliest start date for each alumni in the list
+    const results = await this.prisma.role.groupBy({
+      by: ['alumniId'],
+      where: {
+        alumniId: { in: alumniIds },
+      },
+      _min: {
+        startDate: true,
+      },
+    });
+
+    return results.map((res) => ({
+      alumniId: res.alumniId,
+      startDate: res._min.startDate,
+    }));
+  }
+
   async countAlumni(params?: QueryParamsDto) {
     if (!params) {
       return this.prisma.alumni.count();

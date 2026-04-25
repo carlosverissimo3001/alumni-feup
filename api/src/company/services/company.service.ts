@@ -28,4 +28,16 @@ export class CompanyService {
       data: { companyId: newCompanyId },
     });
   }
+
+  async merge(sourceIds: string[], targetId: string): Promise<void> {
+    await this.prisma.$transaction([
+      this.prisma.role.updateMany({
+        where: { companyId: { in: sourceIds } },
+        data: { companyId: targetId },
+      }),
+      this.prisma.company.deleteMany({
+        where: { id: { in: sourceIds } },
+      }),
+    ]);
+  }
 }
