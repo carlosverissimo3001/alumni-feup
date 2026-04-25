@@ -18,7 +18,7 @@ import { Response } from 'express';
 import { LinkedinOAuthService } from './linkedin-oauth.service';
 import { SessionService, SESSION_COOKIE_NAME } from './session.service';
 import { SessionId } from './session-id.decorator';
-import { getCookieOptions, getUserCookieOptions } from './cookie-options';
+import { getCookieOptions } from './cookie-options';
 import { PendingProfileDto } from './dto/pending-profile.dto';
 import { UserService } from '../user/services/user.service';
 import { UserStatus } from '../user/consts/enum';
@@ -116,12 +116,6 @@ export class LinkedinOAuthController {
         SESSION_COOKIE_NAME,
         sessionId,
         getCookieOptions(this.sessionService.maxAgeSeconds),
-      );
-
-      res.cookie(
-        'user',
-        JSON.stringify(authResponse.user),
-        getUserCookieOptions(this.sessionService.maxAgeSeconds),
       );
 
       return res.redirect(`${this.frontendUrl}/analytics`);

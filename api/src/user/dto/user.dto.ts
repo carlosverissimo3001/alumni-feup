@@ -1,7 +1,7 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { UserStatus } from '../consts/enum';
 
-class User {
+export class User {
   @ApiProperty({
     description: 'The ID of the user',
   })
@@ -21,7 +21,7 @@ class User {
     description: 'The profile picture URL of the user',
     type: String,
   })
-  profilePictureUrl?: string | null;
+  profilePictureUrl?: string;
 }
 
 export class UserAuthResponse {

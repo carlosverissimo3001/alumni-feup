@@ -65,18 +65,10 @@ export class UserService {
       `Found alumni match for LinkedIn user: ${body.personId} with alumni: ${alumni.id}`,
     );
 
-    // Update the personalEmail, if it exists in the payload
-    if (body.personalEmail) {
-      await this.prisma.alumni.update({
-        where: { id: alumni.id },
-        data: { personalEmail: body.personalEmail },
-      });
-    }
-
-    // Set the metadata
-    await this.prisma.alumni.update({
-      where: { id: alumni.id },
-      data: { metadata: JSON.stringify(body) },
+    // Update alumni with personalEmail (if provided) and metadata
+    await this.userRepository.update(alumni.id, {
+      personalEmail: body.personalEmail ?? undefined,
+      metadata: body,
     });
 
     // 3. Generate a JWT token
@@ -99,7 +91,7 @@ export class UserService {
         id: alumni.id,
         firstName: alumni.firstName,
         lastName: alumni.lastName,
-        profilePictureUrl: alumni.profilePictureUrl,
+        profilePictureUrl: alumni.profilePictureUrl ?? undefined,
       },
     };
   }
@@ -179,20 +171,9 @@ export class UserService {
       throw new HttpException('Alumni not found', HttpStatus.NOT_FOUND);
     }
 
-    // Let's now set the personId
-    await this.prisma.alumni.update({
-      where: {
-        id: alumni.id,
-      },
-      data: {
-        personId,
-      },
-    });
-
-    // and set the metadata
-    await this.prisma.alumni.update({
-      where: { id: alumni.id },
-      data: { metadata: JSON.stringify(body) },
+    await this.userRepository.update(alumni.id, {
+      personId,
+      metadata: JSON.stringify(body),
     });
 
     const payload = {
@@ -213,7 +194,7 @@ export class UserService {
         id: alumni.id,
         firstName: alumni.firstName,
         lastName: alumni.lastName,
-        profilePictureUrl: alumni.profilePictureUrl,
+        profilePictureUrl: alumni.profilePictureUrl ?? undefined,
       },
     };
   }
@@ -247,6 +228,25 @@ export class UserService {
    */
   async deleteUser(id: string): Promise<void> {
     await this.userRepository.deleteUser(id);
+  }
+
+  async getUserById(id: string) {
+    const alumni = await this.prisma.alumni.findUnique({
+      where: { id },
+      select: {
+        id: true,
+        firstName: true,
+        lastName: true,
+        profilePictureUrl: true,
+      },
+    });
+    if (!alumni) return null;
+    return {
+      id: alumni.id,
+      firstName: alumni.firstName,
+      lastName: alumni.lastName,
+      profilePictureUrl: alumni.profilePictureUrl ?? undefined,
+    };
   }
 
   /**

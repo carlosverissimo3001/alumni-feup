@@ -2,13 +2,12 @@
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { User } from '@/sdk/models';
-import Cookies from 'js-cookie';
-
-const API_URL = process.env.NEXT_PUBLIC_API_URL;
+import api from '@/api';
 
 interface AuthContextType {
   user: User | null;
   isAuthenticated: boolean;
+  isLoading: boolean;
   login: (user: User) => void;
   logout: () => void;
 }
@@ -30,28 +29,29 @@ interface AuthProviderProps {
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   useEffect(() => {
-    const storedUser = Cookies.get('user');
-    if (storedUser) {
+    let cancelled = false;
+    (async () => {
       try {
-        const parsedUser = JSON.parse(decodeURIComponent(storedUser));
-        setUser(parsedUser);
-        setIsAuthenticated(true);
-      } catch (error: unknown) {
-        if (error instanceof Error) {
-          console.error('Error parsing stored user data from cookies:', error.message);
-        } else {
-          console.error('Error parsing stored user data from cookies:', String(error));
+        const me = await api.authControllerMe();
+        if (!cancelled) {
+          setUser(me);
+          setIsAuthenticated(true);
         }
-        setUser(null);
-        setIsAuthenticated(false);
-        Cookies.remove('user');
+      } catch {
+        if (!cancelled) {
+          setUser(null);
+          setIsAuthenticated(false);
+        }
+      } finally {
+        if (!cancelled) setIsLoading(false);
       }
-    } else {
-      setUser(null);
-      setIsAuthenticated(false);
-    }
+    })();
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   const login = (newUser: User) => {
@@ -61,21 +61,16 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const logout = async () => {
     try {
-      await fetch(`${API_URL}/auth/logout`, {
-        method: 'POST',
-        credentials: 'include',
-      });
+      await api.authControllerLogout();
     } catch {
       // Continue with client-side cleanup even if backend call fails
     }
-
     setUser(null);
     setIsAuthenticated(false);
-    Cookies.remove('user');
   };
 
   return (
-    <AuthContext.Provider value={{ user, isAuthenticated, login, logout }}>
+    <AuthContext.Provider value={{ user, isAuthenticated, isLoading, login, logout }}>
       {children}
     </AuthContext.Provider>
   );
