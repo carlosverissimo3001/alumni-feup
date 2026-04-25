@@ -67,6 +67,16 @@ export class RoleRepository {
     return mapEscoClassificationFromPrisma(classification);
   }
 
+  async getClassifications(
+    codes: string[],
+  ): Promise<EscoClassificationAnalyticsEntity[]> {
+    const classifications = await this.prisma.escoClassification.findMany({
+      where: { code: { in: codes } },
+    });
+
+    return classifications.map(mapEscoClassificationFromPrisma);
+  }
+
   async findById(id: string, params: GetRoleDto): Promise<RoleAnalyticsEntity> {
     const role = await this.prisma.role.findUniqueOrThrow({
       where: { id },

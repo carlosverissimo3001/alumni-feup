@@ -6,7 +6,7 @@ export function getCookieOptions(maxAgeSeconds: number): CookieOptions {
   return {
     httpOnly: true,
     secure: isProd,
-    sameSite: 'lax',
+    sameSite: isProd ? 'none' : 'lax',
     path: '/',
     maxAge: maxAgeSeconds * 1000,
   };
@@ -16,7 +16,7 @@ export function getClearCookieOptions(): CookieOptions {
   return {
     httpOnly: true,
     secure: isProd,
-    sameSite: 'lax',
+    sameSite: isProd ? 'none' : 'lax',
     path: '/',
   };
 }

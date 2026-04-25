@@ -15,7 +15,7 @@ export class LocationService {
   }
 
   async moveRoles(locationId: string, newLocationId: string): Promise<void> {
-    await Promise.all([
+    await this.prisma.$transaction([
       this.prisma.role.updateMany({
         where: { locationId },
         data: { locationId: newLocationId },
@@ -29,6 +29,34 @@ export class LocationService {
       this.prisma.company.updateMany({
         where: { hqLocationId: locationId },
         data: { hqLocationId: newLocationId },
+      }),
+    ]);
+  }
+
+  async merge(sourceIds: string[], targetId: string): Promise<void> {
+    const mergeSourceIds = [...new Set(sourceIds)].filter(
+      (id) => id !== targetId,
+    );
+
+    if (mergeSourceIds.length === 0) {
+      return;
+    }
+
+    await this.prisma.$transaction([
+      this.prisma.role.updateMany({
+        where: { locationId: { in: mergeSourceIds } },
+        data: { locationId: targetId },
+      }),
+      this.prisma.alumni.updateMany({
+        where: { currentLocationId: { in: mergeSourceIds } },
+        data: { currentLocationId: targetId },
+      }),
+      this.prisma.company.updateMany({
+        where: { hqLocationId: { in: mergeSourceIds } },
+        data: { hqLocationId: targetId },
+      }),
+      this.prisma.location.deleteMany({
+        where: { id: { in: mergeSourceIds } },
       }),
     ]);
   }

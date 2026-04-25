@@ -11,6 +11,7 @@ import {
 } from '../consts';
 import {
   CompanyInsightsDto,
+  CompanyListItemExtendedDto,
   CompanyListResponseDto,
   CompanyOptionDto,
   IndustryListItemDto,
@@ -40,39 +41,53 @@ export class CompanyAnalyticsService {
     alumnusUnfiltered: AlumniAnalyticsEntity[],
     query: QueryParamsDto,
   ): Promise<CompanyListResponseDto> {
-    const alumnus = applyDateFilters(alumnusUnfiltered, query);
+    const companyAggregates = await this.alumniRepository.getCompanyAggregates(
+      query,
+    );
 
-    const companiesWithAlumniCount = getCompanyMap(alumnus);
-    const companiesWithAlumniCountOrdered = sortData(companiesWithAlumniCount, {
+    const companies: CompanyListItemExtendedDto[] = companyAggregates.map(
+      (company) => ({
+        id: company.id,
+        name: company.name,
+        count: company._count.roles,
+        logo: company.logo ?? undefined,
+        industry: company.Industry.name,
+        industryId: company.industryId,
+        levelsFyiUrl: company.levelsFyiUrl ?? undefined,
+        trend: [],
+      }),
+    );
+
+    const companiesWithAlumniCountOrdered = sortData(companies, {
       sortBy: query.sortBy || DEFAULT_QUERY_SORT_BY,
       direction: query.sortOrder || DEFAULT_QUERY_SORT_ORDER,
     });
 
     const offset = query.offset || DEFAULT_QUERY_OFFSET;
     const limit = query.limit || DEFAULT_QUERY_LIMIT;
-    const companies = companiesWithAlumniCountOrdered.slice(
+    const companiesPaginated = companiesWithAlumniCountOrdered.slice(
       offset,
       offset + limit,
     );
 
     if (query.includeCompanyTrend) {
       const trends = await Promise.all(
-        companies.map((company) =>
+        companiesPaginated.map((company) =>
           this.trendAnalyticsService.getCompanyTrend({
-            data: alumnusUnfiltered,
             entityId: company.id,
+            query,
           }),
         ),
       );
-      companies.forEach((company, index) => {
+      companiesPaginated.forEach((company, index) => {
         company.trend = trends[index];
       });
     }
 
     return {
-      companies,
-      companyCount: companiesWithAlumniCount.length,
-      alumniCount: alumnus.length,
+      companies: companiesPaginated,
+      companyCount: companies.length,
+      alumniCount: await this.alumniRepository.countAlumni(query),
     };
   }
 
@@ -127,8 +142,8 @@ export class CompanyAnalyticsService {
       const trends = await Promise.all(
         industries.map((industry) =>
           this.trendAnalyticsService.getIndustryTrend({
-            data: alumnusUnfiltered,
             entityId: industry.id,
+            query,
           }),
         ),
       );
@@ -210,14 +225,14 @@ export class CompanyAnalyticsService {
       roles.filter((role) => role.isCurrent).map((role) => role.alumniId),
     );
 
-    const yoes = await Promise.all(
-      Array.from(currentAlumniIds).map(async (alumniId) => {
-        const oldestRole =
-          await this.alumniRepository.findOldestAlumniRole(alumniId);
-        return oldestRole
-          ? differenceInYears(new Date(), new Date(oldestRole.startDate))
-          : 0;
-      }),
+    const oldestRoles = await this.alumniRepository.findOldestRolesStartDates(
+      Array.from(currentAlumniIds),
+    );
+
+    const yoes = oldestRoles.map((role) =>
+      role.startDate
+        ? differenceInYears(new Date(), new Date(role.startDate))
+        : 0,
     );
 
     const yoe =

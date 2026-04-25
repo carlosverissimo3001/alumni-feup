@@ -1,13 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import {
-  DEFAULT_QUERY_LIMIT,
-  DEFAULT_QUERY_OFFSET,
-  DEFAULT_QUERY_SORT_ORDER,
-} from '../consts';
+
 import { AlumniListResponseDto, AlumniOptionDto, QueryParamsDto } from '../dto';
 import { AlumniAnalyticsEntity } from '../entities';
 import { AlumniAnalyticsRepository } from '../repositories';
-import { applyDateFilters } from '../utils/filters';
 
 @Injectable()
 export class AlumniAnalyticsService {
@@ -22,10 +17,10 @@ export class AlumniAnalyticsService {
     }));
   }
 
-  getAlumniAnalytics(
+  async getAlumniAnalytics(
     alumnusUnfiltered: AlumniAnalyticsEntity[],
     query: QueryParamsDto,
-  ): AlumniListResponseDto {
+  ): Promise<AlumniListResponseDto> {
     const currentRoles = new Map(
       alumnusUnfiltered.map((alumni) => [
         alumni.id,
@@ -33,23 +28,10 @@ export class AlumniAnalyticsService {
       ]),
     );
 
-    const alumnus = applyDateFilters(alumnusUnfiltered, query);
+    // Note: alumnusUnfiltered is already filtered, sorted and paginated at repo level
+    const totalCount = await this.alumniRepository.countAlumni(query);
 
-    const offset = query.offset || DEFAULT_QUERY_OFFSET;
-    const limit = query.limit || DEFAULT_QUERY_LIMIT;
-    const direction = query.sortOrder || DEFAULT_QUERY_SORT_ORDER;
-
-    const startIndex = offset;
-    const endIndex = offset + limit;
-
-    const needsSorting = alumnus.length > 1;
-    const sortedAlumnus = needsSorting
-      ? this.sortAlumni(alumnus, direction)
-      : alumnus;
-
-    const alumniPaginated = sortedAlumnus.slice(startIndex, endIndex);
-
-    const alumniMapped = alumniPaginated.map((alumni) => ({
+    const alumniMapped = alumnusUnfiltered.map((alumni) => ({
       id: alumni.id,
       fullName: alumni.fullName,
       linkedinUrl: alumni.linkedinUrl,
@@ -59,7 +41,7 @@ export class AlumniAnalyticsService {
 
     return {
       alumni: alumniMapped,
-      count: alumnus.length,
+      count: totalCount,
     };
   }
 

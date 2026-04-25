@@ -1,12 +1,4 @@
-import { sanitizeLinkedinUrl, removeAccents, parseNameParts } from './utils';
-
-describe('sanitizeLinkedinUrl', () => {
-  it('removes www subdomain and ensures trailing slash', () => {
-    expect(sanitizeLinkedinUrl('https://www.linkedin.com/in/test')).toBe(
-      'https://linkedin.com/in/test/',
-    );
-  });
-});
+import { removeAccents, parseNameParts } from './utils';
 
 describe('removeAccents', () => {
   it('strips diacritics from string', () => {

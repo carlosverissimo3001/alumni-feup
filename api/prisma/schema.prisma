@@ -47,6 +47,7 @@ model Alumni {
 
   @@index([currentLocationId])
   @@index([firstName, lastName])
+  @@index([fullName])
   @@index([linkedinUrl])
   @@map("alumni")
 }
@@ -75,6 +76,10 @@ model Company {
   Location      Location?       @relation(fields: [hqLocationId], references: [id])
 
   @@index([industryId])
+  @@index([hqLocationId])
+  @@index([levelsFyiUrl])
+  @@index([companySize])
+  @@index([companyType])
   @@map("company")
 }
 
@@ -196,6 +201,7 @@ model EscoClassification {
 
   JobClassification JobClassification[]
 
+  @@index([code])
   @@map("esco_classification")
 }
 
@@ -265,6 +271,8 @@ model Role {
   @@index([seniorityLevel, companyId])
   @@index([companyId, locationId])
   @@index([isCurrent])
+  @@index([startDate])
+  @@index([endDate])
   @@map("role")
 }
 
@@ -336,6 +344,7 @@ model Permission {
   // We're deleting all permissions if the alumni is deleted
   Alumni Alumni @relation("AlumniPermissions", fields: [userId], references: [id], onDelete: Cascade)
 
+  @@index([userId, resource])
   @@map("permission")
 }
 

@@ -103,37 +103,13 @@ export class AdminService {
   async mergeCompanies(mergeCompaniesDto: MergeCompaniesDto) {
     const { companyIds, mergeIntoCompanyId } = mergeCompaniesDto;
 
-    // Move the roles from the companies to the new company
-    await Promise.all(
-      companyIds.map((companyId) =>
-        this.companyService.moveRoles(companyId, mergeIntoCompanyId),
-      ),
-    );
-
-    // Delete the companies
-    await Promise.all(
-      companyIds.map((companyId) => this.companyService.delete(companyId)),
-    );
-
-    return;
+    return this.companyService.merge(companyIds, mergeIntoCompanyId);
   }
 
   async mergeLocations(mergeLocationsDto: MergeLocationsDto) {
     const { locationIds, mergeIntoLocationId } = mergeLocationsDto;
 
-    // Move the roles from the locations to the new location
-    await Promise.all(
-      locationIds.map((locationId) =>
-        this.locationService.moveRoles(locationId, mergeIntoLocationId),
-      ),
-    );
-
-    // Delete the locations
-    await Promise.all(
-      locationIds.map((locationId) => this.locationService.delete(locationId)),
-    );
-
-    return;
+    return this.locationService.merge(locationIds, mergeIntoLocationId);
   }
 
   async inviteUser(inviteUserDto: InviteUserDto): Promise<InviteEntity> {

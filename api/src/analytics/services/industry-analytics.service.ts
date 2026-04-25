@@ -6,13 +6,15 @@ import {
   DEFAULT_QUERY_SORT_ORDER,
 } from '../consts';
 import {
+  AlumniListItemDto,
+  CompanyListItemExtendedDto,
   IndustryListItemDto,
   IndustryListResponseDto,
   IndustryOptionDto,
   QueryParamsDto,
 } from '../dto';
 import { AlumniAnalyticsEntity } from '../entities';
-import { IndustryRepository } from '../repositories';
+import { AlumniAnalyticsRepository, IndustryRepository } from '../repositories';
 import { applyDateFilters, getCompanyMap, sortData } from '../utils';
 import { TrendAnalyticsService } from './trend-analytics.service';
 
@@ -21,6 +23,7 @@ export class IndustryAnalyticsService {
   constructor(
     private readonly industryRepository: IndustryRepository,
     private readonly trendAnalyticsService: TrendAnalyticsService,
+    private readonly alumniRepository: AlumniAnalyticsRepository,
   ) {}
 
   /**
@@ -32,19 +35,20 @@ export class IndustryAnalyticsService {
     alumnusUnfiltered: AlumniAnalyticsEntity[],
     query: QueryParamsDto,
   ): Promise<IndustryListResponseDto> {
-    const alumnus = applyDateFilters(alumnusUnfiltered, query);
-    const companiesWithAlumniCount = getCompanyMap(alumnus);
+    const companyAggregates = await this.alumniRepository.getCompanyAggregates(
+      query,
+    );
 
     const industriesMap = new Map<string, { name: string; count: number }>();
-    for (const company of companiesWithAlumniCount) {
+    for (const company of companyAggregates) {
       const industryId = company.industryId;
       if (!industryId) continue;
 
       const industryData = industriesMap.get(industryId) || {
-        name: company.industry,
+        name: company.Industry.name,
         count: 0,
       };
-      industryData.count += company.count;
+      industryData.count += company._count.roles;
       industriesMap.set(industryId, industryData);
     }
 
@@ -61,8 +65,8 @@ export class IndustryAnalyticsService {
       const trends = await Promise.all(
         industries.map((industry) =>
           this.trendAnalyticsService.getIndustryTrend({
-            data: alumnusUnfiltered,
             entityId: industry.id,
+            query,
           }),
         ),
       );

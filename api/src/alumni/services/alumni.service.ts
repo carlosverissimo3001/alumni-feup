@@ -239,7 +239,7 @@ export class AlumniService {
                 role.endDate >= new Date(selectedYear, 11, 31)),
           );
           if (roleFound && roleFound.Location) {
-            const alumniToAdd = JSON.parse(JSON.stringify(alumnus));
+            const alumniToAdd = structuredClone(alumnus);
             alumniToAdd.Roles = [];
             alumniToAdd.Roles.push(roleFound);
             filteredAlumni.push(alumniToAdd);
@@ -280,7 +280,7 @@ export class AlumniService {
               role.Location,
           );
           if (roleFound) {
-            const alumniToAdd = JSON.parse(JSON.stringify(alumnus));
+            const alumniToAdd = structuredClone(alumnus);
             alumniToAdd.Roles = [];
             alumniToAdd.Roles.push(roleFound);
             filteredAlumni.push(alumniToAdd);

@@ -12,37 +12,27 @@ import {
   SeniorityListResponseDto,
 } from '../dto';
 import { AlumniAnalyticsEntity } from '../entities';
+import { AlumniAnalyticsRepository } from '../repositories';
 import { sortData } from '../utils';
 import { applyDateFilters } from '../utils/filters';
 import { TrendAnalyticsService } from './trend-analytics.service';
 
 @Injectable()
 export class SeniorityAnalyticsService {
-  constructor(private readonly trendAnalyticsService: TrendAnalyticsService) {}
+  constructor(
+    private readonly trendAnalyticsService: TrendAnalyticsService,
+    private readonly alumniRepository: AlumniAnalyticsRepository,
+  ) {}
 
   async getSeniorityAnalytics(
-    alumnusUnfiltered: AlumniAnalyticsEntity[],
+    alumnusUnfiltered: AlumniAnalyticsEntity[], // Keep for signature compatibility for now
     query: QueryParamsDto,
   ): Promise<SeniorityListResponseDto> {
-    const alumnus = applyDateFilters(alumnusUnfiltered, query);
+    const seniorityCounts = await this.alumniRepository.getSeniorityCounts(query);
 
-    const allSeniorityLevels = alumnus
-      .flatMap((alumni) => alumni.roles || [])
-      .filter((role) => role.seniorityLevel);
-
-    const uniqueSeniorityLevels = new Map<SENIORITY_LEVEL, number>();
-    for (const role of allSeniorityLevels) {
-      uniqueSeniorityLevels.set(
-        role.seniorityLevel,
-        (uniqueSeniorityLevels.get(role.seniorityLevel) || 0) + 1,
-      );
-    }
-
-    const seniorityLevels: SeniorityListItemDto[] = Array.from(
-      uniqueSeniorityLevels.entries(),
-    ).map(([seniorityLevel, count]) => ({
-      name: seniorityLevel,
-      count,
+    const seniorityLevels: SeniorityListItemDto[] = seniorityCounts.map((res) => ({
+      name: res.seniorityLevel,
+      count: res._count._all,
       trend: [],
     }));
 
@@ -50,8 +40,8 @@ export class SeniorityAnalyticsService {
       const trends = await Promise.all(
         seniorityLevels.map((level) =>
           this.trendAnalyticsService.getSeniorityTrend({
-            data: alumnusUnfiltered,
             entityId: level.name,
+            query,
           }),
         ),
       );
@@ -74,7 +64,7 @@ export class SeniorityAnalyticsService {
 
     return {
       seniorityLevels: seniorityLevelsPaginated,
-      count: uniqueSeniorityLevels.size,
+      count: seniorityLevels.length,
     };
   }
 }

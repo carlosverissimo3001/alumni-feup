@@ -48,6 +48,13 @@ import {
     CountryListResponseDtoToJSON,
     CountryListResponseDtoToJSONTyped,
 } from './CountryListResponseDto';
+import type { EducationListResponseDto } from './EducationListResponseDto';
+import {
+    EducationListResponseDtoFromJSON,
+    EducationListResponseDtoFromJSONTyped,
+    EducationListResponseDtoToJSON,
+    EducationListResponseDtoToJSONTyped,
+} from './EducationListResponseDto';
 import type { CompanyListResponseDto } from './CompanyListResponseDto';
 import {
     CompanyListResponseDtoFromJSON,
@@ -150,6 +157,12 @@ export interface AnalyticsDto {
      * @memberof AnalyticsDto
      */
     graduationData?: GraduationListDto;
+    /**
+     * The combined education analytics data
+     * @type {EducationListResponseDto}
+     * @memberof AnalyticsDto
+     */
+    educationData?: EducationListResponseDto;
 }
 
 /**
@@ -179,6 +192,7 @@ export function AnalyticsDtoFromJSONTyped(json: any, ignoreDiscriminator: boolea
         'facultyData': json['facultyData'] == null ? undefined : FacultyListDtoFromJSON(json['facultyData']),
         'majorData': json['majorData'] == null ? undefined : MajorListDtoFromJSON(json['majorData']),
         'graduationData': json['graduationData'] == null ? undefined : GraduationListDtoFromJSON(json['graduationData']),
+        'educationData': json['educationData'] == null ? undefined : EducationListResponseDtoFromJSON(json['educationData']),
     };
 }
 
@@ -203,6 +217,7 @@ export function AnalyticsDtoToJSONTyped(value?: AnalyticsDto | null, ignoreDiscr
         'facultyData': FacultyListDtoToJSON(value['facultyData']),
         'majorData': MajorListDtoToJSON(value['majorData']),
         'graduationData': GraduationListDtoToJSON(value['graduationData']),
+        'educationData': EducationListResponseDtoToJSON(value['educationData']),
     };
 }
 

@@ -44,8 +44,10 @@ export class AlumniAnalyticsRepository {
           },
         }),
       },
-      // Need this as prisma can't infer nested relations when the
-      // graduation select is optional
+      // Pagination
+      take: params.limit,
+      skip: params.offset,
+      orderBy: { fullName: params.sortOrder || 'asc' },
     })) as unknown as RawAlumni[];
 
     return alumnus.map(mapAlumniFromPrisma);
@@ -88,6 +90,24 @@ export class AlumniAnalyticsRepository {
     return roles[0] ? mapRoleFromPrisma(roles[0]) : undefined;
   }
 
+  async findOldestRolesStartDates(alumniIds: string[]) {
+    // Get the earliest start date for each alumni in the list
+    const results = await this.prisma.role.groupBy({
+      by: ['alumniId'],
+      where: {
+        alumniId: { in: alumniIds },
+      },
+      _min: {
+        startDate: true,
+      },
+    });
+
+    return results.map((res) => ({
+      alumniId: res.alumniId,
+      startDate: res._min.startDate,
+    }));
+  }
+
   async countAlumni(params?: QueryParamsDto) {
     if (!params) {
       return this.prisma.alumni.count();
@@ -97,6 +117,162 @@ export class AlumniAnalyticsRepository {
 
     return this.prisma.alumni.count({
       where: alumniWhere,
+    });
+  }
+
+  async getSeniorityCounts(params: QueryParamsDto) {
+    const { alumniWhere, roleWhere } = buildWhereClause(params);
+
+    return this.prisma.role.groupBy({
+      by: ['seniorityLevel'],
+      where: {
+        ...roleWhere,
+        Alumni: alumniWhere,
+      },
+      _count: {
+        _all: true,
+      },
+    });
+  }
+
+  async getCompanyAggregates(params: QueryParamsDto) {
+    const { alumniWhere, roleWhere } = buildWhereClause(params);
+
+    // This query fetches companies that have at least one role matching the filters,
+    // and returns the count of matching roles per company.
+    // This is much more memory efficient than fetching all alumni.
+    const companies = await this.prisma.company.findMany({
+      where: {
+        roles: {
+          some: {
+            ...roleWhere,
+            Alumni: alumniWhere,
+          },
+        },
+      },
+      select: {
+        id: true,
+        name: true,
+        logo: true,
+        industryId: true,
+        levelsFyiUrl: true,
+        Industry: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+        roles: {
+          where: {
+            ...roleWhere,
+            Alumni: alumniWhere,
+          },
+          select: { alumniId: true },
+        },
+      },
+    });
+
+    return companies.map((c) => {
+      const { roles, ...rest } = c;
+      return {
+        ...rest,
+        _count: {
+          roles: new Set(roles.map((r) => r.alumniId)).size,
+        },
+      };
+    });
+  }
+
+  async getLocationAggregates(params: QueryParamsDto) {
+    const { alumniWhere, roleWhere } = buildWhereClause(params);
+
+    const locations = await this.prisma.location.findMany({
+      where: {
+        Role: {
+          some: {
+            ...roleWhere,
+            Alumni: alumniWhere,
+          },
+        },
+      },
+      select: {
+        id: true,
+        city: true,
+        country: true,
+        countryCode: true,
+        latitude: true,
+        longitude: true,
+        Role: {
+          where: {
+            ...roleWhere,
+            Alumni: alumniWhere,
+          },
+          select: { alumniId: true },
+        },
+      },
+    });
+
+    return locations.map((loc) => {
+      const { Role, ...rest } = loc;
+      return {
+        ...rest,
+        _count: {
+          Role: new Set(Role.map((r) => r.alumniId)).size,
+        },
+      };
+    });
+  }
+
+  async getEducationAggregates(params: QueryParamsDto) {
+    const { alumniWhere } = buildWhereClause(params);
+
+    return this.prisma.graduation.findMany({
+      where: {
+        Alumni: alumniWhere,
+      },
+      select: {
+        courseId: true,
+        conclusionYear: true,
+        Course: {
+          select: {
+            id: true,
+            name: true,
+            acronym: true,
+            Faculty: {
+              select: {
+                id: true,
+                name: true,
+                acronym: true,
+              },
+            },
+          },
+        },
+      },
+      distinct: ['alumniId', 'courseId'], // Ensure one count per alumni per course
+    });
+  }
+
+  async getJobClassificationAggregates(params: QueryParamsDto) {
+    const { alumniWhere, roleWhere } = buildWhereClause(params);
+
+    return this.prisma.jobClassification.findMany({
+      where: {
+        Role: {
+          ...roleWhere,
+          Alumni: alumniWhere,
+        },
+      },
+      select: {
+        escoClassificationId: true,
+        EscoClassification: {
+          select: {
+            titleEn: true,
+            code: true,
+            isLeaf: true,
+            level: true,
+          },
+        },
+      },
     });
   }
 }

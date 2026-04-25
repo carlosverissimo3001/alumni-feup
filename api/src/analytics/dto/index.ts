@@ -41,7 +41,6 @@ export { CompanyInsightsDto } from './insights/company-insights.dto';
 export { AlumniOptionDto } from './alumni-option.dto';
 export { AlumniListResponseDto, AlumniListItemDto } from './alumni-list.dto';
 
-// Major
 export {
   FacultyListDto,
   FacultyListItemDto,
@@ -49,6 +48,8 @@ export {
   MajorListItemDto,
   GraduationListDto,
   GraduationListItemDto,
+  EducationListResponseDto,
+  EducationListItemDto,
 } from './education-list.dto';
 
 // Seniority
