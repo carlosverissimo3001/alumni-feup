@@ -421,7 +421,14 @@
         "parameters": [],
         "responses": {
           "200": {
-            "description": "Pending LinkedIn profile data"
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PendingProfileDto"
+                }
+              }
+            }
           },
           "401": {
             "description": "Not authenticated or no pending profile"
@@ -444,7 +451,14 @@
         "parameters": [],
         "responses": {
           "200": {
-            "description": "Successfully logged out"
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LogoutResponseDto"
+                }
+              }
+            }
           }
         },
         "security": [
@@ -2300,6 +2314,44 @@
         },
         "required": [
           "hasPermission"
+        ]
+      },
+      "PendingProfileDto": {
+        "type": "object",
+        "properties": {
+          "personId": {
+            "type": "string",
+            "description": "LinkedIn person ID (sub claim)"
+          },
+          "firstName": {
+            "type": "string"
+          },
+          "lastName": {
+            "type": "string"
+          },
+          "personalEmail": {
+            "type": "string"
+          },
+          "profilePictureUrl": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "personId",
+          "firstName",
+          "lastName"
+        ]
+      },
+      "LogoutResponseDto": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          }
+        },
+        "required": [
+          "success"
         ]
       },
       "Company": {

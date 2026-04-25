@@ -20,3 +20,22 @@ export function getClearCookieOptions(): CookieOptions {
     path: '/',
   };
 }
+
+export function getUserCookieOptions(maxAgeSeconds: number): CookieOptions {
+  return {
+    httpOnly: false,
+    secure: isProd,
+    sameSite: 'lax',
+    path: '/',
+    maxAge: maxAgeSeconds * 1000,
+  };
+}
+
+export function getClearUserCookieOptions(): CookieOptions {
+  return {
+    httpOnly: false,
+    secure: isProd,
+    sameSite: 'lax',
+    path: '/',
+  };
+}

@@ -7,12 +7,19 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { ApiCookieAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiCookieAuth,
+  ApiOkResponse,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { Response } from 'express';
 import { LinkedinOAuthService } from './linkedin-oauth.service';
 import { SessionService, SESSION_COOKIE_NAME } from './session.service';
 import { SessionId } from './session-id.decorator';
-import { getCookieOptions } from './cookie-options';
+import { getCookieOptions, getUserCookieOptions } from './cookie-options';
+import { PendingProfileDto } from './dto/pending-profile.dto';
 import { UserService } from '../user/services/user.service';
 import { UserStatus } from '../user/consts/enum';
 
@@ -111,14 +118,11 @@ export class LinkedinOAuthController {
         getCookieOptions(this.sessionService.maxAgeSeconds),
       );
 
-      // Set non-sensitive user data for frontend hydration
-      res.cookie('user', JSON.stringify(authResponse.user), {
-        httpOnly: false,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: 'lax',
-        path: '/',
-        maxAge: this.sessionService.maxAgeSeconds * 1000,
-      });
+      res.cookie(
+        'user',
+        JSON.stringify(authResponse.user),
+        getUserCookieOptions(this.sessionService.maxAgeSeconds),
+      );
 
       return res.redirect(`${this.frontendUrl}/analytics`);
     } catch (err) {
@@ -134,9 +138,11 @@ export class LinkedinOAuthController {
   @ApiOperation({
     summary: 'Get pending LinkedIn profile for unmatched users',
   })
-  @ApiResponse({ status: 200, description: 'Pending LinkedIn profile data' })
+  @ApiOkResponse({ type: PendingProfileDto })
   @ApiResponse({ status: 401, description: 'Not authenticated or no pending profile' })
-  async getPendingProfile(@SessionId() sessionId: string) {
+  async getPendingProfile(
+    @SessionId() sessionId: string,
+  ): Promise<PendingProfileDto> {
     const profile =
       await this.linkedinOAuthService.getPendingProfile(sessionId);
 

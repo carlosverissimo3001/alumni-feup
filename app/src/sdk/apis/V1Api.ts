@@ -36,9 +36,11 @@ import type {
   GeoJSONFeatureCollection,
   InviteUserDto,
   LinkedinAuthDto,
+  LogoutResponseDto,
   MarkAsReviewedDto,
   MergeCompaniesDto,
   MergeLocationsDto,
+  PendingProfileDto,
   ReviewGeoJSONFeatureCollection,
   RoleAnalyticsEntity,
   RoleHierarchyDto,
@@ -95,12 +97,16 @@ import {
     InviteUserDtoToJSON,
     LinkedinAuthDtoFromJSON,
     LinkedinAuthDtoToJSON,
+    LogoutResponseDtoFromJSON,
+    LogoutResponseDtoToJSON,
     MarkAsReviewedDtoFromJSON,
     MarkAsReviewedDtoToJSON,
     MergeCompaniesDtoFromJSON,
     MergeCompaniesDtoToJSON,
     MergeLocationsDtoFromJSON,
     MergeLocationsDtoToJSON,
+    PendingProfileDtoFromJSON,
+    PendingProfileDtoToJSON,
     ReviewGeoJSONFeatureCollectionFromJSON,
     ReviewGeoJSONFeatureCollectionToJSON,
     RoleAnalyticsEntityFromJSON,
@@ -1686,18 +1692,19 @@ export class V1Api extends runtime.BaseAPI {
     /**
      * Logout and clear session
      */
-    async authControllerLogoutRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+    async authControllerLogoutRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<LogoutResponseDto>> {
         const requestOptions = await this.authControllerLogoutRequestOpts();
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.VoidApiResponse(response);
+        return new runtime.JSONApiResponse(response, (jsonValue) => LogoutResponseDtoFromJSON(jsonValue));
     }
 
     /**
      * Logout and clear session
      */
-    async authControllerLogout(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
-        await this.authControllerLogoutRaw(initOverrides);
+    async authControllerLogout(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<LogoutResponseDto> {
+        const response = await this.authControllerLogoutRaw(initOverrides);
+        return await response.value();
     }
 
     /**
@@ -2223,18 +2230,19 @@ export class V1Api extends runtime.BaseAPI {
     /**
      * Get pending LinkedIn profile for unmatched users
      */
-    async linkedinOAuthControllerGetPendingProfileRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+    async linkedinOAuthControllerGetPendingProfileRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PendingProfileDto>> {
         const requestOptions = await this.linkedinOAuthControllerGetPendingProfileRequestOpts();
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.VoidApiResponse(response);
+        return new runtime.JSONApiResponse(response, (jsonValue) => PendingProfileDtoFromJSON(jsonValue));
     }
 
     /**
      * Get pending LinkedIn profile for unmatched users
      */
-    async linkedinOAuthControllerGetPendingProfile(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
-        await this.linkedinOAuthControllerGetPendingProfileRaw(initOverrides);
+    async linkedinOAuthControllerGetPendingProfile(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PendingProfileDto> {
+        const response = await this.linkedinOAuthControllerGetPendingProfileRaw(initOverrides);
+        return await response.value();
     }
 
     /**

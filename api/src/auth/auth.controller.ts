@@ -5,11 +5,20 @@ import {
   Post,
   Res,
 } from '@nestjs/common';
-import { ApiCookieAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiCookieAuth,
+  ApiOkResponse,
+  ApiOperation,
+  ApiTags,
+} from '@nestjs/swagger';
 import { Response } from 'express';
 import { SessionService, SESSION_COOKIE_NAME } from './session.service';
 import { SessionId } from './session-id.decorator';
-import { getClearCookieOptions } from './cookie-options';
+import {
+  getClearCookieOptions,
+  getClearUserCookieOptions,
+} from './cookie-options';
+import { LogoutResponseDto } from './dto/logout-response.dto';
 
 @ApiTags('V1')
 @Controller('auth')
@@ -20,13 +29,14 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   @ApiCookieAuth()
   @ApiOperation({ summary: 'Logout and clear session' })
-  @ApiResponse({ status: 200, description: 'Successfully logged out' })
+  @ApiOkResponse({ type: LogoutResponseDto })
   async logout(
     @SessionId() sessionId: string,
     @Res({ passthrough: true }) res: Response,
-  ) {
+  ): Promise<LogoutResponseDto> {
     await this.sessionService.deleteSession(sessionId);
     res.clearCookie(SESSION_COOKIE_NAME, getClearCookieOptions());
+    res.clearCookie('user', getClearUserCookieOptions());
     return { success: true };
   }
 }
