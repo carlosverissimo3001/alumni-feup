@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import NestAPI from "@/api";
-import { MarkAsReviewedDto } from "@/sdk/api";
+import { MarkAsReviewedDto } from "@/sdk/models";
 
 type Input = {
   onSuccess?: () => void | Promise<void>

@@ -1,2 +1,8 @@
 .claude/
 node_modules/
+
+# OpenAPI generator artifacts
+app/src/sdk/.openapi-generator/FILES
+app/src/sdk/.openapi-generator/VERSION
+app/src/sdk/docs/
+openapitools.json

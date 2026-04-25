@@ -11,7 +11,7 @@ import {
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CourseService } from '../services/course.service';
 import { CreateCourseDto, FindCoursesDto } from '../dto';
-import { RequirePermission } from '@/auth';
+import { RequirePermission } from '@/auth/user-auth.guard';
 import { CourseAnalyticsEntity as CourseEntity } from '@/analytics/entities';
 
 @ApiTags('V1')

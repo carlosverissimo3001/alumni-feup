@@ -1,4 +1,4 @@
-import { RequirePermission, UserAuthGuard } from '@/auth';
+import { RequirePermission, UserAuthGuard } from '@/auth/user-auth.guard';
 import {
   Body,
   Controller,

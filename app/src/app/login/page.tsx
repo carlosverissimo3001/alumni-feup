@@ -2,7 +2,6 @@
 
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import { LINKEDIN_URL } from "@/helpers/auth";
 import { useState, useEffect, useCallback } from "react";
 import { Info, Loader2 } from "lucide-react";
 import { motion } from "framer-motion";
@@ -34,7 +33,7 @@ const JoinPage = () => {
 
     setIsLoading(true);
     setTimeout(() => {
-      router.replace(LINKEDIN_URL);
+      router.replace(`${process.env.NEXT_PUBLIC_API_URL}/auth/linkedin/login`);
     }, 600);
   }, [acceptedPolicy, router]);
 

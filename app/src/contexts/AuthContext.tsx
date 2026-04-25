@@ -1,14 +1,15 @@
 'use client';
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { User } from '@/sdk/api';
+import { User } from '@/sdk/models';
 import Cookies from 'js-cookie';
+
+const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 interface AuthContextType {
   user: User | null;
-  token: string | null;
   isAuthenticated: boolean;
-  login: (token: string, user: User) => void;
+  login: (user: User) => void;
   logout: () => void;
 }
 
@@ -28,7 +29,6 @@ interface AuthProviderProps {
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
-  const [token, setToken] = useState<string | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
 
   useEffect(() => {
@@ -38,11 +38,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         const parsedUser = JSON.parse(decodeURIComponent(storedUser));
         setUser(parsedUser);
         setIsAuthenticated(true);
-        
-        // Initialize userId in localStorage if not already set
-        if (typeof window !== 'undefined' && parsedUser.id) {
-          localStorage.setItem('userId', parsedUser.id);
-        }
       } catch (error: unknown) {
         if (error instanceof Error) {
           console.error('Error parsing stored user data from cookies:', error.message);
@@ -52,11 +47,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         setUser(null);
         setIsAuthenticated(false);
         Cookies.remove('user');
-        
-        // Also remove userId from localStorage if user data is invalid
-        if (typeof window !== 'undefined') {
-          localStorage.removeItem('userId');
-        }
       }
     } else {
       setUser(null);
@@ -64,45 +54,29 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   }, []);
 
-  const login = (newToken: string, newUser: User) => {
-    setToken(newToken);
+  const login = (newUser: User) => {
     setUser(newUser);
     setIsAuthenticated(true);
-    const isSecureContext = typeof window !== 'undefined' && window.location.protocol === 'https:';
-    Cookies.set('auth_token', newToken, { expires: 7, secure: isSecureContext, sameSite: 'lax' });
-    Cookies.set('user', encodeURIComponent(JSON.stringify(newUser)), { expires: 7, secure: isSecureContext, sameSite: 'lax' });
-    
-    // Store userId in localStorage for API middleware
-    if (typeof window !== 'undefined' && newUser.id) {
-      localStorage.setItem('userId', newUser.id);
-    }
   };
 
-  const logout = () => {
-    setToken(null);
-    setUser(null);
-    setIsAuthenticated(false);
-    Cookies.remove('auth_token');
-    Cookies.remove('user');
-    
-    // Remove userId from localStorage
-    if (typeof window !== 'undefined') {
-      localStorage.removeItem('userId');
+  const logout = async () => {
+    try {
+      await fetch(`${API_URL}/auth/logout`, {
+        method: 'POST',
+        credentials: 'include',
+      });
+    } catch {
+      // Continue with client-side cleanup even if backend call fails
     }
 
-    // TODO: Maybe invalidate the token in the backend
-
-
-/*     toast({
-      title: 'Logged out',
-      description: 'You have been logged out',
-      variant: 'default',
-    }); */
+    setUser(null);
+    setIsAuthenticated(false);
+    Cookies.remove('user');
   };
 
   return (
-    <AuthContext.Provider value={{ user, token, isAuthenticated, login, logout }}>
+    <AuthContext.Provider value={{ user, isAuthenticated, login, logout }}>
       {children}
     </AuthContext.Provider>
   );
-}; 
+};
