@@ -22,7 +22,9 @@ export class UserRepository {
   // Maps DB object to DTO (Note, I'd prefer this to be an entity instead of a dto)
   fromPrismaObject(alumni: Alumni): User {
     return {
-      ...alumni,
+      id: alumni.id,
+      firstName: alumni.firstName,
+      lastName: alumni.lastName,
       profilePictureUrl: alumni.profilePictureUrl ?? undefined,
     };
   }
