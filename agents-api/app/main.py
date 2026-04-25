@@ -42,6 +42,12 @@ app.add_middleware(
 
 app.add_middleware(APIKeyMiddleware)
 
+
+@app.get("/health", tags=["health"])
+async def health():
+    return {"status": "ok"}
+
+
 # Include all routers
 app.include_router(api_router, prefix="/api")
 

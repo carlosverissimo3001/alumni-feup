@@ -4,7 +4,7 @@ A FastAPI service for job title classification and LinkedIn data extraction.
 
 ## Features
 
-- Classify job titles into ESCO taxonomy using LLM agents (langchain/langGraph + ollama)
+- Classify job titles into ESCO taxonomy using LLM agents
 - Extract LinkedIn profile data
 - RESTful API endpoints with proper request/response validation
 - Connection to PostgreSQL database
@@ -13,7 +13,7 @@ A FastAPI service for job title classification and LinkedIn data extraction.
 
 - Python 3.12+
 - PostgreSQL database
-- Ollama (for LLM inference)
+- Redis
 
 ## Installation
 
@@ -182,6 +182,48 @@ Run tests using pytest:
 ```bash
 pytest
 ```
+
+## Deployment (Railway)
+
+The service deploys to Railway via Nixpacks. Build/runtime config lives in `nixpacks.toml` and `railway.toml`.
+
+### Required env vars
+
+Wire these as Railway service variables (use reference variables for `DATABASE_URL` and `REDIS_URL` so they pull from the Postgres / Redis add-ons):
+
+| Variable | Source | Notes |
+| --- | --- | --- |
+| `DATABASE_URL` | `${{Postgres.DATABASE_URL}}` | Same Postgres as the NestJS API |
+| `REDIS_URL` | `${{Redis.REDIS_URL}}` | Provision Redis as a Railway add-on |
+| `PORT` | auto-injected | Don't set manually |
+| `ENVIRONMENT` | `production` | |
+| `LOG_LEVEL` | `info` | |
+| `CORS_ORIGINS` | `["<nestjs-railway-url>","<frontend-url>"]` | JSON array as a string |
+| `API_KEY_SECRET` | random secret | Shared with the NestJS API for inter-service auth |
+| `OPENAI_API_KEY` | OpenAI dashboard | Required for embeddings (Anthropic has none) |
+| `OPENAI_DEFAULT_MODEL` | `gpt-4o-mini` | |
+| `ALUMNI_EXTRACT_API_KEY` | EnrichLayer | |
+| `ALUMNI_EXTRACT_BASE_URL` | EnrichLayer | |
+| `BRIGHTDATA_API_KEY` | BrightData | |
+| `BRIGHTDATA_BASE_URL` | BrightData | |
+| `BRIGHTDATA_COMPANY_DATASET_ID` | BrightData | |
+| `CLOUDINARY_CLOUD_NAME` | Cloudinary | |
+| `CLOUDINARY_API_KEY` | Cloudinary | |
+| `CLOUDINARY_API_SECRET` | Cloudinary | |
+| `GEOLOCATION_API_KEY` | OpenWeather | |
+| `GEOLOCATION_BASE_URL` | OpenWeather | `https://api.openweathermap.org/geo/1.0/direct?q=` |
+
+### Networking
+
+Call this service from the NestJS API via Railway's private network (`agents-api.railway.internal:$PORT`) instead of the public URL — free, no egress, no CORS for that hop. Public URL is only needed for healthchecks and ad-hoc debugging.
+
+### Sentence-transformers model cache
+
+`nixpacks.toml` pre-downloads `cross-encoder/ms-marco-MiniLM-L-6-v2` at build time into `/app/.cache/huggingface` (set via `HF_HOME`), so cold starts don't pay the ~90 MB download. No volume mount needed; the cache lives in the build image.
+
+### Healthcheck
+
+`GET /health` returns `{"status": "ok"}` and is exempt from `APIKeyMiddleware` (allowlisted in `app/core/middlewares.py`). Railway's healthcheck path is configured in `railway.toml`.
 
 ## License
 
