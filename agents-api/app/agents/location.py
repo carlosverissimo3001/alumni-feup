@@ -125,7 +125,7 @@ tool_node = ToolNode(tools=tools)
 
 # Rate limiter to avoid exceeding OpenAI's 200k tokens/minute cap
 rate_limiter = TokenRateLimiter(
-    redis_client=Redis(host="localhost", port=6379, db=0),
+    redis_client=Redis.from_url(settings.REDIS_URL),
     distributed_key="openai_location_agent_rate_limiter",
 )
 
@@ -143,7 +143,7 @@ def count_tokens(messages: List[SystemMessage | HumanMessage]) -> int:
 
 class LocationAgent:
     def __init__(self):
-        self._redis_cache = Redis(host="localhost", port=6379, db=0)
+        self._redis_cache = Redis.from_url(settings.REDIS_URL)
         self.CACHE_TTL = 60 * 60 * 24  # 24 hours
         self.MAX_RETRIES = 3
         self._background_tasks = set()
