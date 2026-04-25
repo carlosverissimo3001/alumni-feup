@@ -65,10 +65,9 @@ export class UserService {
       `Found alumni match for LinkedIn user: ${body.personId} with alumni: ${alumni.id}`,
     );
 
-    // Update alumni with personalEmail (if provided) and metadata
     await this.userRepository.update(alumni.id, {
       personalEmail: body.personalEmail ?? undefined,
-      metadata: body,
+      metadata: { ...body },
     });
 
     // 3. Generate a JWT token
@@ -173,7 +172,7 @@ export class UserService {
 
     await this.userRepository.update(alumni.id, {
       personId,
-      metadata: JSON.stringify(body),
+      metadata: { ...body },
     });
 
     const payload = {
