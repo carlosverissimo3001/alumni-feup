@@ -50,6 +50,7 @@ import type {
   UpdateSeniorityLevelDto,
   UploadExtractionDto,
   UpsertPermissionDto,
+  User,
   UserAuthResponse,
   VerifyEmailDto,
   VerifyEmailTokenDto,
@@ -125,6 +126,8 @@ import {
     UploadExtractionDtoToJSON,
     UpsertPermissionDtoFromJSON,
     UpsertPermissionDtoToJSON,
+    UserFromJSON,
+    UserToJSON,
     UserAuthResponseFromJSON,
     UserAuthResponseToJSON,
     VerifyEmailDtoFromJSON,
@@ -1704,6 +1707,43 @@ export class V1Api extends runtime.BaseAPI {
      */
     async authControllerLogout(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<LogoutResponseDto> {
         const response = await this.authControllerLogoutRaw(initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for authControllerMe without sending the request
+     */
+    async authControllerMeRequestOpts(): Promise<runtime.RequestOpts> {
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+
+        let urlPath = `/auth/me`;
+
+        return {
+            path: urlPath,
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * Get the currently authenticated user
+     */
+    async authControllerMeRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<User>> {
+        const requestOptions = await this.authControllerMeRequestOpts();
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => UserFromJSON(jsonValue));
+    }
+
+    /**
+     * Get the currently authenticated user
+     */
+    async authControllerMe(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<User> {
+        const response = await this.authControllerMeRaw(initOverrides);
         return await response.value();
     }
 

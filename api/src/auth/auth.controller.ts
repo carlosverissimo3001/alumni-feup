@@ -1,9 +1,11 @@
 import {
   Controller,
+  Get,
   HttpCode,
   HttpStatus,
   Post,
   Res,
+  UnauthorizedException,
 } from '@nestjs/common';
 import {
   ApiCookieAuth,
@@ -14,16 +16,37 @@ import {
 import { Response } from 'express';
 import { SessionService, SESSION_COOKIE_NAME } from './session.service';
 import { SessionId } from './session-id.decorator';
-import {
-  getClearCookieOptions,
-  getClearUserCookieOptions,
-} from './cookie-options';
+import { getClearCookieOptions } from './cookie-options';
 import { LogoutResponseDto } from './dto/logout-response.dto';
+import { UserService } from '../user/services/user.service';
+import { User } from '../user/dto/user.dto';
 
 @ApiTags('V1')
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly sessionService: SessionService) {}
+  constructor(
+    private readonly sessionService: SessionService,
+    private readonly userService: UserService,
+  ) {}
+
+  @Get('me')
+  @ApiCookieAuth()
+  @ApiOperation({ summary: 'Get the currently authenticated user' })
+  @ApiOkResponse({ type: User })
+  async me(@SessionId() sessionId: string): Promise<User> {
+    const session = await this.sessionService.getSession(sessionId);
+    if (session.userId.startsWith('pending:')) {
+      throw new UnauthorizedException('Session is pending profile match');
+    }
+
+    const user = await this.userService.getUserById(session.userId);
+    if (!user) {
+      throw new UnauthorizedException('User not found');
+    }
+
+    await this.sessionService.refreshSession(sessionId);
+    return user;
+  }
 
   @Post('logout')
   @HttpCode(HttpStatus.OK)
@@ -36,7 +59,6 @@ export class AuthController {
   ): Promise<LogoutResponseDto> {
     await this.sessionService.deleteSession(sessionId);
     res.clearCookie(SESSION_COOKIE_NAME, getClearCookieOptions());
-    res.clearCookie('user', getClearUserCookieOptions());
     return { success: true };
   }
 }
