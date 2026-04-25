@@ -14,14 +14,12 @@ import {
   CountryListResponseDto,
   CountryOptionDto,
   GetCitiesDto,
+  QueryParamsDto,
 } from '../dto';
-import { QueryParamsDto } from '../dto/query-params.dto';
 import { AlumniAnalyticsEntity } from '../entities';
 import { AlumniAnalyticsRepository, LocationRepository } from '../repositories';
 import { sortData } from '../utils';
-import { applyDateFilters } from '../utils/filters';
 import { TrendAnalyticsService } from './trend-analytics.service';
-import { LocationAnalyticsEntity } from '../entities';
 
 type GeoEntityMap = {
   name: string;
@@ -43,72 +41,40 @@ export class GeoAnalyticsService {
     alumnusUnfiltered: AlumniAnalyticsEntity[],
     query: QueryParamsDto,
   ): Promise<CountryListResponseDto> {
-    const alumnus = applyDateFilters(alumnusUnfiltered, query);
-
-    // Extract unique country codes first
-    const uniqueCountryCodes = new Set<string>();
-    alumnus.forEach((a) => {
-      (a.roles || []).forEach((role) => {
-        const countryCode = role.location?.countryCode;
-        if (countryCode) {
-          uniqueCountryCodes.add(countryCode);
-        }
-      });
-    });
-
-    // Fetch all country coordinates in a single query
-    const countryCoordinatesMap: Map<string, LocationAnalyticsEntity> =
-      await this.locationRepository.getCountriesCoordinates(
-        Array.from(uniqueCountryCodes),
-      );
-
-    // Process roles and count alumni per country
-    const { entityMap } = this.groupByGeoEntity(
-      alumnus.flatMap((a) =>
-        (a.roles || []).map((role) => {
-          const countryCode = role.location?.countryCode;
-          const countryCoordinates = countryCode
-            ? countryCoordinatesMap.get(countryCode)
-            : null;
-          return {
-            alumniId: a.id,
-            location: role.location,
-            countryCoordinates,
-          };
-        }),
-      ),
-      (role) => role.location?.countryCode || '',
-      (role) => {
-        const coords = role.countryCoordinates;
-        return {
-          name: role.location?.country || '',
-          code: role.location?.countryCode || '',
-          latitude: coords?.latitude ?? 0,
-          longitude: coords?.longitude ?? 0,
-        };
-      },
-      (role) => role.alumniId,
+    const locationAggregates = await this.alumniRepository.getLocationAggregates(
+      query,
     );
 
-    const countries: CountryListItemDto[] = Array.from(entityMap.entries())
-      .filter(([code]) => code) // Filter out empty country codes
-      .map(([code, data]) => ({
-        id: code,
-        name: data.name,
-        code: data.code,
-        count: data.count,
-        trend: [],
-        latitude: data.latitude,
-        longitude: data.longitude,
-      }));
+    const countryMap = new Map<string, CountryListItemDto>();
+
+    for (const loc of locationAggregates) {
+      const code = loc.countryCode;
+      if (!code) continue;
+
+      const existing = countryMap.get(code);
+      if (existing) {
+        existing.count += loc._count.Role;
+      } else {
+        countryMap.set(code, {
+          id: code,
+          name: loc.country || '',
+          code: code,
+          count: loc._count.Role,
+          trend: [],
+          latitude: loc.latitude || 0,
+          longitude: loc.longitude || 0,
+        });
+      }
+    }
+
+    const countries = Array.from(countryMap.values());
 
     if (query.includeGeoTrend) {
       const trends = await Promise.all(
         countries.map((country) =>
           this.trendAnalyticsService.getCountryTrend({
-            data: alumnusUnfiltered,
-            type: TREND_TYPE.ALUMNI_COUNT,
             entityId: country.code,
+            query,
           }),
         ),
       );
@@ -136,49 +102,28 @@ export class GeoAnalyticsService {
     alumnusUnfiltered: AlumniAnalyticsEntity[],
     query: QueryParamsDto,
   ): Promise<CityListResponseDto> {
-    const alumnus = applyDateFilters(alumnusUnfiltered, query);
-
-    // Extract all roles with valid city information
-    const roles = alumnus.flatMap((a) =>
-      (a.roles || [])
-        .filter((role) => role.location?.city && role.location?.id)
-        .map((role) => ({
-          alumniId: a.id,
-          location: role.location!,
-        })),
+    const locationAggregates = await this.alumniRepository.getLocationAggregates(
+      query,
     );
 
-    // Group by city in a single pass
-    const { entityMap } = this.groupByGeoEntity(
-      roles,
-      (role) => role.location.id,
-      (role) => ({
-        name: role.location.city!,
-        code: role.location.countryCode || '',
-        latitude: role.location.latitude || 0,
-        longitude: role.location.longitude || 0,
-      }),
-      (role) => role.alumniId,
-    );
-
-    const cities: CityListItemDto[] = Array.from(entityMap.entries())
-      .filter(([cityId]) => cityId) // Filter out invalid IDs
-      .map(([cityId, data]) => ({
-        id: cityId,
-        name: data.name,
-        code: data.code,
-        count: data.count,
+    const cities: CityListItemDto[] = locationAggregates
+      .filter((loc) => loc.city)
+      .map((loc) => ({
+        id: loc.id,
+        name: loc.city!,
+        code: loc.countryCode || '',
+        count: loc._count.Role,
         trend: [],
-        latitude: data.latitude,
-        longitude: data.longitude,
+        latitude: loc.latitude || 0,
+        longitude: loc.longitude || 0,
       }));
 
     if (query.includeGeoTrend) {
       const trends = await Promise.all(
         cities.map((city) =>
           this.trendAnalyticsService.getCityTrend({
-            data: alumnusUnfiltered,
             entityId: city.id,
+            query,
           }),
         ),
       );

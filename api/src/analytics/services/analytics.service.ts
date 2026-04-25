@@ -75,6 +75,8 @@ export class AnalyticsService {
         this.educationAnalyticsService.getMajors(baseData, query),
       graduationData: () =>
         this.educationAnalyticsService.getGraduations(baseData, query),
+      educationData: () =>
+        this.educationAnalyticsService.getEducationAnalytics(baseData, query),
     };
 
     const selectorMap: Record<SELECTOR_TYPE, (keyof typeof allTasks)[]> = {
@@ -84,7 +86,12 @@ export class AnalyticsService {
       [SELECTOR_TYPE.ROLE]: ['roleData'],
       [SELECTOR_TYPE.SENIORITY]: ['seniorityData'],
       [SELECTOR_TYPE.INDUSTRY]: ['industryData'],
-      [SELECTOR_TYPE.EDUCATION]: ['facultyData', 'majorData', 'graduationData'],
+      [SELECTOR_TYPE.EDUCATION]: [
+        'facultyData',
+        'majorData',
+        'graduationData',
+        'educationData',
+      ],
 
       // AlumnIData uses different params, so we don't need to run it for the all selector
       [SELECTOR_TYPE.ALL]: Object.keys(allTasks).filter(

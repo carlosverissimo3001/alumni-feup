@@ -10,6 +10,7 @@ import {
   FacultyListDto,
   GraduationListDto,
   MajorListDto,
+  EducationListResponseDto,
 } from './education-list.dto';
 
 export class AnalyticsDto {
@@ -73,5 +74,9 @@ export class AnalyticsDto {
   })
   graduationData?: GraduationListDto;
 
-  // TODO: Add all the other analytics data
+  @ApiPropertyOptional({
+    description: 'The combined education analytics data',
+    type: EducationListResponseDto,
+  })
+  educationData?: EducationListResponseDto;
 }

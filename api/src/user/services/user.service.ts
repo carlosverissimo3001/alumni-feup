@@ -68,7 +68,7 @@ export class UserService {
     // Update alumni with personalEmail (if provided) and metadata
     await this.userRepository.update(alumni.id, {
       personalEmail: body.personalEmail ?? undefined,
-      metadata: body,
+      metadata: { ...body },
     });
 
     // 3. Generate a JWT token

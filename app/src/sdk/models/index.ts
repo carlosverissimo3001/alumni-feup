@@ -38,6 +38,8 @@ export * from './CreateCourseDto';
 export * from './CreateFacultyDto';
 export * from './CreateReviewDto';
 export * from './DataPointDto';
+export * from './EducationListItemDto';
+export * from './EducationListResponseDto';
 export * from './EscoClassificationAnalyticsEntity';
 export * from './EvaluateClassificationDto';
 export * from './EvaluateSeniorityLevelDto';

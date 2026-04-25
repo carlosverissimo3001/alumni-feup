@@ -161,6 +161,29 @@ export const buildWhereClause = (
     });
   }
 
+  if (params.currentRolesOnly) {
+    roleAndClauses.push({
+      endDate: null,
+    });
+  }
+
+  if (params.startDate) {
+    roleAndClauses.push({
+      startDate: { gte: new Date(params.startDate) },
+    });
+  }
+
+  if (params.endDate) {
+    roleAndClauses.push({
+      OR: [
+        { endDate: { lte: new Date(params.endDate) } },
+        {
+          AND: [{ endDate: null }, { startDate: { lte: new Date(params.endDate) } }],
+        },
+      ],
+    });
+  }
+
   // Alumni search
   if (params.alumniSearch?.trim()) {
     const searchTerms = normalizeText(params.alumniSearch)

@@ -7,8 +7,10 @@ import {
 import { FREQUENCY, TREND_TYPE } from '../consts';
 import { Injectable } from '@nestjs/common';
 import { subYears } from 'date-fns';
-import { DataPointDto } from '../dto';
+import { DataPointDto, QueryParamsDto } from '../dto';
 import { getLabelForDate } from '../utils/date';
+import { PrismaService } from '@/prisma/prisma.service';
+import { buildWhereClause } from '../utils';
 
 type TrendParams = {
   data: AlumniAnalyticsEntity[];
@@ -20,187 +22,188 @@ const THIRTY_YEARS_AGO = subYears(new Date(), 30);
 
 @Injectable()
 export class TrendAnalyticsService {
-  constructor() {}
+  constructor(private readonly prisma: PrismaService) {}
 
-  getCompanyTrend(params: TrendParams): DataPointDto[] {
-    const { data, entityId } = params;
+  async getCompanyTrend(params: {
+    entityId: string;
+    query: QueryParamsDto;
+  }): Promise<DataPointDto[]> {
+    const { entityId, query } = params;
+    const { alumniWhere, roleWhere } = buildWhereClause(query);
 
-    // Gets all the roles for the company that were active at any point in the last 30 years
-    const roles = data
-      .flatMap((alumni) => alumni.roles || [])
-      .filter((role) => role?.company.id === entityId)
-      .filter((role) => {
-        const startDate = new Date(role.startDate);
-        const endDate = role.endDate ? new Date(role.endDate) : null;
-        return (
-          startDate >= THIRTY_YEARS_AGO ||
-          (endDate && endDate >= THIRTY_YEARS_AGO)
-        );
-      });
+    const roles = await this.prisma.role.findMany({
+      where: {
+        ...roleWhere,
+        companyId: entityId,
+        Alumni: alumniWhere,
+      },
+      select: {
+        startDate: true,
+        endDate: true,
+      },
+    });
 
-    // Generate quarterly data points for the last 15 years
-    const dataPoints: DataPointDto[] = [];
-    const now = new Date();
-    let currentDate = new Date(THIRTY_YEARS_AGO);
-
-    while (currentDate <= now) {
-      // Count roles active in this month
-      const activeRoles = roles.filter((role) => {
-        const startDate = new Date(role.startDate);
-        const endDate = role.endDate ? new Date(role.endDate) : null;
-        return startDate <= currentDate && (!endDate || endDate >= currentDate);
-      });
-
-      dataPoints.push({
-        // YYYY-QX
-        label: getLabelForDate(currentDate, FREQUENCY.MONTHLY),
-        value: activeRoles.length,
-      });
-
-      // Move to next quarter
-      currentDate = new Date(
-        currentDate.getFullYear(),
-        currentDate.getMonth() + 1,
-        1,
-      );
-    }
-
-    return dataPoints;
+    return this.aggregateActiveRoles(roles as unknown as RoleAnalyticsEntity[]);
   }
 
-  getCountryTrend(params: TrendParams): DataPointDto[] {
-    const { data, entityId } = params;
+  async getCountryTrend(params: {
+    entityId: string;
+    query: QueryParamsDto;
+  }): Promise<DataPointDto[]> {
+    const { entityId, query } = params;
+    const { alumniWhere, roleWhere } = buildWhereClause(query);
 
-    // Gets all the roles whose location was the country
-    const roles = data
-      .flatMap((alumni) => alumni.roles || [])
-      .filter((role) => role?.location?.countryCode === entityId)
-      .filter((role) => {
-        const startDate = new Date(role.startDate);
-        const endDate = role.endDate ? new Date(role.endDate) : null;
-        return (
-          startDate >= THIRTY_YEARS_AGO ||
-          (endDate && endDate >= THIRTY_YEARS_AGO)
-        );
-      });
+    const roles = await this.prisma.role.findMany({
+      where: {
+        ...roleWhere,
+        Alumni: alumniWhere,
+        Location: { countryCode: entityId },
+      },
+      select: {
+        startDate: true,
+        endDate: true,
+      },
+    });
 
-    return this.aggregateActiveRoles(roles);
+    return this.aggregateActiveRoles(roles as unknown as RoleAnalyticsEntity[]);
   }
 
-  getCityTrend(params: TrendParams): DataPointDto[] {
-    const { data, entityId } = params;
+  async getCityTrend(params: {
+    entityId: string;
+    query: QueryParamsDto;
+  }): Promise<DataPointDto[]> {
+    const { entityId, query } = params;
+    const { alumniWhere, roleWhere } = buildWhereClause(query);
 
-    // Gets all the roles whose location was the city
-    const roles = data
-      .flatMap((alumni) => alumni.roles || [])
-      .filter((role) => role?.location?.id === entityId)
-      .filter((role) => {
-        const startDate = new Date(role.startDate);
-        const endDate = role.endDate ? new Date(role.endDate) : null;
-        return (
-          startDate >= THIRTY_YEARS_AGO ||
-          (endDate && endDate >= THIRTY_YEARS_AGO)
-        );
-      });
+    const roles = await this.prisma.role.findMany({
+      where: {
+        ...roleWhere,
+        Alumni: alumniWhere,
+        locationId: entityId,
+      },
+      select: {
+        startDate: true,
+        endDate: true,
+      },
+    });
 
-    return this.aggregateActiveRoles(roles);
+    return this.aggregateActiveRoles(roles as unknown as RoleAnalyticsEntity[]);
   }
 
-  getRoleTrend(params: TrendParams): DataPointDto[] {
-    const { data, entityId } = params;
+  async getRoleTrend(params: {
+    entityId: string;
+    query: QueryParamsDto;
+  }): Promise<DataPointDto[]> {
+    const { entityId, query } = params;
+    const { alumniWhere, roleWhere } = buildWhereClause(query);
 
-    // Gets all the roles whose title matches the entityId
-    const roles = data
-      .flatMap((alumni) => alumni.roles || [])
-      .filter((role) => {
-        const jobClassification = role?.jobClassification;
-        const escoClassification = jobClassification?.escoClassification;
+    const roles = await this.prisma.role.findMany({
+      where: {
+        ...roleWhere,
+        Alumni: alumniWhere,
+        JobClassification: {
+          EscoClassification: {
+            code: {
+              startsWith: entityId,
+            },
+          },
+        },
+      },
+      select: {
+        startDate: true,
+        endDate: true,
+      },
+    });
 
-        return escoClassification?.code.startsWith(entityId);
-      })
-      .filter((role) => {
-        const startDate = new Date(role.startDate);
-        const endDate = role.endDate ? new Date(role.endDate) : null;
-        return (
-          startDate >= THIRTY_YEARS_AGO ||
-          (endDate && endDate >= THIRTY_YEARS_AGO)
-        );
-      });
-
-    return this.aggregateActiveRoles(roles);
+    return this.aggregateActiveRoles(roles as unknown as RoleAnalyticsEntity[]);
   }
 
-  getSeniorityTrend(params: TrendParams): DataPointDto[] {
-    const { data, entityId } = params;
+  async getSeniorityTrend(params: {
+    entityId: string;
+    query: QueryParamsDto;
+  }): Promise<DataPointDto[]> {
+    const { entityId, query } = params;
+    const { alumniWhere, roleWhere } = buildWhereClause(query);
 
-    const roles = data
-      .flatMap((alumni) => alumni.roles || [])
-      .filter((role) => role?.seniorityLevel === entityId)
-      .filter((role) => {
-        const startDate = new Date(role.startDate);
-        const endDate = role.endDate ? new Date(role.endDate) : null;
-        return (
-          startDate >= THIRTY_YEARS_AGO ||
-          (endDate && endDate >= THIRTY_YEARS_AGO)
-        );
-      });
+    const roles = await this.prisma.role.findMany({
+      where: {
+        ...roleWhere,
+        Alumni: alumniWhere,
+        seniorityLevel: entityId as any,
+      },
+      select: {
+        startDate: true,
+        endDate: true,
+      },
+    });
 
-    return this.aggregateActiveRoles(roles);
+    return this.aggregateActiveRoles(roles as unknown as RoleAnalyticsEntity[]);
   }
 
-  getIndustryTrend(params: TrendParams): DataPointDto[] {
-    const { data, entityId } = params;
+  async getIndustryTrend(params: {
+    entityId: string;
+    query: QueryParamsDto;
+  }): Promise<DataPointDto[]> {
+    const { entityId, query } = params;
+    const { alumniWhere, roleWhere } = buildWhereClause(query);
 
-    // Gets all the roles whose industry matches the entityId
-    const roles = data
-      .flatMap((alumni) => alumni.roles || [])
-      .filter((role) => role?.company.industry.id === entityId)
-      .filter((role) => {
-        const startDate = new Date(role.startDate);
-        const endDate = role.endDate ? new Date(role.endDate) : null;
-        return (
-          startDate >= THIRTY_YEARS_AGO ||
-          (endDate && endDate >= THIRTY_YEARS_AGO)
-        );
-      });
+    const roles = await this.prisma.role.findMany({
+      where: {
+        ...roleWhere,
+        Alumni: alumniWhere,
+        Company: { Industry: { id: entityId } },
+      },
+      select: {
+        startDate: true,
+        endDate: true,
+      },
+    });
 
-    return this.aggregateActiveRoles(roles);
+    return this.aggregateActiveRoles(roles as unknown as RoleAnalyticsEntity[]);
   }
 
-  getFacultyTrend(params: TrendParams): DataPointDto[] {
-    const { data, entityId } = params;
+  async getFacultyTrend(params: {
+    entityId: string;
+    query: QueryParamsDto;
+  }): Promise<DataPointDto[]> {
+    const { entityId, query } = params;
+    const { alumniWhere } = buildWhereClause(query);
 
-    // Here, we get all the graduations from the faculty (the entity)
-    const graduations = data
-      .flatMap((alumni) => alumni.graduations || [])
-      .filter((graduation) => graduation?.course?.facultyId === entityId)
-      .filter((graduation) => {
-        const conclusionYearDate = new Date(graduation.conclusionYear, 0, 1);
-        return (
-          conclusionYearDate >= THIRTY_YEARS_AGO &&
-          conclusionYearDate <= new Date()
-        );
-      });
+    const graduations = await this.prisma.graduation.findMany({
+      where: {
+        Alumni: alumniWhere,
+        Course: { facultyId: entityId },
+      },
+      select: {
+        conclusionYear: true,
+      },
+    });
 
-    return this.aggregateActiveGraduations(graduations);
+    return this.aggregateActiveGraduations(
+      graduations as unknown as GraduationAnalyticsEntity[],
+    );
   }
 
-  getMajorTrend(params: TrendParams): DataPointDto[] {
-    const { data, entityId } = params;
+  async getMajorTrend(params: {
+    entityId: string;
+    query: QueryParamsDto;
+  }): Promise<DataPointDto[]> {
+    const { entityId, query } = params;
+    const { alumniWhere } = buildWhereClause(query);
 
-    // Here, we get all the graduations from the major (the entity)
-    const graduations = data
-      .flatMap((alumni) => alumni.graduations || [])
-      .filter((graduation) => graduation?.courseId === entityId)
-      .filter((graduation) => {
-        const conclusionYearDate = new Date(graduation.conclusionYear, 0, 1);
-        return (
-          conclusionYearDate >= THIRTY_YEARS_AGO &&
-          conclusionYearDate <= new Date()
-        );
-      });
+    const graduations = await this.prisma.graduation.findMany({
+      where: {
+        Alumni: alumniWhere,
+        courseId: entityId,
+      },
+      select: {
+        conclusionYear: true,
+      },
+    });
 
-    return this.aggregateActiveGraduations(graduations);
+    return this.aggregateActiveGraduations(
+      graduations as unknown as GraduationAnalyticsEntity[],
+    );
   }
 
   aggregateActiveRoles(roles: RoleAnalyticsEntity[]): DataPointDto[] {

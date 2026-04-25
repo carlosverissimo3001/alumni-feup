@@ -8,8 +8,9 @@ import {
   MajorListItemDto,
   GraduationListDto,
   GraduationListItemDto,
+  EducationListItemDto,
+  EducationListResponseDto,
 } from '@/analytics/dto';
-import { applyDateFilters } from '@/analytics/utils/filters';
 import { TrendAnalyticsService } from './trend-analytics.service';
 import {
   DEFAULT_QUERY_OFFSET,
@@ -20,11 +21,13 @@ import {
 } from '../consts';
 import { sortData } from '../utils';
 import { AlumniAnalyticsEntity } from '../entities';
+import { AlumniAnalyticsRepository } from '@/analytics/repositories';
 
 @Injectable()
 export class EducationAnalyticsService {
   constructor(
     private readonly trendAnalyticsService: TrendAnalyticsService,
+    private readonly alumniRepository: AlumniAnalyticsRepository,
     private readonly educationRepository: EducationRepository,
   ) {}
 
@@ -32,32 +35,34 @@ export class EducationAnalyticsService {
     alumnusUnfiltered: AlumniAnalyticsEntity[],
     query: QueryParamsDto,
   ): Promise<FacultyListDto> {
-    const alumnus = applyDateFilters(alumnusUnfiltered, query);
+    const educationAggregates = await this.alumniRepository.getEducationAggregates(
+      query,
+    );
 
-    const graduations = alumnus.flatMap((a) => a.graduations || []);
+    const facultyMap = new Map<string, FacultyListItemDto>();
+    for (const grad of educationAggregates) {
+      const f = grad.Course.Faculty;
+      const existing = facultyMap.get(f.id);
+      if (existing) {
+        existing.count++;
+      } else {
+        facultyMap.set(f.id, {
+          id: f.id,
+          name: f.name,
+          acronym: f.acronym,
+          trend: [],
+          count: 1,
+        });
+      }
+    }
 
-    const faculties = graduations.reduce((map, graduation) => {
-      const facultyId = graduation.course.facultyId;
-      const faculty = map.get(facultyId) || {
-        id: facultyId,
-        name: graduation.course.faculty.name,
-        acronym: graduation.course.faculty.acronym,
-        trend: [],
-        count: 0,
-      };
-
-      faculty.count += 1;
-      map.set(facultyId, faculty);
-      return map;
-    }, new Map<string, FacultyListItemDto>());
-
-    const facultiesArray = Array.from(faculties.values());
+    const facultiesArray = Array.from(facultyMap.values());
     if (query.includeEducationTrend) {
       const trends = await Promise.all(
         facultiesArray.map((faculty) =>
           this.trendAnalyticsService.getFacultyTrend({
-            data: alumnusUnfiltered,
             entityId: faculty.id,
+            query,
           }),
         ),
       );
@@ -77,7 +82,83 @@ export class EducationAnalyticsService {
 
     return {
       faculties: sortedFaculties.slice(offset, offset + limit),
-      count: faculties.size,
+      count: facultyMap.size,
+    };
+  }
+
+  async getEducationAnalytics(
+    alumnusUnfiltered: AlumniAnalyticsEntity[],
+    query: QueryParamsDto,
+  ): Promise<EducationListResponseDto> {
+    const educationAggregates = await this.alumniRepository.getEducationAggregates(
+      query,
+    );
+
+    const educationMap = new Map<
+      string,
+      {
+        name: string;
+        acronym: string;
+        faculty: string;
+        facultyId: string;
+        count: number;
+      }
+    >();
+
+    for (const grad of educationAggregates) {
+      if (!grad.courseId) continue;
+
+      const existing = educationMap.get(grad.courseId);
+      if (existing) {
+        existing.count++;
+      } else {
+        educationMap.set(grad.courseId, {
+          name: grad.Course.name,
+          acronym: grad.Course.acronym,
+          faculty: grad.Course.Faculty.name,
+          facultyId: grad.Course.Faculty.id,
+          count: 1,
+        });
+      }
+    }
+
+    const education: EducationListItemDto[] = Array.from(
+      educationMap.entries(),
+    ).map(([courseId, data]) => ({
+      id: courseId,
+      name: data.name,
+      acronym: data.acronym,
+      facultyId: data.facultyId,
+      faculty: data.faculty,
+      count: data.count,
+      trend: [],
+    }));
+
+    if (query.includeEducationTrend) {
+      const trends = await Promise.all(
+        education.map((course) =>
+          this.trendAnalyticsService.getMajorTrend({
+            entityId: course.id,
+            query,
+          }),
+        ),
+      );
+      education.forEach((course, index) => {
+        course.trend = trends[index];
+      });
+    }
+
+    const offset = query.offset || DEFAULT_QUERY_OFFSET;
+    const limit = query.limit || DEFAULT_QUERY_LIMIT;
+
+    const sortedEducation = sortData(education, {
+      sortBy: query.sortBy ?? DEFAULT_QUERY_SORT_BY,
+      direction: query.sortOrder ?? DEFAULT_QUERY_SORT_ORDER,
+    });
+
+    return {
+      education: sortedEducation.slice(offset, offset + limit),
+      count: educationMap.size,
     };
   }
 
@@ -85,33 +166,35 @@ export class EducationAnalyticsService {
     alumnusUnfiltered: AlumniAnalyticsEntity[],
     query: QueryParamsDto,
   ): Promise<MajorListDto> {
-    const alumnus = applyDateFilters(alumnusUnfiltered, query);
+    const educationAggregates = await this.alumniRepository.getEducationAggregates(
+      query,
+    );
 
-    const graduations = alumnus.flatMap((a) => a.graduations || []);
+    const majorMap = new Map<string, MajorListItemDto>();
+    for (const grad of educationAggregates) {
+      const c = grad.Course;
+      const existing = majorMap.get(c.id);
+      if (existing) {
+        existing.count++;
+      } else {
+        majorMap.set(c.id, {
+          id: c.id,
+          name: c.name,
+          acronym: `[${c.Faculty.acronym}] ${c.acronym}`,
+          facultyAcronym: c.Faculty.acronym,
+          count: 1,
+          trend: [],
+        });
+      }
+    }
 
-    const courses = graduations.reduce((map, graduation) => {
-      const courseId = graduation.courseId;
-      const course = map.get(courseId) || {
-        id: courseId,
-        name: graduation.course.name,
-        acronym: `[${graduation.course.faculty.acronym}] ${graduation.course.acronym}`,
-        facultyAcronym: graduation.course.faculty.acronym,
-        count: 0,
-        trend: [],
-      };
-
-      course.count += 1;
-      map.set(courseId, course);
-      return map;
-    }, new Map<string, MajorListItemDto>());
-
-    const coursesArray = Array.from(courses.values());
+    const coursesArray = Array.from(majorMap.values());
     if (query.includeEducationTrend) {
       const trends = await Promise.all(
         coursesArray.map((course) =>
           this.trendAnalyticsService.getMajorTrend({
-            data: alumnusUnfiltered,
             entityId: course.id,
+            query,
           }),
         ),
       );
@@ -130,32 +213,36 @@ export class EducationAnalyticsService {
 
     return {
       majors: sortedCourses.slice(offset, offset + limit),
-      count: courses.size,
+      count: majorMap.size,
     };
   }
 
-  getGraduations(
+  async getGraduations(
     alumnusUnfiltered: AlumniAnalyticsEntity[],
     query: QueryParamsDto,
-  ): GraduationListDto {
-    const alumnus = applyDateFilters(alumnusUnfiltered, query);
+  ): Promise<GraduationListDto> {
+    const educationAggregates = await this.alumniRepository.getEducationAggregates(
+      query,
+    );
 
-    const graduations = alumnus.flatMap((a) => a.graduations || []);
+    const graduationMap = new Map<string, GraduationListItemDto>();
+    for (const grad of educationAggregates) {
+      const year = grad.conclusionYear;
+      const key = `${grad.Course.acronym}-${year}`;
 
-    const graduationMap = graduations.reduce((map, graduation) => {
-      const key = `${graduation.course.acronym}-${graduation.conclusionYear}`;
-      const grad = map.get(key) || {
-        id: graduation.courseId,
-        name: graduation.course.name,
-        acronym: `[${graduation.course.faculty.acronym}] ${graduation.course.acronym}`,
-        year: graduation.conclusionYear,
-        count: 0,
-      };
-
-      grad.count += 1;
-      map.set(key, grad);
-      return map;
-    }, new Map<string, GraduationListItemDto>());
+      const existing = graduationMap.get(key);
+      if (existing) {
+        existing.count++;
+      } else {
+        graduationMap.set(key, {
+          id: grad.courseId,
+          name: grad.Course.name,
+          acronym: `[${grad.Course.Faculty.acronym}] ${grad.Course.acronym}`,
+          year: year,
+          count: 1,
+        });
+      }
+    }
 
     const offset = query.offset || DEFAULT_QUERY_OFFSET;
     const limit = query.limit || DEFAULT_QUERY_LIMIT;

@@ -137,3 +137,34 @@ export class FacultyListDto {
   })
   count: number;
 }
+
+export class EducationListItemDto {
+  @ApiProperty()
+  id: string;
+
+  @ApiProperty()
+  name: string;
+
+  @ApiProperty()
+  acronym: string;
+
+  @ApiProperty()
+  faculty: string;
+
+  @ApiProperty()
+  facultyId: string;
+
+  @ApiProperty()
+  count: number;
+
+  @ApiProperty({ type: DataPointDto, isArray: true })
+  trend: DataPointDto[];
+}
+
+export class EducationListResponseDto {
+  @ApiProperty({ type: EducationListItemDto, isArray: true })
+  education: EducationListItemDto[];
+
+  @ApiProperty()
+  count: number;
+}

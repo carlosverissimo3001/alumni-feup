@@ -4509,6 +4509,62 @@
           "count"
         ]
       },
+      "EducationListItemDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "acronym": {
+            "type": "string"
+          },
+          "faculty": {
+            "type": "string"
+          },
+          "facultyId": {
+            "type": "string"
+          },
+          "count": {
+            "type": "number"
+          },
+          "trend": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DataPointDto"
+            }
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "acronym",
+          "faculty",
+          "facultyId",
+          "count",
+          "trend"
+        ]
+      },
+      "EducationListResponseDto": {
+        "type": "object",
+        "properties": {
+          "education": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/EducationListItemDto"
+            }
+          },
+          "count": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "education",
+          "count"
+        ]
+      },
       "AnalyticsDto": {
         "type": "object",
         "properties": {
@@ -4589,6 +4645,14 @@
             "allOf": [
               {
                 "$ref": "#/components/schemas/GraduationListDto"
+              }
+            ]
+          },
+          "educationData": {
+            "description": "The combined education analytics data",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/EducationListResponseDto"
               }
             ]
           }

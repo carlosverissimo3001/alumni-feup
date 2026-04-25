@@ -29,9 +29,9 @@ import { AlumniAnalyticsEntity } from '../entities';
 @Injectable()
 export class RoleAnalyticsService {
   constructor(
-    private readonly alumniRepository: AlumniAnalyticsRepository,
     private readonly roleRepository: RoleRepository,
     private readonly trendAnalyticsService: TrendAnalyticsService,
+    private readonly alumniRepository: AlumniAnalyticsRepository,
     private readonly logger: Logger,
   ) {}
 
@@ -39,94 +39,70 @@ export class RoleAnalyticsService {
     alumnusUnfiltered: AlumniAnalyticsEntity[],
     query: QueryParamsDto,
   ): Promise<RoleListResponseDto> {
-    const alumnus = applyDateFilters(alumnusUnfiltered, query);
     const requestedLevel = query.escoClassificationLevel;
     const isGranular = requestedLevel && requestedLevel >= 5;
 
-    const allRoles = alumnus
-      .flatMap((alumni) => alumni.roles || [])
-      .filter((role) => role.jobClassification?.escoClassification);
+    const classificationAggregates = await this.alumniRepository.getJobClassificationAggregates(query);
 
-    const uniqueCodes = new Map<string, string>();
-    for (const role of allRoles) {
+    const hierarchyMap = new Map<string, EscoClassificationAnalyticsEntity>();
+    const roleMap = new Map<string, RoleListItemDto>();
+    const uniqueCodesToFetch = new Set<string>();
+
+    for (const job of classificationAggregates) {
+      if (!job.EscoClassification) continue;
+
       let actualCode: string | undefined;
-      let resolvedCode: string | undefined;
+      const roleLevel = job.EscoClassification.level;
+      const rawCode = job.EscoClassification.code;
 
-      const roleLevel = role.jobClassification!.escoClassification.level;
-      const rawCode = role.jobClassification!.escoClassification.code;
-
-      // Skip roles classified at a lower level than requested, if granular
       if (isGranular && requestedLevel && roleLevel < requestedLevel) {
         continue;
       }
 
-      if (isGranular) {
-        // If role is at the same level as requested, use it as is
+      if (isGranular && requestedLevel) {
         if (roleLevel === requestedLevel) {
           actualCode = rawCode;
-          resolvedCode = rawCode;
         } else {
-          // For roles at a higher level, truncate to requested level
-          // e.g., for level 5, '2511.14.1' becomes '2511.14'
           const parts = rawCode.split('.');
           const baseCode = parts[0];
-          const relevantParts = parts.slice(1, requestedLevel - 3); // -3 because first part is 4 digits
+          const relevantParts = parts.slice(1, requestedLevel - 3);
           actualCode = baseCode + '.' + relevantParts.join('.');
-          resolvedCode = actualCode;
         }
       } else {
-        actualCode = role.jobClassification!.escoClassification.code.slice(
-          0,
-          requestedLevel,
-        );
-        resolvedCode = actualCode;
+        actualCode = rawCode.slice(0, requestedLevel);
       }
-      if (!actualCode || !resolvedCode) continue;
-      uniqueCodes.set(actualCode, resolvedCode);
-    }
 
-    const hierarchyMap = new Map<string, EscoClassificationAnalyticsEntity>();
-    if (uniqueCodes.size > 0) {
-      const classifications = await this.roleRepository.getClassifications(
-        Array.from(uniqueCodes.values()),
-      );
-      classifications.forEach((classification) => {
-        if (classification) {
-          hierarchyMap.set(classification.code, classification);
-        }
-      });
-    }
+      if (!actualCode) continue;
 
-    const roleMap = new Map<string, RoleListItemDto>();
-    for (const role of allRoles) {
-      let { code, titleEn, level, escoUrl } =
-        role.jobClassification!.escoClassification;
-
-      // Let's return early if we don't have a hierarchy for this code
-      const hierarchy = isGranular
-        ? hierarchyMap.get(code)
-        : hierarchyMap.get(code.slice(0, requestedLevel));
-      if (!hierarchy) {
-        continue;
-      }
-      code = hierarchy.code;
-      titleEn = hierarchy.titleEn;
-      level = hierarchy.level;
-      escoUrl = hierarchy.escoUrl;
-
-      const existingRole = roleMap.get(code);
+      const existingRole = roleMap.get(actualCode);
       if (existingRole) {
         existingRole.count++;
       } else {
-        roleMap.set(code, {
-          name: titleEn,
-          code: code,
-          level: requestedLevel || level,
-          escoUrl: escoUrl,
+        uniqueCodesToFetch.add(actualCode);
+        roleMap.set(actualCode, {
+          name: '', // Will be filled once we fetch hierarchy
+          code: actualCode,
+          level: requestedLevel || roleLevel,
+          escoUrl: '',
           count: 1,
           trend: [],
         });
       }
+    }
+
+    if (uniqueCodesToFetch.size > 0) {
+      const classifications = await this.roleRepository.getClassifications(
+        Array.from(uniqueCodesToFetch),
+      );
+      classifications.forEach((classification) => {
+        if (classification) {
+          const role = roleMap.get(classification.code);
+          if (role) {
+            role.name = classification.titleEn;
+            role.escoUrl = classification.escoUrl ?? '';
+          }
+        }
+      });
     }
 
     const roles = Array.from(roleMap.values());
@@ -135,10 +111,10 @@ export class RoleAnalyticsService {
       const trends = await Promise.all(
         roles.map((role) =>
           this.trendAnalyticsService.getRoleTrend({
-            data: alumnusUnfiltered,
             entityId: isGranular
               ? role.code
               : role.code.slice(0, requestedLevel),
+            query,
           }),
         ),
       );
