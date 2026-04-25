@@ -47,12 +47,18 @@ class LoggingMiddleware(BaseHTTPMiddleware):
             raise
 
 
+PUBLIC_PATHS = {"/health"}
+
+
 class APIKeyMiddleware(BaseHTTPMiddleware):
     """
     Middleware to authenticate requests using an API key.
     """
 
     async def dispatch(self, request: Request, call_next: RequestResponseEndpoint) -> Response:
+        if request.url.path in PUBLIC_PATHS:
+            return await call_next(request)
+
         # Get API key from header
         api_key = request.headers.get("X-API-Key")
 
