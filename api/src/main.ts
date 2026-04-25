@@ -8,6 +8,9 @@ declare const module: any;
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
+  // Trust proxy is required for Secure cookies to work behind Vercel/reverse proxies
+  app.getHttpAdapter().getInstance().set('trust proxy', 1);
+
   app.use(cookieParser())
   app.use(compression())
 
