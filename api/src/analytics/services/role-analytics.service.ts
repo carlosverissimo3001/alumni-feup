@@ -87,12 +87,8 @@ export class RoleAnalyticsService {
 
     const hierarchyMap = new Map<string, EscoClassificationAnalyticsEntity>();
     if (uniqueCodes.size > 0) {
-      const classifications = await Promise.all(
-        Array.from(uniqueCodes.values()).map(async (resolvedCode) => {
-          const result =
-            await this.roleRepository.getClassification(resolvedCode);
-          return result;
-        }),
+      const classifications = await this.roleRepository.getClassifications(
+        Array.from(uniqueCodes.values()),
       );
       classifications.forEach((classification) => {
         if (classification) {
