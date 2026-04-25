@@ -2,10 +2,16 @@
 
 import logging
 import time
-from typing import Any, Dict, Optional
+from typing import Any, Dict, Optional, Union
 
 import httpx
 from httpx import Response
+
+# Per-phase timeout policy applied to every HTTPClient.
+# A single overall timeout lets a hung connect/write silently burn the read
+# budget; explicit per-phase values keep slow networks visible.
+DEFAULT_CONNECT_TIMEOUT = 10.0
+DEFAULT_WRITE_TIMEOUT = 10.0
 from tenacity import (
     before_sleep_log,
     retry,
@@ -29,7 +35,7 @@ class HTTPClient:
     def __init__(
         self,
         base_url: Optional[str] = None,
-        timeout: int = 30,
+        timeout: Union[int, float, httpx.Timeout] = 30,
         max_retries: int = 3,
         headers: Optional[Dict[str, str]] = None,
     ):
@@ -38,12 +44,24 @@ class HTTPClient:
 
         Args:
             base_url: Base URL for all requests
-            timeout: Request timeout in seconds
+            timeout: Read timeout in seconds (int/float) or full httpx.Timeout.
+                Plain int/float is converted to per-phase timeouts: connect/write
+                pinned to DEFAULT_CONNECT_TIMEOUT/DEFAULT_WRITE_TIMEOUT, read+pool
+                using the supplied value. Pass an httpx.Timeout directly for full
+                control.
             max_retries: Maximum number of retry attempts
             headers: Default headers for all requests
         """
         self.base_url = base_url
-        self.timeout = timeout
+        if isinstance(timeout, (int, float)):
+            self.timeout = httpx.Timeout(
+                connect=DEFAULT_CONNECT_TIMEOUT,
+                read=float(timeout),
+                write=DEFAULT_WRITE_TIMEOUT,
+                pool=float(timeout),
+            )
+        else:
+            self.timeout = timeout
         self.max_retries = max_retries
         self.default_headers = headers or {}
 

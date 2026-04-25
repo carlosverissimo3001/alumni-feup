@@ -10,6 +10,7 @@ from app.schemas.location import (
     RoleLocationInput,
 )
 from app.services.coordinates import coordinates_service
+from app.utils.pipeline_timeout import with_pipeline_timeout
 from app.utils.role_db import (
     get_all_roles,
     get_role_raw_by_id,
@@ -62,7 +63,12 @@ class LocationService:
                     location=role_raw.location,
                 )
 
-                task = asyncio.create_task(location_agent.process_location(loc_input))
+                task = asyncio.create_task(
+                    with_pipeline_timeout(
+                        location_agent.process_location(loc_input),
+                        step="location.process_location",
+                    )
+                )
                 tasks.append(task)
 
             await asyncio.gather(*tasks)

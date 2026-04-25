@@ -9,6 +9,7 @@ from app.db.models import Alumni, Role
 from app.db.session import get_db
 from app.schemas.seniority import AlumniSeniorityParams, BatchSeniorityInput, RoleSeniorityInput
 from app.utils.alumni_db import find_all, find_by_ids
+from app.utils.pipeline_timeout import with_pipeline_timeout
 from app.utils.role_db import get_roles_by_alumni_id
 
 logger = logging.getLogger(__name__)
@@ -146,7 +147,10 @@ class SeniorityService:
         
 
             async with self.semaphore:
-                await seniority_agent.process_role_batch(batch_input)
+                await with_pipeline_timeout(
+                    seniority_agent.process_role_batch(batch_input),
+                    step="seniority.process_role_batch",
+                )
 
         except Exception as e:
             logger.error(f"Error processing roles for alumni {alumni_id}: {str(e)}")

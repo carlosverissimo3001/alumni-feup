@@ -30,6 +30,7 @@ from app.utils.consts import REMOTE_LOCATION_ID
 from app.utils.http_client import HTTPClient
 from app.utils.location_db import get_location
 from app.utils.misc.string import sanitize_linkedin_url
+from app.utils.pipeline_timeout import with_pipeline_timeout
 from app.utils.role_db import create_role, create_role_raw
 
 logger = logging.getLogger(__name__)
@@ -190,7 +191,12 @@ class LinkedInService:
                     country=country,
                     country_code=country_code,
                 )
-                self._create_background_task(location_agent.process_location(input))
+                self._create_background_task(
+                    with_pipeline_timeout(
+                        location_agent.process_location(input),
+                        step="location.process_location",
+                    )
+                )
 
             else:
                 location_id = location.id
