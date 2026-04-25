@@ -110,7 +110,7 @@ def get_esco_prompt(retry_count: int = 0) -> str:
 
 class JobClassificationAgent:
     def __init__(self):
-        self._redis_cache = Redis(host="localhost", port=6379, db=0)
+        self._redis_cache = Redis.from_url(settings.REDIS_URL)
         self.CACHE_TTL = 60 * 60 * 24  # 24 hours
         self.MAX_RETRIES = 3
 

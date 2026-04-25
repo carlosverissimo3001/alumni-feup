@@ -27,6 +27,9 @@ class Settings(BaseSettings):
     # Database Settings
     DATABASE_URL: PostgresDsn
 
+    # Redis Settings
+    REDIS_URL: str = "redis://localhost:6379/0"
+
     # OpenAI Settings
     OPENAI_DEFAULT_MODEL: str = "gpt-4o-mini"
     OPENAI_API_KEY: str = ""
