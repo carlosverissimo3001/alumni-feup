@@ -35,7 +35,7 @@ async def with_pipeline_timeout(
     try:
         return await asyncio.wait_for(coro, timeout=seconds)
     except asyncio.TimeoutError:
-        logger.error(
+        logger.exception(
             f"Pipeline step '{step}' timed out after {seconds}s",
             extra={"step": step, "timeout_seconds": seconds},
         )

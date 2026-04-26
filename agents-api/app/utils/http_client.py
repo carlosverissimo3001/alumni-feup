@@ -6,12 +6,6 @@ from typing import Any, Dict, Optional, Union
 
 import httpx
 from httpx import Response
-
-# Per-phase timeout policy applied to every HTTPClient.
-# A single overall timeout lets a hung connect/write silently burn the read
-# budget; explicit per-phase values keep slow networks visible.
-DEFAULT_CONNECT_TIMEOUT = 10.0
-DEFAULT_WRITE_TIMEOUT = 10.0
 from tenacity import (
     before_sleep_log,
     retry,
@@ -21,6 +15,22 @@ from tenacity import (
 )
 
 from app.core.config import settings
+
+# Per-phase timeout policy applied to every HTTPClient.
+# A single overall timeout lets a hung connect/write silently burn the read
+# budget; explicit per-phase values keep slow networks visible.
+DEFAULT_CONNECT_TIMEOUT = 10.0
+DEFAULT_WRITE_TIMEOUT = 10.0
+
+# Retry on every per-phase timeout that explicit httpx.Timeout can surface,
+# so write/pool stalls get the same backoff treatment as connect/read.
+RETRYABLE_HTTPX_ERRORS = (
+    httpx.ConnectTimeout,
+    httpx.ReadTimeout,
+    httpx.WriteTimeout,
+    httpx.PoolTimeout,
+    httpx.ConnectError,
+)
 
 logger = logging.getLogger(__name__)
 # Disable noisy HTTPX logs
@@ -103,9 +113,7 @@ class HTTPClient:
             await self.async_client.aclose()
 
     @retry(
-        retry=retry_if_exception_type(
-            (httpx.ConnectTimeout, httpx.ReadTimeout, httpx.ConnectError)
-        ),
+        retry=retry_if_exception_type(RETRYABLE_HTTPX_ERRORS),
         stop=stop_after_attempt(3),
         wait=wait_exponential(multiplier=1, min=1, max=10),
         before_sleep=before_sleep_log(logger, logging.WARNING),
@@ -145,9 +153,7 @@ class HTTPClient:
             raise
 
     @retry(
-        retry=retry_if_exception_type(
-            (httpx.ConnectTimeout, httpx.ReadTimeout, httpx.ConnectError)
-        ),
+        retry=retry_if_exception_type(RETRYABLE_HTTPX_ERRORS),
         stop=stop_after_attempt(3),
         wait=wait_exponential(multiplier=1, min=1, max=10),
         before_sleep=before_sleep_log(logger, logging.WARNING),
