@@ -4,19 +4,7 @@
   "packages": {
     "python": "3.12"
   },
-  "steps": {
-    "prefetch-models": {
-      "inputs": [{ "step": "build" }],
-      "variables": {
-        "HF_HOME": "/app/.cache/huggingface"
-      },
-      "commands": [
-        "uv run python scripts/prefetch_models.py"
-      ]
-    }
-  },
   "deploy": {
-    "inputs": [{ "step": "prefetch-models" }],
     "variables": {
       "HF_HOME": "/app/.cache/huggingface",
       "PYTHONUNBUFFERED": "1"

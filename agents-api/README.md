@@ -219,7 +219,9 @@ Call this service from the NestJS API via Railway's private network (`agents-api
 
 ### Sentence-transformers model cache
 
-`railpack.json` defines a `prefetch-models` build step that pre-downloads `cross-encoder/ms-marco-MiniLM-L-6-v2` into `/app/.cache/huggingface` (set via `HF_HOME`), so cold starts don't pay the ~90 MB download. The step chains off the default `build` step (which runs `uv sync` to install the project), and the deploy stage takes its output as input — so the cached model lands in the runtime image. No volume mount needed.
+`HF_HOME` is set to `/app/.cache/huggingface` in `railpack.json` so the `cross-encoder/ms-marco-MiniLM-L-6-v2` weights download to a writable path on first request. The first request after a cold start pays a ~22s / ~90 MB download cost; subsequent requests in the same container hit the warm cache. Railway containers don't recycle aggressively so the amortised cost is small.
+
+A previous attempt to pre-cache the weights at build time via a custom `prefetch-models` step was reverted — overriding `deploy.inputs` to chain off a custom step drops Railpack's default mise layer (which provides the Python interpreter the venv shebangs reference), so the runtime image fails to boot. If we want build-time pre-caching back, the supported pattern is a Railway volume mount, not a custom step.
 
 ### Healthcheck
 
