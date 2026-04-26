@@ -185,7 +185,7 @@ pytest
 
 ## Deployment (Railway)
 
-The service deploys to Railway via Nixpacks. Build/runtime config lives in `nixpacks.toml` and `railway.toml`.
+The service deploys to Railway via [Railpack](https://railpack.com) (Railway's default builder since March 2025; replaced Nixpacks). Build config lives in `railpack.json`; deploy/runtime config (builder selection, healthcheck, restart policy, start command) lives in `railway.toml`.
 
 ### Required env vars
 
@@ -219,7 +219,7 @@ Call this service from the NestJS API via Railway's private network (`agents-api
 
 ### Sentence-transformers model cache
 
-`nixpacks.toml` pre-downloads `cross-encoder/ms-marco-MiniLM-L-6-v2` at build time into `/app/.cache/huggingface` (set via `HF_HOME`), so cold starts don't pay the ~90 MB download. No volume mount needed; the cache lives in the build image.
+`railpack.json` defines a `prefetch-models` build step that pre-downloads `cross-encoder/ms-marco-MiniLM-L-6-v2` into `/app/.cache/huggingface` (set via `HF_HOME`), so cold starts don't pay the ~90 MB download. The step chains off the default `build` step (which runs `uv sync` to install the project), and the deploy stage takes its output as input — so the cached model lands in the runtime image. No volume mount needed.
 
 ### Healthcheck
 
