@@ -1,0 +1,25 @@
+{
+  "$schema": "https://schema.railpack.com",
+  "provider": "python",
+  "packages": {
+    "python": "3.12"
+  },
+  "steps": {
+    "prefetch-models": {
+      "inputs": [{ "step": "build" }],
+      "variables": {
+        "HF_HOME": "/app/.cache/huggingface"
+      },
+      "commands": [
+        "uv run python -c \"from sentence_transformers.cross_encoder import CrossEncoder; CrossEncoder('cross-encoder/ms-marco-MiniLM-L-6-v2', device='cpu')\""
+      ]
+    }
+  },
+  "deploy": {
+    "inputs": [{ "step": "prefetch-models" }],
+    "variables": {
+      "HF_HOME": "/app/.cache/huggingface",
+      "PYTHONUNBUFFERED": "1"
+    }
+  }
+}
