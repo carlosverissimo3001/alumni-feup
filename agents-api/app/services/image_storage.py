@@ -1,8 +1,8 @@
 import logging
 
 import cloudinary
-import cloudinary.uploader
 import cloudinary.exceptions
+import cloudinary.uploader
 
 from app.core.config import settings
 from app.db import get_db
@@ -55,7 +55,9 @@ class ImageStorageService:
             The secure URL of the uploaded image, or None if upload fails.
         """
         try:
-            upload_result = cloudinary.uploader.upload(image_url, public_id=public_id)
+            upload_result = cloudinary.uploader.upload(
+                image_url, public_id=public_id, timeout=60
+            )
             return upload_result["secure_url"]
         except (cloudinary.exceptions.Error, Exception) as e:
             logger.error(f"Failed to upload image {image_url}: {str(e)}")

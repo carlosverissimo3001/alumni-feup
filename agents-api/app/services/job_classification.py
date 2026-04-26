@@ -9,6 +9,7 @@ from app.schemas.job_classification import (
     AlumniJobClassificationParams,
 )
 from app.utils.alumni_db import find_all, find_by_ids
+from app.utils.pipeline_timeout import with_pipeline_timeout
 from app.utils.role_db import get_extended_roles_by_alumni_id
 
 logger = logging.getLogger(__name__)
@@ -31,7 +32,10 @@ class JobClassificationService:
 
             for i in range(0, len(roles), self.MAX_CONCURRENT):
                 batch = roles[i : i + self.MAX_CONCURRENT]
-                await job_classification_agent._process_roles_batch(batch, alumni_id)
+                await with_pipeline_timeout(
+                    job_classification_agent._process_roles_batch(batch, alumni_id),
+                    step="job_classification.process_roles_batch",
+                )
                 if i + self.MAX_CONCURRENT < len(roles):
                     await asyncio.sleep(0.1)
 

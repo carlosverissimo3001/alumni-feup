@@ -22,6 +22,7 @@ from app.utils.industry_db import get_industry_by_name
 from app.utils.mappings import get_levels_fyi_name
 from app.utils.misc.convert import convert_company_size_to_enum, convert_company_type_to_enum
 from app.utils.misc.string import clean_website_url
+from app.utils.pipeline_timeout import with_pipeline_timeout
 
 logger = logging.getLogger(__name__)
 
@@ -269,7 +270,10 @@ class CompanyService:
             # Now that the company is updated, trigger location processing
             if company_response.headquarters and company_response.country_code:
                 # Execute location agent after company is saved to database
-                await location_agent.process_location(input)
+                await with_pipeline_timeout(
+                    location_agent.process_location(input),
+                    step="location.process_location",
+                )
         except Exception as e:
             logger.error(f"Error updating company {company_id}: {str(e)}")
             raise

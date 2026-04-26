@@ -9,6 +9,7 @@ from app.schemas.location import LocationType, RoleLocationInput
 from app.schemas.role import RoleResolveLocationParams
 from app.utils.consts import REMOTE_LOCATION_ID
 from app.utils.misc.convert import linkedin_date_to_timestamp
+from app.utils.pipeline_timeout import with_pipeline_timeout
 from app.utils.role_db import (
     get_all_roles,
     get_role_raw_by_id,
@@ -66,7 +67,12 @@ class RoleService:
                     location=role_raw.location,
                 )
 
-                task = asyncio.create_task(location_agent.process_location(input))
+                task = asyncio.create_task(
+                    with_pipeline_timeout(
+                        location_agent.process_location(input),
+                        step="location.process_location",
+                    )
+                )
                 tasks.append(task)
 
             await asyncio.gather(*tasks)
