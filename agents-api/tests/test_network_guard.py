@@ -12,9 +12,9 @@ from tests.conftest import NetworkAccessAttempted
 
 
 def test_outbound_connection_is_refused():
-    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    with pytest.raises(NetworkAccessAttempted):
-        sock.connect(("api.openai.com", 443))
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
+        with pytest.raises(NetworkAccessAttempted):
+            sock.connect(("api.openai.com", 443))
 
 
 def test_create_connection_is_refused():
@@ -23,9 +23,9 @@ def test_create_connection_is_refused():
 
 
 def test_refusal_names_the_host():
-    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    with pytest.raises(NetworkAccessAttempted, match="api.anthropic.com:443"):
-        sock.connect(("api.anthropic.com", 443))
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
+        with pytest.raises(NetworkAccessAttempted, match="api.anthropic.com:443"):
+            sock.connect(("api.anthropic.com", 443))
 
 
 @pytest.mark.parametrize("host", ["127.0.0.1", "localhost", "::1"])

@@ -35,7 +35,11 @@ import pytest  # noqa: E402
 
 # Loopback stays open so tests can reach a Postgres/Redis service container.
 # Everything else is refused.
-_ALLOWED_HOSTS = frozenset({"127.0.0.1", "::1", "localhost", "0.0.0.0"})
+#
+# 0.0.0.0 is deliberately absent: it is the wildcard *bind* address, not a
+# loopback one, and nothing connects to it as a destination. A container that
+# binds 0.0.0.0 is still reached over 127.0.0.1.
+_ALLOWED_HOSTS = frozenset({"127.0.0.1", "::1", "localhost"})
 
 _real_connect = socket.socket.connect
 _real_connect_ex = socket.socket.connect_ex
