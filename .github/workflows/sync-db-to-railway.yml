@@ -233,7 +233,18 @@ jobs:
           # emptied as part of the restore rather than in a separate step.
           # --no-owner/--no-privileges because the roles differ between the VM
           # and Railway; without them every GRANT and ALTER OWNER fails.
-          echo "Streaming dump into Railway. This replaces every table."
+          # Deliberately NOT piping pg_dump straight into psql. On a mid-stream
+          # pg_dump failure psql sees a clean EOF, has no error to trip
+          # ON_ERROR_STOP on, and commits the partial restore - leaving the
+          # target half-written. Dumping to a file first means a truncated dump
+          # is caught before anything touches Railway.
+          #
+          # The file stays on the VM, which already holds this data, and is
+          # removed in the always() cleanup step below. It is never uploaded.
+          DUMP=$(mktemp /tmp/alumni-sync-XXXXXX.sql)
+          echo "DUMP_FILE=$DUMP" >> "$GITHUB_ENV"
+          chmod 600 "$DUMP"
+
           echo "pg_dump binary: ${PG_DUMP}"
           # PG_DUMP may be a plain path or a `sudo docker exec ...` prefix, so it
           # is intentionally word-split here rather than quoted.
@@ -243,12 +254,39 @@ jobs:
             --clean --if-exists \
             --no-owner --no-privileges \
             --quote-all-identifiers \
-          | psql "$TARGET_URL" \
-              --quiet \
-              --set ON_ERROR_STOP=on \
-              --single-transaction
+            > "$DUMP"
+
+          BYTES=$(stat -c%s "$DUMP")
+          echo "dump written: $BYTES bytes"
+          if [ "$BYTES" -lt 100000 ]; then
+            echo "Dump is implausibly small for ~3300 alumni. Refusing to restore."
+            exit 1
+          fi
+          # pg_dump terminates a complete plain dump with this marker.
+          if ! tail -5 "$DUMP" | grep -q "PostgreSQL database dump complete"; then
+            echo "Dump has no completion marker - it is truncated. Refusing to restore."
+            exit 1
+          fi
+          echo "Dump looks complete."
+
+          echo "Restoring into Railway. This replaces every table."
+          psql "$TARGET_URL" \
+            --quiet \
+            --set ON_ERROR_STOP=on \
+            --single-transaction \
+            --file "$DUMP"
 
           echo "Restore completed."
+
+      - name: Remove the local dump
+        if: always()
+        run: |
+          if [ -n "${DUMP_FILE:-}" ] && [ -f "$DUMP_FILE" ]; then
+            shred -u "$DUMP_FILE" 2>/dev/null || rm -f "$DUMP_FILE"
+            echo "Removed $DUMP_FILE"
+          else
+            echo "No dump file to remove."
+          fi
 
       - name: Row counts after
         if: inputs.mode == 'sync'
