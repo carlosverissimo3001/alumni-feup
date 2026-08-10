@@ -1,0 +1,172 @@
+name: Sync VM database to Railway
+
+# Copies the VM's Postgres into Railway's, replacing what is there.
+#
+# Runs on the self-hosted runner, which lives on the VM, so it reaches the
+# source database locally - no VPN needed. The dump is streamed directly into
+# Railway over the wire and never written to disk or uploaded as an artifact:
+# these tables hold personal_email and linkedin_url for ~3000 people, and
+# artifacts on a public repository are publicly downloadable.
+#
+# workflow_dispatch only. A pull_request trigger on a self-hosted runner would
+# let a fork run arbitrary code here, and forks never receive secrets anyway.
+#
+# Required repository secret:
+#   RAILWAY_DATABASE_URL - Railway Postgres DATABASE_PUBLIC_URL
+#     (railway variables --service Postgres, then copy DATABASE_PUBLIC_URL)
+
+on:
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "inspect = report only. sync = REPLACE the Railway database."
+        type: choice
+        required: true
+        default: inspect
+        options:
+          - inspect
+          - sync
+      confirm:
+        description: "Type REPLACE-RAILWAY to allow sync mode. Ignored when inspecting."
+        type: string
+        required: false
+        default: ""
+
+concurrency:
+  group: sync-db-to-railway
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    name: "Sync (${{ inputs.mode }})"
+    runs-on: self-hosted
+
+    env:
+      # Never echoed. GitHub masks secrets in logs, but the URLs are also only
+      # ever passed to psql/pg_dump via environment, not on the command line,
+      # so they cannot leak through a process listing either.
+      TARGET_URL: ${{ secrets.RAILWAY_DATABASE_URL }}
+
+    steps:
+      - name: Guard sync mode
+        if: inputs.mode == 'sync'
+        run: |
+          if [ "${{ inputs.confirm }}" != "REPLACE-RAILWAY" ]; then
+            echo "Sync mode requires confirm = REPLACE-RAILWAY. Got something else."
+            echo "Re-run with the exact confirmation string, or use inspect mode."
+            exit 1
+          fi
+          echo "Confirmation accepted. The Railway database will be replaced."
+
+      - name: Check the target secret is configured
+        run: |
+          if [ -z "${TARGET_URL:-}" ]; then
+            echo "RAILWAY_DATABASE_URL is not set as a repository secret."
+            echo "Get it with: railway variables --service Postgres  (DATABASE_PUBLIC_URL)"
+            exit 1
+          fi
+          echo "Target secret is present."
+
+      - name: Locate the source database URL
+        run: |
+          set -euo pipefail
+          # The API's .env on the VM holds DATABASE_URL for the local Postgres.
+          ENV_FILE=~/newAlumniProj/api/.env
+          if [ ! -f "$ENV_FILE" ]; then
+            echo "Expected $ENV_FILE - not found."
+            echo "Run the VM Diagnostics workflow to see the actual layout."
+            exit 1
+          fi
+
+          SOURCE_URL=$(grep -E '^DATABASE_URL=' "$ENV_FILE" | head -1 | cut -d= -f2- | tr -d '"'"'"'')
+          if [ -z "$SOURCE_URL" ]; then
+            echo "No DATABASE_URL line in $ENV_FILE."
+            exit 1
+          fi
+
+          # Pass forward without printing. ::add-mask:: keeps it out of the log
+          # even if a later step echoes it by accident.
+          echo "::add-mask::$SOURCE_URL"
+          echo "SOURCE_URL=$SOURCE_URL" >> "$GITHUB_ENV"
+          echo "Source URL loaded from $ENV_FILE."
+
+      - name: Check tooling and connectivity
+        run: |
+          set -euo pipefail
+          echo "--- versions ---"
+          pg_dump --version || { echo "pg_dump missing on the VM"; exit 1; }
+          psql --version    || { echo "psql missing on the VM"; exit 1; }
+
+          echo
+          echo "--- source (VM, local) ---"
+          psql "$SOURCE_URL" -tAc "select version()" | head -1
+
+          echo
+          echo "--- target (Railway, outbound) ---"
+          # University networks sometimes block non-standard outbound ports;
+          # Railway's Postgres proxy does not listen on 443.
+          if ! psql "$TARGET_URL" -tAc "select version()" | head -1; then
+            echo "Could not reach Railway Postgres from the VM."
+            echo "Most likely outbound egress to the proxy port is blocked."
+            exit 1
+          fi
+
+      - name: Row counts before
+        run: |
+          set -euo pipefail
+          COUNTS="select 'alumni', count(*) from alumni
+                  union all select 'role', count(*) from role
+                  union all select 'company', count(*) from company
+                  union all select 'course', count(*) from course
+                  union all select 'location', count(*) from location
+                  union all select 'graduation', count(*) from graduation
+                  union all select 'migrations', count(*) from _prisma_migrations
+                  order by 1"
+          echo "--- source (VM) ---"
+          psql "$SOURCE_URL" -tA -F' ' -c "$COUNTS" || true
+          echo
+          echo "--- target (Railway), before ---"
+          psql "$TARGET_URL" -tA -F' ' -c "$COUNTS" || echo "(target may be empty)"
+
+      - name: Replace the Railway database
+        if: inputs.mode == 'sync'
+        run: |
+          set -euo pipefail
+
+          # --clean --if-exists emits DROP before each CREATE, so the target is
+          # emptied as part of the restore rather than in a separate step.
+          # --no-owner/--no-privileges because the roles differ between the VM
+          # and Railway; without them every GRANT and ALTER OWNER fails.
+          echo "Streaming dump into Railway. This replaces every table."
+          pg_dump "$SOURCE_URL" \
+            --format=plain \
+            --clean --if-exists \
+            --no-owner --no-privileges \
+            --quote-all-identifiers \
+          | psql "$TARGET_URL" \
+              --quiet \
+              --set ON_ERROR_STOP=on \
+              --single-transaction
+
+          echo "Restore completed."
+
+      - name: Row counts after
+        if: inputs.mode == 'sync'
+        run: |
+          set -euo pipefail
+          COUNTS="select 'alumni', count(*) from alumni
+                  union all select 'role', count(*) from role
+                  union all select 'company', count(*) from company
+                  union all select 'course', count(*) from course
+                  union all select 'location', count(*) from location
+                  union all select 'graduation', count(*) from graduation
+                  union all select 'migrations', count(*) from _prisma_migrations
+                  order by 1"
+          echo "--- source (VM) ---"
+          psql "$SOURCE_URL" -tA -F' ' -c "$COUNTS"
+          echo
+          echo "--- target (Railway), after ---"
+          psql "$TARGET_URL" -tA -F' ' -c "$COUNTS"
+          echo
+          echo "These two should now agree. If migrations differ, the next API"
+          echo "deploy will apply whatever is pending via prisma migrate deploy."

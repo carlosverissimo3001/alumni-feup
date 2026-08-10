@@ -1,0 +1,107 @@
+name: VM Diagnostics
+
+# Read-only inspection of the deploy VM, for when SSH/VPN access is unavailable.
+# The self-hosted runner polls GitHub outbound, so this works without reaching
+# the box directly.
+#
+# workflow_dispatch only, deliberately. A pull_request trigger on a self-hosted
+# runner would let a fork run arbitrary code on this machine; manual dispatch
+# requires write access to the repo.
+#
+# Nothing here writes, installs, restarts, or prints secrets.
+
+on:
+  workflow_dispatch:
+
+concurrency:
+  group: vm-diagnostics
+  cancel-in-progress: true
+
+jobs:
+  inspect:
+    name: Inspect VM state
+    runs-on: self-hosted
+
+    steps:
+      - name: Where are we
+        run: |
+          echo "host:    $(hostname)"
+          echo "user:    $(whoami)"
+          echo "home:    $HOME"
+          echo "uptime:  $(uptime -p 2>/dev/null || uptime)"
+
+      - name: Is the checkout where the deploy expects it
+        run: |
+          # deploy-backend.yml assumes the repo root is ~/newAlumniProj.
+          for candidate in ~/newAlumniProj ~/newAlumniProj/api ~/alumni-feup; do
+            if [ -d "$candidate/.git" ]; then
+              echo "git repo root found at: $candidate"
+            elif [ -d "$candidate" ]; then
+              echo "exists but not a git root: $candidate"
+            else
+              echo "absent: $candidate"
+            fi
+          done
+
+      - name: What commit is deployed
+        run: |
+          cd ~/newAlumniProj 2>/dev/null || { echo "~/newAlumniProj missing - stopping"; exit 0; }
+          echo "branch:  $(git rev-parse --abbrev-ref HEAD)"
+          echo "commit:  $(git log -1 --format='%h %ci %s')"
+          echo
+          echo "--- how far behind origin/main ---"
+          git fetch --quiet origin main || echo "(fetch failed)"
+          echo "behind by: $(git rev-list --count HEAD..origin/main 2>/dev/null || echo '?') commits"
+          echo
+          echo "--- uncommitted changes ---"
+          git status --porcelain | head -20 || true
+
+      - name: Which package manager does the box have
+        run: |
+          # deploy-backend.yml now needs pnpm via corepack. Confirm before enabling.
+          echo "node:     $(node --version 2>/dev/null || echo 'ABSENT')"
+          echo "npm:      $(npm --version 2>/dev/null || echo 'ABSENT')"
+          echo "corepack: $(corepack --version 2>/dev/null || echo 'ABSENT')"
+          echo "pnpm:     $(pnpm --version 2>/dev/null || echo 'ABSENT')"
+          echo "yarn:     $(yarn --version 2>/dev/null || echo 'ABSENT')"
+          echo "python3:  $(python3 --version 2>/dev/null || echo 'ABSENT')"
+          echo "uv:       $(uv --version 2>/dev/null || echo 'ABSENT')"
+
+      - name: Lockfile state
+        run: |
+          cd ~/newAlumniProj 2>/dev/null || exit 0
+          # A stale api/yarn.lock means the checkout predates the pnpm migration.
+          for f in pnpm-lock.yaml pnpm-workspace.yaml api/yarn.lock app/yarn.lock; do
+            [ -f "$f" ] && echo "present: $f" || echo "absent:  $f"
+          done
+
+      - name: What is running
+        run: |
+          echo "--- pm2 ---"
+          pm2 list 2>/dev/null || echo "pm2 not available"
+          echo
+          echo "--- listening ports ---"
+          (ss -lntp 2>/dev/null || netstat -lntp 2>/dev/null || echo "no ss/netstat") | head -20
+
+      - name: Are the services answering
+        run: |
+          # Status codes only. No response bodies, in case anything echoes config.
+          for target in "API      http://localhost:3010/" \
+                        "agents   http://localhost:8000/health"; do
+            name=$(echo "$target" | awk '{print $1}')
+            url=$(echo "$target" | awk '{print $2}')
+            code=$(curl -s -o /dev/null -w '%{http_code}' --max-time 5 "$url" 2>/dev/null || echo "no-response")
+            echo "$name -> $code"
+          done
+          echo
+          echo "--- postgres / redis ---"
+          (pg_isready 2>/dev/null || echo "pg_isready not available")
+          (redis-cli ping 2>/dev/null || echo "redis-cli not available")
+
+      - name: Room to deploy
+        run: |
+          echo "--- disk ---"
+          df -h "$HOME" | tail -2
+          echo
+          echo "--- memory ---"
+          free -h 2>/dev/null || echo "free not available"
