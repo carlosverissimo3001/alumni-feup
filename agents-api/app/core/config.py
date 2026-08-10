@@ -1,7 +1,7 @@
 from typing import List, Optional
 
 from pydantic import PostgresDsn, field_validator
-from pydantic_settings import BaseSettings
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class Settings(BaseSettings):
@@ -63,10 +63,11 @@ class Settings(BaseSettings):
     # Levels.fyi Settings
     LEVELS_FYI_BASE_URL: str = "https://www.levels.fyi/api/salaries"
 
-    class Config:
-        env_file = ".env"
-        case_sensitive = True
-        extra = "ignore"
+    model_config = SettingsConfigDict(
+        env_file=".env",
+        case_sensitive=True,
+        extra="ignore",
+    )
 
 
 # Create settings instance
