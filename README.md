@@ -3,7 +3,7 @@
 
 🔗[alumni-feup.com](https://www.alumni-feup.com/)
 
-[![Build Backend](https://img.shields.io/github/actions/workflow/status/carlosverissimo3001/alumni-feup/.github/workflows/deploy-backend.yml)]() [![Vercel](https://vercelbadge.vercel.app/api/carlosverissimo3001/alumni-feup)]() 
+[![agents-api tests](https://img.shields.io/github/actions/workflow/status/carlosverissimo3001/alumni-feup/agents-api-tests.yml?branch=main&label=agents-api%20tests)]() [![Vercel](https://vercelbadge.vercel.app/api/carlosverissimo3001/alumni-feup)]() 
 [![PRs Welcome ✨](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)]()
 [![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)]()
 
@@ -24,7 +24,7 @@ Built by **Carlos Veríssimo** and **José Pessoa**, it extends the original
 - 🤖 AI/ML Enrichment: job classification, seniority inference, geo resolution (FastAPI agents, LangChain)
 - 🛠️ Admin tools: secure CSV imports, faculty/degree creation, and more to come
 - ⚙️ Modern backend: Nest.js, Prisma, PostgreSQL
-- 🚢 DevOps-ready: Docker, Vercel deployment, CI on PRs
+- 🚢 DevOps-ready: Docker, Railway + Vercel deployments, CI on PRs
 
 **Repository structure:**
 
@@ -47,7 +47,9 @@ Built by **Carlos Veríssimo** and **José Pessoa**, it extends the original
 | AI-Agents Infrastructure | FastAPI, LangChain, OpenAI |
 | Database(s) | PostgreSQL, Redis |
 
-Frontend is deployed on Vercel.
+Frontend is deployed on Vercel; the backend and agents API run on Railway,
+alongside managed Postgres and Redis. The API is served from
+`api.alumni-feup.com`.
 
 ## 🏁 Get Started
 
