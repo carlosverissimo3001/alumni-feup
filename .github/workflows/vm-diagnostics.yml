@@ -98,6 +98,45 @@ jobs:
           (pg_isready 2>/dev/null || echo "pg_isready not available")
           (redis-cli ping 2>/dev/null || echo "redis-cli not available")
 
+      - name: Postgres client tooling
+        run: |
+          # pg_dump refuses to dump a server newer than itself. The VM's server
+          # is 17.4 while the client on PATH is 14.17, so the sync needs a newer
+          # pg_dump from somewhere. Find every candidate.
+          echo "--- server version ---"
+          ENV_FILE=~/newAlumniProj/api/.env
+          if [ -f "$ENV_FILE" ]; then
+            SRC=$(grep -E '^DATABASE_URL=' "$ENV_FILE" | head -1 | cut -d= -f2- | tr -d '"'"'"'')
+            echo "::add-mask::$SRC"
+            psql "$SRC" -tAc "show server_version" 2>/dev/null || echo "could not query"
+          fi
+
+          echo
+          echo "--- pg_dump on PATH ---"
+          command -v pg_dump && pg_dump --version || echo "none"
+
+          echo
+          echo "--- other pg_dump binaries installed ---"
+          ls -1 /usr/lib/postgresql/*/bin/pg_dump 2>/dev/null || echo "none under /usr/lib/postgresql"
+          for b in /usr/lib/postgresql/*/bin/pg_dump; do
+            [ -x "$b" ] && echo "$b -> $("$b" --version)"
+          done
+
+          echo
+          echo "--- docker ---"
+          if command -v docker >/dev/null 2>&1; then
+            docker --version
+            echo "containers:"
+            docker ps --format '  {{.Names}}  {{.Image}}  {{.Status}}' 2>/dev/null \
+              || echo "  (cannot list - permission denied?)"
+          else
+            echo "docker not installed"
+          fi
+
+          echo
+          echo "--- can we install packages? ---"
+          sudo -n true 2>/dev/null && echo "passwordless sudo: yes" || echo "passwordless sudo: no"
+
       - name: Room to deploy
         run: |
           echo "--- disk ---"
