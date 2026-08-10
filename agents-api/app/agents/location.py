@@ -2,6 +2,7 @@ import asyncio
 import json
 import logging
 import time
+from functools import lru_cache
 from typing import List
 
 import openai
@@ -130,14 +131,23 @@ rate_limiter = TokenRateLimiter(
 )
 
 # Helper to estimate token usage
-try:
-    encoding = tiktoken.encoding_for_model(settings.OPENAI_DEFAULT_MODEL)
-except KeyError:
-    # Fallback to cl100k_base which is used by GPT-4 and newer models
-    encoding = tiktoken.get_encoding("cl100k_base")
+@lru_cache(maxsize=1)
+def get_encoding() -> tiktoken.Encoding:
+    """Resolve the tokenizer on first use, not at import.
+
+    tiktoken downloads the BPE vocabulary when its cache is cold, so resolving
+    this at module scope made this module — and app.main, which imports it —
+    impossible to import without network access.
+    """
+    try:
+        return tiktoken.encoding_for_model(settings.OPENAI_DEFAULT_MODEL)
+    except KeyError:
+        # Fallback to cl100k_base which is used by GPT-4 and newer models
+        return tiktoken.get_encoding("cl100k_base")
 
 
 def count_tokens(messages: List[SystemMessage | HumanMessage]) -> int:
+    encoding = get_encoding()
     return sum(len(encoding.encode(m.content)) for m in messages)
 
 
