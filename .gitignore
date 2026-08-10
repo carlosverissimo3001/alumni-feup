@@ -6,3 +6,6 @@ app/src/sdk/.openapi-generator/FILES
 app/src/sdk/.openapi-generator/VERSION
 app/src/sdk/docs/
 openapitools.json
+
+# Local operational scripts, not part of the deployed app
+/scripts/
