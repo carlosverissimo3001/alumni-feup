@@ -1,0 +1,53 @@
+name: agents-api tests
+
+# Deliberately NOT path-filtered to agents-api/**.
+#
+# A required status check that never runs blocks the PR forever - GitHub waits
+# for a check that will never report. Since this is a required check, it has to
+# run on every PR. The suite is ~10s and the uv cache makes installs cheap after
+# the first run, so the cost is small.
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+concurrency:
+  group: agents-api-tests-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    name: pytest
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: agents-api
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+          cache-dependency-glob: agents-api/uv.lock
+
+      - name: Set up Python
+        run: uv python install 3.12
+
+      - name: Install dependencies
+        run: uv sync --group dev
+
+      - name: Lint the test suite
+        # app/ still has 52 pre-existing violations, so it cannot gate yet.
+        # tests/ is clean - keep it that way rather than letting it rot too.
+        run: |
+          uv run ruff check tests/
+          uv run ruff format --check tests/
+
+      - name: Run tests
+        # The suite is hermetic: a session-scoped fixture refuses any
+        # non-loopback socket, so no test can reach a paid API from CI.
+        run: uv run pytest -q
