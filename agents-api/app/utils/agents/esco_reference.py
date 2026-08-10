@@ -1,3 +1,4 @@
+from functools import lru_cache
 from typing import List, TypedDict
 
 from langchain_core.tools import tool
@@ -10,7 +11,20 @@ from app.schemas.job_classification import EscoResult
 from app.utils.embeddings import generate_embedding
 from app.utils.esco_db import get_classification_by_code
 
-_cross_encoder = CrossEncoder("cross-encoder/ms-marco-MiniLM-L-6-v2", device="cpu")
+# Keep in sync with scripts/prefetch_models.py, which warms the HF cache at build time.
+CROSS_ENCODER_MODEL = "cross-encoder/ms-marco-MiniLM-L-6-v2"
+
+
+@lru_cache(maxsize=1)
+def get_cross_encoder() -> CrossEncoder:
+    """Load the reranker on first use, not at import.
+
+    Constructing a CrossEncoder reaches out to the HuggingFace Hub whenever the
+    local cache is cold, so doing it at module scope made this module — and
+    everything importing it, including app.main — impossible to import without
+    network access. Deferring the load also keeps it off the startup path.
+    """
+    return CrossEncoder(CROSS_ENCODER_MODEL, device="cpu")
 
 
 class EscoClassificationInfo(TypedDict):
@@ -130,6 +144,6 @@ def search_esco_classifications(query: str, top_k: int = 20) -> List[EscoResult]
 
 def rerank_esco(query: str, results: List[EscoResult], top_k: int = 5) -> List[EscoResult]:
     pairs = [[query, r.title] for r in results]
-    scores = _cross_encoder.predict(pairs)
+    scores = get_cross_encoder().predict(pairs)
     ranked = sorted(zip(results, scores), key=lambda x: x[1], reverse=True)
     return [r for r, _ in ranked[:top_k]]
