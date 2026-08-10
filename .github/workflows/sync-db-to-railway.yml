@@ -31,6 +31,11 @@ on:
         type: string
         required: false
         default: ""
+      allow_embedding_loss:
+        description: "Override the guard that blocks a sync which would destroy ESCO embeddings."
+        type: boolean
+        required: false
+        default: false
 
 concurrency:
   group: sync-db-to-railway
@@ -127,6 +132,59 @@ jobs:
           echo
           echo "--- target (Railway), before ---"
           psql "$TARGET_URL" -tA -F' ' -c "$COUNTS" || echo "(target may be empty)"
+
+      - name: Compare extensions and ESCO embeddings
+        run: |
+          set -euo pipefail
+          # Railway holds ~3000 OpenAI text-embedding-3-large vectors on
+          # esco_classification. They cost real money to generate, and
+          # agents-api has never run in production on the VM - so the source may
+          # not have pgvector installed at all. Surface that before anything
+          # destructive happens.
+          echo "--- extensions: source (VM) ---"
+          psql "$SOURCE_URL" -tA -F' ' -c "select extname, extversion from pg_extension order by 1"
+          echo
+          echo "--- extensions: target (Railway) ---"
+          psql "$TARGET_URL" -tA -F' ' -c "select extname, extversion from pg_extension order by 1"
+          echo
+
+          EMB="select count(*) || ' rows, ' || count(embedding) || ' with embeddings'
+               from esco_classification"
+          echo "esco_classification, source : $(psql "$SOURCE_URL" -tAc "$EMB" 2>/dev/null || echo 'table or column absent')"
+          echo "esco_classification, target : $(psql "$TARGET_URL" -tAc "$EMB" 2>/dev/null || echo 'table or column absent')"
+          echo
+          echo "--- tables on the target that the source lacks ---"
+          echo "(--clean will NOT drop these; they survive the restore)"
+          comm -13 \
+            <(psql "$SOURCE_URL" -tAc "select table_name from information_schema.tables where table_schema='public' order by 1") \
+            <(psql "$TARGET_URL" -tAc "select table_name from information_schema.tables where table_schema='public' order by 1") \
+            || true
+
+      - name: Guard against destroying embeddings
+        if: inputs.mode == 'sync'
+        run: |
+          set -euo pipefail
+          COUNT="select count(embedding) from esco_classification"
+          SRC=$(psql "$SOURCE_URL" -tAc "$COUNT" 2>/dev/null || echo 0)
+          TGT=$(psql "$TARGET_URL" -tAc "$COUNT" 2>/dev/null || echo 0)
+          SRC=${SRC:-0}; TGT=${TGT:-0}
+          echo "embeddings - source: $SRC, target: $TGT"
+
+          if [ "$SRC" -lt "$TGT" ]; then
+            echo
+            echo "The source has fewer ESCO embeddings than the target."
+            echo "Syncing would replace $TGT embeddings with $SRC and they would"
+            echo "have to be regenerated against the OpenAI API at real cost."
+            if [ "${{ inputs.allow_embedding_loss }}" != "true" ]; then
+              echo
+              echo "Refusing. Re-run with allow_embedding_loss = true if this is intended,"
+              echo "or exclude esco_classification from the dump and sync the rest."
+              exit 1
+            fi
+            echo "allow_embedding_loss is set - continuing anyway."
+          else
+            echo "Source is not behind the target. Safe to proceed."
+          fi
 
       - name: Replace the Railway database
         if: inputs.mode == 'sync'
