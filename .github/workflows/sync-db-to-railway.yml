@@ -95,11 +95,49 @@ jobs:
           echo "SOURCE_URL=$SOURCE_URL" >> "$GITHUB_ENV"
           echo "Source URL loaded from $ENV_FILE."
 
+      - name: Select a usable pg_dump
+        run: |
+          set -euo pipefail
+          # pg_dump refuses to dump a server newer than itself, and the VM ships
+          # only client 14 against a 17.4 server. Prefer a locally installed
+          # binary of a high enough major; otherwise borrow the one inside the
+          # Postgres container, which matches the server exactly.
+          SERVER_MAJOR=$(psql "$SOURCE_URL" -tAc "show server_version_num" | cut -c1-2)
+          echo "server major: $SERVER_MAJOR"
+
+          BEST=""; BEST_MAJOR=0
+          for candidate in $(command -v pg_dump || true) /usr/lib/postgresql/*/bin/pg_dump; do
+            [ -x "$candidate" ] || continue
+            major=$("$candidate" --version | grep -oE '[0-9]+' | head -1)
+            echo "  $candidate -> major $major"
+            if [ "$major" -gt "$BEST_MAJOR" ]; then BEST="$candidate"; BEST_MAJOR="$major"; fi
+          done
+
+          if [ -n "$BEST" ] && [ "$BEST_MAJOR" -ge "$SERVER_MAJOR" ]; then
+            echo "PG_DUMP=$BEST" >> "$GITHUB_ENV"
+            echo "Using local $BEST (major $BEST_MAJOR)."
+            exit 0
+          fi
+
+          echo "No local pg_dump >= $SERVER_MAJOR (best was $BEST_MAJOR)."
+          echo "Falling back to the Postgres container's own binary."
+
+          CONTAINER=$(sudo -n docker ps --format '{{.Names}} {{.Image}}' 2>/dev/null \
+                      | grep -iE 'postgres|pgvector' | head -1 | awk '{print $1}')
+          if [ -z "$CONTAINER" ]; then
+            echo "Could not find a Postgres container either."
+            echo "Fix: sudo apt-get install -y postgresql-client-$SERVER_MAJOR"
+            exit 1
+          fi
+
+          echo "PG_DUMP=sudo -n docker exec -i $CONTAINER pg_dump" >> "$GITHUB_ENV"
+          echo "Using container $CONTAINER: $(sudo -n docker exec -i "$CONTAINER" pg_dump --version)"
+
       - name: Check tooling and connectivity
         run: |
           set -euo pipefail
           echo "--- versions ---"
-          pg_dump --version || { echo "pg_dump missing on the VM"; exit 1; }
+          echo "pg_dump: ${PG_DUMP}"
           psql --version    || { echo "psql missing on the VM"; exit 1; }
 
           echo
@@ -196,7 +234,11 @@ jobs:
           # --no-owner/--no-privileges because the roles differ between the VM
           # and Railway; without them every GRANT and ALTER OWNER fails.
           echo "Streaming dump into Railway. This replaces every table."
-          pg_dump "$SOURCE_URL" \
+          echo "pg_dump binary: ${PG_DUMP}"
+          # PG_DUMP may be a plain path or a `sudo docker exec ...` prefix, so it
+          # is intentionally word-split here rather than quoted.
+          # shellcheck disable=SC2086
+          ${PG_DUMP} "$SOURCE_URL" \
             --format=plain \
             --clean --if-exists \
             --no-owner --no-privileges \
