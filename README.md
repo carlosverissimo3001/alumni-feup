@@ -141,7 +141,7 @@ Special thanks to Jénifer Constantino for the original platform and inspiration
 
 📄 Read Carlos's thesis: [Repositório Aberto da U.Porto](https://repositorio-aberto.up.pt/bitstream/10216/168783/2/735442.pdf)
 
-<!-- Read José's thesis here: (link pending) -->
+<!-- Read José's thesis here: https://www.overleaf.com/read/jzjzjzjzjzjz -->
 
 ---
 
