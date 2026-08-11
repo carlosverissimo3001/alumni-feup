@@ -89,7 +89,7 @@ class LocationService:
         """
         Get the coordinates of a city from the Geocoding API and update the location object
         """
-        await coordinates_service.update_location_coordinates(location)
+        await coordinates_service.update_location_coordinates(location.id)
 
 
 location_service = LocationService()

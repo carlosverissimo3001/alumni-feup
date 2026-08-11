@@ -1,9 +1,11 @@
 import asyncio
 import logging
 
+from sqlalchemy.orm import Session
+
 from app.agents.location import location_agent
 from app.db.models import Role, RoleRaw, SeniorityLevel
-from app.db.session import get_db
+from app.db.session import session_scope
 from app.schemas.linkedin import ExperienceBase
 from app.schemas.location import LocationType, RoleLocationInput
 from app.schemas.role import RoleResolveLocationParams
@@ -19,15 +21,31 @@ from app.utils.role_db import (
 
 logger = logging.getLogger(__name__)
 
-# Get a database session for the service
-db = next(get_db())
-
 
 class RoleService:
+    """Entry points open a session; the work takes one as a parameter.
+
+    These methods are dispatched with BackgroundTasks, so they run after the
+    response has been sent and cannot borrow a request-scoped session. One
+    session per unit of work also keeps the Role objects loaded here attached
+    to the session that writes them.
+    """
+
     async def resolve_role_location(self, params: RoleResolveLocationParams) -> None:
-        """
-        Resolves the location of the roles
-        """
+        """Resolves the location of the roles."""
+        with session_scope() as db:
+            await self._resolve_role_location(params, db)
+
+    async def resolve_role_location_for_alumni(self, alumni_ids: str) -> None:
+        """Resolves the location of the roles for a given alumni."""
+        with session_scope() as db:
+            roles = get_roles_by_alumni_id(alumni_ids, db)
+            role_ids_str = ",".join(role.id for role in roles)
+            # Reuses the same session rather than opening a second one for what
+            # is a single unit of work.
+            await self._resolve_role_location(RoleResolveLocationParams(role_ids=role_ids_str), db)
+
+    async def _resolve_role_location(self, params: RoleResolveLocationParams, db: Session) -> None:
         role_ids = params.role_ids
 
         roles: list[Role] = []
@@ -79,15 +97,6 @@ class RoleService:
 
             if i + batch_size < len(roles):
                 await asyncio.sleep(0.5)
-
-    async def resolve_role_location_for_alumni(self, alumni_ids: str) -> None:
-        """
-        Resolves the location of the roles for a given alumni
-        """
-        roles = get_roles_by_alumni_id(alumni_ids, db)
-        role_ids = [role.id for role in roles]
-        role_ids_str = ",".join(role_ids)
-        await self.resolve_role_location(RoleResolveLocationParams(role_ids=role_ids_str))
 
     async def parse_role(
         self,
