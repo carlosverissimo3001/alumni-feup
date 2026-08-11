@@ -202,6 +202,7 @@ class JobClassification(Base):
     role = relationship("Role", back_populates="job_classification", uselist=False)
     esco_classification = relationship("EscoClassification", back_populates="job_classification")
 
+
 class Location(Base):
     __tablename__ = "location"
 
@@ -261,7 +262,7 @@ class Role(Base):
     company = relationship("Company", back_populates="roles")
     location = relationship("Location", back_populates="roles")
     role_raw = relationship("RoleRaw", back_populates="role")
-    
+
     metadata_ = Column(JSONB, name="metadata", nullable=True)
 
 
@@ -298,3 +299,150 @@ class EscoClassification(Base):
 
     job_classification = relationship("JobClassification", back_populates="esco_classification")
 
+
+class PipelineKind(str, enum.Enum):
+    REFRESH_EXISTING = "REFRESH_EXISTING"
+    INGEST_COHORT = "INGEST_COHORT"
+
+
+class PipelineTrigger(str, enum.Enum):
+    ADMIN_UI = "ADMIN_UI"
+    API = "API"
+    SCHEDULE = "SCHEDULE"
+
+
+class PipelineRunStatus(str, enum.Enum):
+    PLANNING = "PLANNING"
+    PLANNED = "PLANNED"
+    RUNNING = "RUNNING"
+    COMPLETED = "COMPLETED"
+    FAILED = "FAILED"
+    CANCELLED = "CANCELLED"
+
+
+class PipelineStageName(str, enum.Enum):
+    PLAN = "PLAN"
+    LINKEDIN = "LINKEDIN"
+    COMPANY = "COMPANY"
+    CLASSIFY_ROLES = "CLASSIFY_ROLES"
+    SENIORITY = "SENIORITY"
+    LOCATION = "LOCATION"
+
+
+class PipelineStageStatus(str, enum.Enum):
+    PENDING = "PENDING"
+    RUNNING = "RUNNING"
+    COMPLETED = "COMPLETED"
+    FAILED = "FAILED"
+    SKIPPED = "SKIPPED"
+
+
+class PipelineTaskStatus(str, enum.Enum):
+    QUEUED = "QUEUED"
+    RUNNING = "RUNNING"
+    SUCCEEDED = "SUCCEEDED"
+    FAILED = "FAILED"
+    SKIPPED = "SKIPPED"
+
+
+class PipelineEntityType(str, enum.Enum):
+    ALUMNI = "ALUMNI"
+    ROLE = "ROLE"
+    COMPANY = "COMPANY"
+    LOCATION = "LOCATION"
+
+
+# The Postgres enum types are created by Prisma and named in SCREAMING_SNAKE.
+# SQLAlchemy would otherwise derive a type name from the Python class and look
+# for a type that does not exist, so each one is named explicitly. create_type
+# is off because Prisma owns the schema - see api/prisma/schema.prisma.
+def _pg_enum(python_enum, name):
+    return Enum(python_enum, name=name, create_type=False)
+
+
+class PipelineRun(Base):
+    __tablename__ = "pipeline_run"
+
+    id = Column(String, primary_key=True, server_default="gen_random_uuid()")
+    kind = Column(_pg_enum(PipelineKind, "PIPELINE_KIND"), nullable=False)
+    status = Column(
+        _pg_enum(PipelineRunStatus, "PIPELINE_RUN_STATUS"),
+        nullable=False,
+        server_default="PLANNING",
+    )
+    triggered_by = Column(String, nullable=True)
+    trigger_source = Column(
+        _pg_enum(PipelineTrigger, "PIPELINE_TRIGGER"), nullable=False, server_default="API"
+    )
+
+    params = Column(JSONB, nullable=True)
+
+    applied_by = Column(String, nullable=True)
+    applied_at = Column(DateTime, nullable=True)
+
+    error = Column(String, nullable=True)
+
+    created_at = Column(DateTime, nullable=False, server_default="now()")
+    started_at = Column(DateTime, nullable=True)
+    finished_at = Column(DateTime, nullable=True)
+
+    stages = relationship("PipelineStage", back_populates="run", cascade="all, delete-orphan")
+
+
+class PipelineStage(Base):
+    __tablename__ = "pipeline_stage"
+
+    id = Column(String, primary_key=True, server_default="gen_random_uuid()")
+    run_id = Column(String, ForeignKey("pipeline_run.id"), nullable=False)
+    stage = Column(_pg_enum(PipelineStageName, "PIPELINE_STAGE"), nullable=False)
+    status = Column(
+        _pg_enum(PipelineStageStatus, "PIPELINE_STAGE_STATUS"),
+        nullable=False,
+        server_default="PENDING",
+    )
+
+    sequence = Column(Integer, nullable=False)
+
+    total_count = Column(Integer, nullable=False, server_default="0")
+    succeeded_count = Column(Integer, nullable=False, server_default="0")
+    failed_count = Column(Integer, nullable=False, server_default="0")
+    skipped_count = Column(Integer, nullable=False, server_default="0")
+
+    error = Column(String, nullable=True)
+
+    created_at = Column(DateTime, nullable=False, server_default="now()")
+    started_at = Column(DateTime, nullable=True)
+    finished_at = Column(DateTime, nullable=True)
+
+    run = relationship("PipelineRun", back_populates="stages")
+    tasks = relationship("PipelineTask", back_populates="stage", cascade="all, delete-orphan")
+
+
+class PipelineTask(Base):
+    __tablename__ = "pipeline_task"
+
+    id = Column(String, primary_key=True, server_default="gen_random_uuid()")
+    stage_id = Column(String, ForeignKey("pipeline_stage.id"), nullable=False)
+    entity_type = Column(_pg_enum(PipelineEntityType, "PIPELINE_ENTITY_TYPE"), nullable=False)
+    entity_id = Column(String, nullable=False)
+    status = Column(
+        _pg_enum(PipelineTaskStatus, "PIPELINE_TASK_STATUS"),
+        nullable=False,
+        server_default="QUEUED",
+    )
+
+    attempts = Column(Integer, nullable=False, server_default="0")
+    skip_reason = Column(String, nullable=True)
+
+    result = Column(JSONB, nullable=True)
+    error = Column(String, nullable=True)
+
+    # Unique at the database level. This is what makes deduplication a
+    # guarantee rather than a race between workers.
+    idempotency_key = Column(String, nullable=False, unique=True)
+
+    created_at = Column(DateTime, nullable=False, server_default="now()")
+    started_at = Column(DateTime, nullable=True)
+    finished_at = Column(DateTime, nullable=True)
+
+    stage = relationship("PipelineStage", back_populates="tasks")
