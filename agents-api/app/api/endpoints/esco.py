@@ -10,6 +10,7 @@ from app.utils.embeddings import update_esco_embeddings
 router = APIRouter()
 logger = logging.getLogger(__name__)
 
+
 @router.post(
     "/generate-embeddings",
     response_model=Dict[str, str],
@@ -33,8 +34,9 @@ async def generate_esco_embeddings(
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Error generating ESCO embeddings: {str(e)}",
-        ) 
-        
+        )
+
+
 @router.post(
     "/fetch-esco-classifications",
     response_model=Dict[str, str],
@@ -49,6 +51,6 @@ async def fetch_esco_classifications(
     releases a new version of the ESCO classifications.
     """
     # NOTE: I'm not sure of the feasibility of this, neither do I have the time to implement it.
-    #       If we do implement it, we'll use the ESCO API 
+    #       If we do implement it, we'll use the ESCO API
     #       https://esco.ec.europa.eu/en/use-esco/use-esco-services-api/esco-web-service-api
     pass

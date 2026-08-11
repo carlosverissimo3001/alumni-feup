@@ -19,12 +19,6 @@ class ResolveAlumniLocationParams(BaseModel):
     )
 
 
-class ResolveCompanyLocationParams(BaseModel):
-    company_ids: Optional[str] = Field(
-        Query(None, description="Comma-separated list of company IDs to update")
-    )
-
-
 class LocationType(str, enum.Enum):
     ALUMNI = "ALUMNI"
     ROLE = "ROLE"

@@ -1,4 +1,4 @@
-from typing import List, Optional
+from typing import List
 
 from pydantic import PostgresDsn, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict

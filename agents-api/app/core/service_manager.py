@@ -7,6 +7,7 @@ from app.agents.location import location_agent
 from app.services.company import company_service
 from app.services.coordinates import coordinates_service
 from app.services.linkedin import linkedin_service
+from app.tasks.queue import task_queue
 
 logger = logging.getLogger(__name__)
 
@@ -29,6 +30,10 @@ class ServiceManager:
         await self.exit_stack.enter_async_context(linkedin_service)
         await self.exit_stack.enter_async_context(location_agent)
 
+        # Opened once for the process. Endpoints enqueue through it; the work
+        # itself runs in the arq worker, which is a separate process.
+        await task_queue.connect()
+
         self._initialized = True
         logger.info("Services initialized successfully")
 
@@ -38,6 +43,7 @@ class ServiceManager:
             return
 
         logger.info("Cleaning up services...")
+        await task_queue.disconnect()
         await self.exit_stack.aclose()
         self._initialized = False
         logger.info("Services cleaned up successfully")

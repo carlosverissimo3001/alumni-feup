@@ -1,33 +1,30 @@
 import logging
 
 from fastapi import APIRouter, Depends, HTTPException, status
-from fastapi.background import BackgroundTasks
 
 from app.schemas.company import CompanyUpdateParams
-from app.services.company import company_service
+from app.tasks.queue import task_queue
 
 router = APIRouter()
 logger = logging.getLogger(__name__)
 
 
-@router.post("/", status_code=status.HTTP_200_OK,)
+@router.post(
+    "/",
+    status_code=status.HTTP_200_OK,
+)
 async def request_company_update(
-    background_tasks: BackgroundTasks,
     params: CompanyUpdateParams = Depends(),
 ):
     """
     Updates the company data by calling the BrightData API.
-    
+
     If none are provided, it will update all companies.
     """
     try:
         logger.info(f"Requesting company update for {params.company_ids}")
-        background_tasks.add_task(
-            company_service.request_company_update,
-            params=params,
-        )
-        
-        
+        await task_queue.enqueue("update_companies", company_ids=params.company_ids)
+
     except Exception as e:
         logger.error(f"Error updating company data: {e}")
         raise HTTPException(

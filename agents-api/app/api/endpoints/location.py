@@ -1,15 +1,14 @@
 import logging
 
-from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
 from app.db.session import get_db
 from app.schemas.location import (
     ResolveAlumniLocationParams,
-    ResolveCompanyLocationParams,
     ResolveRoleLocationParams,
 )
-from app.services.location import location_service
+from app.tasks.queue import task_queue
 from app.utils.alumni_db import find_all
 
 router = APIRouter()
@@ -20,9 +19,7 @@ logger = logging.getLogger(__name__)
     "/role",
     status_code=status.HTTP_201_CREATED,
 )
-async def resolve_role_location(
-    background_tasks: BackgroundTasks, params: ResolveRoleLocationParams = Depends()
-):
+async def resolve_role_location(params: ResolveRoleLocationParams = Depends()):
     """
     Triggers the agent to resolve the location of a role.
 
@@ -31,10 +28,7 @@ async def resolve_role_location(
     try:
         logger.info(f"Resolving location for roles {params.role_ids}")
 
-        background_tasks.add_task(
-            location_service.request_role_location,
-            params=params,
-        )
+        await task_queue.enqueue("resolve_role_locations", role_ids=params.role_ids)
 
     except Exception as e:
         logger.error(f"Error classifying job title: {str(e)}")
@@ -49,7 +43,6 @@ async def resolve_role_location(
     status_code=status.HTTP_201_CREATED,
 )
 async def resolve_alumni_location(
-    background_tasks: BackgroundTasks,
     params: ResolveAlumniLocationParams = Depends(),
     db: Session = Depends(get_db),
 ):
@@ -65,40 +58,10 @@ async def resolve_alumni_location(
         )
 
         for alumni_id in alumni_ids:
-            background_tasks.add_task(
-                location_service.resolve_role_location_for_alumni,
-                alumni_id=alumni_id,
-            )
+            await task_queue.enqueue("resolve_alumni_role_locations", alumni_id=alumni_id)
     except Exception as e:
         logger.error(f"Error resolving location for alumni {params.alumni_ids}: {str(e)}")
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Error resolving location for alumni",
-        )
-
-
-@router.post(
-    "/company",
-    status_code=status.HTTP_201_CREATED,
-)
-async def resolve_company_location(
-    background_tasks: BackgroundTasks, params: ResolveCompanyLocationParams = Depends()
-):
-    """
-    Triggers the agent to resolve the location of a company.
-
-    If none are provided, it will update all companies.
-    """
-    try:
-        logger.info(f"Resolving location for company {params.company_ids}")
-
-        background_tasks.add_task(
-            location_service.request_company_location,
-            params=params,
-        )
-    except Exception as e:
-        logger.error(f"Error resolving location for company {params.company_ids}: {str(e)}")
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="Error resolving location for company",
         )
