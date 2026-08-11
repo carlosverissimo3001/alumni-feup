@@ -1,8 +1,9 @@
 import logging
-from typing import Generator
+from contextlib import contextmanager
+from typing import Generator, Iterator
 
 from sqlalchemy import create_engine
-from sqlalchemy.orm import declarative_base, sessionmaker
+from sqlalchemy.orm import Session, declarative_base, sessionmaker
 from sqlalchemy.pool import QueuePool
 
 from app.core.config import settings
@@ -37,3 +38,28 @@ def get_db() -> Generator:
     finally:
         logger.debug("Closing database session")
         db.close()
+
+
+@contextmanager
+def session_scope() -> Iterator[Session]:
+    """A session for work that happens outside a request.
+
+    `get_db` is a FastAPI dependency: the session it yields is closed when the
+    response is sent. Most of this service's work is dispatched with
+    `BackgroundTasks` and therefore runs *after* that point, so a request-scoped
+    session would already be closed by the time it was used. Those paths open
+    their own session with this instead.
+
+    Deliberately does not commit on exit. The `*_db` helpers already commit
+    their own writes, and adding an implicit commit here would also commit work
+    a caller had decided to abandon. Rolling back on an exception and always
+    closing is the part that was missing.
+    """
+    session = SessionLocal()
+    try:
+        yield session
+    except Exception:
+        session.rollback()
+        raise
+    finally:
+        session.close()
