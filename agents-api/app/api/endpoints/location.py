@@ -6,7 +6,6 @@ from sqlalchemy.orm import Session
 from app.db.session import get_db
 from app.schemas.location import (
     ResolveAlumniLocationParams,
-    ResolveCompanyLocationParams,
     ResolveRoleLocationParams,
 )
 from app.tasks.queue import task_queue
@@ -66,34 +65,3 @@ async def resolve_alumni_location(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Error resolving location for alumni",
         )
-
-
-@router.post(
-    "/company",
-    status_code=status.HTTP_201_CREATED,
-)
-async def resolve_company_location(params: ResolveCompanyLocationParams = Depends()):
-    """
-    Triggers the agent to resolve the location of a company.
-
-    If none are provided, it will update all companies.
-    """
-    # LocationService has no request_company_location method - it never did.
-    # The previous BackgroundTasks call resolved that attribute eagerly, so this
-    # endpoint raised AttributeError, and the blanket `except Exception` that
-    # used to wrap this turned it into a 500. That is how a permanently broken
-    # endpoint went unnoticed: it looked like an intermittent server error.
-    #
-    # Reported honestly rather than reinstating a call to something that does
-    # not exist. The location agent already handles LocationType.COMPANY, so
-    # only the service method is missing.
-    #
-    # Raised outside a try/except deliberately - wrapping it would convert the
-    # 501 back into a 500, which is the whole problem.
-    logger.warning(
-        f"Company location resolution requested for {params.company_ids} but not implemented"
-    )
-    raise HTTPException(
-        status_code=status.HTTP_501_NOT_IMPLEMENTED,
-        detail="Company location resolution is not implemented",
-    )
