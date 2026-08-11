@@ -3,8 +3,8 @@ import logging
 import math
 
 from app.agents.job_classification import job_classification_agent
-from app.db import get_db
 from app.db.models import Alumni
+from app.db.session import session_scope
 from app.schemas.job_classification import (
     AlumniJobClassificationParams,
 )
@@ -14,8 +14,6 @@ from app.utils.role_db import get_extended_roles_by_alumni_id
 
 logger = logging.getLogger(__name__)
 
-db = next(get_db())
-
 
 class JobClassificationService:
     def __init__(self):
@@ -24,11 +22,12 @@ class JobClassificationService:
 
     async def classify_roles_for_alumni(self, alumni_id: str):
         try:
-            input_data = get_extended_roles_by_alumni_id(alumni_id, db)
-            if not input_data.roles:
-                return
-
-            roles = input_data.roles
+            # Its own session: these run concurrently under asyncio.gather.
+            with session_scope() as db:
+                input_data = get_extended_roles_by_alumni_id(alumni_id, db)
+                if not input_data.roles:
+                    return
+                roles = input_data.roles
 
             for i in range(0, len(roles), self.MAX_CONCURRENT):
                 batch = roles[i : i + self.MAX_CONCURRENT]
@@ -47,27 +46,23 @@ class JobClassificationService:
         Request the classification of the roles of the alumni
         """
         alumni_ids = params.alumni_ids
-        alumni: list[Alumni] = []
 
-        if alumni_ids:
-            alumni = find_by_ids(alumni_ids.split(","), db)
-        else:
-            alumni = find_all(db)
-
-        alumni = list(set(alumni))
-        logger.info(f"Going to update {len(alumni)} alumni")
-
-        for i in range(0, len(alumni), self.BATCH_SIZE):
-            batch = alumni[i : i + self.BATCH_SIZE]
-            batch_no = i // self.BATCH_SIZE + 1
-            logger.info(
-                f"Processing batch {batch_no} of {math.ceil(len(alumni) / self.BATCH_SIZE)}"
+        # Session held for the lookup only - the batches below are minutes of
+        # LLM calls and should not pin a connection.
+        with session_scope() as db:
+            alumni: list[Alumni] = (
+                find_by_ids(alumni_ids.split(","), db) if alumni_ids else find_all(db)
             )
+            ids = list({al.id for al in alumni})
 
-            tasks = [
-                asyncio.create_task(self.classify_roles_for_alumni(al.id))
-                for al in batch
-            ]
+        logger.info(f"Going to update {len(ids)} alumni")
+
+        for i in range(0, len(ids), self.BATCH_SIZE):
+            batch = ids[i : i + self.BATCH_SIZE]
+            batch_no = i // self.BATCH_SIZE + 1
+            logger.info(f"Processing batch {batch_no} of {math.ceil(len(ids) / self.BATCH_SIZE)}")
+
+            tasks = [asyncio.create_task(self.classify_roles_for_alumni(aid)) for aid in batch]
             await asyncio.gather(*tasks)
 
             if i + self.BATCH_SIZE < len(alumni):
