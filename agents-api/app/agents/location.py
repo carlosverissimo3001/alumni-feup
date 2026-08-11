@@ -429,7 +429,7 @@ class LocationAgent:
 
                 # Trigger coordinates update as a background task
                 self._create_background_task(
-                    coordinates_service.update_location_coordinates(location)
+                    coordinates_service.update_location_coordinates(location.id)
                 )
 
             # Update the domain with the location

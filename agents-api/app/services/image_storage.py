@@ -5,10 +5,8 @@ import cloudinary.exceptions
 import cloudinary.uploader
 
 from app.core.config import settings
-from app.db import get_db
+from app.db.session import session_scope
 from app.utils.alumni_db import find_all, update_alumni
-
-db = next(get_db())
 
 logger = logging.getLogger(__name__)
 
@@ -23,13 +21,17 @@ class ImageStorageService:
         )
 
     def upload_all_alumni_profile_pictures(self):
+        """Upload all alumni profile pictures to Cloudinary.
+
+        Self-contained, so it opens its own session: the Alumni rows are both
+        loaded and written here, which keeps them attached to one session.
         """
-        Upload all alumni profile pictures to Cloudinary.
-        """
-        alumni = find_all(db)
-        logger.info(f"Found {len(alumni)} alumni with profile pictures to upload")
-        for alumni in alumni:
-            if alumni.profile_picture_url:
+        with session_scope() as db:
+            alumni_list = find_all(db)
+            logger.info(f"Found {len(alumni_list)} alumni with profile pictures to upload")
+            for alumni in alumni_list:
+                if not alumni.profile_picture_url:
+                    continue
                 try:
                     new_profile_picture_url = self.upload_image(
                         alumni.profile_picture_url, alumni.id
@@ -55,9 +57,7 @@ class ImageStorageService:
             The secure URL of the uploaded image, or None if upload fails.
         """
         try:
-            upload_result = cloudinary.uploader.upload(
-                image_url, public_id=public_id, timeout=60
-            )
+            upload_result = cloudinary.uploader.upload(image_url, public_id=public_id, timeout=60)
             return upload_result["secure_url"]
         except (cloudinary.exceptions.Error, Exception) as e:
             logger.error(f"Failed to upload image {image_url}: {str(e)}")
