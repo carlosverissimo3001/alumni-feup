@@ -28,11 +28,29 @@ dependencies = [
     "pgvector>=0.4.0",
     "langchain-openai>=0.3.18",
     "sentence-transformers>=4.1.0",
+    # Declared explicitly, though only needed transitively by
+    # sentence-transformers: [tool.uv.sources] below only applies to direct
+    # dependencies, and without it torch resolves to the CUDA build.
+    # Upper bound so a CPU-wheel change does not also carry a major torch
+    # upgrade; sentence-transformers is sensitive to that.
+    "torch>=2.7.0,<2.8.0",
     "transformers>=4.52.3",
     "pillow>=11.2.1",
     "redis>=6.1.0",
     "prometheus-client>=0.22.0",
 ]
+
+# sentence-transformers pulls torch, and the default PyPI wheel for Linux
+# bundles the whole CUDA toolkit - 14 nvidia-*-cu12 packages, roughly 2.5GB.
+# Nothing here uses a GPU (the reranker is constructed with device="cpu"), so
+# take the CPU-only build instead.
+[[tool.uv.index]]
+name = "pytorch-cpu"
+url = "https://download.pytorch.org/whl/cpu"
+explicit = true
+
+[tool.uv.sources]
+torch = { index = "pytorch-cpu" }
 
 [tool.ruff]
 line-length = 100
