@@ -65,10 +65,10 @@ model Company {
   companyType  COMPANY_TYPE? @map("company_type")
   companySize  COMPANY_SIZE? @map("company_size")
 
-  createdAt    DateTime      @default(now()) @map("created_at") @db.Timestamp(6)
-  createdBy    String?       @map("created_by")
-  updatedAt    DateTime      @default(now()) @map("updated_at") @db.Timestamp(6)
-  updatedBy    String?       @map("updated_by")
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamp(6)
+  createdBy String?  @map("created_by")
+  updatedAt DateTime @default(now()) @map("updated_at") @db.Timestamp(6)
+  updatedBy String?  @map("updated_by")
 
   Industry      Industry        @relation(fields: [industryId], references: [id])
   roles         Role[]
@@ -239,10 +239,10 @@ model Role {
   wasSeniorityLevelModifiedByUser Boolean?        @map("was_seniority_level_modified_by_user")
 
   // If the user wants a certain role to be hidden in their profile
-  isHiddenInProfile Boolean? @map("is_hidden_in_profile") @default(false)
+  isHiddenInProfile Boolean? @default(false) @map("is_hidden_in_profile")
 
   // The role that should be the main focus of the profile
-  isMainRole Boolean? @map("is_main_role") @default(false)
+  isMainRole Boolean? @default(false) @map("is_main_role")
 
   startDate DateTime  @map("start_date") @db.Timestamptz(6)
   endDate   DateTime? @map("end_date") @db.Timestamptz(6)
@@ -461,4 +461,164 @@ enum COMPANY_TYPE {
   PUBLIC_COMPANY
   SELF_EMPLOYED
   SELF_OWNED
+}
+
+// ---------------------------------------------------------------------------
+// Pipeline execution state
+//
+// The agents-api enrichment pipeline had no durable record that a run ever
+// happened - every entry point used in-memory FastAPI BackgroundTasks, so a
+// batch dying mid-run left no trace. These three tables are that record, and
+// they are what the status endpoints and the admin UI read.
+//
+// Owned by Prisma even though agents-api is the main writer: the NestJS API
+// serves them to the frontend, so they belong in this schema. agents-api
+// mirrors them as SQLAlchemy models.
+// ---------------------------------------------------------------------------
+
+model PipelineRun {
+  id            String              @id @default(dbgenerated("gen_random_uuid()"))
+  kind          PIPELINE_KIND
+  status        PIPELINE_RUN_STATUS @default(PLANNING)
+  triggeredBy   String?             @map("triggered_by")
+  triggerSource PIPELINE_TRIGGER    @default(API) @map("trigger_source")
+
+  // What the run was asked to do - filters, cohort, entity ids.
+  params Json? @map("params")
+
+  // Recorded when a plan is approved, so there is an audit trail of who
+  // authorised the spend.
+  appliedBy String?   @map("applied_by")
+  appliedAt DateTime? @map("applied_at") @db.Timestamp(6)
+
+  error String?
+
+  createdAt  DateTime  @default(now()) @map("created_at") @db.Timestamp(6)
+  startedAt  DateTime? @map("started_at") @db.Timestamp(6)
+  finishedAt DateTime? @map("finished_at") @db.Timestamp(6)
+
+  stages PipelineStage[]
+
+  @@index([status])
+  @@index([kind, status])
+  @@index([createdAt])
+  @@map("pipeline_run")
+}
+
+model PipelineStage {
+  id     String                @id @default(dbgenerated("gen_random_uuid()"))
+  runId  String                @map("run_id")
+  stage  PIPELINE_STAGE
+  status PIPELINE_STAGE_STATUS @default(PENDING)
+
+  // Position in the run, so stages order deterministically without relying on
+  // the enum's declaration order.
+  sequence Int
+
+  totalCount     Int @default(0) @map("total_count")
+  succeededCount Int @default(0) @map("succeeded_count")
+  failedCount    Int @default(0) @map("failed_count")
+  skippedCount   Int @default(0) @map("skipped_count")
+
+  error String?
+
+  createdAt  DateTime  @default(now()) @map("created_at") @db.Timestamp(6)
+  startedAt  DateTime? @map("started_at") @db.Timestamp(6)
+  finishedAt DateTime? @map("finished_at") @db.Timestamp(6)
+
+  run   PipelineRun    @relation(fields: [runId], references: [id], onDelete: Cascade)
+  tasks PipelineTask[]
+
+  @@unique([runId, stage])
+  @@index([runId, sequence])
+  @@index([status])
+  @@map("pipeline_stage")
+}
+
+model PipelineTask {
+  id         String               @id @default(dbgenerated("gen_random_uuid()"))
+  stageId    String               @map("stage_id")
+  entityType PIPELINE_ENTITY_TYPE @map("entity_type")
+  entityId   String               @map("entity_id")
+  status     PIPELINE_TASK_STATUS @default(QUEUED)
+
+  attempts Int @default(0)
+
+  // Why a task was skipped, so a plan can be explained after the fact.
+  skipReason String? @map("skip_reason")
+
+  // What the step decided: chosen ESCO code, confidence, model used, cost.
+  // This is what makes accuracy and cost changes measurable rather than
+  // assumed - there is no baseline to compare against without it.
+  result Json? @map("result")
+
+  error String?
+
+  // Unique per stage and entity, which is what prevents the same alumni being
+  // processed twice. Enforced by the database rather than the application.
+  idempotencyKey String @map("idempotency_key")
+
+  createdAt  DateTime  @default(now()) @map("created_at") @db.Timestamp(6)
+  startedAt  DateTime? @map("started_at") @db.Timestamp(6)
+  finishedAt DateTime? @map("finished_at") @db.Timestamp(6)
+
+  stage PipelineStage @relation(fields: [stageId], references: [id], onDelete: Cascade)
+
+  @@unique([idempotencyKey])
+  @@index([stageId, status])
+  @@index([entityType, entityId])
+  @@index([status])
+  @@map("pipeline_task")
+}
+
+enum PIPELINE_KIND {
+  REFRESH_EXISTING // Re-enrich alumni already in the database
+  INGEST_COHORT // Process a newly uploaded graduation year
+}
+
+enum PIPELINE_TRIGGER {
+  ADMIN_UI
+  API
+  SCHEDULE
+}
+
+enum PIPELINE_RUN_STATUS {
+  PLANNING // Working out what the run would do
+  PLANNED // Plan ready, waiting for approval - nothing has been spent
+  RUNNING
+  COMPLETED
+  FAILED
+  CANCELLED
+}
+
+enum PIPELINE_STAGE {
+  PLAN
+  LINKEDIN
+  COMPANY
+  CLASSIFY_ROLES
+  SENIORITY
+  LOCATION
+}
+
+enum PIPELINE_STAGE_STATUS {
+  PENDING
+  RUNNING
+  COMPLETED
+  FAILED
+  SKIPPED
+}
+
+enum PIPELINE_TASK_STATUS {
+  QUEUED
+  RUNNING
+  SUCCEEDED
+  FAILED
+  SKIPPED
+}
+
+enum PIPELINE_ENTITY_TYPE {
+  ALUMNI
+  ROLE
+  COMPANY
+  LOCATION
 }
