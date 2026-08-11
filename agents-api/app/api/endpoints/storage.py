@@ -4,6 +4,7 @@ from app.services.image_storage import image_storage_service
 
 router = APIRouter()
 
+
 @router.post(
     "/alumni_profile_pictures_to_storage",
     status_code=status.HTTP_200_OK,
@@ -12,5 +13,3 @@ router = APIRouter()
 )
 async def alumni_profile_pictures_to_storage():
     image_storage_service.upload_all_alumni_profile_pictures()
-
-

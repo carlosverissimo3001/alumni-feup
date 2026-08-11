@@ -1,10 +1,9 @@
 import logging
 from typing import List
 
-from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status
 
 from app.schemas.job_classification import AlumniJobClassificationParams, EscoResult
-from app.services.job_classification import job_classification_service
 from app.utils.agents.esco_reference import search_esco_classifications
 
 router = APIRouter()
@@ -16,21 +15,17 @@ logger = logging.getLogger(__name__)
     status_code=status.HTTP_201_CREATED,
 )
 async def classify_job(
-    background_tasks: BackgroundTasks,
     params: AlumniJobClassificationParams = Depends(),
 ):
     """
     Trigger the classification of the roles of the alumni
-    
+
     If none are provided, it will update all alumni roles.
     """
     try:
         logger.info(f"Requesting alumni role classification for {params.alumni_ids}")
 
-        background_tasks.add_task(
-            job_classification_service.request_alumni_classification,
-            params=params,
-        )
+        await task_queue.enqueue("classify_alumni_roles", alumni_ids=params.alumni_ids)
 
     except Exception as e:
         logger.error(f"Error requesting alumni role classification: {str(e)}")

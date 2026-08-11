@@ -1,6 +1,6 @@
 import logging
 
-from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
 from app.db.session import get_db
@@ -9,7 +9,7 @@ from app.schemas.location import (
     ResolveCompanyLocationParams,
     ResolveRoleLocationParams,
 )
-from app.services.location import location_service
+from app.tasks.queue import task_queue
 from app.utils.alumni_db import find_all
 
 router = APIRouter()
@@ -20,9 +20,7 @@ logger = logging.getLogger(__name__)
     "/role",
     status_code=status.HTTP_201_CREATED,
 )
-async def resolve_role_location(
-    background_tasks: BackgroundTasks, params: ResolveRoleLocationParams = Depends()
-):
+async def resolve_role_location(params: ResolveRoleLocationParams = Depends()):
     """
     Triggers the agent to resolve the location of a role.
 
@@ -31,10 +29,7 @@ async def resolve_role_location(
     try:
         logger.info(f"Resolving location for roles {params.role_ids}")
 
-        background_tasks.add_task(
-            location_service.request_role_location,
-            params=params,
-        )
+        await task_queue.enqueue("resolve_role_locations", role_ids=params.role_ids)
 
     except Exception as e:
         logger.error(f"Error classifying job title: {str(e)}")
@@ -49,7 +44,6 @@ async def resolve_role_location(
     status_code=status.HTTP_201_CREATED,
 )
 async def resolve_alumni_location(
-    background_tasks: BackgroundTasks,
     params: ResolveAlumniLocationParams = Depends(),
     db: Session = Depends(get_db),
 ):
@@ -65,10 +59,7 @@ async def resolve_alumni_location(
         )
 
         for alumni_id in alumni_ids:
-            background_tasks.add_task(
-                location_service.resolve_role_location_for_alumni,
-                alumni_id=alumni_id,
-            )
+            await task_queue.enqueue("resolve_alumni_role_locations", alumni_id=alumni_id)
     except Exception as e:
         logger.error(f"Error resolving location for alumni {params.alumni_ids}: {str(e)}")
         raise HTTPException(
@@ -81,24 +72,28 @@ async def resolve_alumni_location(
     "/company",
     status_code=status.HTTP_201_CREATED,
 )
-async def resolve_company_location(
-    background_tasks: BackgroundTasks, params: ResolveCompanyLocationParams = Depends()
-):
+async def resolve_company_location(params: ResolveCompanyLocationParams = Depends()):
     """
     Triggers the agent to resolve the location of a company.
 
     If none are provided, it will update all companies.
     """
-    try:
-        logger.info(f"Resolving location for company {params.company_ids}")
-
-        background_tasks.add_task(
-            location_service.request_company_location,
-            params=params,
-        )
-    except Exception as e:
-        logger.error(f"Error resolving location for company {params.company_ids}: {str(e)}")
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="Error resolving location for company",
-        )
+    # LocationService has no request_company_location method - it never did.
+    # The previous BackgroundTasks call resolved that attribute eagerly, so this
+    # endpoint raised AttributeError, and the blanket `except Exception` that
+    # used to wrap this turned it into a 500. That is how a permanently broken
+    # endpoint went unnoticed: it looked like an intermittent server error.
+    #
+    # Reported honestly rather than reinstating a call to something that does
+    # not exist. The location agent already handles LocationType.COMPANY, so
+    # only the service method is missing.
+    #
+    # Raised outside a try/except deliberately - wrapping it would convert the
+    # 501 back into a 500, which is the whole problem.
+    logger.warning(
+        f"Company location resolution requested for {params.company_ids} but not implemented"
+    )
+    raise HTTPException(
+        status_code=status.HTTP_501_NOT_IMPLEMENTED,
+        detail="Company location resolution is not implemented",
+    )

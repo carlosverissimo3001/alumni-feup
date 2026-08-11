@@ -1,9 +1,9 @@
 import logging
 
-from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status
 
 from app.schemas.seniority import AlumniSeniorityParams
-from app.services.seniority import seniority_service
+from app.tasks.queue import task_queue
 
 router = APIRouter()
 logger = logging.getLogger(__name__)
@@ -15,7 +15,6 @@ logger = logging.getLogger(__name__)
     description="Trigger the seniority classification of alumni roles. If no alumni IDs are provided, it will process all alumni.",
 )
 async def classify_seniority(
-    background_tasks: BackgroundTasks,
     params: AlumniSeniorityParams = Depends(),
 ):
     """
@@ -31,10 +30,7 @@ async def classify_seniority(
     try:
         logger.info(f"Requesting alumni role seniority classification for {params.alumni_ids}")
 
-        background_tasks.add_task(
-            seniority_service.request_alumni_seniority,
-            params=params,
-        )
+        await task_queue.enqueue("classify_alumni_seniority", alumni_ids=params.alumni_ids)
 
         return {"message": "Seniority classification process started"}
 
