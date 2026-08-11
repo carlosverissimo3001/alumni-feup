@@ -12,7 +12,15 @@ would otherwise hand real credentials to the suite, and `load_dotenv()` in
 
 import os
 
-os.environ["DATABASE_URL"] = "postgresql://test:test@localhost:5432/agents_test"
+# CI provides TEST_DATABASE_URL; locally this is docker-compose-dev.yml.
+# The application's own engine is pointed at it too, so tests that exercise
+# app.db.session (rather than the `db` fixture) reach the same database.
+# Nothing connects at import - SQLAlchemy engines are lazy - so the hermetic
+# tests are unaffected.
+_TEST_DATABASE_URL = os.environ.setdefault(
+    "TEST_DATABASE_URL", "postgresql://postgres:secret@localhost:5434/postgres"
+)
+os.environ["DATABASE_URL"] = _TEST_DATABASE_URL
 os.environ["OPENAI_API_KEY"] = "sk-test-not-a-real-key"
 os.environ["REDIS_URL"] = "redis://localhost:6379/15"
 os.environ["API_KEY_SECRET"] = "test-secret"
@@ -125,9 +133,7 @@ def allow_loopback_check():
 # service container both work.
 
 # CI provides this; locally it defaults to docker-compose-dev.yml.
-TEST_DATABASE_URL = os.environ.get(
-    "TEST_DATABASE_URL", "postgresql://postgres:secret@localhost:5434/postgres"
-)
+TEST_DATABASE_URL = _TEST_DATABASE_URL
 
 
 @pytest.fixture(scope="session")
