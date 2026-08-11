@@ -32,6 +32,7 @@ for _key in (
 import socket  # noqa: E402
 
 import pytest  # noqa: E402
+from sqlalchemy.pool import NullPool  # noqa: E402
 
 # Loopback stays open so tests can reach a Postgres/Redis service container.
 # Everything else is refused.
@@ -112,3 +113,73 @@ def block_network() -> None:
 def allow_loopback_check():
     """Expose the guard's predicate so tests can assert on it directly."""
     return _is_allowed
+
+
+# --- database fixtures --------------------------------------------------------
+#
+# Opt-in. Most of the suite never touches a database and stays hermetic; these
+# fixtures exist for the code where the database *is* the behaviour under test,
+# starting with session scoping (CAR-115).
+#
+# Loopback is permitted by the network guard above, so a local container or a CI
+# service container both work.
+
+# CI provides this; locally it defaults to docker-compose-dev.yml.
+TEST_DATABASE_URL = os.environ.get(
+    "TEST_DATABASE_URL", "postgresql://postgres:secret@localhost:5434/postgres"
+)
+
+
+@pytest.fixture(scope="session")
+def db_engine():
+    """Engine for the test database, or skip if it is not reachable.
+
+    Skipping locally keeps `pytest` working for contributors without Docker.
+    In CI the service container is guaranteed, so an unreachable database is a
+    real failure - silently skipping there would report green on tests that
+    never ran.
+    """
+    from sqlalchemy import create_engine, text
+
+    engine = create_engine(TEST_DATABASE_URL, poolclass=NullPool)
+    try:
+        with engine.connect() as conn:
+            conn.execute(text("select 1 from pipeline_run limit 0"))
+    except Exception as exc:  # noqa: BLE001
+        reason = (
+            f"Test database unavailable or schema not applied at "
+            f"{TEST_DATABASE_URL.rsplit('@', 1)[-1]}: {type(exc).__name__}. "
+            "Start it with `docker compose -f docker-compose-dev.yml up -d` and apply "
+            "the Prisma migrations."
+        )
+        if os.environ.get("CI"):
+            pytest.fail(reason)
+        pytest.skip(reason)
+
+    yield engine
+    engine.dispose()
+
+
+@pytest.fixture
+def db(db_engine):
+    """A session wrapped in a transaction that is always rolled back.
+
+    Isolation without truncating: the outer transaction is never committed, so
+    a test can commit freely and still leave the database untouched. That
+    matters here because the local database holds a copy of production.
+    """
+    from sqlalchemy.orm import sessionmaker
+
+    connection = db_engine.connect()
+    transaction = connection.begin()
+    session = sessionmaker(bind=connection)()
+    try:
+        yield session
+    finally:
+        session.close()
+        # A test that provoked an IntegrityError has already left the
+        # transaction aborted, so rolling back again warns. Only roll back what
+        # is still live.
+        if transaction.is_active:
+            transaction.rollback()
+        connection.close()
