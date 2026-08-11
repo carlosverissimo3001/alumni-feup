@@ -1,9 +1,9 @@
-version: '3.8'
+name: alumni-feup
 
 services:
   postgres:
-    image: pgvector/pgvector:pg17
-    container_name: postgres
+    image: pgvector/pgvector:pg18
+    container_name: alumni-feup-postgres
     restart: always
     environment:
       POSTGRES_USER: postgres
@@ -12,18 +12,18 @@ services:
     ports:
       - "5434:5432"
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - alumni_feup_postgres_data:/var/lib/postgresql
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -d $${POSTGRES_DB} -U $${POSTGRES_USER}"]
       interval: 10s
       timeout: 5s
       retries: 5
     networks:
-      - app_network
+      - alumni_feup_network
 
   redis:
     image: redis:7
-    container_name: redis
+    container_name: alumni-feup-redis
     restart: always
     ports:
       - "6380:6379"
@@ -33,11 +33,11 @@ services:
       timeout: 5s
       retries: 5
     networks:
-      - app_network
+      - alumni_feup_network
 
 volumes:
-  postgres_data:
+  alumni_feup_postgres_data:
 
 networks:
-  app_network:
+  alumni_feup_network:
     driver: bridge
