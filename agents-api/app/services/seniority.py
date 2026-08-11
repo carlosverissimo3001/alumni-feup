@@ -1,5 +1,6 @@
 import asyncio
 import logging
+import math
 from datetime import datetime
 from typing import List
 
@@ -174,9 +175,7 @@ class SeniorityService:
         for i in range(0, len(ids), self.BATCH_SIZE):
             batch = ids[i : i + self.BATCH_SIZE]
             batch_no = i // self.BATCH_SIZE + 1
-            # logger.info(
-            #     f"Processing batch {batch_no} of {math.ceil(len(ids) / self.BATCH_SIZE)}"
-            # )
+            logger.info(f"Processing batch {batch_no} of {math.ceil(len(ids) / self.BATCH_SIZE)}")
 
             tasks = [asyncio.create_task(self.process_alumni_roles(aid)) for aid in batch]
             await asyncio.gather(*tasks)

@@ -4,6 +4,7 @@ from typing import List
 from fastapi import APIRouter, Depends, HTTPException, status
 
 from app.schemas.job_classification import AlumniJobClassificationParams, EscoResult
+from app.tasks.queue import task_queue
 from app.utils.agents.esco_reference import search_esco_classifications
 
 router = APIRouter()
