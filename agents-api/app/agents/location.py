@@ -14,6 +14,7 @@ from langchain_openai import ChatOpenAI
 from langgraph.graph import END, START, StateGraph
 from langgraph.prebuilt import ToolNode
 from redis import Redis
+from sqlalchemy.orm import Session
 from tenacity import (
     before_sleep_log,
     retry,
@@ -22,8 +23,8 @@ from tenacity import (
 )
 
 from app.core.config import settings
-from app.db import get_db
 from app.db.models import Location
+from app.db.session import session_scope
 from app.schemas.location import LocationAgentState, LocationInput, LocationResult, LocationType
 from app.services.coordinates import coordinates_service
 from app.utils.alumni_db import find_by_id, update_alumni
@@ -41,9 +42,6 @@ from app.utils.role_db import get_role_by_id, update_role
 logger = logging.getLogger(__name__)
 
 DEFAULT_UPDATED_BY = "location-agent"
-
-# Get a database session for the service
-db = next(get_db())
 
 # JSON schema for location resolution
 geo_resolution_schema = {
@@ -129,6 +127,7 @@ rate_limiter = TokenRateLimiter(
     redis_client=Redis.from_url(settings.REDIS_URL),
     distributed_key="openai_location_agent_rate_limiter",
 )
+
 
 # Helper to estimate token usage
 @lru_cache(maxsize=1)
@@ -270,17 +269,22 @@ class LocationAgent:
 
         try:
             # here, we'll fetch locations for the resolved country code
-            db_locations = get_locations_by_country_code(state["resolved_country_code"], db)
-            state["db_locations"] = [
-                LocationResult(
-                    id=location.id,
-                    city=location.city,
-                    country=location.country,
-                    country_code=location.country_code,
-                    is_country_only=location.is_country_only,
-                )
-                for location in db_locations
-            ]
+            # The conversion to LocationResult stays inside the scope: reading
+            # attributes off a detached instance happens to work while they are
+            # already loaded, but it is one lazy relationship away from a
+            # DetachedInstanceError.
+            with session_scope() as db:
+                db_locations = get_locations_by_country_code(state["resolved_country_code"], db)
+                state["db_locations"] = [
+                    LocationResult(
+                        id=location.id,
+                        city=location.city,
+                        country=location.country,
+                        country_code=location.country_code,
+                        is_country_only=location.is_country_only,
+                    )
+                    for location in db_locations
+                ]
         except Exception as e:
             logger.error(f"Error fetching locations: {str(e)}")
             state["error"] = str(e)
@@ -387,9 +391,19 @@ class LocationAgent:
         return await self.resolve_location_with_retry(state)
 
     async def update_locations(self, states: List[LocationAgentState]) -> List[LocationAgentState]:
+        """Update locations in batch.
+
+        One session for the whole batch, not one per state. `seen` caches
+        Location instances across iterations to avoid re-querying, and those
+        instances are only valid within the session that loaded them - a
+        per-state session would hand the next iteration a detached object.
         """
-        Update locations in batch
-        """
+        with session_scope() as db:
+            return await self._update_locations(states, db)
+
+    async def _update_locations(
+        self, states: List[LocationAgentState], db: Session
+    ) -> List[LocationAgentState]:
         seen: dict[tuple, Location] = {}
         for state in states:
             if not state.get("location_result"):
