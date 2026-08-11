@@ -7,6 +7,7 @@ from langchain_core.tools import Tool
 from langchain_openai import ChatOpenAI
 from langgraph.graph import END, START, StateGraph
 from langgraph.prebuilt import ToolNode
+from sqlalchemy.orm import Session
 from tenacity import (
     before_sleep_log,
     retry,
@@ -15,8 +16,8 @@ from tenacity import (
 )
 
 from app.core.config import settings
-from app.db import get_db
 from app.db.models import SeniorityLevel
+from app.db.session import session_scope
 from app.schemas.seniority import BatchSeniorityInput, SeniorityAgentState
 from app.utils.prompts import (
     SENIORITY_CLASSIFICATION_PROMPT,
@@ -26,9 +27,6 @@ from app.utils.role_db import get_role_by_id, update_role
 
 # Configure logging
 logger = logging.getLogger(__name__)
-
-# Get a database session for the service
-db = next(get_db())
 
 
 json_schema = {
@@ -173,8 +171,15 @@ Schema:
             raise e
 
     def update_roles_with_seniority(self, state: SeniorityAgentState) -> SeniorityAgentState:
-        for entry in state["parsed_seniority_results"]:
+        # One session for the whole batch: each Role is loaded and written here,
+        # so it stays attached to the session that saves it.
+        with session_scope() as db:
+            return self._update_roles_with_seniority(state, db)
 
+    def _update_roles_with_seniority(
+        self, state: SeniorityAgentState, db: Session
+    ) -> SeniorityAgentState:
+        for entry in state["parsed_seniority_results"]:
             role_id = entry["role_id"]
             try:
                 role = get_role_by_id(role_id, db)
@@ -184,7 +189,7 @@ Schema:
 
                 new_seniority = SeniorityLevel[entry["seniority"]]
                 role.seniority_level = new_seniority
-                
+
                 role.metadata_ = {
                     **(role.metadata_ or {}),
                     "seniority_classification": {

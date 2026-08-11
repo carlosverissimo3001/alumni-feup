@@ -1,6 +1,7 @@
 import logging
 
 from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, status
+from sqlalchemy.orm import Session
 
 from app.db.session import get_db
 from app.schemas.location import (
@@ -13,8 +14,6 @@ from app.utils.alumni_db import find_all
 
 router = APIRouter()
 logger = logging.getLogger(__name__)
-
-db = next(get_db())
 
 
 @router.post(
@@ -50,7 +49,9 @@ async def resolve_role_location(
     status_code=status.HTTP_201_CREATED,
 )
 async def resolve_alumni_location(
-    background_tasks: BackgroundTasks, params: ResolveAlumniLocationParams = Depends()
+    background_tasks: BackgroundTasks,
+    params: ResolveAlumniLocationParams = Depends(),
+    db: Session = Depends(get_db),
 ):
     """
     Triggers the agent to resolve the location of an alumni.
