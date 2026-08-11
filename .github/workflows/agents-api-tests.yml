@@ -50,7 +50,10 @@ jobs:
 
       - name: Apply the Prisma schema to the test database
         working-directory: .
-        run: npx --yes prisma@6 migrate deploy --schema api/prisma/schema.prisma
+        # Pinned to the exact version in api/package.json - a floating major
+        # would let CI apply migrations with a different Prisma than the app
+        # runs. Keep the two in sync.
+        run: npx --yes prisma@6.19.2 migrate deploy --schema api/prisma/schema.prisma
         env:
           DATABASE_URL: ${{ env.TEST_DATABASE_URL }}
 
