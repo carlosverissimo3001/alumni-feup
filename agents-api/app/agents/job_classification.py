@@ -20,7 +20,7 @@ from tenacity import (
 )
 
 from app.core.config import settings
-from app.db import get_db
+from app.db.session import session_scope
 from app.schemas.job_classification import (
     JobClassificationAgentState,
     JobClassificationRoleInput,
@@ -40,9 +40,6 @@ from app.utils.prompts import (
 )
 
 logger = logging.getLogger(__name__)
-
-# Get a database session for the agent
-db = next(get_db())
 
 json_schema = {
     "type": "object",
@@ -235,7 +232,10 @@ class JobClassificationAgent:
             ]
 
             if updates:
-                await update_role_with_classifications_batch(db, updates, DEFAULT_ACTION_BY)
+                # Loads nothing and writes in one go, so a scope of its own is
+                # enough - no instance crosses a session boundary here.
+                with session_scope() as db:
+                    await update_role_with_classifications_batch(db, updates, DEFAULT_ACTION_BY)
 
         except Exception as e:
             logger.error(f"Error in batch update classifications: {str(e)}")
