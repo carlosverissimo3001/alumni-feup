@@ -5,8 +5,8 @@ from typing import Optional
 
 from app.agents.location import location_agent
 from app.core.config import settings
-from app.db import get_db
 from app.db.models import Company
+from app.db.session import session_scope
 from app.schemas.company import CompanyUpdateParams
 from app.schemas.linkedin import LinkedInCompanyResponse, convert_to_linkedin_company_response
 from app.schemas.location import CompanyLocationInput, LocationType
@@ -27,7 +27,6 @@ from app.utils.pipeline_timeout import with_pipeline_timeout
 logger = logging.getLogger(__name__)
 
 # Get a database session for the service
-db = next(get_db())
 
 
 class CompanyService:
@@ -103,41 +102,40 @@ class CompanyService:
         company_ids = params.company_ids
         # logger.info(f"Requesting company update for {company_ids}")
 
-        companies: list[Company] = []
+        # Session held for the lookup only. The batches below are network calls
+        # to BrightData with a delay between them, and each task opens its own
+        # session anyway.
+        with session_scope() as db:
+            companies: list[Company] = (
+                get_companies_by_ids(company_ids.split(","), db)
+                if company_ids
+                else get_all_companies(db)
+            )
+            # just making sure the user was not dumb and provided duplicate company IDs
+            # and newsflash, that user is me :))
+            targets = list({(c.id, c.linkedin_url) for c in companies})
 
-        if company_ids:
-            company_ids = company_ids.split(",")
-            companies = get_companies_by_ids(company_ids, db)
-        else:
-            companies = get_all_companies(db)
-
-        # just making sure the user was not dumb and provided duplicate company IDs
-        # and newsflash, that user is me :))
-        companies = list(set(companies))
-
-        # logger.info(f"Going to update {len(companies)} companies")
+        # logger.info(f"Going to update {len(targets)} companies")
 
         # Process in batches of 10 to avoid overwhelming the system
         batch_size = 10
-        for i in range(0, len(companies), batch_size):
-            batch = companies[i : i + batch_size]
+        for i in range(0, len(targets), batch_size):
+            batch = targets[i : i + batch_size]
             # logger.info(
             #    f"Processing batch {i // batch_size + 1} of {(len(companies) + batch_size - 1) // batch_size} ({len(batch)} companies)"
             # )
 
             # Create and track tasks for this batch
-            tasks = []
-            for company in batch:
-                task = asyncio.create_task(
-                    self.extract_company_data(company.linkedin_url, company.id)
-                )
-                tasks.append(task)
+            tasks = [
+                asyncio.create_task(self.extract_company_data(linkedin_url, company_id))
+                for company_id, linkedin_url in batch
+            ]
 
             # Wait for all tasks in this batch to complete
             await asyncio.gather(*tasks)
 
             # Small delay between batches to prevent rate limiting
-            if i + batch_size < len(companies):
+            if i + batch_size < len(targets):
                 await asyncio.sleep(1)
 
     async def extract_company_data(
@@ -242,9 +240,10 @@ class CompanyService:
 
         industry_id = DEFAULT_INDUSTRY_ID
         if company_response.industries:
-            industry = get_industry_by_name(company_response.industries, db)
-            if industry:
-                industry_id = industry.id
+            with session_scope() as db:
+                industry = get_industry_by_name(company_response.industries, db)
+                if industry:
+                    industry_id = industry.id
 
         company = Company(
             id=company_id,
@@ -264,8 +263,10 @@ class CompanyService:
             company.levels_fyi_url = levels_fyi_url
 
         try:
-            # Update the company
-            update_company(company, db)
+            # `company` is constructed here rather than loaded, so it is not
+            # attached to any session and can be written through a fresh one.
+            with session_scope() as db:
+                update_company(company, db)
 
             # Now that the company is updated, trigger location processing
             if company_response.headquarters and company_response.country_code:

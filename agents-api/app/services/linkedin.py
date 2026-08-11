@@ -3,10 +3,12 @@ import logging
 from datetime import datetime
 from typing import List, Optional
 
+from sqlalchemy.orm import Session
+
 from app.agents.location import location_agent
 from app.core.config import settings
-from app.db import get_db
 from app.db.models import Alumni, Company
+from app.db.session import session_scope
 from app.schemas.job_classification import AlumniJobClassificationParams
 from app.schemas.linkedin import (
     LinkedInProfileResponse,
@@ -22,7 +24,6 @@ from app.utils.alumni_db import (
     delete_profile_data,
     find_all,
     find_by_id,
-    find_by_ids,
     update_alumni,
 )
 from app.utils.company_db import get_company_by_linkedin_url, insert_company
@@ -36,7 +37,6 @@ from app.utils.role_db import create_role, create_role_raw
 logger = logging.getLogger(__name__)
 
 # Get a database session for the service
-db = next(get_db())
 
 
 class LinkedInService:
@@ -95,13 +95,14 @@ class LinkedInService:
         """
         # logger.info(f"Extracting LinkedIn data for {alumni_id}")
 
-        # Get the alumni from the database
-        alumni = find_by_id(alumni_id, db)
-        if not alumni or not alumni.linkedin_url:
-            # logger.error(f"Alumni with id {alumni_id} not found or has no LinkedIn URL")
-            return
-
-        profile_url = alumni.linkedin_url
+        # Session held for the lookup only - the API call and processing below
+        # take far longer than the query.
+        with session_scope() as db:
+            alumni = find_by_id(alumni_id, db)
+            if not alumni or not alumni.linkedin_url:
+                # logger.error(f"Alumni with id {alumni_id} not found or has no LinkedIn URL")
+                return
+            profile_url = alumni.linkedin_url
 
         try:
             self.client.set_headers(
@@ -129,6 +130,36 @@ class LinkedInService:
         self,
         profile_data: LinkedInProfileResponse,
         alumni_id: str,
+    ) -> None:
+        # Uploading to Cloudinary needs no session, so it happens before one is
+        # opened rather than holding a pool connection during the upload.
+        profile_picture_url = None
+        if profile_data.profile_pic_url:
+            profile_picture_url = image_storage_service.upload_image(
+                profile_data.profile_pic_url, alumni_id
+            )
+
+        # One session for the whole unit of work: the Company and Role rows are
+        # created and written here, so they stay attached to the session that
+        # persists them.
+        with session_scope() as db:
+            await self._persist_profile_data(profile_data, alumni_id, profile_picture_url, db)
+
+        # Offloaded after the session closes - these are fire-and-forget and
+        # must not hold a connection.
+        self._create_background_task(
+            job_classification_service.request_alumni_classification(
+                params=AlumniJobClassificationParams(alumni_ids=alumni_id)
+            )
+        )
+        self._create_background_task(location_service.resolve_role_location_for_alumni(alumni_id))
+
+    async def _persist_profile_data(
+        self,
+        profile_data: LinkedInProfileResponse,
+        alumni_id: str,
+        profile_picture_url: Optional[str],
+        db: Session,
     ) -> None:
         # First, let's parse the roles, to understand if we need to extract company data
         for role in profile_data.experiences:
@@ -200,12 +231,6 @@ class LinkedInService:
 
             else:
                 location_id = location.id
-        # Let's upload their picture to cloudinary
-        profile_picture_url = None
-        if profile_data.profile_pic_url:
-            profile_picture_url = image_storage_service.upload_image(
-                profile_data.profile_pic_url, alumni_id
-            )
         # Update the alumni table (Alumni was already created by our backend :))) )
         update_alumni(
             Alumni(
@@ -215,17 +240,6 @@ class LinkedInService:
             ),
             db,
         )
-
-        # We'll now offload the role classification to a background task, using the agent
-        # Note that we do NOT wait for this to finish, as it can take a while
-        self._create_background_task(
-            job_classification_service.request_alumni_classification(
-                params=AlumniJobClassificationParams(alumni_ids=alumni_id)
-            )
-        )
-
-        # We'll also use the location agent to update the alumni location
-        self._create_background_task(location_service.resolve_role_location_for_alumni(alumni_id))
 
     async def update_profile_data(
         self,
@@ -242,7 +256,11 @@ class LinkedInService:
         """
         try:
             # Get alumni from database based on whether specific IDs were provided
-            ids = alumni_ids if alumni_ids else [alumni.id for alumni in find_all(db)]
+            if alumni_ids:
+                ids = alumni_ids
+            else:
+                with session_scope() as db:
+                    ids = [alumni.id for alumni in find_all(db)]
 
             results = []
             for i in range(0, len(ids), batch_size):
@@ -271,26 +289,28 @@ class LinkedInService:
         """Process a single alumni profile."""
         try:
             # Delete existing data before extraction
-            delete_profile_data(alumni_id, db)
+            with session_scope() as db:
+                delete_profile_data(alumni_id, db)
 
             # Extract new data
             await self.extract_profile_data(alumni_id)
             return True
         except Exception as e:
             logger.error(f"Error processing alumni {alumni_id}: {str(e)}")
-            alumni = find_by_id(alumni_id, db)
-            existing_metadata = alumni.metadata_ or {}
+            with session_scope() as db:
+                alumni = find_by_id(alumni_id, db)
+                existing_metadata = alumni.metadata_ or {} if alumni else {}
 
-            error_info = {
-                "linkedin_error": {
-                    "message": str(e),
-                    "timestamp": datetime.now().isoformat(),
-                    "type": e.__class__.__name__,
+                error_info = {
+                    "linkedin_error": {
+                        "message": str(e),
+                        "timestamp": datetime.now().isoformat(),
+                        "type": e.__class__.__name__,
+                    }
                 }
-            }
-            updated_metadata = {**existing_metadata, **error_info}
+                updated_metadata = {**existing_metadata, **error_info}
 
-            update_alumni(Alumni(id=alumni_id, metadata_=updated_metadata), db)
+                update_alumni(Alumni(id=alumni_id, metadata_=updated_metadata), db)
             return False
 
 

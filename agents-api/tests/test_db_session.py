@@ -86,18 +86,6 @@ def _app_modules():
         yield info.name
 
 
-@pytest.mark.xfail(
-    strict=True,
-    reason=(
-        "CAR-115 not finished: 12 modules still hold a process-wide session opened "
-        "at import. session_scope() now exists and is tested, but replacing the "
-        "globals is not a find-and-replace. Model instances are passed between "
-        "functions, so an object loaded under one session and written through "
-        "another raises InvalidRequestError - each background task needs one "
-        "session opened at its entry point and threaded down. This test goes "
-        "green when that lands."
-    ),
-)
 def test_no_module_holds_a_session_at_import_time():
     """This is the acceptance criterion for CAR-115.
 
