@@ -2,8 +2,8 @@ import asyncio
 import logging
 
 from app.agents.location import location_agent
-from app.db import get_db
 from app.db.models import Location, Role
+from app.db.session import session_scope
 from app.schemas.location import (
     LocationType,
     ResolveRoleLocationParams,
@@ -21,7 +21,6 @@ from app.utils.role_db import (
 logger = logging.getLogger(__name__)
 
 # Get a database session for the service
-db = next(get_db())
 
 
 class LocationService:
@@ -31,58 +30,63 @@ class LocationService:
         """
         role_ids = params.role_ids
 
-        roles: list[Role] = []
+        # Everything the database is needed for happens here. The batches below
+        # sleep 60s between them, so holding the session open across the whole
+        # run would pin a connection for the duration.
+        with session_scope() as db:
+            roles: list[Role] = (
+                get_roles_by_ids(role_ids.split(","), db) if role_ids else get_all_roles(db)
+            )
 
-        if role_ids:
-            role_ids = role_ids.split(",")
-            roles = get_roles_by_ids(role_ids, db)
-        else:
-            roles = get_all_roles(db)
+            # just making sure the user was not dumb and provided duplicate role IDs
+            # and newsflash, that user is me :))
+            roles = list(set(roles))
 
-        # just making sure the user was not dumb and provided duplicate role IDs
-        # and newsflash, that user is me :))
-        roles = list(set(roles))
-
-        batch_size = 300
-        for i in range(0, len(roles), batch_size):
-            logger.info(f"Processing batch {i // batch_size + 1} of {len(roles) // batch_size}")
-            
-            batch = roles[i : i + batch_size]
-
-            tasks = []
-            for role in batch:
+            inputs: list[RoleLocationInput] = []
+            for role in roles:
                 role_raw = get_role_raw_by_id(role.id, db)
-                location = role_raw.location
-
-                if not location:
+                # A role with no raw row, or no free-text location on it, is not
+                # something the agent can resolve. Previously the former raised
+                # AttributeError and took the whole batch down.
+                if not role_raw or not role_raw.location:
                     continue
-
-                loc_input = RoleLocationInput(
-                    type=LocationType.ROLE,
-                    role_id=role.id,
-                    location=role_raw.location,
+                inputs.append(
+                    RoleLocationInput(
+                        type=LocationType.ROLE,
+                        role_id=role.id,
+                        location=role_raw.location,
+                    )
                 )
 
-                task = asyncio.create_task(
+        batch_size = 300
+        for i in range(0, len(inputs), batch_size):
+            logger.info(f"Processing batch {i // batch_size + 1} of {len(inputs) // batch_size}")
+
+            batch = inputs[i : i + batch_size]
+
+            tasks = [
+                asyncio.create_task(
                     with_pipeline_timeout(
                         location_agent.process_location(loc_input),
                         step="location.process_location",
                     )
                 )
-                tasks.append(task)
+                for loc_input in batch
+            ]
 
             await asyncio.gather(*tasks)
 
-            if i + batch_size < len(roles):
+            if i + batch_size < len(inputs):
                 await asyncio.sleep(60)
 
     async def resolve_role_location_for_alumni(self, alumni_id: str) -> None:
         """
         Resolves the location of the roles for a given alumni
         """
-        roles = get_roles_by_alumni_id(alumni_id, db)
-        role_ids = [role.id for role in roles]
-        role_ids_str = ",".join(role_ids)
+        with session_scope() as db:
+            roles = get_roles_by_alumni_id(alumni_id, db)
+            role_ids_str = ",".join(role.id for role in roles)
+
         await self.request_role_location(ResolveRoleLocationParams(role_ids=role_ids_str))
 
     async def update_location_coordinates(self, location: Location):

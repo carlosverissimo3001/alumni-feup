@@ -1,12 +1,11 @@
 import asyncio
 import logging
-import math
 from datetime import datetime
 from typing import List
 
 from app.agents.seniority import seniority_agent
 from app.db.models import Alumni, Role
-from app.db.session import get_db
+from app.db.session import session_scope
 from app.schemas.seniority import AlumniSeniorityParams, BatchSeniorityInput, RoleSeniorityInput
 from app.utils.alumni_db import find_all, find_by_ids
 from app.utils.pipeline_timeout import with_pipeline_timeout
@@ -15,7 +14,6 @@ from app.utils.role_db import get_roles_by_alumni_id
 logger = logging.getLogger(__name__)
 
 # Get a database session for the service
-db = next(get_db())
 
 
 class SeniorityService:
@@ -139,12 +137,14 @@ class SeniorityService:
         Process all roles for an alumni as a batch
         """
         try:
-            roles = get_roles_by_alumni_id(alumni_id, db)
-            if not roles:
-                return
-
-            batch_input = self._prepare_batch_input(alumni_id, roles)
-        
+            # Its own session: these run concurrently under asyncio.gather, and
+            # sharing one across them is the same thread-safety problem as the
+            # module-level global, only smaller.
+            with session_scope() as db:
+                roles = get_roles_by_alumni_id(alumni_id, db)
+                if not roles:
+                    return
+                batch_input = self._prepare_batch_input(alumni_id, roles)
 
             async with self.semaphore:
                 await with_pipeline_timeout(
@@ -160,28 +160,25 @@ class SeniorityService:
         Request the classification of seniority of the roles of the alumni
         """
         alumni_ids = params.alumni_ids
-        alumni: list[Alumni] = []
 
-        if alumni_ids:
-            alumni = find_by_ids(alumni_ids.split(","), db)
-        else:
-            alumni = find_all(db)
-
-        alumni = list(set(alumni))
-        # logger.info(f"Going to process roles for {len(alumni)} alumni")
+        # The session is held for the lookup only. Keeping it open across the
+        # batches below would pin a connection for the whole run, which is
+        # minutes of LLM calls, not milliseconds of query.
+        with session_scope() as db:
+            alumni: list[Alumni] = (
+                find_by_ids(alumni_ids.split(","), db) if alumni_ids else find_all(db)
+            )
+            ids = list({al.id for al in alumni})
 
         # Process in batches
-        for i in range(0, len(alumni), self.BATCH_SIZE):
-            batch = alumni[i : i + self.BATCH_SIZE]
+        for i in range(0, len(ids), self.BATCH_SIZE):
+            batch = ids[i : i + self.BATCH_SIZE]
             batch_no = i // self.BATCH_SIZE + 1
             # logger.info(
-            #     f"Processing batch {batch_no} of {math.ceil(len(alumni) / self.BATCH_SIZE)}"
+            #     f"Processing batch {batch_no} of {math.ceil(len(ids) / self.BATCH_SIZE)}"
             # )
-            
-            tasks = [
-                asyncio.create_task(self.process_alumni_roles(al.id))
-                for al in batch
-            ]
+
+            tasks = [asyncio.create_task(self.process_alumni_roles(aid)) for aid in batch]
             await asyncio.gather(*tasks)
 
 
