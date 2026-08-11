@@ -1,0 +1,20 @@
+# Config for the arq worker service.
+#
+# A second Railway service runs from this same repo and root directory but
+# needs a different start command, so it points at this file via the service's
+# "Config file path" setting (/agents-api/railway.worker.toml). Railway's
+# config-as-code always overrides dashboard settings, so without a separate
+# file the worker would inherit railway.toml and start a second copy of the
+# API instead.
+
+[build]
+builder = "RAILPACK"
+
+[deploy]
+startCommand = ".venv/bin/arq app.tasks.worker.WorkerSettings"
+
+# No healthcheckPath: a worker serves no HTTP, so a healthcheck would never
+# pass and Railway would restart it forever.
+
+restartPolicyType = "ON_FAILURE"
+restartPolicyMaxRetries = 3
