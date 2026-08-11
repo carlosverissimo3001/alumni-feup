@@ -60,8 +60,13 @@ jobs:
       - name: Install dependencies
         run: uv sync --group dev
 
-      - name: Lint the test suite
+      - name: Lint
+        # The full ruleset cannot gate app/ yet - it still carries pre-existing
+        # E501s, tracked in CAR-163. The F rules can, and they are the ones that
+        # catch bugs rather than style: F821 undefined-name shipped a production
+        # 500 in #102 precisely because nothing gated it.
         run: |
+          uv run ruff check app/ --select F
           uv run ruff check tests/
           uv run ruff format --check tests/
 
