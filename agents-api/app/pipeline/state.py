@@ -22,6 +22,9 @@ class StageOutcome(str, enum.Enum):
     RUNNING = "RUNNING"
     COMPLETE = "COMPLETE"
     ABORT_THRESHOLD = "ABORT_THRESHOLD"
+    # Not derivable from counts - the executor observes it and reports it here
+    # so callers have one outcome type to branch on.
+    CANCELLED = "CANCELLED"
 
 
 @dataclass(frozen=True)

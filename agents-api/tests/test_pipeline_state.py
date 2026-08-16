@@ -10,6 +10,7 @@ it - hence `app.pipeline.stages`.
 
 import pytest
 
+from app.pipeline.keys import idempotency_key
 from app.pipeline.sequence import STAGE_SEQUENCE, next_stage, sequence_of
 from app.pipeline.stages import PipelineStageName
 from app.pipeline.state import (
@@ -163,3 +164,39 @@ class TestResumeTargets:
 
     def test_resuming_the_first_stage_targets_everything(self):
         assert resume_targets(PipelineStageName.PLAN) == STAGE_SEQUENCE
+
+
+class TestIdempotencyKey:
+    def test_is_stable_for_the_same_entity_in_the_same_stage(self):
+        # The dedup guarantee is a unique constraint on this value, so resuming
+        # a stage has to derive the identical key or it inserts a duplicate row
+        # for work that already succeeded.
+        first = idempotency_key("run-1", PipelineStageName.CLASSIFY_ROLES, "alumni-1")
+        second = idempotency_key("run-1", PipelineStageName.CLASSIFY_ROLES, "alumni-1")
+        assert first == second
+
+    def test_differs_across_entities(self):
+        assert idempotency_key(
+            "run-1", PipelineStageName.CLASSIFY_ROLES, "alumni-1"
+        ) != idempotency_key("run-1", PipelineStageName.CLASSIFY_ROLES, "alumni-2")
+
+    def test_differs_across_stages(self):
+        assert idempotency_key(
+            "run-1", PipelineStageName.CLASSIFY_ROLES, "alumni-1"
+        ) != idempotency_key("run-1", PipelineStageName.SENIORITY, "alumni-1")
+
+    def test_differs_across_runs(self):
+        # Two runs over the same alumni are legitimate - a refresh next month is
+        # not the same work as this month's. Scoping to the run is what keeps
+        # the constraint from rejecting it.
+        assert idempotency_key(
+            "run-1", PipelineStageName.CLASSIFY_ROLES, "alumni-1"
+        ) != idempotency_key("run-2", PipelineStageName.CLASSIFY_ROLES, "alumni-1")
+
+    def test_separator_cannot_be_forged_by_an_entity_id(self):
+        # Naive concatenation lets an entity id containing the separator collide
+        # with a different (run, stage, entity) triple.
+        assert (
+            idempotency_key("run", PipelineStageName.PLAN, "a:b")
+            != idempotency_key("run", PipelineStageName.PLAN, "a") + ":b"
+        )
