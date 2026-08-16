@@ -21,6 +21,16 @@ async def startup(ctx) -> None:
         level=getattr(logging, settings.LOG_LEVEL.upper(), logging.INFO),
         format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
     )
+
+    # A worker killed mid-stage leaves its in-flight tasks in RUNNING with
+    # nothing to move them. Sweeping on startup is what turns a hard kill into
+    # a resumable run rather than a stuck one.
+    from app.db.session import session_scope
+    from app.pipeline.recovery import recover_stuck_tasks
+
+    with session_scope() as db:
+        recover_stuck_tasks(db)
+
     logger.info("Worker started")
 
 

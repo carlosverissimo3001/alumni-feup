@@ -3,6 +3,9 @@ from typing import List
 
 from fastapi import APIRouter, Depends, HTTPException, status
 
+from app.db.session import session_scope
+from app.pipeline.runs import create_run, ensure_stages
+from app.pipeline.stages import PipelineKind, PipelineStageName
 from app.schemas.job_classification import AlumniJobClassificationParams, EscoResult
 from app.tasks.queue import task_queue
 from app.utils.agents.esco_reference import search_esco_classifications
@@ -26,7 +29,20 @@ async def classify_job(
     try:
         logger.info(f"Requesting alumni role classification for {params.alumni_ids}")
 
-        await task_queue.enqueue("classify_alumni_roles", alumni_ids=params.alumni_ids)
+        with session_scope() as db:
+            run = create_run(
+                db,
+                kind=PipelineKind.REFRESH_EXISTING,
+                params={"alumni_ids": params.alumni_ids},
+            )
+            db.flush()
+            ensure_stages(db, run)
+            run_id = run.id
+
+        await task_queue.enqueue(
+            "run_stage", run_id=run_id, stage=PipelineStageName.CLASSIFY_ROLES.value
+        )
+        return {"run_id": run_id}
 
     except Exception as e:
         logger.error(f"Error requesting alumni role classification: {str(e)}")

@@ -147,6 +147,23 @@ def _flush_counts(session: Session, stage: PipelineStage, counts: TaskCounts) ->
     session.flush()
 
 
+def _mark_running(session: Session, stage_id: str, entity_ids: List[str]) -> None:
+    """Claim a chunk before working it.
+
+    One statement for the whole chunk. Without it a killed worker leaves its
+    in-flight rows in QUEUED, where the recovery sweep cannot tell them apart
+    from work that was never started.
+    """
+    session.query(PipelineTask).filter(
+        PipelineTask.stage_id == stage_id,
+        PipelineTask.entity_id.in_(entity_ids),
+    ).update(
+        {PipelineTask.status: PipelineTaskStatus.RUNNING, PipelineTask.started_at: _now()},
+        synchronize_session=False,
+    )
+    session.flush()
+
+
 def _finish_task(
     session: Session,
     stage_id: str,
@@ -195,6 +212,8 @@ async def execute_stage(
             session.flush()
             logger.info("Run %s cancelled during stage %s", run.id, stage.stage)
             return StageOutcome.CANCELLED
+
+        _mark_running(session, stage.id, chunk)
 
         outcomes = await asyncio.gather(
             *(spec.handle(entity_id) for entity_id in chunk), return_exceptions=True

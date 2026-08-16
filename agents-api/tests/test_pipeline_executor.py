@@ -6,6 +6,8 @@ whether a resume reuses them, whether a crash leaves them recoverable - so
 stubbing the database out would test nothing.
 """
 
+from datetime import datetime, timedelta, timezone
+
 import pytest
 
 from app.db.models import PipelineRun, PipelineStage, PipelineTask
@@ -17,6 +19,7 @@ from app.pipeline.executor import (
     pending_entity_ids,
 )
 from app.pipeline.keys import idempotency_key
+from app.pipeline.recovery import recover_stuck_tasks
 from app.pipeline.stages import (
     PipelineEntityType,
     PipelineKind,
@@ -291,3 +294,84 @@ class TestExecuteStage:
         db.refresh(stage)
         assert stage.status is PipelineStageStatus.FAILED
         assert stage.error is not None and "threshold" in stage.error.lower()
+
+
+class TestRunningMarker:
+    async def test_marks_a_chunk_running_before_handling_it(self, db, run, stage):
+        seen = {}
+
+        async def handle(entity_id):
+            seen[entity_id] = (
+                db.query(PipelineTask).filter(PipelineTask.entity_id == entity_id).one().status
+            )
+            return None
+
+        spec = StageSpec(
+            entity_type=PipelineEntityType.ALUMNI,
+            resolve=lambda session, run: ["a", "b"],
+            handle=handle,
+            chunk_size=2,
+        )
+        await execute_stage(db, run, stage, spec)
+
+        # Without this the crash-recovery sweep has nothing to find: a killed
+        # worker would leave rows in QUEUED, indistinguishable from work that
+        # was never started.
+        assert seen == {"a": PipelineTaskStatus.RUNNING, "b": PipelineTaskStatus.RUNNING}
+
+    async def test_only_the_current_chunk_is_marked_running(self, db, run, stage):
+        seen = []
+
+        async def handle(entity_id):
+            seen.append(db.query(PipelineTask).filter(PipelineTask.entity_id == "d").one().status)
+            return None
+
+        spec = StageSpec(
+            entity_type=PipelineEntityType.ALUMNI,
+            resolve=lambda session, run: ["a", "b", "c", "d"],
+            handle=handle,
+            chunk_size=2,
+        )
+        await execute_stage(db, run, stage, spec)
+
+        # While the first chunk runs, "d" is still queued.
+        assert seen[0] is PipelineTaskStatus.QUEUED
+
+
+class TestRecoverStuckTasks:
+    def test_resets_tasks_left_running_by_a_dead_worker(self, db, run, stage):
+        materialize_tasks(db, run, stage, ["a"], PipelineEntityType.ALUMNI)
+        db.flush()
+        task = db.query(PipelineTask).filter(PipelineTask.entity_id == "a").one()
+        task.status = PipelineTaskStatus.RUNNING
+        task.started_at = datetime.now(timezone.utc).replace(tzinfo=None) - timedelta(hours=9)
+        db.flush()
+
+        reset = recover_stuck_tasks(db, timeout=timedelta(hours=8))
+        db.flush()
+
+        assert reset == 1
+        assert _statuses(db, stage.id)["a"] is PipelineTaskStatus.QUEUED
+
+    def test_leaves_tasks_that_are_still_within_the_timeout(self, db, run, stage):
+        # A long-running stage is normal here - request_role_location sleeps 60s
+        # between batches. Resetting live work would double-process it.
+        materialize_tasks(db, run, stage, ["a"], PipelineEntityType.ALUMNI)
+        db.flush()
+        task = db.query(PipelineTask).filter(PipelineTask.entity_id == "a").one()
+        task.status = PipelineTaskStatus.RUNNING
+        task.started_at = datetime.now(timezone.utc).replace(tzinfo=None) - timedelta(minutes=5)
+        db.flush()
+
+        assert recover_stuck_tasks(db, timeout=timedelta(hours=8)) == 0
+
+    def test_leaves_terminal_tasks_alone(self, db, run, stage):
+        materialize_tasks(db, run, stage, ["a"], PipelineEntityType.ALUMNI)
+        db.flush()
+        task = db.query(PipelineTask).filter(PipelineTask.entity_id == "a").one()
+        task.status = PipelineTaskStatus.SUCCEEDED
+        task.started_at = datetime.now(timezone.utc).replace(tzinfo=None) - timedelta(days=2)
+        db.flush()
+
+        assert recover_stuck_tasks(db, timeout=timedelta(hours=8)) == 0
+        assert _statuses(db, stage.id)["a"] is PipelineTaskStatus.SUCCEEDED
