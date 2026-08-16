@@ -1,0 +1,86 @@
+name: lint
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+concurrency:
+  group: lint-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # Same shape as agents-api-tests.yml: the paths filter lives on the job, not
+  # the trigger. A workflow that never runs never reports, and a required check
+  # that never reports blocks the PR forever. A skipped required job counts as
+  # satisfied.
+  changes:
+    name: detect changes
+    runs-on: ubuntu-latest
+    outputs:
+      api: ${{ steps.filter.outputs.api }}
+      app: ${{ steps.filter.outputs.app }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            api:
+              - 'api/**'
+              - 'package.json'
+              - 'pnpm-lock.yaml'
+              - '.github/workflows/lint.yml'
+            app:
+              - 'app/**'
+              - 'package.json'
+              - 'pnpm-lock.yaml'
+              - '.github/workflows/lint.yml'
+
+  api:
+    name: lint api
+    needs: changes
+    if: needs.changes.outputs.api == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      # --filter installs this workspace and its dependencies only. A full
+      # install pulls the frontend's toolchain to lint the backend.
+      - run: pnpm install --frozen-lockfile --filter api...
+
+      # Prisma Client is generated, and oxlint resolves imports of it. Without
+      # this the lint fails on a missing @prisma/client rather than on anything
+      # a reviewer would care about.
+      - run: pnpm --filter api prisma:generate
+
+      - run: pnpm --filter api lint
+
+  app:
+    name: lint app
+    needs: changes
+    if: needs.changes.outputs.app == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile --filter app...
+
+      # next lint reads next.config and the ESLint config, so it needs the app's
+      # own dependencies present but no build.
+      - run: pnpm --filter app lint
