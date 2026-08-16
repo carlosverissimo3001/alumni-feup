@@ -104,7 +104,10 @@ def resume_run(
     run.started_at = run.started_at or _now()
 
     clear_cancel(run.id, redis_client)
-    session.flush()
+    # Committed rather than flushed: session_scope does not commit, and a
+    # resume that is rolled back leaves the run looking failed while its stage
+    # job is already queued.
+    session.commit()
 
     logger.info("Run %s resumed from %s", run.id, from_stage.value)
     return from_stage
@@ -122,7 +125,7 @@ def cancel_run(
 
     run.status = PipelineRunStatus.CANCELLED
     run.finished_at = _now()
-    session.flush()
+    session.commit()
 
 
 def stage_row(

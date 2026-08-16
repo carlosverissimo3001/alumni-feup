@@ -9,6 +9,7 @@ stubbing the database out would test nothing.
 from datetime import datetime, timedelta, timezone
 
 import pytest
+from sqlalchemy import event
 
 from app.db.models import PipelineRun, PipelineStage, PipelineTask
 from app.pipeline.executor import (
@@ -375,3 +376,33 @@ class TestRecoverStuckTasks:
 
         assert recover_stuck_tasks(db, timeout=timedelta(hours=8)) == 0
         assert _statuses(db, stage.id)["a"] is PipelineTaskStatus.SUCCEEDED
+
+
+class TestDurability:
+    """session_scope does not commit (app/db/session.py), so the executor must.
+
+    Without this every status write is discarded when the worker's session
+    closes, and a killed worker resumes from nothing - which defeats the whole
+    ticket. The `db` fixture cannot see the difference, because flushed and
+    committed state look identical inside its outer transaction; listening for
+    real commit events is what distinguishes them.
+    """
+
+    async def test_commits_at_chunk_boundaries(self, db, run, stage):
+        commits = []
+        event.listen(db, "after_commit", lambda s: commits.append(1))
+
+        async def handle(entity_id):
+            return None
+
+        spec = StageSpec(
+            entity_type=PipelineEntityType.ALUMNI,
+            resolve=lambda session, run: ["a", "b", "c", "d"],
+            handle=handle,
+            chunk_size=2,
+        )
+        await execute_stage(db, run, stage, spec)
+
+        # Two chunks, so progress must be durable at least twice - not once at
+        # the end, which would lose a whole stage to a kill.
+        assert len(commits) >= 2

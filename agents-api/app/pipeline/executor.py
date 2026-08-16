@@ -161,7 +161,10 @@ def _mark_running(session: Session, stage_id: str, entity_ids: List[str]) -> Non
         {PipelineTask.status: PipelineTaskStatus.RUNNING, PipelineTask.started_at: _now()},
         synchronize_session=False,
     )
-    session.flush()
+    # Committed, not just flushed: an uncommitted claim is rolled back when a
+    # killed worker's session dies, leaving the rows in QUEUED and the recovery
+    # sweep with nothing to find.
+    session.commit()
 
 
 def _finish_task(
@@ -209,7 +212,7 @@ async def execute_stage(
         if is_cancelled is not None and await is_cancelled():
             run.status = PipelineRunStatus.CANCELLED
             run.finished_at = _now()
-            session.flush()
+            session.commit()
             logger.info("Run %s cancelled during stage %s", run.id, stage.stage)
             return StageOutcome.CANCELLED
 
@@ -240,6 +243,11 @@ async def execute_stage(
         counts = count_tasks(session, stage.id)
         _flush_counts(session, stage, counts)
 
+        # session_scope does not commit (app/db/session.py), so without this the
+        # worker's whole session is discarded on close and a kill resumes from
+        # nothing. Committing per chunk is what makes progress survive.
+        session.commit()
+
         # Evaluated per chunk rather than at the end: the point is to stop
         # paying for a provider that is down, not to report it afterwards.
         if should_abort(counts, threshold):
@@ -252,7 +260,7 @@ async def execute_stage(
             run.status = PipelineRunStatus.FAILED
             run.error = f"Stage {stage.stage.value} exceeded its failure threshold"
             run.finished_at = _now()
-            session.flush()
+            session.commit()
             return StageOutcome.ABORT_THRESHOLD
 
     counts = count_tasks(session, stage.id)
@@ -262,6 +270,6 @@ async def execute_stage(
     if outcome is StageOutcome.COMPLETE:
         stage.status = PipelineStageStatus.COMPLETED
         stage.finished_at = _now()
-        session.flush()
+        session.commit()
 
     return outcome

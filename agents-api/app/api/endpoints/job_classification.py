@@ -38,6 +38,9 @@ async def classify_job(
             db.flush()
             ensure_stages(db, run)
             run_id = run.id
+            # session_scope does not commit. Without this the run is gone by the
+            # time the worker looks for it, and run_stage finds nothing.
+            db.commit()
 
         await task_queue.enqueue(
             "run_stage", run_id=run_id, stage=PipelineStageName.CLASSIFY_ROLES.value

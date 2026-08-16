@@ -102,6 +102,7 @@ async def run_stage(ctx, run_id: str, stage: str) -> str:
             # An unconverted stage is skipped rather than treated as failed, so
             # the chain still reaches the stages that are converted.
             row.status = PipelineStageStatus.SKIPPED
+            db.commit()
             outcome = StageOutcome.COMPLETE
         else:
             run.status = PipelineRunStatus.RUNNING
@@ -115,8 +116,11 @@ async def run_stage(ctx, run_id: str, stage: str) -> str:
         if following is None:
             run.status = PipelineRunStatus.COMPLETED
             run.finished_at = datetime.now(timezone.utc).replace(tzinfo=None)
+            db.commit()
             logger.info("Run %s completed", run_id)
             return outcome.value
+
+        db.commit()
 
     # Enqueued outside the session: the next stage is minutes of work and has no
     # business inheriting this one's connection.
