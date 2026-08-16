@@ -40,6 +40,10 @@ class JobClassificationService:
 
         except Exception as e:
             logger.error(f"Error classifying roles for alumni {alumni_id}: {str(e)}")
+            # Re-raised so the pipeline executor can mark the task FAILED.
+            # Swallowing here made every task look successful, which disabled
+            # the failure threshold and its abort path along with it.
+            raise
 
     async def request_alumni_classification(self, params: AlumniJobClassificationParams):
         """
@@ -63,7 +67,10 @@ class JobClassificationService:
             logger.info(f"Processing batch {batch_no} of {math.ceil(len(ids) / self.BATCH_SIZE)}")
 
             tasks = [asyncio.create_task(self.classify_roles_for_alumni(aid)) for aid in batch]
-            await asyncio.gather(*tasks)
+            # return_exceptions keeps this path behaving as it did before
+            # classify_roles_for_alumni started re-raising: one alumni failing
+            # must not abandon the rest of the batch.
+            await asyncio.gather(*tasks, return_exceptions=True)
 
             if i + self.BATCH_SIZE < len(alumni):
                 await asyncio.sleep(0.1)

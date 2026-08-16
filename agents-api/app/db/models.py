@@ -17,6 +17,21 @@ from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import relationship
 
 from app.db.session import Base
+
+# The pipeline enums are defined in app.pipeline.stages rather than here: the
+# stage machine has to be importable without a database, and importing anything
+# under app.db constructs an engine as a side effect (app/db/__init__.py ->
+# session.py). Re-exported below so `from app.db.models import PipelineStageName`
+# keeps working alongside the other model enums.
+from app.pipeline.stages import (
+    PipelineEntityType,
+    PipelineKind,
+    PipelineRunStatus,
+    PipelineStageName,
+    PipelineStageStatus,
+    PipelineTaskStatus,
+    PipelineTrigger,
+)
 from app.utils.consts import DEFAULT_INDUSTRY_ID
 
 
@@ -298,58 +313,6 @@ class EscoClassification(Base):
     embedding = Column(Vector(3072), nullable=True)
 
     job_classification = relationship("JobClassification", back_populates="esco_classification")
-
-
-class PipelineKind(str, enum.Enum):
-    REFRESH_EXISTING = "REFRESH_EXISTING"
-    INGEST_COHORT = "INGEST_COHORT"
-
-
-class PipelineTrigger(str, enum.Enum):
-    ADMIN_UI = "ADMIN_UI"
-    API = "API"
-    SCHEDULE = "SCHEDULE"
-
-
-class PipelineRunStatus(str, enum.Enum):
-    PLANNING = "PLANNING"
-    PLANNED = "PLANNED"
-    RUNNING = "RUNNING"
-    COMPLETED = "COMPLETED"
-    FAILED = "FAILED"
-    CANCELLED = "CANCELLED"
-
-
-class PipelineStageName(str, enum.Enum):
-    PLAN = "PLAN"
-    LINKEDIN = "LINKEDIN"
-    COMPANY = "COMPANY"
-    CLASSIFY_ROLES = "CLASSIFY_ROLES"
-    SENIORITY = "SENIORITY"
-    LOCATION = "LOCATION"
-
-
-class PipelineStageStatus(str, enum.Enum):
-    PENDING = "PENDING"
-    RUNNING = "RUNNING"
-    COMPLETED = "COMPLETED"
-    FAILED = "FAILED"
-    SKIPPED = "SKIPPED"
-
-
-class PipelineTaskStatus(str, enum.Enum):
-    QUEUED = "QUEUED"
-    RUNNING = "RUNNING"
-    SUCCEEDED = "SUCCEEDED"
-    FAILED = "FAILED"
-    SKIPPED = "SKIPPED"
-
-
-class PipelineEntityType(str, enum.Enum):
-    ALUMNI = "ALUMNI"
-    ROLE = "ROLE"
-    COMPANY = "COMPANY"
-    LOCATION = "LOCATION"
 
 
 # The Postgres enum types are created by Prisma and named in SCREAMING_SNAKE.

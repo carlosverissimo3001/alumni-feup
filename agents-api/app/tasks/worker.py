@@ -21,13 +21,33 @@ async def startup(ctx) -> None:
         level=getattr(logging, settings.LOG_LEVEL.upper(), logging.INFO),
         format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
     )
+
+    # run_stage enqueues the following stage, so the worker needs its own pool.
+    # The API opens one in its lifespan; a worker never runs that, so without
+    # this every stage transition dies with QueueUnavailable and the chain stops
+    # after its first stage.
+    from app.db.session import session_scope
+    from app.pipeline.recovery import recover_stuck_tasks
+    from app.tasks.queue import task_queue
+
+    await task_queue.connect()
+
+    # A worker killed mid-stage leaves its in-flight tasks in RUNNING with
+    # nothing to move them. Sweeping on startup is what turns a hard kill into
+    # a resumable run rather than a stuck one.
+    with session_scope() as db:
+        recover_stuck_tasks(db)
+        db.commit()
+
     logger.info("Worker started")
 
 
 async def shutdown(ctx) -> None:
     from app.core.service_manager import service_manager
+    from app.tasks.queue import task_queue
 
     await service_manager.cleanup()
+    await task_queue.disconnect()
     logger.info("Worker stopped")
 
 
