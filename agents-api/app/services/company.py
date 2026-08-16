@@ -14,6 +14,7 @@ from app.services.image_storage import image_storage_service
 from app.utils.company_db import (
     get_all_companies,
     get_companies_by_ids,
+    mark_company_enriched,
     update_company,
 )
 from app.utils.consts import BASE_WAIT_TIME, DEFAULT_INDUSTRY_ID
@@ -267,6 +268,10 @@ class CompanyService:
             # attached to any session and can be written through a fresh one.
             with session_scope() as db:
                 update_company(company, db)
+                # Marked here rather than inside update_company: the location
+                # agent calls that helper too, and enrichment is what this
+                # timestamp is meant to record (CAR-152).
+                mark_company_enriched(company_id, db)
 
             # Now that the company is updated, trigger location processing
             if company_response.headquarters and company_response.country_code:
