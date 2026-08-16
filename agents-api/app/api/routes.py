@@ -6,6 +6,7 @@ from app.api.endpoints import (
     job_classification,
     linkedin,
     location,
+    pipelines,
     role,
     seniority,
     storage,
@@ -59,4 +60,10 @@ api_router.include_router(
     esco.router,
     prefix="/esco",
     tags=["ESCO"],
+)
+
+api_router.include_router(
+    pipelines.router,
+    prefix="/pipelines",
+    tags=["Pipelines"],
 )

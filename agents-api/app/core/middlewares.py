@@ -1,9 +1,9 @@
 import logging
 import time
 
-from fastapi import HTTPException, Request, status
+from fastapi import Request, status
 from starlette.middleware.base import BaseHTTPMiddleware, RequestResponseEndpoint
-from starlette.responses import Response
+from starlette.responses import JSONResponse, Response
 
 from app.core.config import settings
 
@@ -50,6 +50,17 @@ class LoggingMiddleware(BaseHTTPMiddleware):
 PUBLIC_PATHS = {"/health"}
 
 
+def _unauthorized(detail: str) -> JSONResponse:
+    """Return the 401 rather than raising it.
+
+    An HTTPException raised inside a BaseHTTPMiddleware is not seen by FastAPI's
+    exception handler - that runs inside the router, further in - so it bubbles
+    to ServerErrorMiddleware and the client gets a 500. A missing API key would
+    have read as "the server broke" rather than "you are not authorised".
+    """
+    return JSONResponse(status_code=status.HTTP_401_UNAUTHORIZED, content={"detail": detail})
+
+
 class APIKeyMiddleware(BaseHTTPMiddleware):
     """
     Middleware to authenticate requests using an API key.
@@ -68,18 +79,12 @@ class APIKeyMiddleware(BaseHTTPMiddleware):
                 logger.warning(
                     f"Unauthorized access attempt: Missing API key - {request.method} {request.url.path}"  # noqa: E501
                 )
-                raise HTTPException(
-                    status_code=status.HTTP_401_UNAUTHORIZED,
-                    detail="API key missing",
-                )
+                return _unauthorized("API key missing")
 
             if api_key != settings.API_KEY_SECRET:
                 logger.warning(
                     f"Unauthorized access attempt: Invalid API key - {request.method} {request.url.path}"  # noqa: E501
                 )
-                raise HTTPException(
-                    status_code=status.HTTP_401_UNAUTHORIZED,
-                    detail="Invalid API key",
-                )
+                return _unauthorized("Invalid API key")
 
         return await call_next(request)

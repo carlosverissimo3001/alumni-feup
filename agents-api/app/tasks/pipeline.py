@@ -14,6 +14,7 @@ from datetime import datetime, timezone
 from typing import List, Optional
 
 from app.schemas.company import CompanyUpdateParams
+from app.schemas.job_classification import AlumniJobClassificationParams
 from app.schemas.location import ResolveRoleLocationParams
 from app.schemas.seniority import AlumniSeniorityParams
 
@@ -44,9 +45,12 @@ async def update_companies(ctx, company_ids: Optional[str] = None) -> None:
     await company_service.request_company_update(CompanyUpdateParams(company_ids=company_ids))
 
 
-# classify_alumni_roles is gone: the CLASSIFY_ROLES stage now owns that path, so
-# leaving the task registered would be one more entry point writing no run
-# record. The service method it called is still used by the LinkedIn service.
+async def classify_alumni_roles(ctx, alumni_ids: Optional[str] = None) -> None:
+    from app.services.job_classification import job_classification_service
+
+    await job_classification_service.request_alumni_classification(
+        params=AlumniJobClassificationParams(alumni_ids=alumni_ids)
+    )
 
 
 async def classify_alumni_seniority(ctx, alumni_ids: Optional[str] = None) -> None:
@@ -133,6 +137,7 @@ async def run_stage(ctx, run_id: str, stage: str) -> str:
 TASKS = [
     run_stage,
     extract_linkedin_profile,
+    classify_alumni_roles,
     update_linkedin_profiles,
     update_companies,
     classify_alumni_seniority,
