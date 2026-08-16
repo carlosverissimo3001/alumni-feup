@@ -144,6 +144,10 @@ class Company(Base):
     created_by = Column(String, nullable=True)
     updated_by = Column(String, nullable=True)
 
+    # Null means never enriched, so the row is always eligible. Not updated_at:
+    # that is bumped by any write, including an HQ location resolution.
+    enriched_at = Column(DateTime, nullable=True)
+
     industry = relationship("Industry", back_populates="companies")
     roles = relationship("Role", back_populates="company")
     hq_location = relationship("Location", back_populates="company")

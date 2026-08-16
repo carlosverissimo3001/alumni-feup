@@ -70,6 +70,12 @@ model Company {
   updatedAt DateTime @default(now()) @map("updated_at") @db.Timestamp(6)
   updatedBy String?  @map("updated_by")
 
+  /// When enrichment last succeeded for this company. Null means never, so the
+  /// row is always eligible. Deliberately not updatedAt: that is bumped by any
+  /// write, including a merge or an HQ location resolution, which would mark a
+  /// never-enriched company as fresh.
+  enrichedAt DateTime? @map("enriched_at") @db.Timestamp(6)
+
   Industry      Industry        @relation(fields: [industryId], references: [id])
   roles         Role[]
   ReviewCompany ReviewCompany[]

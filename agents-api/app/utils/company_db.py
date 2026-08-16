@@ -72,3 +72,20 @@ def update_company(company: Company, db: Session) -> Company:
         db.commit()
         db.refresh(existing_company)
     return existing_company
+
+
+def mark_company_enriched(company_id: str, db: Session) -> None:
+    """Record that enrichment succeeded for this company.
+
+    Separate from `update_company` on purpose. That helper is also called by the
+    location agent to attach an HQ location, and marking a company enriched
+    there would make a never-enriched company look fresh - the same defect
+    `updated_at` already has, which is why this column exists.
+    """
+    company = db.query(Company).filter(Company.id == company_id).first()
+    if company is None:
+        logger.warning("Cannot mark company %s enriched: no such company", company_id)
+        return
+
+    company.enriched_at = datetime.now(timezone.utc)
+    db.commit()

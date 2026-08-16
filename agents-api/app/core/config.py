@@ -30,6 +30,11 @@ class Settings(BaseSettings):
     # Redis Settings
     REDIS_URL: str = "redis://localhost:6379/0"
 
+    # Pipeline Settings
+    # How long a company's enrichment stays fresh. In config rather than
+    # hardcoded so it can be tuned without a deploy (CAR-152).
+    COMPANY_REFRESH_AFTER_DAYS: int = 180
+
     # OpenAI Settings
     OPENAI_DEFAULT_MODEL: str = "gpt-4o-mini"
     OPENAI_API_KEY: str = ""
