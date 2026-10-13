@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import Script from "next/script";
 import "./globals.css";
 import Layout from "@/components/navbar/layout";
 import { Providers } from "@/providers";
@@ -58,6 +59,20 @@ export default function RootLayout({
             <SpeedInsights />
             <Analytics />
             <Toaster />
+            {/* Self-hosted Umami, running alongside Vercel Analytics until the frontend
+                itself migrates off Vercel (CAR-391/392) - data-performance enables Web
+                Vitals collection (LCP/INP/CLS/FCP/TTFB), not just pageviews. */}
+            {process.env.NEXT_PUBLIC_UMAMI_WEBSITE_ID && (
+              <Script
+                src={
+                  process.env.NEXT_PUBLIC_UMAMI_SCRIPT_URL ??
+                  "https://analytics.alumni-feup.com/script.js"
+                }
+                data-website-id={process.env.NEXT_PUBLIC_UMAMI_WEBSITE_ID}
+                data-performance="true"
+                strategy="afterInteractive"
+              />
+            )}
           </LoadingProvider>
         </Providers>
       </body>
