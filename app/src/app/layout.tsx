@@ -57,7 +57,7 @@ export default function RootLayout({
               <Script
                 src={
                   process.env.NEXT_PUBLIC_UMAMI_SCRIPT_URL ??
-                  "https://analytics.alumni-feup.com/script.js"
+                  "https://analytics.carlosverissimo.com/script.js"
                 }
                 data-website-id={process.env.NEXT_PUBLIC_UMAMI_WEBSITE_ID}
                 data-performance="true"
