@@ -34,7 +34,7 @@ jobs:
       - name: Pull latest code, sync deps, and restart
         run: |
           set -euo pipefail
-          cd ~/newAlumniProj
+          cd ~/alumni-feup
 
           echo "Pulling latest changes..."
           git pull origin main
