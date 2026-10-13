@@ -1,9 +1,5 @@
 name: Deploy Backend
 
-# Restores the VM deploy path removed on 2026-08-10 during the Railway cutover
-# (CAR-387). The self-hosted runner lives on the VM and polls GitHub outbound,
-# so no SSH secrets are needed in CI.
-
 on:
   push:
     branches:
@@ -14,7 +10,6 @@ on:
       - "pnpm-workspace.yaml"
   workflow_dispatch: {}
 
-# Never let two deploys touch the VM at once.
 concurrency:
   group: deploy-backend
   cancel-in-progress: false
