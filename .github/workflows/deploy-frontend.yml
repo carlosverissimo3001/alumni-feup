@@ -1,9 +1,5 @@
 name: Deploy Frontend
 
-# Sibling to deploy-backend.yml (CAR-387) and deploy-agents-api.yml (CAR-389).
-# Deploys the Next.js frontend to the VM (CAR-391) - pm2-managed `next start`
-# on port 4200, fronted by the Cloudflare Tunnel.
-
 on:
   push:
     branches:
@@ -14,7 +10,6 @@ on:
       - "pnpm-workspace.yaml"
   workflow_dispatch: {}
 
-# Never let two deploys touch the VM at once.
 concurrency:
   group: deploy-frontend
   cancel-in-progress: false
