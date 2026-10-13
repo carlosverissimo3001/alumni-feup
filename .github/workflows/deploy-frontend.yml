@@ -1,0 +1,64 @@
+name: Deploy Frontend
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "app/**"
+      - "pnpm-lock.yaml"
+      - "pnpm-workspace.yaml"
+  workflow_dispatch: {}
+
+concurrency:
+  group: deploy-frontend
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: Deploy on VM
+    runs-on: self-hosted
+    environment: Production – alumni-feup
+
+    steps:
+      - name: Check frontend is up before deployment
+        run: |
+          if ! curl -sf --max-time 10 http://localhost:4200/; then
+            echo "Frontend did not answer before deployment."
+            echo "Continuing - this just means it was already down."
+          fi
+
+      - name: Pull latest code, install, and rebuild
+        run: |
+          set -euo pipefail
+          cd ~/newAlumniProj
+
+          echo "Pulling latest changes..."
+          git pull origin main
+
+          echo "Installing dependencies..."
+          corepack enable pnpm
+          pnpm install --frozen-lockfile --filter app...
+
+          # NEXT_PUBLIC_* vars are baked in at build time, not read at
+          # runtime - app/.env must exist and be current before this step.
+          echo "Building frontend..."
+          pnpm --filter app build
+
+          echo "Restarting frontend..."
+          pm2 restart frontend --update-env
+
+      - name: Verify the frontend came back
+        run: |
+          echo "Waiting for frontend to be ready..."
+          for i in $(seq 1 30); do
+            if curl -s --max-time 5 -o /dev/null http://localhost:4200/; then
+              echo "Frontend is accepting connections."
+              exit 0
+            fi
+            sleep 2
+          done
+
+          echo "Frontend did not accept connections within 60s"
+          pm2 logs frontend --lines 50 --nostream
+          exit 1
