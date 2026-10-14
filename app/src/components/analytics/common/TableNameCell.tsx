@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import ImageWithFallback from "@/components/ui/image-with-fallback";
 import { TableCell } from "@/components/ui/table";
@@ -60,15 +61,27 @@ const NameWithTooltip = ({
   name,
   acronym,
   children,
+  tapToOpen = false,
 }: {
   name: string;
   acronym?: string;
   children: React.ReactNode;
+  /** Lets a tap toggle the tooltip open, for rows with no other click target
+   * to reveal it on touch devices. Hover/focus still works as before - this
+   * only adds a second way in. */
+  tapToOpen?: boolean;
 }) => {
+  const [open, setOpen] = useState(false);
+
   return (
     <TooltipProvider>
-      <Tooltip>
-        <TooltipTrigger asChild>{children}</TooltipTrigger>
+      <Tooltip open={tapToOpen ? open : undefined} onOpenChange={setOpen}>
+        <TooltipTrigger
+          asChild
+          onClick={tapToOpen ? () => setOpen((o) => !o) : undefined}
+        >
+          {children}
+        </TooltipTrigger>
         <TooltipContent align="start">
           <p>
             <NameContent name={name} acronym={acronym} forTooltip={true} />
@@ -127,7 +140,7 @@ export const TableNameCell = ({
               isRowInFilters ? "font-bold" : "font-medium"
             }`}
           >
-            <NameWithTooltip name={name} acronym={acronym}>
+            <NameWithTooltip name={name} acronym={acronym} tapToOpen>
               <span>
                 <NameContent
                   name={name}
