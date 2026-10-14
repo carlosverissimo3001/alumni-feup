@@ -314,7 +314,7 @@ export default function Profile() {
             </div>
 
             {/* Company Card */}
-            <div className="p-3 rounded-xl bg-blue-50 shadow-card border-l-[3px] border-blue-400 flex flex-col h-full">
+            <div className="p-3 rounded-xl bg-card shadow-card border-l-[3px] border-blue-400 flex flex-col h-full">
               <div className="flex items-center gap-3">
                 {focusedRole?.company?.logo && (
                   <div className="p-2 bg-white rounded-lg shadow-sm">
@@ -329,7 +329,7 @@ export default function Profile() {
                 )}
                 <Link
                   href={`/company/${focusedRole?.company?.id}`}
-                  className="text-xl font-bold text-gray-800 hover:text-primary transition-colors group flex items-center gap-2"
+                  className="text-xl font-bold text-foreground hover:text-primary transition-colors group flex items-center gap-2"
                 >
                   {focusedRole?.company?.name || "No company specified"}
                   <ArrowUpRight className="w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity" />
@@ -340,7 +340,7 @@ export default function Profile() {
                 focusedRole?.company?.industry) && (
                 <div className="flex flex-col gap-1 my-3 ml-1">
                   {focusedRole?.company?.location && (
-                    <div className="flex items-center gap-2 text-sm text-gray-700 font-medium">
+                    <div className="flex items-center gap-2 text-sm text-muted-foreground font-medium">
                       <MapPin className="h-4 w-4 text-blue-600" />
                       {focusedRole.company.location.city &&
                       focusedRole.company.location.country
@@ -358,7 +358,7 @@ export default function Profile() {
                     </div>
                   )}
                   {focusedRole?.company?.industry && (
-                    <div className="flex items-center gap-2 text-sm text-gray-700 font-medium">
+                    <div className="flex items-center gap-2 text-sm text-muted-foreground font-medium">
                       <Factory className="h-4 w-4 text-blue-600" />
                       {focusedRole.company.industry.name}
                     </div>
