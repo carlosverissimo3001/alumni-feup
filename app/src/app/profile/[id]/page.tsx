@@ -236,13 +236,13 @@ export default function Profile() {
         >
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8 items-stretch mb-8">
             {/* Role Card */}
-            <div className="p-3 rounded-xl bg-gradient-to-br from-primary/5 to-primary/10 border border-primary/20 flex flex-col h-full">
-              <h3 className="text-xl font-bold text-gray-800 mb-2">
+            <div className="p-card-padding rounded-xl bg-card shadow-card border-l-[3px] border-primary flex flex-col h-full">
+              <h3 className="text-xl font-bold text-foreground mb-2">
                 {jobTitle || "No role specified"}
               </h3>
               {focusedRole?.seniorityLevel && (
                 <>
-                  <div className="flex items-center text-sm text-gray-600 mb-2">
+                  <div className="flex items-center text-sm text-muted-foreground mb-2">
                     <span
                       className={clsx(
                         "px-2 py-0.5 ml-[-3px] rounded-full border text-xs font-medium",
@@ -255,7 +255,7 @@ export default function Profile() {
                   </div>
                 </>
               )}
-              <div className="flex items-center text-sm text-gray-600 mb-3">
+              <div className="flex items-center text-sm text-muted-foreground mb-3">
                 <Clock className="h-4 w-4 mr-3 text-primary" />
                 <span>
                   {focusedRole?.startDate
@@ -275,8 +275,8 @@ export default function Profile() {
                     : " - Present"}
                 </span>
               </div>
-              <div className="flex items-center justify-between p-3 bg-white/70 rounded-lg border border-gray-200 mt-auto">
-                <div className="flex items-center gap-2 text-xs text-gray-600">
+              <div className="flex items-center justify-between p-3 bg-muted/50 rounded-lg border border-border mt-auto">
+                <div className="flex items-center gap-2 text-xs text-muted-foreground">
                   <TagIcon className="h-4 w-4 text-primary" />
                   <span>ESCO:</span>
                   <TooltipProvider>
@@ -314,7 +314,7 @@ export default function Profile() {
             </div>
 
             {/* Company Card */}
-            <div className="p-3 rounded-xl bg-gradient-to-br from-blue-50 to-blue-100 border border-blue-200 flex flex-col h-full">
+            <div className="p-3 rounded-xl bg-blue-50 shadow-card border-l-[3px] border-blue-400 flex flex-col h-full">
               <div className="flex items-center gap-3">
                 {focusedRole?.company?.logo && (
                   <div className="p-2 bg-white rounded-lg shadow-sm">
@@ -433,10 +433,10 @@ export default function Profile() {
 
             {/* Location Card */}
             <div className="space-y-4">
-              <div className="p-6 rounded-xl bg-gradient-to-br from-primary/5 to-primary/10 border border-primary/20 flex flex-col h-full">
+              <div className="p-6 rounded-xl bg-card shadow-card border-l-[3px] border-primary flex flex-col h-full">
                 <div className="flex items-center gap-3 mb-3">
                   <MapPin className="h-5 w-5 text-primary" />
-                  <span className="text-xl font-bold text-gray-800">
+                  <span className="text-xl font-bold text-foreground">
                     {profile?.location?.city && profile?.location?.country
                       ? `${profile.location.city}, ${profile.location.country}`
                       : "Location not specified"}
@@ -499,7 +499,7 @@ export default function Profile() {
             transition={{ duration: 0.5, delay: 0.6 }}
           >
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-2xl font-bold text-gray-800">
+              <h3 className="text-2xl font-bold text-foreground">
                 Profile Actions
               </h3>
             </div>
@@ -509,9 +509,9 @@ export default function Profile() {
                 transition={{ duration: 0.2 }}
                 className="flex"
               >
-                <Card className="flex flex-col w-full shadow-lg hover:shadow-xl transition-all duration-300 border-0 bg-white/80 backdrop-blur-sm hover:bg-white">
+                <Card className="flex flex-col w-full shadow-card transition-all duration-300 border-0 bg-card">
                   <CardHeader className="pb-4">
-                    <CardTitle className="text-lg flex items-center text-gray-800">
+                    <CardTitle className="text-lg flex items-center text-foreground">
                       <div className="p-2 rounded-lg bg-primary/10 mr-3">
                         <RefreshCw className="h-5 w-5 text-primary" />
                       </div>
@@ -519,7 +519,7 @@ export default function Profile() {
                     </CardTitle>
                   </CardHeader>
                   <CardContent className="flex flex-col flex-1">
-                    <p className="text-gray-600 mb-6 leading-relaxed">
+                    <p className="text-muted-foreground mb-6 leading-relaxed">
                       If you have recently updated your LinkedIn profile, you
                       can request an update to this profile.
                     </p>
@@ -569,9 +569,9 @@ export default function Profile() {
                 transition={{ duration: 0.2 }}
                 className="flex"
               >
-                <Card className="flex flex-col w-full shadow-lg hover:shadow-xl transition-all duration-300 border-0 bg-white/80 backdrop-blur-sm hover:bg-white">
+                <Card className="flex flex-col w-full shadow-card transition-all duration-300 border-0 bg-card">
                   <CardHeader className="pb-4">
-                    <CardTitle className="text-lg flex items-center text-gray-800">
+                    <CardTitle className="text-lg flex items-center text-foreground">
                       <div className="p-2 rounded-lg bg-destructive/10 mr-3">
                         <Trash2 className="h-5 w-5 text-destructive" />
                       </div>
@@ -579,7 +579,7 @@ export default function Profile() {
                     </CardTitle>
                   </CardHeader>
                   <CardContent className="flex flex-col flex-1">
-                    <p className="text-gray-600 mb-6 leading-relaxed">
+                    <p className="text-muted-foreground mb-6 leading-relaxed">
                       If you want to delete your account, you can request it
                       here. We will delete your account and all your data from
                       our database.
