@@ -9,3 +9,7 @@ openapitools.json
 
 # Local operational scripts, not part of the deployed app
 /scripts/
+
+# Superpowers brainstorming/planning artifacts - local process only, not repo history
+/.superpowers/
+/docs/superpowers/
