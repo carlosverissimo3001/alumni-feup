@@ -114,7 +114,7 @@ const MobileNav = () => {
             </button>
           </DrawerTrigger>
 
-          <DrawerContent className="h-[45vh]">
+          <DrawerContent className="h-[45vh] bg-white border-0 rounded-t-2xl">
             <div className="bg-white h-full w-full max-w-md mx-auto rounded-t-2xl px-4 pt-3 pb-4 flex flex-col">
               <DrawerTitle className="text-base font-semibold text-zinc-900 mb-3">
                 More Options

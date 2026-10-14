@@ -1,10 +1,12 @@
 "use client";
 
 import { useTheme } from "next-themes";
+import { usePathname } from "next/navigation";
 import { Moon, Sun } from "lucide-react";
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
+import { isDarkModeRoute } from "@/lib/theme-routes";
 
 type ThemeToggleProps = {
   /** Matches navbar.tsx's collapsed-sidebar row layout. */
@@ -14,12 +16,19 @@ type ThemeToggleProps = {
 
 export function ThemeToggle({ variant = "desktop", isCollapsed = false }: ThemeToggleProps) {
   const { resolvedTheme, setTheme } = useTheme();
+  const pathname = usePathname();
   // Avoid rendering theme-dependent UI before hydration confirms the resolved theme.
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
 
   if (!mounted) {
     return <div className="h-5 w-5" />;
+  }
+
+  // Theme is forced to light outside the migrated pages (see providers.tsx) -
+  // the toggle would look broken (no visible effect) there, so hide it instead.
+  if (!isDarkModeRoute(pathname)) {
+    return null;
   }
 
   const isDark = resolvedTheme === "dark";
