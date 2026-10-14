@@ -56,6 +56,10 @@ export default {
       boxShadow: {
         card: "var(--shadow-card)",
       },
+      fontFamily: {
+        sans: ["var(--font-bricolage-sans)"],
+        mono: ["var(--font-jetbrains-mono)"],
+      },
       spacing: {
         "card-padding": "0.875rem",
         "section-gap": "2rem",
