@@ -18,6 +18,7 @@ import { useNavbar } from "@/contexts/NavbarContext";
 import { useEffect, useRef } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { motion } from "framer-motion";
+import { ThemeToggle } from "./ThemeToggle";
 const Navbar = () => {
   const { isAuthenticated, user, logout } = useAuth();
   const { isCollapsed, toggleCollapse } = useNavbar();
@@ -272,6 +273,7 @@ const Navbar = () => {
               </div>
             </button>
           )}
+          <ThemeToggle isCollapsed={isCollapsed} />
         </div>
       </div>
 
@@ -283,7 +285,7 @@ const Navbar = () => {
         animate={{ opacity: 1 }}
         transition={{ duration: 0.5, delay: 0.3 }}
       >
-        <span>© FEUP 2025</span>
+        <span>© FEUP 2026</span>
       </motion.div>
     </div>
   );

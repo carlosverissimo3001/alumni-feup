@@ -20,6 +20,7 @@ import {
   DrawerTitle,
 } from "@/components/ui/drawer";
 import { motion } from "framer-motion";
+import { ThemeToggle } from "./ThemeToggle";
 
 const MobileNav = () => {
   const { isAuthenticated, user, logout } = useAuth();
@@ -161,6 +162,8 @@ const MobileNav = () => {
                     </button>
                   </>
                 )}
+                <div className="h-px bg-zinc-200 my-2" />
+                <ThemeToggle variant="mobile" />
               </div>
             </div>
           </DrawerContent>
