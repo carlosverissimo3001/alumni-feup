@@ -29,7 +29,7 @@ This is the first of three sub-projects in the broader analytics-section fronten
 
 The token system is applied page-by-page rather than everywhere at once, starting with the lowest-risk surfaces:
 
-1. **Navbar** — sitewide chrome, so it exercises the tokens on every page immediately, but is a single, well-contained component.
+1. **Navbar** — sitewide chrome, so it exercises the tokens on every page immediately. Its visual design has already gone through significant iteration over the past year, so this pass is **token-substitution only**: hardcoded hex/spacing values are swapped for the equivalent token, with no visual change to the rendered result. Any navbar restyle is explicitly out of scope here and would be its own, separately-approved change.
 2. **Profile page** — only reachable by logged-in users, a small fraction of traffic, so mistakes here are cheap.
 3. **About / feedback pages** — static, low-traffic, no data-fetching complexity to tangle with the visual change.
 
@@ -92,6 +92,7 @@ This is a token-layer change, not a component rewrite: existing components keep 
 ## Testing / verification
 
 - Visual check in both light and dark mode across the navbar, profile page, and about/feedback pages at desktop and mobile widths.
+- Navbar specifically: before/after visual diff confirming zero rendered change — this pass is token substitution only, not a restyle.
 - Grep confirms zero remaining hardcoded brand-color occurrences within the files touched in this pass.
 - `tsc --noEmit` clean.
 - Contrast check (WCAG AA) on `--primary-dark` against the dark-mode card background before finalizing its value.
