@@ -53,6 +53,14 @@ export default {
           5: "hsl(var(--chart-5))",
         },
       },
+      boxShadow: {
+        card: "var(--shadow-card)",
+      },
+      spacing: {
+        "card-padding": "0.875rem",
+        "section-gap": "2rem",
+        "table-row-y": "0.625rem",
+      },
       keyframes: {
         "accordion-down": {
           from: { height: "0" },
