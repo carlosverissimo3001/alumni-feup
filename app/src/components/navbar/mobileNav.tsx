@@ -20,6 +20,7 @@ import {
   DrawerTitle,
 } from "@/components/ui/drawer";
 import { motion } from "framer-motion";
+import { ThemeToggle } from "./ThemeToggle";
 
 const MobileNav = () => {
   const { isAuthenticated, user, logout } = useAuth();
@@ -83,8 +84,8 @@ const MobileNav = () => {
                 className={cn(
                   "flex flex-col items-center justify-center px-3 py-2 rounded-xl transition-all duration-200",
                   isActive
-                    ? "bg-[#8C2D19]/10 text-[#8C2D19] font-medium"
-                    : "text-zinc-400 hover:text-[#8C2D19]"
+                    ? "bg-primary/10 text-primary font-medium"
+                    : "text-zinc-400 hover:text-primary"
                 )}
               >
                 <motion.div
@@ -101,7 +102,7 @@ const MobileNav = () => {
 
         <Drawer>
           <DrawerTrigger asChild>
-            <button className="flex flex-col items-center justify-center px-3 py-2 text-zinc-400 hover:text-[#8C2D19] rounded-xl transition-all duration-200">
+            <button className="flex flex-col items-center justify-center px-3 py-2 text-zinc-400 hover:text-primary rounded-xl transition-all duration-200">
               <motion.div
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.95 }}
@@ -113,7 +114,7 @@ const MobileNav = () => {
             </button>
           </DrawerTrigger>
 
-          <DrawerContent className="h-[45vh]">
+          <DrawerContent className="h-[45vh] bg-white border-0 rounded-t-2xl">
             <div className="bg-white h-full w-full max-w-md mx-auto rounded-t-2xl px-4 pt-3 pb-4 flex flex-col">
               <DrawerTitle className="text-base font-semibold text-zinc-900 mb-3">
                 More Options
@@ -128,8 +129,8 @@ const MobileNav = () => {
                       className={cn(
                         "flex items-center p-3 rounded-xl transition-all duration-200",
                         pathname === route.href
-                          ? "bg-[#8C2D19]/10 text-[#8C2D19]"
-                          : "text-zinc-600 hover:text-[#8C2D19] hover:bg-[#8C2D19]/5"
+                          ? "bg-primary/10 text-primary"
+                          : "text-zinc-600 hover:text-primary hover:bg-primary/5"
                       )}
                     >
                       <motion.div
@@ -161,6 +162,8 @@ const MobileNav = () => {
                     </button>
                   </>
                 )}
+                <div className="h-px bg-zinc-200 my-2" />
+                <ThemeToggle variant="mobile" />
               </div>
             </div>
           </DrawerContent>

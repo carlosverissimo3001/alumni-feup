@@ -58,7 +58,7 @@ const AboutPage = () => {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.5 }}
-        className="min-h-screen bg-white"
+        className="min-h-screen bg-background"
       >
         <div className="max-w-6xl mx-auto p-4 space-y-8">
           <motion.section
@@ -72,7 +72,7 @@ const AboutPage = () => {
                 <motion.span
                   key={index}
                   variants={letterVariants}
-                  className="inline-block bg-gradient-to-r from-[#8C2D19] to-orange-500 bg-clip-text text-transparent text-3xl md:text-4xl font-bold"
+                  className="inline-block bg-gradient-to-r from-primary to-orange-500 bg-clip-text text-transparent text-3xl md:text-4xl font-bold"
                 >
                   {letter}
                 </motion.span>
@@ -82,7 +82,7 @@ const AboutPage = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.6, duration: 0.6 }}
-              className="text-base md:text-lg text-zinc-600 max-w-3xl mx-auto"
+              className="text-base md:text-lg text-muted-foreground max-w-3xl mx-auto"
             >
               Alumni-FEUP is a comprehensive platform designed to connect and
               empower FEUP Informatics and Software Engineering alumni.
@@ -97,12 +97,12 @@ const AboutPage = () => {
           >
             <h2
               id="team"
-              className="text-3xl font-semibold text-center text-zinc-800 group flex items-center justify-center gap-2"
+              className="text-3xl font-semibold text-center text-foreground group flex items-center justify-center gap-2"
             >
               Development Team
               <a
                 href="#team"
-                className="opacity-0 group-hover:opacity-100 text-[#8C2D19] transition-opacity"
+                className="opacity-0 group-hover:opacity-100 text-primary transition-opacity"
               >
                 #
               </a>
@@ -114,7 +114,7 @@ const AboutPage = () => {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.6, delay: index * 0.2 }}
-                  className="group bg-gradient-to-br from-white via-[#FCEFEA] to-[#8C2D19]/15 p-8 rounded-3xl border border-[#8C2D19]/20 hover:shadow-xl hover:shadow-[#8C2D19]/20 hover:border-[#8C2D19]/50 transition-all duration-300 hover:-translate-y-1"
+                  className="group bg-card shadow-card border-l-[3px] border-primary p-8 rounded-3xl transition-all duration-300 hover:-translate-y-1"
                 >
                   <div className="w-32 h-32 relative mx-auto mb-6 overflow-hidden rounded-full ring-4 ring-white shadow-lg group-hover:scale-105 transition-transform duration-300">
                     <Image
@@ -124,10 +124,10 @@ const AboutPage = () => {
                       className="object-cover"
                     />
                   </div>
-                  <h3 className="text-2xl font-semibold text-center text-zinc-800 mb-2">
+                  <h3 className="text-2xl font-semibold text-center text-foreground mb-2">
                     {dev.name}
                   </h3>
-                  <p className="text-zinc-600 text-center mb-4">{dev.role}</p>
+                  <p className="text-muted-foreground text-center mb-4">{dev.role}</p>
                   <div className="flex justify-center space-x-6">
                     <Tooltip>
                       <TooltipTrigger asChild>
@@ -165,7 +165,7 @@ const AboutPage = () => {
                             alt="GitHub"
                             width={24}
                             height={24}
-                            className="hover:scale-125 transition-transform duration-300"
+                            className="dark:invert hover:scale-125 transition-transform duration-300"
                           />
                         </Link>
                       </TooltipTrigger>
@@ -190,12 +190,12 @@ const AboutPage = () => {
           >
             <h2
               id="acknowledgments"
-              className="text-3xl font-semibold text-center text-zinc-800 group flex items-center justify-center gap-2"
+              className="text-3xl font-semibold text-center text-foreground group flex items-center justify-center gap-2"
             >
               Acknowledgments
               <a
                 href="#acknowledgments"
-                className="opacity-0 group-hover:opacity-100 text-[#8C2D19] transition-opacity"
+                className="opacity-0 group-hover:opacity-100 text-primary transition-opacity"
               >
                 #
               </a>
@@ -205,10 +205,10 @@ const AboutPage = () => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.4 }}
-                className="group bg-gradient-to-br from-white via-[#FCEFEA] to-[#8C2D19]/15 rounded-3xl p-8 border border-[#8C2D19]/20 hover:shadow-xl hover:shadow-[#8C2D19]/20 hover:border-[#8C2D19]/50 transition-all duration-300 hover:-translate-y-1"
+                className="group bg-card shadow-card border-l-[3px] border-primary rounded-3xl p-8 transition-all duration-300 hover:-translate-y-1"
               >
                 <div className="flex items-center gap-3 mb-4">
-                  <h3 className="text-2xl font-semibold text-zinc-800">
+                  <h3 className="text-2xl font-semibold text-foreground">
                     Alumni Data
                   </h3>
                   <Image
@@ -219,7 +219,7 @@ const AboutPage = () => {
                     className="opacity-80"
                   />
                 </div>
-                <p className="text-zinc-600 text-md">
+                <p className="text-muted-foreground text-md">
                   Alumni-FEUP&apos;s alumni network visualization is made
                   possible through LinkedIn data integration, enabling us to map
                   career trajectories and professional connections of FEUP
@@ -231,10 +231,10 @@ const AboutPage = () => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6 }}
-                className="group bg-gradient-to-br from-white via-[#FCEFEA] to-[#8C2D19]/15 rounded-3xl p-8 border border-[#8C2D19]/20 hover:shadow-xl hover:shadow-[#8C2D19]/20 hover:border-[#8C2D19]/50 transition-all duration-300 hover:-translate-y-1"
+                className="group bg-card shadow-card border-l-[3px] border-primary rounded-3xl p-8 transition-all duration-300 hover:-translate-y-1"
               >
                 <div className="flex items-center gap-3 mb-4">
-                  <h3 className="text-2xl font-semibold text-zinc-800">
+                  <h3 className="text-2xl font-semibold text-foreground">
                     ESCO Classification
                   </h3>
                   <Image
@@ -242,10 +242,10 @@ const AboutPage = () => {
                     alt="European Commission"
                     width={84}
                     height={28}
-                    className="opacity-80 invert"
+                    className="opacity-80 invert dark:invert-0"
                   />
                 </div>
-                <p className="text-zinc-600 text-md">
+                <p className="text-muted-foreground text-md">
                   This service uses the ESCO (European Skills Classification of
                   Occupations) classification of the European Commission.{" "}
                   <Tooltip>
@@ -253,7 +253,7 @@ const AboutPage = () => {
                       <Link
                         href="https://ec.europa.eu/esco/portal/esco/home"
                         target="_blank"
-                        className="text-[#8C2D19] hover:text-orange-500 inline-flex items-center gap-1 group-hover:underline"
+                        className="text-primary hover:text-orange-500 inline-flex items-center gap-1 group-hover:underline"
                       >
                         ESCO{" "}
                         <ExternalLink
@@ -276,10 +276,10 @@ const AboutPage = () => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.2 }}
-                className="group bg-gradient-to-br from-white via-[#FCEFEA] to-[#8C2D19]/15 rounded-3xl p-8 border border-[#8C2D19]/20 hover:shadow-xl hover:shadow-[#8C2D19]/20 hover:border-[#8C2D19]/50 transition-all duration-300 hover:-translate-y-1"
+                className="group bg-card shadow-card border-l-[3px] border-primary rounded-3xl p-8 transition-all duration-300 hover:-translate-y-1"
               >
                 <div className="flex items-center gap-3 mb-4">
-                  <h3 className="text-2xl font-semibold text-zinc-800">
+                  <h3 className="text-2xl font-semibold text-foreground">
                     Salary Data
                   </h3>
                   <Image
@@ -290,14 +290,14 @@ const AboutPage = () => {
                     className="opacity-80"
                   />
                 </div>
-                <p className="text-zinc-600 text-md">
+                <p className="text-muted-foreground text-md">
                   Salary insights are powered by data from{" "}
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <Link
                         href="https://www.levels.fyi"
                         target="_blank"
-                        className="text-[#8C2D19] hover:text-orange-500 inline-flex items-center gap-1 group-hover:underline"
+                        className="text-primary hover:text-orange-500 inline-flex items-center gap-1 group-hover:underline"
                       >
                         levels.fyi{" "}
                         <ExternalLink
@@ -328,17 +328,17 @@ const AboutPage = () => {
           >
             <h2
               id="open-source"
-              className="text-3xl font-semibold text-zinc-800 group flex items-center justify-center gap-2"
+              className="text-3xl font-semibold text-foreground group flex items-center justify-center gap-2"
             >
               Open Source
               <a
                 href="#open-source"
-                className="opacity-0 group-hover:opacity-100 text-[#8C2D19] transition-opacity"
+                className="opacity-0 group-hover:opacity-100 text-primary transition-opacity"
               >
                 #
               </a>
             </h2>
-            <p className="text-zinc-600">
+            <p className="text-muted-foreground">
               Alumni-FEUP is an open-source project. Check out our code and
               contribute on GitHub.
             </p>
@@ -347,7 +347,7 @@ const AboutPage = () => {
                 <Link
                   href="https://github.com/carlosverissimo3001/alumni-feup"
                   target="_blank"
-                  className="inline-flex items-center gap-3 bg-gradient-to-r from-[#8C2D19] to-orange-500 text-white px-8 py-4 rounded-2xl transition-all font-semibold text-lg group"
+                  className="inline-flex items-center gap-3 bg-gradient-to-r from-primary to-orange-500 text-white px-8 py-4 rounded-2xl transition-all font-semibold text-lg group"
                 >
                   <Github
                     size={28}

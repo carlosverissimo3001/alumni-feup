@@ -9,3 +9,6 @@ openapitools.json
 
 # Local operational scripts, not part of the deployed app
 /scripts/
+
+/.superpowers/
+/docs/superpowers/

@@ -21,7 +21,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
         </div>
         <main
           className={cn(
-            "flex-1 w-full bg-white pb-20 md:pb-0",
+            "flex-1 w-full bg-background pb-20 md:pb-0",
             "relative z-[20] transition-all duration-300",
             "overflow-x-hidden",
             isCollapsed ? "md:pl-20" : "md:pl-60"
