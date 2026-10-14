@@ -113,7 +113,7 @@ const Navbar = () => {
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
       className={cn(
-        "relative space-y-4 py-8 flex flex-col h-full bg-gradient-to-b from-zinc-900 to-zinc-800 text-white transition-all duration-500 ease-in-out z-50 hover:shadow-xl hover:shadow-[#8C2D19]/20",
+        "relative space-y-4 py-8 flex flex-col h-full bg-gradient-to-b from-zinc-900 to-zinc-800 text-white transition-all duration-500 ease-in-out z-50 hover:shadow-xl hover:shadow-primary/20",
         isCollapsed ? "w-20" : "w-60"
       )}
     >
@@ -163,9 +163,9 @@ const Navbar = () => {
                 key={`${route.label}-${route.href}`}
                 href={route.href}
                 className={cn(
-                  "text-sm group flex p-3 w-full justify-start font-medium cursor-pointer hover:text-white hover:bg-gradient-to-r hover:from-[#8C2D19]/20 hover:to-zinc-800 rounded-lg transition-all duration-200",
+                  "text-sm group flex p-3 w-full justify-start font-medium cursor-pointer hover:text-white hover:bg-gradient-to-r hover:from-primary/20 hover:to-zinc-800 rounded-lg transition-all duration-200",
                   pathname === route.href
-                    ? "text-white bg-gradient-to-r from-[#8C2D19]/20 to-zinc-800"
+                    ? "text-white bg-gradient-to-r from-primary/20 to-zinc-800"
                     : "text-zinc-400",
                   isCollapsed && "justify-center"
                 )}
@@ -206,9 +206,9 @@ const Navbar = () => {
                 key={`${route.label}-${route.href}`}
                 href={route.href}
                 className={cn(
-                  "text-sm group flex p-3 w-full justify-start font-medium cursor-pointer hover:text-white hover:bg-gradient-to-r hover:from-[#8C2D19]/20 hover:to-zinc-800 rounded-lg transition-all duration-200",
+                  "text-sm group flex p-3 w-full justify-start font-medium cursor-pointer hover:text-white hover:bg-gradient-to-r hover:from-primary/20 hover:to-zinc-800 rounded-lg transition-all duration-200",
                   pathname === route.href
-                    ? "text-white bg-gradient-to-r from-[#8C2D19]/20 to-zinc-800"
+                    ? "text-white bg-gradient-to-r from-primary/20 to-zinc-800"
                     : "text-zinc-400",
                   isCollapsed && "justify-center"
                 )}
