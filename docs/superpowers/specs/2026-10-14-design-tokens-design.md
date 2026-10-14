@@ -21,9 +21,19 @@ This is the first of three sub-projects in the broader analytics-section fronten
 
 ## Scope
 
-**In scope**: typography (typeface + scale), spacing (semantic tokens on top of Tailwind's default scale), color (brand red as a true token, light + dark variants), surface/elevation (card treatment, light + dark). Applies to the analytics section only, per the platform's thesis scope (not the world map, not reviews).
+**In scope**: typography (typeface + scale), spacing (semantic tokens on top of Tailwind's default scale), color (brand red as a true token, light + dark variants), surface/elevation (card treatment, light + dark). The token layer itself is sitewide (it lives in `globals.css`/`tailwind.config.js`, consumed wherever brand color, spacing, or surfaces appear) — but see **Rollout order** below for which pages actually get migrated onto it as part of this ticket, versus later.
 
 **Out of scope**: dashboard layout/structure (CAR-170), chart library migration (CAR-171), any change to the FEUP brand palette itself (non-negotiable per the UI Refresh milestone), mobile-specific layout fixes beyond what naturally falls out of the token system (CAR-396 was explicitly folded into the broader redesign rather than patched here).
+
+### Rollout order
+
+The token system is applied page-by-page rather than everywhere at once, starting with the lowest-risk surfaces:
+
+1. **Navbar** — sitewide chrome, so it exercises the tokens on every page immediately, but is a single, well-contained component.
+2. **Profile page** — only reachable by logged-in users, a small fraction of traffic, so mistakes here are cheap.
+3. **About / feedback pages** — static, low-traffic, no data-fetching complexity to tangle with the visual change.
+
+The analytics dashboards (the actual thesis-scoped surface, and the highest-traffic, highest-complexity area) are deliberately **not** part of this first pass. They're migrated afterward, once the token set has proven itself on these lower-stakes pages — any gaps in the type scale, spacing tokens, or surface treatment surface and get fixed here first, where a mistake is cheap, rather than on the dashboards.
 
 ## Decisions
 
@@ -77,12 +87,12 @@ All tokens are expressed as CSS variables in `app/src/app/globals.css` (extendin
 
 ## Migration approach
 
-This is a token-layer change, not a component rewrite: existing components keep their current structure and markup, swapping hardcoded hex/gradient/shadow values for the new token-backed utility classes. The 33 files with hardcoded brand-red references are the main migration surface. `StatsCard.tsx` additionally needs its elevation treatment rewritten per the surfaces decision above.
+This is a token-layer change, not a component rewrite: existing components keep their current structure and markup, swapping hardcoded hex/gradient/shadow values for the new token-backed utility classes. Of the 33 files with hardcoded brand-red references, this first pass only touches the subset belonging to the navbar, profile page, and about/feedback pages (per the rollout order above) — the remaining files, including the analytics dashboards and `StatsCard.tsx`'s elevation rewrite, are migrated in a later pass once the token set is proven.
 
 ## Testing / verification
 
-- Visual check in both light and dark mode across the analytics dashboards (stats cards, tables, charts' surrounding chrome) at desktop and mobile widths.
-- Grep confirms zero remaining hardcoded occurrences of the four legacy hex values.
+- Visual check in both light and dark mode across the navbar, profile page, and about/feedback pages at desktop and mobile widths.
+- Grep confirms zero remaining hardcoded brand-color occurrences within the files touched in this pass.
 - `tsc --noEmit` clean.
 - Contrast check (WCAG AA) on `--primary-dark` against the dark-mode card background before finalizing its value.
 
@@ -90,4 +100,5 @@ This is a token-layer change, not a component rewrite: existing components keep 
 
 - Dashboard layout and six-panel/paginated-table restructure — CAR-170.
 - D3 → shadcn/Recharts chart migration, including real touch support — CAR-171.
+- Migrating the analytics dashboards (including `StatsCard.tsx`'s elevation rewrite) onto the token system — deferred to a follow-up pass after navbar/profile/about/feedback prove it out (see Rollout order).
 - Any further typography scale/weight decisions beyond what's specified above are left to implementation, grounded in the sizes already in use today rather than invented fresh.
