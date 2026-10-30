@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
-import NestAPI from "@/api";
+import { serverApi } from "@/sdk/server-client";
 
 export async function adminMiddleware(request: NextRequest) {
   const fallbackUrl = new URL("/analytics", request.url);
@@ -24,7 +24,7 @@ export async function adminMiddleware(request: NextRequest) {
   }
 
   try {
-    const {hasPermission} = await NestAPI.userControllerCheckPermission({
+    const {hasPermission} = await serverApi.userControllerCheckPermission({
       checkPermissionDto: {
         userId,
         resource: "admin",
