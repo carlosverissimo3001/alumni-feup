@@ -12,14 +12,19 @@ const SAME_SITE = 'lax' as const;
 // code (www.alumni-feup.com, e.g. Next.js middleware) never sees it, even
 // though the browser correctly sends it on direct client-side calls to the
 // API itself. Sharing it across the whole alumni-feup.com family fixes that.
-const COOKIE_DOMAIN = isProd ? '.alumni-feup.com' : undefined;
+// Driven by its own env var rather than NODE_ENV, so correctness doesn't
+// depend on how the process happens to be started - undefined (the
+// single-host default) unless explicitly set.
+function cookieDomain(): string | undefined {
+  return process.env.COOKIE_DOMAIN || undefined;
+}
 
 export function getCookieOptions(maxAgeSeconds: number): CookieOptions {
   return {
     httpOnly: true,
     secure: isProd,
     sameSite: SAME_SITE,
-    domain: COOKIE_DOMAIN,
+    domain: cookieDomain(),
     path: '/',
     maxAge: maxAgeSeconds * 1000,
   };
@@ -31,7 +36,7 @@ export function getClearCookieOptions(): CookieOptions {
     secure: isProd,
     // Must match getCookieOptions or the clear will not match the cookie.
     sameSite: SAME_SITE,
-    domain: COOKIE_DOMAIN,
+    domain: cookieDomain(),
     path: '/',
   };
 }
