@@ -2,20 +2,27 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { serverApi } from "@/sdk/server-client";
 
+const SESSION_COOKIE_NAME = "alumniFeup_session";
+
 export async function adminMiddleware(request: NextRequest) {
   const fallbackUrl = new URL("/analytics", request.url);
-  const userCookie = request.cookies.get("user")?.value;
+  const sessionCookie = request.cookies.get(SESSION_COOKIE_NAME);
 
-  if (!userCookie) {
+  if (!sessionCookie) {
     return NextResponse.redirect(fallbackUrl);
   }
 
   let userId: string | undefined;
   try {
-    const user = JSON.parse(userCookie);
+    // Server-to-server call: forward the session cookie explicitly, the
+    // way a browser's `credentials: 'include'` would - fetch() here runs
+    // on the server, so it has no ambient cookie jar of its own.
+    const user = await serverApi.authControllerMe({
+      headers: { Cookie: `${SESSION_COOKIE_NAME}=${sessionCookie.value}` },
+    });
     userId = user.id;
   } catch (error) {
-    console.error("❌ Error parsing user cookie:", error);
+    console.error("❌ Could not resolve user from session:", error);
     return NextResponse.redirect(fallbackUrl);
   }
 
