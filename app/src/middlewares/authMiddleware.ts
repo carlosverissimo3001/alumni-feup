@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
+import { SESSION_COOKIE_NAME } from "@/lib/cookies";
 
 export function authMiddleware(request: NextRequest) {
-  const userCookie = request.cookies.get("user")?.value;
-  if (!userCookie) {
+  if (!request.cookies.has(SESSION_COOKIE_NAME)) {
     return NextResponse.redirect(new URL("/analytics", request.url));
   }
   return NextResponse.next();
