@@ -8,13 +8,8 @@ import { SESSION_COOKIE_NAME } from "@/lib/cookies";
 // the actual security boundary.
 export async function adminMiddleware(request: NextRequest) {
   const fallbackUrl = new URL("/analytics", request.url);
-  const hasCookie = request.cookies.has(SESSION_COOKIE_NAME);
-  // TEMPORARY diagnostic - remove once /admin is confirmed working again.
-  console.log(
-    `🔍 adminMiddleware: path=${request.nextUrl.pathname} hasSessionCookie=${hasCookie} allCookies=${request.cookies.getAll().map((c) => c.name).join(",")}`,
-  );
 
-  if (!hasCookie) {
+  if (!request.cookies.has(SESSION_COOKIE_NAME)) {
     return NextResponse.redirect(fallbackUrl);
   }
 
