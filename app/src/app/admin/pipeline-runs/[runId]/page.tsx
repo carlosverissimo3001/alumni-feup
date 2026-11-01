@@ -39,6 +39,7 @@ import {
   formatDateTime,
   formatDuration,
   formatEnumLabel,
+  progressIndicatorClassName,
   statusBadgeClassName,
 } from "@/components/admin/pipelines/pipelineFormat";
 
@@ -205,7 +206,10 @@ const PipelineRunDetailPage = () => {
                         {formatDuration(stage.startedAt, stage.finishedAt)}
                       </span>
                     </div>
-                    <Progress value={progressPct} />
+                    <Progress
+                      value={progressPct}
+                      indicatorClassName={progressIndicatorClassName(stage.status)}
+                    />
                     {stage.error && (
                       <p className="text-xs text-red-700">{stage.error}</p>
                     )}
