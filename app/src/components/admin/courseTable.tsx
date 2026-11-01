@@ -117,9 +117,9 @@ export default function CourseTable({
             <div className="h-8 w-8 animate-spin rounded-full border-4 border-[#8C2D19] border-t-transparent"></div>
           </div>
         ) : courses && courses.length > 0 ? (
-          <div className="overflow-x-auto">
+          <div className="overflow-x-auto overflow-y-auto max-h-[500px]">
             <table className="w-full">
-              <thead>
+              <thead className="sticky top-0 z-10">
                 <tr className="border-b bg-gray-50">
                   <th className="text-left py-2 px-3 text-[#8C2D19] text-sm">
                     <Button
