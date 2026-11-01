@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -12,7 +11,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { ArrowLeft } from "lucide-react";
+import { AdminBackLink } from "@/components/admin/adminBackLink";
 import { useListPipelineRuns } from "@/hooks/pipelines/useListPipelineRuns";
 import {
   PipelinesControllerListRunsKindEnum,
@@ -43,23 +42,13 @@ const PipelineRunsPage = () => {
 
   return (
     <div className="container mx-auto py-8">
-      <div className="max-w-5xl mx-auto space-y-6">
-        <div className="flex items-center justify-between">
-          <div className="space-y-1">
-            <h1 className="text-2xl font-bold tracking-tight">Pipeline Runs</h1>
-            <p className="text-sm text-muted-foreground">
-              View-only: current and past alumni data pipeline runs.
-            </p>
-          </div>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => router.back()}
-            className="text-muted-foreground hover:text-foreground"
-          >
-            <ArrowLeft className="h-4 w-4 mr-2" />
-            Back
-          </Button>
+      <div className="max-w-6xl mx-auto space-y-6">
+        <div>
+          <AdminBackLink href="/admin" className="mb-3" />
+          <h1 className="text-2xl font-bold tracking-tight">Pipeline Runs</h1>
+          <p className="text-sm text-muted-foreground">
+            View-only: current and past alumni data pipeline runs.
+          </p>
         </div>
 
         <Card className="shadow-lg border border-gray-200 rounded-lg">

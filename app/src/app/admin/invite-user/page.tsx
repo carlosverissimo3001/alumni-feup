@@ -8,6 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/misc/useToast";
+import { AdminBackLink } from "@/components/admin/adminBackLink";
 
 export default function AddBetaTester() {
   const [singleEmail, setSingleEmail] = useState("");
@@ -98,10 +99,14 @@ export default function AddBetaTester() {
   };
 
   return (
-    <div className="container mx-auto p-6">
-      <h1 className="text-2xl font-bold mb-6">Invite Beta Testers</h1>
+    <div className="container mx-auto py-8">
+      <div className="max-w-2xl mx-auto">
+        <AdminBackLink href="/admin" className="mb-4" />
+        <h1 className="text-2xl font-bold tracking-tight mb-6">
+          Invite Beta Testers
+        </h1>
 
-      <Card>
+        <Card>
         <CardHeader>
           <CardTitle>Send Invitations</CardTitle>
         </CardHeader>
@@ -161,7 +166,8 @@ export default function AddBetaTester() {
             </TabsContent>
           </Tabs>
         </CardContent>
-      </Card>
+        </Card>
+      </div>
     </div>
   );
 }
