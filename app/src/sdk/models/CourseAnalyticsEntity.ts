@@ -87,6 +87,12 @@ export interface CourseAnalyticsEntity {
      * @memberof CourseAnalyticsEntity
      */
     faculty: FacultyAnalyticsEntity;
+    /**
+     * When this course record was added to the platform
+     * @type {Date}
+     * @memberof CourseAnalyticsEntity
+     */
+    createdAt: Date;
 }
 
 
@@ -124,6 +130,7 @@ export function instanceOfCourseAnalyticsEntity(value: object): value is CourseA
     if (!('startYear' in value) || value['startYear'] === undefined) return false;
     if (!('facultyId' in value) || value['facultyId'] === undefined) return false;
     if (!('faculty' in value) || value['faculty'] === undefined) return false;
+    if (!('createdAt' in value) || value['createdAt'] === undefined) return false;
     return true;
 }
 
@@ -147,6 +154,7 @@ export function CourseAnalyticsEntityFromJSONTyped(json: any, ignoreDiscriminato
         'endYear': json['endYear'] == null ? undefined : json['endYear'],
         'facultyId': json['facultyId'],
         'faculty': FacultyAnalyticsEntityFromJSON(json['faculty']),
+        'createdAt': (new Date(json['createdAt'])),
     };
 }
 
@@ -171,6 +179,7 @@ export function CourseAnalyticsEntityToJSONTyped(value?: CourseAnalyticsEntity |
         'endYear': value['endYear'],
         'facultyId': value['facultyId'],
         'faculty': FacultyAnalyticsEntityToJSON(value['faculty']),
+        'createdAt': value['createdAt'].toISOString(),
     };
 }
 

@@ -97,6 +97,7 @@ export const courseSelect = {
   startYear: true,
   endYear: true,
   courseType: true,
+  createdAt: true,
   Faculty: {
     select: facultySelect,
   },

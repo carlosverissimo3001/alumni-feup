@@ -121,6 +121,7 @@ type RawCourse = {
   courseType: COURSE_TYPE;
   startYear: number;
   endYear?: number | null;
+  createdAt: Date;
 };
 
 type RawGraduation = {

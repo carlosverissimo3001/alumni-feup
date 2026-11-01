@@ -62,4 +62,10 @@ export class CourseAnalyticsEntity {
     type: FacultyAnalyticsEntity,
   })
   faculty: FacultyAnalyticsEntity;
+
+  @ApiProperty({
+    description: 'When this course record was added to the platform',
+    type: Date,
+  })
+  createdAt: Date;
 }
