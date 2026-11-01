@@ -85,7 +85,20 @@ class TaskSummary(BaseModel):
 
 class CreateRunRequest(BaseModel):
     alumni_ids: Optional[str] = Field(
-        None, description="Comma-separated alumni IDs. All alumni in scope when omitted."
+        None,
+        description=(
+            "Comma-separated alumni IDs. Required unless confirm_all_alumni is set - "
+            "omitting it no longer scopes to every alumni record."
+        ),
+    )
+    confirm_all_alumni: bool = Field(
+        False,
+        description=(
+            "Explicit opt-in required to scope the run to every alumni record "
+            "(when alumni_ids is omitted) or to a resolved scope above "
+            "PIPELINE_RUN_SIZE_CAP. Call the /preflight endpoint first to see the "
+            "count this would resolve to."
+        ),
     )
     failure_threshold: Optional[float] = Field(
         None,
@@ -97,6 +110,14 @@ class CreateRunRequest(BaseModel):
 
 class RunCreated(BaseModel):
     run_id: str
+
+
+class RunPreflight(BaseModel):
+    resolved_count: int
+    cap: int
+    requires_confirmation: bool = Field(
+        description="True when creating this run as given would be rejected without confirm_all_alumni."
+    )
 
 
 class RunAction(BaseModel):

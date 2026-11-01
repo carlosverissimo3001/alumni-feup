@@ -19,7 +19,11 @@ from app.pipeline.stages import PipelineEntityType, PipelineStageName
 
 
 def _resolve_alumni(session: Session, run: PipelineRun) -> List[str]:
-    """The alumni a run covers, from its params - all of them if unspecified.
+    """The alumni a run covers, from its params.
+
+    Falling back to every alumni record when alumni_ids is absent is safe here
+    only because the create-run endpoint (CAR-465) already required an explicit
+    confirm_all_alumni before a run with no alumni_ids could be created.
 
     Mirrors the lookup request_alumni_classification does, but reads the scope
     from the run rather than from a function argument, so a resume recovers it
