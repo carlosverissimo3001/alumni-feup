@@ -11,6 +11,7 @@ from typing import Optional
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy.orm import Session
 
+from app.core.config import settings
 from app.db.models import PipelineRun, PipelineStage, PipelineTask
 from app.db.session import get_db
 from app.pipeline import queries
@@ -29,12 +30,14 @@ from app.schemas.pipeline import (
     RunAction,
     RunCreated,
     RunDetail,
+    RunPreflight,
     RunSummary,
     StageSummary,
     TaskCountsOut,
     TaskSummary,
 )
 from app.tasks.queue import task_queue
+from app.utils.alumni_db import count_all
 
 router = APIRouter()
 logger = logging.getLogger(__name__)
@@ -107,6 +110,45 @@ def _task_summary(task: PipelineTask) -> TaskSummary:
     )
 
 
+def _parsed_alumni_ids(body: CreateRunRequest) -> list:
+    return [piece.strip() for piece in (body.alumni_ids or "").split(",") if piece.strip()]
+
+
+def _resolved_scope(body: CreateRunRequest, db: Session) -> int:
+    """How many alumni this request would resolve to.
+
+    Mirrors registry._resolve_alumni's branching so the count reported here -
+    for preflight and for the 400 this raises - matches what the run would
+    actually be scoped to.
+    """
+    ids = _parsed_alumni_ids(body)
+    return len(set(ids)) if ids else count_all(db)
+
+
+def _requires_confirmation(body: CreateRunRequest, resolved_count: int) -> bool:
+    if not _parsed_alumni_ids(body):
+        return True
+    return resolved_count > settings.PIPELINE_RUN_SIZE_CAP
+
+
+@router.post(
+    "/{kind}/runs/preflight",
+    response_model=RunPreflight,
+    summary="Resolve the scope a run would cover, without creating or enqueueing it",
+)
+def preflight_pipeline_run(
+    kind: PipelineKind,
+    body: CreateRunRequest,
+    db: Session = Depends(get_db),
+) -> RunPreflight:
+    resolved_count = _resolved_scope(body, db)
+    return RunPreflight(
+        resolved_count=resolved_count,
+        cap=settings.PIPELINE_RUN_SIZE_CAP,
+        requires_confirmation=_requires_confirmation(body, resolved_count),
+    )
+
+
 @router.post(
     "/{kind}/runs",
     response_model=RunCreated,
@@ -118,6 +160,21 @@ async def create_pipeline_run(
     body: CreateRunRequest,
     db: Session = Depends(get_db),
 ) -> RunCreated:
+    resolved_count = _resolved_scope(body, db)
+    if _requires_confirmation(body, resolved_count) and not body.confirm_all_alumni:
+        # CAR-465: an empty/missing alumni_ids silently scoped to the whole
+        # table, which already caused a real production-cost incident. Reject
+        # rather than guess at intent; GET /{kind}/runs/preflight tells a
+        # caller the count before they decide to confirm it.
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=(
+                f"This request would resolve to {resolved_count} alumni, above the "
+                f"{settings.PIPELINE_RUN_SIZE_CAP} cap or with alumni_ids omitted. "
+                "Pass confirm_all_alumni=true to proceed, or narrow alumni_ids."
+            ),
+        )
+
     params = body.model_dump(exclude_none=True)
 
     run = create_run(db, kind=kind, params=params or None)

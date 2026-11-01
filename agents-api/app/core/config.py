@@ -35,6 +35,10 @@ class Settings(BaseSettings):
     # hardcoded so it can be tuned without a deploy (CAR-152).
     COMPANY_REFRESH_AFTER_DAYS: int = 180
 
+    # Largest run a caller can create without explicitly confirming the scope
+    # (CAR-465). Tunable per environment without a deploy.
+    PIPELINE_RUN_SIZE_CAP: int = 500
+
     # OpenAI Settings
     OPENAI_DEFAULT_MODEL: str = "gpt-4o-mini"
     OPENAI_API_KEY: str = ""

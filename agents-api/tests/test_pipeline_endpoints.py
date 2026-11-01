@@ -329,6 +329,92 @@ class TestCreateRun:
             client.post("/api/pipelines/NONSENSE/runs", json={}, headers=HEADERS).status_code == 422
         )
 
+    def test_rejects_missing_alumni_ids_instead_of_scoping_to_everyone(self, client, db):
+        # CAR-465: this used to silently scope to the entire alumni table.
+        response = client.post(
+            "/api/pipelines/REFRESH_EXISTING/runs", json={}, headers=HEADERS
+        )
+
+        assert response.status_code == 400
+        assert client.enqueued == []
+
+    def test_rejects_an_explicitly_empty_alumni_ids_string(self, client, db):
+        response = client.post(
+            "/api/pipelines/REFRESH_EXISTING/runs",
+            json={"alumni_ids": ""},
+            headers=HEADERS,
+        )
+
+        assert response.status_code == 400
+        assert client.enqueued == []
+
+    def test_confirm_all_alumni_allows_the_full_table_scope(self, client, db, monkeypatch):
+        from app.core.config import settings
+
+        # Isolate from the real alumni count: a confirmed run only needs to
+        # prove the override works, not process the whole table.
+        monkeypatch.setattr(settings, "PIPELINE_RUN_SIZE_CAP", 10_000_000)
+
+        response = client.post(
+            "/api/pipelines/REFRESH_EXISTING/runs",
+            json={"confirm_all_alumni": True},
+            headers=HEADERS,
+        )
+
+        assert response.status_code == 202
+        assert len(client.enqueued) == 1
+
+    def test_a_scoped_request_with_real_ids_is_unaffected(self, client, db):
+        response = client.post(
+            "/api/pipelines/REFRESH_EXISTING/runs",
+            json={"alumni_ids": "a,b,c"},
+            headers=HEADERS,
+        )
+
+        assert response.status_code == 202
+        run_id = response.json()["run_id"]
+        assert client.enqueued == [("run_stage", {"run_id": run_id, "stage": "PLAN"})]
+
+    def test_an_explicit_scope_above_the_cap_is_rejected_without_confirmation(self, client, db, monkeypatch):
+        from app.core.config import settings
+
+        monkeypatch.setattr(settings, "PIPELINE_RUN_SIZE_CAP", 2)
+
+        response = client.post(
+            "/api/pipelines/REFRESH_EXISTING/runs",
+            json={"alumni_ids": "a,b,c"},
+            headers=HEADERS,
+        )
+
+        assert response.status_code == 400
+        assert client.enqueued == []
+
+
+class TestPreflight:
+    def test_reports_the_resolved_count_without_creating_a_run(self, client, db):
+        response = client.post(
+            "/api/pipelines/REFRESH_EXISTING/runs/preflight",
+            json={"alumni_ids": "a,b,c"},
+            headers=HEADERS,
+        )
+
+        assert response.status_code == 200
+        body = response.json()
+        assert body["resolved_count"] == 3
+        assert body["requires_confirmation"] is False
+        assert client.enqueued == []
+
+    def test_flags_that_an_empty_scope_would_need_confirmation(self, client, db):
+        response = client.post(
+            "/api/pipelines/REFRESH_EXISTING/runs/preflight",
+            json={},
+            headers=HEADERS,
+        )
+
+        assert response.status_code == 200
+        assert response.json()["requires_confirmation"] is True
+        assert client.enqueued == []
+
 
 class TestOpenAPIContract:
     def test_every_pipeline_response_has_a_schema(self, client):
