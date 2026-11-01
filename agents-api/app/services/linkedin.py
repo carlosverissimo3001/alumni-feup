@@ -84,6 +84,7 @@ class LinkedInService:
     async def extract_profile_data(
         self,
         alumni_id: str,
+        skip_followup_classification: bool = False,
     ):
         """
         Extract data from a LinkedIn profile URL.
@@ -91,6 +92,11 @@ class LinkedInService:
         Args:
             profile_url: URL of the LinkedIn profile
             alumni_id: ID of the alumni for linking data
+            skip_followup_classification: True when the caller already runs
+                classification explicitly right after (e.g. the pipeline's
+                CLASSIFY_ROLES stage), so the background classification this
+                method would otherwise fire is redundant. The standalone
+                extraction path has no such follow-up and keeps the default.
 
         """
         # logger.info(f"Extracting LinkedIn data for {alumni_id}")
@@ -120,7 +126,9 @@ class LinkedInService:
             raw_response = self.client.get_json("/profile", params=params)
 
             response = convert_to_linkedin_profile_response(raw_response)
-            await self.process_profile_data(response, alumni_id)
+            await self.process_profile_data(
+                response, alumni_id, skip_followup_classification=skip_followup_classification
+            )
 
         except Exception as e:
             logger.error(f"Error extracting LinkedIn data: {str(e)}")
@@ -130,6 +138,7 @@ class LinkedInService:
         self,
         profile_data: LinkedInProfileResponse,
         alumni_id: str,
+        skip_followup_classification: bool = False,
     ) -> None:
         # Uploading to Cloudinary needs no session, so it happens before one is
         # opened rather than holding a pool connection during the upload.
@@ -147,11 +156,15 @@ class LinkedInService:
 
         # Offloaded after the session closes - these are fire-and-forget and
         # must not hold a connection.
-        self._create_background_task(
-            job_classification_service.request_alumni_classification(
-                params=AlumniJobClassificationParams(alumni_ids=alumni_id)
+        # Skipped when the caller already classifies this alumni explicitly
+        # right after (e.g. the pipeline's CLASSIFY_ROLES stage) - firing this
+        # too would just classify them twice (CAR-474).
+        if not skip_followup_classification:
+            self._create_background_task(
+                job_classification_service.request_alumni_classification(
+                    params=AlumniJobClassificationParams(alumni_ids=alumni_id)
+                )
             )
-        )
         self._create_background_task(location_service.resolve_role_location_for_alumni(alumni_id))
 
     async def _persist_profile_data(
