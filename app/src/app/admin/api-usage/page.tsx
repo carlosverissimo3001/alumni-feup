@@ -1,14 +1,13 @@
 "use client";
 
-import { useRouter } from "next/navigation";
-import { Button } from "@/components/ui/button";
-import { ArrowLeft, ExternalLink } from "lucide-react";
+import { ExternalLink } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useBrightDataBalance } from "@/hooks/admin/useBrighDataBalance";
 import { useAlumniExtractBalance } from "@/hooks/admin/useAlumniExtractBalance";
 import { Skeleton } from "@/components/ui/skeleton";
 import Link from "next/link";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { AdminBackLink } from "@/components/admin/adminBackLink";
 
 const formatCurrency = (amount: number | undefined): string => {
   if (amount === undefined) return "";
@@ -34,7 +33,6 @@ const isLowAlumniExtractBalance = (amount: number | undefined): boolean => {
 };
 
 const ApiUsagePage = () => {
-  const router = useRouter();
   const { data: brightDataBalance, isLoading: isLoadingBrightData } =
     useBrightDataBalance();
   const { data: alumniExtractBalance, isLoading: isLoadingAlumniExtract } =
@@ -43,24 +41,14 @@ const ApiUsagePage = () => {
   return (
     <div className="container mx-auto py-8">
       <div className="max-w-4xl mx-auto space-y-6">
-        <div className="flex items-center justify-between">
-          <div className="space-y-1">
-            <h1 className="text-2xl font-bold tracking-tight">
-              API Usage & Credits
-            </h1>
-            <p className="text-sm text-muted-foreground">
-              Overview of third-party API balances and usage.
-            </p>
-          </div>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => router.back()}
-            className="text-muted-foreground hover:text-foreground"
-          >
-            <ArrowLeft className="h-4 w-4 mr-2" />
-            Back
-          </Button>
+        <div>
+          <AdminBackLink href="/admin" className="mb-3" />
+          <h1 className="text-2xl font-bold tracking-tight">
+            API Usage & Credits
+          </h1>
+          <p className="text-sm text-muted-foreground">
+            Overview of third-party API balances and usage.
+          </p>
         </div>
 
         <div className="grid gap-6 md:grid-cols-2">

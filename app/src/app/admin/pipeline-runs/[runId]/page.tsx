@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
@@ -18,7 +18,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { ArrowLeft } from "lucide-react";
+import { AdminBackLink } from "@/components/admin/adminBackLink";
 import { useGetPipelineRun } from "@/hooks/pipelines/useGetPipelineRun";
 import { useListPipelineRunTasks } from "@/hooks/pipelines/useListPipelineRunTasks";
 import {
@@ -45,7 +45,6 @@ const ACTIVE_RUN_STATUSES: RunDetailDtoStatusEnum[] = [
 ];
 
 const PipelineRunDetailPage = () => {
-  const router = useRouter();
   const { runId } = useParams<{ runId: string }>();
 
   const [taskStatus, setTaskStatus] = useState<string>("all");
@@ -92,23 +91,13 @@ const PipelineRunDetailPage = () => {
 
   return (
     <div className="container mx-auto py-8">
-      <div className="max-w-5xl mx-auto space-y-6">
-        <div className="flex items-center justify-between">
-          <div className="space-y-1">
-            <h1 className="text-2xl font-bold tracking-tight">
-              {run.kind ? formatEnumLabel(run.kind) : "Pipeline Run"}
-            </h1>
-            <p className="text-sm text-muted-foreground font-mono">{run.id}</p>
-          </div>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => router.push("/admin/pipeline-runs")}
-            className="text-muted-foreground hover:text-foreground"
-          >
-            <ArrowLeft className="h-4 w-4 mr-2" />
-            Back to runs
-          </Button>
+      <div className="max-w-6xl mx-auto space-y-6">
+        <div>
+          <AdminBackLink href="/admin/pipeline-runs" className="mb-3" />
+          <h1 className="text-2xl font-bold tracking-tight">
+            {run.kind ? formatEnumLabel(run.kind) : "Pipeline Run"}
+          </h1>
+          <p className="text-sm text-muted-foreground font-mono">{run.id}</p>
         </div>
 
         <Card className="shadow-lg border border-gray-200 rounded-lg">

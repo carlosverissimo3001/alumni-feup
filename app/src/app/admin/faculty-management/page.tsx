@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -12,7 +11,7 @@ import { useListFaculties } from "@/hooks/faculty/useListFaculties";
 import { useAddFaculty } from "@/hooks/faculty/useAddFaculty";
 import { useAddCourse } from "@/hooks/courses/useAddCourse";
 import { useListCourses } from "@/hooks/courses/useListCourses";
-import { ArrowLeft, Plus } from "lucide-react";
+import { Plus } from "lucide-react";
 import {
   Select,
   SelectContent,
@@ -29,11 +28,11 @@ import {
 import { useAuth } from "@/contexts/AuthContext";
 import FacultyTable from "@/components/admin/facultyTable";
 import CourseTable from "@/components/admin/courseTable";
+import { AdminBackLink } from "@/components/admin/adminBackLink";
 
 export default function FacultyAndCourseManagement() {
   const { user } = useAuth();
 
-  const router = useRouter();
   const { toast } = useToast();
   const {
     data: faculties,
@@ -168,17 +167,10 @@ export default function FacultyAndCourseManagement() {
   ];
 
   return (
-    <div className="container mx-auto py-10 min-h-screen bg-white">
-      <div className="flex items-center mb-8">
-        <Button
-          variant="ghost"
-          size="default"
-          className="hover:bg-gray-100 transition-colors duration-200 text-muted-foreground hover:text-foreground"
-          onClick={() => router.push("/admin")}
-        >
-          <ArrowLeft className="h-4 w-4 mr-1" />
-          Back
-        </Button>
+    <div className="container mx-auto py-8 min-h-screen bg-white">
+      <div className="max-w-6xl mx-auto">
+      <div className="mb-8">
+        <AdminBackLink href="/admin" className="mb-3" />
         <h1 className="text-3xl font-bold text-[#8C2D19]">
           Faculty & Course Management
         </h1>
@@ -548,6 +540,7 @@ export default function FacultyAndCourseManagement() {
           />
         </>
       )}
+      </div>
     </div>
   );
 }

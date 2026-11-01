@@ -1,8 +1,6 @@
 "use client";
 
-import { useRouter } from "next/navigation";
-import { Button } from "@/components/ui/button";
-import { ArrowLeft, UserCheck } from "lucide-react";
+import { UserCheck } from "lucide-react";
 import ReviewAlumni from "@/components/admin/reviewAlumni";
 import {
   Card,
@@ -13,31 +11,21 @@ import {
 } from "@/components/ui/card";
 import { useListAlumniToReview } from "@/hooks/alumni/useListAlumniToReview";
 import { Skeleton } from "@/components/ui/skeleton";
-const ReviewAlumniPage = () => {
-  const router = useRouter();
+import { AdminBackLink } from "@/components/admin/adminBackLink";
 
+const ReviewAlumniPage = () => {
   const { data: alumniToReview, isLoading } = useListAlumniToReview();
 
   return (
     <div className="container mx-auto py-8">
       <div className="max-w-6xl mx-auto space-y-6">
         {/* Header Section */}
-        <div className="flex items-center justify-between">
-          <div className="space-y-1">
-            <h1 className="text-2xl font-bold tracking-tight">Review Alumni</h1>
-            <p className="text-sm text-muted-foreground">
-              Review and approve pending alumni submissions
-            </p>
-          </div>
-          <Button
-            variant="ghost"
-            size="default"
-            onClick={() => router.back()}
-            className="text-muted-foreground hover:text-foreground"
-          >
-            <ArrowLeft className="h-4 w-4 mr-2" />
-            Back
-          </Button>
+        <div>
+          <AdminBackLink href="/admin" className="mb-3" />
+          <h1 className="text-2xl font-bold tracking-tight">Review Alumni</h1>
+          <p className="text-sm text-muted-foreground">
+            Review and approve pending alumni submissions
+          </p>
         </div>
 
         {/* Stats Overview */}
