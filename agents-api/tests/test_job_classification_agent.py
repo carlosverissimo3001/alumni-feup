@@ -310,9 +310,7 @@ async def test_global_semaphore_caps_peak_concurrent_calls_across_many_alumni(
 
     alumni_batches = [make_alumnus_states(3) for _ in range(50)]
 
-    await asyncio.gather(
-        *[agent.validate_esco_results_batch(states) for states in alumni_batches]
-    )
+    await asyncio.gather(*[agent.validate_esco_results_batch(states) for states in alumni_batches])
 
     assert peak <= MAX_CONCURRENT_LLM_CALLS
     # Demand (150 calls) comfortably exceeds the budget, so the cap is
