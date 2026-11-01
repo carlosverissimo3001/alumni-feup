@@ -1,0 +1,5 @@
+# Generated at run time - the fixtures and harness code are the checked-in
+# artifacts, these are local cost-saving caches and run output.
+.cache/
+.packets/
+.reports/
