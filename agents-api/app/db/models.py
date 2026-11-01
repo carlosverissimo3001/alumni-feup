@@ -287,6 +287,10 @@ class Role(Base):
     was_seniority_level_accepted_by_user = Column(Boolean, nullable=True)
     was_seniority_level_modified_by_user = Column(Boolean, nullable=True)
 
+    source_fingerprint = Column(String, nullable=True)
+    source_company_url = Column(String, nullable=True)
+    source_missing_since = Column(DateTime(timezone=True), nullable=True)
+
     # One-to-one relationship with JobClassification
     job_classification = relationship("JobClassification", back_populates="role", uselist=False)
     alumni = relationship("Alumni", back_populates="roles")

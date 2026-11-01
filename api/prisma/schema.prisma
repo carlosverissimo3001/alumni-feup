@@ -262,6 +262,11 @@ model Role {
   isCurrent   Boolean @default(false) @map("is_current")
   isPromotion Boolean @default(false) @map("is_promotion")
 
+  // CAR-481: LinkedIn reconciliation matching key, see role_reconciliation.py
+  sourceFingerprint  String?   @map("source_fingerprint")
+  sourceCompanyUrl   String?   @map("source_company_url")
+  sourceMissingSince DateTime? @map("source_missing_since") @db.Timestamptz(6)
+
   JobClassification JobClassification?
   // We're deleting all alumni roles if the alumni is deleted
   Alumni            Alumni             @relation("AlumniRoles", fields: [alumniId], references: [id], onDelete: Cascade)
@@ -279,6 +284,7 @@ model Role {
   @@index([isCurrent])
   @@index([startDate])
   @@index([endDate])
+  @@unique([alumniId, sourceFingerprint])
   @@map("role")
 }
 

@@ -7,7 +7,7 @@ from sqlalchemy.orm import Session
 
 from app.agents.location import location_agent
 from app.core.config import settings
-from app.db.models import Alumni, Company
+from app.db.models import Alumni
 from app.db.session import session_scope
 from app.schemas.job_classification import AlumniJobClassificationParams
 from app.schemas.linkedin import (
@@ -19,20 +19,20 @@ from app.services.company import company_service
 from app.services.image_storage import image_storage_service
 from app.services.job_classification import job_classification_service
 from app.services.location import location_service
-from app.services.role import role_service
+from app.services.role_reconciliation import (
+    ReconciliationConflictError,
+    ReconciliationOutcome,
+    reconcile_alumni_roles,
+)
 from app.utils.alumni_db import (
-    delete_profile_data,
     find_all,
     find_by_id,
     update_alumni,
 )
-from app.utils.company_db import get_company_by_linkedin_url, insert_company
 from app.utils.consts import REMOTE_LOCATION_ID
 from app.utils.http_client import HTTPClient
 from app.utils.location_db import get_location
-from app.utils.misc.string import sanitize_linkedin_url
 from app.utils.pipeline_timeout import with_pipeline_timeout
-from app.utils.role_db import create_role, create_role_raw
 
 logger = logging.getLogger(__name__)
 
@@ -205,53 +205,25 @@ class LinkedInService:
         profile_picture_url: Optional[str],
         db: Session,
         skip_followup_company_extraction: bool = False,
-    ) -> None:
-        # First, let's parse the roles, to understand if we need to extract company data
-        for role in profile_data.experiences:
-            if role.company_linkedin_profile_url:
-                sanitized_url = sanitize_linkedin_url(role.company_linkedin_profile_url)
-                company_id: str = ""
+    ) -> ReconciliationOutcome:
+        """Commits as one transaction per alumnus; nothing is applied on a
+        reconciliation conflict."""
+        outcome = reconcile_alumni_roles(
+            db,
+            alumni_id,
+            profile_data.experiences,
+            experiences_field_present=profile_data.experiences_field_present,
+        )
+        if not outcome.ok:
+            raise ReconciliationConflictError(
+                f"Could not reconcile LinkedIn data for alumnus {alumni_id}: {outcome.conflict}"
+            )
 
-                db_company = get_company_by_linkedin_url(sanitized_url, db)
-                # All good, no need to call the API
-                if db_company:
-                    company_id = db_company.id
-                else:
-                    # We insert the company before we call the API, so that we can link the role to the company # noqa: E501
-                    db_company = insert_company(
-                        Company(
-                            linkedin_url=sanitized_url,
-                            # will be updated later
-                            name=role.company,
-                            # industry_id is set to the default industry id, will be updated later
-                        ),
-                        db,
-                    )
-                    company_id = db_company.id
-
-                    # Let's offload the company extraction to a background task.
-                    # Skipped when the caller already enriches companies
-                    # explicitly right after (e.g. the pipeline's COMPANY
-                    # stage) - firing this too would double the billed
-                    # BrightData calls (CAR-477/478).
-                    if not skip_followup_company_extraction:
-                        self._create_background_task(
-                            company_service.extract_company_data(sanitized_url, company_id)
-                        )
-
-                # Now we can parse the role
-                role_db = await role_service.parse_role(role, alumni_id, company_id)
-
-                # If the role is not valid, we skip it
-                if not role_db:
-                    continue
-
-                # And insert it into the database
-                create_role(role_db, db)
-
-                # And insert the raw role
-                raw_role = await role_service.parse_raw_role(role_db.id, role)
-                create_role_raw(raw_role, db)
+        if not skip_followup_company_extraction:
+            for company_id, company_url in outcome.new_companies.items():
+                self._create_background_task(
+                    company_service.extract_company_data(company_url, company_id)
+                )
 
         # Now, let's try to find their location
         city = profile_data.city
@@ -290,6 +262,7 @@ class LinkedInService:
             ),
             db,
         )
+        return outcome
 
     async def update_profile_data(
         self,
@@ -336,13 +309,7 @@ class LinkedInService:
                 await asyncio.gather(*self._background_tasks, return_exceptions=True)
 
     async def process_single_alumni(self, alumni_id: str):
-        """Process a single alumni profile."""
         try:
-            # Delete existing data before extraction
-            with session_scope() as db:
-                delete_profile_data(alumni_id, db)
-
-            # Extract new data
             await self.extract_profile_data(alumni_id)
             return True
         except Exception as e:

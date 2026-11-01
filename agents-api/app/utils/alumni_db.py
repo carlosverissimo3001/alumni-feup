@@ -4,11 +4,11 @@ from datetime import datetime, timezone
 from sqlalchemy.orm import Session
 
 from app.db.models import Alumni
-from app.utils.role_db import delete_role
 
 logger = logging.getLogger(__name__)
 
 DEFAULT_UPDATED_BY = "agents-api"
+
 
 def update_alumni(alumni: Alumni, db: Session) -> None:
     """
@@ -39,8 +39,10 @@ def update_alumni(alumni: Alumni, db: Session) -> None:
 def find_all(db: Session) -> list[Alumni]:
     return db.query(Alumni).all()
 
+
 def count_all(db: Session) -> int:
     return db.query(Alumni).count()
+
 
 def find_all_with_linkedin(db: Session) -> list[Alumni]:
     """
@@ -53,22 +55,11 @@ def find_all_with_linkedin(db: Session) -> list[Alumni]:
         List of alumni records with non-null LinkedIn URLs
     """
     return db.query(Alumni).filter(Alumni.linkedin_url.isnot(None)).all()
+
+
 def find_by_id(id: str, db: Session) -> Alumni:
     return db.query(Alumni).filter(Alumni.id == id).first()
 
 
 def find_by_ids(ids: list[str], db: Session) -> list[Alumni]:
     return db.query(Alumni).filter(Alumni.id.in_(ids)).all()
-
-
-def delete_profile_data(id: str, db: Session) -> None:
-    alumni = find_by_id(id, db)
-    if alumni:
-        # Get all roles and delete them one by one
-        for role in list(alumni.roles):
-            delete_role(role, db)
-
-        # Clear other profile data
-        alumni.current_location_id = None
-        alumni.profile_picture_url = None
-        db.commit()

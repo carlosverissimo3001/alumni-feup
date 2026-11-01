@@ -189,3 +189,33 @@ def db(db_engine):
         if transaction.is_active:
             transaction.rollback()
         connection.close()
+
+
+@pytest.fixture
+def default_industry(db):
+    """Company.industry_id's default UUID - present in prod/local, not CI."""
+    from app.db.models import Industry
+    from app.utils.consts import DEFAULT_INDUSTRY_ID
+
+    existing = db.query(Industry).filter(Industry.id == DEFAULT_INDUSTRY_ID).first()
+    if existing:
+        return existing
+    row = Industry(id=DEFAULT_INDUSTRY_ID, name="Unknown")
+    db.add(row)
+    db.flush()
+    return row
+
+
+@pytest.fixture
+def remote_location(db):
+    """Role.location_id's REMOTE_LOCATION_ID default - same as above."""
+    from app.db.models import Location
+    from app.utils.consts import REMOTE_LOCATION_ID
+
+    existing = db.query(Location).filter(Location.id == REMOTE_LOCATION_ID).first()
+    if existing:
+        return existing
+    row = Location(id=REMOTE_LOCATION_ID, city="Remote")
+    db.add(row)
+    db.flush()
+    return row
