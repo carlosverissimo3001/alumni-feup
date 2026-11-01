@@ -118,10 +118,11 @@ class TestConvertedStage:
 
 
 class TestUnconvertedStage:
-    # LINKEDIN, COMPANY, and CLASSIFY_ROLES are converted; PLAN is not (CAR-158
-    # is outstanding) and never will be resolved/routed to real work in any
-    # scenario here, which makes it a safe universal "still unconverted"
-    # example for this test, regardless of which other stages get converted.
+    # LINKEDIN, COMPANY, CLASSIFY_ROLES, and SENIORITY are converted; PLAN is
+    # not (CAR-158 is outstanding) and never will be resolved/routed to real
+    # work in any scenario here, which makes it a safe universal "still
+    # unconverted" example for this test, regardless of which other stages
+    # get converted.
     async def test_is_skipped_rather_than_failed(self, db, run, enqueued):
         # Failing here would strand every run at PLAN and never reach LINKEDIN.
         await run_stage(None, run.id, PipelineStageName.PLAN.value)

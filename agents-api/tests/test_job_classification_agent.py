@@ -439,3 +439,57 @@ async def test_no_parsed_results_skips_the_write_entirely(agent, state):
     outcomes = await agent.batch_update_classifications([state])
 
     assert outcomes == []
+
+
+# --- followup seniority trigger (SENIORITY pipeline conversion) --------------
+
+
+class _FakeSeniorityService:
+    def __init__(self):
+        self.calls = []
+
+    async def request_alumni_seniority(self, params):
+        self.calls.append(params)
+
+
+def _stub_out_classification_steps(monkeypatch, agent, state):
+    """Bypasses the real embedding search, LLM validation, and DB write, so
+    these tests exercise only the followup-seniority trigger below them."""
+    monkeypatch.setattr(agent, "get_best_esco_matches_db", lambda _state: state)
+
+    async def fake_validate(states):
+        return states
+
+    monkeypatch.setattr(agent, "validate_esco_results_batch", fake_validate)
+
+    async def fake_write(_states):
+        return []
+
+    monkeypatch.setattr(agent, "batch_update_classifications", fake_write)
+
+
+async def test_followup_seniority_fires_by_default(monkeypatch, agent, role, state):
+    """The standalone classification path has no pipeline SENIORITY stage
+    following it, so it must keep firing the background seniority call."""
+    fake_seniority = _FakeSeniorityService()
+    monkeypatch.setattr("app.agents.job_classification.seniority_service", fake_seniority)
+    _stub_out_classification_steps(monkeypatch, agent, state)
+
+    await agent._process_roles_batch([role], "alumni-1")
+    await asyncio.sleep(0)  # let the fire-and-forget task run
+
+    assert len(fake_seniority.calls) == 1
+    assert fake_seniority.calls[0].alumni_ids == "alumni-1"
+
+
+async def test_followup_seniority_is_skipped_when_requested(monkeypatch, agent, role, state):
+    """The pipeline's SENIORITY stage classifies this alumnus explicitly right
+    after CLASSIFY_ROLES, so the internal trigger must not fire a duplicate."""
+    fake_seniority = _FakeSeniorityService()
+    monkeypatch.setattr("app.agents.job_classification.seniority_service", fake_seniority)
+    _stub_out_classification_steps(monkeypatch, agent, state)
+
+    await agent._process_roles_batch([role], "alumni-1", skip_followup_seniority=True)
+    await asyncio.sleep(0)
+
+    assert fake_seniority.calls == []
