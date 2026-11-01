@@ -44,10 +44,10 @@ Place the **best overall match** — the one that most accurately describes the 
 
 VALIDATE_ESCO_EXTRA_DETAILS = """
 CHECKLIST OF COMMON MISTAKES:
-❌ Do not include explanatory text or comments
+❌ Do not include explanatory text or comments outside the tool call arguments
 ❌ Do not modify confidence scores
 ❌ Do not use ESCO code as ID
-❌ Do not add/remove fields or reformat the JSON
+❌ Do not add/remove fields or reformat the arguments
 
 ALLOWED FIELDS:
 ✅ "id" – must match UUID from candidate list
@@ -55,10 +55,9 @@ ALLOWED FIELDS:
 ✅ "confidence" – float between 0 and 1, unchanged
 
 REQUIREMENTS:
-- Valid JSON array only
-- No text before or after
-- Must contain exactly 3 objects
-- No extra whitespace, comments, or changes
+- You MUST call the `return_esco_choices` tool - never respond with plain text or a raw JSON array instead
+- The tool call's `results` argument must contain exactly 3 objects
+- No extra fields, whitespace, comments, or changes
 """
 
 

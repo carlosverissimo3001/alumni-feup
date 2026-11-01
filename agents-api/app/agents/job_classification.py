@@ -2,7 +2,7 @@ import asyncio
 import json
 import logging
 import time
-from typing import List
+from typing import List, Optional
 
 import openai
 from fastapi.encoders import jsonable_encoder
@@ -22,6 +22,7 @@ from app.db.session import session_scope
 from app.schemas.job_classification import (
     JobClassificationAgentState,
     JobClassificationRoleInput,
+    ValidationOutcome,
 )
 from app.schemas.seniority import AlumniSeniorityParams
 from app.services.seniority import seniority_service
@@ -85,7 +86,9 @@ DEFAULT_ACTION_BY = "job-classification-agent"
 cold_llm = ChatOpenAI(
     model=settings.OPENAI_DEFAULT_MODEL,
     api_key=settings.OPENAI_API_KEY,
-    max_retries=3,
+    # Retries are owned by the tenacity wrapper around _validate_single, so
+    # the SDK doesn't layer its own retry budget on top of that one.
+    max_retries=0,
     temperature=0.0,
 )
 llm_with_tools = cold_llm.bind_tools([validate_tool])
@@ -179,7 +182,20 @@ class JobClassificationAgent:
                     args = tool_call[0]["args"]
                     state["parsed_esco_results"] = args.get("results", [])
                     state["reasoning"] = args.get("reasoning", "No explanation provided.")
+                    state["outcome"] = ValidationOutcome.SUCCESS
                     return state
+
+                # Expected tool call absent from the response: a schema
+                # failure, not a transient one, so it's reported explicitly
+                # and not retried.
+                logger.error(
+                    f"LLM response for role {state['role']} did not include a "
+                    "return_esco_choices tool call."
+                )
+                state["parsed_esco_results"] = []
+                state["error"] = "LLM response did not include the return_esco_choices tool call"
+                state["outcome"] = ValidationOutcome.INVALID_LLM_RESPONSE
+                return state
 
             except Exception as e:
                 if isinstance(e, openai.RateLimitError) or "429" in str(e):
@@ -190,39 +206,70 @@ class JobClassificationAgent:
                 state["error"] = str(e)
                 raise e
 
-        # Paces calls within this alumnus; the actual global cap is
-        # _llm_call_semaphore around the provider call above.
+        # Skip the LLM entirely when retrieval has nothing to validate - it
+        # cannot possibly produce a correct answer from an empty candidate set.
+        # Calls that do proceed are paced per-alumnus here, on top of the
+        # global _llm_call_semaphore cap around the provider call above.
+        to_validate: List[tuple[int, JobClassificationAgentState]] = []
+        results: List[Optional[JobClassificationAgentState]] = [None] * len(states)
+        for idx, state in enumerate(states):
+            if state.get("esco_results_from_embeddings"):
+                to_validate.append((idx, state))
+                continue
+
+            state["parsed_esco_results"] = []
+            state["outcome"] = (
+                ValidationOutcome.RETRIEVAL_FAILED
+                if state.get("error")
+                else ValidationOutcome.EMPTY_RETRIEVAL
+            )
+            results[idx] = state
+
+        # Process in smaller chunks to avoid overwhelming the API
         chunk_size = 3
-        results = []
-        for i in range(0, len(states), chunk_size):
-            chunk = states[i : i + chunk_size]
-            chunk_results = await asyncio.gather(*[_validate_single(state) for state in chunk])
-            results.extend(chunk_results)
-            if i + chunk_size < len(states):
+        for i in range(0, len(to_validate), chunk_size):
+            chunk = to_validate[i : i + chunk_size]
+            chunk_results = await asyncio.gather(*[_validate_single(s) for _, s in chunk])
+            for (idx, _), result in zip(chunk, chunk_results):
+                results[idx] = result
+            if i + chunk_size < len(to_validate):
                 await asyncio.sleep(5)
 
         return results
 
     async def batch_update_classifications(self, states: List[JobClassificationAgentState]):
-        try:
-            updates = [
-                {
-                    "role_id": state["role"].role_id,
-                    "classifications": state["parsed_esco_results"],
-                    "reasoning": state["reasoning"],
-                }
-                for state in states
-                if state["parsed_esco_results"]
-            ]
+        """Persist classifications. Raises if any role's write fails.
 
-            if updates:
-                # Loads nothing and writes in one go, so a scope of its own is
-                # enough - no instance crosses a session boundary here.
-                with session_scope() as db:
-                    await update_role_with_classifications_batch(db, updates, DEFAULT_ACTION_BY)
+        A swallowed write failure is indistinguishable from success to the
+        caller, so failures are raised instead of just logged - the pipeline
+        executor relies on that to mark the task FAILED.
+        """
+        updates = [
+            {
+                "role_id": state["role"].role_id,
+                "classifications": state["parsed_esco_results"],
+                "reasoning": state["reasoning"],
+            }
+            for state in states
+            if state["parsed_esco_results"]
+        ]
 
-        except Exception as e:
-            logger.error(f"Error in batch update classifications: {str(e)}")
+        if not updates:
+            return []
+
+        # Loads nothing and writes in one go, so a scope of its own is
+        # enough - no instance crosses a session boundary here.
+        with session_scope() as db:
+            outcomes = await update_role_with_classifications_batch(db, updates, DEFAULT_ACTION_BY)
+
+        failures = [o for o in outcomes if not o.success]
+        if failures:
+            raise RuntimeError(
+                f"Failed to persist classification for {len(failures)} role(s): "
+                f"{[(f.role_id, f.error) for f in failures]}"
+            )
+
+        return outcomes
 
     async def _process_roles_batch(
         self, roles: List[JobClassificationRoleInput], alumni_id: str

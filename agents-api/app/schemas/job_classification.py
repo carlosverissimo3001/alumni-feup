@@ -5,7 +5,7 @@ from typing import List, Optional
 from fastapi import Query
 from langgraph.graph import add_messages
 from pydantic import BaseModel, Field
-from typing_extensions import Annotated, TypedDict
+from typing_extensions import Annotated, NotRequired, TypedDict
 
 
 class AlumniJobClassificationParams(BaseModel):
@@ -49,13 +49,36 @@ class EscoResult(BaseModel):
     confidence: float = Field(..., description="Confidence score of the classification")
 
 
+class ValidationOutcome(str, enum.Enum):
+    """Typed result of one role's trip through retrieval + LLM validation.
+
+    Replaces the old behaviour of leaving state fields implicitly empty/None
+    to signal "nothing happened here" - callers can branch on this instead.
+    """
+
+    SUCCESS = "SUCCESS"
+    RETRIEVAL_FAILED = "RETRIEVAL_FAILED"
+    EMPTY_RETRIEVAL = "EMPTY_RETRIEVAL"
+    INVALID_LLM_RESPONSE = "INVALID_LLM_RESPONSE"
+
+
+class ClassificationWriteOutcome(BaseModel):
+    """Typed result of persisting (or not) one role's classification."""
+
+    role_id: str
+    success: bool
+    error: Optional[str] = None
+
+
 class JobClassificationAgentState(TypedDict):
     role: JobClassificationRoleInput
     messages: Annotated[list, add_messages]
     esco_results_from_embeddings: List[EscoResult]
-    esco_results_from_agent: str 
+    esco_results_from_agent: str
     parsed_esco_results: List[dict]
     processing_time: float
     model_used: str
     retry_count: int
     error: Optional[str]
+    outcome: NotRequired[Optional[ValidationOutcome]]
+    reasoning: NotRequired[Optional[str]]

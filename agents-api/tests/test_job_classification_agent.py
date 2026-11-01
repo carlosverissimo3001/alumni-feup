@@ -16,9 +16,11 @@ from app.agents.job_classification import (
     get_esco_prompt,
 )
 from app.schemas.job_classification import (
+    ClassificationWriteOutcome,
     EscoResult,
     JobClassificationAgentState,
     JobClassificationRoleInput,
+    ValidationOutcome,
 )
 from app.utils.prompts import VALIDATE_ESCO_CORE_PROMPT, VALIDATE_ESCO_EXTRA_DETAILS
 
@@ -105,6 +107,16 @@ def test_retries_append_the_extra_guidance():
 
     assert VALIDATE_ESCO_CORE_PROMPT in prompt
     assert VALIDATE_ESCO_EXTRA_DETAILS in prompt
+
+
+def test_retry_prompt_does_not_contradict_the_core_tool_call_contract():
+    """The core prompt requires a tool call; the retry addendum must not
+    demand a different output contract (e.g. a raw JSON array) instead."""
+    assert "return_esco_choices" in VALIDATE_ESCO_CORE_PROMPT
+    assert "return_esco_choices" in VALIDATE_ESCO_EXTRA_DETAILS
+
+    assert "valid json array" not in VALIDATE_ESCO_EXTRA_DETAILS.lower()
+    assert "must call" in VALIDATE_ESCO_EXTRA_DETAILS.lower()
 
 
 # --- embedding lookup ---------------------------------------------------------
@@ -198,6 +210,9 @@ def _esco_tool_call(results, reasoning="Closest ESCO match for a backend role.")
 
 
 async def test_parses_results_and_reasoning_from_the_tool_call(monkeypatch, agent, state):
+    state["esco_results_from_embeddings"] = [
+        EscoResult(id="42", title="Systems analyst", confidence=0.81)
+    ]
     results = [{"id": "1", "title": "Software developer", "confidence": 0.93}]
     stub = StubLLM(StubResponse([_esco_tool_call(results)]))
     monkeypatch.setattr("app.agents.job_classification.llm_with_tools", stub)
@@ -206,9 +221,13 @@ async def test_parses_results_and_reasoning_from_the_tool_call(monkeypatch, agen
 
     assert out[0]["parsed_esco_results"] == results
     assert out[0]["reasoning"] == "Closest ESCO match for a backend role."
+    assert out[0]["outcome"] == ValidationOutcome.SUCCESS
 
 
 async def test_missing_reasoning_falls_back_to_a_placeholder(monkeypatch, agent, state):
+    state["esco_results_from_embeddings"] = [
+        EscoResult(id="42", title="Systems analyst", confidence=0.81)
+    ]
     tool_call = {"name": "return_esco_choices", "args": {"results": []}}
     monkeypatch.setattr(
         "app.agents.job_classification.llm_with_tools", StubLLM(StubResponse([tool_call]))
@@ -234,28 +253,30 @@ async def test_embedding_candidates_are_sent_to_the_model(monkeypatch, agent, st
     assert "Backend Engineer" in prompt
 
 
-@pytest.mark.xfail(
-    strict=True,
-    reason=(
-        "Known bug, same shape as the one in seniority.classify_seniority: when the "
-        "model returns no `return_esco_choices` tool call, _validate_single falls off "
-        "the end and implicitly returns None, so asyncio.gather collects None into the "
-        "results list and batch_update_classifications then raises on None['role']. "
-        "location.resolve_geo gets this right — it returns state outside the branch. "
-        "Fix during CAR-103; this test will start passing then."
-    ),
-)
-async def test_missing_tool_call_still_returns_the_state(monkeypatch, agent, state):
+async def test_missing_tool_call_returns_a_typed_invalid_response_outcome(
+    monkeypatch, agent, state
+):
+    """A response with no `return_esco_choices` tool call is a schema failure:
+    it must come back as an explicit typed outcome, not fall through to None."""
+    state["esco_results_from_embeddings"] = [
+        EscoResult(id="42", title="Systems analyst", confidence=0.81)
+    ]
     stub = StubLLM(StubResponse([{"name": "some_other_tool", "args": {}}]))
     monkeypatch.setattr("app.agents.job_classification.llm_with_tools", stub)
 
     out = await agent.validate_esco_results_batch([state])
 
     assert out[0] is not None
+    assert out[0]["outcome"] == ValidationOutcome.INVALID_LLM_RESPONSE
+    assert out[0]["parsed_esco_results"] == []
+    assert out[0]["error"]
 
 
 async def test_batches_are_processed_together(monkeypatch, agent, state, role):
     """Up to three roles go in one chunk; a fourth would trigger a 5s sleep."""
+    state["esco_results_from_embeddings"] = [
+        EscoResult(id="42", title="Systems analyst", confidence=0.81)
+    ]
     stub = StubLLM(StubResponse([_esco_tool_call([])]))
     monkeypatch.setattr("app.agents.job_classification.llm_with_tools", stub)
     states = [dict(state), dict(state), dict(state)]
@@ -316,3 +337,100 @@ async def test_global_semaphore_caps_peak_concurrent_calls_across_many_alumni(
     # Demand (150 calls) comfortably exceeds the budget, so the cap is
     # actually the thing holding peak down, not a coincidence.
     assert peak == MAX_CONCURRENT_LLM_CALLS
+
+
+class ExplodingLLM:
+    """Fails loudly if ever invoked — used to prove a code path is unreachable."""
+
+    async def ainvoke(self, _messages):
+        raise AssertionError("LLM was called despite having nothing to validate")
+
+
+async def test_empty_retrieval_skips_the_llm_call_entirely(monkeypatch, agent, state):
+    """An empty candidate list can never produce a correct answer, so the
+    (paid) LLM call must not even be attempted."""
+    assert state["esco_results_from_embeddings"] == []
+    monkeypatch.setattr("app.agents.job_classification.llm_with_tools", ExplodingLLM())
+
+    out = await agent.validate_esco_results_batch([state])
+
+    assert out[0]["outcome"] == ValidationOutcome.EMPTY_RETRIEVAL
+    assert out[0]["parsed_esco_results"] == []
+
+
+async def test_retrieval_failure_is_distinguished_from_plain_empty_retrieval(
+    monkeypatch, agent, state
+):
+    """A retrieval error and a legitimately-empty search both skip the LLM,
+    but they are reported as different typed outcomes."""
+    state["error"] = "Failed to search ESCO classifications: pgvector connection lost"
+    monkeypatch.setattr("app.agents.job_classification.llm_with_tools", ExplodingLLM())
+
+    out = await agent.validate_esco_results_batch([state])
+
+    assert out[0]["outcome"] == ValidationOutcome.RETRIEVAL_FAILED
+
+
+# --- persisting classifications (bug 2: swallowed write failures) ------------
+
+
+class _FakeSessionScope:
+    """Stands in for `session_scope()` so no real DB connection is needed."""
+
+    def __enter__(self):
+        return object()
+
+    def __exit__(self, *exc_info):
+        return False
+
+
+async def test_a_failed_write_is_observable_by_the_caller(monkeypatch, agent, state):
+    """The DB write failing must not look identical to success - the caller
+    needs to be able to tell, so the executor can mark the task FAILED."""
+    state["parsed_esco_results"] = [
+        {"id": "esco-1", "title": "Software developer", "confidence": 0.9}
+    ]
+    state["reasoning"] = "fits"
+
+    monkeypatch.setattr("app.agents.job_classification.session_scope", _FakeSessionScope)
+
+    async def fake_batch_write(_db, _updates, _action_by):
+        return [
+            ClassificationWriteOutcome(role_id="role-1", success=False, error="connection reset")
+        ]
+
+    monkeypatch.setattr(
+        "app.agents.job_classification.update_role_with_classifications_batch", fake_batch_write
+    )
+
+    with pytest.raises(RuntimeError, match="role-1"):
+        await agent.batch_update_classifications([state])
+
+
+async def test_a_successful_write_does_not_raise(monkeypatch, agent, state):
+    state["parsed_esco_results"] = [
+        {"id": "esco-1", "title": "Software developer", "confidence": 0.9}
+    ]
+    state["reasoning"] = "fits"
+
+    monkeypatch.setattr("app.agents.job_classification.session_scope", _FakeSessionScope)
+
+    async def fake_batch_write(_db, _updates, _action_by):
+        return [ClassificationWriteOutcome(role_id="role-1", success=True)]
+
+    monkeypatch.setattr(
+        "app.agents.job_classification.update_role_with_classifications_batch", fake_batch_write
+    )
+
+    outcomes = await agent.batch_update_classifications([state])
+
+    assert outcomes[0].success is True
+
+
+async def test_no_parsed_results_skips_the_write_entirely(agent, state):
+    """Nothing to persist means nothing is attempted - no session is opened."""
+    state["parsed_esco_results"] = []
+
+    outcomes = await agent.batch_update_classifications([state])
+
+    assert outcomes == []
