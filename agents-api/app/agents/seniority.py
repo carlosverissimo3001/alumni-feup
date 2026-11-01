@@ -187,6 +187,22 @@ Schema:
                     logger.warning(f"Role not found: {role_id}")
                     continue
 
+                # CAR-480: a user-accepted or user-modified seniority level is
+                # feedback the profile UI already wrote (api's
+                # alumni-profile.service.ts) - overwriting it here would
+                # silently discard that correction on the next classification
+                # or retry. A rejection (accepted=False, not modified) isn't
+                # an approved replacement value, so it stays eligible for
+                # recomputation, same as an unset row.
+                if (
+                    role.was_seniority_level_modified_by_user
+                    or role.was_seniority_level_accepted_by_user
+                ):
+                    logger.info(
+                        f"Skipping seniority update for role {role_id}: protected by user feedback"
+                    )
+                    continue
+
                 new_seniority = SeniorityLevel[entry["seniority"]]
                 role.seniority_level = new_seniority
 

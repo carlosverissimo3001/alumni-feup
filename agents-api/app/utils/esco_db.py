@@ -84,6 +84,18 @@ def update_role_with_classifications(db: Session, state: JobClassificationAgentS
         logger.error(f"Skipping DB update due to error: {state['error']}")
         return False
 
+    role_id = state["role"].role_id
+    existing = (
+        db.query(JobClassification.was_accepted_by_user, JobClassification.was_modified_by_user)
+        .filter(JobClassification.role_id == role_id)
+        .first()
+    )
+    if existing and (existing.was_accepted_by_user or existing.was_modified_by_user):
+        logger.info(
+            f"Skipping classification update for role {role_id}: protected by user feedback"
+        )
+        return True
+
     try:
         classification = _build_classification(
             role_id=state["role"].role_id,
@@ -133,8 +145,32 @@ async def update_role_with_classifications_batch(
     pending_classifications: List[JobClassification] = []
     outcomes: dict[str, ClassificationWriteOutcome] = {}
 
+    # CAR-480: an accepted or user-modified classification is feedback the
+    # profile UI already wrote (api's alumni-profile.service.ts) - the
+    # standard flow only ever classifies roles with no existing row, but this
+    # batch writer is also reachable from retries and other callers that
+    # don't pre-filter, so the protection has to live here, not just upstream.
+    requested_role_ids = [update["role_id"] for update in updates]
+    protected_role_ids = {
+        row.role_id
+        for row in db.query(JobClassification.role_id)
+        .filter(
+            JobClassification.role_id.in_(requested_role_ids),
+            (JobClassification.was_accepted_by_user.is_(True))
+            | (JobClassification.was_modified_by_user.is_(True)),
+        )
+        .all()
+    }
+
     for update in updates:
         role_id = update["role_id"]
+
+        if role_id in protected_role_ids:
+            logger.info(
+                f"Skipping classification update for role {role_id}: protected by user feedback"
+            )
+            outcomes[role_id] = ClassificationWriteOutcome(role_id=role_id, success=True)
+            continue
 
         if not update["classifications"]:
             logger.warning(f"No classifications for role {role_id}, skipping")

@@ -32,23 +32,50 @@ class FakeQuery:
         self._session.deleted_for.append(self._model)
         return 1
 
+    def all(self):
+        # Used by the CAR-480 protection check (bulk lookup of protected
+        # role_ids). Tests that care about protection set
+        # session.protected_role_ids explicitly; everything else keeps
+        # today's "nothing is protected" behavior.
+        protected = getattr(self._session, "protected_role_ids", set())
+        return [_Row(role_id=rid) for rid in protected]
+
+    def first(self):
+        # Scoped per FakeSession instance, which each test creates fresh for
+        # one role - good enough fidelity without parsing SQLAlchemy filter
+        # expressions in the fake.
+        if getattr(self._session, "protected_role_ids", set()):
+            return _Row(was_accepted_by_user=True, was_modified_by_user=True)
+        return None
+
+
+class _Row:
+    """Minimal stand-in for a SQLAlchemy Row, attribute access only."""
+
+    def __init__(self, **kwargs):
+        self.__dict__.update(kwargs)
+
 
 class FakeSession:
     """Records calls instead of touching a real database.
 
     `commit_error`, when set, is raised the first time `commit()` is called,
     to simulate a write failure after everything looked valid.
+    `protected_role_ids` makes the CAR-480 protection lookup report those
+    role_ids as user-protected (modified/accepted), same as a real query
+    would for a role with that feedback already recorded.
     """
 
-    def __init__(self, commit_error: Exception | None = None):
+    def __init__(self, commit_error: Exception | None = None, protected_role_ids=None):
         self.added = []
         self.deleted_for = []
         self.committed = False
         self.rolled_back = False
         self._commit_error = commit_error
+        self.protected_role_ids = protected_role_ids or set()
 
-    def query(self, model):
-        return FakeQuery(self, model)
+    def query(self, *_args):
+        return FakeQuery(self, _args[0] if _args else None)
 
     def add(self, obj):
         self.added.append(obj)
@@ -205,3 +232,73 @@ async def test_batch_write_failure_is_a_typed_failure_outcome_not_silent():
     assert len(outcomes) == 1
     assert outcomes[0].success is False
     assert "connection reset" in outcomes[0].error
+
+
+# --- CAR-480: protect user feedback from being overwritten --------------------
+
+
+def test_singular_update_skips_a_user_modified_role(state):
+    db = FakeSession(protected_role_ids={"role-1"})
+
+    ok = update_role_with_classifications(db, state)
+
+    assert ok is True
+    assert db.deleted_for == []
+    assert db.added == []
+    assert db.committed is False
+
+
+def test_singular_update_still_writes_an_unprotected_role(state):
+    db = FakeSession()  # nothing protected
+
+    ok = update_role_with_classifications(db, state)
+
+    assert ok is True
+    assert len(db.deleted_for) == 1
+    assert len(db.added) == 1
+    assert db.committed is True
+
+
+async def test_batch_skips_accepted_role_without_deleting_or_writing():
+    updates = [
+        {
+            "role_id": "role-accepted",
+            "classifications": [{"id": "esco-1", "title": "Software developer", "confidence": 0.9}],
+            "reasoning": "fits",
+        },
+    ]
+    db = FakeSession(protected_role_ids={"role-accepted"})
+
+    outcomes = await update_role_with_classifications_batch(db, updates)
+
+    assert db.deleted_for == []
+    assert db.added == []
+    assert len(outcomes) == 1
+    assert outcomes[0].role_id == "role-accepted"
+    assert outcomes[0].success is True  # protected = intentional no-op, not a failure
+
+
+async def test_batch_protects_one_role_while_updating_its_unprotected_sibling():
+    updates = [
+        {
+            "role_id": "role-protected",
+            "classifications": [{"id": "esco-1", "title": "Software developer", "confidence": 0.9}],
+            "reasoning": "fits",
+        },
+        {
+            "role_id": "role-open",
+            "classifications": [{"id": "esco-2", "title": "Data scientist", "confidence": 0.8}],
+            "reasoning": "fits too",
+        },
+    ]
+    db = FakeSession(protected_role_ids={"role-protected"})
+
+    outcomes = await update_role_with_classifications_batch(db, updates)
+
+    by_role = {o.role_id: o for o in outcomes}
+    assert by_role["role-protected"].success is True
+    assert by_role["role-open"].success is True
+    assert len(db.deleted_for) == 1  # only the open role's old row was deleted
+    assert len(db.added) == 1
+    assert db.added[0].role_id == "role-open"
+    assert db.committed is True
