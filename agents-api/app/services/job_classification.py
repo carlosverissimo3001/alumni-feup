@@ -17,7 +17,10 @@ logger = logging.getLogger(__name__)
 
 class JobClassificationService:
     def __init__(self):
-        self.MAX_CONCURRENT = 25
+        # Roles per alumnus processed together in one pipeline-timeout step;
+        # not a concurrency limit. The true process-wide LLM call budget is
+        # MAX_CONCURRENT_LLM_CALLS in app.agents.job_classification.
+        self.ROLES_PER_ALUMNUS_CHUNK = 25
         self.BATCH_SIZE = 50
 
     async def classify_roles_for_alumni(self, alumni_id: str):
@@ -29,13 +32,13 @@ class JobClassificationService:
                     return
                 roles = input_data.roles
 
-            for i in range(0, len(roles), self.MAX_CONCURRENT):
-                batch = roles[i : i + self.MAX_CONCURRENT]
+            for i in range(0, len(roles), self.ROLES_PER_ALUMNUS_CHUNK):
+                batch = roles[i : i + self.ROLES_PER_ALUMNUS_CHUNK]
                 await with_pipeline_timeout(
                     job_classification_agent._process_roles_batch(batch, alumni_id),
                     step="job_classification.process_roles_batch",
                 )
-                if i + self.MAX_CONCURRENT < len(roles):
+                if i + self.ROLES_PER_ALUMNUS_CHUNK < len(roles):
                     await asyncio.sleep(0.1)
 
         except Exception as e:
