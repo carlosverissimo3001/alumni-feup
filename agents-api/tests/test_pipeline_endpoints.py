@@ -331,9 +331,7 @@ class TestCreateRun:
 
     def test_rejects_missing_alumni_ids_instead_of_scoping_to_everyone(self, client, db):
         # CAR-465: this used to silently scope to the entire alumni table.
-        response = client.post(
-            "/api/pipelines/REFRESH_EXISTING/runs", json={}, headers=HEADERS
-        )
+        response = client.post("/api/pipelines/REFRESH_EXISTING/runs", json={}, headers=HEADERS)
 
         assert response.status_code == 400
         assert client.enqueued == []
@@ -375,7 +373,7 @@ class TestCreateRun:
         run_id = response.json()["run_id"]
         assert client.enqueued == [("run_stage", {"run_id": run_id, "stage": "PLAN"})]
 
-    def test_an_explicit_scope_above_the_cap_is_rejected_without_confirmation(self, client, db, monkeypatch):
+    def test_scope_above_cap_rejected_without_confirmation(self, client, db, monkeypatch):
         from app.core.config import settings
 
         monkeypatch.setattr(settings, "PIPELINE_RUN_SIZE_CAP", 2)
