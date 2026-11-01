@@ -85,6 +85,7 @@ class LinkedInService:
         self,
         alumni_id: str,
         skip_followup_classification: bool = False,
+        skip_followup_location: bool = False,
         skip_followup_company_extraction: bool = False,
     ):
         """
@@ -98,6 +99,11 @@ class LinkedInService:
                 CLASSIFY_ROLES stage), so the background classification this
                 method would otherwise fire is redundant. The standalone
                 extraction path has no such follow-up and keeps the default.
+            skip_followup_location: True when the caller already runs location
+                resolution explicitly right after (e.g. the pipeline's LOCATION
+                stage), so the background location call this method would
+                otherwise fire is redundant. The standalone extraction path has
+                no such follow-up and keeps the default.
             skip_followup_company_extraction: True when the caller already
                 runs company enrichment explicitly right after (e.g. the
                 pipeline's COMPANY stage), so the background BrightData
@@ -137,6 +143,7 @@ class LinkedInService:
                 response,
                 alumni_id,
                 skip_followup_classification=skip_followup_classification,
+                skip_followup_location=skip_followup_location,
                 skip_followup_company_extraction=skip_followup_company_extraction,
             )
 
@@ -149,6 +156,7 @@ class LinkedInService:
         profile_data: LinkedInProfileResponse,
         alumni_id: str,
         skip_followup_classification: bool = False,
+        skip_followup_location: bool = False,
         skip_followup_company_extraction: bool = False,
     ) -> None:
         # Uploading to Cloudinary needs no session, so it happens before one is
@@ -182,7 +190,13 @@ class LinkedInService:
                     params=AlumniJobClassificationParams(alumni_ids=alumni_id)
                 )
             )
-        self._create_background_task(location_service.resolve_role_location_for_alumni(alumni_id))
+        # Skipped when the caller already resolves this alumni's location
+        # explicitly right after (e.g. the pipeline's LOCATION stage) - firing
+        # this too would just resolve it twice.
+        if not skip_followup_location:
+            self._create_background_task(
+                location_service.resolve_role_location_for_alumni(alumni_id)
+            )
 
     async def _persist_profile_data(
         self,
