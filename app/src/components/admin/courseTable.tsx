@@ -17,7 +17,13 @@ type CourseTableProps = {
   faculties?: Faculty[];
 };
 
-type SortKey = "name" | "acronym" | "courseType" | "status" | "startYear";
+type SortKey =
+  | "name"
+  | "acronym"
+  | "courseType"
+  | "status"
+  | "startYear"
+  | "createdAt";
 type SortDirection = "asc" | "desc";
 
 export default function CourseTable({
@@ -57,9 +63,21 @@ export default function CourseTable({
           return direction * String(a.status).localeCompare(String(b.status));
         case "startYear":
           return direction * (a.startYear - b.startYear);
+        case "createdAt":
+          return (
+            direction *
+            (new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime())
+          );
         default:
           return 0;
       }
+    });
+
+  const formatDate = (date: Date) =>
+    new Date(date).toLocaleDateString("en-US", {
+      month: "short",
+      day: "numeric",
+      year: "numeric",
     });
 
   const formatCourseType = (type: string) => {
@@ -160,6 +178,16 @@ export default function CourseTable({
                       </div>
                     </Button>
                   </th>
+                  <th className="text-left py-2 px-3 text-[#8C2D19] text-sm">
+                    <Button
+                      variant="ghost"
+                      className="p-0 h-auto font-semibold text-[#8C2D19] text-sm hover:bg-transparent hover:text-[#A13A23] focus:ring-0"
+                      onClick={() => handleSort("createdAt")}
+                    >
+                      Added
+                      <ArrowUpDown size={16} className="ml-1" />
+                    </Button>
+                  </th>
                 </tr>
               </thead>
               <tbody>
@@ -198,6 +226,9 @@ export default function CourseTable({
                     <td className="py-2 px-3 text-gray-700 text-sm">
                       {course.startYear}{" "}
                       {course.endYear ? `(${course.endYear})` : ""}
+                    </td>
+                    <td className="py-2 px-3 text-gray-700 text-sm">
+                      {formatDate(course.createdAt)}
                     </td>
                   </tr>
                 ))}

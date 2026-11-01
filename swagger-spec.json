@@ -3319,6 +3319,11 @@
                 "$ref": "#/components/schemas/FacultyAnalyticsEntity"
               }
             ]
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string",
+            "description": "When this course record was added to the platform"
           }
         },
         "required": [
@@ -3330,7 +3335,8 @@
           "facultyAcronym",
           "startYear",
           "facultyId",
-          "faculty"
+          "faculty",
+          "createdAt"
         ]
       },
       "GraduationAnalyticsEntity": {
