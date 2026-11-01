@@ -1,8 +1,9 @@
 """Which service each stage drives, and over which entities.
 
-CLASSIFY_ROLES (CAR-157) and LINKEDIN are converted. The other stages keep
-their existing coarse tasks until they are converted one at a time against a
-proven executor, so an unconverted stage is absent here rather than half-wired.
+CLASSIFY_ROLES (CAR-157), LINKEDIN, and SENIORITY are converted. The other
+stages keep their existing coarse tasks until they are converted one at a
+time against a proven executor, so an unconverted stage is absent here rather
+than half-wired.
 
 Services are imported inside the resolvers and handlers for the same reason
 app/tasks/pipeline.py does it: importing them at module scope drags langchain
@@ -52,7 +53,19 @@ async def _extract_linkedin_profile(alumni_id: str) -> None:
 async def _classify_roles(alumni_id: str) -> None:
     from app.services.job_classification import job_classification_service
 
-    await job_classification_service.classify_roles_for_alumni(alumni_id)
+    # skip_followup_seniority=True: SENIORITY below already classifies this
+    # alumnus explicitly right after, so the service's own internal
+    # background seniority call would just be redundant LLM spend.
+    await job_classification_service.classify_roles_for_alumni(
+        alumni_id, skip_followup_seniority=True
+    )
+
+
+async def _classify_seniority(alumni_id: str) -> None:
+    from app.schemas.seniority import AlumniSeniorityParams
+    from app.services.seniority import seniority_service
+
+    await seniority_service.request_alumni_seniority(AlumniSeniorityParams(alumni_ids=alumni_id))
 
 
 STAGES: Dict[PipelineStageName, StageSpec] = {
@@ -65,6 +78,11 @@ STAGES: Dict[PipelineStageName, StageSpec] = {
         entity_type=PipelineEntityType.ALUMNI,
         resolve=_resolve_alumni,
         handle=_classify_roles,
+    ),
+    PipelineStageName.SENIORITY: StageSpec(
+        entity_type=PipelineEntityType.ALUMNI,
+        resolve=_resolve_alumni,
+        handle=_classify_seniority,
     ),
 }
 
