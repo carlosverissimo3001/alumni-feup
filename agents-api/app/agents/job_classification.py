@@ -9,8 +9,6 @@ from fastapi.encoders import jsonable_encoder
 from langchain_core.messages import HumanMessage, SystemMessage
 from langchain_core.tools import Tool
 from langchain_openai import ChatOpenAI
-from langgraph.graph import END, START, StateGraph
-from langgraph.prebuilt import ToolNode
 from redis import Redis
 from tenacity import (
     before_sleep_log,
@@ -27,10 +25,7 @@ from app.schemas.job_classification import (
 )
 from app.schemas.seniority import AlumniSeniorityParams
 from app.services.seniority import seniority_service
-from app.utils.agents.esco_reference import (
-    get_detailed_esco_classification,
-    search_esco_classifications,
-)
+from app.utils.agents.esco_reference import search_esco_classifications
 from app.utils.esco_db import (
     update_role_with_classifications_batch,
 )
@@ -78,15 +73,7 @@ validate_tool = Tool.from_function(
     args_schema=json_schema,
 )
 
-get_detailed_esco_classification = Tool.from_function(
-    func=get_detailed_esco_classification,
-    name="get_detailed_esco_classification",
-    description="Get the detailed ESCO classification for the given id",
-)
-
 DEFAULT_ACTION_BY = "job-classification-agent"
-
-tools = [get_detailed_esco_classification, validate_tool]
 
 cold_llm = ChatOpenAI(
     model=settings.OPENAI_DEFAULT_MODEL,
@@ -94,9 +81,7 @@ cold_llm = ChatOpenAI(
     max_retries=3,
     temperature=0.0,
 )
-llm_with_tools = cold_llm.bind_tools(tools)
-
-tool_node = ToolNode(tools=tools)
+llm_with_tools = cold_llm.bind_tools([validate_tool])
 
 
 def get_esco_prompt(retry_count: int = 0) -> str:
@@ -124,15 +109,6 @@ class JobClassificationAgent:
         self._redis_cache.setex(
             self._get_cache_key(query), self.CACHE_TTL, json.dumps(jsonable_encoder(results))
         )
-
-    def create_graph(self) -> StateGraph:
-        graph = StateGraph(JobClassificationAgentState)
-        graph.add_node("get_best_esco_matches_db", self.get_best_esco_matches_db)
-        graph.add_node("validate_and_update", self._process_roles_batch)
-        graph.add_edge(START, "get_best_esco_matches_db")
-        graph.add_edge("get_best_esco_matches_db", "validate_and_update")
-        graph.add_edge("validate_and_update", END)
-        return graph.compile()
 
     def get_best_esco_matches_db(
         self, state: JobClassificationAgentState
