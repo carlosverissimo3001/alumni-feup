@@ -5,16 +5,18 @@ import {
   HttpStatus,
   Post,
   Body,
+  UseGuards,
 } from '@nestjs/common';
 import { FacultyService } from '../services/faculty.service';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { ApiResponse } from '@nestjs/swagger';
 import { Faculty } from '@/entities/faculty.entity';
 import { CreateFacultyDto } from '../dto';
-import { RequirePermission } from '@/auth/user-auth.guard';
+import { RequirePermission, UserAuthGuard } from '@/auth/user-auth.guard';
 
 @ApiTags('V1')
 @Controller('faculty')
+@UseGuards(UserAuthGuard)
 export class FacultyController {
   constructor(private readonly facultyService: FacultyService) {}
 

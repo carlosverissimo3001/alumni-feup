@@ -19,6 +19,7 @@ export * from './RoleResolveLocationParams';
 export * from './RunAction';
 export * from './RunCreated';
 export * from './RunDetail';
+export * from './RunPreflight';
 export * from './RunSummary';
 export * from './StageSummary';
 export * from './TaskCountsOut';

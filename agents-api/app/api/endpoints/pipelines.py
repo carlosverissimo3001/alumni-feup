@@ -23,6 +23,7 @@ from app.pipeline.stages import (
     PipelineRunStatus,
     PipelineStageName,
     PipelineTaskStatus,
+    PipelineTrigger,
 )
 from app.schemas.pipeline import (
     CreateRunRequest,
@@ -175,9 +176,17 @@ async def create_pipeline_run(
             ),
         )
 
-    params = body.model_dump(exclude_none=True)
+    # trigger_source/triggered_by have their own PipelineRun columns, so they're
+    # excluded here rather than duplicated inside the params JSONB blob.
+    params = body.model_dump(exclude_none=True, exclude={"trigger_source", "triggered_by"})
 
-    run = create_run(db, kind=kind, params=params or None)
+    run = create_run(
+        db,
+        kind=kind,
+        params=params or None,
+        trigger_source=body.trigger_source or PipelineTrigger.API,
+        triggered_by=body.triggered_by,
+    )
     db.flush()
     ensure_stages(db, run)
     run_id = run.id

@@ -26,6 +26,7 @@ import type {
   RunAction,
   RunCreated,
   RunDetail,
+  RunPreflight,
 } from '../models/index';
 import {
     CreateRunRequestFromJSON,
@@ -50,6 +51,8 @@ import {
     RunCreatedToJSON,
     RunDetailFromJSON,
     RunDetailToJSON,
+    RunPreflightFromJSON,
+    RunPreflightToJSON,
 } from '../models/index';
 
 export interface CancelApiPipelinesRunsRunIdCancelPostRequest {
@@ -78,6 +81,11 @@ export interface ListRunsApiPipelinesRunsGetRequest {
     status?: PipelineRunStatus | null;
     cursor?: string | null;
     limit?: number;
+}
+
+export interface PreflightPipelineRunApiPipelinesKindRunsPreflightPostRequest {
+    kind: PipelineKind;
+    createRunRequest: CreateRunRequest;
 }
 
 export interface ResumeApiPipelinesRunsRunIdResumePostRequest {
@@ -350,6 +358,61 @@ export class PipelinesApi extends runtime.BaseAPI {
      */
     async listRunsApiPipelinesRunsGet(requestParameters: ListRunsApiPipelinesRunsGetRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PageRunSummary> {
         const response = await this.listRunsApiPipelinesRunsGetRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for preflightPipelineRunApiPipelinesKindRunsPreflightPost without sending the request
+     */
+    async preflightPipelineRunApiPipelinesKindRunsPreflightPostRequestOpts(requestParameters: PreflightPipelineRunApiPipelinesKindRunsPreflightPostRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['kind'] == null) {
+            throw new runtime.RequiredError(
+                'kind',
+                'Required parameter "kind" was null or undefined when calling preflightPipelineRunApiPipelinesKindRunsPreflightPost().'
+            );
+        }
+
+        if (requestParameters['createRunRequest'] == null) {
+            throw new runtime.RequiredError(
+                'createRunRequest',
+                'Required parameter "createRunRequest" was null or undefined when calling preflightPipelineRunApiPipelinesKindRunsPreflightPost().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
+
+
+        let urlPath = `/api/pipelines/{kind}/runs/preflight`;
+        urlPath = urlPath.replace(`{${"kind"}}`, encodeURIComponent(String(requestParameters['kind'])));
+
+        return {
+            path: urlPath,
+            method: 'POST',
+            headers: headerParameters,
+            query: queryParameters,
+            body: CreateRunRequestToJSON(requestParameters['createRunRequest']),
+        };
+    }
+
+    /**
+     * Resolve the scope a run would cover, without creating or enqueueing it
+     */
+    async preflightPipelineRunApiPipelinesKindRunsPreflightPostRaw(requestParameters: PreflightPipelineRunApiPipelinesKindRunsPreflightPostRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<RunPreflight>> {
+        const requestOptions = await this.preflightPipelineRunApiPipelinesKindRunsPreflightPostRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => RunPreflightFromJSON(jsonValue));
+    }
+
+    /**
+     * Resolve the scope a run would cover, without creating or enqueueing it
+     */
+    async preflightPipelineRunApiPipelinesKindRunsPreflightPost(requestParameters: PreflightPipelineRunApiPipelinesKindRunsPreflightPostRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<RunPreflight> {
+        const response = await this.preflightPipelineRunApiPipelinesKindRunsPreflightPostRaw(requestParameters, initOverrides);
         return await response.value();
     }
 

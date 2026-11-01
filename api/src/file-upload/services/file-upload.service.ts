@@ -1,10 +1,12 @@
 import { UploadExtractionDto } from '@/file-upload/dto/upload-extraction.dto';
+import { UploadExtractionResponseDto } from '@/file-upload/dto/upload-extraction-response.dto';
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { PrismaService } from '@/prisma/prisma.service';
 import { ENROLLMENT_HEADERS } from '../consts';
 import { readCSV } from '../utils/csv';
 import * as fs from 'fs';
 import { AlumniService } from '@/alumni/services/alumni.service';
+import { AgentsApiService } from '@/agents-api/services/agents-api.service';
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024;
 const MIN_CONCLUSION_YEAR = 1950;
@@ -16,12 +18,14 @@ export class FileUploadService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly alumniService: AlumniService,
+    private readonly agentsApiService: AgentsApiService,
   ) {}
 
   async handleFileUpload(
     dto: UploadExtractionDto,
     file: Express.Multer.File,
-  ): Promise<number> {
+    triggeredBy?: string,
+  ): Promise<UploadExtractionResponseDto> {
     if (!file) {
       throw new BadRequestException('no file uploaded');
     }
@@ -43,18 +47,12 @@ export class FileUploadService {
     const createdAlumni = await this.parseFile(file.path, dto);
     fs.unlinkSync(file.path);
 
-    for (const alumniId of createdAlumni) {
-      void this.alumniService
-        .requestProfileExtraction(alumniId)
-        .catch((error) => {
-          console.error(
-            `Failed to request profile extraction for alumni ${alumniId}:`,
-            error,
-          );
-        });
-    }
+    const { runId } = await this.agentsApiService.createPipelineRun(
+      createdAlumni,
+      triggeredBy,
+    );
 
-    return createdAlumni.length;
+    return { count: createdAlumni.length, runId };
   }
 
   async parseFile(

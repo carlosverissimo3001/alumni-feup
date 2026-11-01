@@ -13,6 +13,14 @@
  */
 
 import { mapValues } from '../runtime';
+import type { PipelineTrigger } from './PipelineTrigger';
+import {
+    PipelineTriggerFromJSON,
+    PipelineTriggerFromJSONTyped,
+    PipelineTriggerToJSON,
+    PipelineTriggerToJSONTyped,
+} from './PipelineTrigger';
+
 /**
  * 
  * @export
@@ -26,12 +34,32 @@ export interface CreateRunRequest {
      */
     alumniIds?: string | null;
     /**
+     * Explicit opt-in required to scope the run to every alumni record (when alumni_ids is omitted) or to a resolved scope above PIPELINE_RUN_SIZE_CAP. Call the /preflight endpoint first to see the count this would resolve to.
+     * @type {boolean}
+     * @memberof CreateRunRequest
+     */
+    confirmAllAlumni?: boolean;
+    /**
      * 
      * @type {number}
      * @memberof CreateRunRequest
      */
     failureThreshold?: number | null;
+    /**
+     * 
+     * @type {PipelineTrigger}
+     * @memberof CreateRunRequest
+     */
+    triggerSource?: PipelineTrigger | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof CreateRunRequest
+     */
+    triggeredBy?: string | null;
 }
+
+
 
 /**
  * Check if a given object implements the CreateRunRequest interface.
@@ -51,7 +79,10 @@ export function CreateRunRequestFromJSONTyped(json: any, ignoreDiscriminator: bo
     return {
         
         'alumniIds': json['alumni_ids'] == null ? undefined : json['alumni_ids'],
+        'confirmAllAlumni': json['confirm_all_alumni'] == null ? undefined : json['confirm_all_alumni'],
         'failureThreshold': json['failure_threshold'] == null ? undefined : json['failure_threshold'],
+        'triggerSource': json['trigger_source'] == null ? undefined : PipelineTriggerFromJSON(json['trigger_source']),
+        'triggeredBy': json['triggered_by'] == null ? undefined : json['triggered_by'],
     };
 }
 
@@ -67,7 +98,10 @@ export function CreateRunRequestToJSONTyped(value?: CreateRunRequest | null, ign
     return {
         
         'alumni_ids': value['alumniIds'],
+        'confirm_all_alumni': value['confirmAllAlumni'],
         'failure_threshold': value['failureThreshold'],
+        'trigger_source': PipelineTriggerToJSON(value['triggerSource']),
+        'triggered_by': value['triggeredBy'],
     };
 }
 

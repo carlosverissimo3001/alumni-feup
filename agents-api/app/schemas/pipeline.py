@@ -106,6 +106,12 @@ class CreateRunRequest(BaseModel):
         le=1.0,
         description="Abort the run above this share of failed tasks. Defaults to 0.2.",
     )
+    trigger_source: Optional[PipelineTrigger] = Field(
+        None, description="Defaults to API when omitted."
+    )
+    triggered_by: Optional[str] = Field(
+        None, description="Caller-supplied identity of whoever/whatever started the run."
+    )
 
 
 class RunCreated(BaseModel):

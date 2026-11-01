@@ -5,6 +5,8 @@ import { MulterModule } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { PrismaService } from '@/prisma/prisma.service';
 import { AlumniModule } from '@/alumni/alumni.module';
+import { AgentsApiModule } from '@/agents-api/agents-api.module';
+import { AuthModule } from '@/auth/auth.module';
 
 @Module({
   imports: [
@@ -18,6 +20,8 @@ import { AlumniModule } from '@/alumni/alumni.module';
       }),
     }),
     AlumniModule,
+    AgentsApiModule,
+    AuthModule,
   ],
   controllers: [FileUploadController],
   providers: [FileUploadService, PrismaService],

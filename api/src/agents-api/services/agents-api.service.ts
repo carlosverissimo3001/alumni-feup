@@ -12,8 +12,10 @@ import {
   PipelineRunStatus,
   PipelineStageName,
   PipelineTaskStatus,
+  PipelineTrigger,
   PipelinesApi,
   ResponseError,
+  RunCreated,
   RunDetail,
 } from '@/sdk/agents-api';
 
@@ -72,6 +74,29 @@ export class AgentsApiService {
       }
       const message = error instanceof Error ? error.message : 'Unknown error';
       throw new HttpException(`Failed to ${operation}: ${message}`, 500);
+    }
+  }
+
+  /**
+   * Creates a pipeline run for a batch of alumni and starts it immediately
+   * (mirrors the generated client's own createPipelineRunApiPipelinesKindRunsPost,
+   * scoped to the one kind/trigger this backend ever creates runs for).
+   */
+  async createPipelineRun(
+    alumniIds: string[],
+    triggeredBy?: string,
+  ): Promise<RunCreated> {
+    try {
+      return await this.pipelinesApi.createPipelineRunApiPipelinesKindRunsPost({
+        kind: PipelineKind.IngestCohort,
+        createRunRequest: {
+          alumniIds: alumniIds.join(','),
+          triggerSource: PipelineTrigger.AdminUi,
+          triggeredBy,
+        },
+      });
+    } catch (error: unknown) {
+      this.handlePipelinesError('create pipeline run', error);
     }
   }
 
