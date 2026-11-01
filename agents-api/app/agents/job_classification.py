@@ -41,6 +41,13 @@ from app.utils.prompts import (
 
 logger = logging.getLogger(__name__)
 
+# Process-wide cap on in-flight LLM validation calls. Every caller of
+# _validate_single acquires this before the actual provider call, so the
+# limit holds across the whole service (concurrent alumni, concurrent roles
+# within an alumnus, etc.) rather than per invocation.
+MAX_CONCURRENT_LLM_CALLS = 25
+_llm_call_semaphore = asyncio.Semaphore(MAX_CONCURRENT_LLM_CALLS)
+
 json_schema = {
     "type": "object",
     "properties": {
@@ -171,22 +178,22 @@ class JobClassificationAgent:
             retry_count = state.get("retry_count", 0)
             try:
                 esco_prompt = get_esco_prompt(retry_count)
-                response = await llm_with_tools.ainvoke(
-                    [
-                        SystemMessage(content=esco_prompt),
-                        SystemMessage(
-                            content=f"Here are the list of results from the vector search: {state['esco_results_from_embeddings']}"
-                        ),
-                        SystemMessage(content=f"Here is the role to classify: {state['role']}"),
-                        *state["messages"],
-                        HumanMessage(
-                            content="""Please validate the results and provide the 3 best matches using the return_esco_choices tool.
+                messages = [
+                    SystemMessage(content=esco_prompt),
+                    SystemMessage(
+                        content=f"Here are the list of results from the vector search: {state['esco_results_from_embeddings']}"
+                    ),
+                    SystemMessage(content=f"Here is the role to classify: {state['role']}"),
+                    *state["messages"],
+                    HumanMessage(
+                        content="""Please validate the results and provide the 3 best matches using the return_esco_choices tool.
                     Only include: id, title, confidence.
                     DO NOT use the ESCO code as the ID.
                     DO NOT include any comments, extra fields, or explanation."""
-                        ),
-                    ]
-                )
+                    ),
+                ]
+                async with _llm_call_semaphore:
+                    response = await llm_with_tools.ainvoke(messages)
                 state["messages"].append(response)
 
                 tool_call = [
@@ -207,7 +214,8 @@ class JobClassificationAgent:
                 state["error"] = str(e)
                 raise e
 
-        # Process in smaller chunks to avoid overwhelming the API
+        # Paces calls within this alumnus; the actual global cap is
+        # _llm_call_semaphore around the provider call above.
         chunk_size = 3
         results = []
         for i in range(0, len(states), chunk_size):

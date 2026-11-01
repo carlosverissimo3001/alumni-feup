@@ -5,11 +5,16 @@ agents onto Pydantic AI, and before CAR-106/CAR-108 change what gets sent to the
 model. Redis and the model client are both stubbed — neither is reachable.
 """
 
+import asyncio
 from datetime import datetime
 
 import pytest
 
-from app.agents.job_classification import JobClassificationAgent, get_esco_prompt
+from app.agents.job_classification import (
+    MAX_CONCURRENT_LLM_CALLS,
+    JobClassificationAgent,
+    get_esco_prompt,
+)
 from app.schemas.job_classification import (
     EscoResult,
     JobClassificationAgentState,
@@ -259,3 +264,57 @@ async def test_batches_are_processed_together(monkeypatch, agent, state, role):
 
     assert len(out) == 3
     assert len(stub.calls) == 3
+
+
+# --- global concurrency budget (CAR-469) --------------------------------------
+
+
+async def test_global_semaphore_caps_peak_concurrent_calls_across_many_alumni(
+    monkeypatch, agent, role
+):
+    """Reproduces the incident shape: ~50 alumni classified concurrently, each
+    gathering several roles at once internally. Without a process-wide budget
+    this fans out to ~150 overlapping provider calls; the module-level
+    semaphore must keep the real peak at or below MAX_CONCURRENT_LLM_CALLS.
+    """
+    in_flight = 0
+    peak = 0
+
+    class SlowStubLLM:
+        async def ainvoke(self, _messages):
+            nonlocal in_flight, peak
+            in_flight += 1
+            peak = max(peak, in_flight)
+            await asyncio.sleep(0.05)
+            in_flight -= 1
+            return StubResponse([_esco_tool_call([])])
+
+    monkeypatch.setattr("app.agents.job_classification.llm_with_tools", SlowStubLLM())
+
+    def make_alumnus_states(role_count):
+        return [
+            JobClassificationAgentState(
+                role=role,
+                messages=[],
+                esco_results_from_embeddings=[],
+                esco_results_from_agent=[],
+                parsed_esco_results=[],
+                processing_time=0.0,
+                model_used="gpt-4o-mini",
+                retry_count=0,
+                error=None,
+                reasoning=None,
+            )
+            for _ in range(role_count)
+        ]
+
+    alumni_batches = [make_alumnus_states(3) for _ in range(50)]
+
+    await asyncio.gather(
+        *[agent.validate_esco_results_batch(states) for states in alumni_batches]
+    )
+
+    assert peak <= MAX_CONCURRENT_LLM_CALLS
+    # Demand (150 calls) comfortably exceeds the budget, so the cap is
+    # actually the thing holding peak down, not a coincidence.
+    assert peak == MAX_CONCURRENT_LLM_CALLS
