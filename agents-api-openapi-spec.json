@@ -1070,6 +1070,18 @@
             ],
             "title": "Triggered By",
             "description": "Caller-supplied identity of whoever/whatever started the run."
+          },
+          "label": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Label",
+            "description": "Human-readable label for the run, e.g. the course/cohort name."
           }
         },
         "type": "object",
@@ -1360,6 +1372,18 @@
             ],
             "title": "Triggered By"
           },
+          "label": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Label",
+            "description": "Human-readable label for the run, e.g. the course/cohort name."
+          },
           "params": {
             "anyOf": [
               {
@@ -1489,6 +1513,18 @@
               }
             ],
             "title": "Triggered By"
+          },
+          "label": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Label",
+            "description": "Human-readable label for the run, e.g. the course/cohort name."
           },
           "params": {
             "anyOf": [

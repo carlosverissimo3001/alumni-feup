@@ -59,6 +59,12 @@ export interface RunSummaryDto {
     triggeredBy: string | null;
     /**
      * 
+     * @type {string}
+     * @memberof RunSummaryDto
+     */
+    label: string | null;
+    /**
+     * 
      * @type {{ [key: string]: any; }}
      * @memberof RunSummaryDto
      */
@@ -138,6 +144,7 @@ export function instanceOfRunSummaryDto(value: object): value is RunSummaryDto {
     if (!('status' in value) || value['status'] === undefined) return false;
     if (!('triggerSource' in value) || value['triggerSource'] === undefined) return false;
     if (!('triggeredBy' in value) || value['triggeredBy'] === undefined) return false;
+    if (!('label' in value) || value['label'] === undefined) return false;
     if (!('params' in value) || value['params'] === undefined) return false;
     if (!('createdAt' in value) || value['createdAt'] === undefined) return false;
     if (!('startedAt' in value) || value['startedAt'] === undefined) return false;
@@ -162,6 +169,7 @@ export function RunSummaryDtoFromJSONTyped(json: any, ignoreDiscriminator: boole
         'status': json['status'],
         'triggerSource': json['triggerSource'],
         'triggeredBy': json['triggeredBy'],
+        'label': json['label'],
         'params': json['params'],
         'createdAt': (new Date(json['createdAt'])),
         'startedAt': (json['startedAt'] == null ? null : new Date(json['startedAt'])),
@@ -187,6 +195,7 @@ export function RunSummaryDtoToJSONTyped(value?: RunSummaryDto | null, ignoreDis
         'status': value['status'],
         'triggerSource': value['triggerSource'],
         'triggeredBy': value['triggeredBy'],
+        'label': value['label'],
         'params': value['params'],
         'createdAt': value['createdAt'].toISOString(),
         'startedAt': value['startedAt'] == null ? value['startedAt'] : value['startedAt'].toISOString(),

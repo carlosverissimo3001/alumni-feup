@@ -131,6 +131,9 @@ export class RunSummaryDto implements RunSummary {
   @ApiProperty({ nullable: true, type: String })
   triggeredBy: string | null;
 
+  @ApiProperty({ nullable: true, type: String })
+  label: string | null;
+
   @ApiProperty({ nullable: true, type: 'object', additionalProperties: true })
   params: Record<string, any> | null;
 
@@ -165,6 +168,9 @@ export class RunDetailDto implements RunDetail {
 
   @ApiProperty({ nullable: true, type: String })
   triggeredBy: string | null;
+
+  @ApiProperty({ nullable: true, type: String })
+  label: string | null;
 
   @ApiProperty({ nullable: true, type: 'object', additionalProperties: true })
   params: Record<string, any> | null;

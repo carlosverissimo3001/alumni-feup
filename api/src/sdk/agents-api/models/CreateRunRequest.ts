@@ -57,6 +57,12 @@ export interface CreateRunRequest {
      * @memberof CreateRunRequest
      */
     triggeredBy?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof CreateRunRequest
+     */
+    label?: string | null;
 }
 
 
@@ -83,6 +89,7 @@ export function CreateRunRequestFromJSONTyped(json: any, ignoreDiscriminator: bo
         'failureThreshold': json['failure_threshold'] == null ? undefined : json['failure_threshold'],
         'triggerSource': json['trigger_source'] == null ? undefined : PipelineTriggerFromJSON(json['trigger_source']),
         'triggeredBy': json['triggered_by'] == null ? undefined : json['triggered_by'],
+        'label': json['label'] == null ? undefined : json['label'],
     };
 }
 
@@ -102,6 +109,7 @@ export function CreateRunRequestToJSONTyped(value?: CreateRunRequest | null, ign
         'failure_threshold': value['failureThreshold'],
         'trigger_source': PipelineTriggerToJSON(value['triggerSource']),
         'triggered_by': value['triggeredBy'],
+        'label': value['label'],
     };
 }
 

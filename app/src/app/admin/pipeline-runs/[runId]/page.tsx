@@ -122,6 +122,7 @@ const PipelineRunDetailPage = () => {
           <div className="flex items-center justify-between gap-4">
             <h1 className="text-2xl font-bold tracking-tight">
               {run.kind ? formatEnumLabel(run.kind) : "Pipeline Run"}
+              {run.label && <span className="text-muted-foreground"> · {run.label}</span>}
             </h1>
             {isPolling && (
               <RefreshIndicator

@@ -73,6 +73,10 @@ def _summary(run: PipelineRun, counts: dict) -> RunSummary:
         status=run.status,
         trigger_source=run.trigger_source,
         triggered_by=run.triggered_by,
+        # No dedicated column for this - it rides along in params (the only
+        # CreateRunRequest field kept there on purpose) and is pulled back out
+        # here rather than parsed by every caller of RunSummary.
+        label=(run.params or {}).get("label"),
         params=run.params,
         created_at=run.created_at,
         started_at=run.started_at,
