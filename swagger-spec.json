@@ -1036,6 +1036,190 @@
         ]
       }
     },
+    "/admin/pipelines/runs": {
+      "get": {
+        "operationId": "PipelinesController_listRuns",
+        "parameters": [
+          {
+            "name": "kind",
+            "required": false,
+            "in": "query",
+            "description": "Filter by pipeline kind",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "REFRESH_EXISTING",
+                "INGEST_COHORT"
+              ]
+            }
+          },
+          {
+            "name": "status",
+            "required": false,
+            "in": "query",
+            "description": "Filter by run status",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "PLANNING",
+                "PLANNED",
+                "RUNNING",
+                "COMPLETED",
+                "FAILED",
+                "CANCELLED"
+              ]
+            }
+          },
+          {
+            "name": "cursor",
+            "required": false,
+            "in": "query",
+            "description": "Pagination cursor",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Max number of items to return",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A page of pipeline runs",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PageRunSummaryDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "List pipeline runs",
+        "tags": [
+          "V1"
+        ]
+      }
+    },
+    "/admin/pipelines/runs/{runId}": {
+      "get": {
+        "operationId": "PipelinesController_getRun",
+        "parameters": [
+          {
+            "name": "runId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The pipeline run detail",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RunDetailDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Get a pipeline run, including its stages",
+        "tags": [
+          "V1"
+        ]
+      }
+    },
+    "/admin/pipelines/runs/{runId}/tasks": {
+      "get": {
+        "operationId": "PipelinesController_listRunTasks",
+        "parameters": [
+          {
+            "name": "runId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "required": false,
+            "in": "query",
+            "description": "Filter by task status",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "QUEUED",
+                "RUNNING",
+                "SUCCEEDED",
+                "FAILED",
+                "SKIPPED"
+              ]
+            }
+          },
+          {
+            "name": "stage",
+            "required": false,
+            "in": "query",
+            "description": "Filter by stage",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "PLAN",
+                "LINKEDIN",
+                "COMPANY",
+                "CLASSIFY_ROLES",
+                "SENIORITY",
+                "LOCATION"
+              ]
+            }
+          },
+          {
+            "name": "cursor",
+            "required": false,
+            "in": "query",
+            "description": "Pagination cursor",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Max number of items to return",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A page of pipeline run tasks",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PageTaskSummaryDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "List the tasks of a pipeline run",
+        "tags": [
+          "V1"
+        ]
+      }
+    },
     "/analytics/companies/{id}": {
       "get": {
         "operationId": "CompanyAnalyticsController_getCompanyDetails",
@@ -3601,6 +3785,361 @@
         "required": [
           "shouldHide",
           "id"
+        ]
+      },
+      "TaskCountsOutDto": {
+        "type": "object",
+        "properties": {
+          "total": {
+            "type": "number"
+          },
+          "succeeded": {
+            "type": "number"
+          },
+          "failed": {
+            "type": "number"
+          },
+          "skipped": {
+            "type": "number"
+          },
+          "pending": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "total",
+          "succeeded",
+          "failed",
+          "skipped",
+          "pending"
+        ]
+      },
+      "RunSummaryDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "REFRESH_EXISTING",
+              "INGEST_COHORT"
+            ],
+            "nullable": true
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "PLANNING",
+              "PLANNED",
+              "RUNNING",
+              "COMPLETED",
+              "FAILED",
+              "CANCELLED"
+            ]
+          },
+          "triggerSource": {
+            "type": "string",
+            "enum": [
+              "ADMIN_UI",
+              "API",
+              "SCHEDULE"
+            ]
+          },
+          "triggeredBy": {
+            "type": "string",
+            "nullable": true
+          },
+          "params": {
+            "type": "object",
+            "nullable": true,
+            "additionalProperties": true
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "startedAt": {
+            "format": "date-time",
+            "type": "string",
+            "nullable": true
+          },
+          "finishedAt": {
+            "format": "date-time",
+            "type": "string",
+            "nullable": true
+          },
+          "error": {
+            "type": "string",
+            "nullable": true
+          },
+          "counts": {
+            "$ref": "#/components/schemas/TaskCountsOutDto"
+          }
+        },
+        "required": [
+          "id",
+          "kind",
+          "status",
+          "triggerSource",
+          "triggeredBy",
+          "params",
+          "createdAt",
+          "startedAt",
+          "finishedAt",
+          "error",
+          "counts"
+        ]
+      },
+      "PageRunSummaryDto": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RunSummaryDto"
+            }
+          },
+          "nextCursor": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "required": [
+          "items"
+        ]
+      },
+      "StageSummaryDto": {
+        "type": "object",
+        "properties": {
+          "stage": {
+            "type": "string",
+            "enum": [
+              "PLAN",
+              "LINKEDIN",
+              "COMPANY",
+              "CLASSIFY_ROLES",
+              "SENIORITY",
+              "LOCATION"
+            ]
+          },
+          "sequence": {
+            "type": "number"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "PENDING",
+              "RUNNING",
+              "COMPLETED",
+              "FAILED",
+              "SKIPPED"
+            ]
+          },
+          "totalCount": {
+            "type": "number"
+          },
+          "succeededCount": {
+            "type": "number"
+          },
+          "failedCount": {
+            "type": "number"
+          },
+          "skippedCount": {
+            "type": "number"
+          },
+          "startedAt": {
+            "format": "date-time",
+            "type": "string",
+            "nullable": true
+          },
+          "finishedAt": {
+            "format": "date-time",
+            "type": "string",
+            "nullable": true
+          },
+          "error": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "required": [
+          "stage",
+          "sequence",
+          "status",
+          "totalCount",
+          "succeededCount",
+          "failedCount",
+          "skippedCount",
+          "startedAt",
+          "finishedAt",
+          "error"
+        ]
+      },
+      "RunDetailDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "REFRESH_EXISTING",
+              "INGEST_COHORT"
+            ]
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "PLANNING",
+              "PLANNED",
+              "RUNNING",
+              "COMPLETED",
+              "FAILED",
+              "CANCELLED"
+            ]
+          },
+          "triggerSource": {
+            "type": "string",
+            "enum": [
+              "ADMIN_UI",
+              "API",
+              "SCHEDULE"
+            ]
+          },
+          "triggeredBy": {
+            "type": "string",
+            "nullable": true
+          },
+          "params": {
+            "type": "object",
+            "nullable": true,
+            "additionalProperties": true
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "startedAt": {
+            "format": "date-time",
+            "type": "string",
+            "nullable": true
+          },
+          "finishedAt": {
+            "format": "date-time",
+            "type": "string",
+            "nullable": true
+          },
+          "error": {
+            "type": "string",
+            "nullable": true
+          },
+          "counts": {
+            "$ref": "#/components/schemas/TaskCountsOutDto"
+          },
+          "stages": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/StageSummaryDto"
+            }
+          }
+        },
+        "required": [
+          "id",
+          "kind",
+          "status",
+          "triggerSource",
+          "triggeredBy",
+          "params",
+          "createdAt",
+          "startedAt",
+          "finishedAt",
+          "error",
+          "counts",
+          "stages"
+        ]
+      },
+      "TaskSummaryDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "entityType": {
+            "type": "string",
+            "enum": [
+              "ALUMNI",
+              "ROLE",
+              "COMPANY",
+              "LOCATION"
+            ]
+          },
+          "entityId": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "QUEUED",
+              "RUNNING",
+              "SUCCEEDED",
+              "FAILED",
+              "SKIPPED"
+            ]
+          },
+          "attempts": {
+            "type": "number"
+          },
+          "error": {
+            "type": "string",
+            "nullable": true
+          },
+          "result": {
+            "type": "object",
+            "nullable": true,
+            "additionalProperties": true
+          },
+          "startedAt": {
+            "format": "date-time",
+            "type": "string",
+            "nullable": true
+          },
+          "finishedAt": {
+            "format": "date-time",
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "required": [
+          "id",
+          "entityType",
+          "entityId",
+          "status",
+          "attempts",
+          "error",
+          "result",
+          "startedAt",
+          "finishedAt"
+        ]
+      },
+      "PageTaskSummaryDto": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TaskSummaryDto"
+            }
+          },
+          "nextCursor": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "required": [
+          "items"
         ]
       },
       "COMPANY_SIZE": {

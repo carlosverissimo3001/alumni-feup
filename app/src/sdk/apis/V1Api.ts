@@ -40,10 +40,13 @@ import type {
   MarkAsReviewedDto,
   MergeCompaniesDto,
   MergeLocationsDto,
+  PageRunSummaryDto,
+  PageTaskSummaryDto,
   PendingProfileDto,
   ReviewGeoJSONFeatureCollection,
   RoleAnalyticsEntity,
   RoleHierarchyDto,
+  RunDetailDto,
   SendFeedbackDto,
   UpdateClassificationDto,
   UpdateRoleVisibilityDto,
@@ -106,6 +109,10 @@ import {
     MergeCompaniesDtoToJSON,
     MergeLocationsDtoFromJSON,
     MergeLocationsDtoToJSON,
+    PageRunSummaryDtoFromJSON,
+    PageRunSummaryDtoToJSON,
+    PageTaskSummaryDtoFromJSON,
+    PageTaskSummaryDtoToJSON,
     PendingProfileDtoFromJSON,
     PendingProfileDtoToJSON,
     ReviewGeoJSONFeatureCollectionFromJSON,
@@ -114,6 +121,8 @@ import {
     RoleAnalyticsEntityToJSON,
     RoleHierarchyDtoFromJSON,
     RoleHierarchyDtoToJSON,
+    RunDetailDtoFromJSON,
+    RunDetailDtoToJSON,
     SendFeedbackDtoFromJSON,
     SendFeedbackDtoToJSON,
     UpdateClassificationDtoFromJSON,
@@ -300,6 +309,25 @@ export interface FileUploadControllerCreateRequest {
 export interface LinkedinOAuthControllerCallbackRequest {
     code: string;
     state: string;
+}
+
+export interface PipelinesControllerGetRunRequest {
+    runId: string;
+}
+
+export interface PipelinesControllerListRunTasksRequest {
+    runId: string;
+    status?: PipelinesControllerListRunTasksStatusEnum;
+    stage?: PipelinesControllerListRunTasksStageEnum;
+    cursor?: string;
+    limit?: number;
+}
+
+export interface PipelinesControllerListRunsRequest {
+    kind?: PipelinesControllerListRunsKindEnum;
+    status?: PipelinesControllerListRunsStatusEnum;
+    cursor?: string;
+    limit?: number;
 }
 
 export interface ReviewControllerChangeScoreRequest {
@@ -2322,6 +2350,165 @@ export class V1Api extends runtime.BaseAPI {
     }
 
     /**
+     * Creates request options for pipelinesControllerGetRun without sending the request
+     */
+    async pipelinesControllerGetRunRequestOpts(requestParameters: PipelinesControllerGetRunRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['runId'] == null) {
+            throw new runtime.RequiredError(
+                'runId',
+                'Required parameter "runId" was null or undefined when calling pipelinesControllerGetRun().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+
+        let urlPath = `/admin/pipelines/runs/{runId}`;
+        urlPath = urlPath.replace(`{${"runId"}}`, encodeURIComponent(String(requestParameters['runId'])));
+
+        return {
+            path: urlPath,
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * Get a pipeline run, including its stages
+     */
+    async pipelinesControllerGetRunRaw(requestParameters: PipelinesControllerGetRunRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<RunDetailDto>> {
+        const requestOptions = await this.pipelinesControllerGetRunRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => RunDetailDtoFromJSON(jsonValue));
+    }
+
+    /**
+     * Get a pipeline run, including its stages
+     */
+    async pipelinesControllerGetRun(requestParameters: PipelinesControllerGetRunRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<RunDetailDto> {
+        const response = await this.pipelinesControllerGetRunRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for pipelinesControllerListRunTasks without sending the request
+     */
+    async pipelinesControllerListRunTasksRequestOpts(requestParameters: PipelinesControllerListRunTasksRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['runId'] == null) {
+            throw new runtime.RequiredError(
+                'runId',
+                'Required parameter "runId" was null or undefined when calling pipelinesControllerListRunTasks().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        if (requestParameters['status'] != null) {
+            queryParameters['status'] = requestParameters['status'];
+        }
+
+        if (requestParameters['stage'] != null) {
+            queryParameters['stage'] = requestParameters['stage'];
+        }
+
+        if (requestParameters['cursor'] != null) {
+            queryParameters['cursor'] = requestParameters['cursor'];
+        }
+
+        if (requestParameters['limit'] != null) {
+            queryParameters['limit'] = requestParameters['limit'];
+        }
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+
+        let urlPath = `/admin/pipelines/runs/{runId}/tasks`;
+        urlPath = urlPath.replace(`{${"runId"}}`, encodeURIComponent(String(requestParameters['runId'])));
+
+        return {
+            path: urlPath,
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * List the tasks of a pipeline run
+     */
+    async pipelinesControllerListRunTasksRaw(requestParameters: PipelinesControllerListRunTasksRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PageTaskSummaryDto>> {
+        const requestOptions = await this.pipelinesControllerListRunTasksRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => PageTaskSummaryDtoFromJSON(jsonValue));
+    }
+
+    /**
+     * List the tasks of a pipeline run
+     */
+    async pipelinesControllerListRunTasks(requestParameters: PipelinesControllerListRunTasksRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PageTaskSummaryDto> {
+        const response = await this.pipelinesControllerListRunTasksRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for pipelinesControllerListRuns without sending the request
+     */
+    async pipelinesControllerListRunsRequestOpts(requestParameters: PipelinesControllerListRunsRequest): Promise<runtime.RequestOpts> {
+        const queryParameters: any = {};
+
+        if (requestParameters['kind'] != null) {
+            queryParameters['kind'] = requestParameters['kind'];
+        }
+
+        if (requestParameters['status'] != null) {
+            queryParameters['status'] = requestParameters['status'];
+        }
+
+        if (requestParameters['cursor'] != null) {
+            queryParameters['cursor'] = requestParameters['cursor'];
+        }
+
+        if (requestParameters['limit'] != null) {
+            queryParameters['limit'] = requestParameters['limit'];
+        }
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+
+        let urlPath = `/admin/pipelines/runs`;
+
+        return {
+            path: urlPath,
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * List pipeline runs
+     */
+    async pipelinesControllerListRunsRaw(requestParameters: PipelinesControllerListRunsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PageRunSummaryDto>> {
+        const requestOptions = await this.pipelinesControllerListRunsRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => PageRunSummaryDtoFromJSON(jsonValue));
+    }
+
+    /**
+     * List pipeline runs
+     */
+    async pipelinesControllerListRuns(requestParameters: PipelinesControllerListRunsRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PageRunSummaryDto> {
+        const response = await this.pipelinesControllerListRunsRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
      * Creates request options for reviewControllerChangeScore without sending the request
      */
     async reviewControllerChangeScoreRequestOpts(requestParameters: ReviewControllerChangeScoreRequest): Promise<runtime.RequestOpts> {
@@ -2942,6 +3129,49 @@ export const AnalyticsControllerGetOptionsSelectorTypeEnum = {
     Seniority: 'SENIORITY'
 } as const;
 export type AnalyticsControllerGetOptionsSelectorTypeEnum = typeof AnalyticsControllerGetOptionsSelectorTypeEnum[keyof typeof AnalyticsControllerGetOptionsSelectorTypeEnum];
+/**
+ * @export
+ */
+export const PipelinesControllerListRunTasksStatusEnum = {
+    Queued: 'QUEUED',
+    Running: 'RUNNING',
+    Succeeded: 'SUCCEEDED',
+    Failed: 'FAILED',
+    Skipped: 'SKIPPED'
+} as const;
+export type PipelinesControllerListRunTasksStatusEnum = typeof PipelinesControllerListRunTasksStatusEnum[keyof typeof PipelinesControllerListRunTasksStatusEnum];
+/**
+ * @export
+ */
+export const PipelinesControllerListRunTasksStageEnum = {
+    Plan: 'PLAN',
+    Linkedin: 'LINKEDIN',
+    Company: 'COMPANY',
+    ClassifyRoles: 'CLASSIFY_ROLES',
+    Seniority: 'SENIORITY',
+    Location: 'LOCATION'
+} as const;
+export type PipelinesControllerListRunTasksStageEnum = typeof PipelinesControllerListRunTasksStageEnum[keyof typeof PipelinesControllerListRunTasksStageEnum];
+/**
+ * @export
+ */
+export const PipelinesControllerListRunsKindEnum = {
+    RefreshExisting: 'REFRESH_EXISTING',
+    IngestCohort: 'INGEST_COHORT'
+} as const;
+export type PipelinesControllerListRunsKindEnum = typeof PipelinesControllerListRunsKindEnum[keyof typeof PipelinesControllerListRunsKindEnum];
+/**
+ * @export
+ */
+export const PipelinesControllerListRunsStatusEnum = {
+    Planning: 'PLANNING',
+    Planned: 'PLANNED',
+    Running: 'RUNNING',
+    Completed: 'COMPLETED',
+    Failed: 'FAILED',
+    Cancelled: 'CANCELLED'
+} as const;
+export type PipelinesControllerListRunsStatusEnum = typeof PipelinesControllerListRunsStatusEnum[keyof typeof PipelinesControllerListRunsStatusEnum];
 /**
  * @export
  */

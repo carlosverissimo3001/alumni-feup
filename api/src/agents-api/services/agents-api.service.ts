@@ -3,11 +3,24 @@ import { Injectable } from '@nestjs/common';
 import { HttpException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { LINKEDIN_OPERATION } from '@/consts';
-import { Configuration, LinkedInApi, ResponseError } from '@/sdk/agents-api';
+import {
+  Configuration,
+  LinkedInApi,
+  PageRunSummary,
+  PageTaskSummary,
+  PipelineKind,
+  PipelineRunStatus,
+  PipelineStageName,
+  PipelineTaskStatus,
+  PipelinesApi,
+  ResponseError,
+  RunDetail,
+} from '@/sdk/agents-api';
 
 @Injectable()
 export class AgentsApiService {
   private readonly linkedInApi: LinkedInApi;
+  private readonly pipelinesApi: PipelinesApi;
 
   constructor(
     private readonly prisma: PrismaService,
@@ -17,14 +30,15 @@ export class AgentsApiService {
       this.configService.get<string>('AGENTS_API_URL') ||
       'http://localhost:8000';
 
-    this.linkedInApi = new LinkedInApi(
-      new Configuration({
-        basePath: agentsApiUrl,
-        headers: {
-          'X-API-Key': this.configService.get<string>('AGENTS_API_KEY') ?? '',
-        },
-      }),
-    );
+    const configuration = new Configuration({
+      basePath: agentsApiUrl,
+      headers: {
+        'X-API-Key': this.configService.get<string>('AGENTS_API_KEY') ?? '',
+      },
+    });
+
+    this.linkedInApi = new LinkedInApi(configuration);
+    this.pipelinesApi = new PipelinesApi(configuration);
   }
 
   /**
@@ -59,5 +73,78 @@ export class AgentsApiService {
       const message = error instanceof Error ? error.message : 'Unknown error';
       throw new HttpException(`Failed to ${operation}: ${message}`, 500);
     }
+  }
+
+  /**
+   * Lists pipeline runs, optionally filtered by kind/status, cursor-paginated
+   */
+  async listPipelineRuns(params: {
+    kind?: PipelineKind;
+    status?: PipelineRunStatus;
+    cursor?: string;
+    limit?: number;
+  }): Promise<PageRunSummary> {
+    try {
+      return await this.pipelinesApi.listRunsApiPipelinesRunsGet({
+        kind: params.kind,
+        status: params.status,
+        cursor: params.cursor,
+        limit: params.limit,
+      });
+    } catch (error: unknown) {
+      this.handlePipelinesError('list pipeline runs', error);
+    }
+  }
+
+  /**
+   * Gets the detail of a single pipeline run, including its stages
+   */
+  async getPipelineRun(runId: string): Promise<RunDetail> {
+    try {
+      return await this.pipelinesApi.getRunApiPipelinesRunsRunIdGet({ runId });
+    } catch (error: unknown) {
+      this.handlePipelinesError('get pipeline run', error);
+    }
+  }
+
+  /**
+   * Lists the tasks of a pipeline run, optionally filtered by status/stage, cursor-paginated
+   */
+  async listPipelineRunTasks(
+    runId: string,
+    params: {
+      status?: PipelineTaskStatus;
+      stage?: PipelineStageName;
+      cursor?: string;
+      limit?: number;
+    },
+  ): Promise<PageTaskSummary> {
+    try {
+      return await this.pipelinesApi.listRunTasksApiPipelinesRunsRunIdTasksGet(
+        {
+          runId,
+          status: params.status,
+          stage: params.stage,
+          cursor: params.cursor,
+          limit: params.limit,
+        },
+      );
+    } catch (error: unknown) {
+      this.handlePipelinesError('list pipeline run tasks', error);
+    }
+  }
+
+  // Mirrors the ResponseError-vs-generic-Error handling in triggerLinkedinOperation above;
+  // always throws, so callers rely on TS's control-flow narrowing after calling it.
+  private handlePipelinesError(action: string, error: unknown): never {
+    console.error(`Error calling the API to ${action}:`, error);
+    if (error instanceof ResponseError) {
+      throw new HttpException(
+        `Failed to ${action}: ${error.response.statusText || 'Unknown error'}`,
+        error.response.status,
+      );
+    }
+    const message = error instanceof Error ? error.message : 'Unknown error';
+    throw new HttpException(`Failed to ${action}: ${message}`, 500);
   }
 }
