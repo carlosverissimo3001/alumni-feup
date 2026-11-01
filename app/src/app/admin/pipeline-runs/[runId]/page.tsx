@@ -18,6 +18,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetDescription,
+} from "@/components/ui/sheet";
 import { AdminBackLink } from "@/components/admin/adminBackLink";
 import { RefreshIndicator } from "@/components/admin/pipelines/refreshIndicator";
 import { useGetPipelineRun } from "@/hooks/pipelines/useGetPipelineRun";
@@ -26,6 +33,7 @@ import {
   PipelinesControllerListRunTasksStageEnum,
   PipelinesControllerListRunTasksStatusEnum,
   RunDetailDtoStatusEnum,
+  TaskSummaryDto,
 } from "@/sdk";
 import {
   formatDateTime,
@@ -51,6 +59,7 @@ const PipelineRunDetailPage = () => {
   const [taskStatus, setTaskStatus] = useState<string>("all");
   const [taskStage, setTaskStage] = useState<string>("all");
   const [cursors, setCursors] = useState<string[]>([]);
+  const [selectedTask, setSelectedTask] = useState<TaskSummaryDto | null>(null);
 
   const {
     data: run,
@@ -263,6 +272,9 @@ const PipelineRunDetailPage = () => {
                     <thead className="sticky top-0 z-10">
                       <tr className="border-b bg-gray-50">
                         <th className="text-left py-2 px-3 text-[#8C2D19] text-sm">
+                          Stage
+                        </th>
+                        <th className="text-left py-2 px-3 text-[#8C2D19] text-sm">
                           Entity
                         </th>
                         <th className="text-left py-2 px-3 text-[#8C2D19] text-sm">
@@ -283,8 +295,12 @@ const PipelineRunDetailPage = () => {
                       {tasks.map((task) => (
                         <tr
                           key={task.id}
-                          className="border-b hover:bg-gray-50 transition-colors duration-200"
+                          className="border-b hover:bg-gray-50 transition-colors duration-200 cursor-pointer"
+                          onClick={() => setSelectedTask(task)}
                         >
+                          <td className="py-2 px-3 text-gray-700 text-sm">
+                            {formatEnumLabel(task.stage)}
+                          </td>
                           <td className="py-2 px-3 text-gray-700 text-sm font-mono">
                             {formatEnumLabel(task.entityType)} · {task.entityId}
                           </td>
@@ -332,6 +348,68 @@ const PipelineRunDetailPage = () => {
           </CardContent>
         </Card>
       </div>
+
+      <Sheet
+        open={!!selectedTask}
+        onOpenChange={(open) => !open && setSelectedTask(null)}
+      >
+        <SheetContent className="w-full sm:max-w-lg overflow-y-auto">
+          {selectedTask && (
+            <>
+              <SheetHeader>
+                <SheetTitle>
+                  {formatEnumLabel(selectedTask.entityType)} · {selectedTask.entityId}
+                </SheetTitle>
+                <SheetDescription className="font-mono text-xs">
+                  {selectedTask.id}
+                </SheetDescription>
+              </SheetHeader>
+              <div className="mt-6 space-y-4 text-sm">
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <p className="text-muted-foreground">Stage</p>
+                    <p className="font-medium">{formatEnumLabel(selectedTask.stage)}</p>
+                  </div>
+                  <div>
+                    <p className="text-muted-foreground">Status</p>
+                    <Badge className={statusBadgeClassName(selectedTask.status)}>
+                      {formatEnumLabel(selectedTask.status)}
+                    </Badge>
+                  </div>
+                  <div>
+                    <p className="text-muted-foreground">Attempts</p>
+                    <p className="font-medium">{selectedTask.attempts}</p>
+                  </div>
+                  <div>
+                    <p className="text-muted-foreground">Started</p>
+                    <p className="font-medium">{formatDateTime(selectedTask.startedAt)}</p>
+                  </div>
+                  <div>
+                    <p className="text-muted-foreground">Finished</p>
+                    <p className="font-medium">{formatDateTime(selectedTask.finishedAt)}</p>
+                  </div>
+                </div>
+                {selectedTask.error && (
+                  <div>
+                    <p className="text-muted-foreground mb-1">Error</p>
+                    <pre className="whitespace-pre-wrap break-words text-red-700 bg-red-50 border border-red-200 rounded-md px-3 py-2 text-xs">
+                      {selectedTask.error}
+                    </pre>
+                  </div>
+                )}
+                {selectedTask.result && (
+                  <div>
+                    <p className="text-muted-foreground mb-1">Result</p>
+                    <pre className="whitespace-pre-wrap break-words bg-gray-50 border border-gray-200 rounded-md px-3 py-2 text-xs">
+                      {JSON.stringify(selectedTask.result, null, 2)}
+                    </pre>
+                  </div>
+                )}
+              </div>
+            </>
+          )}
+        </SheetContent>
+      </Sheet>
     </div>
   );
 };

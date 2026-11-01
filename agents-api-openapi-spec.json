@@ -1680,6 +1680,9 @@
             "type": "string",
             "title": "Id"
           },
+          "stage": {
+            "$ref": "#/components/schemas/PipelineStageName"
+          },
           "entity_type": {
             "$ref": "#/components/schemas/PipelineEntityType"
           },
@@ -1745,6 +1748,7 @@
         "type": "object",
         "required": [
           "id",
+          "stage",
           "entity_type",
           "entity_id",
           "status",

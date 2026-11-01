@@ -73,6 +73,7 @@ class RunDetail(RunSummary):
 
 class TaskSummary(BaseModel):
     id: str
+    stage: PipelineStageName
     entity_type: PipelineEntityType
     entity_id: str
     status: PipelineTaskStatus
