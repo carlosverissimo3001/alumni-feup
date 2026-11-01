@@ -62,14 +62,32 @@
 
 @layer base {
   html {
-    /* Reserves the vertical scrollbar's width always, instead of only
+    /* Reserves the vertical scrollbar's gutter always, instead of only
        when content is tall enough to need one - otherwise switching
        between a short and a tall view (e.g. admin's Faculty/Courses
        tabs), or opening a Radix dropdown that temporarily hides the
-       scrollbar, shifts the whole page's width. scrollbar-gutter only
-       applies to a non-"visible" overflow, which html isn't by default. */
+       scrollbar, shifts the whole page's width. overflow-y: auto +
+       scrollbar-gutter: stable does NOT reliably reserve the gutter on
+       the root <html> element in Chrome when there's nothing to scroll
+       (tested) - only overflow-y: scroll does. Styled thin/subtle below
+       so the always-present track doesn't look like a broken scrollbar
+       on pages with nothing to scroll. */
     overflow-y: scroll;
     scrollbar-gutter: stable;
+    scrollbar-width: thin; /* Firefox */
+  }
+  html::-webkit-scrollbar {
+    width: 8px;
+  }
+  html::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  html::-webkit-scrollbar-thumb {
+    background: hsl(var(--border));
+    border-radius: 9999px;
+  }
+  html::-webkit-scrollbar-thumb:hover {
+    background: hsl(var(--muted-foreground) / 0.4);
   }
   * {
     @apply border-border outline-ring/50;
