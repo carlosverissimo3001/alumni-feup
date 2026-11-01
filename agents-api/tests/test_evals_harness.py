@@ -78,16 +78,28 @@ def test_retrieval_report_computes_recall_and_skips_unlabeled_roles():
     }
     results = [
         RetrievalResult(
-            role_id="r1", acceptable_codes=["A"], ranked_codes=["A", "X"],
-            latency_s=0.1, embedding_cost_usd=0.0, embedding_cached=True,
+            role_id="r1",
+            acceptable_codes=["A"],
+            ranked_codes=["A", "X"],
+            latency_s=0.1,
+            embedding_cost_usd=0.0,
+            embedding_cached=True,
         ),
         RetrievalResult(
-            role_id="r2", acceptable_codes=["B"], ranked_codes=["X", "Y"],
-            latency_s=0.1, embedding_cost_usd=0.0, embedding_cached=True,
+            role_id="r2",
+            acceptable_codes=["B"],
+            ranked_codes=["X", "Y"],
+            latency_s=0.1,
+            embedding_cost_usd=0.0,
+            embedding_cached=True,
         ),
         RetrievalResult(
-            role_id="r3", acceptable_codes=[], ranked_codes=["X"],
-            latency_s=0.1, embedding_cost_usd=0.0, embedding_cached=True,
+            role_id="r3",
+            acceptable_codes=[],
+            ranked_codes=["X"],
+            latency_s=0.1,
+            embedding_cost_usd=0.0,
+            embedding_cached=True,
         ),
     ]
 
@@ -101,8 +113,11 @@ def test_retrieval_report_computes_recall_and_skips_unlabeled_roles():
 def test_judgment_report_flags_wrong_known_regression():
     fixtures_by_id = {
         "r041": _fixture(
-            id="r041", title="Investigadora", challenge_tags=["known_regression"],
-            acceptable_esco_codes=["2269.13"], acceptable_esco_titles=["Biomedical Scientist"],
+            id="r041",
+            title="Investigadora",
+            challenge_tags=["known_regression"],
+            acceptable_esco_codes=["2269.13"],
+            acceptable_esco_titles=["Biomedical Scientist"],
         ),
     }
     results = [
