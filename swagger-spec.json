@@ -4067,6 +4067,17 @@
           "id": {
             "type": "string"
           },
+          "stage": {
+            "type": "string",
+            "enum": [
+              "PLAN",
+              "LINKEDIN",
+              "COMPANY",
+              "CLASSIFY_ROLES",
+              "SENIORITY",
+              "LOCATION"
+            ]
+          },
           "entityType": {
             "type": "string",
             "enum": [
@@ -4114,6 +4125,7 @@
         },
         "required": [
           "id",
+          "stage",
           "entityType",
           "entityId",
           "status",

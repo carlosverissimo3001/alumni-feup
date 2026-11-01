@@ -12,6 +12,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { AdminBackLink } from "@/components/admin/adminBackLink";
+import { RefreshIndicator } from "@/components/admin/pipelines/refreshIndicator";
 import { useListPipelineRuns } from "@/hooks/pipelines/useListPipelineRuns";
 import {
   PipelinesControllerListRunsKindEnum,
@@ -32,7 +33,7 @@ const PipelineRunsPage = () => {
   const [kind, setKind] = useState<string>("all");
   const [status, setStatus] = useState<string>("all");
 
-  const { data: runs, isLoading } = useListPipelineRuns({
+  const { data: runs, isLoading, isFetching, isPolling, refetch } = useListPipelineRuns({
     params: {
       kind: kind === "all" ? undefined : (kind as PipelinesControllerListRunsKindEnum),
       status:
@@ -45,7 +46,16 @@ const PipelineRunsPage = () => {
       <div className="max-w-6xl mx-auto space-y-6">
         <div>
           <AdminBackLink href="/admin" className="mb-3" />
-          <h1 className="text-2xl font-bold tracking-tight">Pipeline Runs</h1>
+          <div className="flex items-center justify-between gap-4">
+            <h1 className="text-2xl font-bold tracking-tight">Pipeline Runs</h1>
+            {isPolling && (
+              <RefreshIndicator
+                intervalMs={5000}
+                onRefresh={refetch}
+                isRefreshing={isFetching}
+              />
+            )}
+          </div>
           <p className="text-sm text-muted-foreground">
             View-only: current and past alumni data pipeline runs.
           </p>

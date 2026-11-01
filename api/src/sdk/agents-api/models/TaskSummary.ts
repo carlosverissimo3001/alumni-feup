@@ -13,6 +13,13 @@
  */
 
 import { mapValues } from '../runtime';
+import type { PipelineStageName } from './PipelineStageName';
+import {
+    PipelineStageNameFromJSON,
+    PipelineStageNameFromJSONTyped,
+    PipelineStageNameToJSON,
+    PipelineStageNameToJSONTyped,
+} from './PipelineStageName';
 import type { PipelineTaskStatus } from './PipelineTaskStatus';
 import {
     PipelineTaskStatusFromJSON,
@@ -40,6 +47,12 @@ export interface TaskSummary {
      * @memberof TaskSummary
      */
     id: string;
+    /**
+     * 
+     * @type {PipelineStageName}
+     * @memberof TaskSummary
+     */
+    stage: PipelineStageName;
     /**
      * 
      * @type {PipelineEntityType}
@@ -97,6 +110,7 @@ export interface TaskSummary {
  */
 export function instanceOfTaskSummary(value: object): value is TaskSummary {
     if (!('id' in value) || value['id'] === undefined) return false;
+    if (!('stage' in value) || value['stage'] === undefined) return false;
     if (!('entityType' in value) || value['entityType'] === undefined) return false;
     if (!('entityId' in value) || value['entityId'] === undefined) return false;
     if (!('status' in value) || value['status'] === undefined) return false;
@@ -119,6 +133,7 @@ export function TaskSummaryFromJSONTyped(json: any, ignoreDiscriminator: boolean
     return {
         
         'id': json['id'],
+        'stage': PipelineStageNameFromJSON(json['stage']),
         'entityType': PipelineEntityTypeFromJSON(json['entity_type']),
         'entityId': json['entity_id'],
         'status': PipelineTaskStatusFromJSON(json['status']),
@@ -142,6 +157,7 @@ export function TaskSummaryToJSONTyped(value?: TaskSummary | null, ignoreDiscrim
     return {
         
         'id': value['id'],
+        'stage': PipelineStageNameToJSON(value['stage']),
         'entity_type': PipelineEntityTypeToJSON(value['entityType']),
         'entity_id': value['entityId'],
         'status': PipelineTaskStatusToJSON(value['status']),

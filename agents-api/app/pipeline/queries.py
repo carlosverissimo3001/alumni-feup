@@ -8,7 +8,7 @@ import logging
 from typing import List, Optional, Tuple
 
 from sqlalchemy import func
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 
 from app.db.models import PipelineRun, PipelineStage, PipelineTask
 from app.pipeline.cursor import Cursor, encode_cursor
@@ -73,6 +73,7 @@ def list_tasks(
     query = (
         session.query(PipelineTask)
         .join(PipelineStage, PipelineTask.stage_id == PipelineStage.id)
+        .options(joinedload(PipelineTask.stage))
         .filter(PipelineStage.run_id == run_id)
     )
     if status is not None:

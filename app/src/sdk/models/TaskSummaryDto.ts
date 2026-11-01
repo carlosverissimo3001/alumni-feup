@@ -27,6 +27,12 @@ export interface TaskSummaryDto {
     id: string;
     /**
      * 
+     * @type {TaskSummaryDtoStageEnum}
+     * @memberof TaskSummaryDto
+     */
+    stage: TaskSummaryDtoStageEnum;
+    /**
+     * 
      * @type {TaskSummaryDtoEntityTypeEnum}
      * @memberof TaskSummaryDto
      */
@@ -79,6 +85,19 @@ export interface TaskSummaryDto {
 /**
  * @export
  */
+export const TaskSummaryDtoStageEnum = {
+    Plan: 'PLAN',
+    Linkedin: 'LINKEDIN',
+    Company: 'COMPANY',
+    ClassifyRoles: 'CLASSIFY_ROLES',
+    Seniority: 'SENIORITY',
+    Location: 'LOCATION'
+} as const;
+export type TaskSummaryDtoStageEnum = typeof TaskSummaryDtoStageEnum[keyof typeof TaskSummaryDtoStageEnum];
+
+/**
+ * @export
+ */
 export const TaskSummaryDtoEntityTypeEnum = {
     Alumni: 'ALUMNI',
     Role: 'ROLE',
@@ -105,6 +124,7 @@ export type TaskSummaryDtoStatusEnum = typeof TaskSummaryDtoStatusEnum[keyof typ
  */
 export function instanceOfTaskSummaryDto(value: object): value is TaskSummaryDto {
     if (!('id' in value) || value['id'] === undefined) return false;
+    if (!('stage' in value) || value['stage'] === undefined) return false;
     if (!('entityType' in value) || value['entityType'] === undefined) return false;
     if (!('entityId' in value) || value['entityId'] === undefined) return false;
     if (!('status' in value) || value['status'] === undefined) return false;
@@ -127,6 +147,7 @@ export function TaskSummaryDtoFromJSONTyped(json: any, ignoreDiscriminator: bool
     return {
         
         'id': json['id'],
+        'stage': json['stage'],
         'entityType': json['entityType'],
         'entityId': json['entityId'],
         'status': json['status'],
@@ -150,6 +171,7 @@ export function TaskSummaryDtoToJSONTyped(value?: TaskSummaryDto | null, ignoreD
     return {
         
         'id': value['id'],
+        'stage': value['stage'],
         'entityType': value['entityType'],
         'entityId': value['entityId'],
         'status': value['status'],

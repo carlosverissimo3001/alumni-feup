@@ -100,6 +100,7 @@ def _stage_summary(stage: PipelineStage) -> StageSummary:
 def _task_summary(task: PipelineTask) -> TaskSummary:
     return TaskSummary(
         id=task.id,
+        stage=task.stage.stage,
         entity_type=task.entity_type,
         entity_id=task.entity_id,
         status=task.status,

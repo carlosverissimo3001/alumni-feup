@@ -192,6 +192,9 @@ export class TaskSummaryDto implements TaskSummary {
   @ApiProperty()
   id: string;
 
+  @ApiProperty({ enum: PipelineStageName })
+  stage: PipelineStageName;
+
   @ApiProperty({ enum: PipelineEntityType })
   entityType: PipelineEntityType;
 
