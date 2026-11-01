@@ -61,6 +61,16 @@
 }
 
 @layer base {
+  html {
+    /* Reserves the vertical scrollbar's width always, instead of only
+       when content is tall enough to need one - otherwise switching
+       between a short and a tall view (e.g. admin's Faculty/Courses
+       tabs), or opening a Radix dropdown that temporarily hides the
+       scrollbar, shifts the whole page's width. scrollbar-gutter only
+       applies to a non-"visible" overflow, which html isn't by default. */
+    overflow-y: scroll;
+    scrollbar-gutter: stable;
+  }
   * {
     @apply border-border outline-ring/50;
   }
