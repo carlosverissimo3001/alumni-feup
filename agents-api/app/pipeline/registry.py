@@ -1,9 +1,8 @@
 """Which service each stage drives, and over which entities.
 
-CLASSIFY_ROLES (CAR-157), LINKEDIN, and LOCATION are converted. The other
-stages keep their existing coarse tasks until they are converted one at a time
-against a proven executor, so an unconverted stage is absent here rather than
-half-wired.
+CLASSIFY_ROLES (CAR-157), LINKEDIN, COMPANY, SENIORITY, and LOCATION are
+converted. PLAN remains on its old coarse task until CAR-158 lands, so an
+unconverted stage is absent here rather than half-wired.
 
 Services are imported inside the resolvers and handlers for the same reason
 app/tasks/pipeline.py does it: importing them at module scope drags langchain
@@ -42,21 +41,79 @@ def _resolve_alumni(session: Session, run: PipelineRun) -> List[str]:
 async def _extract_linkedin_profile(alumni_id: str) -> None:
     from app.services.linkedin import linkedin_service
 
-    # skip_followup_classification=True (CAR-474): CLASSIFY_ROLES below already
-    # classifies this alumnus explicitly right after, so the service's own
-    # internal background classification call would just be redundant LLM
     # spend. skip_followup_location=True for the same reason: LOCATION below
     # already resolves this alumnus explicitly, so the service's own internal
     # background location call would just double the LLM spend.
+    #
+    # skip_followup_company_extraction=True (CAR-477/478): COMPANY below
+    # already enriches every company this alumnus' roles reference, so the
+    # service's own internal background extraction call would double the
+    # (billed) BrightData calls for every pipeline-run-driven call. The
+    # standalone re-extract path has no such follow-up and keeps firing all
+    # three of these.
     await linkedin_service.extract_profile_data(
-        alumni_id, skip_followup_classification=True, skip_followup_location=True
+        alumni_id,
+        skip_followup_classification=True,
+        skip_followup_location=True,
+        skip_followup_company_extraction=True,
     )
 
 
 async def _classify_roles(alumni_id: str) -> None:
     from app.services.job_classification import job_classification_service
 
-    await job_classification_service.classify_roles_for_alumni(alumni_id)
+    # skip_followup_seniority=True: SENIORITY below already classifies this
+    # alumnus explicitly right after, so the service's own internal
+    # background seniority call would just be redundant LLM spend.
+    await job_classification_service.classify_roles_for_alumni(
+        alumni_id, skip_followup_seniority=True
+    )
+
+
+async def _classify_seniority(alumni_id: str) -> None:
+    from app.schemas.seniority import AlumniSeniorityParams
+    from app.services.seniority import seniority_service
+
+    await seniority_service.request_alumni_seniority(AlumniSeniorityParams(alumni_ids=alumni_id))
+
+
+def _resolve_companies(session: Session, run: PipelineRun) -> List[str]:
+    """The companies this run covers: those linked to its alumni's roles that
+    aren't enriched yet.
+
+    Scoped to this run's alumni (not every unenriched company in the
+    database) for the same reason _resolve_alumni is scoped - see CAR-465.
+    A company can be referenced by multiple alumni's roles; dedup by id.
+    """
+    from app.db.models import Company, Role
+
+    alumni_ids = _resolve_alumni(session, run)
+    company_ids = (
+        session.query(Role.company_id)
+        .join(Company, Role.company_id == Company.id)
+        .filter(Role.alumni_id.in_(alumni_ids), Company.enriched_at.is_(None))
+        .distinct()
+        .all()
+    )
+    return sorted({row[0] for row in company_ids})
+
+
+async def _extract_company(company_id: str) -> None:
+    from app.db.session import session_scope
+    from app.services.company import company_service
+    from app.utils.company_db import get_company_by_id
+
+    # Session held for the lookup only, mirroring _extract_linkedin_profile's
+    # alumni lookup above: the handler is given just an entity_id by the
+    # executor (see executor.py's StageSpec.handle), so it opens its own
+    # session to resolve the company's linkedin_url before the network call.
+    with session_scope() as db:
+        db_company = get_company_by_id(company_id, db)
+        if not db_company or not db_company.linkedin_url:
+            return
+        company_url = db_company.linkedin_url
+
+    await company_service.extract_company_data(company_url, company_id)
 
 
 async def _resolve_location(alumni_id: str) -> None:
@@ -71,10 +128,20 @@ STAGES: Dict[PipelineStageName, StageSpec] = {
         resolve=_resolve_alumni,
         handle=_extract_linkedin_profile,
     ),
+    PipelineStageName.COMPANY: StageSpec(
+        entity_type=PipelineEntityType.COMPANY,
+        resolve=_resolve_companies,
+        handle=_extract_company,
+    ),
     PipelineStageName.CLASSIFY_ROLES: StageSpec(
         entity_type=PipelineEntityType.ALUMNI,
         resolve=_resolve_alumni,
         handle=_classify_roles,
+    ),
+    PipelineStageName.SENIORITY: StageSpec(
+        entity_type=PipelineEntityType.ALUMNI,
+        resolve=_resolve_alumni,
+        handle=_classify_seniority,
     ),
     PipelineStageName.LOCATION: StageSpec(
         entity_type=PipelineEntityType.ALUMNI,

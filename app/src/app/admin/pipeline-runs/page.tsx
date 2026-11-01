@@ -101,7 +101,7 @@ const PipelineRunsPage = () => {
                 <div className="h-8 w-8 animate-spin rounded-full border-4 border-[#8C2D19] border-t-transparent" />
               </div>
             ) : runs && runs.length > 0 ? (
-              <div className="overflow-x-auto overflow-y-auto max-h-[500px]">
+              <div className="overflow-x-auto overflow-y-auto max-h-[500px] scrollbar-thin">
                 <table className="w-full">
                   <thead className="sticky top-0 z-10">
                     <tr className="border-b bg-gray-50">

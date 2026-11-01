@@ -272,7 +272,10 @@ class JobClassificationAgent:
         return outcomes
 
     async def _process_roles_batch(
-        self, roles: List[JobClassificationRoleInput], alumni_id: str
+        self,
+        roles: List[JobClassificationRoleInput],
+        alumni_id: str,
+        skip_followup_seniority: bool = False,
     ) -> List[JobClassificationAgentState]:
         states = [
             JobClassificationAgentState(
@@ -294,10 +297,16 @@ class JobClassificationAgent:
         states = await self.validate_esco_results_batch(states)
         await self.batch_update_classifications(states)
 
-        # Let the seniority agent handle the rest of the workload
-        asyncio.create_task(
-            seniority_service.request_alumni_seniority(AlumniSeniorityParams(alumni_ids=alumni_id))
-        )
+        # Let the seniority agent handle the rest of the workload.
+        # Skipped when the caller already runs seniority classification
+        # explicitly right after (e.g. the pipeline's SENIORITY stage) -
+        # firing this too would just classify seniority twice.
+        if not skip_followup_seniority:
+            asyncio.create_task(
+                seniority_service.request_alumni_seniority(
+                    AlumniSeniorityParams(alumni_ids=alumni_id)
+                )
+            )
 
         return states
 

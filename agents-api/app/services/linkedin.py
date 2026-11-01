@@ -86,6 +86,7 @@ class LinkedInService:
         alumni_id: str,
         skip_followup_classification: bool = False,
         skip_followup_location: bool = False,
+        skip_followup_company_extraction: bool = False,
     ):
         """
         Extract data from a LinkedIn profile URL.
@@ -103,6 +104,12 @@ class LinkedInService:
                 stage), so the background location call this method would
                 otherwise fire is redundant. The standalone extraction path has
                 no such follow-up and keeps the default.
+            skip_followup_company_extraction: True when the caller already
+                runs company enrichment explicitly right after (e.g. the
+                pipeline's COMPANY stage), so the background BrightData
+                extraction this method would otherwise fire for each
+                newly-seen company is redundant, billed, work. The standalone
+                extraction path has no such follow-up and keeps the default.
 
         """
         # logger.info(f"Extracting LinkedIn data for {alumni_id}")
@@ -137,6 +144,7 @@ class LinkedInService:
                 alumni_id,
                 skip_followup_classification=skip_followup_classification,
                 skip_followup_location=skip_followup_location,
+                skip_followup_company_extraction=skip_followup_company_extraction,
             )
 
         except Exception as e:
@@ -149,6 +157,7 @@ class LinkedInService:
         alumni_id: str,
         skip_followup_classification: bool = False,
         skip_followup_location: bool = False,
+        skip_followup_company_extraction: bool = False,
     ) -> None:
         # Uploading to Cloudinary needs no session, so it happens before one is
         # opened rather than holding a pool connection during the upload.
@@ -162,7 +171,13 @@ class LinkedInService:
         # created and written here, so they stay attached to the session that
         # persists them.
         with session_scope() as db:
-            await self._persist_profile_data(profile_data, alumni_id, profile_picture_url, db)
+            await self._persist_profile_data(
+                profile_data,
+                alumni_id,
+                profile_picture_url,
+                db,
+                skip_followup_company_extraction=skip_followup_company_extraction,
+            )
 
         # Offloaded after the session closes - these are fire-and-forget and
         # must not hold a connection.
@@ -189,6 +204,7 @@ class LinkedInService:
         alumni_id: str,
         profile_picture_url: Optional[str],
         db: Session,
+        skip_followup_company_extraction: bool = False,
     ) -> None:
         # First, let's parse the roles, to understand if we need to extract company data
         for role in profile_data.experiences:
@@ -213,10 +229,15 @@ class LinkedInService:
                     )
                     company_id = db_company.id
 
-                    # Let's offload the company extraction to a background task
-                    self._create_background_task(
-                        company_service.extract_company_data(sanitized_url, company_id)
-                    )
+                    # Let's offload the company extraction to a background task.
+                    # Skipped when the caller already enriches companies
+                    # explicitly right after (e.g. the pipeline's COMPANY
+                    # stage) - firing this too would double the billed
+                    # BrightData calls (CAR-477/478).
+                    if not skip_followup_company_extraction:
+                        self._create_background_task(
+                            company_service.extract_company_data(sanitized_url, company_id)
+                        )
 
                 # Now we can parse the role
                 role_db = await role_service.parse_role(role, alumni_id, company_id)
