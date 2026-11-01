@@ -1,8 +1,9 @@
 """Which service each stage drives, and over which entities.
 
-CLASSIFY_ROLES (CAR-157) and LINKEDIN are converted. The other stages keep
-their existing coarse tasks until they are converted one at a time against a
-proven executor, so an unconverted stage is absent here rather than half-wired.
+CLASSIFY_ROLES (CAR-157), LINKEDIN, and LOCATION are converted. The other
+stages keep their existing coarse tasks until they are converted one at a time
+against a proven executor, so an unconverted stage is absent here rather than
+half-wired.
 
 Services are imported inside the resolvers and handlers for the same reason
 app/tasks/pipeline.py does it: importing them at module scope drags langchain
@@ -44,15 +45,24 @@ async def _extract_linkedin_profile(alumni_id: str) -> None:
     # skip_followup_classification=True (CAR-474): CLASSIFY_ROLES below already
     # classifies this alumnus explicitly right after, so the service's own
     # internal background classification call would just be redundant LLM
-    # spend. Location resolution still fires in the background - LOCATION
-    # isn't a converted stage yet, so it's the only thing doing that work.
-    await linkedin_service.extract_profile_data(alumni_id, skip_followup_classification=True)
+    # spend. skip_followup_location=True for the same reason: LOCATION below
+    # already resolves this alumnus explicitly, so the service's own internal
+    # background location call would just double the LLM spend.
+    await linkedin_service.extract_profile_data(
+        alumni_id, skip_followup_classification=True, skip_followup_location=True
+    )
 
 
 async def _classify_roles(alumni_id: str) -> None:
     from app.services.job_classification import job_classification_service
 
     await job_classification_service.classify_roles_for_alumni(alumni_id)
+
+
+async def _resolve_location(alumni_id: str) -> None:
+    from app.services.location import location_service
+
+    await location_service.resolve_role_location_for_alumni(alumni_id)
 
 
 STAGES: Dict[PipelineStageName, StageSpec] = {
@@ -65,6 +75,11 @@ STAGES: Dict[PipelineStageName, StageSpec] = {
         entity_type=PipelineEntityType.ALUMNI,
         resolve=_resolve_alumni,
         handle=_classify_roles,
+    ),
+    PipelineStageName.LOCATION: StageSpec(
+        entity_type=PipelineEntityType.ALUMNI,
+        resolve=_resolve_alumni,
+        handle=_resolve_location,
     ),
 }
 

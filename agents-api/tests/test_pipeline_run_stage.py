@@ -77,6 +77,21 @@ def enqueued(db, monkeypatch):
             chunk_size=2,
         ),
     )
+    # LOCATION is also converted (CAR-474 follow-up) and is the last stage in
+    # the sequence, so TestLastStage drives it through run_stage directly.
+    # Without this it would run the real location service against whatever
+    # alumni happen to be in the database, which is both slow and unrelated
+    # to what that test is about.
+    monkeypatch.setitem(
+        registry.STAGES,
+        PipelineStageName.LOCATION,
+        StageSpec(
+            entity_type=PipelineEntityType.ALUMNI,
+            resolve=lambda session, r: ["a", "b"],
+            handle=handle,
+            chunk_size=2,
+        ),
+    )
     return calls
 
 
@@ -118,8 +133,8 @@ class TestConvertedStage:
 
 
 class TestUnconvertedStage:
-    # LINKEDIN and CLASSIFY_ROLES are converted; COMPANY (and SENIORITY,
-    # LOCATION) are still on their old coarse tasks - using COMPANY here so
+    # LINKEDIN, CLASSIFY_ROLES, and LOCATION are converted; COMPANY (and
+    # SENIORITY) are still on their old coarse tasks - using COMPANY here so
     # this keeps testing a genuinely unconverted stage as more get converted.
     async def test_is_skipped_rather_than_failed(self, db, run, enqueued):
         # Failing here would strand every run at COMPANY and never reach
