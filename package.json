@@ -15,6 +15,9 @@
     "gen:json": "pnpm --filter api run swagger",
     "gen:sdk": "pnpm exec openapi-generator-cli generate -i ./swagger-spec.json -g typescript-fetch -o ./app/src/sdk --additional-properties=typescriptThreePlus=true",
     "build:sdk": "pnpm run gen:json && pnpm run gen:sdk",
+    "gen:json:agents-api": "cd agents-api && uv run python scripts/export_openapi.py",
+    "gen:sdk:agents-api": "pnpm exec openapi-generator-cli generate -i ./agents-api-openapi-spec.json -g typescript-fetch -o ./api/src/sdk/agents-api --additional-properties=typescriptThreePlus=true",
+    "build:sdk:agents-api": "pnpm run gen:json:agents-api && pnpm run gen:sdk:agents-api",
     "lint": "pnpm -r lint",
     "format": "pnpm -r format"
   },
