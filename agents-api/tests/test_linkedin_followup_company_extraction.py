@@ -92,7 +92,9 @@ async def _extraction_calls(monkeypatch):
 
 
 class TestSkipFollowupCompanyExtraction:
-    async def test_pipeline_triggered_call_does_not_fire_company_extraction(self, monkeypatch, db):
+    async def test_pipeline_triggered_call_does_not_fire_company_extraction(
+        self, monkeypatch, db, default_industry, remote_location
+    ):
         alumnus = _alumnus(db)
         service = _service(monkeypatch, db)
         calls = await _extraction_calls(monkeypatch)
@@ -107,7 +109,9 @@ class TestSkipFollowupCompanyExtraction:
 
         assert calls == []
 
-    async def test_standalone_call_keeps_firing_company_extraction(self, monkeypatch, db):
+    async def test_standalone_call_keeps_firing_company_extraction(
+        self, monkeypatch, db, default_industry, remote_location
+    ):
         alumnus = _alumnus(db)
         service = _service(monkeypatch, db)
         calls = await _extraction_calls(monkeypatch)

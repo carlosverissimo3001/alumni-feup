@@ -206,11 +206,8 @@ class LinkedInService:
         db: Session,
         skip_followup_company_extraction: bool = False,
     ) -> ReconciliationOutcome:
-        """Reconcile this alumnus's roles against the fetch, then update
-        their profile fields, as one transaction (CAR-481) - the caller
-        commits only when the reconciliation didn't hit a conflict, so a
-        conflicted alumnus's data is untouched rather than partially applied.
-        """
+        """Commits as one transaction per alumnus; nothing is applied on a
+        reconciliation conflict."""
         outcome = reconcile_alumni_roles(
             db,
             alumni_id,
@@ -218,20 +215,10 @@ class LinkedInService:
             experiences_field_present=profile_data.experiences_field_present,
         )
         if not outcome.ok:
-            # Raised rather than just logged: this surfaces as a FAILED task
-            # in the existing admin UI (same error panel built for other
-            # task failures), so a conflict gets looked at instead of
-            # sitting silently in a log line. Nothing was committed above.
             raise ReconciliationConflictError(
                 f"Could not reconcile LinkedIn data for alumnus {alumni_id}: {outcome.conflict}"
             )
 
-        # Company enrichment is still fired per newly-created company here,
-        # not inside reconcile_alumni_roles - it's an external, billed,
-        # independent-of-this-transaction call, not DB reconciliation.
-        # Skipped when the caller already enriches companies explicitly
-        # right after (e.g. the pipeline's COMPANY stage) - firing this too
-        # would double the billed BrightData calls (CAR-477/478).
         if not skip_followup_company_extraction:
             for company_id, company_url in outcome.new_companies.items():
                 self._create_background_task(
@@ -322,13 +309,6 @@ class LinkedInService:
                 await asyncio.gather(*self._background_tasks, return_exceptions=True)
 
     async def process_single_alumni(self, alumni_id: str):
-        """Process a single alumni profile.
-
-        CAR-481: used to delete all of this alumnus's existing roles before
-        fetching - if the fetch then failed, that data was gone with
-        nothing to replace it. extract_profile_data now reconciles safely
-        against whatever already exists, so a plain re-extract is enough.
-        """
         try:
             await self.extract_profile_data(alumni_id)
             return True

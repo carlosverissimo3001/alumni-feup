@@ -9,6 +9,7 @@ logger = logging.getLogger(__name__)
 
 DEFAULT_UPDATED_BY = "agents-api"
 
+
 def update_alumni(alumni: Alumni, db: Session) -> None:
     """
     Update a alumni record with new data.
@@ -38,8 +39,10 @@ def update_alumni(alumni: Alumni, db: Session) -> None:
 def find_all(db: Session) -> list[Alumni]:
     return db.query(Alumni).all()
 
+
 def count_all(db: Session) -> int:
     return db.query(Alumni).count()
+
 
 def find_all_with_linkedin(db: Session) -> list[Alumni]:
     """
@@ -52,6 +55,8 @@ def find_all_with_linkedin(db: Session) -> list[Alumni]:
         List of alumni records with non-null LinkedIn URLs
     """
     return db.query(Alumni).filter(Alumni.linkedin_url.isnot(None)).all()
+
+
 def find_by_id(id: str, db: Session) -> Alumni:
     return db.query(Alumni).filter(Alumni.id == id).first()
 

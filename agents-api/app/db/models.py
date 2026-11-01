@@ -287,10 +287,6 @@ class Role(Base):
     was_seniority_level_accepted_by_user = Column(Boolean, nullable=True)
     was_seniority_level_modified_by_user = Column(Boolean, nullable=True)
 
-    # CAR-481: exact-repeat matching key for safe LinkedIn reconciliation -
-    # not a claimed stable identity, the source payload has no stable
-    # experience ID. See Role in api/prisma/schema.prisma for the full
-    # rationale (that's the source of truth for this table's schema).
     source_fingerprint = Column(String, nullable=True)
     source_company_url = Column(String, nullable=True)
     source_missing_since = Column(DateTime(timezone=True), nullable=True)

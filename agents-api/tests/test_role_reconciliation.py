@@ -122,7 +122,7 @@ class TestComputeFingerprint:
 
 
 class TestReconcileNewRole:
-    def test_inserts_a_genuinely_new_role(self, db, industry):
+    def test_inserts_a_genuinely_new_role(self, db, industry, remote_location):
         alumnus = _make_alumni(db)
         _make_company(db, industry)  # pre-existing, found by URL lookup
 
@@ -137,7 +137,7 @@ class TestReconcileNewRole:
         role_raw = db.query(RoleRaw).filter(RoleRaw.role_id == role.id).one()
         assert role_raw.title == "Software Engineer"
 
-    def test_creates_a_new_company_when_none_exists(self, db, industry):
+    def test_creates_a_new_company_when_none_exists(self, db, default_industry, remote_location):
         alumnus = _make_alumni(db)
         # No company pre-created this time - reconciliation must create one.
 

@@ -1,18 +1,9 @@
 """Fetch-first-then-reconcile matching for LinkedIn-derived roles (CAR-481).
 
-The source payload has no stable experience ID, so this does not claim to
-"know" that two experiences are the same thing across requests - it matches
-on an exact-repeat fingerprint (company URL + start date + normalized title)
-and refuses to guess when something looks like it might be an edit rather
-than a coincidence. See CAR-481 for the full design and why: a much larger
-design (a source-identity alias table, immutable snapshots, a per-alumnus
-lease) was proposed first and cut down to this after review, because this
-project's actual scale (hundreds of alumni, one operator) doesn't need it.
-
-Nothing in this module commits. The caller owns one transaction per alumnus
-and must not commit if `ReconciliationOutcome.conflict` is set - partially
-applying a reconciliation that hit a conflict would be worse than not
-applying it at all.
+No stable experience ID exists in the source payload, so matching is an
+exact-repeat fingerprint (company URL + start date + normalized title); an
+ambiguous overlap becomes a conflict rather than a guess. Nothing here
+commits - the caller owns one transaction per alumnus.
 """
 
 import hashlib
@@ -37,10 +28,7 @@ FINGERPRINT_VERSION = "v1"
 
 
 class ReconciliationConflictError(Exception):
-    """Raised by a caller that wants a conflict to surface as a failed,
-    retryable task (e.g. the LINKEDIN pipeline stage) rather than a silent
-    log line - admins see the conflict in the existing task error UI and can
-    resolve it like any other failure, no new surface needed."""
+    pass
 
 
 def _normalize_title(title: Optional[str]) -> str:
@@ -48,14 +36,6 @@ def _normalize_title(title: Optional[str]) -> str:
 
 
 def compute_fingerprint(company_url: Optional[str], start_date: datetime, title: str) -> str:
-    """An exact-repeat matching key, not a claimed stable identity.
-
-    Two experiences with the same company URL, start date, and
-    (whitespace/case-normalized) title match. Anything else - a title edit,
-    a different source URL for the same real company, a missing date - does
-    not, and falls to the ambiguous-conflict path rather than being silently
-    merged or silently duplicated.
-    """
     normalized_url = (company_url or "").strip().lower()
     date_part = start_date.date().isoformat() if start_date else ""
     normalized_title = _normalize_title(title)
@@ -69,16 +49,7 @@ class ReconciliationOutcome:
     inserted_role_ids: List[str] = field(default_factory=list)
     updated_role_ids: List[str] = field(default_factory=list)
     newly_missing_role_ids: List[str] = field(default_factory=list)
-    # Roles whose stale classification was cleared because their title or
-    # description actually changed - CLASSIFY_ROLES only ever processes
-    # roles without a JobClassification, so this is what makes a real
-    # content edit eligible for reclassification again. Never touches a
-    # CAR-480-protected (user-corrected) classification.
     invalidated_classification_role_ids: List[str] = field(default_factory=list)
-    # Companies created by this call, keyed by id -> sanitized LinkedIn URL.
-    # Tracked separately from inserted_role_ids: two roles in the same fetch
-    # can reference the same brand-new company, and enrichment must fire
-    # once per company, not once per role.
     new_companies: Dict[str, str] = field(default_factory=dict)
     conflict: Optional[str] = None
 
@@ -109,7 +80,7 @@ def _get_or_create_company(
         return company
     company = Company(linkedin_url=sanitized_url, name=fallback_name)
     db.add(company)
-    db.flush()  # assigns company.id without committing - caller owns the commit
+    db.flush()
     new_companies[company.id] = sanitized_url
     return company
 
@@ -119,13 +90,11 @@ def _build_candidates(
 ) -> List[_Candidate]:
     candidates = []
     for exp in experiences:
-        # Same skip as the pre-CAR-481 code: an experience with no company
-        # URL never created a Role at all.
         if not exp.company_linkedin_profile_url:
             continue
         start_date = linkedin_date_to_timestamp(exp.starts_at)
         if not start_date:
-            continue  # the converter already drops these; defensive only
+            continue
         end_date = linkedin_date_to_timestamp(exp.ends_at) if exp.ends_at else None
         sanitized_url = sanitize_linkedin_url(exp.company_linkedin_profile_url)
         company = _get_or_create_company(db, sanitized_url, exp.company, new_companies)
@@ -149,19 +118,9 @@ def reconcile_alumni_roles(
     experiences: List[ExperienceBase],
     experiences_field_present: bool = True,
 ) -> ReconciliationOutcome:
-    """Match a LinkedIn fetch's experiences against this alumnus's existing
-    roles and apply the safe, non-destructive reconciliation.
-
-    Must run inside a transaction the caller owns - nothing here commits.
-    On a conflict, nothing is applied for this alumnus - the caller must not
-    commit a conflicted outcome.
-    """
     outcome = ReconciliationOutcome(alumni_id=alumni_id)
     candidates = _build_candidates(db, experiences, outcome.new_companies)
 
-    # Indistinguishable duplicate source entries (the fetch itself contains
-    # two experiences that fingerprint identically) are a conflict, not a
-    # pick-one-arbitrarily situation.
     seen_fingerprints: Dict[str, _Candidate] = {}
     for cand in candidates:
         if cand.fingerprint in seen_fingerprints:
@@ -177,8 +136,6 @@ def reconcile_alumni_roles(
     existing_roles: List[Role] = db.query(Role).filter(Role.alumni_id == alumni_id).all()
     fingerprinted = {r.source_fingerprint: r for r in existing_roles if r.source_fingerprint}
 
-    # Preloaded once, not per-candidate - avoids an N+1 query for legacy-role
-    # title matching below.
     role_ids = [r.id for r in existing_roles]
     titles_by_role_id: Dict[str, str] = {}
     if role_ids:
@@ -195,8 +152,6 @@ def reconcile_alumni_roles(
     conflicts: List[str] = []
 
     for cand in candidates:
-        # 1. Exact fingerprint match - the common case once a role has been
-        # through reconciliation at least once before.
         existing = fingerprinted.get(cand.fingerprint)
         if existing is not None and existing.id not in matched_role_ids:
             matched_role_ids.add(existing.id)
@@ -206,10 +161,8 @@ def reconcile_alumni_roles(
         key = (cand.company.id, cand.start_date.date())
         same_slot = by_company_start.get(key, [])
 
-        # 2. Legacy-role adoption: a role that predates fingerprinting
-        # (source_fingerprint is null) with the exact same company, start
-        # date, and normalized title - adopt it instead of inserting a
-        # duplicate of a role that already exists.
+        # Adopt a pre-fingerprinting role with an exact (company, start,
+        # title) match instead of inserting a duplicate.
         adoptable = next(
             (
                 r
@@ -226,11 +179,8 @@ def reconcile_alumni_roles(
             to_update.append((adoptable, cand))
             continue
 
-        # 3. Ambiguous overlap: something unmatched already occupies this
-        # alumnus's (company, start date) slot with a different title. Could
-        # be a genuine edit, could be coincidence - no stable upstream ID to
-        # tell them apart, so this alumnus's whole reconciliation stops
-        # rather than guessing which.
+        # Could be a title edit, could be coincidence - no way to tell them
+        # apart, so this flags a conflict rather than guessing.
         unmatched_same_slot = [r for r in same_slot if r.id not in matched_role_ids]
         if unmatched_same_slot:
             conflicts.append(
@@ -241,7 +191,6 @@ def reconcile_alumni_roles(
             )
             continue
 
-        # 4. Genuinely new.
         to_insert.append(cand)
 
     if conflicts:
@@ -281,8 +230,6 @@ def reconcile_alumni_roles(
         role.source_company_url = cand.sanitized_company_url
         role.source_missing_since = None
         role.updated_by = "linkedin-reconciliation"
-        # seniority_level is deliberately untouched here - that's CAR-480's
-        # protection policy and the seniority agent's job, not this one's.
 
         role_raw = db.query(RoleRaw).filter(RoleRaw.role_id == role.id).first()
         content_changed = role_raw is not None and (
@@ -304,11 +251,7 @@ def reconcile_alumni_roles(
             )
         outcome.updated_role_ids.append(role.id)
 
-        # A content change invalidates the existing classification -
-        # CLASSIFY_ROLES only ever considers roles without one, so it would
-        # otherwise never reconsider this role again. Skip if CAR-480
-        # protected it - a user-corrected classification stays correct
-        # regardless of what the source title now says.
+        # CLASSIFY_ROLES only considers roles without a classification.
         if content_changed:
             existing_classification = (
                 db.query(JobClassification).filter(JobClassification.role_id == role.id).first()
@@ -320,9 +263,6 @@ def reconcile_alumni_roles(
                 db.delete(existing_classification)
                 outcome.invalidated_classification_role_ids.append(role.id)
 
-    # Flag roles missing from this fetch - only ones this mechanism already
-    # tracks (fingerprinted), and only when the fetch's experience list is
-    # trustworthy enough to treat absence as meaningful. Never deleted.
     if experiences_field_present:
         for role in fingerprinted.values():
             if role.id in matched_role_ids:
@@ -331,9 +271,5 @@ def reconcile_alumni_roles(
                 role.source_missing_since = datetime.now(timezone.utc)
                 outcome.newly_missing_role_ids.append(role.id)
 
-    # Flushed, not committed - that boundary belongs to the caller. Without
-    # this, an attribute set on an already-loaded Role (the update and
-    # missing-flag paths both do this) stays pending in the session and a
-    # caller that reloads the row before committing would see stale data.
     db.flush()
     return outcome
