@@ -6,7 +6,11 @@ from sqlalchemy.orm import Session
 
 from app.core.config import settings
 from app.db.models import EscoClassification, JobClassification
-from app.schemas.job_classification import EscoResult, JobClassificationAgentState
+from app.schemas.job_classification import (
+    ClassificationWriteOutcome,
+    EscoResult,
+    JobClassificationAgentState,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -39,49 +43,69 @@ def delete_existing_classifications(db: Session, role_id: str):
     db.query(JobClassification).filter(JobClassification.role_id == role_id).delete()
 
 
-def update_role_with_classifications(db: Session, state: JobClassificationAgentState):
-    if state.get("error"):
-        logger.error(f"Skipping DB update due to error: {state['error']}")
-        return
+def _build_classification(
+    role_id: str, parsed: Optional[list], model_used: str, reasoning: str
+) -> JobClassification:
+    """Validate replacement data and build the row to write.
 
-    delete_existing_classifications(db, state["role"].role_id)
-
-    parsed = state.get("parsed_esco_results")
+    Raises on anything invalid. Callers must only delete the existing row
+    once this succeeds, so a parse failure never leaves a role with its old
+    classification deleted and nothing written in its place.
+    """
     if not parsed:
-        logger.error("No parsed ESCO results available, skipping DB update.")
-        return
+        raise ValueError("No parsed ESCO results available")
 
-    try:
-        results = [EscoResult(**result) for result in parsed]
-    except Exception as e:
-        logger.error(f"Error parsing ESCO results: {str(e)}")
-        return
-
+    results = [EscoResult(**result) for result in parsed]
     if not results:
-        logger.error("No valid ESCO results to save")
-        return
+        raise ValueError("No valid ESCO results to save")
 
     best_result = results[0]
-    model_used = state.get("model_used", "mistral:7b")
-
     metadata_json = {
         "choices": [result.model_dump() for result in results],
-        "reasoning": state.get("reasoning", ""),
+        "reasoning": reasoning,
     }
 
-    try:
-        classification = JobClassification(
-            role_id=state["role"].role_id,
-            esco_classification_id=best_result.id,
-            confidence=best_result.confidence,
-            model_used=model_used,
-            metadata_=metadata_json,
-        )
+    return JobClassification(
+        role_id=role_id,
+        esco_classification_id=best_result.id,
+        confidence=best_result.confidence,
+        model_used=model_used,
+        metadata_=metadata_json,
+    )
 
-        insert_classification(db, classification)
+
+def update_role_with_classifications(db: Session, state: JobClassificationAgentState) -> bool:
+    """Replace a role's classification. Returns True iff the write committed.
+
+    The replacement is fully validated before the existing row is touched,
+    so a bad payload is a no-op rather than a silent deletion.
+    """
+    if state.get("error"):
+        logger.error(f"Skipping DB update due to error: {state['error']}")
+        return False
+
+    try:
+        classification = _build_classification(
+            role_id=state["role"].role_id,
+            parsed=state.get("parsed_esco_results"),
+            model_used=state.get("model_used", "mistral:7b"),
+            reasoning=state.get("reasoning") or "",
+        )
     except Exception as e:
-        logger.error(f"Error inserting classification into DB: {str(e)}")
+        logger.error(f"Error validating ESCO results, skipping DB update: {str(e)}")
+        return False
+
+    try:
+        delete_existing_classifications(db, state["role"].role_id)
+        db.add(classification)
+        db.commit()
+        db.refresh(classification)
+    except Exception as e:
+        logger.error(f"Error replacing classification in DB: {str(e)}")
         db.rollback()
+        return False
+
+    return True
 
 
 def sanitize_json(obj):
@@ -97,48 +121,74 @@ def sanitize_json(obj):
 
 async def update_role_with_classifications_batch(
     db: Session, updates: List[dict], action_by: Optional[str] = None
-) -> None:
-    """Batch update role classifications in the database with sanitized data."""
-    try:
-        for update in updates:
-            delete_existing_classifications(db, update["role_id"])
+) -> List[ClassificationWriteOutcome]:
+    """Batch update role classifications, returning a typed outcome per role.
 
-            if not update["classifications"]:
-                logger.warning(f"No classifications for role {update['role_id']}, skipping")
-                continue
+    Every update is validated first; only roles with a valid replacement get
+    their existing classification deleted, and that delete + insert happen in
+    the same commit. A role that fails validation is reported as a failed
+    outcome and is left with whatever classification it already had.
+    """
+    role_ids_to_replace: List[str] = []
+    pending_classifications: List[JobClassification] = []
+    outcomes: dict[str, ClassificationWriteOutcome] = {}
 
-            try:
-                sanitized_classifications = sanitize_json(update["classifications"])
-                results = [EscoResult(**result) for result in sanitized_classifications]
-            except Exception as e:
-                logger.error(f"Error parsing ESCO results for role {update['role_id']}: {str(e)}")
-                continue
+    for update in updates:
+        role_id = update["role_id"]
+
+        if not update["classifications"]:
+            logger.warning(f"No classifications for role {role_id}, skipping")
+            outcomes[role_id] = ClassificationWriteOutcome(
+                role_id=role_id, success=False, error="No classifications provided"
+            )
+            continue
+
+        try:
+            sanitized_classifications = sanitize_json(update["classifications"])
+            results = [EscoResult(**result) for result in sanitized_classifications]
+            if not results:
+                raise ValueError("No valid ESCO results to save")
 
             best_result = results[0]
             metadata_json = {
                 "choices": [result.model_dump() for result in results],
                 "reasoning": sanitize_json(update.get("reasoning", "")),
             }
+            classification = JobClassification(
+                role_id=role_id,
+                esco_classification_id=best_result.id,
+                confidence=best_result.confidence,
+                model_used=settings.OPENAI_DEFAULT_MODEL,
+                metadata_=metadata_json,
+                created_by=action_by,
+                updated_by=action_by,
+            )
+        except Exception as e:
+            logger.error(f"Error validating ESCO results for role {role_id}: {str(e)}")
+            outcomes[role_id] = ClassificationWriteOutcome(
+                role_id=role_id, success=False, error=str(e)
+            )
+            continue
 
-            try:
-                classification = JobClassification(
-                    role_id=update["role_id"],
-                    esco_classification_id=best_result.id,
-                    confidence=best_result.confidence,
-                    model_used=settings.OPENAI_DEFAULT_MODEL,
-                    metadata_=metadata_json,
-                    created_by=action_by,
-                    updated_by=action_by,
-                )
-                db.add(classification)
-            except Exception as e:
-                logger.error(
-                    f"Error creating classification for role {update['role_id']}: {str(e)}"
-                )
-                continue
+        role_ids_to_replace.append(role_id)
+        pending_classifications.append(classification)
 
+    try:
+        for role_id in role_ids_to_replace:
+            delete_existing_classifications(db, role_id)
+        for classification in pending_classifications:
+            db.add(classification)
         db.commit()
     except Exception as e:
-        logger.error(f"Error in batch update: {str(e)}")
+        logger.error(f"Error committing batch classification update: {str(e)}")
         db.rollback()
-        raise
+        for role_id in role_ids_to_replace:
+            outcomes[role_id] = ClassificationWriteOutcome(
+                role_id=role_id, success=False, error=str(e)
+            )
+        return list(outcomes.values())
+
+    for role_id in role_ids_to_replace:
+        outcomes[role_id] = ClassificationWriteOutcome(role_id=role_id, success=True)
+
+    return list(outcomes.values())
