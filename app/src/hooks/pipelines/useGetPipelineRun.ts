@@ -19,9 +19,15 @@ export const useGetPipelineRun = (runId: string) => {
     enabled: !!runId,
   });
 
+  const isPolling = !!(
+    query.data && ACTIVE_STATUSES.includes(query.data.status)
+  );
+
   return {
     data: query.data,
     isLoading: query.isLoading,
+    isFetching: query.isFetching,
+    isPolling,
     error: query.error,
     refetch: query.refetch,
   };

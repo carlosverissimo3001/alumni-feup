@@ -19,6 +19,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { AdminBackLink } from "@/components/admin/adminBackLink";
+import { RefreshIndicator } from "@/components/admin/pipelines/refreshIndicator";
 import { useGetPipelineRun } from "@/hooks/pipelines/useGetPipelineRun";
 import { useListPipelineRunTasks } from "@/hooks/pipelines/useListPipelineRunTasks";
 import {
@@ -51,13 +52,23 @@ const PipelineRunDetailPage = () => {
   const [taskStage, setTaskStage] = useState<string>("all");
   const [cursors, setCursors] = useState<string[]>([]);
 
-  const { data: run, isLoading: isLoadingRun } = useGetPipelineRun(runId);
+  const {
+    data: run,
+    isLoading: isLoadingRun,
+    isFetching: isFetchingRun,
+    isPolling,
+    refetch: refetchRun,
+  } = useGetPipelineRun(runId);
 
   const shouldPollTasks = !!run && ACTIVE_RUN_STATUSES.includes(run.status);
   const currentCursor = cursors[cursors.length - 1];
 
-  const { data: tasks, nextCursor, isLoading: isLoadingTasks } =
-    useListPipelineRunTasks({
+  const {
+    data: tasks,
+    nextCursor,
+    isLoading: isLoadingTasks,
+    refetch: refetchTasks,
+  } = useListPipelineRunTasks({
       runId,
       status:
         taskStatus === "all"
@@ -72,6 +83,11 @@ const PipelineRunDetailPage = () => {
     });
 
   const resetTaskPaging = () => setCursors([]);
+
+  const handleRefreshNow = () => {
+    refetchRun();
+    refetchTasks();
+  };
 
   if (isLoadingRun) {
     return (
@@ -94,9 +110,18 @@ const PipelineRunDetailPage = () => {
       <div className="max-w-6xl mx-auto space-y-6">
         <div>
           <AdminBackLink href="/admin/pipeline-runs" className="mb-3" />
-          <h1 className="text-2xl font-bold tracking-tight">
-            {run.kind ? formatEnumLabel(run.kind) : "Pipeline Run"}
-          </h1>
+          <div className="flex items-center justify-between gap-4">
+            <h1 className="text-2xl font-bold tracking-tight">
+              {run.kind ? formatEnumLabel(run.kind) : "Pipeline Run"}
+            </h1>
+            {isPolling && (
+              <RefreshIndicator
+                intervalMs={5000}
+                onRefresh={handleRefreshNow}
+                isRefreshing={isFetchingRun}
+              />
+            )}
+          </div>
           <p className="text-sm text-muted-foreground font-mono">{run.id}</p>
         </div>
 

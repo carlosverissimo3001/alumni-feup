@@ -29,10 +29,16 @@ export const useListPipelineRuns = ({
     },
   });
 
+  const isPolling = !!query.data?.items.some((run) =>
+    ACTIVE_STATUSES.includes(run.status)
+  );
+
   return {
     data: query.data?.items,
     nextCursor: query.data?.nextCursor,
     isLoading: query.isLoading,
+    isFetching: query.isFetching,
+    isPolling,
     error: query.error,
     refetch: query.refetch,
   };
