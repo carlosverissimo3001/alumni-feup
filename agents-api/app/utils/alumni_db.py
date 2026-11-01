@@ -4,7 +4,6 @@ from datetime import datetime, timezone
 from sqlalchemy.orm import Session
 
 from app.db.models import Alumni
-from app.utils.role_db import delete_role
 
 logger = logging.getLogger(__name__)
 
@@ -59,16 +58,3 @@ def find_by_id(id: str, db: Session) -> Alumni:
 
 def find_by_ids(ids: list[str], db: Session) -> list[Alumni]:
     return db.query(Alumni).filter(Alumni.id.in_(ids)).all()
-
-
-def delete_profile_data(id: str, db: Session) -> None:
-    alumni = find_by_id(id, db)
-    if alumni:
-        # Get all roles and delete them one by one
-        for role in list(alumni.roles):
-            delete_role(role, db)
-
-        # Clear other profile data
-        alumni.current_location_id = None
-        alumni.profile_picture_url = None
-        db.commit()

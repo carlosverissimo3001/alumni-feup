@@ -1,18 +1,23 @@
 """skip_followup_company_extraction on process_profile_data/_persist_profile_data (CAR-477/478).
 
 _persist_profile_data fires company_service.extract_company_data as a
-background fire-and-forget task whenever it sees a brand-new company. That
-duplicates the explicit enrichment a pipeline run's COMPANY stage already does
-for the same companies right after LINKEDIN, so a caller running inside such a
-sequence passes skip_followup_company_extraction=True to suppress it. The
-standalone extraction path (the single-alumni manual re-extract trigger, with
-no such follow-up) has no reason to pass it and must keep firing the
-background call exactly as before.
+background fire-and-forget task whenever reconciliation creates a brand-new
+company. That duplicates the explicit enrichment a pipeline run's COMPANY
+stage already does for the same companies right after LINKEDIN, so a caller
+running inside such a sequence passes skip_followup_company_extraction=True
+to suppress it. The standalone extraction path (the single-alumni manual
+re-extract trigger, with no such follow-up) has no reason to pass it and
+must keep firing the background call exactly as before.
+
+Uses the real (rolled-back) test database - CAR-481 moved role/company
+persistence into app.services.role_reconciliation, which does real queries
+a mocked-out session can no longer stand in for faithfully.
 
 Mirrors test_linkedin_followup_classification.py's precedent for the sibling
 skip_followup_classification flag.
 """
 
+from app.db.models import Alumni
 from app.schemas.linkedin import ExperienceBase, ExperienceDate, LinkedInProfileResponse
 from app.services import location as location_module
 from app.services.linkedin import LinkedInService
@@ -38,8 +43,16 @@ class _NullContext:
         return False
 
 
-class _NewCompany:
-    id = "company-1"
+def _alumnus(db):
+    row = Alumni(
+        first_name="Test",
+        last_name="Alumnus",
+        full_name="Test Alumnus",
+        has_sigarra_match=False,
+    )
+    db.add(row)
+    db.flush()
+    return row
 
 
 def _service(monkeypatch, db):
@@ -60,17 +73,10 @@ def _service(monkeypatch, db):
         location_module.location_service, "resolve_role_location_for_alumni", no_location
     )
 
-    # Short-circuit the rest of _persist_profile_data's unit of work: what is
-    # under test is only whether the company-extraction background task gets
-    # created, not alumni/role persistence.
+    # session_scope short-circuited to the test's own rolled-back session,
+    # same as test_role_reconciliation.py - what's under test is only
+    # whether the company-extraction background task fires.
     monkeypatch.setattr("app.services.linkedin.session_scope", lambda: _NullContext(db))
-    monkeypatch.setattr("app.services.linkedin.get_company_by_linkedin_url", lambda url, db: None)
-    monkeypatch.setattr("app.services.linkedin.insert_company", lambda company, db: _NewCompany())
-
-    async def no_parse_role(*args, **kwargs):
-        return None
-
-    monkeypatch.setattr("app.services.linkedin.role_service.parse_role", no_parse_role)
 
     return service
 
@@ -87,12 +93,13 @@ async def _extraction_calls(monkeypatch):
 
 class TestSkipFollowupCompanyExtraction:
     async def test_pipeline_triggered_call_does_not_fire_company_extraction(self, monkeypatch, db):
+        alumnus = _alumnus(db)
         service = _service(monkeypatch, db)
         calls = await _extraction_calls(monkeypatch)
 
         await service.process_profile_data(
             PROFILE,
-            "alumni-1",
+            alumnus.id,
             skip_followup_classification=True,
             skip_followup_company_extraction=True,
         )
@@ -101,12 +108,16 @@ class TestSkipFollowupCompanyExtraction:
         assert calls == []
 
     async def test_standalone_call_keeps_firing_company_extraction(self, monkeypatch, db):
+        alumnus = _alumnus(db)
         service = _service(monkeypatch, db)
         calls = await _extraction_calls(monkeypatch)
 
         # Default behaviour, unchanged: the manual re-extract trigger calls
         # this with no flag at all.
-        await service.process_profile_data(PROFILE, "alumni-1")
+        await service.process_profile_data(PROFILE, alumnus.id)
         await service.close()
 
-        assert calls == [("https://linkedin.com/company/acme/", "company-1")]
+        assert len(calls) == 1
+        company_url, company_id = calls[0]
+        assert company_url == "https://linkedin.com/company/acme/"
+        assert company_id  # a real company row was created and flushed

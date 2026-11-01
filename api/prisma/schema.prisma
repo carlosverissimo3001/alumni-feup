@@ -262,6 +262,21 @@ model Role {
   isCurrent   Boolean @default(false) @map("is_current")
   isPromotion Boolean @default(false) @map("is_promotion")
 
+  // CAR-481: an exact-repeat matching key for safe LinkedIn reconciliation
+  // (fetch -> match -> update-in-place-or-insert), not a claimed stable
+  // identity - the source payload has no stable experience ID. Computed from
+  // (source company URL, start date, normalized title); scoped per alumnus.
+  // Null for roles created before this existed or by non-LinkedIn paths.
+  sourceFingerprint String? @map("source_fingerprint")
+  // The LinkedIn company URL as scraped, independent of companyId - an
+  // admin merging/relinking companies must not break fingerprint matching.
+  sourceCompanyUrl  String? @map("source_company_url")
+  // Set the first time a reconciliation run doesn't see this role in a new
+  // fetch; cleared if it reappears. Never auto-deleted - a missing role is
+  // flagged for review, not removed (the fetch's absence isn't trustworthy
+  // enough evidence of "actually ended" on its own).
+  sourceMissingSince DateTime? @map("source_missing_since") @db.Timestamptz(6)
+
   JobClassification JobClassification?
   // We're deleting all alumni roles if the alumni is deleted
   Alumni            Alumni             @relation("AlumniRoles", fields: [alumniId], references: [id], onDelete: Cascade)
@@ -279,6 +294,9 @@ model Role {
   @@index([isCurrent])
   @@index([startDate])
   @@index([endDate])
+  // Nullable, so pre-existing rows (sourceFingerprint = null) aren't
+  // constrained - Postgres treats each NULL as distinct under a unique index.
+  @@unique([alumniId, sourceFingerprint])
   @@map("role")
 }
 
