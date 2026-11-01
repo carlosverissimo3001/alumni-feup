@@ -317,7 +317,12 @@ async def test_global_semaphore_caps_peak_concurrent_calls_across_many_alumni(
             JobClassificationAgentState(
                 role=role,
                 messages=[],
-                esco_results_from_embeddings=[],
+                # Non-empty: CAR-470's retrieval-skip path filters out empty
+                # candidate lists before they ever reach the semaphore, which
+                # would hide the concurrency cap this test exists to prove.
+                esco_results_from_embeddings=[
+                    EscoResult(id="42", title="Systems analyst", confidence=0.81)
+                ],
                 esco_results_from_agent=[],
                 parsed_esco_results=[],
                 processing_time=0.0,
