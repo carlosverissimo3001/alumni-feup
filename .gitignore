@@ -5,6 +5,9 @@ node_modules/
 app/src/sdk/.openapi-generator/FILES
 app/src/sdk/.openapi-generator/VERSION
 app/src/sdk/docs/
+api/src/sdk/agents-api/.openapi-generator/FILES
+api/src/sdk/agents-api/.openapi-generator/VERSION
+api/src/sdk/agents-api/docs/
 openapitools.json
 
 # Local operational scripts, not part of the deployed app

@@ -1,0 +1,1690 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Agents API",
+    "description": "API for job title classification and LinkedIn data extraction",
+    "version": "0.1.0"
+  },
+  "paths": {
+    "/health": {
+      "get": {
+        "tags": [
+          "health"
+        ],
+        "summary": "Health",
+        "operationId": "health_health_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/job-classification/": {
+      "post": {
+        "tags": [
+          "Job Classification"
+        ],
+        "summary": "Classify Job",
+        "description": "Trigger the classification of the roles of the alumni\n\nIf none are provided, it will update all alumni roles.",
+        "operationId": "classify_job_api_job_classification__post",
+        "parameters": [
+          {
+            "name": "alumni_ids",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Comma-separated list of alumni IDs to update",
+              "title": "Alumni Ids"
+            },
+            "description": "Comma-separated list of alumni IDs to update"
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/job-classification/raw": {
+      "post": {
+        "tags": [
+          "Job Classification"
+        ],
+        "summary": "Classify Job Raw",
+        "description": "Test endpoint that takes in a query (some job title and description) and returns a\nlist of ESCO classifications.",
+        "operationId": "classify_job_raw_api_job_classification_raw_post",
+        "parameters": [
+          {
+            "name": "query",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Query"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/EscoResult"
+                  },
+                  "title": "Response Classify Job Raw Api Job Classification Raw Post"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/location/role": {
+      "post": {
+        "tags": [
+          "Location"
+        ],
+        "summary": "Resolve Role Location",
+        "description": "Triggers the agent to resolve the location of a role.\n\nIf none are provided, it will update all roles.",
+        "operationId": "resolve_role_location_api_location_role_post",
+        "parameters": [
+          {
+            "name": "role_ids",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Comma-separated list of role IDs to update",
+              "title": "Role Ids"
+            },
+            "description": "Comma-separated list of role IDs to update"
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/location/alumni": {
+      "post": {
+        "tags": [
+          "Location"
+        ],
+        "summary": "Resolve Alumni Location",
+        "description": "Triggers the agent to resolve the location of an alumni.\n\nIf none are provided, it will update all alumni.",
+        "operationId": "resolve_alumni_location_api_location_alumni_post",
+        "parameters": [
+          {
+            "name": "alumni_ids",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Comma-separated list of alumni IDs to update",
+              "title": "Alumni Ids"
+            },
+            "description": "Comma-separated list of alumni IDs to update"
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/linkedin/extract-profile": {
+      "post": {
+        "tags": [
+          "LinkedIn"
+        ],
+        "summary": "Extract Linkedin Profiles",
+        "description": "Triggers the extraction of Linkedin Profiles.",
+        "operationId": "extract_linkedin_profiles_api_linkedin_extract_profile_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LinkedInExtractProfileRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/linkedin/update-profile": {
+      "post": {
+        "tags": [
+          "LinkedIn"
+        ],
+        "summary": "Update Linkedin Profiles",
+        "description": "Triggers the update of Linkedin Profiles.\nIf no data is provided, all LinkedIn profiles in the database will be updated.",
+        "operationId": "update_linkedin_profiles_api_linkedin_update_profile_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LinkedInUpdateProfileRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/role/resolve-role-location": {
+      "post": {
+        "tags": [
+          "Role"
+        ],
+        "summary": "Resolve Role Location",
+        "description": "Resolve the location of the roles",
+        "operationId": "resolve_role_location_api_role_resolve_role_location_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RoleResolveLocationParams"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/seniority/": {
+      "post": {
+        "tags": [
+          "Seniority"
+        ],
+        "summary": "Classify Seniority",
+        "description": "Trigger the seniority classification of alumni roles. If no alumni IDs are provided, it will process all alumni.",
+        "operationId": "classify_seniority_api_seniority__post",
+        "parameters": [
+          {
+            "name": "alumni_ids",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Comma-separated list of alumni IDs, whose roles will be updated",
+              "title": "Alumni Ids"
+            },
+            "description": "Comma-separated list of alumni IDs, whose roles will be updated"
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/storage/alumni_profile_pictures_to_storage": {
+      "post": {
+        "tags": [
+          "Storage"
+        ],
+        "summary": "Alumni Profile Pictures To Storage",
+        "description": "Uses the stored hotlink to download a alumni profile picture from LinkedIn     and save it to Cloudinary",
+        "operationId": "alumni_profile_pictures_to_storage_api_storage_alumni_profile_pictures_to_storage_post",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/company/": {
+      "post": {
+        "tags": [
+          "Company"
+        ],
+        "summary": "Request Company Update",
+        "description": "Updates the company data by calling the BrightData API.\n\nIf none are provided, it will update all companies.",
+        "operationId": "request_company_update_api_company__post",
+        "parameters": [
+          {
+            "name": "company_ids",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Comma-separated list of company IDs to update",
+              "title": "Company Ids"
+            },
+            "description": "Comma-separated list of company IDs to update"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/esco/generate-embeddings": {
+      "post": {
+        "tags": [
+          "ESCO"
+        ],
+        "summary": "Generate Esco Embeddings",
+        "description": "Triggers the generation of embeddings for all ESCO classifications that don't have them yet.\nThe process runs in batches to avoid memory issues.",
+        "operationId": "generate_esco_embeddings_api_esco_generate_embeddings_post",
+        "parameters": [
+          {
+            "name": "batch_size",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 100,
+              "title": "Batch Size"
+            }
+          }
+        ],
+        "responses": {
+          "202": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "string"
+                  },
+                  "title": "Response Generate Esco Embeddings Api Esco Generate Embeddings Post"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/esco/fetch-esco-classifications": {
+      "post": {
+        "tags": [
+          "ESCO"
+        ],
+        "summary": "Fetch Esco Classifications",
+        "description": "Fetches the ESCO classifications from the ESCO API, saving them in the database.\nTo be used inside a cron job, running every 6 months, or on demand, when the European Commission\nreleases a new version of the ESCO classifications.",
+        "operationId": "fetch_esco_classifications_api_esco_fetch_esco_classifications_post",
+        "responses": {
+          "202": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": {
+                    "type": "string"
+                  },
+                  "type": "object",
+                  "title": "Response Fetch Esco Classifications Api Esco Fetch Esco Classifications Post"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/pipelines/{kind}/runs": {
+      "post": {
+        "tags": [
+          "Pipelines"
+        ],
+        "summary": "Create a run and start it",
+        "operationId": "create_pipeline_run_api_pipelines__kind__runs_post",
+        "parameters": [
+          {
+            "name": "kind",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/PipelineKind"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateRunRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "202": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RunCreated"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/pipelines/runs": {
+      "get": {
+        "tags": [
+          "Pipelines"
+        ],
+        "summary": "List runs",
+        "operationId": "list_runs_api_pipelines_runs_get",
+        "parameters": [
+          {
+            "name": "kind",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/PipelineKind"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Kind"
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/PipelineRunStatus"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Status"
+            }
+          },
+          {
+            "name": "cursor",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Cursor"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 100,
+              "minimum": 1,
+              "default": 25,
+              "title": "Limit"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Page_RunSummary_"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/pipelines/runs/{run_id}": {
+      "get": {
+        "tags": [
+          "Pipelines"
+        ],
+        "summary": "Run detail",
+        "operationId": "get_run_api_pipelines_runs__run_id__get",
+        "parameters": [
+          {
+            "name": "run_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Run Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RunDetail"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/pipelines/runs/{run_id}/tasks": {
+      "get": {
+        "tags": [
+          "Pipelines"
+        ],
+        "summary": "Tasks in a run",
+        "operationId": "list_run_tasks_api_pipelines_runs__run_id__tasks_get",
+        "parameters": [
+          {
+            "name": "run_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Run Id"
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/PipelineTaskStatus"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Status"
+            }
+          },
+          {
+            "name": "stage",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/PipelineStageName"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Stage"
+            }
+          },
+          {
+            "name": "cursor",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Cursor"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 100,
+              "minimum": 1,
+              "default": 25,
+              "title": "Limit"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Page_TaskSummary_"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/pipelines/runs/{run_id}/retry": {
+      "post": {
+        "tags": [
+          "Pipelines"
+        ],
+        "summary": "Re-run only the tasks that failed",
+        "operationId": "retry_run_api_pipelines_runs__run_id__retry_post",
+        "parameters": [
+          {
+            "name": "run_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Run Id"
+            }
+          }
+        ],
+        "responses": {
+          "202": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RunAction"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/pipelines/runs/{run_id}/resume": {
+      "post": {
+        "tags": [
+          "Pipelines"
+        ],
+        "summary": "Reopen a stage and everything after it",
+        "operationId": "resume_api_pipelines_runs__run_id__resume_post",
+        "parameters": [
+          {
+            "name": "run_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Run Id"
+            }
+          },
+          {
+            "name": "from_stage",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/PipelineStageName",
+              "description": "Stage to resume from"
+            },
+            "description": "Stage to resume from"
+          }
+        ],
+        "responses": {
+          "202": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RunAction"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/pipelines/runs/{run_id}/cancel": {
+      "post": {
+        "tags": [
+          "Pipelines"
+        ],
+        "summary": "Stop a run at its next chunk boundary",
+        "operationId": "cancel_api_pipelines_runs__run_id__cancel_post",
+        "parameters": [
+          {
+            "name": "run_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Run Id"
+            }
+          }
+        ],
+        "responses": {
+          "202": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RunAction"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "CreateRunRequest": {
+        "properties": {
+          "alumni_ids": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Alumni Ids",
+            "description": "Comma-separated alumni IDs. All alumni in scope when omitted."
+          },
+          "failure_threshold": {
+            "anyOf": [
+              {
+                "type": "number",
+                "maximum": 1.0,
+                "minimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Failure Threshold",
+            "description": "Abort the run above this share of failed tasks. Defaults to 0.2."
+          }
+        },
+        "type": "object",
+        "title": "CreateRunRequest"
+      },
+      "EscoResult": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id",
+            "description": "ESCO classification ID"
+          },
+          "title": {
+            "type": "string",
+            "title": "Title",
+            "description": "ESCO classification title"
+          },
+          "confidence": {
+            "type": "number",
+            "title": "Confidence",
+            "description": "Confidence score of the classification"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "title",
+          "confidence"
+        ],
+        "title": "EscoResult",
+        "description": "Schema for ESCO classification result."
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "type": "array",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "title": "HTTPValidationError"
+      },
+      "LinkedInExtractProfileRequest": {
+        "properties": {
+          "alumni_ids": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Alumni Ids",
+            "description": "List of alumni IDs to extract"
+          }
+        },
+        "type": "object",
+        "required": [
+          "alumni_ids"
+        ],
+        "title": "LinkedInExtractProfileRequest",
+        "description": "Schema for requesting LinkedIn profile data extraction."
+      },
+      "LinkedInUpdateProfileRequest": {
+        "properties": {
+          "alumni_ids": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Alumni Ids",
+            "description": "List of alumni IDs to update"
+          }
+        },
+        "type": "object",
+        "required": [
+          "alumni_ids"
+        ],
+        "title": "LinkedInUpdateProfileRequest",
+        "description": "Schema for requesting LinkedIn profile data extraction."
+      },
+      "Page_RunSummary_": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/RunSummary"
+            },
+            "type": "array",
+            "title": "Items"
+          },
+          "next_cursor": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Next Cursor",
+            "description": "Pass back as `cursor` for the next page. Absent on the last page."
+          }
+        },
+        "type": "object",
+        "required": [
+          "items"
+        ],
+        "title": "Page[RunSummary]"
+      },
+      "Page_TaskSummary_": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/TaskSummary"
+            },
+            "type": "array",
+            "title": "Items"
+          },
+          "next_cursor": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Next Cursor",
+            "description": "Pass back as `cursor` for the next page. Absent on the last page."
+          }
+        },
+        "type": "object",
+        "required": [
+          "items"
+        ],
+        "title": "Page[TaskSummary]"
+      },
+      "PipelineEntityType": {
+        "type": "string",
+        "enum": [
+          "ALUMNI",
+          "ROLE",
+          "COMPANY",
+          "LOCATION"
+        ],
+        "title": "PipelineEntityType"
+      },
+      "PipelineKind": {
+        "type": "string",
+        "enum": [
+          "REFRESH_EXISTING",
+          "INGEST_COHORT"
+        ],
+        "title": "PipelineKind"
+      },
+      "PipelineRunStatus": {
+        "type": "string",
+        "enum": [
+          "PLANNING",
+          "PLANNED",
+          "RUNNING",
+          "COMPLETED",
+          "FAILED",
+          "CANCELLED"
+        ],
+        "title": "PipelineRunStatus"
+      },
+      "PipelineStageName": {
+        "type": "string",
+        "enum": [
+          "PLAN",
+          "LINKEDIN",
+          "COMPANY",
+          "CLASSIFY_ROLES",
+          "SENIORITY",
+          "LOCATION"
+        ],
+        "title": "PipelineStageName"
+      },
+      "PipelineStageStatus": {
+        "type": "string",
+        "enum": [
+          "PENDING",
+          "RUNNING",
+          "COMPLETED",
+          "FAILED",
+          "SKIPPED"
+        ],
+        "title": "PipelineStageStatus"
+      },
+      "PipelineTaskStatus": {
+        "type": "string",
+        "enum": [
+          "QUEUED",
+          "RUNNING",
+          "SUCCEEDED",
+          "FAILED",
+          "SKIPPED"
+        ],
+        "title": "PipelineTaskStatus"
+      },
+      "PipelineTrigger": {
+        "type": "string",
+        "enum": [
+          "ADMIN_UI",
+          "API",
+          "SCHEDULE"
+        ],
+        "title": "PipelineTrigger"
+      },
+      "RoleResolveLocationParams": {
+        "properties": {
+          "role_ids": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Role Ids"
+          }
+        },
+        "type": "object",
+        "title": "RoleResolveLocationParams"
+      },
+      "RunAction": {
+        "properties": {
+          "run_id": {
+            "type": "string",
+            "title": "Run Id"
+          },
+          "enqueued_stage": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/PipelineStageName"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "The stage put on the queue, if any work needed doing."
+          }
+        },
+        "type": "object",
+        "required": [
+          "run_id"
+        ],
+        "title": "RunAction"
+      },
+      "RunCreated": {
+        "properties": {
+          "run_id": {
+            "type": "string",
+            "title": "Run Id"
+          }
+        },
+        "type": "object",
+        "required": [
+          "run_id"
+        ],
+        "title": "RunCreated"
+      },
+      "RunDetail": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "kind": {
+            "$ref": "#/components/schemas/PipelineKind"
+          },
+          "status": {
+            "$ref": "#/components/schemas/PipelineRunStatus"
+          },
+          "trigger_source": {
+            "$ref": "#/components/schemas/PipelineTrigger"
+          },
+          "triggered_by": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Triggered By"
+          },
+          "params": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Params"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "started_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Started At"
+          },
+          "finished_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Finished At"
+          },
+          "error": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Error"
+          },
+          "counts": {
+            "$ref": "#/components/schemas/TaskCountsOut"
+          },
+          "stages": {
+            "items": {
+              "$ref": "#/components/schemas/StageSummary"
+            },
+            "type": "array",
+            "title": "Stages"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "kind",
+          "status",
+          "trigger_source",
+          "triggered_by",
+          "params",
+          "created_at",
+          "started_at",
+          "finished_at",
+          "error",
+          "counts",
+          "stages"
+        ],
+        "title": "RunDetail"
+      },
+      "RunSummary": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "kind": {
+            "$ref": "#/components/schemas/PipelineKind"
+          },
+          "status": {
+            "$ref": "#/components/schemas/PipelineRunStatus"
+          },
+          "trigger_source": {
+            "$ref": "#/components/schemas/PipelineTrigger"
+          },
+          "triggered_by": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Triggered By"
+          },
+          "params": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Params"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "started_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Started At"
+          },
+          "finished_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Finished At"
+          },
+          "error": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Error"
+          },
+          "counts": {
+            "$ref": "#/components/schemas/TaskCountsOut"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "kind",
+          "status",
+          "trigger_source",
+          "triggered_by",
+          "params",
+          "created_at",
+          "started_at",
+          "finished_at",
+          "error",
+          "counts"
+        ],
+        "title": "RunSummary"
+      },
+      "StageSummary": {
+        "properties": {
+          "stage": {
+            "$ref": "#/components/schemas/PipelineStageName"
+          },
+          "sequence": {
+            "type": "integer",
+            "title": "Sequence"
+          },
+          "status": {
+            "$ref": "#/components/schemas/PipelineStageStatus"
+          },
+          "total_count": {
+            "type": "integer",
+            "title": "Total Count"
+          },
+          "succeeded_count": {
+            "type": "integer",
+            "title": "Succeeded Count"
+          },
+          "failed_count": {
+            "type": "integer",
+            "title": "Failed Count"
+          },
+          "skipped_count": {
+            "type": "integer",
+            "title": "Skipped Count"
+          },
+          "started_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Started At"
+          },
+          "finished_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Finished At"
+          },
+          "error": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Error"
+          }
+        },
+        "type": "object",
+        "required": [
+          "stage",
+          "sequence",
+          "status",
+          "total_count",
+          "succeeded_count",
+          "failed_count",
+          "skipped_count",
+          "started_at",
+          "finished_at",
+          "error"
+        ],
+        "title": "StageSummary"
+      },
+      "TaskCountsOut": {
+        "properties": {
+          "total": {
+            "type": "integer",
+            "title": "Total"
+          },
+          "succeeded": {
+            "type": "integer",
+            "title": "Succeeded"
+          },
+          "failed": {
+            "type": "integer",
+            "title": "Failed"
+          },
+          "skipped": {
+            "type": "integer",
+            "title": "Skipped"
+          },
+          "pending": {
+            "type": "integer",
+            "title": "Pending"
+          }
+        },
+        "type": "object",
+        "required": [
+          "total",
+          "succeeded",
+          "failed",
+          "skipped",
+          "pending"
+        ],
+        "title": "TaskCountsOut"
+      },
+      "TaskSummary": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "entity_type": {
+            "$ref": "#/components/schemas/PipelineEntityType"
+          },
+          "entity_id": {
+            "type": "string",
+            "title": "Entity Id"
+          },
+          "status": {
+            "$ref": "#/components/schemas/PipelineTaskStatus"
+          },
+          "attempts": {
+            "type": "integer",
+            "title": "Attempts"
+          },
+          "error": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Error"
+          },
+          "result": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Result"
+          },
+          "started_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Started At"
+          },
+          "finished_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Finished At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "entity_type",
+          "entity_id",
+          "status",
+          "attempts",
+          "error",
+          "result",
+          "started_at",
+          "finished_at"
+        ],
+        "title": "TaskSummary"
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "type": "array",
+            "title": "Location"
+          },
+          "msg": {
+            "type": "string",
+            "title": "Message"
+          },
+          "type": {
+            "type": "string",
+            "title": "Error Type"
+          }
+        },
+        "type": "object",
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError"
+      }
+    }
+  }
+}
