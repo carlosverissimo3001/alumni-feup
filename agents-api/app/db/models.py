@@ -217,6 +217,12 @@ class JobClassification(Base):
     model_used = Column(String, nullable=False)
     metadata_ = Column(JSONB, name="metadata", nullable=True)
 
+    # NestJS writes these when a user accepts/corrects a classification in
+    # the profile UI (api/src/alumni/services/alumni-profile.service.ts) -
+    # mapped here so agents-api can avoid overwriting that feedback (CAR-480).
+    was_accepted_by_user = Column(Boolean, nullable=True)
+    was_modified_by_user = Column(Boolean, nullable=True)
+
     # Each job classification belongs to a single role (one-to-one)
     role = relationship("Role", back_populates="job_classification", uselist=False)
     esco_classification = relationship("EscoClassification", back_populates="job_classification")
@@ -274,6 +280,12 @@ class Role(Base):
     seniority_level = Column(Enum(SeniorityLevel), nullable=False, default=SeniorityLevel.ASSOCIATE)
     is_promotion = Column(Boolean, nullable=False, server_default="false")
     is_current = Column(Boolean, nullable=False, server_default="false")
+
+    # NestJS writes these when a user accepts/corrects a seniority level in
+    # the profile UI (api/src/alumni/services/alumni-profile.service.ts) -
+    # mapped here so agents-api can avoid overwriting that feedback (CAR-480).
+    was_seniority_level_accepted_by_user = Column(Boolean, nullable=True)
+    was_seniority_level_modified_by_user = Column(Boolean, nullable=True)
 
     # One-to-one relationship with JobClassification
     job_classification = relationship("JobClassification", back_populates="role", uselist=False)
