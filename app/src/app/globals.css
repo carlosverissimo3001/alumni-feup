@@ -75,4 +75,30 @@
   }
 }
 
+@layer utilities {
+  /* A container's own OS-default scrollbar paints over anything positioned
+     near it, including a portaled Radix dropdown (Select, Combobox) whose
+     trigger sits close to the container's edge - the scrollbar visibly cuts
+     through the dropdown's content. Thinning it down doesn't remove the
+     overlap, but makes it unnoticeable. Apply to any internally-scrolling
+     container that sits near a dropdown trigger (e.g. a table with its own
+     max-height + overflow-y-auto). */
+  .scrollbar-thin {
+    scrollbar-width: thin; /* Firefox */
+  }
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 8px;
+  }
+  .scrollbar-thin::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    background: hsl(var(--border));
+    border-radius: 9999px;
+  }
+  .scrollbar-thin::-webkit-scrollbar-thumb:hover {
+    background: hsl(var(--muted-foreground) / 0.4);
+  }
+}
+
 
