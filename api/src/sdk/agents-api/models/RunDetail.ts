@@ -87,6 +87,12 @@ export interface RunDetail {
     triggeredBy: string | null;
     /**
      * 
+     * @type {string}
+     * @memberof RunDetail
+     */
+    label?: string | null;
+    /**
+     * 
      * @type {{ [key: string]: any; }}
      * @memberof RunDetail
      */
@@ -165,6 +171,7 @@ export function RunDetailFromJSONTyped(json: any, ignoreDiscriminator: boolean):
         'status': PipelineRunStatusFromJSON(json['status']),
         'triggerSource': PipelineTriggerFromJSON(json['trigger_source']),
         'triggeredBy': json['triggered_by'],
+        'label': json['label'] == null ? undefined : json['label'],
         'params': json['params'],
         'createdAt': (new Date(json['created_at'])),
         'startedAt': (json['started_at'] == null ? null : new Date(json['started_at'])),
@@ -191,6 +198,7 @@ export function RunDetailToJSONTyped(value?: RunDetail | null, ignoreDiscriminat
         'status': PipelineRunStatusToJSON(value['status']),
         'trigger_source': PipelineTriggerToJSON(value['triggerSource']),
         'triggered_by': value['triggeredBy'],
+        'label': value['label'],
         'params': value['params'],
         'created_at': value['createdAt'].toISOString(),
         'started_at': value['startedAt'] == null ? value['startedAt'] : value['startedAt'].toISOString(),

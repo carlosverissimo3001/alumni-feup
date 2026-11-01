@@ -85,6 +85,7 @@ export class AgentsApiService {
   async createPipelineRun(
     alumniIds: string[],
     triggeredBy?: string,
+    label?: string,
   ): Promise<RunCreated> {
     try {
       return await this.pipelinesApi.createPipelineRunApiPipelinesKindRunsPost({
@@ -93,6 +94,7 @@ export class AgentsApiService {
           alumniIds: alumniIds.join(','),
           triggerSource: PipelineTrigger.AdminUi,
           triggeredBy,
+          label,
         },
       });
     } catch (error: unknown) {

@@ -47,9 +47,15 @@ export class FileUploadService {
     const createdAlumni = await this.parseFile(file.path, dto);
     fs.unlinkSync(file.path);
 
+    const course = await this.prisma.course.findUnique({
+      where: { id: dto.courseId },
+      select: { acronym: true },
+    });
+
     const { runId } = await this.agentsApiService.createPipelineRun(
       createdAlumni,
       triggeredBy,
+      course?.acronym,
     );
 
     return { count: createdAlumni.length, runId };

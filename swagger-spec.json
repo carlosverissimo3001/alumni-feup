@@ -3851,6 +3851,10 @@
             "type": "string",
             "nullable": true
           },
+          "label": {
+            "type": "string",
+            "nullable": true
+          },
           "params": {
             "type": "object",
             "nullable": true,
@@ -3884,6 +3888,7 @@
           "status",
           "triggerSource",
           "triggeredBy",
+          "label",
           "params",
           "createdAt",
           "startedAt",
@@ -4013,6 +4018,10 @@
             "type": "string",
             "nullable": true
           },
+          "label": {
+            "type": "string",
+            "nullable": true
+          },
           "params": {
             "type": "object",
             "nullable": true,
@@ -4052,6 +4061,7 @@
           "status",
           "triggerSource",
           "triggeredBy",
+          "label",
           "params",
           "createdAt",
           "startedAt",

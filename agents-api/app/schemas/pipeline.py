@@ -59,6 +59,9 @@ class RunSummary(BaseModel):
     status: PipelineRunStatus
     trigger_source: PipelineTrigger
     triggered_by: Optional[str]
+    label: Optional[str] = Field(
+        None, description="Human-readable label for the run, e.g. the course/cohort name."
+    )
     params: Optional[Dict[str, Any]]
     created_at: datetime
     started_at: Optional[datetime]
@@ -112,6 +115,9 @@ class CreateRunRequest(BaseModel):
     )
     triggered_by: Optional[str] = Field(
         None, description="Caller-supplied identity of whoever/whatever started the run."
+    )
+    label: Optional[str] = Field(
+        None, description="Human-readable label for the run, e.g. the course/cohort name."
     )
 
 

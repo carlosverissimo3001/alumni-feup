@@ -66,6 +66,12 @@ export interface RunDetailDto {
     triggeredBy: string | null;
     /**
      * 
+     * @type {string}
+     * @memberof RunDetailDto
+     */
+    label: string | null;
+    /**
+     * 
      * @type {{ [key: string]: any; }}
      * @memberof RunDetailDto
      */
@@ -151,6 +157,7 @@ export function instanceOfRunDetailDto(value: object): value is RunDetailDto {
     if (!('status' in value) || value['status'] === undefined) return false;
     if (!('triggerSource' in value) || value['triggerSource'] === undefined) return false;
     if (!('triggeredBy' in value) || value['triggeredBy'] === undefined) return false;
+    if (!('label' in value) || value['label'] === undefined) return false;
     if (!('params' in value) || value['params'] === undefined) return false;
     if (!('createdAt' in value) || value['createdAt'] === undefined) return false;
     if (!('startedAt' in value) || value['startedAt'] === undefined) return false;
@@ -176,6 +183,7 @@ export function RunDetailDtoFromJSONTyped(json: any, ignoreDiscriminator: boolea
         'status': json['status'],
         'triggerSource': json['triggerSource'],
         'triggeredBy': json['triggeredBy'],
+        'label': json['label'],
         'params': json['params'],
         'createdAt': (new Date(json['createdAt'])),
         'startedAt': (json['startedAt'] == null ? null : new Date(json['startedAt'])),
@@ -202,6 +210,7 @@ export function RunDetailDtoToJSONTyped(value?: RunDetailDto | null, ignoreDiscr
         'status': value['status'],
         'triggerSource': value['triggerSource'],
         'triggeredBy': value['triggeredBy'],
+        'label': value['label'],
         'params': value['params'],
         'createdAt': value['createdAt'].toISOString(),
         'startedAt': value['startedAt'] == null ? value['startedAt'] : value['startedAt'].toISOString(),

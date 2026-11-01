@@ -106,6 +106,7 @@ const PipelineRunsPage = () => {
                   <thead className="sticky top-0 z-10">
                     <tr className="border-b bg-gray-50">
                       <th className="text-left py-2 px-3 text-[#8C2D19] text-sm">Kind</th>
+                      <th className="text-left py-2 px-3 text-[#8C2D19] text-sm">Label</th>
                       <th className="text-left py-2 px-3 text-[#8C2D19] text-sm">Status</th>
                       <th className="text-left py-2 px-3 text-[#8C2D19] text-sm">Trigger</th>
                       <th className="text-left py-2 px-3 text-[#8C2D19] text-sm">
@@ -124,6 +125,9 @@ const PipelineRunsPage = () => {
                       >
                         <td className="py-2 px-3 text-gray-700 text-sm">
                           {run.kind ? formatEnumLabel(run.kind) : "-"}
+                        </td>
+                        <td className="py-2 px-3 text-gray-700 text-sm font-medium">
+                          {run.label ?? "-"}
                         </td>
                         <td className="py-2 px-3 text-sm">
                           <Badge className={statusBadgeClassName(run.status)}>
