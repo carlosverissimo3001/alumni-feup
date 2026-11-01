@@ -23,7 +23,18 @@ class JobClassificationService:
         self.ROLES_PER_ALUMNUS_CHUNK = 25
         self.BATCH_SIZE = 50
 
-    async def classify_roles_for_alumni(self, alumni_id: str):
+    async def classify_roles_for_alumni(
+        self, alumni_id: str, skip_followup_seniority: bool = False
+    ):
+        """
+        Args:
+            alumni_id: the alumnus to classify.
+            skip_followup_seniority: True when the caller already runs
+                seniority classification explicitly right after (e.g. the
+                pipeline's SENIORITY stage), so the background seniority call
+                this method would otherwise fire is redundant. Other callers
+                have no such follow-up and keep the default.
+        """
         try:
             # Its own session: these run concurrently under asyncio.gather.
             with session_scope() as db:
@@ -35,7 +46,9 @@ class JobClassificationService:
             for i in range(0, len(roles), self.ROLES_PER_ALUMNUS_CHUNK):
                 batch = roles[i : i + self.ROLES_PER_ALUMNUS_CHUNK]
                 await with_pipeline_timeout(
-                    job_classification_agent._process_roles_batch(batch, alumni_id),
+                    job_classification_agent._process_roles_batch(
+                        batch, alumni_id, skip_followup_seniority=skip_followup_seniority
+                    ),
                     step="job_classification.process_roles_batch",
                 )
                 if i + self.ROLES_PER_ALUMNUS_CHUNK < len(roles):

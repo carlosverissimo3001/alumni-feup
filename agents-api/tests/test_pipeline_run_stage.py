@@ -118,7 +118,7 @@ class TestConvertedStage:
 
 
 class TestUnconvertedStage:
-    # LINKEDIN and CLASSIFY_ROLES are converted; COMPANY (and SENIORITY,
+    # LINKEDIN, CLASSIFY_ROLES, and SENIORITY are converted; COMPANY (and
     # LOCATION) are still on their old coarse tasks - using COMPANY here so
     # this keeps testing a genuinely unconverted stage as more get converted.
     async def test_is_skipped_rather_than_failed(self, db, run, enqueued):
