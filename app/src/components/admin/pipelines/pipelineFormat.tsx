@@ -26,6 +26,29 @@ export const statusBadgeClassName = (status: string): string => {
   }
 };
 
+// Solid fills for a progress bar's indicator, keyed the same way as
+// statusBadgeClassName - red should mean "failed", not just "has a value".
+export const progressIndicatorClassName = (status: string): string => {
+  switch (status) {
+    case "RUNNING":
+      return "bg-blue-500";
+    case "SUCCEEDED":
+    case "COMPLETED":
+      return "bg-green-500";
+    case "FAILED":
+      return "bg-red-500";
+    case "CANCELLED":
+    case "SKIPPED":
+      return "bg-gray-300";
+    case "PLANNING":
+    case "PLANNED":
+    case "QUEUED":
+    case "PENDING":
+    default:
+      return "bg-amber-400";
+  }
+};
+
 export const formatEnumLabel = (value: string): string =>
   value
     .split("_")
