@@ -3,13 +3,7 @@
 import { useState, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { Combobox } from "@/components/ui/combobox";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useCSVUpload } from "@/hooks/file/useCSVupload";
@@ -52,6 +46,23 @@ const CSVUpload = () => {
     setCourseId(undefined);
     clearFile();
   };
+
+  const handleFacultyChange = (value: string | null) => {
+    setFacultyId(value || undefined);
+    setCourseId(undefined);
+  };
+
+  const facultyOptions =
+    faculties?.map((fac) => ({
+      value: fac.id,
+      label: fac.acronym ? `${fac.acronym} - ${fac.name}` : fac.name,
+    })) || [];
+
+  const courseOptions =
+    courses?.map((c) => ({
+      value: c.id,
+      label: c.acronym ? `${c.acronym} - ${c.name}` : c.name,
+    })) || [];
 
   const handleUpload = async () => {
     if (!facultyId || !courseId) return;
@@ -101,54 +112,36 @@ const CSVUpload = () => {
               <Label htmlFor="faculty" className="text-sm font-medium">
                 Faculty
               </Label>
-              <Select
-                onValueChange={setFacultyId}
+              <Combobox
+                options={facultyOptions}
+                value={facultyId || null}
+                onChange={handleFacultyChange}
                 disabled={isLoading}
-                value={facultyId || ""}
-              >
-                <SelectTrigger
-                  id="faculty"
-                  className="h-11 border-slate-200 focus:ring-2 focus:ring-primary/20"
-                >
-                  <SelectValue placeholder="Choose a faculty" />
-                </SelectTrigger>
-                <SelectContent>
-                  {faculties?.map((fac) => (
-                    <SelectItem key={fac.id} value={fac.id}>
-                      {fac.acronym && `${fac.acronym} - ${fac.name}`}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+                placeholder="Choose a faculty"
+                searchPlaceholder="Search faculties..."
+                emptyMessage="No faculties found."
+                isLoading={isLoadingFaculties}
+                className="h-11 border-slate-200 focus:ring-2 focus:ring-primary/20"
+              />
             </div>
 
             <div className="space-y-2">
               <Label htmlFor="course" className="text-sm font-medium">
                 Course
               </Label>
-              <Select
-                onValueChange={setCourseId}
+              <Combobox
+                options={courseOptions}
+                value={courseId || null}
+                onChange={(value) => setCourseId(value || undefined)}
                 disabled={isLoading || !facultyId}
-                value={courseId || ""}
-              >
-                <SelectTrigger
-                  id="course"
-                  className="h-11 border-slate-200 focus:ring-2 focus:ring-primary/20"
-                >
-                  <SelectValue
-                    placeholder={
-                      facultyId ? "Choose a course" : "Select a faculty first"
-                    }
-                  />
-                </SelectTrigger>
-                <SelectContent>
-                  {courses?.map((c) => (
-                    <SelectItem key={c.id} value={c.id}>
-                      {c.acronym && `${c.acronym} - ${c.name}`}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+                placeholder={
+                  facultyId ? "Choose a course" : "Select a faculty first"
+                }
+                searchPlaceholder="Search courses..."
+                emptyMessage="No courses found."
+                isLoading={isLoadingCourses}
+                className="h-11 border-slate-200 focus:ring-2 focus:ring-primary/20"
+              />
             </div>
           </div>
           <div className="space-y-2">

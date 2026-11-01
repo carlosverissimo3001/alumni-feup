@@ -1,9 +1,7 @@
 import { CourseAnalyticsEntity as Course, Faculty } from "@/sdk";
 import { CourseAnalyticsEntityStatusEnum as CourseStatusEnum } from "@/sdk";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
-import { SelectContent, SelectItem, SelectValue } from "../ui/select";
-import { SelectTrigger } from "../ui/select";
-import { Select } from "../ui/select";
+import { Combobox } from "../ui/combobox";
 import { useState } from "react";
 import { ArrowUpDown } from "lucide-react";
 import { Button } from "../ui/button";
@@ -95,19 +93,20 @@ export default function CourseTable({
             Courses {courses && courses.length > 0 && `(${courses.length})`}
           </span>
           <div className="w-64">
-            <Select value={filterFacultyId} onValueChange={setFilterFacultyId}>
-              <SelectTrigger className="border-gray-300 focus:border-[#A13A23] focus:ring focus:ring-[#A13A23]/20 transition-all duration-200">
-                <SelectValue placeholder="Filter by faculty" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Faculties</SelectItem>
-                {faculties?.map((faculty: Faculty) => (
-                  <SelectItem key={faculty.id} value={faculty.id}>
-                    {faculty.acronym} - {faculty.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            <Combobox
+              options={[
+                { value: "all", label: "All Faculties" },
+                ...(faculties?.map((faculty: Faculty) => ({
+                  value: faculty.id,
+                  label: `${faculty.acronym} - ${faculty.name}`,
+                })) || []),
+              ]}
+              value={filterFacultyId}
+              onChange={(value) => setFilterFacultyId(value || "all")}
+              placeholder="Filter by faculty"
+              searchPlaceholder="Search faculties..."
+              className="border-gray-300 focus:border-[#A13A23] focus:ring focus:ring-[#A13A23]/20 transition-all duration-200"
+            />
           </div>
         </CardTitle>
       </CardHeader>
