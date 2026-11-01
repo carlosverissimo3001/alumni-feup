@@ -6,6 +6,7 @@ import {
   CardDescription,
 } from "@/components/ui/card";
 import {
+  ActivityIcon,
   BookOpenIcon,
   CreditCardIcon,
   FileSpreadsheetIcon,
@@ -51,6 +52,12 @@ const AdminDashboard = () => {
       description: "Search users and assign resource-level permissions",
       icon: <ShieldCheckIcon className="h-6 w-6" />,
       href: "/admin/manage-permissions",
+    },
+    {
+      title: "Pipeline Runs",
+      description: "View-only status of alumni data pipeline runs",
+      icon: <ActivityIcon className="h-6 w-6" />,
+      href: "/admin/pipeline-runs",
     },
     /* {
       title: "Invite User",
