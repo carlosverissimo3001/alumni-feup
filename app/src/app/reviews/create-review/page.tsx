@@ -10,13 +10,7 @@ import { useRouter } from "next/navigation";
 import { TextArea } from "@/components/ui/text-area";
 import { Label } from "@/components/ui/label";
 import { ReviewType } from "@/components/map/utils/reviewhelper";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { Combobox } from "@/components/ui/combobox";
 import { useReviewSubmit } from "@/hooks/reviews/useReviewSubmit";
 import { CreateReviewDto } from "@/sdk/models/CreateReviewDto";
 import { ExtendedCompanyDto } from "@/sdk/models/ExtendedCompanyDto";
@@ -49,6 +43,7 @@ const SubmitReview = () => {
 
     const {
         data: pastLocationsAndCompanies,
+        isLoading: isLoadingLocationsAndCompanies,
     } = useFetchPastLocationsAndCompanies(user?.id as string);
 
     const companies = transformData(pastLocationsAndCompanies?.companies);
@@ -64,7 +59,13 @@ const SubmitReview = () => {
     const [anonymous, setAnonymous] = useState<boolean>(false);
     const [errors, setErrors] = useState<Errors>({});
 
-    const setSelectedCompany = (value: string) => {
+    const setSelectedCompany = (value: string | null) => {
+      if (value === null) {
+        setSelectedCompanyTransform('');
+        setSelectedCompanyDefault(undefined);
+        setSelectedLocation(undefined);
+        return;
+      }
       const index = Number(value);
       setSelectedCompanyTransform(value);
       setSelectedCompanyDefault(companies[index].companyId);
@@ -75,8 +76,8 @@ const SubmitReview = () => {
       }));
     };
 
-    const setSelectedLocationForm = (value: string) => {
-      setSelectedLocation(value);
+    const setSelectedLocationForm = (value: string | null) => {
+      setSelectedLocation(value || undefined);
       setErrors((prev) => ({
         ...prev,
         selectedLocation: '',
@@ -261,44 +262,34 @@ const SubmitReview = () => {
                  (!selectedLocation && reviewType === ReviewType.Location)) && <span className="text-red-500">*</span>}
               </Label>
                 {reviewType === ReviewType.Company ? (
-                  <Select
-                      value={selectCompanyTransform}
-                      onValueChange={setSelectedCompany}
-                    >
-                      <SelectTrigger className="mt-1.5">
-                        <SelectValue placeholder="The companies you have worked at" />
-                      </SelectTrigger>
-                      <SelectContent>            
-                        {companies.length != 0 ?  companies.map((company) => (
-                          <SelectItem key={company.id} value={company.id}>
-                             {company.companyName}, {company.locationCity}, {company.locationCountry}
-                          </SelectItem>
-                        )) : (
-                          <SelectItem value="0" disabled>
-                            No companies available
-                          </SelectItem>
-                        )}
-                      </SelectContent>
-                    </Select>) : (
-                      <Select
-                      value={selectedLocation}
-                      onValueChange={setSelectedLocationForm}
-                    >
-                      <SelectTrigger className="mt-1.5">
-                        <SelectValue placeholder="The locations where you have worked" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {locations?.length != 0 ? locations?.map((location) => (
-                          <SelectItem key={location.id} value={location.id!}>
-                             {location.city}, {location.country}
-                          </SelectItem>
-                        )) : (
-                          <SelectItem value="0" disabled>
-                            No locations available
-                          </SelectItem>
-                        )}
-                      </SelectContent>
-                    </Select>)}
+                  <Combobox
+                      options={companies.map((company) => ({
+                        value: company.id,
+                        label: `${company.companyName}, ${company.locationCity}, ${company.locationCountry}`,
+                      }))}
+                      value={selectCompanyTransform || null}
+                      onChange={setSelectedCompany}
+                      placeholder="The companies you have worked at"
+                      searchPlaceholder="Search companies..."
+                      emptyMessage="No companies available."
+                      isLoading={isLoadingLocationsAndCompanies}
+                      className="mt-1.5"
+                    />) : (
+                      <Combobox
+                      options={
+                        locations?.map((location) => ({
+                          value: location.id!,
+                          label: `${location.city}, ${location.country}`,
+                        })) || []
+                      }
+                      value={selectedLocation || null}
+                      onChange={setSelectedLocationForm}
+                      placeholder="The locations where you have worked"
+                      searchPlaceholder="Search locations..."
+                      emptyMessage="No locations available."
+                      isLoading={isLoadingLocationsAndCompanies}
+                      className="mt-1.5"
+                    />)}
 
                     {reviewType === ReviewType.Company ? 
                       errors.selectedCompany ? 

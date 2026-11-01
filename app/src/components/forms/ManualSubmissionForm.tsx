@@ -12,6 +12,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Combobox } from "@/components/ui/combobox";
 import { MultiSelect } from "@/components/ui/multi-select";
 import { useListFaculties } from "@/hooks/faculty/useListFaculties";
 import { useListCourses } from "@/hooks/courses/useListCourses";
@@ -421,22 +422,24 @@ const ManualSubmissionForm = ({ onBack }: ManualSubmissionFormProps) => {
                         <Label htmlFor="faculty" className="text-sm font-medium">
                           Faculty <span className="text-destructive">*</span>
                         </Label>
-                        <Select
-                          value={selectedFaculty}
-                          onValueChange={setSelectedFaculty}
+                        <Combobox
+                          options={
+                            faculties?.map((faculty) => ({
+                              value: faculty.id,
+                              label: `${faculty.acronym} - ${faculty.name}`,
+                            })) || []
+                          }
+                          value={selectedFaculty || null}
+                          onChange={(value) =>
+                            setSelectedFaculty(value || undefined)
+                          }
                           disabled={isLoadingFaculties}
-                        >
-                          <SelectTrigger className="mt-1.5">
-                            <SelectValue placeholder="Select your faculty" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {faculties?.map((faculty) => (
-                              <SelectItem key={faculty.id} value={faculty.id}>
-                                {faculty.acronym} - {faculty.name}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
+                          placeholder="Select your faculty"
+                          searchPlaceholder="Search faculties..."
+                          emptyMessage="No faculties found."
+                          isLoading={isLoadingFaculties}
+                          className="mt-1.5"
+                        />
                       </div>
 
                       <div>

@@ -20,6 +20,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Combobox } from "@/components/ui/combobox";
 import {
   Faculty,
   CreateCourseDtoCourseTypeEnum,
@@ -345,22 +346,22 @@ export default function FacultyAndCourseManagement() {
                       >
                         Faculty
                       </Label>
-                      <Select
-                        value={selectedFacultyId}
-                        onValueChange={setSelectedFacultyId}
+                      <Combobox
+                        options={
+                          faculties?.map((faculty: Faculty) => ({
+                            value: faculty.id,
+                            label: `${faculty.acronym} - ${faculty.name}`,
+                          })) || []
+                        }
+                        value={selectedFacultyId || null}
+                        onChange={(value) => setSelectedFacultyId(value || "")}
                         disabled={isLoadingFaculties || !faculties}
-                      >
-                        <SelectTrigger className="mt-1 border-gray-300 focus:border-[#A13A23] focus:ring focus:ring-[#A13A23]/20 transition-all duration-200">
-                          <SelectValue placeholder="Select a faculty" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {faculties?.map((faculty: Faculty) => (
-                            <SelectItem key={faculty.id} value={faculty.id}>
-                              {faculty.acronym} - {faculty.name}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
+                        placeholder="Select a faculty"
+                        searchPlaceholder="Search faculties..."
+                        emptyMessage="No faculties found."
+                        isLoading={isLoadingFaculties}
+                        className="mt-1 border-gray-300 focus:border-[#A13A23] focus:ring focus:ring-[#A13A23]/20 transition-all duration-200"
+                      />
                     </div>
                     <div>
                       <Label
