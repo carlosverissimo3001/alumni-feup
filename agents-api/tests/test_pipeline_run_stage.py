@@ -118,20 +118,21 @@ class TestConvertedStage:
 
 
 class TestUnconvertedStage:
+    # LINKEDIN and CLASSIFY_ROLES are converted; COMPANY (and SENIORITY,
+    # LOCATION) are still on their old coarse tasks - using COMPANY here so
+    # this keeps testing a genuinely unconverted stage as more get converted.
     async def test_is_skipped_rather_than_failed(self, db, run, enqueued):
-        # Five of six stages are still on their old coarse tasks. Failing here
-        # would strand every run at LINKEDIN and never reach CLASSIFY_ROLES.
-        await run_stage(None, run.id, PipelineStageName.LINKEDIN.value)
+        # Failing here would strand every run at COMPANY and never reach
+        # CLASSIFY_ROLES.
+        await run_stage(None, run.id, PipelineStageName.COMPANY.value)
 
-        assert _stage(db, run.id, PipelineStageName.LINKEDIN).status is (
-            PipelineStageStatus.SKIPPED
-        )
+        assert _stage(db, run.id, PipelineStageName.COMPANY).status is (PipelineStageStatus.SKIPPED)
 
     async def test_still_advances_the_chain(self, db, run, enqueued):
-        await run_stage(None, run.id, PipelineStageName.LINKEDIN.value)
+        await run_stage(None, run.id, PipelineStageName.COMPANY.value)
 
         assert enqueued == [
-            ("run_stage", {"run_id": run.id, "stage": PipelineStageName.COMPANY.value})
+            ("run_stage", {"run_id": run.id, "stage": PipelineStageName.CLASSIFY_ROLES.value})
         ]
 
 

@@ -536,6 +536,57 @@
         }
       }
     },
+    "/api/pipelines/{kind}/runs/preflight": {
+      "post": {
+        "tags": [
+          "Pipelines"
+        ],
+        "summary": "Resolve the scope a run would cover, without creating or enqueueing it",
+        "operationId": "preflight_pipeline_run_api_pipelines__kind__runs_preflight_post",
+        "parameters": [
+          {
+            "name": "kind",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/PipelineKind"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateRunRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RunPreflight"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/pipelines/{kind}/runs": {
       "post": {
         "tags": [
@@ -975,7 +1026,13 @@
               }
             ],
             "title": "Alumni Ids",
-            "description": "Comma-separated alumni IDs. All alumni in scope when omitted."
+            "description": "Comma-separated alumni IDs. Required unless confirm_all_alumni is set - omitting it no longer scopes to every alumni record."
+          },
+          "confirm_all_alumni": {
+            "type": "boolean",
+            "title": "Confirm All Alumni",
+            "description": "Explicit opt-in required to scope the run to every alumni record (when alumni_ids is omitted) or to a resolved scope above PIPELINE_RUN_SIZE_CAP. Call the /preflight endpoint first to see the count this would resolve to.",
+            "default": false
           },
           "failure_threshold": {
             "anyOf": [
@@ -990,6 +1047,29 @@
             ],
             "title": "Failure Threshold",
             "description": "Abort the run above this share of failed tasks. Defaults to 0.2."
+          },
+          "trigger_source": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/PipelineTrigger"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Defaults to API when omitted."
+          },
+          "triggered_by": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Triggered By",
+            "description": "Caller-supplied identity of whoever/whatever started the run."
           }
         },
         "type": "object",
@@ -1359,6 +1439,30 @@
           "stages"
         ],
         "title": "RunDetail"
+      },
+      "RunPreflight": {
+        "properties": {
+          "resolved_count": {
+            "type": "integer",
+            "title": "Resolved Count"
+          },
+          "cap": {
+            "type": "integer",
+            "title": "Cap"
+          },
+          "requires_confirmation": {
+            "type": "boolean",
+            "title": "Requires Confirmation",
+            "description": "True when creating this run as given would be rejected without confirm_all_alumni."
+          }
+        },
+        "type": "object",
+        "required": [
+          "resolved_count",
+          "cap",
+          "requires_confirmation"
+        ],
+        "title": "RunPreflight"
       },
       "RunSummary": {
         "properties": {

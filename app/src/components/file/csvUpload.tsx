@@ -1,11 +1,14 @@
 "use client";
 
 import { useState, useCallback } from "react";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Combobox } from "@/components/ui/combobox";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { ToastAction } from "@/components/ui/toast";
+import { useToast } from "@/hooks/misc/useToast";
 import { useCSVUpload } from "@/hooks/file/useCSVupload";
 import { FileSpreadsheetIcon, UploadIcon, InfoIcon } from "lucide-react";
 import { CSVInfoPanel } from "@/components/file/csvInfoPanel";
@@ -29,6 +32,8 @@ const CSVUpload = () => {
   const [facultyId, setFacultyId] = useState<string | undefined>(undefined);
   const [courseId, setCourseId] = useState<string | undefined>(undefined);
   const [showInfo, setShowInfo] = useState(false);
+  const router = useRouter();
+  const { toast } = useToast();
 
   const { data: faculties, isLoading: isLoadingFaculties } = useListFaculties();
 
@@ -67,12 +72,24 @@ const CSVUpload = () => {
   const handleUpload = async () => {
     if (!facultyId || !courseId) return;
 
-    const success = await uploadFile({
+    const runId = await uploadFile({
       facultyId,
       courseId,
     });
 
-    if (success) {
+    if (runId) {
+      toast({
+        title: "Upload complete",
+        description: "Processing has started for the uploaded alumni.",
+        action: (
+          <ToastAction
+            altText="View run"
+            onClick={() => router.push(`/admin/pipeline-runs/${runId}`)}
+          >
+            View run
+          </ToastAction>
+        ),
+      });
       setTimeout(() => {
         handleClearSelection();
       }, 2000);

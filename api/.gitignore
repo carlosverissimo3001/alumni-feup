@@ -46,6 +46,10 @@ lerna-debug.log*
 .temp
 .tmp
 
+# transient multer upload destination - unlinked after processing on the
+# happy path, but can leak on an error path before that cleanup runs
+/uploads
+
 # Runtime data
 pids
 *.pid

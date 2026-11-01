@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { MAX_FILE_SIZE } from "@/consts";
+import { UploadExtractionResponseDto } from "@/sdk";
 
 type UploadParams = {
   facultyId: string;
@@ -11,6 +12,7 @@ export const useCSVUpload = () => {
   const [error, setError] = useState<string | null>(null);
   const [isUploading, setIsUploading] = useState(false);
   const [uploadSuccess, setUploadSuccess] = useState(false);
+  const [runId, setRunId] = useState<string | null>(null);
 
   const validateFile = (selectedFile: File | null | undefined) => {
     if (!selectedFile) {
@@ -46,12 +48,16 @@ export const useCSVUpload = () => {
     setFile(null);
     setError(null);
     setUploadSuccess(false);
+    setRunId(null);
   };
 
-  const uploadFile = async ({ facultyId, courseId }: UploadParams) => {
+  const uploadFile = async ({
+    facultyId,
+    courseId,
+  }: UploadParams): Promise<string | null> => {
     if (!file) {
       setError("No file selected.");
-      return false;
+      return null;
     }
 
     setIsUploading(true);
@@ -68,6 +74,7 @@ export const useCSVUpload = () => {
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/files`, {
         method: "POST",
         body: formData,
+        credentials: "include",
       });
 
       if (!response.ok) {
@@ -75,15 +82,17 @@ export const useCSVUpload = () => {
         throw new Error(errorData.message || "Upload failed");
       }
 
+      const data: UploadExtractionResponseDto = await response.json();
       setUploadSuccess(true);
-      return true;
+      setRunId(data.runId);
+      return data.runId;
     } catch (error: unknown) {
       if (error instanceof Error) {
         setError(error.message);
       } else {
         setError("Upload failed");
       }
-      return false;
+      return null;
     } finally {
       setIsUploading(false);
     }
@@ -94,6 +103,7 @@ export const useCSVUpload = () => {
     error,
     isUploading,
     uploadSuccess,
+    runId,
     handleFileChange,
     clearFile,
     uploadFile,

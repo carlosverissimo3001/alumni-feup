@@ -2101,11 +2101,11 @@
         },
         "responses": {
           "default": {
-            "description": "Returns the status of the upload",
+            "description": "The created-alumni count and the pipeline run started for them",
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "string"
+                  "$ref": "#/components/schemas/UploadExtractionResponseDto"
                 }
               }
             }
@@ -5560,6 +5560,23 @@
         "required": [
           "facultyId",
           "courseId"
+        ]
+      },
+      "UploadExtractionResponseDto": {
+        "type": "object",
+        "properties": {
+          "count": {
+            "type": "number",
+            "description": "Number of alumni created from the CSV"
+          },
+          "runId": {
+            "type": "string",
+            "description": "Pipeline run started for the newly created alumni"
+          }
+        },
+        "required": [
+          "count",
+          "runId"
         ]
       },
       "ReviewGeoJSONFeature": {

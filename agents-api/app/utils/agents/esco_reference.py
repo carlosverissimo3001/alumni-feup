@@ -1,28 +1,11 @@
-from functools import lru_cache
 from typing import List
 
-from sentence_transformers.cross_encoder import CrossEncoder
 from sqlalchemy import select
 
 from app.db import get_db
 from app.db.models import EscoClassification
 from app.schemas.job_classification import EscoResult
 from app.utils.embeddings import generate_embedding
-
-# Keep in sync with scripts/prefetch_models.py, which warms the HF cache at build time.
-CROSS_ENCODER_MODEL = "cross-encoder/ms-marco-MiniLM-L-6-v2"
-
-
-@lru_cache(maxsize=1)
-def get_cross_encoder() -> CrossEncoder:
-    """Load the reranker on first use, not at import.
-
-    Constructing a CrossEncoder reaches out to the HuggingFace Hub whenever the
-    local cache is cold, so doing it at module scope made this module — and
-    everything importing it, including app.main — impossible to import without
-    network access. Deferring the load also keeps it off the startup path.
-    """
-    return CrossEncoder(CROSS_ENCODER_MODEL, device="cpu")
 
 
 def search_esco_classifications(query: str, top_k: int = 20) -> List[EscoResult]:
@@ -92,13 +75,15 @@ def search_esco_classifications(query: str, top_k: int = 20) -> List[EscoResult]
             )
             for row in results
         ]
-        return rerank_esco(query, results, top_k=5)
+        # rerank_esco (an English-only MS MARCO cross-encoder) used to narrow this
+        # down to 5. It has no multilingual training, so fed a non-English title
+        # (e.g. PT "Investigadora") it reranks on surface lexical overlap with the
+        # English ESCO titles ("Investigator") rather than meaning, and can push
+        # the genuinely correct match out of the shortlist before the LLM ever
+        # sees it. cosine similarity from text-embedding-3-large is itself
+        # multilingual, so trusting its ordering directly removes that failure
+        # mode; this is a correctness fix, not just a perf one - see CAR ticket
+        # for the broader retrieval/validation redesign this is part of.
+        return results[:8]
     except Exception as e:
         raise Exception(f"Error searching ESCO classifications: {str(e)}")
-
-
-def rerank_esco(query: str, results: List[EscoResult], top_k: int = 5) -> List[EscoResult]:
-    pairs = [[query, r.title] for r in results]
-    scores = get_cross_encoder().predict(pairs)
-    ranked = sorted(zip(results, scores), key=lambda x: x[1], reverse=True)
-    return [r for r, _ in ranked[:top_k]]

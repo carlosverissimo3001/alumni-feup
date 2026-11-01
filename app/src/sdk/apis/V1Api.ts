@@ -52,6 +52,7 @@ import type {
   UpdateRoleVisibilityDto,
   UpdateSeniorityLevelDto,
   UploadExtractionDto,
+  UploadExtractionResponseDto,
   UpsertPermissionDto,
   User,
   UserAuthResponse,
@@ -133,6 +134,8 @@ import {
     UpdateSeniorityLevelDtoToJSON,
     UploadExtractionDtoFromJSON,
     UploadExtractionDtoToJSON,
+    UploadExtractionResponseDtoFromJSON,
+    UploadExtractionResponseDtoToJSON,
     UpsertPermissionDtoFromJSON,
     UpsertPermissionDtoToJSON,
     UserFromJSON,
@@ -2199,21 +2202,17 @@ export class V1Api extends runtime.BaseAPI {
     /**
      * Upload a file
      */
-    async fileUploadControllerCreateRaw(requestParameters: FileUploadControllerCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<string>> {
+    async fileUploadControllerCreateRaw(requestParameters: FileUploadControllerCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UploadExtractionResponseDto>> {
         const requestOptions = await this.fileUploadControllerCreateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        if (this.isJsonMime(response.headers.get('content-type'))) {
-            return new runtime.JSONApiResponse<string>(response);
-        } else {
-            return new runtime.TextApiResponse(response) as any;
-        }
+        return new runtime.JSONApiResponse(response, (jsonValue) => UploadExtractionResponseDtoFromJSON(jsonValue));
     }
 
     /**
      * Upload a file
      */
-    async fileUploadControllerCreate(requestParameters: FileUploadControllerCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<string> {
+    async fileUploadControllerCreate(requestParameters: FileUploadControllerCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UploadExtractionResponseDto> {
         const response = await this.fileUploadControllerCreateRaw(requestParameters, initOverrides);
         return await response.value();
     }

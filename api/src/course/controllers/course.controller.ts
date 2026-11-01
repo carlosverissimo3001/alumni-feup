@@ -7,15 +7,17 @@ import {
   Query,
   Post,
   Body,
+  UseGuards,
 } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CourseService } from '../services/course.service';
 import { CreateCourseDto, FindCoursesDto } from '../dto';
-import { RequirePermission } from '@/auth/user-auth.guard';
+import { RequirePermission, UserAuthGuard } from '@/auth/user-auth.guard';
 import { CourseAnalyticsEntity as CourseEntity } from '@/analytics/entities';
 
 @ApiTags('V1')
 @Controller('course')
+@UseGuards(UserAuthGuard)
 export class CourseController {
   constructor(private readonly courseService: CourseService) {}
 
