@@ -85,8 +85,16 @@ class LocationService:
         """
         with session_scope() as db:
             roles = get_roles_by_alumni_id(alumni_id, db)
-            role_ids_str = ",".join(role.id for role in roles)
 
+        if not roles:
+            # request_role_location treats a falsy role_ids as "no filter
+            # given" and resolves every role in the database. An alumnus with
+            # no roles at all (e.g. a LinkedIn fetch that succeeded but found
+            # no listed work experience) would otherwise produce an empty
+            # string here and silently trigger that database-wide fallback.
+            return
+
+        role_ids_str = ",".join(role.id for role in roles)
         await self.request_role_location(ResolveRoleLocationParams(role_ids=role_ids_str))
 
     async def update_location_coordinates(self, location: Location):
