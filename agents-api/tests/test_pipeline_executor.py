@@ -407,7 +407,9 @@ class TestDurability:
         # the end, which would lose a whole stage to a kill.
         assert len(commits) >= 2
 
-    async def test_commits_each_entity_as_it_finishes_not_just_the_whole_chunk(self, db, run, stage):
+    async def test_commits_each_entity_as_it_finishes_not_just_the_whole_chunk(
+        self, db, run, stage
+    ):
         # A single chunk holding every entity: if committing only happened at
         # chunk boundaries, this would be one commit no matter how many
         # entities it holds. A caller polling mid-chunk (the pipeline-run API,
