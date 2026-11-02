@@ -406,3 +406,28 @@ class TestDurability:
         # Two chunks, so progress must be durable at least twice - not once at
         # the end, which would lose a whole stage to a kill.
         assert len(commits) >= 2
+
+    async def test_commits_each_entity_as_it_finishes_not_just_the_whole_chunk(
+        self, db, run, stage
+    ):
+        # A single chunk holding every entity: if committing only happened at
+        # chunk boundaries, this would be one commit no matter how many
+        # entities it holds. A caller polling mid-chunk (the pipeline-run API,
+        # which the frontend polls) would then see nothing change until the
+        # slowest entity in the chunk landed, even though the others finished
+        # earlier.
+        commits = []
+        event.listen(db, "after_commit", lambda s: commits.append(1))
+
+        async def handle(entity_id):
+            return None
+
+        spec = StageSpec(
+            entity_type=PipelineEntityType.ALUMNI,
+            resolve=lambda session, run: ["a", "b", "c", "d"],
+            handle=handle,
+            chunk_size=4,
+        )
+        await execute_stage(db, run, stage, spec)
+
+        assert len(commits) >= 4

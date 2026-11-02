@@ -167,6 +167,16 @@ def _mark_running(session: Session, stage_id: str, entity_ids: List[str]) -> Non
     session.commit()
 
 
+async def _run_one(
+    entity_id: str, handle: Callable[[str], Awaitable[Optional[Dict[str, Any]]]]
+) -> tuple[str, Optional[Dict[str, Any]], Optional[BaseException]]:
+    try:
+        result = await handle(entity_id)
+    except BaseException as exc:  # noqa: BLE001 - captured per entity, not propagated
+        return entity_id, None, exc
+    return entity_id, result, None
+
+
 def _finish_task(
     session: Session,
     stage_id: str,
@@ -218,35 +228,37 @@ async def execute_stage(
 
         _mark_running(session, stage.id, chunk)
 
-        outcomes = await asyncio.gather(
-            *(spec.handle(entity_id) for entity_id in chunk), return_exceptions=True
-        )
-
-        for entity_id, outcome in zip(chunk, outcomes):
-            if isinstance(outcome, BaseException):
-                logger.warning(
-                    "Stage %s failed on %s: %s", stage.stage, entity_id, outcome
-                )
+        # as_completed rather than gather: a chunk holds up to chunk_size
+        # entities that don't all finish together, and committing only once
+        # the whole chunk is done hid every entity's result until the
+        # slowest one in the chunk landed. Finishing and committing each one
+        # as it completes is what makes progress visible in real time.
+        pending = {asyncio.create_task(_run_one(entity_id, spec.handle)) for entity_id in chunk}
+        for task in asyncio.as_completed(pending):
+            entity_id, outcome, error = await task
+            if error is not None:
+                logger.warning("Stage %s failed on %s: %s", stage.stage, entity_id, error)
                 _finish_task(
                     session,
                     stage.id,
                     entity_id,
                     PipelineTaskStatus.FAILED,
                     None,
-                    f"{type(outcome).__name__}: {outcome}",
+                    f"{type(error).__name__}: {error}",
                 )
             else:
                 _finish_task(
                     session, stage.id, entity_id, PipelineTaskStatus.SUCCEEDED, outcome, None
                 )
 
-        counts = count_tasks(session, stage.id)
-        _flush_counts(session, stage, counts)
+            # session_scope does not commit (app/db/session.py), so without
+            # this the worker's whole session is discarded on close and a
+            # kill resumes from nothing. Committing per entity is what makes
+            # progress survive and show up immediately.
+            _flush_counts(session, stage, count_tasks(session, stage.id))
+            session.commit()
 
-        # session_scope does not commit (app/db/session.py), so without this the
-        # worker's whole session is discarded on close and a kill resumes from
-        # nothing. Committing per chunk is what makes progress survive.
-        session.commit()
+        counts = count_tasks(session, stage.id)
 
         # Evaluated per chunk rather than at the end: the point is to stop
         # paying for a provider that is down, not to report it afterwards.
