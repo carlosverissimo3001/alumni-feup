@@ -108,6 +108,7 @@ class TokenRateLimiter:
             self._tokens = new_tokens
             await self._set_distributed_tokens(new_tokens)
             self._last_check = now
+            self._condition.notify_all()
 
     async def _wait_for_tokens(self, needed_tokens: int, current_tokens: float) -> None:
         """Wait for tokens to become available."""
